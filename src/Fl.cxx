@@ -410,7 +410,12 @@ int Fl::handle(int event, Fl_Window* window)
     break;
 
   case FL_RELEASE: {
-    if (Fl::pushed_) w = Fl::pushed_; Fl::pushed_ = 0;
+    if (Fl::pushed_) {
+      Fl::e_x += mouse_dx;
+      Fl::e_y += mouse_dy;
+      w = Fl::pushed_;
+      Fl::pushed_ = 0; // must be zero before callback is done!
+    }
     int r = w->handle(event);
     fl_fix_focus();
     if (fl_xmousewin) fl_xmousewin->handle(FL_MOVE);
@@ -506,9 +511,8 @@ void Fl_Window::hide() {
 #ifdef WIN32
   if (x->private_dc) ReleaseDC(x->xid,x->private_dc);
   if (x->xid == fl_window) fl_GetDC(0); // releases dc belonging to window
-#else
-  if (x->region) XDestroyRegion(x->region);
 #endif
+  if (x->region) XDestroyRegion(x->region);
   XDestroyWindow(fl_display, x->xid);
 
   delete x;
