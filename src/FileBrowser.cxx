@@ -125,7 +125,7 @@ FileBrowser::item_width(void *p) const	// I - List item data
   BLINE	*line;			// Pointer to line
   char		*text,			// Pointer into text
 		*ptr,			// Pointer into fragment
-		fragment[PATH_MAX];	// Fragment of text
+		fragment[FL_PATH_MAX];	// Fragment of text
   double	width,			// Width of line
 		tempwidth;		// Width of fragment
   int		column;			// Current column
@@ -268,7 +268,7 @@ FileBrowser::load(const char *directory)// I - Directory to load
 {
   int		i;		// Looping var
   int		num_files;	// Number of files in directory
-  char		filename[PATH_MAX];// Current file
+  char		filename[FL_PATH_MAX];// Current file
   FileIcon	*icon;		// Icon to use
 
 
@@ -318,7 +318,7 @@ FileBrowser::load(const char *directory)// I - Directory to load
       }
 #else
     FILE	*mtab;		// /etc/mtab or /etc/mnttab file
-    char	line[PATH_MAX];	// Input line
+    char	line[FL_PATH_MAX];	// Input line
 
     //
     // Open the file that contains a list of mounted filesystems...
@@ -335,7 +335,7 @@ FileBrowser::load(const char *directory)// I - Directory to load
 
     if (mtab != NULL)
     {
-      while (fgets(line, PATH_MAX, mtab) != NULL)
+      while (fgets(line, FL_PATH_MAX, mtab) != NULL)
       {
         if (line[0] == '#' || line[0] == '\n')
 	  continue;
@@ -360,7 +360,7 @@ FileBrowser::load(const char *directory)// I - Directory to load
     //
 
 #if defined(_WIN32) || defined(__EMX__)
-    strlcpy(filename, directory_, PATH_MAX);
+    strlcpy(filename, directory_, FL_PATH_MAX);
 
     i = strlen(filename) - 1;
 
@@ -383,10 +383,10 @@ FileBrowser::load(const char *directory)// I - Directory to load
       if (strcmp(files[i]->d_name, ".") != 0 &&
           strcmp(files[i]->d_name, "..") != 0)
       {
-        char namebuf[PATH_MAX];
-        memset(namebuf, 0, PATH_MAX);
-        utf8frommb(namebuf, PATH_MAX, files[i]->d_name, strlen(files[i]->d_name));
-	snprintf(filename, PATH_MAX, "%s/%s", directory_, namebuf);
+        char namebuf[FL_PATH_MAX];
+        memset(namebuf, 0, FL_PATH_MAX);
+        utf8frommb(namebuf, FL_PATH_MAX, files[i]->d_name, strlen(files[i]->d_name));
+	snprintf(filename, FL_PATH_MAX, "%s/%s", directory_, namebuf);
 
 	if (filename_isdir(filename)) {
           add(namebuf, FileIcon::find(filename));
@@ -398,10 +398,10 @@ FileBrowser::load(const char *directory)// I - Directory to load
       if (strcmp(files[i]->d_name, ".") != 0 &&
           strcmp(files[i]->d_name, "..") != 0)
       {
-        char namebuf[PATH_MAX];
-        memset(namebuf, 0, PATH_MAX);
-        utf8frommb(namebuf, PATH_MAX, files[i]->d_name, strlen(files[i]->d_name));
-	snprintf(filename, PATH_MAX, "%s/%s", directory_, namebuf);
+        char namebuf[FL_PATH_MAX];
+        memset(namebuf, 0, FL_PATH_MAX);
+        utf8frommb(namebuf, FL_PATH_MAX, files[i]->d_name, strlen(files[i]->d_name));
+	snprintf(filename, FL_PATH_MAX, "%s/%s", directory_, namebuf);
 
 	if (!filename_isdir(filename) &&
             filename_match(namebuf, pattern_)) {
