@@ -51,6 +51,12 @@
 #  include <unistd.h>
 #endif
 
+// temporary stuff
+#ifndef FL_PATH_MAX
+# define FL_PATH_MAX 256
+#endif
+
+// end temporary stuff
 
 using namespace fltk;
 

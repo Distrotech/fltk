@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "fltk"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR- /GX /Os /Ob2 /I "..\.." /I "." /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FD /c
+# ADD CPP /nologo /MT /W3 /GX /Os /Ob2 /I "..\.." /I "." /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
@@ -65,7 +65,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "fltkd"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR- /GX /ZI /Od /I "." /I "..\.." /I "../visualc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FD /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "." /I "..\.." /I "../visualc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FD /c
 # SUBTRACT CPP /Fr /YX
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
@@ -280,6 +280,10 @@ SOURCE=..\..\src\FloatInput.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\flstring.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\fltk_theme.cxx
 # End Source File
 # Begin Source File
@@ -413,6 +417,10 @@ SOURCE=..\..\src\PlasticBox.cxx
 # Begin Source File
 
 SOURCE=..\..\src\PopupMenu.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\Preferences.cxx
 # End Source File
 # Begin Source File
 
