@@ -52,10 +52,6 @@
 
 #define DAMAGE_BAR	0x10
 
-// TEMPORARY :
-// activate the following to allow new 1.1.x FileInput func
-//#define NEW_BTNS
-
 using namespace fltk;
 //
 // 'FileInput::FileInput()' - Create a FileInput widget.
@@ -121,7 +117,6 @@ void FileInput::draw_buttons() {
 
 void
 FileInput::update_buttons() {
-#ifdef NEWBTNS
     int		i;				// Looping var
     const char	*start,				// Start of path component
 	*end;				// End of path component
@@ -153,7 +148,6 @@ FileInput::update_buttons() {
     printf("    found %d components/buttons...\n", i);
 
     buttons_[i] = 0;
-#endif
 }
 
 
@@ -167,6 +161,7 @@ FileInput::text(const char *str,		// I - New string value
     set_damage(DAMAGE_BAR);
     int ret = Input::text( str,len);
     update_buttons();
+    redraw();
     return ret;
 }
 
@@ -174,9 +169,9 @@ FileInput::text(const char *str,		// I - New string value
 int						// O - TRUE on success
 FileInput::text(const char *str) {		// I - New string value
     set_damage(DAMAGE_BAR);
-    update_buttons();
     int ret = Input::text(str);
     update_buttons();
+    redraw();
     return ret;
 }
 
@@ -194,7 +189,6 @@ static float line_ascent(float leading) {
 
 
 void FileInput::draw() {
-#ifdef NEWBTNS
     if (damage() & (DAMAGE_BAR | DAMAGE_ALL))
 	draw_buttons();
     // this flag keeps Input_::drawtext from drawing a bogus box!
@@ -231,9 +225,6 @@ void FileInput::draw() {
       r.move_x(label_width);
       Input::draw(r);
     }
-#else
-    Input::draw();
-#endif // NEW BTNS
 }
 
 
@@ -244,7 +235,6 @@ void FileInput::draw() {
 int						// O - TRUE if we handled event
 FileInput::handle(int event)		// I - Event
 {
-#ifdef NEW_BTN
     //  printf("handle(event = %d)\n", event);
 
     switch (event) {
@@ -266,15 +256,12 @@ FileInput::handle(int event)		// I - Event
 
     default :
 	if (Input::handle(event)) {
-	    damage(DAMAGE_BAR);
+	    fltk::damage(DAMAGE_BAR);
 	    return 1;
 	}
 
 	return 0;
     }
-#else
-    return Input::handle(event);
-#endif
 }
 
 
@@ -296,7 +283,8 @@ FileInput::handle_button(int event)		// I - Event
     {
 	X += buttons_[i];
 
-	if (X > xscroll() && event_x() < (x() + X - xscroll())) break;
+	if (X > xscroll() && event_x() < (X - xscroll())) 
+	    break;
     }
 
     //  printf("handle_button(event = %d), button = %d\n", event, i);

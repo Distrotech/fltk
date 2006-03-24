@@ -1275,6 +1275,11 @@ bool fltk::handle(int event, Window* window)
   return false;
 }
 
+int fltk::x() {return Monitor::all().x();}
+int fltk::y() {return Monitor::all().y();}
+int fltk::w() {return Monitor::all().w();}
+int fltk::h() {return Monitor::all().h();}
+
 //
 // End of "$Id$".
 //
