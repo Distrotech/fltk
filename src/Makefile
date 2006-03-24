@@ -81,11 +81,13 @@ CPPFILES = \
 	Menu_popup.cxx \
 	MultiImage.cxx \
 	NumericInput.cxx \
+	numericsort.cxx \
 	Output.cxx \
 	OvalBox.cxx \
 	PackedGroup.cxx \
 	PlasticBox.cxx \
 	PopupMenu.cxx \
+	Preferences.cxx \
 	ProgressBar.cxx \
 	RadioButton.cxx \
 	RepeatButton.cxx \
@@ -138,11 +140,12 @@ CPPFILES = \
 	error.cxx \
 	event_key_state.cxx \
 	file_chooser.cxx \
+	filename_absolute.cxx \
 	filename_ext.cxx \
 	filename_isdir.cxx \
 	filename_list.cxx \
 	filename_match.cxx \
-	filename_normalize.cxx \
+	filename_name.cxx \
 	fillrect.cxx \
 	fltk_theme.cxx \
 	gifImage.cxx \
@@ -167,7 +170,7 @@ CPPFILES = \
 	xpmImage.cxx
 
 CFILES	= \
-	scandir.c \
+	scandir.cxx \
 	string.c \
 	utf.c \
 	vsnprintf.c

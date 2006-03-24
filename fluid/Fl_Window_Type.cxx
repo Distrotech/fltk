@@ -34,17 +34,19 @@
 #include <fltk/draw.h>
 #include <fltk/Box.h>
 #include <fltk/layout.h>
+#include <fltk/Preferences.h>
 #include "FluidType.h"
 #include <math.h>
 #include <stdlib.h>
 #include "alignment_panel.h"
 #include <stdio.h>
+#include <fltk/ItemGroup.h>
+#include <fltk/Item.h>
 
-int gridx = 5;
-int gridy = 5;
-int snap = 3;
 
 bool include_H_from_C = true;
+
+extern int gridx, gridy, snap;
 
 void alignment_cb(fltk::Input *i, long v) {
   int n = (int)strtol(i->value(),0,0);
@@ -382,9 +384,9 @@ extern fltk::MenuBar* menubar;
 
 void toggle_overlays(fltk::Widget *,void *) {
   if (overlays_invisible)
-    menubar->find("&Edit/Show Overlays")->set_value();
+    menubar->find("&Edit/Show Overlays")->set_flag(fltk::VALUE);
   else
-    menubar->find("&Edit/Show Overlays")->clear_value();
+    menubar->find("&Edit/Show Overlays")->clear_flag(fltk::VALUE);
   if (overlaybutton) overlaybutton->value(overlays_invisible);
   overlays_invisible = !overlays_invisible;
   for (FluidType *o=FluidType::first; o; o=o->walk())
@@ -429,10 +431,9 @@ void WindowType::moveallchildren()
   dx = dy = 0;
 }
 
-#include <FL/Fl_Menu_Item.H>
 
-extern Fl_Menu_Item Main_Menu[];
-extern Fl_Menu_Item New_Menu[];
+extern fltk::MenuBar * Main_Menu;
+extern fltk::ItemGroup * newMenu;
 
 // find the innermost item clicked on:
 WidgetType* WindowType::clicked_widget() {
@@ -470,7 +471,7 @@ int WindowType::handle(int event) {
     // test for popup menu:
     if (fltk::event_button() >= 3) {
       in_this_only = this; // modifies how some menu items work.
-      New_Menu->popup(mx,my,"New");
+      newMenu->popup(fltk::Rectangle(mx,my,0,0),"New");
       in_this_only = 0;
       return 1;
     }
@@ -625,9 +626,9 @@ int WindowType::handle(int event) {
 
   case fltk::SHORTCUT: {
     in_this_only = this; // modifies how some menu items work.
-    const Fl_Menu_Item* r = Main_Menu->test_shortcut();
+    bool found = Main_Menu->test_shortcut();
     in_this_only = 0;
-    return r != 0;}
+    return found != false;}
 
   default:
 #ifdef _WIN32

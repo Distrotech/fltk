@@ -45,6 +45,9 @@
 #include <fltk/MultiBrowser.h>
 #include <fltk/Item.h>
 #include <fltk/draw.h>
+#include <fltk/events.h>
+#include <fltk/damage.h>
+#include <fltk/filename.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -177,17 +180,25 @@ class Widget_List : public fltk::List {
 
 static Widget_List widgetlist;
 
-static fltk::Browser *widget_browser;
+extern fltk::Browser *widget_browser;
 
-static void Widget_Browser_callback(fltk::Widget *,void *) {
-  if (FluidType::current) FluidType::current->open();
+extern void deselect();
+static void Widget_Browser_callback(fltk::Widget * w,void *) {
+    if (fltk::event()==fltk::PUSH )  {
+	if ( ( (fltk::Browser*) w)->item()==0) 
+	    deselect();
+	    widget_browser->redraw();
+    }
+    else if (fltk::event()==fltk::WHEN_ENTER_KEY || fltk::event_clicks()) { // double_click open the widget editor
+	if (FluidType::current) FluidType::current->open();
+    }
 }
 
 fltk::Widget *make_widget_browser(int x,int y,int w,int h) {
   widget_browser = new fltk::MultiBrowser(x,y,w,h);
   widget_browser->list(&widgetlist);
   widget_browser->callback(Widget_Browser_callback);
-  widget_browser->when(fltk::WHEN_ENTER_KEY);
+  widget_browser->when(fltk::WHEN_ENTER_KEY|fltk::WHEN_CHANGED);
   widget_browser->indented(1);
   return widget_browser;
 }
@@ -202,6 +213,17 @@ int Widget_List::children(const fltk::Menu*, const int* indexes, int level) {
   }
   int n; for (n = 0; item; item = item->next_brother) n++;
   return n;
+}
+
+static const char * get_item_fullname(FluidType* item) {
+    static char buffer[PATH_MAX];
+    if (strcmp(item->type_name(),"namespace") ==0) 
+	sprintf(buffer, "%s %s", "namespace", item->title());
+    else if (strcmp(item->type_name(),"class") ==0) 
+	sprintf(buffer, "%s %s", "class", item->title());
+    else 
+	strncpy(buffer, item->title(), sizeof(buffer));
+    return buffer;
 }
 
 fltk::Widget* Widget_List::child(const fltk::Menu*, const int* indexes, int level) {
@@ -221,10 +243,11 @@ fltk::Widget* Widget_List::child(const fltk::Menu*, const int* indexes, int leve
   widget->user_data(item);
   if (item->selected) widget->set_selected();
   else widget->clear_selected();
-  if (item->is_parent() && item->open_) widget->set_value();
-  else widget->clear_value();
+  // force the hierarchy to be open/closed:
+  if (item->is_parent() && item->open_) widget->set_flag(fltk::VALUE);
+  else widget->clear_flag(fltk::VALUE);
 
-  widget->label(item->title());
+  widget->label(get_item_fullname(item));
   widget->w(0);
   widget->h(0);
 
@@ -233,15 +256,16 @@ fltk::Widget* Widget_List::child(const fltk::Menu*, const int* indexes, int leve
 
 void Widget_List::flags_changed(const fltk::Menu*, fltk::Widget* w) {
   FluidType* item = (FluidType*)(w->user_data());
-  item->open_ = w->value();
+  item->open_ = (w->flags()&fltk::VALUE) != 0;
   item->new_selected = w->selected();
   if (item->new_selected != item->selected) selection_changed(item);
 }
 
-void select(FluidType* item, int value) {
-  item->new_selected = value != 0;
-  if (item->new_selected != item->selected) {
-    selection_changed(item);
+void select(FluidType* it, int value) {
+  it->new_selected = value != 0;
+  if (it->new_selected != it->selected) {
+    selection_changed(it);
+    widget_browser->goto_focus();
     widget_browser->redraw();
   }
 }
@@ -265,6 +289,7 @@ void select_only(FluidType* i) {
 void deselect() {
   for (FluidType* item = FluidType::first; item; item = item->walk())
     select(item,0);
+  FluidType::current = 0;
 }
 
 // Generate a descriptive text for this item, to put in browser & window
@@ -584,6 +609,11 @@ void FluidType::write() {
   for (FluidType* p = parent; p; p = p->parent) level++;
   write_indent(level);
   write_word(type_name());
+  if (is_class()) {
+    const char * p = prefix();
+    if (p && *p) write_word(p);
+  }
+
   write_word(name());
   write_open(level);
   write_properties();

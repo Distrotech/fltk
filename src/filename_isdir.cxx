@@ -46,8 +46,8 @@ static bool fill_stat(const char *name) {
   if (last_statname && strcmp(last_statname, name)==0) return last_result;
   delete[] const_cast<char *>( last_statname ); // otherwize VC++ will scream
   last_statname = newstring(name);
-  char namebuf[FL_PATH_MAX];
-  utf8tomb(name, strlen(name), namebuf, FL_PATH_MAX);
+  char namebuf[PATH_MAX];
+  utf8tomb(name, strlen(name), namebuf, PATH_MAX);
   name = namebuf;
 #if defined(_WIN32) || defined(__EMX__)
   // _WIN32 apparently thinks A: is not a directory, but A:/ is!
@@ -64,14 +64,15 @@ static bool fill_stat(const char *name) {
   return last_result;
 }
 
+
 /** Returns true if the file exists and is a directory. */
-bool filename_isdir(const char* name) {
+bool fltk::filename_isdir(const char* name) {
   if (!fill_stat(name)) return false;
   return (last_stat.st_mode&0170000)==0040000;
 }
 
 /** Returns the size of the file in bytes. Returns zero if it does not exist.*/
-double filename_size(const char* name) {
+double fltk::filename_size(const char* name) {
   if (!fill_stat(name)) return 0.0;
   return (double)last_stat.st_size;
 }
@@ -81,7 +82,7 @@ double filename_size(const char* name) {
   (number of seconds since the start of 1970 in GMT). Returns 0
   if the file does not exist.
 */
-long int filename_mtime(const char *name) {
+long int fltk::filename_mtime(const char *name) {
   if (!fill_stat(name)) return 0;
   if (last_stat.st_mtime) return last_stat.st_mtime;
   if (last_stat.st_atime) return last_stat.st_atime;

@@ -1,5 +1,5 @@
 //
-// "$Id: FileIcon.h,v 1.2 2002/12/10 02:00:29 easysw Exp $"
+// "$Id$"
 //
 // Fl_FileIcon definitions for the Fast Light Tool Kit (FLTK).
 //
@@ -52,7 +52,7 @@ class FL_API FileIcon
     FIFO,			// Only named pipes
     DEVICE,			// Only character and block devices
     LINK,			// Only symbolic links
-    DIR 			// Only directories
+    DIRECTORY 			// Only directories
   };
 
   enum				// Data opcodes
@@ -87,7 +87,7 @@ class FL_API FileIcon
   const char	*pattern() { return (pattern_); }
   int		size() { return (num_data_); }
   int		type() { return (type_); }
-  short		*value() { return (data_); }
+  short		*data() { return (data_); }
 
   static FileIcon *find(const char *filename, int filetype = ANY);
   static FileIcon *first() { return (first_); }
@@ -99,5 +99,5 @@ class FL_API FileIcon
 #endif
 
 //
-// End of "$Id: FileIcon.h,v 1.2 2002/12/10 02:00:29 easysw Exp $".
+// End of "$Id$".
 //

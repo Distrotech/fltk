@@ -37,16 +37,33 @@ typedef Symbol Box;
 class FL_API FrameBox : public Box {
 protected:
   const char* data_;
-  const FrameBox* down;
-  int dx, dy, dw, dh;
+  const Box* down_;
+  int dx_, dy_, dw_, dh_;
 public:
   const char* data() const {return data_;}
   void _draw(const Rectangle&) const;
   void inset(Rectangle&) const;
+  /*! dx,dy,dw,dh lets you peek at constants rather than use inset(). */
+  int dx() const {return dx_;}
+  int dy() const {return dy_;}
+  int dw() const {return dw_;}
+  int dh() const {return dh_;}
   bool fills_rectangle() const;
   bool is_frame() const;
-  FrameBox(const char* n, const char* c, const FrameBox* d=0);
+  FrameBox(const char* name, int dx,int dy,int dw,int dh, const char* pattern, const Box* down=0)
+    : Box(name),data_(pattern),down_(down),dx_(dx),dy_(dy),dw_(dw),dh_(dh) {}
 };
+
+// Back compatability functions added by fabian?
+inline int box_dx(const Box* b) {return b->dx();}
+inline int box_dy(const Box* b) {return b->dy();}
+inline int box_dw(const Box* b) {return b->dw();}
+inline int box_dh(const Box* b) {return b->dh();}
+// If we know it is a FrameBox these are faster:
+inline int box_dx(const FrameBox* b) {return b->dx();}
+inline int box_dy(const FrameBox* b) {return b->dy();}
+inline int box_dw(const FrameBox* b) {return b->dw();}
+inline int box_dh(const FrameBox* b) {return b->dh();}
 
 class FL_API FlatBox : public Box {
 public:
@@ -57,7 +74,7 @@ public:
 };
 
 class FL_API HighlightBox : public FlatBox {
-  const Box* down;
+  const Box* down_;
 public:
   void _draw(const Rectangle&) const;
   void inset(Rectangle&) const;

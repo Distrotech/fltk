@@ -1,5 +1,5 @@
 //
-// "$Id: glpuzzle.cxx,v 1.6 2002/12/10 02:00:36 easysw Exp $"
+// "$Id$"
 //
 // OpenGL puzzle demo for the Fast Light Tool Kit (FLTK).
 //
@@ -33,7 +33,11 @@
 #include <time.h>
 #include <math.h>
 #include <fltk/glut.h>	// changed for fltk
-#include <GL/glu.h> // added for fltk
+#ifdef __APPLE__
+#  include <OpenGL/glu.h>
+#else
+#  include <GL/glu.h> // added for FLTK
+#endif
 #include "trackball.c"	// changed from trackball.h for fltk
 
 #define WIDTH 4
@@ -1466,5 +1470,5 @@ main(int argc, char **argv)
 }
 
 //
-// End of "$Id: glpuzzle.cxx,v 1.6 2002/12/10 02:00:36 easysw Exp $".
+// End of "$Id$".
 //

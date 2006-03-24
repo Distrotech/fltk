@@ -1,11 +1,11 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 2.0000 
-header_name {../fltk/FileChooser.h} 
+version 1.0107 
+header_name {../FL/Fl_File_Chooser.H} 
 code_name {.cxx}
 comment {//
 // "$Id$"
 //
-// File_Chooser dialog for the Fast Light Tool Kit (FLTK).
+// Fl_File_Chooser dialog for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2005 by Bill Spitzak and others.
 //
@@ -31,14 +31,14 @@ comment {//
 } {in_source in_header
 } 
 
-decl {\#include <fltk/draw.h>} {} 
+decl {\#include <FL/fl_draw.H>} {} 
 
-class FileChooser {open
+class FL_EXPORT Fl_File_Chooser {open
 } {
   decl {enum { SINGLE = 0, MULTI = 1, CREATE = 2, DIRECTORY = 4 };} {public
   }
-  decl {static Preferences prefs_;} {}
-  decl {void (*callback_)(FileChooser*, void *);} {}
+  decl {static Fl_Preferences prefs_;} {}
+  decl {void (*callback_)(Fl_File_Chooser*, void *);} {}
   decl {void *data_;} {}
   decl {char directory_[1024];} {}
   decl {char pattern_[1024];} {}
@@ -49,11 +49,11 @@ class FileChooser {open
   decl {void fileListCB();} {}
   decl {void fileNameCB();} {}
   decl {void newdir();} {}
-  decl {static void previewCB(FileChooser *fc);} {}
+  decl {static void previewCB(Fl_File_Chooser *fc);} {}
   decl {void showChoiceCB();} {}
   decl {void update_favorites();} {}
   decl {void update_preview();} {}
-  Function {FileChooser(const char *d, const char *p, int t, const char *title)} {open
+  Function {Fl_File_Chooser(const char *d, const char *p, int t, const char *title)} {open
   } {
     Fl_Window window {
       label {Choose File}
@@ -85,7 +85,7 @@ window->hide();}
         Fl_Button newButton {
           callback {newdir();}
           image {new.xbm} xywh {455 10 25 25} labelsize 8
-          code0 {\#include <fltk/Preferences.h>}
+          code0 {\#include <FL/Fl_Preferences.H>}
           code1 {o->tooltip(new_directory_tooltip);}
         }
       }
@@ -93,10 +93,10 @@ window->hide();}
         callback {update_preview();}
         private xywh {10 45 470 225} resizable
       } {
-        FileBrowser fileList {
+        Fl_File_Browser fileList {
           callback {fileListCB();}
           private xywh {10 45 295 225} type Hold hotspot
-          code0 {\#include <fltk/FileBrowser.h>}
+          code0 {\#include <FL/Fl_File_Browser.H>}
         }
         Fl_Box previewBox {
           label {?}
@@ -119,10 +119,10 @@ window->hide();}
             private xywh {115 275 365 20} resizable
           }
         }
-        FileInput fileName {
+        Fl_File_Input fileName {
           callback {fileNameCB();}
           private xywh {115 300 365 35} labelfont 1 when 8 resizable
-          code0 {fileName->when(WHEN_CHANGED | WHEN_ENTER_KEY_ALWAYS);}
+          code0 {fileName->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);}
         }
         Fl_Box {} {
           label {Filename:}
@@ -163,7 +163,7 @@ window->hide();}
       private xywh {437 187 355 150} type Double resizable
       code0 {favWindow->label(manage_favorites_label);} modal size_range {181 150 0 0} visible
     } {
-      FileBrowser favList {
+      Fl_File_Browser favList {
         callback {favoritesCB(favList);}
         private xywh {10 10 300 95} type Hold resizable
       }
@@ -220,20 +220,20 @@ int e;
 prefs_.get("preview", e, 1);
 preview(e);} {}
   }
-  Function {~FileChooser()} {} {
+  Function {~Fl_File_Chooser()} {} {
     code {Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
 delete window;
 delete favWindow;} {}
   }
-  Function {callback(void (*cb)(FileChooser *, void *), void *d = 0)} {return_type void
+  Function {callback(void (*cb)(Fl_File_Chooser *, void *), void *d = 0)} {return_type void
   } {
     code {callback_ = cb;
 data_     = d;} {}
   }
-  Function {color(Color c)} {} {
+  Function {color(Fl_Color c)} {} {
     code {fileList->color(c);} {}
   }
-  Function {color()} {return_type Color
+  Function {color()} {return_type Fl_Color
   } {
     code {return (fileList->color());} {}
   }
@@ -304,20 +304,20 @@ okButton->parent()->init_sizes();} {}
     code {window->hotspot(fileList);
 window->show();
 Fl::flush();
-fl_cursor(CURSOR_WAIT);
+fl_cursor(FL_CURSOR_WAIT);
 rescan();
-fl_cursor(CURSOR_DEFAULT);
+fl_cursor(FL_CURSOR_DEFAULT);
 fileName->take_focus();} {}
   }
   Function {shown()} {return_type int
   } {
     code {return window->shown();} {}
   }
-  Function {textcolor(Color c)} {return_type void
+  Function {textcolor(Fl_Color c)} {return_type void
   } {
     code {fileList->textcolor(c);} {}
   }
-  Function {textcolor()} {return_type Color
+  Function {textcolor()} {return_type Fl_Color
   } {
     code {return (fileList->textcolor());} {}
   }
@@ -341,17 +341,17 @@ fileName->take_focus();} {}
   } {
     code {type_ = t;
 if (t & MULTI)
-  fileList->type(MULTI_BROWSER);
+  fileList->type(FL_MULTI_BROWSER);
 else
-  fileList->type(HOLD_BROWSER);
+  fileList->type(FL_HOLD_BROWSER);
 if (t & CREATE)
   newButton->activate();
 else
   newButton->deactivate();
 if (t & DIRECTORY)
-  fileList->filetype(FileBrowser::DIRECTORIES);
+  fileList->filetype(Fl_File_Browser::DIRECTORIES);
 else
-  fileList->filetype(FileBrowser::FILES);} {}
+  fileList->filetype(Fl_File_Browser::FILES);} {}
   }
   Function {type()} {return_type int
   } {
@@ -403,16 +403,16 @@ else
   }
 } 
 
-decl {char *fl_dir_chooser(const char *message,const char *fname,int relative=0);} {public
+decl {FL_EXPORT char *fl_dir_chooser(const char *message,const char *fname,int relative=0);} {public
 } 
 
-decl {char *fl_file_chooser(const char *message,const char *pat,const char *fname,int relative=0);} {public
+decl {FL_EXPORT char *fl_file_chooser(const char *message,const char *pat,const char *fname,int relative=0);} {public
 } 
 
-decl {void fl_file_chooser_callback(void (*cb)(const char*));} {public
+decl {FL_EXPORT void fl_file_chooser_callback(void (*cb)(const char*));} {public
 } 
 
-decl {void fl_file_chooser_ok_label(const char*l);} {public
+decl {FL_EXPORT void fl_file_chooser_ok_label(const char*l);} {public
 } 
 
 comment {

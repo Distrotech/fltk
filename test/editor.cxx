@@ -48,6 +48,7 @@
 #include <fltk/ReturnButton.h>
 #include <fltk/TextBuffer.h>
 #include <fltk/TextEditor.h>
+#include <fltk/MenuBuild.h>
 
 #include <FL/Fl_Menu_Bar.H>
 
@@ -101,6 +102,7 @@ const char         *code_keywords[] = {	// List of known C/C++ keywords...
 		     "throw",
 		     "true",
 		     "try",
+		     "using",
 		     "while",
 		     "xor",
 		     "xor_eq"
@@ -441,6 +443,7 @@ class EditorWindow : public fltk::Window {
 
 EditorWindow::EditorWindow(int w, int h, const char* t) : fltk::Window(w, h, t) {
   replace_dlg = new fltk::Window(300, 105, "Replace");
+  replace_dlg->begin();
     replace_find = new fltk::Input(80, 10, 210, 25, "Find:");
     replace_find->align(fltk::ALIGN_LEFT);
 
@@ -481,7 +484,7 @@ int check_save(void) {
 }
 
 int loading = 0;
-void load_file(char *newfile, int ipos) {
+void load_file(const char *newfile, int ipos) {
   loading = 1;
   int insert = (ipos != -1);
   changed = insert;
@@ -497,7 +500,7 @@ void load_file(char *newfile, int ipos) {
   textbuf->call_modify_callbacks();
 }
 
-void save_file(char *newfile) {
+void save_file(const char *newfile) {
   if (textbuf->savefile(newfile))
     fltk::alert("Error writing to file \'%s\':\n%s.", newfile, strerror(errno));
   else
@@ -588,12 +591,12 @@ void new_cb(fltk::Widget*, void*) {
 void open_cb(fltk::Widget*, void*) {
   if (!check_save()) return;
 
-  char *newfile = fltk::file_chooser("Open File?", "*", filename);
+  const char *newfile = fltk::file_chooser("Open File?", "*", filename);
   if (newfile != NULL) load_file(newfile, -1);
 }
 
 void insert_cb(fltk::Widget*, void *v) {
-  char *newfile = fltk::file_chooser("Insert File?", "*", filename);
+  const char *newfile = fltk::file_chooser("Insert File?", "*", filename);
   EditorWindow *w = (EditorWindow *)v;
   if (newfile != NULL) load_file(newfile, w->editor->insert_position());
 }
@@ -632,8 +635,8 @@ void replace_cb(fltk::Widget*, void* v) {
 
 void replace2_cb(fltk::Widget*, void* v) {
   EditorWindow* e = (EditorWindow*)v;
-  const char *find = e->replace_find->value();
-  const char *replace = e->replace_with->value();
+  const char *find = e->replace_find->text();
+  const char *replace = e->replace_with->text();
 
   if (find[0] == '\0') {
     // Search string is blank; get a new one...
@@ -660,10 +663,10 @@ void replace2_cb(fltk::Widget*, void* v) {
 
 void replall_cb(fltk::Widget*, void* v) {
   EditorWindow* e = (EditorWindow*)v;
-  const char *find = e->replace_find->value();
-  const char *replace = e->replace_with->value();
+  const char *find = e->replace_find->text();
+  const char *replace = e->replace_with->text();
 
-  find = e->replace_find->value();
+  find = e->replace_find->text();
   if (find[0] == '\0') {
     // Search string is blank; get a new one...
     e->replace_dlg->show();
@@ -710,9 +713,7 @@ void save_cb() {
 }
 
 void saveas_cb() {
-  char *newfile;
-
-  newfile = fltk::file_chooser("Save File As?", "*", filename);
+  const char *newfile = fltk::file_chooser("Save File As?", "*", filename);
   if (newfile != NULL) save_file(newfile);
 }
 
@@ -723,52 +724,56 @@ void view_cb(fltk::Widget*, void*) {
   w->show();
 }
 
-Fl_Menu_Item menuitems[] = {
-  { "&File",              0, 0, 0, fltk::SUBMENU },
-    { "&New File",        0, (fltk::Callback *)new_cb },
-    { "&Open File...",    fltk::CTRL + 'o', (fltk::Callback *)open_cb },
-    { "&Insert File...",  fltk::CTRL + 'i', (fltk::Callback *)insert_cb, 0, fltk::MENU_DIVIDER },
-    { "&Save File",       fltk::CTRL + 's', (fltk::Callback *)save_cb },
-    { "Save File &As...", fltk::CTRL + fltk::SHIFT + 's', (fltk::Callback *)saveas_cb, 0, fltk::MENU_DIVIDER },
-    { "New &View", fltk::ALT + 'v', (fltk::Callback *)view_cb, 0 },
-    { "&Close View", fltk::CTRL + 'w', (fltk::Callback *)close_cb, 0, fltk::MENU_DIVIDER },
-    { "E&xit", fltk::CTRL + 'q', (fltk::Callback *)quit_cb, 0 },
-    { 0 },
+static void build_menus(fltk::MenuBar * menu, fltk::Widget *w) {
+    fltk::ItemGroup * g;
+    menu->user_data(w);
 
-  { "&Edit", 0, 0, 0, fltk::SUBMENU },
-    { "Cu&t",        fltk::CTRL + 'x', (fltk::Callback *)cut_cb },
-    { "&Copy",       fltk::CTRL + 'c', (fltk::Callback *)copy_cb },
-    { "&Paste",      fltk::CTRL + 'v', (fltk::Callback *)paste_cb },
-    { "&Delete",     0, (fltk::Callback *)delete_cb },
-    { 0 },
-
-  { "&Search", 0, 0, 0, fltk::SUBMENU },
-    { "&Find...",       fltk::CTRL + 'f', (fltk::Callback *)find_cb },
-    { "F&ind Again",    fltk::CTRL + 'g', find2_cb },
-    { "&Replace...",    fltk::CTRL + 'r', replace_cb },
-    { "Re&place Again", fltk::CTRL + 't', replace2_cb },
-    { 0 },
-
-  { 0 }
-};
+    menu->begin();
+      g = new fltk::ItemGroup( "&File", 0);
+	new fltk::Item( "&New File",        0, (fltk::Callback *)new_cb );
+	new fltk::Item( "&Open File...",    fltk::CTRL + 'o', (fltk::Callback *)open_cb );
+	new fltk::Item( "&Insert File...",  fltk::CTRL + 'i', (fltk::Callback *)insert_cb);
+	new fltk::Divider();
+	new fltk::Item( "&Save File",       fltk::CTRL + 's', (fltk::Callback *)save_cb );
+	new fltk::Item( "Save File &As...", fltk::CTRL + fltk::SHIFT + 's', (fltk::Callback *)saveas_cb);
+	new fltk::Divider();
+	new fltk::Item( "New &View", fltk::ALT + 'v', (fltk::Callback *)view_cb, 0 );
+	new fltk::Item( "&Close View", fltk::CTRL + 'w', (fltk::Callback *)close_cb);
+	new fltk::Divider();
+	new fltk::Item( "E&xit", fltk::CTRL + 'q', (fltk::Callback *)quit_cb, 0 );
+      g->end();
+      g = new fltk::ItemGroup( "&Edit", 0);
+	new fltk::Item( "Cu&t",        fltk::CTRL + 'x', (fltk::Callback *)cut_cb );
+	new fltk::Item( "&Copy",       fltk::CTRL + 'c', (fltk::Callback *)copy_cb );
+	new fltk::Item( "&Paste",      fltk::CTRL + 'v', (fltk::Callback *)paste_cb );
+	new fltk::Item( "&Delete",     0, (fltk::Callback *)delete_cb );
+      g->end();
+      g = new fltk::ItemGroup( "&Search", 0);
+	new fltk::Item( "&Find...",       fltk::CTRL + 'f', (fltk::Callback *)find_cb );
+	new fltk::Item( "F&ind Again",    fltk::CTRL + 'g', find2_cb );
+	new fltk::Item( "&Replace...",    fltk::CTRL + 'r', replace_cb );
+	new fltk::Item( "Re&place Again", fltk::CTRL + 't', replace2_cb );
+      g->end();
+    menu->end();
+}
 
 fltk::Window* new_view() {
   EditorWindow* w = new EditorWindow(660, 400, title);
     w->begin();
-    fltk::MenuBar* m = new fltk::MenuBar(0, 0, 660, 30);
-    m->copy(menuitems, w);
-    w->editor = new fltk::TextEditor(0, 30, 660, 370);
+    fltk::MenuBar* m = new fltk::MenuBar(0, 0, 660, 21);
+    build_menus(m,w);
+    w->editor = new fltk::TextEditor(0, 21, 660, 379);
     w->editor->buffer(textbuf);
-    w->editor->highlight_data(stylebuf, styletable,
-                              sizeof(styletable) / sizeof(styletable[0]),
-			      'A', style_unfinished_cb, 0);
-    w->editor->textfont(fltk::COURIER);
+//     w->editor->highlight_data(stylebuf, styletable,
+//                               sizeof(styletable) / sizeof(styletable[0]),
+// 			      'A', style_unfinished_cb, 0);
+    //w->editor->textfont(fltk::COURIER);
   w->end();
   w->resizable(w->editor);
   w->callback((fltk::Callback *)close_cb, w);
 
   w->editor->linenumber_width(60);
-  //w->editor->wrap_mode(true, 0);
+  w->editor->wrap_mode(true, 0);
   //w->editor->cursor_style(fltk::TextDisplay::BLOCK_CURSOR);
   //w->editor->insert_mode(false);
 

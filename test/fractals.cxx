@@ -1,5 +1,5 @@
 //
-// "$Id: fractals.cxx,v 1.11 2004/03/25 18:13:18 spitzak Exp $"
+// "$Id$"
 //
 // Fractal drawing demo for the Fast Light Tool Kit (FLTK).
 //
@@ -29,10 +29,10 @@
 
 #include <config.h>
 #if !HAVE_GL || !HAVE_GL_GLU_H
-#include <FL/Fl.H>
-#include <FL/fl_message.H>
+#include <fltk/run.h>
+#include <fltk/ask.h>
 int main(int, char**) {
-  fl_alert("This demo does not work without GL and GLU (%d)");
+  fltk::alert("This demo does not work without GL and GLU");
   return 1;
 }
 #else
@@ -87,7 +87,7 @@ typedef unsigned long ulong;
 #  define srand48(x) (srand((x)))
 #endif
 
-typedef enum { NOTALLOWED, MOUNTAIN, TREE, ISLAND, BIGMTN, STEM, LEAF, 
+typedef enum { NOTALLOWED=10, MOUNTAIN, TREE, ISLAND, BIGMTN, STEM, LEAF, 
                MOUNTAIN_MAT, WATER_MAT, LEAF_MAT, TREE_MAT, STEMANDLEAVES,
                AXES } DisplayLists;
 
@@ -677,7 +677,7 @@ void menuuse(int v)
 /******************* MENU SETUP & HANDLING *********************/
 /***************************************************************/
 
-typedef enum { MENU_QUIT, MENU_RAND, MENU_MOVE, MENU_AXES } MenuChoices;
+typedef enum { MENU_QUIT=30, MENU_RAND, MENU_MOVE, MENU_AXES } MenuChoices;
 
 void setlevel(int value)
 {
@@ -696,7 +696,18 @@ void choosefract(int value)
 void handlemenu(int value)
 {
   switch (value) {
-    case MENU_QUIT:
+  case MOUNTAIN:
+  case TREE:
+  case ISLAND:
+    choosefract(value);
+    break;
+  case 0:  case 1:  case 2:  case 3:  case 4:  case 5:  case 6:  case 7: case 8:
+    setlevel(value);
+    break;
+  case FLYING: case POLAR: 
+    agvSwitchMoveMode(value);
+    break;
+  case MENU_QUIT:
       exit(0);
       break;
     case MENU_RAND:
@@ -818,5 +829,5 @@ int main(int argc, char** argv)
 #endif
 
 //
-// End of "$Id: fractals.cxx,v 1.11 2004/03/25 18:13:18 spitzak Exp $".
+// End of "$Id$".
 //

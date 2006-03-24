@@ -18,7 +18,7 @@
 	@x:TiledGroup:tile
 	@x:ScrollGroup:scroll
 	@x:PackedGroup:pack
-	@x:Menu:menu
+	@x:Menu:menubar
 
 @main:Window\nTests:@w
 	@w:overlay:overlay
@@ -52,9 +52,10 @@
 @main:Nice\nDemos:@e
 	@e:X Color\nBrowser:../forms/colbrowser
 	@e:Mandelbrot:mandelbrot
-	@e:Fractals:../glut/fractals
+	@e:Fractals:fractals
 	@e:Puzzle:glpuzzle
 	@e:Checkers:checkers
+	@e:Qubix:qubix
 
 @main:Other\nTests:@o
 	@o:color choosers:color_chooser r

@@ -1,9 +1,9 @@
 //
-// "$Id: glut.h,v 1.12 2005/01/24 08:07:07 spitzak Exp $"
+// "$Id$"
 //
 // GLUT emulation header file for the Fast Light Tool Kit (FLTK).
 //
-// Copyright 1998-2003 by Bill Spitzak and others.
+// Copyright 1998-2005 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -20,10 +20,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA.
 //
-// Please report all bugs and problems to "fltk-bugs@fltk.org".
+// Please report all bugs and problems on the following page:
+//
+//     http://www.fltk.org/str.php
 //
 
-// Emulation of Glut using fltk.
+// Emulation of GLUT using fltk.
 
 // GLUT is Copyright (c) Mark J. Kilgard, 1994, 1995, 1996:
 // "This program is freely distributable without licensing fees  and is
@@ -31,57 +33,61 @@
 // program is -not- in the public domain."
 
 // Although I have copied the GLUT API, none of my code is based on
-// any Glut implementation details and is therefore covered by the LGPL.
+// any GLUT implementation details and is therefore covered by the LGPL.
 
-// Fltk does not include the Glut drawing functions (such as
+// FLTK does not include the GLUT drawing functions (such as
 // glutWireTeapot()) or the stroke fonts but the declarations for the
 // drawing functions are included here because otherwise there is no
 // way to get them along with this.  To use them you will have to
-// link in the original Glut library, put -lglut *after* -lfltk.
+// link in the original GLUT library, put -lglut *after* -lfltk.
 
-// Commented out lines indicate parts of Glut that are not emulated.
+// Commented out lines indicate parts of GLUT that are not emulated.
 
 #ifndef __glut_h__
-#define __glut_h__
+#  define __glut_h__
 
-#include <fltk/run.h>
-#include <fltk/GlWindow.h>
-#include <fltk/gl.h>
-#include <fltk/events.h>
-#include <fltk/visual.h>
-//#include <GL/glu.h>
+#  include "gl.h"
 
 ////////////////////////////////////////////////////////////////
-// Glut is emulated using this window class and these static variables
+// GLUT is emulated using this window class and these static variables
 // (plus several more static variables hidden in glut.C):
 
-class FL_GLUT_API Fl_Glut_Window : public fltk::GlWindow {
-  void _init();
-  int mouse_down;
-protected:
-  void draw();
-  void draw_overlay();
-  int handle(int);
-public: // so the inline functions work
-  int number;
-  int menu[3];
-  void make_current();
-  void (*display)();
-  void (*overlaydisplay)();
-  void (*reshape)(int w, int h);
-  void (*keyboard)(uchar, int x, int y);
-  void (*mouse)(int b, int state, int x, int y);
-  void (*motion)(int x, int y);
-  void (*passivemotion)(int x, int y);
-  void (*entry)(int);
-  void (*visibility)(int);
-  void (*special)(int, int x, int y);
-  Fl_Glut_Window(int w, int h, const char *);
-  Fl_Glut_Window(int x, int y, int w, int h, const char *);
-  ~Fl_Glut_Window();
-};
+#  include <fltk/run.h>
+#  include <fltk/events.h>
+#  include <fltk/GlWindow.h>
+#  include <fltk/Cursor.h>
+#  include <fltk/visual.h>
 
-extern FL_GLUT_API Fl_Glut_Window *glut_window;	// the current window
+namespace fltk {
+	
+	class FL_GLUT_API GlutWindow : public fltk::GlWindow {
+	  void _init();
+	  int mouse_down;
+	protected:
+	  void draw();
+	  void draw_overlay();
+	  int handle(int);
+	public: // so the inline functions work
+	  int number;
+	  int menu[3];
+	  void make_current();
+	  void (*display)();
+	  void (*overlaydisplay)();
+	  void (*reshape)(int w, int h);
+	  void (*keyboard)(uchar, int x, int y);
+	  void (*mouse)(int b, int state, int x, int y);
+	  void (*motion)(int x, int y);
+	  void (*passivemotion)(int x, int y);
+	  void (*entry)(int);
+	  void (*visibility)(int);
+	  void (*special)(int, int x, int y);
+	  GlutWindow(int w, int h, const char *);
+	  GlutWindow(int x, int y, int w, int h, const char *);
+	  ~GlutWindow();
+	};
+}
+
+extern FL_GLUT_API fltk::GlutWindow *glut_window;	// the current window
 extern FL_GLUT_API int glut_menu;			// the current menu
 
 // function pointers that are not per-window:
@@ -91,12 +97,11 @@ extern FL_GLUT_API void (*glut_menustatus_function)(int,int,int);
 
 ////////////////////////////////////////////////////////////////
 
-//#define GLUT_API_VERSION This does not match any version of Glut exactly...
+//#  define GLUT_API_VERSION This does not match any version of GLUT exactly...
 
 FL_GLUT_API void glutInit(int *argcp, char **argv); // creates first window
 
 FL_GLUT_API void glutInitDisplayMode(unsigned int mode);
-// the FL_ symbols have the same value as the GLUT ones:
 enum {
   GLUT_RGB	= fltk::RGB_COLOR,
   GLUT_RGBA	= fltk::RGB_COLOR,
@@ -153,6 +158,7 @@ inline void glutHideWindow() {glut_window->hide();}
 inline void glutFullScreen() {glut_window->fullscreen();}
 
 inline void glutSetCursor(fltk::Cursor* cursor) {glut_window->cursor(cursor);}
+// notice that the numeric values are different than glut:
 
 //#define GLUT_CURSOR_RIGHT_ARROW
 //#define GLUT_CURSOR_LEFT_ARROW
@@ -177,7 +183,6 @@ inline void glutSetCursor(fltk::Cursor* cursor) {glut_window->cursor(cursor);}
 #define GLUT_CURSOR_INHERIT		fltk::CURSOR_DEFAULT
 #define GLUT_CURSOR_NONE		fltk::CURSOR_NONE
 #define GLUT_CURSOR_FULL_CROSSHAIR	fltk::CURSOR_CROSS
-
 //inline void glutWarpPointer(int x, int y);
 
 inline void glutEstablishOverlay() {glut_window->make_overlay_current();}
@@ -284,7 +289,6 @@ enum {
   GLUT_KEY_END		= fltk::EndKey,
   GLUT_KEY_INSERT	= fltk::InsertKey
 };
-
 //inline void glutSpaceballMotionFunc(void (*)(int x, int y, int z));
 
 //inline void glutSpaceballRotateFunc(void (*)(int x, int y, int z));
@@ -315,9 +319,9 @@ inline void glutOverlayDisplayFunc(void (*f)()) {
 
 //inline void glutCopyColormap(int win);
 
-// Warning: values are changed from Glut!
+// Warning: values are changed from GLUT!
 // Also relies on the GL_ symbols having values greater than 100
-FL_GLUT_API int glutGet(GLenum type);
+int glutGet(GLenum type);
 enum {
   GLUT_RETURN_ZERO = 0,
   GLUT_WINDOW_X,
@@ -342,25 +346,25 @@ enum {
   GLUT_WINDOW_BUFFER_SIZE
 };
 
-#define GLUT_WINDOW_STENCIL_SIZE	GL_STENCIL_BITS
-#define GLUT_WINDOW_DEPTH_SIZE		GL_DEPTH_BITS
-#define GLUT_WINDOW_RED_SIZE		GL_RED_BITS
-#define GLUT_WINDOW_GREEN_SIZE		GL_GREEN_BITS
-#define GLUT_WINDOW_BLUE_SIZE		GL_BLUE_BITS
-#define GLUT_WINDOW_ALPHA_SIZE		GL_ALPHA_BITS
-#define GLUT_WINDOW_ACCUM_RED_SIZE	GL_ACCUM_RED_BITS
-#define GLUT_WINDOW_ACCUM_GREEN_SIZE	GL_ACCUM_GREEN_BITS
-#define GLUT_WINDOW_ACCUM_BLUE_SIZE	GL_ACCUM_BLUE_BITS
-#define GLUT_WINDOW_ACCUM_ALPHA_SIZE	GL_ACCUM_ALPHA_BITS
-#define GLUT_WINDOW_DOUBLEBUFFER	GL_DOUBLEBUFFER
-#define GLUT_WINDOW_RGBA		GL_RGBA
-#define GLUT_WINDOW_COLORMAP_SIZE	GL_INDEX_BITS
-#ifdef GL_SAMPLES_SGIS
-#define GLUT_WINDOW_NUM_SAMPLES		GL_SAMPLES_SGIS
-#else
-#define GLUT_WINDOW_NUM_SAMPLES		GLUT_RETURN_ZERO
-#endif
-#define GLUT_WINDOW_STEREO		GL_STEREO
+#  define GLUT_WINDOW_STENCIL_SIZE	GL_STENCIL_BITS
+#  define GLUT_WINDOW_DEPTH_SIZE	GL_DEPTH_BITS
+#  define GLUT_WINDOW_RED_SIZE		GL_RED_BITS
+#  define GLUT_WINDOW_GREEN_SIZE	GL_GREEN_BITS
+#  define GLUT_WINDOW_BLUE_SIZE		GL_BLUE_BITS
+#  define GLUT_WINDOW_ALPHA_SIZE	GL_ALPHA_BITS
+#  define GLUT_WINDOW_ACCUM_RED_SIZE	GL_ACCUM_RED_BITS
+#  define GLUT_WINDOW_ACCUM_GREEN_SIZE	GL_ACCUM_GREEN_BITS
+#  define GLUT_WINDOW_ACCUM_BLUE_SIZE	GL_ACCUM_BLUE_BITS
+#  define GLUT_WINDOW_ACCUM_ALPHA_SIZE	GL_ACCUM_ALPHA_BITS
+#  define GLUT_WINDOW_DOUBLEBUFFER	GL_DOUBLEBUFFER
+#  define GLUT_WINDOW_RGBA		GL_RGBA
+#  define GLUT_WINDOW_COLORMAP_SIZE	GL_INDEX_BITS
+#  ifdef GL_SAMPLES_SGIS
+#    define GLUT_WINDOW_NUM_SAMPLES	GL_SAMPLES_SGIS
+#  else
+#    define GLUT_WINDOW_NUM_SAMPLES	GLUT_RETURN_ZERO
+#  endif
+#  define GLUT_WINDOW_STEREO		GL_STEREO
 
 //int glutDeviceGet(GLenum type);
 //#define GLUT_HAS_KEYBOARD		600
@@ -380,15 +384,15 @@ enum {
   GLUT_ACTIVE_CTRL	= fltk::CTRL,
   GLUT_ACTIVE_ALT	= fltk::ALT
 };
-inline int glutGetModifiers() { return fltk::event_state() & (GLUT_ACTIVE_SHIFT | GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT) ;}
+inline int glutGetModifiers() {return fltk::event_state() & (GLUT_ACTIVE_SHIFT | GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT);}
 
-FL_GLUT_API int glutLayerGet(GLenum);
-#define GLUT_OVERLAY_POSSIBLE		800
+int glutLayerGet(GLenum);
+#  define GLUT_OVERLAY_POSSIBLE		800
 //#define GLUT_LAYER_IN_USE		801
 //#define GLUT_HAS_OVERLAY		802
-#define GLUT_TRANSPARENT_INDEX		803
-#define GLUT_NORMAL_DAMAGED		804
-#define GLUT_OVERLAY_DAMAGED		805
+#  define GLUT_TRANSPARENT_INDEX		803
+#  define GLUT_NORMAL_DAMAGED		804
+#  define GLUT_OVERLAY_DAMAGED		805
 
 //inline int glutVideoResizeGet(GLenum param);
 //#define GLUT_VIDEO_RESIZE_POSSIBLE	900
@@ -411,47 +415,44 @@ FL_GLUT_API int glutLayerGet(GLenum);
 //inline void glutVideoPan(int x, int y, int width, int height);
 
 ////////////////////////////////////////////////////////////////
-// Emulated Glut drawing functions:
+// Emulated GLUT drawing functions:
 
 // Font argument must be a void* for compatability, so...
 extern FL_GLUT_API struct Glut_Bitmap_Font {fltk::Font* font; int size;}
   glutBitmap9By15, glutBitmap8By13, glutBitmapTimesRoman10,
   glutBitmapTimesRoman24, glutBitmapHelvetica10, glutBitmapHelvetica12,
   glutBitmapHelvetica18;
-#define GLUT_BITMAP_9_BY_15             (&glutBitmap9By15)
-#define GLUT_BITMAP_8_BY_13             (&glutBitmap8By13)
-#define GLUT_BITMAP_TIMES_ROMAN_10      (&glutBitmapTimesRoman10)
-#define GLUT_BITMAP_TIMES_ROMAN_24      (&glutBitmapTimesRoman24)
-#define GLUT_BITMAP_HELVETICA_10        (&glutBitmapHelvetica10)
-#define GLUT_BITMAP_HELVETICA_12        (&glutBitmapHelvetica12)
-#define GLUT_BITMAP_HELVETICA_18        (&glutBitmapHelvetica18)
+#  define GLUT_BITMAP_9_BY_15             (&glutBitmap9By15)
+#  define GLUT_BITMAP_8_BY_13             (&glutBitmap8By13)
+#  define GLUT_BITMAP_TIMES_ROMAN_10      (&glutBitmapTimesRoman10)
+#  define GLUT_BITMAP_TIMES_ROMAN_24      (&glutBitmapTimesRoman24)
+#  define GLUT_BITMAP_HELVETICA_10        (&glutBitmapHelvetica10)
+#  define GLUT_BITMAP_HELVETICA_12        (&glutBitmapHelvetica12)
+#  define GLUT_BITMAP_HELVETICA_18        (&glutBitmapHelvetica18)
 
 FL_GLUT_API void glutBitmapCharacter(void *font, int character);
 FL_GLUT_API int glutBitmapWidth(void *font, int character);
 
 ////////////////////////////////////////////////////////////////
-// Glut drawing functions.  These are NOT emulated but you can
-// link in the glut library to get them.  This assummes the object
-// files in Glut remain as they currently are so that there are
+// GLUT drawing functions.  These are NOT emulated but you can
+// link in the glut library to get them.  This assumes the object
+// files in GLUT remain as they currently are so that there are
 // not symbol conflicts with the above.
 
 extern "C" {
-#ifndef APIENTRY
-# define APIENTRY
-#endif
 
-extern int APIENTRY glutExtensionSupported(const char *name);
+extern int APIENTRY glutExtensionSupported(char *name);
 
 /* Stroke font constants (use these in GLUT program). */
-#ifdef _WIN32
-# define GLUT_STROKE_ROMAN		((void*)0)
-# define GLUT_STROKE_MONO_ROMAN		((void*)1)
-#else
+#  ifdef WIN32
+#    define GLUT_STROKE_ROMAN		((void*)0)
+#    define GLUT_STROKE_MONO_ROMAN	((void*)1)
+#  else
 extern void *glutStrokeRoman;
-# define GLUT_STROKE_ROMAN		(&glutStrokeRoman)
+#    define GLUT_STROKE_ROMAN		(&glutStrokeRoman)
 extern void *glutStrokeMonoRoman;
-# define GLUT_STROKE_MONO_ROMAN		(&glutStrokeMonoRoman)
-#endif
+#    define GLUT_STROKE_MONO_ROMAN	(&glutStrokeMonoRoman)
+#  endif
 
 /* GLUT font sub-API */
 extern void APIENTRY glutStrokeCharacter(void *font, int character);
@@ -479,8 +480,8 @@ extern void APIENTRY glutSolidIcosahedron();
 
 }
 
-#endif                  /* __glut_h__ */
+#endif                  /* !__glut_h__ */
 
 //
-// End of "$Id: glut.h,v 1.12 2005/01/24 08:07:07 spitzak Exp $".
+// End of "$Id$".
 //

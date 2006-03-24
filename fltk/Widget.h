@@ -153,9 +153,6 @@ public:
   bool	changed() const		{ return (flags_&CHANGED)!=0; }
   void	set_changed()		{ flags_ |= CHANGED; }
   void	clear_changed()		{ flags_ &= ~CHANGED; }
-  bool	value() const		{ return (flags_&VALUE)!=0; }
-  void	set_value()		{ flags_ |= VALUE; }
-  void	clear_value()		{ flags_ &= ~VALUE; }
   bool	selected() const	{ return (flags_&SELECTED)!=0; }
   void	set_selected()		{ flags_ |= SELECTED; }
   void	clear_selected()	{ flags_ &= ~SELECTED; }
@@ -194,6 +191,7 @@ public:
   void	draw_background() const	;
   void  draw_frame() const	;
   void  draw_box() const	;
+  void  draw_box(const Rectangle& r) const ; // multiple boxes drawing for a single Widget
   void	draw_label() const	;
   void  draw_label(const Rectangle&, Flags) const ;
   void  draw_glyph(int, const Rectangle&) const ;

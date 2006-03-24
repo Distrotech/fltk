@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "fltk"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /Os /Ob2 /I "..\.." /I "." /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FD /c
+# ADD CPP /nologo /MT /W3 /GX /Os /Ob2 /I "..\.." /I "." /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FR /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
@@ -65,8 +65,8 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "fltkd"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "." /I "..\.." /I "../visualc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FD /c
-# SUBTRACT CPP /Fr /YX
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "." /I "..\.." /I "../visualc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /Fr /FD /c
+# SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -82,6 +82,486 @@ LIB32=link.exe -lib
 
 # Name "fltk - Win32 Release"
 # Name "fltk - Win32 Debug"
+# Begin Group "header"
+
+# PROP Default_Filter "h"
+# Begin Source File
+
+SOURCE=..\..\fltk\adjuster.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\aligngroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\ask.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\bargroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\box.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\checkbutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\choice.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\clock.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\color.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\colorchooser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\ComboBox.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\cursor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\cyclebutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\damage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\dial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\dirent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\divider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\DoubleBufferWindow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\draw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\error.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\events.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\file_chooser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\filebrowser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\filechooser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\fileicon.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\fileinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\filename.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\FillDial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\FillSlider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\fl_api.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\FL_VERSION.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\flags.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\floatinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\font.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\forms.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\gl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\gl2opengl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\glut.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\glut0.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\GlWindow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\HelpDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\HelpView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\highlightbutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\image.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\inputbrowser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\IntInput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\invisiblebox.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\itemgroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\labeltype.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\layout.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\lightbutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\LineDial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\load_plugin.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\mac.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\math.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\menu.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\menubar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\menuwindow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\Monitor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\MultiBrowser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\multiimage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\MultiLineInput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\MultiLineOutput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\numericinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\packedgroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\PixelType.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\popupmenu.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\Preferences.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\progressbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\radiobutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\RadioItem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\RadioLightButton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\rectangle.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\repeatbutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\returnbutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\rgbimage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\run.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\scrollbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\scrollgroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\secretinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\shapedwindow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\sharedimage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\show_colormap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\string.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\stringlist.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\style.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\styleset.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\symbol.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\tabgroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\textbuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\textdisplay.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\texteditor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\Threads.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\thumbwheel.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\tiledgroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\tiledimage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\ToggleButton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\tooltip.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\utf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\valuator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\valueinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\valueoutput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\valueslider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\visual.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\widget.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\win32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\WordwrapInput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\WordwrapOutput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\x.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\xbmimage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\xpmimage.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\src\add_idle.cxx
@@ -244,6 +724,10 @@ SOURCE=..\..\src\FileInput.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\filename_absolute.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\filename_ext.cxx
 # End Source File
 # Begin Source File
@@ -260,7 +744,7 @@ SOURCE=..\..\src\filename_match.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\filename_normalize.cxx
+SOURCE=..\..\src\filename_name.cxx
 # End Source File
 # Begin Source File
 
@@ -277,10 +761,6 @@ SOURCE=..\..\src\Fl_Menu_Item.cxx
 # Begin Source File
 
 SOURCE=..\..\src\FloatInput.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\flstring.c
 # End Source File
 # Begin Source File
 
@@ -301,6 +781,10 @@ SOURCE=..\..\src\Group.cxx
 # Begin Source File
 
 SOURCE=..\..\src\GSave.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\HelpView.cxx
 # End Source File
 # Begin Source File
 
@@ -388,6 +872,10 @@ SOURCE=..\..\src\NumericInput.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\numericsort.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\Output.cxx
 # End Source File
 # Begin Source File
@@ -460,7 +948,7 @@ SOURCE=..\..\src\run.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\scandir.c
+SOURCE=..\..\src\scandir.cxx
 # End Source File
 # Begin Source File
 

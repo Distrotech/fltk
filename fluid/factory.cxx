@@ -30,9 +30,11 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
-
 #include <fltk/run.h>
 #include <fltk/Group.h>
+#include <fltk/MenuBuild.h>
+#include <fltk/MenuBar.h>
+
 #include <string.h>
 #ifdef _WIN32
 # define strcasecmp(a,b) stricmp(a,b)
@@ -198,6 +200,7 @@ public:
 };
 static AdjusterType Adjustertype;
 
+#include <fltk/Box.h>
 ////////////////////////////////////////////////////////////////
 
 #include <fltk/Dial.h>
@@ -363,6 +366,125 @@ public:
 static BarGroupType BarGrouptype;
 
 ////////////////////////////////////////////////////////////////
+#include <fltk/TextDisplay.h>
+class TextDisplayType : public WidgetType {
+    int textstuff(int w, fltk::Font* f, int& s, fltk::Color c);
+public:
+  virtual void ideal_size(int &w, int &h) {
+    fltk::TextDisplay *myo = (fltk::TextDisplay *)o;
+    fltk::setfont(myo->textfont(), myo->textsize());
+    h -= fltk::box_dh(o->box());
+    w -= fltk::box_dw(o->box());
+    int ww = (int) fltk::getwidth("m");
+    w = ((w + ww - 1) / ww) * ww + fltk::box_dw(o->box());
+    h = ((h + fltk::getascent() - 1) / fltk::getascent() ) * fltk::getascent() +
+        fltk::box_dh(o->box());
+    if (h < 30) h = 30;
+    if (w < 50) w = 50;
+  }
+  virtual const char *type_name() const {return "fltk::TextDisplay";}
+  fltk::Widget *widget(int x,int y,int w,int h) {
+    fltk::TextDisplay *myo = new fltk::TextDisplay(x,y,w,h);
+    myo->box(fltk::DOWN_BOX);
+    return myo;
+  }
+  WidgetType *_make() {return new TextDisplayType();}
+  int pixmapID() { return 28; }
+};
+static TextDisplayType TextDisplaytype;
+
+int TextDisplayType::textstuff(int w, fltk::Font* f, int& s, fltk::Color c) {
+  fltk::TextDisplay *myo = (fltk::TextDisplay*)(w==4 ? ((WidgetType*)factory)->o : o);
+  switch (w) {
+    case 4:
+    case 0: f = myo->textfont(); s = myo->textsize(); c = myo->textcolor(); break;
+    case 1: myo->textfont(f); break;
+    case 2: myo->textsize((float)s); break;
+    case 3: myo->textcolor(c); break;
+  }
+  return 1;
+}
+////////////////////////////////////////////////////////////////
+#include <fltk/TextEditor.h>
+
+class TextEditorType : public WidgetType {
+  int textstuff(int w, fltk::Font* f, int& s, fltk::Color c);
+public:
+  virtual void ideal_size(int &w, int &h) {
+    fltk::TextEditor *myo = (fltk::TextEditor *)o;
+    fltk::setfont(myo->textfont(), myo->textsize());
+    h -= fltk::box_dh(o->box());
+    w -= fltk::box_dw(o->box());
+    int ww = (int)fltk::getwidth("m");
+    w = ((w + ww - 1) / ww) * ww + fltk::box_dw(o->box());
+    h = ((h + fltk::getascent() - 1) / fltk::getascent()) * fltk::getascent() +
+        fltk::box_dh(o->box());
+    if (h < 30) h = 30;
+    if (w < 50) w = 50;
+  }
+  virtual const char *type_name() const {return "fltk::TextEditor";}
+  fltk::Widget *widget(int x,int y,int w,int h) {
+    fltk::TextEditor *myo = new fltk::TextEditor(x,y,w,h);
+    return myo;
+  }
+  WidgetType *_make() {return new TextEditorType();}
+  int pixmapID() { return 29; }
+};
+static TextEditorType TextEditortype;
+
+int TextEditorType::textstuff(int w, fltk::Font* f, int& s, fltk::Color c) {
+    fltk::TextEditor *myo = (fltk::TextEditor*)(w==4 ? ((WidgetType*)factory)->o : o);
+  switch (w) {
+    case 4:
+    case 0: f = myo->textfont(); s = (int) myo->textsize(); c = myo->textcolor(); break;
+    case 1: myo->textfont(f); break;
+    case 2: myo->textsize((float)s); break;
+    case 3: myo->textcolor(c); break;
+  }
+  return 1;
+}
+
+////////////////////////////////////////////////////////////////
+#include <fltk/FileInput.h>
+class FileInputType: public WidgetType {
+    fltk::Item *subtypes() {return 0;}
+    int textstuff(int w,fltk::Font* f, int& s, fltk::Color c);
+public:
+  virtual void ideal_size(int &w, int &h) {
+    fltk::FileInput *myo = (fltk::FileInput *)o;
+    fltk::setfont(myo->textfont(), myo->textsize());
+    h = fltk::getdescent() + myo->textsize() + 4;
+    w -= fltk::box_dw(o->box());
+    int ww = (int)fltk::getwidth("m",1);
+    w = ((w + ww - 1) / ww) * ww + fltk::box_dw(o->box());
+    if (h < 20) h = 20;
+    if (w < 50) w = 50;
+  }
+  virtual const char *type_name() const {return "fltk::FileInput";}
+  fltk::Widget *widget(int x,int y,int w,int h) {
+    fltk::FileInput *myo = new fltk::FileInput(x,y,w,h,"file:");
+    myo->value("/now/is/the/time/for/a/filename.ext");
+    return myo;
+  }
+  WidgetType *_make() {      return new FileInputType();  }
+  int pixmapID() { return 30; }
+};
+
+static FileInputType FileInputtype;
+ 
+int FileInputType::textstuff(int w, fltk::Font* f, int& s, fltk::Color c) {
+    fltk::FileInput *myo = (fltk::FileInput*)(w==4 ? ((WidgetType*)factory)->o : o);
+  switch (w) {
+    case 4:
+    case 0: f = myo->textfont(); s = myo->textsize(); c = myo->textcolor(); break;
+    case 1: myo->textfont(f); break;
+    case 2: myo->textsize((float)s); break;
+    case 3: myo->textcolor(c); break;
+  }
+  return 1;
+}
+
+////////////////////////////////////////////////////////////////
 
 extern class FunctionType Functiontype;
 extern class CodeType Codetype;
@@ -370,6 +492,7 @@ extern class CodeBlockType CodeBlocktype;
 extern class DeclType Decltype;
 extern class DeclBlockType DeclBlocktype;
 extern class ClassType Classtype;
+extern class NamespaceType Namespacetype;
 extern class WindowType Windowtype;
 extern class GroupType Grouptype;
 extern class PackType Packtype;
@@ -384,6 +507,8 @@ extern class DividerType Dividertype;
 extern class SubmenuType Submenutype;
 extern class BrowserType Browsertype;
 extern class InputBrowserType InputBrowsertype;
+extern class FileBrowserType FileBrowsertype;
+extern class CommentType Commenttype;
 
 extern void select(FluidType *,int);
 extern void select_only(FluidType *);
@@ -393,106 +518,105 @@ static void cb(fltk::Widget *, void *v) {
   if (t) {select_only(t); modflag = 1; t->open();}
 }
 
-#include <FL/Fl_Menu_Item.H>
+fltk::ItemGroup* newMenu;
 
-Fl_Menu_Item New_Menu[] = {
-{"code",0,0,0,FL_SUBMENU},
-  {"function/method",0,cb,(void*)&Functiontype},
-  {"code",0,cb,(void*)&Codetype},
-  {"code block",0,cb,(void*)&CodeBlocktype},
-  {"declaration",0,cb,(void*)&Decltype},
-  {"declaration block",0,cb,(void*)&DeclBlocktype},
-  {"class",0,cb,(void*)&Classtype},
-{0},
-{"group",0,0,0,FL_SUBMENU},
-  {0,0,cb,(void*)&Windowtype},
-  {0,0,cb,(void*)&Grouptype},
-  {0,0,cb,(void*)&Packtype},
-  {0,0,cb,(void*)&Tabstype},
-  {0,0,cb,(void*)&Scrolltype},
-  {0,0,cb,(void*)&Tiletype},
-  {0,0,cb,(void*)&BarGrouptype},
-{0},
-{"buttons",0,0,0,FL_SUBMENU},
-  {0,0,cb,(void*)&Buttontype},
-  {0,0,cb,(void*)&ReturnButtontype},
-  {0,0,cb,(void*)&LightButtontype},
-  {0,0,cb,(void*)&CheckButtontype},
-  {0,0,cb,(void*)&RadioButtontype},
-  {0,0,cb,(void*)&RepeatButtontype},
-{0},
-{"valuators",0,0,0,FL_SUBMENU},
-  {0,0,cb,(void*)&Slidertype},
-  {0,0,cb,(void*)&ValueSlidertype},
-  {0,0,cb,(void*)&ValueInputtype},
-  {0,0,cb,(void*)&ValueOutputtype},
-  {0,0,cb,(void*)&Scrollbartype},
-  {0,0,cb,(void*)&Adjustertype},
-  {0,0,cb,(void*)&Dialtype},
-  {0,0,cb,(void*)&ThumbWheeltype},
-  {0,0,cb,(void*)&ProgressBartype},
-{0},
-{"text",0,0,0,FL_SUBMENU},
-  {0,0,cb,(void*)&Inputtype},
-  {0,0,cb,(void*)&Outputtype},
-{0},
-{"menus",0,0,0,FL_SUBMENU},
-  {0,0,cb,(void*)&MenuBartype},
-  {0,0,cb,(void*)&PopupMenutype},
-  {0,0,cb,(void*)&Choicetype},
-  {0,0,cb,(void*)&Browsertype},
-  {0,0,cb,(void*)&InputBrowsertype},
-  {0,0,cb, (void*)&Submenutype},
-  {0,0,cb, (void*)&Itemtype},
-  {0,0,cb, (void*)&Dividertype},
-{0},
-{"other",0,0,0,FL_SUBMENU},
-  {0,0,cb,(void*)&Widgettype},
-  {0,0,cb,(void*)&InvisibleBoxtype},
-  {0,0,cb,(void*)&Clocktype},
-{0},
-{"plugins",0,0,Plugins_New_Menu,FL_SUBMENU_POINTER},
-{0}};
+//////////////////////////////////////////////////////////////////////
+void fill_in_New_Menu(fltk::ItemGroup* menu) {
+  fltk::ItemGroup* submenu;
+  newMenu= menu;
 
-void fill_in_New_Menu(Fl_Menu_Item* menu) {
-  int level = 0;
-  for (unsigned i = 0; level || menu[i].user_data() || menu[i].text; i++) {
-    Fl_Menu_Item *m = menu+i;
-    if (m->flags & FL_SUBMENU) level++;
-    if (!m->text && !m->user_data()) level--;
-    if (m->user_data() && !m->flags && !m->text) {
-      const char *n = ((FluidType*)(m->user_data()))->type_name();
-      //if (!strncmp(n,"fltk::",3)) n += 6;
-      m->text = n;
-      m->callback_ = cb;
-    }
-  }
+    newMenu->begin();
+	submenu=new fltk::ItemGroup("code",0,0);
+	  new fltk::Item((*(WidgetType*)&Functiontype).type_name(),0,cb,(void*)&Functiontype);
+	  new fltk::Item((*(WidgetType*)&Codetype).type_name(),0,cb,(void*)&Codetype);
+	  new fltk::Item((*(WidgetType*)&CodeBlocktype).type_name(),0,cb,(void*)&CodeBlocktype);
+	  new fltk::Item((*(WidgetType*)&Decltype).type_name(),0,cb,(void*)&Decltype);
+	  new fltk::Item((*(WidgetType*)&DeclBlocktype).type_name(),0,cb,(void*)&DeclBlocktype);
+	  new fltk::Item((*(WidgetType*)&Classtype).type_name(),0,cb,(void*)&Classtype);
+	  new fltk::Item((*(WidgetType*)&Namespacetype).type_name(),0,cb,(void*)&Namespacetype);
+	  new fltk::Item((*(WidgetType*)&Commenttype).type_name(),0,cb,(void*)&Commenttype);
+	submenu->end();
+	submenu=new fltk::ItemGroup("group",0,0);
+	  new fltk::Item(Windowtype.type_name(),0,cb,(void*)&Windowtype);
+	  new fltk::Item(Grouptype.type_name(),0,cb,(void*)&Grouptype);
+	  new fltk::Item((*(WidgetType*)&Packtype).type_name(),0,cb,(void*)&Packtype);
+	  new fltk::Item((*(WidgetType*)&Tabstype).type_name(),0,cb,(void*)&Tabstype);
+	  new fltk::Item((*(WidgetType*)&Scrolltype).type_name(),0,cb,(void*)&Scrolltype);
+	  new fltk::Item((*(WidgetType*)&Tiletype).type_name(),0,cb,(void*)&Tiletype);
+	  new fltk::Item((*(WidgetType*)&BarGrouptype).type_name(),0,cb,(void*)&BarGrouptype);
+	submenu->end();
+	submenu=new fltk::ItemGroup("buttons",0,0);
+	  new fltk::Item((*(WidgetType*)&Buttontype).type_name(),0,cb,(void*)&Buttontype);
+	  new fltk::Item((*(WidgetType*)&ReturnButtontype).type_name(),0,cb,(void*)&ReturnButtontype);
+	  new fltk::Item((*(WidgetType*)&LightButtontype).type_name(),0,cb,(void*)&LightButtontype);
+	  new fltk::Item((*(WidgetType*)&CheckButtontype).type_name(),0,cb,(void*)&CheckButtontype);
+	  new fltk::Item((*(WidgetType*)&RadioButtontype).type_name(),0,cb,(void*)&RadioButtontype);
+	  new fltk::Item((*(WidgetType*)&RepeatButtontype).type_name(),0,cb,(void*)&RepeatButtontype);
+	submenu->end();
+	submenu=new fltk::ItemGroup("valuators",0,0);
+	  new fltk::Item((*(WidgetType*)&Slidertype).type_name(),0,cb,(void*)&Slidertype);
+	  new fltk::Item((*(WidgetType*)&ValueSlidertype).type_name(),0,cb,(void*)&ValueSlidertype);
+	  new fltk::Item((*(WidgetType*)&ValueInputtype).type_name(),0,cb,(void*)&ValueInputtype);
+	  new fltk::Item((*(WidgetType*)&ValueOutputtype).type_name(),0,cb,(void*)&ValueOutputtype);
+	  new fltk::Item((*(WidgetType*)&Scrollbartype).type_name(),0,cb,(void*)&Scrollbartype);
+	  new fltk::Item((*(WidgetType*)&Adjustertype).type_name(),0,cb,(void*)&Adjustertype);
+	  new fltk::Item((*(WidgetType*)&Dialtype).type_name(),0,cb,(void*)&Dialtype);
+	  new fltk::Item((*(WidgetType*)&ThumbWheeltype).type_name(),0,cb,(void*)&ThumbWheeltype);
+	  new fltk::Item((*(WidgetType*)&ProgressBartype).type_name(),0,cb,(void*)&ProgressBartype);
+	submenu->end();
+	submenu=new fltk::ItemGroup("text",0,0);
+	  new fltk::Item((*(WidgetType*)&Inputtype).type_name(),0,cb,(void*)&Inputtype);
+	  new fltk::Item((*(WidgetType*)&Outputtype).type_name(),0,cb,(void*)&Outputtype);
+	  new fltk::Item((*(WidgetType*)&TextDisplaytype).type_name(),0,cb,(void*)&TextDisplaytype);
+	  new fltk::Item((*(WidgetType*)&TextEditortype).type_name(),0,cb,(void*)&TextEditortype);
+	  new fltk::Item((*(WidgetType*)&FileInputtype).type_name(),0,cb,(void*)&FileInputtype);
+	submenu->end();
+	submenu=new fltk::ItemGroup("menus",0,0);
+	  new fltk::Item((*(WidgetType*)&MenuBartype).type_name(),0,cb,(void*)&MenuBartype);
+	  new fltk::Item((*(WidgetType*)&PopupMenutype).type_name(),0,cb,(void*)&PopupMenutype);
+	  new fltk::Item((*(WidgetType*)&Choicetype).type_name(),0,cb,(void*)&Choicetype);
+	  new fltk::Item((*(WidgetType*)&Browsertype).type_name(),0,cb,(void*)&Browsertype);
+	  new fltk::Item((*(WidgetType*)&InputBrowsertype).type_name(),0,cb,(void*)&InputBrowsertype);
+	  new fltk::Item((*(WidgetType*)&FileBrowsertype).type_name(),0,cb,(void*)&FileBrowsertype);
+	  new fltk::Item((*(WidgetType*)&Submenutype).type_name(),0,cb, (void*)&Submenutype);
+	  new fltk::Item((*(WidgetType*)&Itemtype).type_name(),0,cb, (void*)&Itemtype);
+	  new fltk::Item((*(WidgetType*)&Dividertype).type_name(),0,cb, (void*)&Dividertype);
+	submenu->end();
+	submenu=new fltk::ItemGroup("other",0,0);
+	  new fltk::Item((*(WidgetType*)&Widgettype).type_name(),0,cb,(void*)&Widgettype);
+	  new fltk::Item((*(WidgetType*)&InvisibleBoxtype).type_name(),0,cb,(void*)&InvisibleBoxtype);
+	  new fltk::Item((*(WidgetType*)&Clocktype).type_name(),0,cb,(void*)&Clocktype);
+	submenu->end();
+/* fabien: is it necessary or redondant with the 'Plugins' submenu before 'Help' ?
+	submenu=new fltk::ItemGroup("plugins",0,0);
+	submenu->end();
+*/
+      newMenu->end();
 }
-
-void fill_in_New_Menu() {
-  fill_in_New_Menu(New_Menu);
-}
+//////////////////////////////////////////////////////////////////////
 
 int reading_file;
 
 // Recursive function for searching submenus:
-static FluidType *FluidType_make(const char *tn, Fl_Menu_Item* menu) {
-  int level = 0;
-  reading_file = 1; // makes labels be null
+static FluidType *FluidType_make(const char *tn, fltk::ItemGroup * menu) {
   FluidType *r = 0;
-  for (unsigned i = 0; level||menu[i].user_data() || menu[i].text; i++) {
-    Fl_Menu_Item *m = menu+i;
-    if (m->flags & FL_SUBMENU) level++;
-    if (!m->text && !m->user_data()) level--;
-    if (!m->user_data()) continue;
-    if(m->flags & FL_SUBMENU_POINTER) {
-      if(r = FluidType_make(tn, (Fl_Menu_Item*) m->user_data()), r) break;
-    } else {
-      FluidType *t = (FluidType*)(m->user_data());
-      if (!strcasecmp(tn,t->type_name())) {r = t->make(); break;}
-    }
+  fltk::Item * m;
+  char menuName[128];
+  int n;
+  
+  if (!tn || strlen(tn)==0) 
+      return 0;
+
+  for (n = menu->children(); n--;) {
+    fltk::Widget* w = menu->child(n);
+    if (w->label() && w->is_group() && tn && *tn) {
+	sprintf(menuName,"%s/%s",w->label(),tn);
+	m = (fltk::Item *) menu->find(menuName);
+	if (m)  break;
+      }
   }
-  reading_file = 0;
+  if (m && m->user_data())
+    r = ((FluidType*)(m->user_data()))->make();
   return r;
 }
 
@@ -500,16 +624,23 @@ static struct {const char* oldname; const char* newname;} ntable[] = {
   {"submenu",		"fltk::ItemGroup"},
   {"menuitem",		"fltk::Item"},
   {"Fl_Counter",	"fltk::ValueInput"},
+  {"Fl_Spinner",	"fltk::ValueInput"},
   {"Fl_Tabs",		"fltk::TabGroup"},
   {"Fl_Return_Button",	"fltk::ReturnButton"},
   {"fltk::EnterButton",	"fltk::ReturnButton"},
+  {"Fl_Menu_Button",	"fltk::PopupMenu"},
   {"Fl_Box",		"fltk::InvisibleBox"},
+  {"Fl_Boxtype",	"fltk::InvisibleBoxType"},
   {"Fl_Round_Button",	"fltk::RadioButton"},
   {"Fl_Pack",		"fltk::PackedGroup"},
   {"Fl_Tabs",		"fltk::TabGroup"},
   {"Fl_Scroll",		"fltk::ScrollGroup"},
   {"Fl_Bar",		"fltk::BarGroup"},
-  {"Fl_Roller",		"fltk::ThumbWheel"}
+  {"Fl_Roller",		"fltk::ThumbWheel"},
+  {"Fl_File_Browser", "fltk::FileBrowser"},
+  {"Fl_Text_Display", "fltk::TextDisplay"},
+  {"Fl_Text_Editor", "fltk::TextEditor"},
+  {"Fl_Tile", "fltk::TiledGroup"}
 };
 
 // Create a new type by name:
@@ -530,7 +661,7 @@ FluidType *FluidType_make(const char *tn) {
   } else if (!p) {
     p = tn;
   }
-  return FluidType_make(p, New_Menu);
+  return FluidType_make(p, newMenu);
 }
 
 #include <fltk/Browser.h>

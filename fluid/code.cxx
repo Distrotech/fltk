@@ -1,5 +1,5 @@
 //
-// "$Id: code.cxx,v 1.22 2004/07/04 17:38:08 laza2000 Exp $"
+// "$Id$"
 //
 // Code output routines for the Fast Light Tool Kit (FLTK).
 //
@@ -36,6 +36,8 @@
 
 static FILE *code_file;
 static FILE *header_file;
+
+using namespace fltk;
 
 // return true if c can be in a C identifier.  I needed this so
 // it is not messed up by locale settings:
@@ -295,8 +297,12 @@ int write_code(const char *s, const char *t) {
   fprintf(header_file, "#define %s\n", define_name);
   }  
 
-  if (t && include_H_from_C)
+  if (*t == '.' && strchr(t, '/') == NULL) {
     write_c("#include \"%s\"\n", filename_name(t));
+  } else {
+    write_c("#include \"%s\"\n", t);
+  }
+
   for (FluidType* p = FluidType::first; p; p = p->next_brother) {
     // write all static data for this & all children first
     p->write_static();
@@ -327,5 +333,5 @@ void FluidType::write_code() {
 }
 
 //
-// End of "$Id: code.cxx,v 1.22 2004/07/04 17:38:08 laza2000 Exp $".
+// End of "$Id$".
 //

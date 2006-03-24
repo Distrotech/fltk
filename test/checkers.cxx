@@ -1,5 +1,5 @@
 //
-// "$Id: checkers.cxx,v 1.32 2005/01/24 08:07:59 spitzak Exp $"
+// "$Id$"
 //
 // Checkers game for the Fast Light Tool Kit (FLTK).
 //
@@ -1214,12 +1214,20 @@ void copyright_cb(fltk::Widget*, void*) {
   copyright_window->show();
 }
 
-void debug_cb(fltk::Widget*v, void*) {
-  debug = v->value();
+void debug_cb(fltk::Widget* v, void*) {
+  debug = !debug;
+  // LAME! Fltk2 does not emulate Fl_Menu_Item well enough to allow any
+  // changes to be remembered. Go change the table directly:
+  Fl_Menu_Item* item = menu+8;
+  if (debug) item->set(); else item->clear();
 }
 
-void forced_cb(fltk::Widget*v, void*) {
-  forcejumps = v->value();
+void forced_cb(fltk::Widget* v, void*) {
+  forcejumps = !forcejumps;
+  // LAME! Fltk2 does not emulate Fl_Menu_Item well enough to allow any
+  // changes to be remembered. Go change the table directly:
+  Fl_Menu_Item* item = menu+7;
+  if (forcejumps) item->set(); else item->clear();
   killnode(root->son); root->son = 0;
   if (showlegal) {expandnode(root); board->redraw();}
 }
@@ -1376,5 +1384,5 @@ int main(int argc, char **argv) {
 }
 
 //
-// End of "$Id: checkers.cxx,v 1.32 2005/01/24 08:07:59 spitzak Exp $".
+// End of "$Id$".
 //

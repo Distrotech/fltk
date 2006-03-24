@@ -1,5 +1,5 @@
 //
-// "$Id: filename_list.cxx,v 1.23 2004/07/29 09:07:54 spitzak Exp $"
+// "$Id$"
 //
 // Filename list routines for the Fast Light Tool Kit (FLTK).
 //
@@ -28,75 +28,86 @@
 // order the user expects.
 
 #include <config.h>
-#include <fltk/filename.h>
-#include <fltk/utf.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
-
-extern "C" {
-static int
-numericsort(dirent **A, dirent **B)
-{
-  const char* a = (*A)->d_name;
-  const char* b = (*B)->d_name;
-  int ret = 0;
-  for (;;) {
-    if (isdigit((uchar)*a) && isdigit((uchar)*b)) {
-      int diff,magdiff;
-      while (*a == '0') a++;
-      while (*b == '0') b++;
-      while (isdigit((uchar)*a) && *a == *b) {a++; b++;}
-      diff = (isdigit((uchar)*a) && isdigit((uchar)*b)) ? *a - *b : 0;
-      magdiff = 0;
-      while (isdigit((uchar)*a)) {magdiff++; a++;}
-      while (isdigit((uchar)*b)) {magdiff--; b++;}
-      if (magdiff) {ret = magdiff; break;} /* compare # of significant digits*/
-      if (diff) {ret = diff; break;}	/* compare first non-zero digit */
-    } else {
-      // compare case-insensitive:
-      int t = tolower((uchar)*a)-tolower((uchar)*b);
-      if (t) {ret = t; break;}
-      // see if we reached the end:
-      if (!*a) break;
-      // remember the case-sensitive comparison, use it if no other diffs:
-      if (!ret) ret = *a-*b;
-      a++; b++;
-    }
-  }
-  if (!ret) return 0;
-  else return (ret < 0) ? -1 : 1;
-}
-}
+#include <fltk/string.h>
+#include <fltk/utf.h>
+#include <fltk/filename.h>
 
 #if ! HAVE_SCANDIR
-extern "C" int
-scandir (const char *dir, dirent ***namelist,
+int scandir (const char *dir, dirent ***namelist,
 	 int (*select)(dirent *),
-	 int (*compar)(dirent **, dirent **));
+	 int (*compar)(const dirent*const*, const dirent*const*));
 #endif
 
-int filename_list(const char *d, dirent ***list) {
+int fltk::alphasort(const dirent*const*a, const dirent*const*b) {
+  return strcmp((*a)->d_name, (*b)->d_name);
+}
+
+int fltk::casealphasort(const dirent*const*a, const dirent*const*b) {
+  return strcasecmp((*a)->d_name, (*b)->d_name);
+}
+
+int fltk::filename_list(const char *d, dirent ***list,
+                     File_Sort_F *sort) {
   // Nobody defines the comparison function prototype correctly!
   // It should be "const dirent* const*". I don't seem to be able to
   // do this even for our own internal version because some compilers
   // will not cast it to the non-const version! Egad. So we have to
   // use if's to go to what the various systems use:
-#if defined(__hpux) || defined(__CYGWIN__)
-  // HP-UX seems to be partially const-correct:
-  return scandir(d, list, 0, (int(*)(const dirent **, const dirent **))numericsort);
-#elif !HAVE_SCANDIR || defined(__sgi) || defined(__osf__)
-  // When we define our own scandir (_WIN32 and perhaps some Unix systems)
-  // and also some existing Unix systems take it the way we define it:
-  return scandir(d, list, 0, numericsort);
-#else
-  // The vast majority of Unix systems want the sort function to have this
+#if HAVE_SCANDIR && !defined(__APPLE__) && !defined(__linux)
+  int n = scandir(d, list, 0, sort);
+#elif HAVE_SCANDIR && defined(__linux)
+  int n = scandir(d, list, 0, (int(*)(const void*,const void*))sort);
+#elif defined(__hpux) || defined(__CYGWIN__)
+  // HP-UX, Cygwin define the comparison function like this:
+  int n = scandir(d, list, 0, (int(*)(const dirent **, const dirent **))sort);
+#elif defined(__osf__)
+  // OSF, DU 4.0x
+  int n = scandir(d, list, 0, (int(*)(dirent **, dirent **))sort);
+#elif defined(_AIX)
+  // AIX is almost standard...
+  int n = scandir(d, list, 0, (int(*)(void*, void*))sort);
+#elif !defined(__sgi) && !defined(WIN32)
+  // The vast majority of UNIX systems want the sort function to have this
   // prototype, most likely so that it can be passed to qsort without any
   // changes:
-  return scandir(d, list, 0, (int(*)(const void*,const void*))numericsort);
+  int n = scandir(d, list, 0, (int(*)(const void*,const void*))sort);
+#else
+  // This version is when we define our own scandir (WIN32 and perhaps
+  // some Unix systems) and apparently on IRIX:
+  int n = scandir(d, list, 0, sort);
 #endif
+
+#if defined(WIN32) && !defined(__CYGWIN__)
+  // we did this already during fl_scandir/win32
+#else
+  // append a '/' to all filenames that are directories
+  int i, dirlen = strlen(d);
+  char *fullname = (char*)malloc(dirlen+PATH_MAX+3); // Add enough extra for two /'s and a nul
+  // Use memcpy for speed since we already know the length of the string...
+  memcpy(fullname, d, dirlen+1);
+  char *name = fullname + dirlen;
+  if (name!=fullname && name[-1]!='/') *name++ = '/';
+  for (i=0; i<n; i++) {
+    dirent *de = (*list)[i];
+    int len = strlen(de->d_name);
+    if (de->d_name[len-1]=='/' || len>PATH_MAX) continue;
+    // Use memcpy for speed since we already know the length of the string...
+    memcpy(name, de->d_name, len+1);
+    if (fltk::filename_isdir(fullname)) {
+      (*list)[i] = de = (dirent*)realloc(de, de->d_name - (char*)de + len + 2);
+      char *dst = de->d_name + len;
+      *dst++ = '/';
+      *dst = 0;
+    }
+  }
+  free(fullname);
+#endif
+  return n;
 }
 
 //
-// End of "$Id: filename_list.cxx,v 1.23 2004/07/29 09:07:54 spitzak Exp $".
+// End of "$Id$".
 //

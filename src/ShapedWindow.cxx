@@ -155,7 +155,15 @@ static HRGN bitmap2region(xbmImage* bitmap) {
                                     + (sizeof(RECT)*maxRects));
     	}
         pr = (RECT*)&pData->Buffer;
-        SetRect(&pr[pData->rdh.nCount], x0, y, x, y+1);
+
+#ifdef WIN32
+	// fabien : we must take in account the border+caption x and y offsets of the Window
+	POINT pt={GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXEDGE),GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CXEDGE)+GetSystemMetrics(SM_CYCAPTION)}; 
+#else
+	// please check some if some adjustement is necessary on Unix(-like) platforms
+#endif
+	
+        SetRect(&pr[pData->rdh.nCount], x0+pt.x, y+pt.y, x+pt.x, y+pt.y+1);
         if (x0 < pData->rdh.rcBound.left)
           pData->rdh.rcBound.left = x0;
         if (y < pData->rdh.rcBound.top)

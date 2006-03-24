@@ -34,19 +34,38 @@ namespace fltk {
 
 class FL_API Item : public Widget {
 public:
-  enum { // values for type(), should match Button
+  enum MenuItemType { // values for type(), should match Button
     NORMAL = 0,
     TOGGLE = RESERVED_TYPE+1,
     RADIO  = RESERVED_TYPE+2
   };
+  
   void draw();
   void layout();
   int handle(int);
+  
   Item(const char* label = 0);
+  // constructor for normal item type decl
+  Item(const char* label,int shortcut,Callback *callback,void *user_data_=0, int flags=0);  
+  // constructor for custom item type decl
+  Item(MenuItemType t,const char* label,int shortcut,Callback *callback,void *user_data_=0, int flags=0);  
+
   static NamedStyle* default_style;
   static void set_style(const Style*, bool menubar);
   static void set_style(const Widget* w, bool f) {set_style(w->style(),f);}
   static void clear_style() {set_style(Widget::default_style,false);}
+
+private:
+    void init(); // common constructor initialization
+};
+
+// Toggle item decl facility
+class FL_API ItemToggle : public Item {
+public:
+  ItemToggle(const char* label = 0) : Item(label) {type(Item::TOGGLE);}
+  ItemToggle(const char* label,int shortcut,Callback *callback,void *user_data=0, int flags=0)
+      : Item(label,shortcut,callback,user_data, flags) {type(Item::TOGGLE);}
+
 };
 
 }

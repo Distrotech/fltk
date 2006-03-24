@@ -31,13 +31,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "flstring.h"
 #include <sys/stat.h>
 
 #include <fltk/Preferences.h>
-#include <fltk/filename.H>
+#include <fltk/filename.h>
+#include <fltk/string.h>
+#include <ctype.h>
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
+#  include <windows.h>
 #  include <direct.h>
 #  include <io.h>
 // Visual C++ 2005 incorrectly displays a warning about the use of POSIX APIs
@@ -51,17 +53,57 @@
 #  include <unistd.h>
 #endif
 
-// temporary stuff
-#ifndef FL_PATH_MAX
-# define FL_PATH_MAX 256
-#endif
-
 // end temporary stuff
 
 using namespace fltk;
 
-char Preferences::nameBuffer[128];
+static char nameBuffer[128];
 
+class Preferences::Node // a node contains a list to all its entries
+{          // and all means to manage the tree structure
+  Node *child_, *next_, *parent_;
+  char *path_;
+  bool dirty_;
+public:
+  Node( const char *path );
+  ~Node();
+  // node methods
+  int write( FILE *f );
+  Node *find( const char *path );
+  Node *search( const char *path, int offset=0 );
+  Node *addChild( const char *path );
+  void setParent( Node *parent );
+  Node *parent() { return parent_; }
+  bool remove();
+  bool dirty();
+  // entry methods
+  int nChildren();
+  const char *child( int ix );
+  void set( const char *name, const char *value );
+  void set( const char *line );
+  void add( const char *line );
+  const char *get( const char *name );
+  int getEntry( const char *name );
+  bool deleteEntry( const char *name );
+  // public values
+  Entry *entry;
+  int nEntry, NEntry;
+  static int lastEntrySet;
+};
+
+class Preferences::RootNode  // the root node manages file paths and basic reading and writing
+{
+  Preferences *prefs_;
+  char *filename_;
+  char *vendor_, *application_;
+public:
+  RootNode( Preferences *, Root root, const char *vendor, const char *application );
+  RootNode( Preferences *, const char *path, const char *vendor, const char *application );
+  ~RootNode();
+  int read();
+  int write();
+  bool getPath( char *path, int pathlen );
+};
 
 /**
  * create the initial preferences base
@@ -156,9 +198,9 @@ const char *Preferences::group( int ix )
  * return 1, if a group with this name exists
  * example: if ( base.groupExists( "setup/colors" ) ) ...
  */
-char Preferences::groupExists( const char *key )
+bool Preferences::groupExists( const char *key )
 {
-  return node->search( key ) ? 1 : 0 ;
+    return node->search( key ) ? true : false ;
 }
 
 
@@ -166,11 +208,11 @@ char Preferences::groupExists( const char *key )
  * delete a group
  * example: setup.deleteGroup( "colors/buttons" );
  */
-char Preferences::deleteGroup( const char *key )
+bool Preferences::deleteGroup( const char *key )
 {
   Node *nd = node->search( key );
   if ( nd ) return nd->remove();
-  return 0;
+  return false;
 }
 
 
@@ -200,9 +242,9 @@ const char *Preferences::entry( int ix )
  * return 1, if an entry with this name exists
  * example: if ( buttonColor.entryExists( "red" ) ) ...
  */
-char Preferences::entryExists( const char *key )
+bool Preferences::entryExists( const char *key )
 {
-  return node->getEntry( key )>=0 ? 1 : 0 ;
+  return node->getEntry( key )>=0;
 }
 
 
@@ -210,7 +252,7 @@ char Preferences::entryExists( const char *key )
  * remove a single entry (name/value pair)
  * example: buttonColor.deleteEntry( "red" );
  */
-char Preferences::deleteEntry( const char *key )
+bool Preferences::deleteEntry( const char *key )
 {
   return node->deleteEntry( key );
 }
@@ -219,7 +261,7 @@ char Preferences::deleteEntry( const char *key )
 /**
  * read an entry from the group
  */
-char Preferences::get( const char *key, int &value, int defaultValue )
+bool Preferences::get( const char *key, int &value, int defaultValue )
 {
   const char *v = node->get( key );
   value = v ? atoi( v ) : defaultValue;
@@ -230,18 +272,18 @@ char Preferences::get( const char *key, int &value, int defaultValue )
 /**
  * set an entry (name/value pair)
  */
-char Preferences::set( const char *key, int value )
+bool Preferences::set( const char *key, int value )
 {
   sprintf( nameBuffer, "%d", value );
   node->set( key, nameBuffer );
-  return 1;
+  return true;
 }
 
 
 /**
  * read an entry from the group
  */
-char Preferences::get( const char *key, float &value, float defaultValue )
+bool Preferences::get( const char *key, float &value, float defaultValue )
 {
   const char *v = node->get( key );
   value = v ? (float)atof( v ) : defaultValue;
@@ -252,18 +294,18 @@ char Preferences::get( const char *key, float &value, float defaultValue )
 /**
  * set an entry (name/value pair)
  */
-char Preferences::set( const char *key, float value )
+bool Preferences::set( const char *key, float value )
 {
   sprintf( nameBuffer, "%g", value );
   node->set( key, nameBuffer );
-  return 1;
+  return true;
 }
 
 
 /**
  * read an entry from the group
  */
-char Preferences::get( const char *key, double &value, double defaultValue )
+bool Preferences::get( const char *key, double &value, double defaultValue )
 {
   const char *v = node->get( key );
   value = v ? atof( v ) : defaultValue;
@@ -274,11 +316,11 @@ char Preferences::get( const char *key, double &value, double defaultValue )
 /**
  * set an entry (name/value pair)
  */
-char Preferences::set( const char *key, double value )
+bool Preferences::set( const char *key, double value )
 {
   sprintf( nameBuffer, "%g", value );
   node->set( key, nameBuffer );
-  return 1;
+  return true;
 }
 
 
@@ -317,14 +359,14 @@ static char *decodeText( const char *src )
  * the text will be moved into the given text buffer
  * text will be clipped to the buffer size
  */
-char Preferences::get( const char *key, char *text, const char *defaultValue, int maxSize )
+bool Preferences::get( const char *key, char *text, const char *defaultValue, int maxSize )
 {
   const char *v = node->get( key );
   if ( v && strchr( v, '\\' ) ) {
     char *w = decodeText( v );
     strlcpy(text, w, maxSize);
     free( w );
-    return 1;
+    return true;
   }
   if ( !v ) v = defaultValue;
   if ( v ) strlcpy(text, v, maxSize);
@@ -338,13 +380,13 @@ char Preferences::get( const char *key, char *text, const char *defaultValue, in
  * 'text' will be changed to point to a new text buffer
  * the text buffer must be deleted with 'free(text)' by the user.
  */
-char Preferences::get( const char *key, char *&text, const char *defaultValue )
+bool Preferences::get( const char *key, char *&text, const char *defaultValue )
 {
   const char *v = node->get( key );
   if ( v && strchr( v, '\\' ) )
   {
     text = decodeText( v );
-    return 1;
+    return true;
   }    
   if ( !v ) v = defaultValue;
   if ( v )
@@ -358,7 +400,7 @@ char Preferences::get( const char *key, char *&text, const char *defaultValue )
 /**
  * set an entry (name/value pair)
  */
-char Preferences::set( const char *key, const char *text )
+bool Preferences::set( const char *key, const char *text )
 {
   const char *s = text;
   int n=0, ns=0;
@@ -382,7 +424,7 @@ char Preferences::set( const char *key, const char *text )
   }
   else
     node->set( key, text );
-  return 1;
+  return true;
 }
 
 
@@ -414,7 +456,7 @@ static void *decodeHex( const char *src, int &size )
  * the data will be moved into the given destination buffer
  * data will be clipped to the buffer size
  */
-char Preferences::get( const char *key, void *data, const void *defaultValue, int defaultSize, int maxSize )
+bool Preferences::get( const char *key, void *data, const void *defaultValue, int defaultSize, int maxSize )
 {
   const char *v = node->get( key );
   if ( v )
@@ -423,11 +465,11 @@ char Preferences::get( const char *key, void *data, const void *defaultValue, in
     void *w = decodeHex( v, dsize );
     memmove( data, w, dsize>maxSize?maxSize:dsize );
     free( w );
-    return 1;
+    return true;
   }    
   if ( defaultValue )
     memmove( data, defaultValue, defaultSize>maxSize?maxSize:defaultSize );
-  return 0;
+  return false;
 }
 
 
@@ -436,14 +478,14 @@ char Preferences::get( const char *key, void *data, const void *defaultValue, in
  * 'data' will be changed to point to a new data buffer
  * the data buffer must be deleted with 'free(data)' by the user.
  */
-char Preferences::get( const char *key, void *&data, const void *defaultValue, int defaultSize )
+bool Preferences::get( const char *key, void *&data, const void *defaultValue, int defaultSize )
 {
   const char *v = node->get( key );
   if ( v )
   {
     int dsize;
     data = decodeHex( v, dsize );
-    return 1;
+    return true;
   }    
   if ( defaultValue )
   {
@@ -452,14 +494,14 @@ char Preferences::get( const char *key, void *&data, const void *defaultValue, i
   }
   else
     data = 0;
-  return 0;
+  return false;
 }
 
 
 /**
  * set an entry (name/value pair)
  */
-char Preferences::set( const char *key, const void *data, int dsize )
+bool Preferences::set( const char *key, const void *data, int dsize )
 {
   char *buffer = (char*)malloc( dsize*2+1 ), *d = buffer;;
   unsigned char *s = (unsigned char*)data;
@@ -473,7 +515,7 @@ char Preferences::set( const char *key, const void *data, int dsize )
   *d = 0;
   node->set( key, buffer );
   free( buffer );
-  return 1;
+  return true;
 }
 
 
@@ -494,17 +536,17 @@ int Preferences::size( const char *key )
  * - 'path' must be large enough to receive a complete file path
  * example:
  *   Preferences prefs( USER, "matthiasm.com", "test" );
- *   char path[FL_PATH_MAX];
+ *   char path[PATH_MAX];
  *   prefs.getUserdataPath( path );
  * sample returns:
  *   Win32: c:/Documents and Settings/matt/Application Data/matthiasm.com/test/
  *   prefs: c:/Documents and Settings/matt/Application Data/matthiasm.com/test.prefs
  */
-char Preferences::getUserdataPath( char *path, int pathlen )
+bool Preferences::getUserdataPath( char *path, int pathlen )
 {
   if ( rootNode )
     return rootNode->getPath( path, pathlen );
-  return 0;
+  return false;
 }
 
 /**
@@ -553,7 +595,7 @@ Preferences::Name::Name( const char *format, ... )
   data_ = (char*)malloc(1024);
   va_list args;
   va_start(args, format);
-  fl_vsnprintf(data_, 1024, format, args);
+  vsnprintf(data_, 1024, format, args);
   va_end(args);
 }
 
@@ -606,7 +648,7 @@ static void makePathForFile( const char *path )
 // - construct the name of the file that will hold our preferences
 Preferences::RootNode::RootNode( Preferences *prefs, Root root, const char *vendor, const char *application )
 {
-  char filename[ FL_PATH_MAX ]; filename[0] = 0;
+  char filename[ PATH_MAX ]; filename[0] = 0;
 #ifdef _WIN32
 #  define FLPREFS_RESOURCE	"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders"
   int appDataLen = strlen(vendor) + strlen(application) + 8;
@@ -618,7 +660,7 @@ Preferences::RootNode::RootNode( Preferences *prefs, Root root, const char *vend
     case SYSTEM:
       err = RegOpenKey( HKEY_LOCAL_MACHINE, FLPREFS_RESOURCE, &key );
       if (err == ERROR_SUCCESS) {
-	nn = FL_PATH_MAX - appDataLen;
+	nn = PATH_MAX - appDataLen;
 	err = RegQueryValueEx( key, "Common AppData", 0L, &type, (BYTE*)filename, &nn );
 	if ( ( err != ERROR_SUCCESS ) && ( type == REG_SZ ) )
 	  filename[0] = 0;
@@ -628,7 +670,7 @@ Preferences::RootNode::RootNode( Preferences *prefs, Root root, const char *vend
     case USER:
       err = RegOpenKey( HKEY_CURRENT_USER, FLPREFS_RESOURCE, &key );
       if (err == ERROR_SUCCESS) {
-	nn = FL_PATH_MAX - appDataLen;
+	nn = PATH_MAX - appDataLen;
 	err = RegQueryValueEx( key, "AppData", 0L, &type, (BYTE*)filename, &nn );
 	if ( ( err != ERROR_SUCCESS ) && ( type == REG_SZ ) )
 	{
@@ -645,7 +687,7 @@ Preferences::RootNode::RootNode( Preferences *prefs, Root root, const char *vend
     strcpy(filename, "C:\\FLTK");
   }
 
-  fl_snprintf(filename + strlen(filename), sizeof(filename) - strlen(filename),
+  snprintf(filename + strlen(filename), sizeof(filename) - strlen(filename),
            "/%s/%s.prefs", vendor, application);
   for (char *s = filename; *s; s++) if (*s == '\\') *s = '/';
 #elif defined ( __APPLE__ )
@@ -663,7 +705,7 @@ Preferences::RootNode::RootNode( Preferences *prefs, Root root, const char *vend
       break;
   }
   FSpMakeFSRef( &spec, &ref );
-  FSRefMakePath( &ref, (UInt8*)filename, FL_PATH_MAX );
+  FSRefMakePath( &ref, (UInt8*)filename, PATH_MAX );
   snprintf(filename + strlen(filename), sizeof(filename) - strlen(filename),
            "/%s/%s.prefs", vendor, application );
 #else
@@ -702,9 +744,9 @@ Preferences::RootNode::RootNode( Preferences *prefs, Root root, const char *vend
 // - construct the name of the file that will hold our preferences
 Preferences::RootNode::RootNode( Preferences *prefs, const char *path, const char *vendor, const char *application )
 {
-  char filename[ FL_PATH_MAX ]; filename[0] = 0;
+  char filename[ PATH_MAX ]; filename[0] = 0;
 
-  fl_snprintf(filename, sizeof(filename), "%s/%s.prefs", path, application);
+  snprintf(filename, sizeof(filename), "%s/%s.prefs", path, application);
 
   prefs_       = prefs;
   filename_    = strdup(filename);
@@ -785,7 +827,7 @@ int Preferences::RootNode::write()
 }
 
 // get the path to the preferences directory
-char Preferences::RootNode::getPath( char *path, int pathlen )
+bool Preferences::RootNode::getPath( char *path, int pathlen )
 {
   strlcpy( path, filename_, pathlen);
 
@@ -794,7 +836,7 @@ char Preferences::RootNode::getPath( char *path, int pathlen )
   s = strrchr( path, '.' );
   if ( !s ) return 0;
   *s = 0;
-  char ret = makePath( path );
+  bool ret = makePath( path ) ? true : false;
   strcpy( s, "/" );
   return ret;
 }
@@ -835,12 +877,12 @@ Preferences::Node::~Node()
 }
 
 // recursively check if any entry is dirty (was changed after loading a fresh prefs file)
-char Preferences::Node::dirty()
+bool Preferences::Node::dirty()
 {
-  if ( dirty_ ) return 1;
-  if ( next_ && next_->dirty() ) return 1;
-  if ( child_ && child_->dirty() ) return 1;
-  return 0;
+  if ( dirty_ ) return true;
+  if ( next_ && next_->dirty() ) return true;
+  if ( child_ && child_->dirty() ) return true;
+  return false;
 }
 
 // write this node (recursively from the last neighbor back to this)
@@ -938,7 +980,7 @@ void Preferences::Node::set( const char *line )
 {
   // hmm. If we assume that we always read this file in the beginning,
   // we can handle the dirty flag 'quick and dirty'
-  char dirt = dirty_;
+  bool dirt = dirty_;
   if ( line[0]==';' || line[0]==0 || line[0]=='#' )
   {
     set( line, 0 );
@@ -990,14 +1032,14 @@ int Preferences::Node::getEntry( const char *name )
 }
 
 // remove one entry form this group
-char Preferences::Node::deleteEntry( const char *name )
+bool Preferences::Node::deleteEntry( const char *name )
 {
   int ix = getEntry( name );
-  if ( ix == -1 ) return 0;
+  if ( ix == -1 ) return false;
   memmove( entry+ix, entry+ix+1, (nEntry-ix-1) * sizeof(Entry) );
   nEntry--;
   dirty_ = 1;
-  return 1;
+  return true;
 }
 
 // find a group somewhere in the tree starting here
@@ -1107,7 +1149,7 @@ const char *Preferences::Node::child( int ix )
 }
 
 // remove myself from the list and delete me (and all children)
-char Preferences::Node::remove()
+bool Preferences::Node::remove()
 {
   Node *nd = 0, *np;
   if ( parent_ )
