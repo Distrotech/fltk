@@ -34,12 +34,14 @@ comment {//
 } 
 
 decl {\#include <fltk/draw.h>} {} 
+
 decl {\#include <fltk/run.h>} {} 
+
 decl {\#include <fltk/Cursor.h>} {} 
 
 namespace fltk {open
 } {
-  class {FL_API} FileChooser {open
+  class FL_API FileChooser {open
   } {
     decl {enum { SINGLE = 0, MULTI = 1, CREATE = 2, DIRECTORY = 4 };} {public
     }
@@ -63,11 +65,11 @@ namespace fltk {open
     } {
       {fltk::Window} window {
         label {Choose File}
-        callback {fileName->value("");
+        callback {fileName->text("");
 fileList->deselect();
 fltk::remove_timeout((TimeoutHandler)previewCB, this);
 window->hide();} open
-        private xywh {392 247 490 380} type Double resizable
+        private xywh {482 261 490 380} type Double resizable
         extra_code {if (title) window->label(title);
 \#include <stdio.h>
 \#include <stdlib.h>
@@ -89,7 +91,8 @@ window->hide();} open
             extra_code {favoritesButton->label(favorites_label);}
           } {}
           {fltk::Button} newButton {
-            callback {newdir();} selected
+            label button
+            callback {newdir();}
             xywh {445 0 25 25} image not_inlined {new.xbm} labelsize 8
             extra_code {\#include <fltk/Preferences.h>
 o->tooltip(new_directory_tooltip);}
@@ -126,7 +129,7 @@ o->tooltip(new_directory_tooltip);}
             }
           }
           {fltk::FileInput} fileName {
-            callback {fileNameCB();}
+            callback {fileNameCB();} selected
             private xywh {105 25 365 35} when ENTER_KEY labelfont 1
             extra_code {fileName->when(fltk::WHEN_CHANGED | fltk::WHEN_ENTER_KEY_ALWAYS);}
           }
@@ -151,7 +154,7 @@ okButton->label("Ok");}
             }
             {fltk::Button} cancelButton {
               label Cancel
-              callback {fileName->value("");
+              callback {fileName->text("");
 fileList->deselect();
 fltk::remove_timeout((TimeoutHandler)previewCB, this);
 window->hide();}
@@ -216,7 +219,7 @@ favOkButton->label(save_label);}
       code {callback_ = 0;
 data_ = 0;
 directory_[0] = 0;
-window->size_range(window->w(), window->h(), fltk::w(), fltk::h());
+window->size_range(window->w(), window->h(), fltk::monitor_w(), fltk::monitor_h());
 type(t);
 filter(p);
 update_favorites();
@@ -331,7 +334,7 @@ fileName->take_focus();} {}
     } {
       code {fileList->textfont(f);} {}
     }
-    Function {textfont()} {return_type Font*
+    Function {textfont()} {return_type {Font*}
     } {
       code {return (fileList->textfont());} {}
     }

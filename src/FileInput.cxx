@@ -34,6 +34,7 @@
 #include <fltk/Cursor.h>
 #include <fltk/Rectangle.h>
 #include <fltk/run.h>
+#include <fltk/Box.h>
 #include <fltk/string.h>
 
 // temporary for new 1.1.x button FileInput features to come
@@ -71,44 +72,45 @@ FileInput::FileInput(int X, int Y, int W, int H, const char *l)
 // 'FileInput::draw_buttons()' - Draw directory buttons.
 //
 
-void FileInput::draw_boxes(Box* b,const Rectangle& r) {
-    box(b);
+void FileInput::draw_boxes(bool pressed,const Rectangle& r) {
+    box(pressed ? fltk::DOWN_BOX : fltk::UP_BOX);
     draw_box(r);
 }
 
 void FileInput::draw_buttons() {
-    int	i,					// Looping var
+  int	i,					// Looping var
 	X;					// Current X position
 
+  if (damage() & (DAMAGE_BAR | DAMAGE_ALL)) {
+    update_buttons();
+  }
 
-    if (damage() & (DAMAGE_BAR | DAMAGE_ALL)) {
-	update_buttons();
-    }
-    Color c = color();
-    color(buttoncolor());
-    for (X = 0, i = 0; buttons_[i]; i ++)
-    {
+  Color c = color();
+  color(buttoncolor());
 
-
-	Rectangle r;
-	if ((X + buttons_[i]) > xscroll()) {
-	    if (X < xscroll())
-		r = Rectangle(0,0,X + buttons_[i] - xscroll(), DIR_HEIGHT);
-	    else if ((X + buttons_[i] - xscroll()) > w())
-		r = Rectangle(X - xscroll(), 0, w() - X + xscroll(), DIR_HEIGHT);
-	    else
-		r = Rectangle( X - xscroll(), 0, buttons_[i], DIR_HEIGHT);
-	    draw_boxes(pressed_==i ? fltk::DOWN_BOX : fltk::UP_BOX,r);
-	}
-
-	X += buttons_[i];
+  for (X = 0, i = 0; buttons_[i]; i ++)
+  {
+    if ((X + buttons_[i]) > xscroll()) {
+      if (X < xscroll()) {
+        draw_boxes(pressed_ == i ,
+                 Rectangle(0, 0, X + buttons_[i] - xscroll(), DIR_HEIGHT));
+      } else if ((X + buttons_[i] - xscroll()) > w()) {
+	draw_boxes(pressed_ == i ,
+        	 Rectangle(0 + X - xscroll(), 0, w() - X + xscroll(), DIR_HEIGHT));
+      } else {
+        draw_boxes(pressed_ == i ,
+	         Rectangle(0 + X - xscroll(), 0, buttons_[i], DIR_HEIGHT));
+      }
     }
 
-    if (X < w()) {
-	Rectangle r = Rectangle(X - xscroll(),0, w() - X + xscroll(), DIR_HEIGHT);
-	draw_boxes(pressed_==i ? fltk::DOWN_BOX : fltk::UP_BOX, r);
-    }
-    color(c);
+    X += buttons_[i];
+  }
+
+  if (X < w()) {
+    draw_boxes(pressed_==i,
+             Rectangle(0 + X - xscroll(), 0, w() - X + xscroll(), DIR_HEIGHT));
+  }
+  color(c);
 }
 
 //
@@ -142,7 +144,7 @@ FileInput::update_buttons() {
 	    end ++;
 
 	    buttons_[i] = (short)getwidth(start, end - start);
-	    if (!i) buttons_[i] += 6;
+	    if (!i) buttons_[i] += fltk::box_dx(box()) + 6;
     }
 
     printf("    found %d components/buttons...\n", i);
@@ -154,6 +156,7 @@ FileInput::update_buttons() {
 //
 // 'FileInput::text()' - Set the string stored in the widget...
 //
+static int idbg=0;
 
 int						// O - TRUE on success
 FileInput::text(const char *str,		// I - New string value
@@ -161,7 +164,6 @@ FileInput::text(const char *str,		// I - New string value
     set_damage(DAMAGE_BAR);
     int ret = Input::text( str,len);
     update_buttons();
-    redraw();
     return ret;
 }
 
@@ -171,10 +173,8 @@ FileInput::text(const char *str) {		// I - New string value
     set_damage(DAMAGE_BAR);
     int ret = Input::text(str);
     update_buttons();
-    redraw();
     return ret;
 }
-
 
 //
 // 'FileInput::draw()' - Draw the file input widget...
@@ -241,7 +241,7 @@ FileInput::handle(int event)		// I - Event
     case MOVE :
     case ENTER :
 	if (active_r()) {
-	    if (event_y() < (y() + DIR_HEIGHT)) window()->cursor(CURSOR_DEFAULT);
+	    if (event_y() < DIR_HEIGHT) window()->cursor(CURSOR_DEFAULT);
 	    else window()->cursor(CURSOR_INSERT);
 	}
 
@@ -250,7 +250,8 @@ FileInput::handle(int event)		// I - Event
     case PUSH :
     case RELEASE :
     case DRAG :
-	if (event_y() < (y() + DIR_HEIGHT) || pressed_ >= 0) return handle_button(event);
+	if (event_y() < DIR_HEIGHT || pressed_ >= 0) 
+	    return handle_button(event);
 
 	return Input::handle(event);
 
@@ -293,7 +294,7 @@ FileInput::handle_button(int event)		// I - Event
     if (event == RELEASE) pressed_ = -1;
     else pressed_ = (short)i;
 
-    window()->make_current();
+    this->make_current();
     draw_buttons();
 
     // Return immediately if the user is clicking on the last button or

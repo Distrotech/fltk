@@ -1,3 +1,6 @@
+//
+// "$Id$"
+//
 // scandir.c
 // Implementation of Posix scandir() command on systems that do not have it.
 
@@ -57,9 +60,9 @@ linking) can be used on all such machines.
 #endif
 
 int
-scandir (const char *dir, struct dirent ***namelist,
-	 int (*select)(struct dirent *),
-	 int (*compar)(struct dirent **, struct dirent **))
+scandir (const char *dir, dirent ***namelist,
+	 int (*select)(dirent *),
+	 int (*compar)(const dirent * const *, const dirent * const *))
 {
   DIR *dp = opendir (dir);
   struct dirent **v = NULL;
@@ -130,3 +133,7 @@ int alphasort (struct dirent **a, struct dirent **b) {
 }
 
 #endif
+
+//
+// $Id$
+//

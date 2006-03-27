@@ -105,8 +105,8 @@ fltk::file_chooser(const char *message,	// I - Message in titlebar
   fc->ok_label(current_label);
   fc->show();
 
-  while (fc->shown())
-    fltk::wait();
+  while (fc->visible())
+    fltk::check();
 
   if (fc->value() && relative) {
       fltk::filename_relative(retname, sizeof(retname), fc->value());

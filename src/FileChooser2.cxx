@@ -600,7 +600,7 @@ FileChooser::fileNameCB()
 	char tempname[1024];
 
 	snprintf(tempname, sizeof(tempname), "%s/%s", directory_, filename);
-	fileName->value(tempname);
+	fileName->text(tempname);
 	strlcpy(pathname, tempname, sizeof(pathname));
       }
 
@@ -677,8 +677,8 @@ FileChooser::fileNameCB()
     }
 
     // See if we need to enable the OK button...
-    if (((type_ & CREATE) || !access(fileName->value(), 0)) &&
-        (!fltk::filename_isdir(fileName->value()) || (type_ & DIRECTORY))) {
+    if (((type_ & CREATE) || !access(fileName->text(), 0)) &&
+        (!fltk::filename_isdir(fileName->text()) || (type_ & DIRECTORY))) {
       okButton->activate();
     } else {
       okButton->deactivate();
@@ -687,8 +687,8 @@ FileChooser::fileNameCB()
     // fltk::DeleteKey or fltk::BackSpace
     fileList->deselect(0);
     fileList->redraw();
-    if (((type_ & CREATE) || !access(fileName->value(), 0)) &&
-        (!fltk::filename_isdir(fileName->value()) || (type_ & DIRECTORY))) {
+    if (((type_ & CREATE) || !access(fileName->text(), 0)) &&
+        (!fltk::filename_isdir(fileName->text()) || (type_ & DIRECTORY))) {
       okButton->activate();
     } else {
       okButton->deactivate();
@@ -845,7 +845,7 @@ FileChooser::rescan()
     strlcat(pathname, "/", sizeof(pathname));
   }
 //  puts("Setting fileName in rescan()");
-  fileName->value(pathname);
+  fileName->text(pathname);
 
   if (type_ & DIRECTORY)
     okButton->activate();
