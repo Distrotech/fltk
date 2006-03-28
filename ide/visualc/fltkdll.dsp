@@ -718,6 +718,8 @@ DEP_CPP_FILE_=\
 	"..\..\fltk\popupmenu.h"\
 	"..\..\fltk\Preferences.h"\
 	"..\..\fltk\returnbutton.h"\
+	"..\..\fltk\run.h"\
+	"..\..\fltk\string.h"\
 	"..\..\fltk\tiledgroup.h"\
 	".\config.h"\
 	{$(INCLUDE)}"fltk\button.h"\
@@ -769,6 +771,7 @@ SOURCE=..\..\src\FileChooser.cxx
 DEP_CPP_FILEC=\
 	"..\..\fltk\ask.h"\
 	"..\..\fltk\browser.h"\
+	"..\..\fltk\cursor.h"\
 	"..\..\fltk\DoubleBufferWindow.h"\
 	"..\..\fltk\filebrowser.h"\
 	"..\..\fltk\filechooser.h"\
@@ -810,6 +813,7 @@ SOURCE=..\..\src\FileChooser2.cxx
 DEP_CPP_FILECH=\
 	"..\..\fltk\ask.h"\
 	"..\..\fltk\browser.h"\
+	"..\..\fltk\cursor.h"\
 	"..\..\fltk\DoubleBufferWindow.h"\
 	"..\..\fltk\events.h"\
 	"..\..\fltk\filebrowser.h"\
@@ -818,13 +822,14 @@ DEP_CPP_FILECH=\
 	"..\..\fltk\fileinput.h"\
 	"..\..\fltk\filename.h"\
 	"..\..\fltk\invisiblebox.h"\
+	"..\..\fltk\item.h"\
 	"..\..\fltk\popupmenu.h"\
 	"..\..\fltk\Preferences.h"\
 	"..\..\fltk\returnbutton.h"\
+	"..\..\fltk\run.h"\
+	"..\..\fltk\sharedimage.h"\
 	"..\..\fltk\string.h"\
 	"..\..\fltk\tiledgroup.h"\
-	"..\..\fltk\utf.h"\
-	".\config.h"\
 	{$(INCLUDE)}"fltk\button.h"\
 	{$(INCLUDE)}"fltk\checkbutton.h"\
 	{$(INCLUDE)}"fltk\choice.h"\
@@ -832,12 +837,15 @@ DEP_CPP_FILECH=\
 	{$(INCLUDE)}"fltk\fl_api.h"\
 	{$(INCLUDE)}"fltk\flags.h"\
 	{$(INCLUDE)}"fltk\group.h"\
+	{$(INCLUDE)}"fltk\image.h"\
 	{$(INCLUDE)}"fltk\input.h"\
 	{$(INCLUDE)}"fltk\menu.h"\
+	{$(INCLUDE)}"fltk\PixelType.h"\
 	{$(INCLUDE)}"fltk\rectangle.h"\
 	{$(INCLUDE)}"fltk\scrollbar.h"\
 	{$(INCLUDE)}"fltk\slider.h"\
 	{$(INCLUDE)}"fltk\style.h"\
+	{$(INCLUDE)}"fltk\symbol.h"\
 	{$(INCLUDE)}"fltk\valuator.h"\
 	{$(INCLUDE)}"fltk\widget.h"\
 	{$(INCLUDE)}"fltk\window.h"\
@@ -880,6 +888,7 @@ DEP_CPP_FILEIC=\
 
 SOURCE=..\..\src\FileInput.cxx
 DEP_CPP_FILEIN=\
+	"..\..\fltk\box.h"\
 	"..\..\fltk\cursor.h"\
 	"..\..\fltk\damage.h"\
 	"..\..\fltk\events.h"\
@@ -895,14 +904,24 @@ DEP_CPP_FILEIN=\
 	{$(INCLUDE)}"fltk\PixelType.h"\
 	{$(INCLUDE)}"fltk\rectangle.h"\
 	{$(INCLUDE)}"fltk\style.h"\
+	{$(INCLUDE)}"fltk\symbol.h"\
 	{$(INCLUDE)}"fltk\widget.h"\
 	{$(INCLUDE)}"fltk\window.h"\
 	
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\filename_ext.cxx
+SOURCE=..\..\src\filename_absolute.cxx
 DEP_CPP_FILEN=\
+	"..\..\fltk\filename.h"\
+	"..\..\fltk\string.h"\
+	{$(INCLUDE)}"fltk\fl_api.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\filename_ext.cxx
+DEP_CPP_FILENA=\
 	"..\..\fltk\filename.h"\
 	{$(INCLUDE)}"fltk\fl_api.h"\
 	
@@ -910,17 +929,6 @@ DEP_CPP_FILEN=\
 # Begin Source File
 
 SOURCE=..\..\src\filename_isdir.cxx
-DEP_CPP_FILENA=\
-	"..\..\fltk\filename.h"\
-	"..\..\fltk\string.h"\
-	"..\..\fltk\utf.h"\
-	".\config.h"\
-	{$(INCLUDE)}"fltk\fl_api.h"\
-	
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\filename_list.cxx
 DEP_CPP_FILENAM=\
 	"..\..\fltk\filename.h"\
 	"..\..\fltk\string.h"\
@@ -931,8 +939,27 @@ DEP_CPP_FILENAM=\
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\filename_match.cxx
+SOURCE=..\..\src\filename_list.cxx
 DEP_CPP_FILENAME=\
+	"..\..\fltk\filename.h"\
+	"..\..\fltk\string.h"\
+	"..\..\fltk\utf.h"\
+	".\config.h"\
+	{$(INCLUDE)}"fltk\fl_api.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\filename_match.cxx
+DEP_CPP_FILENAME_=\
+	"..\..\fltk\filename.h"\
+	{$(INCLUDE)}"fltk\fl_api.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\filename_name.cxx
+DEP_CPP_FILENAME_N=\
 	"..\..\fltk\filename.h"\
 	{$(INCLUDE)}"fltk\fl_api.h"\
 	

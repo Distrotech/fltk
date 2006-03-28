@@ -25,9 +25,6 @@
 //     http://www.fltk.org/str.php
 //
 
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -53,7 +50,7 @@
 #  include <unistd.h>
 #endif
 
-// end temporary stuff
+
 
 using namespace fltk;
 
