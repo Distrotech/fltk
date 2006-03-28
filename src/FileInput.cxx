@@ -122,14 +122,15 @@ FileInput::update_buttons() {
     int		i;				// Looping var
     const char	*start,				// Start of path component
 	*end;				// End of path component
-
+    Box * b = box();
 
     //  puts("update_buttons()");
 
     // Set the current font & size...
-    labelfont(textfont());
-    labelsize(textsize());
-
+    float  ts = textsize();
+    Font * f = textfont();
+    //textfont(f);  textsize(ts);
+    fltk::setfont(f,ts);
     // Loop through the value string, setting widths...
     for (i = 0, start = text();
     start && i < (int)(sizeof(buttons_) / sizeof(buttons_[0]) - 1);
@@ -144,7 +145,7 @@ FileInput::update_buttons() {
 	    end ++;
 
 	    buttons_[i] = (short)getwidth(start, end - start);
-	    if (!i) buttons_[i] += fltk::box_dx(box()) + 6;
+	    if (!i) buttons_[i] += fltk::box_dx(b) + 6;
     }
 
     printf("    found %d components/buttons...\n", i);
@@ -189,6 +190,8 @@ static float line_ascent(float leading) {
 
 
 void FileInput::draw() {
+    Box *b = box();
+
     if (damage() & (DAMAGE_BAR | DAMAGE_ALL))
 	draw_buttons();
     // this flag keeps Input_::drawtext from drawing a bogus box!
@@ -196,8 +199,8 @@ void FileInput::draw() {
 	fltk::focus()!=this && !size() && !(damage()&DAMAGE_ALL);
 
     if (!must_trick_Input_) {
-      Rectangle r(1,DIR_HEIGHT+1,w()-2,h()-DIR_HEIGHT-2);
-      //Input::box()->inset(r);
+      Rectangle r(box_dx(b),DIR_HEIGHT+box_dy(b),w()-box_dw(b),h()-DIR_HEIGHT-box_dh(b));
+      //Input::b->inset(r);
       int label_width ;
       if (1 || damage() & DAMAGE_ALL) {
 	draw_frame();
@@ -254,7 +257,18 @@ FileInput::handle(int event)		// I - Event
 	    return handle_button(event);
 
 	return Input::handle(event);
+    break;
 
+    case KEY:
+    case KEYUP:
+	if (Input::handle(event)) {
+	    fltk::damage(DAMAGE_BAR);
+	    if (when()&(WHEN_CHANGED|WHEN_ENTER_KEY_ALWAYS |WHEN_ENTER_KEY_ALWAYS) ) {
+		clear_changed(); do_callback();
+	    }
+	    return 1;
+	}
+      return 0;
     default :
 	if (Input::handle(event)) {
 	    fltk::damage(DAMAGE_BAR);

@@ -34,7 +34,7 @@
 //   FileChooser::rescan()            - Rescan the current directory.
 //   FileChooser::favoritesButtonCB() - Handle favorites selections.
 //   FileChooser::fileListCB()        - Handle clicks (and double-clicks)
-//                                          in the FileBrowser.
+//                                          in the Fl_File_Browser.
 //   FileChooser::fileNameCB()        - Handle text entry in the FileBrowser.
 //   FileChooser::showChoiceCB()      - Handle show selections.
 //   compare_dirnames()                   - Compare two directory names.
@@ -45,7 +45,6 @@
 //
 // Include necessary headers.
 //
-
 #include <fltk/FileChooser.h>
 #include <fltk/filename.h>
 #include <fltk/ask.h>
@@ -80,6 +79,7 @@
 #  include <pwd.h>
 #endif /* WIN32 */
 
+
 using namespace fltk;
 
 //
@@ -105,7 +105,7 @@ const char	*FileChooser::new_directory_tooltip = "Create a new directory.";
 const char	*FileChooser::preview_label = "Preview";
 const char	*FileChooser::save_label = "Save";
 const char	*FileChooser::show_label = "Show:";
-File_Sort_F	*FileChooser::sort = (File_Sort_F*) fltk::numericsort;
+File_Sort_F	*FileChooser::sort = fltk::numericsort;
 
 
 //
@@ -128,7 +128,7 @@ FileChooser::count() {
   const char	*filename;	// Filename in input field or list
 
 
-  filename = fileName->value();
+  filename = fileName->text();
 
   if (!(type_ & MULTI)) {
     // Check to see if the file name input field is blank...
@@ -139,7 +139,7 @@ FileChooser::count() {
   for (i = 1, fcount = 0; i <= fileList->size(); i ++)
     if (fileList->selected(i)) {
       // See if this file is a directory...
-      filename = (char *)fileList->child(i)->label();
+      filename = (char *)fileList->child(i-1)->label();
 
       if (filename[strlen(filename) - 1] != '/')
 	fcount ++;
@@ -402,8 +402,8 @@ FileChooser::fileListCB()
 	pathname[1024];			// Full pathname to file
 
 
-  filename = (char *)fileList->child(fileList->value())->label();
-  if (!filename)
+ filename = (char *)fileList->child(fileList->value())->label();
+   if (!filename)
     return;
 
   if (!directory_[0]) {
@@ -455,7 +455,7 @@ FileChooser::fileListCB()
 	const char *temp;
 	for (i = 1; i <= fileList->size(); i ++) {
 	  if (i != fileList->value() && fileList->selected(i)) {
-	    temp = fileList->child(i)->label();
+	    temp = fileList->child(i-1)->label();
 	    temp += strlen(temp) - 1;
 	    if (*temp == '/') break;	// Yes, selected directory
 	  }
@@ -512,7 +512,7 @@ FileChooser::fileNameCB()
 //  puts("fileNameCB()");
 
   // Get the filename from the text field...
-  filename = (char *)fileName->value();
+  filename = (char *)fileName->text();
 
   if (!filename || !filename[0]) {
     okButton->deactivate();
@@ -545,8 +545,8 @@ FileChooser::fileNameCB()
   filename = pathname;
 
   // Now process things according to the key pressed...
-  if (fltk::event_key() == fltk::ReturnKey || fltk::event_key() == fltk::KeypadEnter) {
-    // ReturnKey pressed - select or change directory...
+  if (fltk::event_key() == ReturnKey || fltk::event_key() == KeypadEnter) {
+    // Enter pressed - select or change directory...
 #if (defined(WIN32) && ! defined(__CYGWIN__)) || defined(__EMX__)
     if ((isalpha(pathname[0] & 255) && pathname[1] == ':' && !pathname[2]) ||
         fltk::filename_isdir(pathname) &&
@@ -572,7 +572,7 @@ FileChooser::fileNameCB()
       fltk::alert(existing_file_label);
     }
   }
-  else if (fltk::event_key() != fltk::DeleteKey &&
+    else if (fltk::event_key() != fltk::DeleteKey &&
            fltk::event_key() != fltk::BackSpaceKey) {
     // Check to see if the user has entered a directory...
     if ((slash = strrchr(pathname, '/')) == NULL)
@@ -614,7 +614,7 @@ FileChooser::fileNameCB()
     first_line = 0;
 
     for (i = 1; i <= num_files && max_match > min_match; i ++) {
-      file = fileList->child(i)->label();
+      file = fileList->child(i-1)->label();
 
 #if (defined(WIN32) && ! defined(__CYGWIN__)) || defined(__EMX__)
       if (strncasecmp(filename, file, min_match) == 0) {
@@ -656,7 +656,7 @@ FileChooser::fileNameCB()
 
     // If we have any matches, add them to the input field...
     if (first_line > 0 && min_match == max_match &&
-        max_match == (int)strlen(fileList->child(first_line)->label())) {
+        max_match == (int)strlen(fileList->child(first_line-1)->label())) {
       // This is the only possible match...
       fileList->deselect(0);
       fileList->select(first_line);
@@ -794,7 +794,7 @@ FileChooser::newdir()
 void
 FileChooser::preview(int e)// I - 1 = enable preview, 0 = disable preview
 {
-    previewButton->value(e? true : false);
+    previewButton->value(e ? true : false);
   prefs_.set("preview", e);
 
   Group *p = previewBox->parent();
@@ -1035,6 +1035,7 @@ FileChooser::update_preview()
       oldimage = (SharedImage *)image->copy(w, h);
       previewBox->image((Image *)oldimage);
 */
+
       image->remove();
     } else {
       previewBox->image((Image *)image);
@@ -1061,7 +1062,7 @@ FileChooser::value(int f)	// I - File number
   static char	pathname[1024];	// Filename + directory
 
 
-  name = fileName->value();
+  name = fileName->text();
 
   if (!(type_ & MULTI)) {
     // Return the filename in the filename field...
@@ -1073,7 +1074,7 @@ FileChooser::value(int f)	// I - File number
   for (i = 1, fcount = 0; i <= fileList->size(); i ++)
     if (fileList->selected(i)) {
       // See if this file is a selected file/directory...
-      name = fileList->child(i)->label();
+      name = fileList->child(i-1)->label();
 
       fcount ++;
 
@@ -1162,9 +1163,9 @@ FileChooser::value(const char *filename)
 
   for (i = 1; i <= fcount; i ++)
 #if defined(WIN32) || defined(__EMX__)
-    if (strcasecmp(fileList->child(i)->label(), slash) == 0) {
+    if (strcasecmp(fileList->child(i-1)->label(), slash) == 0) {
 #else
-    if (strcmp(fileList->child(i)->label(), slash) == 0) {
+    if (strcmp(fileList->child(i-1)->label(), slash) == 0) {
 #endif // WIN32 || __EMX__
 //      printf("Selecting line %d...\n", i);
       fileList->topline(i);

@@ -91,8 +91,7 @@ window->hide();} open
             extra_code {favoritesButton->label(favorites_label);}
           } {}
           {fltk::Button} newButton {
-            label button
-            callback {newdir();}
+            callback {newdir();} selected
             xywh {445 0 25 25} image not_inlined {new.xbm} labelsize 8
             extra_code {\#include <fltk/Preferences.h>
 o->tooltip(new_directory_tooltip);}
@@ -129,8 +128,8 @@ o->tooltip(new_directory_tooltip);}
             }
           }
           {fltk::FileInput} fileName {
-            callback {fileNameCB();} selected
-            private xywh {105 25 365 35} when ENTER_KEY labelfont 1
+            callback {fileNameCB();}
+            private xywh {105 25 365 35} when ENTER_KEY labelfont 1 labelsize 14 textsize 14
             extra_code {fileName->when(fltk::WHEN_CHANGED | fltk::WHEN_ENTER_KEY_ALWAYS);}
           }
           {fltk::InvisibleBox} {} {
