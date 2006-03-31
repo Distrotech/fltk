@@ -153,8 +153,10 @@ private:
     REDRAW_0,	// item that needs to be redrawn
     REDRAW_1,	// a second item that needs to be redrawn
     OPEN,	// this and all parents are open
-    TEMP,	// scratch space
-    TEMP2,	// scratch space, currently unused
+    TEMP,	// scratch space reserved for fltk only
+	TREE_TRAVERSAL, // this volatile mark is available for all tree traversal usage fltk+applications
+    USER1,	// all purpose scratch space 1, for applications only
+    USER2,	// all purpose scratch space 2, for applications only
     NUMMARKS
   };
   Widget* goto_mark(int mark); // set HERE to mark

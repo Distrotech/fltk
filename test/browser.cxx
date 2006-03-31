@@ -1,5 +1,29 @@
+//
+// "$Id$"
+//
+// browser.cxx
 // Maarten de Boer's toggle tree demo program rewritten to use the
 // fltk 2.0 browser.  This unfortunately required a bunch of changes.
+//
+// Copyright 1998-2006 by Bill Spitzak and others.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA.
+//
+// Please report all bugs and problems to "fltk-bugs@fltk.org".
+//
 
 #include <fltk/Browser.h>
 #include <fltk/Window.h>
@@ -15,14 +39,16 @@
 #include <fltk/ItemGroup.h>
 
 #include "folder_small.xpm"
+#include "folder_small2.xpm"
+#include "book.xpm"
 #include "file_small.xpm"
 #include "porsche.xpm"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-fltk::xpmImage* folderSmall;
-fltk::xpmImage* fileSmall;
+fltk::xpmImage* folderSmall, *folderSmall2;
+fltk::xpmImage* fileSmall, *fileSmall2;
 fltk::xpmImage* customImage;
 
 void
@@ -75,7 +101,6 @@ static fltk::Group* current_group(fltk::Browser* tree) {
   return w->parent() ? w->parent() : tree;
 }
 
-
 void cb_add_folder(fltk::Widget*, void* ptr) {
   fltk::Browser* tree = (fltk::Browser*) ptr;
   tree->add_group("Added folder", current_group(tree));
@@ -85,6 +110,15 @@ void cb_add_folder(fltk::Widget*, void* ptr) {
 void cb_add_paper(fltk::Widget*, void* ptr) {
   fltk::Browser* tree = (fltk::Browser*) ptr;
   tree->add_leaf("New paper\t2.col\t3.col", current_group(tree));
+  tree->relayout();
+}
+
+void cb_change_look(fltk::Widget*, void* ptr) {
+	static bool flip = true;
+  fltk::Browser* tree = (fltk::Browser*) ptr;
+  tree->set_symbol(fltk::Browser::GROUP, flip ? folderSmall2 : folderSmall);
+  tree->set_symbol(fltk::Browser::LEAF, flip ? fileSmall2 : fileSmall);
+  flip = !flip;
   tree->relayout();
 }
 
@@ -167,6 +201,9 @@ int main(int argc,char** argv) {
   fltk::Button add_folder_button(5, 248, 70, 22, "Add Folder");
   add_folder_button.callback((fltk::Callback*)cb_add_folder, (void *)&tree);
 
+  fltk::Button change_look_button(5, 272, 70, 22, "Change Look!");
+  change_look_button.callback((fltk::Callback*)cb_change_look , (void *)&tree);
+
   fltk::CheckButton multi_button(80, 200, 160, 20, "fltk::Browser::MULTI");
   multi_button.callback((fltk::Callback*)cb_multi, (void *)&tree);
 
@@ -190,7 +227,9 @@ int main(int argc,char** argv) {
   win.end();
 
   folderSmall = new fltk::xpmImage(folder_small);
+  folderSmall2= new fltk::xpmImage(folder_small2);
   fileSmall = new fltk::xpmImage(file_small);
+  fileSmall2 = new fltk::xpmImage(book);
   customImage = new fltk::xpmImage(porsche_xpm);
 
 #if USE_STRING_LIST
@@ -234,7 +273,7 @@ int main(int argc,char** argv) {
 
   g = tree.add_group("rrr", g); // more imbricated groups 
   g = tree.add_group("sss", g);
-  g = tree.add_group("sss", g);
+  g = tree.add_group("ttt", g);
 
   g = tree.add_group("uuu", &tree);
   tree.add_leaf("vvv", g);
@@ -279,3 +318,5 @@ int main(int argc,char** argv) {
   fltk::run();
   return 0;
 }
+
+// End of "$Id$"

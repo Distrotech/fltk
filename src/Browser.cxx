@@ -1839,10 +1839,25 @@ Item* Browser::add_leaf(const char *label,  Group* parent, const Symbol* img) {
 }
 
 void Browser::set_symbol(Browser::NodeType nodetype, const Symbol* img) {
+	const Symbol* old;
     switch(nodetype) {
-	case Browser::GROUP:	defGroupSymbol = img; break;
-	case Browser::LEAF:	defLeafSymbol  = img; break;
+	case Browser::GROUP:	
+		old = defGroupSymbol;
+		defGroupSymbol = img; 
+		break;
+	case Browser::LEAF:	
+		old = defLeafSymbol;
+		defLeafSymbol  = img; 
+		break;
     }
+	// now let's change dynamically the look of the tree symbols !
+	if (old && img && img!=old) {
+		set_mark(TREE_TRAVERSAL, HERE); // memorize current
+		for (Widget* it=goto_top(); it ; it = next()) {
+			if (it->image()==old) it->image(img);
+		}
+		goto_mark(TREE_TRAVERSAL); // memorize current
+	}
 }
 
 //
