@@ -7,7 +7,7 @@
 // quite a mess!  Also, the classes defined here are private and
 // may change in the future!
 //
-// Copyright 1998-2000 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -322,8 +322,8 @@ void Menu::draw_in(Widget* widget, const int* indexes, int level,
     if (damage != DAMAGE_CHILD || i==selected || i==drawn_selected) {
 
       Flags flags = item->flags();
-      if (flags&NOTACTIVE) flags |= INACTIVE;
-      if (i == selected && !(flags & (OUTPUT|NOTACTIVE))) {
+      // fabien: obsolete: if (flags&NOTACTIVE) flags |= INACTIVE;
+      if (i == selected && !(flags & (OUTPUT|INACTIVE))) {
 	flags |= (SELECTED|HIGHLIGHT);
       } else {
 	flags &= ~(SELECTED|HIGHLIGHT);

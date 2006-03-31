@@ -4,7 +4,7 @@
 // _WIN32-specific code for the Fast Light Tool Kit (FLTK).
 // This file is #included by Fl.cxx
 //
-// Copyright 1998-2004 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -392,7 +392,7 @@ static inline int fl_wait(double time_to_wait) {
     fl_unlock_function();
     int t_msec =
       time_to_wait < 2147483.647 ? int(time_to_wait*1000+.5) : 0x7fffffff;
-    int ret_val =
+    // int ret_val = 
       MsgWaitForMultipleObjects(0, NULL, false, t_msec, QS_ALLINPUT);
     fl_lock_function();
     in_main_thread_ = true;
@@ -2145,6 +2145,7 @@ void CreatedWindow::set_minmax(LPMINMAXINFO minmax)
 
   minmax->ptMinTrackSize.x = window->minw + r.w();
   minmax->ptMinTrackSize.y = window->minh + r.h();
+
   if (window->maxw) {
     minmax->ptMaxTrackSize.x = window->maxw + r.w();
     minmax->ptMaxSize.x = window->maxw + r.w();
@@ -2152,6 +2153,10 @@ void CreatedWindow::set_minmax(LPMINMAXINFO minmax)
   if (window->maxh) {
     minmax->ptMaxTrackSize.y = window->maxh + r.h();
     minmax->ptMaxSize.y = window->maxh + r.h();
+  }
+  else { // taking in account the windows desktop taskbar
+    minmax->ptMaxTrackSize.y = 
+	minmax->ptMaxSize.y = fltk::monitor_h()-r.h();
   }
 }
 

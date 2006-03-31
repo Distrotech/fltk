@@ -5,6 +5,7 @@
 #include <fltk/draw.h>
 #include <fltk/run.h>
 #include <fltk/Cursor.h>
+
 using namespace fltk;
 
 inline void FileChooser::cb_window_i(fltk::DoubleBufferWindow*, void*) {
@@ -177,20 +178,20 @@ FileChooser::FileChooser(const char *d, const char *p, int t, const char *title)
         o->align(fltk::ALIGN_INSIDE|fltk::ALIGN_CLIP);
       }
       o->end();
+      //window->resizable(o);
+      fltk::Group::current()->resizable(o);
     }
      {fltk::Group* o = new fltk::Group(10, 275, 470, 95);
       o->begin();
        {fltk::Group* o = new fltk::Group(0, 0, 470, 20);
         o->begin();
          {fltk::CheckButton* o = previewButton = new fltk::CheckButton(0, 0, 73, 20, "Preview");
-          o->set_flag(VALUE);
+          o->set_flag(fltk::VALUE);
           o->shortcut(0x80070);
           o->callback((fltk::Callback*)cb_previewButton);
           previewButton->label(preview_label);
         }
-         {fltk::InvisibleBox* o = new fltk::InvisibleBox(105, 0, 365, 20);
-          fltk::Group::current()->resizable(o);
-        }
+        new fltk::InvisibleBox(105, 0, 365, 20);
         o->end();
       }
        {fltk::FileInput* o = fileName = new fltk::FileInput(105, 25, 365, 35);
@@ -217,14 +218,10 @@ FileChooser::FileChooser(const char *d, const char *p, int t, const char *title)
           o->callback((fltk::Callback*)cb_cancelButton);
           o->label("Cancel");
         }
-         {fltk::InvisibleBox* o = new fltk::InvisibleBox(0, 0, 30, 25);
-          fltk::Group::current()->resizable(o);
-        }
+        new fltk::InvisibleBox(0, 0, 30, 25);
         o->end();
-        fltk::Group::current()->resizable(o);
       }
       o->end();
-      fltk::Group::current()->resizable(o);
     }
     o->end();
     if (title) window->label(title);

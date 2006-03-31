@@ -1,7 +1,7 @@
 //
 // "$Id$"
 //
-// Copyright 1998-2003 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -21,6 +21,8 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 
 #include <fltk/Browser.h>
+#include <fltk/ItemGroup.h>
+#include <fltk/Item.h>
 #include <fltk/Button.h>
 #include <fltk/events.h>
 #include <fltk/damage.h>
@@ -1769,6 +1771,7 @@ Browser::Browser(int X,int Y,int W,int H,const char* L)
   selected_column_ = -1;
   nColumn = 0;
   nHeader = 0; header_ = 0;
+  defGroupSymbol = defLeafSymbol = 0;
   // set all the marks to the top:
   levels = 0;
   for (int i = 0; i < NUMMARKS; i++) {
@@ -1819,6 +1822,28 @@ Browser::~Browser() {
   - selected()
 
 */
+
+//
+// Tree construction high level API
+//
+ItemGroup* Browser::add_group(const char *label, Group* parent, int state, const Symbol *img ) {
+    if (parent) parent->begin();
+    return new ItemGroup(img ? img : (defGroupSymbol ? defGroupSymbol : 0),
+	label,fltk::ALIGN_BROWSER | state);
+}
+
+Item* Browser::add_leaf(const char *label,  Group* parent, const Symbol* img) {
+    if (parent) parent->begin();
+    return new Item(img ? img : (defLeafSymbol ?  defLeafSymbol  : 0),
+	label, fltk::ALIGN_BROWSER);
+}
+
+void Browser::set_symbol(Browser::NodeType nodetype, const Symbol* img) {
+    switch(nodetype) {
+	case Browser::GROUP:	defGroupSymbol = img; break;
+	case Browser::LEAF:	defLeafSymbol  = img; break;
+    }
+}
 
 //
 // End of "$Id$".

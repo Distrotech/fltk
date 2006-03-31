@@ -3,7 +3,7 @@
 //
 // File_Input header file for the Fast Light Tool Kit (FLTK).
 //
-// Copyright 1998-2005 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 // Original version Copyright 1998 by Curtis Edwards.
 //
 // This library is free software; you can redistribute it and/or
@@ -157,7 +157,6 @@ FileInput::update_buttons() {
 //
 // 'FileInput::text()' - Set the string stored in the widget...
 //
-static int idbg=0;
 
 int						// O - TRUE on success
 FileInput::text(const char *str,		// I - New string value

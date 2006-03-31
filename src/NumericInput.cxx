@@ -248,4 +248,5 @@ int NumericInput::handle_arrow(int dir)
   }
   return 1;
 }
+
 // End of "$Id$".

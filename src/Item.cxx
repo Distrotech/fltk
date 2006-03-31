@@ -1,7 +1,7 @@
 //
 // "$Id$"
 //
-// Copyright 1998-2003 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -48,12 +48,17 @@ static NamedStyle style("Item", revert, &Item::default_style);
 */
 NamedStyle* Item::default_style = &::style;
 
-/** Unlike other widgets the constructor does not take any dimensions,
+/** Constructor by default and also the one that should be used to easily 
+    constructing browsing items (supports image + alignement decl)
+    Unlike other widgets the constructor does not take any dimensions,
     since it is assummed the container widget will size this
     correctly.
 */
-Item::Item(const char* l) : Widget(0,0,0,0,l) {
+Item::Item(const Symbol* img, const char* l, int custom_alignment) 
+  : Widget(0,0,0,0,l) {
   init();
+  if (img) image(img);
+  if (custom_alignment!=-1)  align(custom_alignment);
 }
 
 void Item::init() {
@@ -217,10 +222,13 @@ void ItemGroup::init() {
   align(ALIGN_LEFT|ALIGN_INSIDE);
 }
 
-ItemGroup::ItemGroup(const char* l) : Menu(0,0,0,0,l) {
+ItemGroup::ItemGroup(const Symbol * img, const char* l,  int custom_align) 
+  : Menu(0,0,0,0,l) {
   init();
   // Undo the Menu class changing default_callback:
   callback(Widget::default_callback);
+  if (img) image(img);
+  if (custom_align!=-1) align(custom_align);
 }
 
 

@@ -1,7 +1,7 @@
 //
 // "$Id$"
 //
-// Copyright 1998-2004 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -97,7 +97,7 @@ void CycleButton::draw() {
     Item::set_style(&style,false);
     Flags saved = o->flags();
     o->clear_flag(SELECTED);
-    if (flags&(INACTIVE|NOTACTIVE)) o->set_flag(INACTIVE);
+    //fabien : should not be necessary anymore: if (flags&(INACTIVE|NOTACTIVE)) o->set_flag(INACTIVE);
     push_clip(r);
     push_matrix();
     translate(r.x(),r.y());

@@ -29,6 +29,9 @@
 
 namespace fltk {
 
+class ItemGroup;
+class Item;
+
 class FL_API Browser : public Menu {
 public:
 
@@ -39,7 +42,7 @@ public:
   Browser(int X,int Y,int W,int H,const char*l=0);
   static NamedStyle* default_style;
   ~Browser();
-
+  
   enum { // values for type()
     NORMAL = 0,
     MULTI = 1
@@ -172,6 +175,29 @@ private:
   void set_level(int); // increases levels by reallocating the arrays
 
   static void column_click_cb_(Widget*, void*);
+
+public:  
+  //
+  // tree construction high level API
+  //   dramatically improves tree construction in an easy and elegant way
+  // 
+  enum NodeType { // values for tree node types
+    GROUP= 0,
+    LEAF = 1
+  };
+  
+  //! sets a default symbol for the group or leaf node type, 0 for img means no default img
+  void set_symbol(NodeType nodetype, const Symbol* img=0);
+
+  //! create a group node in the tree, if img is not 0 then custom img is set, otherwise default img is set if any
+  ItemGroup* add_group(const char *label, Group* parent=0, int state=fltk::OPEN, const Symbol* img=0);
+  //! create a leaf node in the tree, if img is not 0 then custom img is set, otherwise default img is set if any
+  Item* add_leaf(const char *label, Group* parent=0, const Symbol* img=0);
+
+private:
+  const Symbol * defGroupSymbol;
+  const Symbol * defLeafSymbol;
+
 };
 
 }

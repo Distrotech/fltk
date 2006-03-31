@@ -3,7 +3,7 @@
 //
 // Base widget class for the Fast Light Tool Kit (FLTK).
 //
-// Copyright 1998-2003 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -878,7 +878,7 @@ bool Widget::active_r() const {
   send() an fltk::ACTIVATE event. */
 void Widget::activate() {
   if (!active()) {
-    clear_flag(NOTACTIVE);
+    clear_flag(INACTIVE);
     if (active_r()) {
       redraw_label(); redraw();
       clear_flag(INACTIVE);
@@ -892,12 +892,12 @@ void Widget::activate() {
   send() an fltk::DEACTIVATE event. */
 void Widget::deactivate() {
   if (active_r()) {
-    set_flag(NOTACTIVE|INACTIVE);
+    set_flag(INACTIVE);
     throw_focus();
     redraw_label(); redraw();
     handle(DEACTIVATE);
   } else {
-    set_flag(NOTACTIVE|INACTIVE);
+    set_flag(INACTIVE);
   }
 }
 

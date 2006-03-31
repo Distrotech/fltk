@@ -141,7 +141,7 @@ public:
   void	hide()			;
   void	set_visible()		{ flags_ &= ~INVISIBLE; }
   void	clear_visible()		{ flags_ |= INVISIBLE; }
-  bool	active() const		{ return !(flags_&NOTACTIVE); }
+  bool	active() const		{ return !(flags_&INACTIVE); }
   bool	active_r() const	;
   void	activate()		;
   void	activate(int b)		{ if (b) activate(); else deactivate(); }
@@ -149,7 +149,7 @@ public:
   bool	output() const		{ return (flags_&OUTPUT)!=0; }
   void	set_output()		{ flags_ |= OUTPUT; }
   void	clear_output()		{ flags_ &= ~OUTPUT; }
-  bool	takesevents() const	{ return !(flags_&(OUTPUT|INVISIBLE|NOTACTIVE)); }
+  bool	takesevents() const	{ return !(flags_&(OUTPUT|INVISIBLE|INACTIVE)); }
   bool	changed() const		{ return (flags_&CHANGED)!=0; }
   void	set_changed()		{ flags_ |= CHANGED; }
   void	clear_changed()		{ flags_ &= ~CHANGED; }

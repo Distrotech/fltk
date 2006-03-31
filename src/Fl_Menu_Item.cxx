@@ -4,7 +4,7 @@
 // The obsolete MenuItem structure.  This code should not be used
 // in new fltk programs.
 //
-// Copyright 1998-2003 by Bill Spitzak and others.
+// Copyright 1998-2006 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -91,7 +91,7 @@ static const Fl_Menu_Item* add(Group* g, const Fl_Menu_Item* m,void* data) {
     if (m->labelcolor_) o->labelcolor(m->labelcolor_);
     // these flags have been cleverly assigned so this shift and mask
     // converts from the old values to the new ones:
-    o->set_flag((m->flags<<8)&(NOTACTIVE|VALUE|INVISIBLE));
+    o->set_flag((m->flags<<8)&(INACTIVE|VALUE|INVISIBLE));
     if (m->flags & FL_MENU_DIVIDER) new Divider();
     m = next;
   }

@@ -16,12 +16,14 @@
 
 #include "folder_small.xpm"
 #include "file_small.xpm"
+#include "porsche.xpm"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 fltk::xpmImage* folderSmall;
 fltk::xpmImage* fileSmall;
+fltk::xpmImage* customImage;
 
 void
 cb_test(fltk::Widget* browser, void*) {
@@ -69,39 +71,20 @@ cb_multi(fltk::Button* w, void* ptr) {
 static fltk::Group* current_group(fltk::Browser* tree) {
   fltk::Widget* w = tree->goto_focus();
   if (!w) return tree;
-  if (w->is_group() && w->flags()&fltk::VALUE) return (fltk::Group*)w;
+  if (w->is_group() && w->flags()&fltk::OPEN) return (fltk::Group*)w;
   return w->parent() ? w->parent() : tree;
 }
 
-static fltk::Group* add_folder(fltk::Group* parent,
-		       const char* name, int open, fltk::Image* image) {
-  parent->begin();
-  fltk::ItemGroup* o = new fltk::ItemGroup(name);
-  o->image(image);
-  if (open) o->set_flag(fltk::VALUE);
-  return o;
-}
 
-static fltk::Widget* add_paper(fltk::Group* parent,
-			   const char* name, int, fltk::Image* image) {
-  parent->begin();
-  fltk::Item* o = new fltk::Item(name);
-  o->align(fltk::ALIGN_LEFT|fltk::ALIGN_INSIDE|fltk::ALIGN_CLIP);
-  o->image(image);
-  return o;
-}
-
-void
-cb_add_folder(fltk::Widget*, void* ptr) {
+void cb_add_folder(fltk::Widget*, void* ptr) {
   fltk::Browser* tree = (fltk::Browser*) ptr;
-  add_folder(current_group(tree), "Added folder", 1, folderSmall);
+  tree->add_group("Added folder", current_group(tree));
   tree->relayout();
 }
 
-void
-cb_add_paper(fltk::Widget*, void* ptr) {
+void cb_add_paper(fltk::Widget*, void* ptr) {
   fltk::Browser* tree = (fltk::Browser*) ptr;
-  add_paper(current_group(tree), "New paper\t2.col\t3.col", 0, fileSmall);
+  tree->add_leaf("New paper\t2.col\t3.col", current_group(tree));
   tree->relayout();
 }
 
@@ -208,6 +191,7 @@ int main(int argc,char** argv) {
 
   folderSmall = new fltk::xpmImage(folder_small);
   fileSmall = new fltk::xpmImage(file_small);
+  customImage = new fltk::xpmImage(porsche_xpm);
 
 #if USE_STRING_LIST
   //tree.list(new fltk::String_List("alpha\0beta\0ceta\0delta\0red\0green\0blue\0"));
@@ -215,53 +199,52 @@ int main(int argc,char** argv) {
   //tree.list(new fltk::String_List(strings));
 #else
 
+  // defining default images for nodes
+  tree.set_symbol(fltk::Browser::GROUP, folderSmall);
+  tree.set_symbol(fltk::Browser::LEAF, fileSmall);
+
   // Add some nodes with icons -- some open, some closed.
-  // fltk::ToggleNode::fltk::ToggleNode( LABEL , CAN_OPEN (default=1) , ICON )
   fltk::Group* g;
+  g = tree.add_group ("aaa\t2.col\t3.col", &tree);
+  tree.add_group ("bbb TWO\t2.col\t3.col", g);
 
-  g = add_folder(&tree, "aaa\t2.col\t3.col", 1, folderSmall);
+  g = tree.add_group ("bbb", &tree);
+  tree.add_leaf("ccc\t789", g); 
+  tree.add_leaf("ddd\t012", g); 
 
-  add_folder(g, "bbb TWO\t2.col\t3.col", 1, folderSmall);
+  
+  g = tree.add_group("eee", &tree);
+  tree.add_leaf("fff", &tree, customImage); // let's have fun with a custom image
+					    // while demonstrating different height nodes
+  g = tree.add_group("ggg", g);
+  tree.add_leaf("hhh", g); // g decl is not even necessary for next children
+  tree.add_leaf("iii", g); // I let it for keeping API orthogonality
 
-  g = add_folder(&tree, "bbb", 0, folderSmall);
+  g = tree.add_group("jjj",&tree);
+  tree.add_leaf("kkk",g);
 
-  add_paper(g, "ccc\t789", 1, folderSmall);
-  add_paper(g, "ddd\t012", 0, fileSmall);
+  tree.add_leaf("lll");
 
-  g = add_folder(&tree, "eee", 1, folderSmall);
-  add_paper(g, "fff", 0, fileSmall);
+  g = tree.add_group("mmm", &tree, 0); // let this node closed
+  tree.add_leaf("nnn",g);
+  tree.add_leaf("ooo",g);
 
-  g = add_folder(g, "ggg", 1, folderSmall);
-  add_paper(g, "hhh", 1, fileSmall);
-  add_paper(g, "iii", 1, fileSmall);
+  g = tree.add_group("ppp", g);
+  tree.add_leaf("qqq",g);
 
-  g = add_folder(&tree, "jjj", 1, folderSmall);
-  add_paper(g, "kkk", 0, fileSmall);
+  g = tree.add_group("rrr", g); // more imbricated groups 
+  g = tree.add_group("sss", g);
+  g = tree.add_group("sss", g);
 
-  add_paper(&tree, "lll", 0, fileSmall);
-  g = add_folder(&tree, "mmm", 0, folderSmall);
-  add_paper(g, "nnn", 1, folderSmall);
-  add_paper(g, "ooo", 0, fileSmall);
-
-  g = add_folder(g, "ppp", 1, folderSmall);
-  add_paper(g, "qqq", 0, fileSmall);
-  g = g->parent();
-
-  g = add_folder(g, "rrr", 1, folderSmall);
-  g = add_folder(g, "sss", 1, folderSmall);
-  g = add_folder(g, "ttt", 1, folderSmall);
-
-  g = add_folder(&tree, "uuu", 1, folderSmall);
-  add_paper(g, "vvv", 0, fileSmall);
+  g = tree.add_group("uuu", &tree);
+  tree.add_leaf("vvv", g);
+  tree.add_leaf("www", g);
 
 #if 0
-  add_paper(&tree, "www", 0, fileSmall);
-  add_paper(&tree, "xxx", 0, fileSmall);
-  add_paper(&tree, "yyy", 0, fileSmall);
-  add_paper(&tree, "zzz", 0, fileSmall);
+  tree.add_leaf("yyy", g);
+  tree.add_leaf("zzz", g);
 
   // add some widgets:
-  //g->begin();
   fltk::Button * b = new fltk::Button(0,0,100,23,"button");
   b->callback(button_cb);
   b = new fltk::CheckButton(0,0,100,23,"CheckButton");
