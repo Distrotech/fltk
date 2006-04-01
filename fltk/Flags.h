@@ -61,6 +61,7 @@ enum {
   ALIGN_CLIP		  = 0x00000040, //!< The label is clipped to the widget
   ALIGN_WRAP		  = 0x00000080, //!< The label is word-wrapped
   ALIGN_MASK		  = 0x000000FF, //!< Used to split align() from flags()
+  ALIGN_POSITIONMASK      = 0x0000000F, //!< Used to split align() from flags()
 
   ALIGN_TOPLEFT		  = (ALIGN_TOP|ALIGN_LEFT),	    //!< Label is left-justified above widget
   ALIGN_BOTTOMLEFT	  = (ALIGN_BOTTOM|ALIGN_LEFT),	    //!< Label is left-justified below widget
@@ -93,9 +94,10 @@ enum {
   TAB_TO_FOCUS		  = 0x00040000, //!< Widget::tab_to_focus();
   CLICK_TO_FOCUS	  = 0x00080000, //!< Widget::click_to_focus()
   INACTIVE		  = 0x00100000, //!< draw it grayed-out
-  FOCUSED		  = 0x00200000, //!< draw with keyboard focus
-  PUSHED		  = 0x00400000,  //!< draw pushed-in
-  OPEN			  = VALUE,	//!< OPEN /CLOSE state for browser
+  FOCUSED		  = 0x00200000, //!< draw with keyboard focus also used for belowmouse widget image (image3_) 
+  PUSHED		  = 0x00400000, //!< draw pushed-in 
+  BELOWMOUSE		  = FOCUSED,	//!< used by image() and set_symbol() for state corresponding to widget below mouse
+  OPENED		  = VALUE,	//!< used by image() and set_symbol() for state corresponding to widget open (i.e group node)
 };
 /*! \} */
 

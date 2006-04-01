@@ -42,6 +42,8 @@ typedef Callback* Callback_p; // needed for BORLAND
 typedef void (Callback0)(Widget*);
 typedef void (Callback1)(Widget*, long);
 
+const Symbol* const NoSymbol= ((const Symbol* ) 0);
+
 class FL_API Widget : public Rectangle {
   // disable the copy assignment/constructors:
   Widget & operator=(const Widget &);
@@ -88,9 +90,16 @@ public:
   void	label(const char* a);
   void	copy_label(const char* a);
 
-  const Symbol* image() const	{ return image_; }
-  void	image(const Symbol* a)	{ image_ = a; }
-  void	image(const Symbol& a)	{ image_ = &a; }
+  // image manips
+  //!  get the image Symbol according to the desired state (NO_FLAGS, INACTIVE, BELOWMOUSE, PUSHED or OPENED)
+  const Symbol* image(Flags flags=NO_FLAGS) const;
+  //!  set the image Symbol according to the desired state (NO_FLAGS, INACTIVE, BELOWMOUSE, PUSHED or OPENED)
+  void	image(const Symbol* a, Flags flags=NO_FLAGS);	
+  //!  set the image Symbol according to the desired state (NO_FLAGS, INACTIVE, BELOWMOUSE, PUSHED or OPENED)
+  void	image(const Symbol& a,Flags flags=NO_FLAGS) {  image(&a, flags); }
+  //! get the image relative to a particular event/state 
+  const Symbol * Widget::context_image() const; // return the context dependant image
+
 
   const char *tooltip() const	{ return tooltip_; }
   void	tooltip(const char *t)	{ tooltip_ = t; }
@@ -276,7 +285,10 @@ public:
 private:
 
   const char*		label_;
-  const Symbol*		image_;
+  const Symbol*		image_,	  // DEFAULT image_
+			*image2_, // INACTIVE optional image
+			*image3_, // PUSHED / OPEN optional image
+			*image4_; // FOCUSED optional image
   unsigned		flags_;
   const Style*		style_;
   Callback*		callback_;

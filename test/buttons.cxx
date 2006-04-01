@@ -1,5 +1,5 @@
 //
-// "$Id: buttons.cxx,v 1.20 2004/08/01 22:28:24 spitzak Exp $"
+// "$Id$"
 //
 // Draws the image for the manual
 //
@@ -36,7 +36,23 @@
 #include <fltk/LightButton.h>
 #include <fltk/HighlightButton.h>
 
+#include <fltk/xpmImage.h>
+#include "folder_small.xpm"
+#include "folder_small2.xpm"
+#include "folder_small3.xpm"
+
 using namespace fltk;
+
+Button * abutton=0;
+
+void cb_active_butt(Widget*, void*) {
+    static bool flip = true;
+    if (flip) abutton->activate(); else abutton->deactivate();
+    abutton->label(flip ? "Active" : "Inactive");
+    flip = !flip;
+
+  abutton->redraw();
+}
 
 void rb_cb(Widget*, void*) {
 //  Fl::theme("essai");
@@ -44,14 +60,14 @@ void rb_cb(Widget*, void*) {
   redraw();
 }
 
-const int W = 130;
+const int W = 150;
 const int H = 24;
 const int B = 10;
 const int X0 = B;
 const int X1 = (B+W+B);
 
 int main(int argc, char ** argv) {
-  Window window(X1+W+B, B+5*(H+B));
+  Window window(X1+W+B, B+6*(H+B));
   window.begin();
 
   int Y = B;
@@ -71,7 +87,17 @@ int main(int argc, char ** argv) {
   Y += H+B;
   (void) new HighlightButton(X0, Y, W, H, "HighlightButton");
   (void) new CheckButton(X1, Y, W, H, "CheckButton");
-  
+  Y += H+B;
+  Button * b = new Button(X0, Y, W, H, "Everything !");
+  b->image(new xpmImage(folder_small2), fltk::NO_FLAGS);
+  b->image(new xpmImage(folder_small), fltk::PUSHED);
+  b->image(new xpmImage(folder_small3), fltk::FOCUSED);
+  b->callback(cb_active_butt);
+
+  abutton = b = new Button(X1, Y, W, H, "Inactive");
+  b->image(new xpmImage(folder_small3), fltk::NO_FLAGS);
+  b->image(new xpmImage(folder_small2), fltk::INACTIVE);
+  b->activate(0);  
   window.resizable(window);
   window.end();
   window.show(argc,argv);
@@ -82,5 +108,5 @@ int main(int argc, char ** argv) {
 }
 
 //
-// End of "$Id: buttons.cxx,v 1.20 2004/08/01 22:28:24 spitzak Exp $".
+// End of "$Id$".
 //

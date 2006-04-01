@@ -188,17 +188,28 @@ public:
     LEAF = 1
   };
   
-  //! sets a default symbol for the group or leaf node type, 0 for img means no default img
-  void set_symbol(NodeType nodetype, const Symbol* img=0);
+  /** sets default(s) symbol(s) for the group or leaf node type, 
+      the state can be OPEN or CLOSE, 
+      NoSymbol for img means no img
+      you can choose to setup a set of images up to three different states/events for a group node
+  */
+  void set_symbol(NodeType nodetype, 
+      const Symbol* imgClosed=fltk::NoSymbol, // default (and closed if open not null) img
+      const Symbol* imgFocus=fltk::NoSymbol,  // img when mouse comes on it
+      const Symbol* imgOpen=fltk::NoSymbol);  // img when node open (for group nodes only)
+  //! tell what image is affected to a particlar event/state
+  const Symbol* get_symbol(NodeType nodetype, Flags f=fltk::NO_FLAGS) const;  
 
   //! create a group node in the tree, if img is not 0 then custom img is set, otherwise default img is set if any
-  ItemGroup* add_group(const char *label, Group* parent=0, int state=fltk::OPEN, const Symbol* img=0);
+  ItemGroup* add_group(const char *label, Group* parent=0, int state=fltk::OPENED, 
+      const Symbol* imgClosed=fltk::NoSymbol, const Symbol* imgFocus=fltk::NoSymbol, const Symbol* imgOpen=fltk::NoSymbol);
   //! create a leaf node in the tree, if img is not 0 then custom img is set, otherwise default img is set if any
-  Item* add_leaf(const char *label, Group* parent=0, const Symbol* img=0);
+  Item* add_leaf(const char *label, Group* parent=0,  
+      const Symbol* img=fltk::NoSymbol, const Symbol* imgFocus=fltk::NoSymbol);
 
 private:
-  const Symbol * defGroupSymbol;
-  const Symbol * defLeafSymbol;
+  const Symbol *defGroupSymbol1, *defGroupSymbol2, *defGroupSymbol3;
+  const Symbol *defLeafSymbol1,*defLeafSymbol2,*defLeafSymbol3;
 
 };
 

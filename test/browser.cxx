@@ -40,19 +40,20 @@
 
 #include "folder_small.xpm"
 #include "folder_small2.xpm"
-#include "book.xpm"
+#include "folder_small3.xpm"
 #include "file_small.xpm"
+#include "file_small2.xpm"
+#include "book.xpm"
 #include "porsche.xpm"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-fltk::xpmImage* folderSmall, *folderSmall2;
-fltk::xpmImage* fileSmall, *fileSmall2;
+fltk::xpmImage* folderSmall, *folderSmall2,*folderSmall3;
+fltk::xpmImage* fileSmall, *fileSmall2,*bookImg;
 fltk::xpmImage* customImage;
 
-void
-cb_test(fltk::Widget* browser, void*) {
+void cb_test(fltk::Widget* browser, void*) {
   fltk::Widget* w = ((fltk::Browser*)browser)->item();
   printf("Callback, browser->item() = '%s'",
 	 w && w->label() ? w->label() : "null");
@@ -60,8 +61,7 @@ cb_test(fltk::Widget* browser, void*) {
   printf("\n");
 }
 
-void
-cb_remove(fltk::Widget*, void* ptr) {
+void cb_remove(fltk::Widget*, void* ptr) {
   fltk::Browser* tree = (fltk::Browser*) ptr;
   if (tree->type() & fltk::Browser::MULTI) {
     fltk::Widget* w = tree->goto_top();
@@ -87,8 +87,7 @@ cb_remove(fltk::Widget*, void* ptr) {
   }
 }
 
-void
-cb_multi(fltk::Button* w, void* ptr) {
+void cb_multi(fltk::Button* w, void* ptr) {
   fltk::Browser* tree = (fltk::Browser*) ptr;
   tree->type(w->value() ? fltk::Browser::MULTI : fltk::Browser::NORMAL);
   tree->relayout();
@@ -97,7 +96,7 @@ cb_multi(fltk::Button* w, void* ptr) {
 static fltk::Group* current_group(fltk::Browser* tree) {
   fltk::Widget* w = tree->goto_focus();
   if (!w) return tree;
-  if (w->is_group() && w->flags()&fltk::OPEN) return (fltk::Group*)w;
+  if (w->is_group() && w->flags()&fltk::OPENED) return (fltk::Group*)w;
   return w->parent() ? w->parent() : tree;
 }
 
@@ -110,15 +109,6 @@ void cb_add_folder(fltk::Widget*, void* ptr) {
 void cb_add_paper(fltk::Widget*, void* ptr) {
   fltk::Browser* tree = (fltk::Browser*) ptr;
   tree->add_leaf("New paper\t2.col\t3.col", current_group(tree));
-  tree->relayout();
-}
-
-void cb_change_look(fltk::Widget*, void* ptr) {
-	static bool flip = true;
-  fltk::Browser* tree = (fltk::Browser*) ptr;
-  tree->set_symbol(fltk::Browser::GROUP, flip ? folderSmall2 : folderSmall);
-  tree->set_symbol(fltk::Browser::LEAF, flip ? fileSmall2 : fileSmall);
-  flip = !flip;
   tree->relayout();
 }
 
@@ -161,7 +151,48 @@ void button_cb(fltk::Widget* b, void *) {
 const char *labels[] = {"Column 1", "Column 2", "Column 3", 0};
 int widths[]   = {100, 70, 70, 0};
 
-fltk::Browser *browser;
+fltk::Browser *browser=0;
+fltk::CheckButton *bm = 0;
+
+// callback for changing dynamically the look of the tree browser 
+void cb_change_look(fltk::Widget*, void* ptr) {
+  static bool flip = true;
+  fltk::Browser* tree = (fltk::Browser*) ptr;
+  bm->set();
+  bm->do_callback();
+
+  tree->set_symbol(fltk::Browser::GROUP	   // tell if you want to setup Group nodes
+      ,flip ? folderSmall : folderSmall2   // node default (closed) image 
+      ,flip ? folderSmall3  : folderSmall  // belowmouse image (optional)
+      ,flip ? folderSmall : folderSmall3   // group node open image (optional)
+      );
+  tree->set_symbol(fltk::Browser::LEAF, // tell you want to setup Leaf nodes
+      flip ? fileSmall : fileSmall2,    // node default (closed) image 
+      flip ? fileSmall2 : fileSmall);   // belowmouse image (optional)
+  flip = !flip;
+  tree->relayout();
+}
+
+// callback for deactivate/activate the belowmouse img change
+void below_mouse_cb(fltk::Button *w, long arg) {
+    static const fltk::Symbol *last1 = 0;
+    static const fltk::Symbol *last2=0;
+
+    if (w->value()) {
+	browser->set_symbol(fltk::Browser::GROUP, browser->get_symbol(fltk::Browser::GROUP),last1,
+	    browser->get_symbol(fltk::Browser::GROUP,fltk::OPENED));
+	browser->set_symbol(fltk::Browser::LEAF, browser->get_symbol(fltk::Browser::LEAF),last2);
+    } else {
+	last1 = browser->get_symbol(fltk::Browser::GROUP, fltk::BELOWMOUSE);
+	last2 = browser->get_symbol(fltk::Browser::LEAF, fltk::BELOWMOUSE);
+	browser->set_symbol(fltk::Browser::GROUP, 
+	    browser->get_symbol(fltk::Browser::GROUP), 0, 
+	    browser->get_symbol(fltk::Browser::GROUP,fltk::OPENED));
+	browser->set_symbol(fltk::Browser::LEAF, browser->get_symbol(fltk::Browser::LEAF),0);
+    }
+    browser->relayout();
+}
+
 void change_resize(fltk::Button *w, long arg) {
   if (w->value()) 
     widths[1] = -1;
@@ -169,15 +200,6 @@ void change_resize(fltk::Button *w, long arg) {
     widths[1] = 70; 
   browser->column_widths(widths);
 }
-
-#define USE_STRING_LIST 0
-#if USE_STRING_LIST
-#include <fltk/fltk::String_List.h>
-
-const char* const strings[] = {
-  "foo", "bar", "number 2", "number 3", "another item", "blah", "zoo"
-};
-#endif
 
 int main(int argc,char** argv) {
 
@@ -191,7 +213,7 @@ int main(int argc,char** argv) {
   browser = &tree;
   tree.column_widths(widths);
   tree.column_labels(labels);
-
+  
   fltk::Button remove_button(5, 200, 80, 22, "Remove");
   remove_button.callback((fltk::Callback*)cb_remove, (void *)&tree);
 
@@ -223,13 +245,20 @@ int main(int argc,char** argv) {
   fltk::CheckButton resize(88, 310, 160, 20, "Make 2. column flexible");
   resize.callback((fltk::Callback*)change_resize);
 
+  bm = new fltk::CheckButton (5, 310, 82, 20, "below mouse");
+  bm->set();
+  bm->callback((fltk::Callback*)below_mouse_cb);
+
   win.resizable(tree);
   win.end();
 
   folderSmall = new fltk::xpmImage(folder_small);
   folderSmall2= new fltk::xpmImage(folder_small2);
+  folderSmall3= new fltk::xpmImage(folder_small3);
+
   fileSmall = new fltk::xpmImage(file_small);
-  fileSmall2 = new fltk::xpmImage(book);
+  fileSmall2 = new fltk::xpmImage(file_small2);
+  bookImg = new fltk::xpmImage(book);
   customImage = new fltk::xpmImage(porsche_xpm);
 
 #if USE_STRING_LIST
@@ -239,8 +268,7 @@ int main(int argc,char** argv) {
 #else
 
   // defining default images for nodes
-  tree.set_symbol(fltk::Browser::GROUP, folderSmall);
-  tree.set_symbol(fltk::Browser::LEAF, fileSmall);
+  cb_change_look(0, &tree);
 
   // Add some nodes with icons -- some open, some closed.
   fltk::Group* g;
@@ -312,7 +340,6 @@ int main(int argc,char** argv) {
 #endif
 #endif
 
-  //fltk::visual(fltk::RGB);
   win.show(argc,argv);
 
   fltk::run();
