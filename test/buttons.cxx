@@ -85,13 +85,19 @@ int main(int argc, char ** argv) {
   (void) new LightButton(X0, Y, W, H, "LightButton");
   (void) new RadioButton(X1, Y, W, H, "RadioButton");
   Y += H+B;
-  (void) new HighlightButton(X0, Y, W, H, "HighlightButton");
-  (void) new CheckButton(X1, Y, W, H, "CheckButton");
+  // The box of the higlight button will appear when belowmouse
+  // when combined with image() as below, you get the border + the image appearing when belowmouse()
+
+  (new HighlightButton(X0, Y, W, H, "HighlightButton"))->image(new xpmImage(folder_small),fltk::BELOWMOUSE);
+
+  new CheckButton(X1, Y, W, H, "CheckButton");
+
   Y += H+B;
   Button * b = new Button(X0, Y, W, H, "Everything !");
   b->image(new xpmImage(folder_small2), fltk::NO_FLAGS);
+  // to remove the  belowmouse changing image comment this line:
+  b->image(new xpmImage(folder_small3), fltk::BELOWMOUSE);
   b->image(new xpmImage(folder_small), fltk::PUSHED);
-  b->image(new xpmImage(folder_small3), fltk::FOCUSED);
   b->callback(cb_active_butt);
 
   abutton = b = new Button(X1, Y, W, H, "Inactive");
@@ -101,6 +107,7 @@ int main(int argc, char ** argv) {
   window.resizable(window);
   window.end();
   window.show(argc,argv);
+  // Default Style handling for changing the scheme of all widget at once
   Button::default_style->box_ = fltk::PLASTIC_UP_BOX;
   Button::default_style->color_ = 256-36;
   Widget::default_style->highlight_color(3);
