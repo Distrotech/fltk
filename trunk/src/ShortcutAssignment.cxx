@@ -406,7 +406,11 @@ unsigned Widget::label_shortcut() const {
 bool Widget::test_label_shortcut() const {
   if (flags() & RAW_LABEL) return false;
   char c = tolower(event_text()[0]);
-  printf("ok shortcut %c\n",c);
+  // test ctrl key if accel is ctrl
+  if (ACCELERATOR==CTRL && c <= 0x1A) {
+    c+=0x60; // get corresponding lower alpha
+  }
+  // printf("label shortcut %c\n",c);
   const char* label = this->label();
   if (!c || !label) return false;
   for (;*label;) {
