@@ -410,7 +410,7 @@ bool Widget::test_label_shortcut() const {
   if (ACCELERATOR==CTRL && c <= 0x1A) {
     c+=0x60; // get corresponding lower alpha
   }
-  // printf("label shortcut %c\n",c);
+  // printf("ok shortcut %c\n",c);
   const char* label = this->label();
   if (!c || !label) return false;
   for (;*label;) {
