@@ -57,35 +57,60 @@ void window_callback(Fl_Widget*, void*) {
 
 #if 1
 #include <fltk/Widget.h>
+#include <fltk/run.h>
 #include <fltk/ask.h>
 #include <fltk/lut.h>
 #include <Windows.h>
 using namespace fltk;
+
+class TestClass { // class that keeps an ID and have same size as Widget for ptr hash test
+public:
+    unsigned long id ;
+    unsigned long fill[sizeof(Widget)/sizeof(unsigned long)-sizeof(unsigned long)]; // simulate Widget Size
+};
+
+void test_perf(int nbItems) {
+  int i;
+  TestClass *o = new TestClass[nbItems];
+  double t = fltk::get_time_secs();
+  for (i=0; i<nbItems; i++) LookupTable::add((void*) &o[i],(o[i].id=LookupTable::get_uid ()));
+  double u = fltk::get_time_secs();
+  
+  for (i=0; i<nbItems; i++)  
+      LookupTable::find((void*)&o[i]);
+  double v1 = fltk::get_time_secs();
+
+  for (i=0; i<nbItems; i++)  
+      LookupTable::is_valid((void*)&o[i],o[i].id);
+  double v2 = fltk::get_time_secs();
+  
+  //for (i=0; i<10; i++) printf(" w= %08lx, data= %08lx\n",(void*)&o[i],*LookupTable::find((void*)&o[i]));
+
+  size_t nb = LookupTable::count();
+
+  for (i=0; i<nbItems; i++) delete LookupTable::remove((void*)&o[i]);
+  double z = fltk::get_time_secs();
+
+  printf("\nNumber of Widgets =  %ld\n", nb);
+  printf("Allocation time %3.6g seconds\n", u-t);
+  printf("Find time %3.6g secs, %3.6g microsec per object\n", v1-u, (v1-u)/nbItems*1000000);
+  printf("is_valid time %3.6g secs, %3.6g microsec per object\n", v2-v1, (v2-v1)/nbItems*1000000);
+  printf("DeAllocation time %3.6g secs\n", z-v2);
+
+  delete [] o;
+}
+
 int main(int argc, char **argv) {
-  const size_t NBWID = 250000;
 
   LookupTable::init();
-  
-  int i;
-  DWORD t = GetTickCount();
-  for (i=0; i<NBWID; i++) LookupTable::add((void*)(long)i,LookupTable::get_uid ());
-  size_t nb = LookupTable::count();
-  DWORD u = GetTickCount();
-  
-  for (i=0; i<NBWID; i++) LookupTable::find((void*)(long)i);
-  DWORD v = GetTickCount();
-  
-  for (i=0; i<10; i++) printf(" w= %08lx, data= %08lx\n",(void*)(long)i,*LookupTable::find((void*)(long)i));
-
-  for (i=0; i<NBWID; i++) delete LookupTable::remove((void*)(long)i);
-  DWORD z = GetTickCount();
-
-  message("Number of Widgets =  %ld\n", nb);
-  message("Allocation time %ld millisecs\n", u-t);
-  message("Find time %ld millisecs\n", v-u);
-  message("DeAllocation time %ld millisecs\n", z-v);
+  test_perf(25000);  
+  test_perf(100000);  
+  test_perf(250000);  
+  test_perf(500000);  
   
   LookupTable::done();
+  puts("press <enter> to exit\n");
+  getchar();
   return 0;
 }
 #else

@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////////	
 #include "FL_API.h"
 #include <fltk/types.h>
+#include <stddef.h>
 
 namespace fltk {
 
@@ -59,7 +60,7 @@ namespace fltk {
 	    //! initialize the class internals
 	    static void init();
 	    //! free resources
-	    static void done() {for (size_t i=0; i<hashTableLen; i++) Node::clear(slot[i]);}
+	    static void done() {for (int i=0; i<hashTableLen; i++) Node::clear(slot[i]);}
 	    
 	    //! for statistics purpose count the nuumber of stored nodes in the hashTable
 	    static size_t count();

@@ -37,20 +37,10 @@ namespace fltk {
   typedef unsigned __int32  Unsigned32;
   typedef unsigned __int64  Unsigned64;
 #elif defined(__MINGW32__)
-#include <sys/types.h>
 typedef unsigned Unsigned32;
 
 #else // unixes or unix-like os
-#include <sys/types.h>
-typedef int8_t	    Integer8;
-typedef int16_t	    Integer16;
-typedef int32_t	    Integer32;
-typedef int64_t	    Integer64;
-
-typedef unsigned Integer8   Unsigned8;
-typedef unsigned Integer16  Unsigned16;
-typedef unsigned Integer32  Unsigned32;
-typedef unsigned Integer64  Unsigned64;
+typedef unsigned Unsigned32;
 
 #endif
 

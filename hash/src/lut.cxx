@@ -1,4 +1,5 @@
-#include <iostream>
+#include <stdio.h>
+#include <string.h>
 #include <fltk/lut.h>
 
 /////////////////////////////////////////////////////
@@ -30,7 +31,7 @@ LookupTable::Node* LookupTable::Node::remove(Node* &first, const Key& p) {
 void LookupTable::dump () { 
     for (size_t i=0; i< (hashTableLen>1024 ? 1024: hashTableLen); i++) {
 	size_t c = Node::count(slot[i]);
-	std::cerr << "slot " << i << " : " << c << std::endl;
+	fprintf(stderr, "slot %04ld : %ld elements\n",i , c);
     }
 }
 

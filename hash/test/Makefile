@@ -112,6 +112,7 @@ CFILES	=
 # only some of the demos have been changed to use namespaces:
 TARGETS = \
 	arc$(EXEEXT) \
+	ask$(EXEEXT) \
 	bitmap$(EXEEXT) \
 	boxtype$(EXEEXT) \
 	browser$(EXEEXT) \
