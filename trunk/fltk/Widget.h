@@ -1,4 +1,3 @@
-//
 // "$Id$"
 //
 // The base class of all widgets.
@@ -21,14 +20,12 @@
 // USA.
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
-//
 
 #ifndef fltk_Widget_h
 #define fltk_Widget_h
 
 #include "Style.h"
 #include "Rectangle.h"
-
 namespace fltk {
 
 class FL_API Widget;

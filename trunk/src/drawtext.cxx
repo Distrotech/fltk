@@ -613,7 +613,7 @@ static float split(
 void fltk::drawtext(const char* str, const Rectangle& r1, Flags flags)
 {
   if (!str || !*str) return; // speeds up very common widgets
-  Rectangle r(r1); transform(r);
+  Rectangle r; transform(r1,r);
   push_matrix();
   load_identity();
   drawtext(drawtext_transformed, getwidth, str, r, flags);
@@ -664,7 +664,7 @@ void fltk::drawtext(void (*textfunction)(const char*,int,float,float),
     } else if (!(flags & ALIGN_LEFT)) {
       dx = (r.w()-w)>>1;
     }
-    fillrect(Rectangle(r.x()+dx, int(dy), w, h));
+    fillrect(r.x()+dx, int(dy), w, h);
     setcolor(normal_color);
   }
   if (column_widths_) {
@@ -678,9 +678,9 @@ void fltk::drawtext(void (*textfunction)(const char*,int,float,float),
 	for (i=0; i<current_column; i++) xx += column_widths_[i];
 	pop_clip();
 	if (segment_count > 1)
-	  push_clip(Rectangle(xx, r.y(), column_widths_[current_column], r.h()));
+	  push_clip(xx, r.y(), column_widths_[current_column], r.h());
 	else
-	  push_clip(Rectangle(xx, r.y(), r.w(), r.h()));
+	  push_clip(xx, r.y(), r.w(), r.h());
       }
       if (s.symbol) {
 	Symbol::text(s.start);

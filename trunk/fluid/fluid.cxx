@@ -44,14 +44,17 @@ const char *copyright =
 "\n"
 "Please report bugs to fltk-bugs@fltk.org.";
 
+#include <config.h>
 #include <fltk/run.h>
 #include <fltk/visual.h>
 #include <fltk/events.h>
+#include <fltk/damage.h>
 #include <fltk/Window.h>
 #include <fltk/Box.h>
 #include <fltk/Button.h>
 #include <fltk/Browser.h>
 #include <fltk/MenuBar.h>
+#include <fltk/StatusBarGroup.h>
 #include <fltk/Input.h>
 #include <fltk/Tooltip.h>
 #include <fltk/ask.h>
@@ -63,7 +66,8 @@ const char *copyright =
 #include <fltk/Preferences.h>
 #include <fltk/MenuBuild.h>
 #include <fltk/string.h>
-
+#include <fltk/HelpDialog.h>
+#include <fltk/PackedGroup.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -86,6 +90,7 @@ const char *copyright =
 #include "template_panel.h"
 #include "widget_panel.h"
 
+#include "PrefsData.h"
 #include "Fluid_Plugins.h"
 #include "FluidType.h"
 #include "coding_style.h"
@@ -95,21 +100,17 @@ const char *copyright =
 
 using namespace fltk;
 
-DECL_MENUCB2(toggle_sourceview_cb,DoubleBufferWindow);
+DECL_MENUCBV2(toggle_sourceview_cb,DoubleBufferWindow);
+
 
 /////////////////////////////////////////
 // Read preferences file 
-Preferences fluid_prefs(Preferences::USER, "fltk.org", "fluid");
-
-int gridx, gridy, snap, show_tooltip;
+PrefsData prefs(Preferences::USER, "fltk.org", "fluid2");
+int modflag=0;
 
 int  read_alignment_prefs() {
-    fluid_prefs.get("snap", snap, 3);
-    fluid_prefs.get("gridx", gridx, 5);
-    fluid_prefs.get("gridy", gridy, 5);
-    fluid_prefs.get("show_tooltips", show_tooltip, 1);
-    fluid_prefs.get("widget_size", WidgetType::default_size, 14.0f);
-    Tooltip::enable(show_tooltip ? true : false);
+    prefs.get("widget_size", WidgetType::default_size, 14.0f);
+    Tooltip::enable(prefs.show_tooltip()? true : false);
     
     return 0;
 }
@@ -117,9 +118,10 @@ int  read_alignment_prefs() {
 /////////////////////////////////////////
 
 // File history info...
-char	absolute_history[10][1024];
-char	relative_history[10][1024];
+char	absolute_history[MAX_HISTORY][1024];
+char	relative_history[MAX_HISTORY][1024];
 
+void    check_history (const char * fname);
 void	load_history();
 void	update_history(const char *);
 void	set_preferences_window();
@@ -131,8 +133,9 @@ void nyi(Widget *,void *) {
 }
 
 static const char *filename;
+static HelpDialog *help_dialog = 0;
+
 void set_filename(const char *c);
-int modflag;
 
 #if 0
 static char* pwd;
@@ -213,7 +216,7 @@ void leave_source_dir() {
 Window *main_window;
 
 char position_window(Window *w, const char *prefsName, int Visible, int X, int Y, int W=0, int H=0 ) {
-    Preferences pos(fluid_prefs, prefsName);
+    Preferences pos(prefs, prefsName);
     if (prevpos_button && prevpos_button->value() ) {
 	pos.get("x", X, X);
 	pos.get("y", Y, Y);
@@ -229,7 +232,7 @@ char position_window(Window *w, const char *prefsName, int Visible, int X, int Y
     return Visible;
 }
 void save_position(Window *w, const char *prefsName) {
-    Preferences pos(fluid_prefs, prefsName);
+    Preferences pos(prefs, prefsName);
     pos.set("x", w->x());
     pos.set("y", w->y());
     pos.set("w", w->w());
@@ -292,7 +295,7 @@ void save_template_cb(Widget *, void *) {
 
   // Find the templates directory...
   char filename[1024];
-  fluid_prefs.getUserdataPath(filename, sizeof(filename));
+  prefs.getUserdataPath(filename, sizeof(filename));
 
   strlcat(filename, "templates", sizeof(filename));
 #if defined(WIN32) && !defined(__CYGWIN__)
@@ -324,19 +327,18 @@ void save_template_cb(Widget *, void *) {
     return;
   }
 
-#if defined(HAVE_LIBPNG) && defined(HAVE_LIBZ)
+// FIXME : need offscreen capabilities
+#if 0
+//#if defined(HAVE_LIBPNG) && defined(HAVE_LIBZ)
   // Get the screenshot, if any...
   FluidType *t;
 
-  for (t = FluidType::first; t; t = t->next) {
-    // Find the first window...
-    if (t->is_window()) break;
-  }
-
+  for (t = FluidType::first; t; t = t->walk(0)) 
+      if (t->is_window()) break;  // Find the first window...
   if (!t) return;
 
   // Grab a screenshot...
-  Fl_Window_Type *wt = (Fl_Window_Type *)t;
+  WindowType *wt = (WindowType *)t;
   uchar *pixels;
   int w, h;
 
@@ -411,10 +413,20 @@ void exit_cb(Widget *,void *) {
 	  if (modflag) return;	// Didn't save!
     }
     
-    if (widgetbin_panel) {
-	save_position(widgetbin_panel,"widgetbin_pos");
-	delete widgetbin_panel;
-    }
+  save_position(main_window,"main_window_pos");
+
+  if (widgetbin_panel) {
+    save_position(widgetbin_panel,"widgetbin_pos");
+    delete widgetbin_panel;
+  }
+
+  if (sourceview_panel) {
+    prefs.sv_autorefresh(sv_autorefresh->value());
+    prefs.sv_autoposition(sv_autoposition->value());
+    prefs.sv_tab(sv_tab->value());
+    save_position(sourceview_panel,"sourceview_pos");
+    delete sourceview_panel;
+  }
     exit(0);
 }
 
@@ -422,6 +434,10 @@ void open_cb(Widget *, void *v) {
     if (!v && modflag && !ask("Discard changes?")) return;
     const char *c;
     if (!(c = file_chooser("Open:", "*.f[ld]", filename))) return;
+    if (!fltk::filename_exist(c)) {
+	message("%s not found", c);
+	return;
+    }
     Undo::suspend();
 
     if (!v) set_filename(c);
@@ -448,7 +464,13 @@ void open_history_cb(Widget *, void *v) {
 	    if (modflag) return;	// Didn't save!
 	}
     }
-    const char *oldfilename = filename;
+    const char *oldfilename = (char *)v;
+    if (!fltk::filename_exist(oldfilename )) {
+	message("%s not found", oldfilename );
+	check_history(oldfilename);
+	return;
+    }
+    oldfilename=filename;
     filename = NULL;
     set_filename((char *)v);
     Undo::suspend(); 
@@ -473,9 +495,9 @@ static char* cutfname(int which = 0) {
 
   if (!beenhere) {
     beenhere = 1;
-    fluid_prefs.getUserdataPath(name[0], sizeof(name[0]));
+    prefs.getUserdataPath(name[0], sizeof(name[0]));
     strlcat(name[0], "cut_buffer", sizeof(name[0]));
-    fluid_prefs.getUserdataPath(name[1], sizeof(name[1]));
+    prefs.getUserdataPath(name[1], sizeof(name[1]));
     strlcat(name[1], "dup_buffer", sizeof(name[1]));
   }
 
@@ -487,7 +509,7 @@ void default_widget_size_cb(RadioButton *b, long size) {
   // Update the "normal" text size of new widgets...
   b->setonly();
   WidgetType::default_size = (float) size;
-  fluid_prefs.set("widget_size", WidgetType::default_size);
+  prefs.set("widget_size", WidgetType::default_size);
 }
 
 // new_cb() : new (possibly template) fulid file creation from File/New menu
@@ -682,7 +704,7 @@ void cut_cb(Widget *, void *) {
     Undo::checkpoint();
     ipasteoffset = 0;
     FluidType *p = FluidType::current->parent;
-    while (p && p->selected) p = p->parent;
+    while (p && p->selected()) p = p->parent;
     if (!write_file(cutfname(),1)) {
 	message("Can't write %s: %s", cutfname(), strerror(errno));
 	return;
@@ -691,14 +713,14 @@ void cut_cb(Widget *, void *) {
     if (p) select_only(p);
 }
 
-extern int force_parent, gridx, gridy;
+extern int force_parent;
 
 void paste_cb(Widget*, void*) {
     Undo::checkpoint();
     if (ipasteoffset) force_parent = 1;
     pasteoffset = ipasteoffset;
-    if (gridx>1) pasteoffset = ((pasteoffset-1)/gridx+1)*gridx;
-    if (gridy>1) pasteoffset = ((pasteoffset-1)/gridy+1)*gridy;
+    if (prefs.gridx()>1) pasteoffset = ((pasteoffset-1)/prefs.gridx()+1)*prefs.gridx();
+    if (prefs.gridy()>1) pasteoffset = ((pasteoffset-1)/prefs.gridy()+1)*prefs.gridy();
     if (!read_file(cutfname(), 1)) {
 	message("Can't read %s: %s", cutfname(), strerror(errno));
     }
@@ -729,10 +751,42 @@ void about_cb(Widget *, void *) {
     about_panel->show();
 }
 
+void show_help(const char *name) {
+  const char	*docdir;
+  char		helpname[1024];
+  
+  if (!help_dialog) help_dialog = new HelpDialog();
+
+  if ((docdir = getenv("FLTK_DOCDIR")) == NULL) {
+#ifdef __EMX__
+    // Doesn't make sense to have a hardcoded fallback
+    static char fltk_docdir[1024];
+
+    strlcpy(fltk_docdir, __XOS2RedirRoot("/XFree86/lib/X11/fltk/doc"),
+            sizeof(fltk_docdir));
+
+    docdir = fltk_docdir;
+#else
+    docdir = FLTK_DOCDIR;
+#endif // __EMX__
+  }
+  snprintf(helpname, sizeof(helpname), "%s/%s", docdir, name);  
+
+  help_dialog->load(helpname);
+  help_dialog->show();
+}
+
+void help_cb(Widget *, void *) {
+  show_help("fluid.html");
+}
+
+void manual_cb(Widget *, void *) {
+  show_help("index.html");
+}
+
 void tt_cb(Widget *w, void *) {
-    show_tooltip = ((Button*)w)->value(); 
-    Tooltip::enable(show_tooltip ? true : false);
-    fluid_prefs.set("show_tooltips", show_tooltip );
+    prefs.show_tooltip(((Button*)w)->value()); 
+    Tooltip::enable(prefs.show_tooltip() ? true : false);
 }
 
 #include <string.h>
@@ -775,6 +829,20 @@ void theme_cb(Widget *, void *) {
 }
 
 
+void initialize_tab_colors() {
+    int c = prefs.tabcolor();
+    if (panel_tabs) {
+	panel_tabs->child(0)->color((unsigned) c ? prefs.tabcolor1() : fltk::GRAY75);
+	panel_tabs->child(1)->color((unsigned) c ? prefs.tabcolor2() : fltk::GRAY75);
+	panel_tabs->child(2)->color((unsigned) c ? prefs.tabcolor3() : fltk::GRAY75);
+    }
+    if (pref_tabs) {
+	pref_tabs->child(0)->color((unsigned) c ? prefs.tabcolor1() : fltk::GRAY75);
+	pref_tabs->child(1)->color((unsigned) c ? prefs.tabcolor3() : fltk::GRAY75);
+	pref_tabs->child(2)->color((unsigned) c ? prefs.tabcolor2() : fltk::GRAY75);
+    }
+}
+
 void toggle_widgetbin_cb(Widget *o, void * v) {
     if (!widgetbin_panel) {
 	make_widgetbin();
@@ -797,31 +865,39 @@ void toggle_widgetbin_cb(Widget *o, void * v) {
 ////////////////////////////////////////////////////////////////
 
 
-#define BROWSERWIDTH 300
+#define BROWSERWIDTH 350
 #define BROWSERHEIGHT 500
-#define WINWIDTH 300
+#define WINWIDTH 350
 #define MENUHEIGHT 23
 #define WINHEIGHT (BROWSERHEIGHT+MENUHEIGHT)
 
 
 MenuBar* menubar;
-Browser *widget_browser;
+Browser* widget_browser;
+StatusBarGroup* status_bar;
+
+////////////////////////////////////////////////////////////////
+void toggle_statusbar_cb(Widget *,void *) {
+
+    if (status_bar->visible()) {
+    status_bar->hide();
+    istatusbar->label("Show Status Bar ...");
+    prefs.show_statusbar(0);
+  } else {
+    status_bar->show();
+    istatusbar->label("Hide Status Bar ...");
+    prefs.show_statusbar(1);
+  }
+}
 
 ////////////////////////////////////////////////////////////////
 void toggle_sourceview_cb(DoubleBufferWindow *, void *) {
   if (!sourceview_panel) {
     make_sourceview();
     sourceview_panel->callback((Callback*)toggle_sourceview_cb);
-    Preferences svp(fluid_prefs, "sourceview");
-    int autorefresh;
-    svp.get("autorefresh", autorefresh, 1);
-    sv_autorefresh->value(autorefresh ? true : false);
-    int autoposition;
-    svp.get("autoposition", autoposition, 1);
-    sv_autoposition->value(autoposition ? true : false);
-    int tab;
-    svp.get("tab", tab, 0);
-    if (tab>=0 && tab<sv_tab->children()) sv_tab->value(tab);
+    sv_autorefresh->value(prefs.sv_autorefresh() ? true : false);
+    sv_autoposition->value(prefs.sv_autoposition() ? true : false);
+    if (prefs.sv_tab()>=0 && prefs.sv_tab()<sv_tab->children()) sv_tab->value(prefs.sv_tab());
     if (!position_window(sourceview_panel,"sourceview_pos", 0, 320, 120, 550, 500)) return;
   }
 
@@ -842,19 +918,26 @@ void toggle_sourceview_b_cb(Button*, void *) {
 void make_main_window() {
     if (!main_window) {
 	Widget *o;
-	main_window = new Window(WINWIDTH,WINHEIGHT,"fluid");
+	main_window = new Window(WINWIDTH,WINHEIGHT,"fluid2");
+	//in_window->size_range(WINWIDTH,100);
 	main_window->box(NO_BOX);
 	main_window->begin();
+	menubar = new MenuBar(0,0,BROWSERWIDTH,MENUHEIGHT);
+	menubar->box(FLAT_BOX);
 	o = widget_browser = (Browser *) make_widget_browser(0,MENUHEIGHT,BROWSERWIDTH,BROWSERHEIGHT);
 	//  o->text_box(FLAT_BOX);
 	main_window->resizable(o);
-	menubar = new MenuBar(0,0,BROWSERWIDTH,MENUHEIGHT);
-	menubar->box(FLAT_BOX);
 	build_hierarchy(menubar);
-	if (show_tooltip) itooltip->set_flag(VALUE);
+	if (prefs.show_tooltip()) itooltip->set_flag(VALUE);
 	// this is removed because the new ctrl+bindings mess up emacs in
 	// the text fields:
 	//    menubar->global();
+	// create a status bar, only care for h(), other dims are automatically resized
+	status_bar = new StatusBarGroup();
+	status_bar->child_box(THIN_DOWN_BOX, StatusBarGroup::SBAR_RIGHT);
+	status_bar->child_box(FLAT_BOX, StatusBarGroup::SBAR_CENTER);
+	
+	if (!prefs.show_statusbar()) toggle_statusbar_cb(0, 0);
 	main_window->end();
 	load_history();
 	make_shell_window();
@@ -968,7 +1051,7 @@ void do_shell_command(fltk::ReturnButton*, void*) {
     compile_only = 0;
   }
 
-/* FIXME : write strings should it be implement in fluid 2 as in fltk1 ?
+/* FIXME : write strings : should it be implemented in fluid 2 as in fltk1 ?
   if (shell_writemsgs_button->value()) {
     compile_only = 1;
     write_strings_cb(0, 0);
@@ -1051,12 +1134,12 @@ void update_sourceview_cb(Button*, void*) {
   // generate space for the source and header file filenames
   if (!sv_source_filename) {
     sv_source_filename = (char*)malloc(PATH_MAX);
-    fluid_prefs.getUserdataPath(sv_source_filename, PATH_MAX);
+    prefs.getUserdataPath(sv_source_filename, PATH_MAX);
     strlcat(sv_source_filename, "source_view_tmp.cxx", PATH_MAX);
   }
   if (!sv_header_filename) {
     sv_header_filename = (char*)malloc(PATH_MAX);
-    fluid_prefs.getUserdataPath(sv_header_filename, PATH_MAX);
+    prefs.getUserdataPath(sv_header_filename, PATH_MAX);
     strlcat(sv_header_filename, "source_view_tmp.h", PATH_MAX);
   }
 
@@ -1114,16 +1197,36 @@ void set_filename(const char *c) {
 }
 
 ////////////////////////////////////////////////////////////////
+// Check that file is valid, remove from history if not
+void check_history (const char * fname) {
+    int i;
+    for (i=0;i<MAX_HISTORY;i++) {
+	if (!strcmp(fname,absolute_history[i]) && !fltk::filename_exist(absolute_history[i])) {
+	    if (i<MAX_HISTORY-1) {
+		for (int p=i;p<MAX_HISTORY-1;p++) {
+		    strcpy(absolute_history[p],absolute_history[p+1]);
+		    strcpy(relative_history[p],relative_history[p+1]);
+		}
+		*absolute_history[MAX_HISTORY-1]='\0';
+	    }
+	    else
+		*absolute_history[i]='\0';
+	}
+    }
+    for (i=0;i<MAX_HISTORY; i ++) 
+	prefs.set( Preferences::Name("file%d", i), absolute_history[i]);
+    for (i=0;i<MAX_HISTORY && *absolute_history[i]; i ++);
+    if (i<MAX_HISTORY ) history_item[i]->hide();
+}
 // Load file history from preferences...
 void load_history() {
     int	i;		// Looping var
-    int	max_files;
+    int	max_files = prefs.recent_files();
     
-    fluid_prefs.get("recent_files", max_files, 5);
-    if (max_files > 10) max_files = 10;
+    if (max_files > MAX_HISTORY) max_files = MAX_HISTORY;
     
     for (i = 0; i < max_files; i ++) {
-	fluid_prefs.get( Preferences::Name("file%d", i), absolute_history[i], "", sizeof(absolute_history[i]));
+	prefs.get( Preferences::Name("file%d", i), absolute_history[i], "", sizeof(absolute_history[i]));
 	if (absolute_history[i][0]) {
 	    // Make a relative version of the filename for the menu...
 	    filename_relative(relative_history[i], sizeof(relative_history[i]),
@@ -1132,7 +1235,7 @@ void load_history() {
 	} else break;
     }
     
-    for (; i < 10; i ++) {
+    for (; i < MAX_HISTORY; i ++) {
 	history_item[i]->hide();
     }
     menubar->redraw();
@@ -1142,11 +1245,10 @@ void load_history() {
 void update_history(const char *flname) {
     int	i;		// Looping var
     char	absolute[1024];
-    int	max_files;
+    int	max_files=prefs.recent_files();
     
     
-    fluid_prefs.get("recent_files", max_files, 5);
-    if (max_files > 10) max_files = 10;
+    if (max_files > MAX_HISTORY) max_files = MAX_HISTORY;
     
     filename_absolute(absolute, sizeof(absolute), flname);
     
@@ -1157,32 +1259,33 @@ void update_history(const char *flname) {
 	if (!strcmp(absolute, absolute_history[i])) break;
 #endif // WIN32 || __APPLE__
 	
-	if (i == 0) return;
-	
-	if (i >= max_files) i = max_files - 1;
-	
-	// Move the other flnames down in the list...
-	memmove(absolute_history + 1, absolute_history,
-	    i * sizeof(absolute_history[0]));
-	memmove(relative_history + 1, relative_history,
-	    i * sizeof(relative_history[0]));
-	
-	// Put the new file at the top...
-	strlcpy(absolute_history[0], absolute, sizeof(absolute_history[0]));
-	
-	filename_relative(relative_history[0], sizeof(relative_history[0]),
-	    absolute_history[0]);
-	
-	// Update the menu items as needed...
-	for (i = 0; i < max_files; i ++) {
-	    fluid_prefs.set( Preferences::Name("file%d", i), absolute_history[i]);
-	    if (!absolute_history[i][0]) break;
-	}
-	
-	for (; i < 10; i ++) {
-	    fluid_prefs.set( Preferences::Name("file%d", i), "");
-	    history_item[i]->hide();
-	}
+    if (i == 0) return;
+    
+    if (i >= max_files) i = max_files - 1;
+    
+    // Move the other flnames down in the list...
+    memmove(absolute_history + 1, absolute_history,
+	i * sizeof(absolute_history[0]));
+    memmove(relative_history + 1, relative_history,
+	i * sizeof(relative_history[0]));
+    
+    // Put the new file at the top...
+    strlcpy(absolute_history[0], absolute, sizeof(absolute_history[0]));
+    
+    filename_relative(relative_history[0], sizeof(relative_history[0]),
+	absolute_history[0]);
+    
+    // Update the menu items as needed...
+    for (i = 0; i < max_files; i ++) {
+	prefs.set( Preferences::Name("file%d", i), absolute_history[i]);
+	if (!absolute_history[i][0]) break;
+	history_item[i]->show();
+    }
+    
+    for (; i < MAX_HISTORY; i ++) {
+	prefs.set( Preferences::Name("file%d", i), "");
+	history_item[i]->hide();
+    }
 }
 ////////////////////////////////////////////////////////////////
 
@@ -1251,6 +1354,7 @@ int main(int argc,char **argv) {
 	main_window->callback(exit_cb);
 	main_window->show(argc,argv);
 	set_preferences_window();
+	position_window(main_window,"main_window_pos", 1, 10, 30, WINWIDTH, WINHEIGHT );
 	toggle_widgetbin_cb(0,0);
 	toggle_sourceview_cb(0,0);
 	if (!c && openlast_button->value() && absolute_history[0][0]) {

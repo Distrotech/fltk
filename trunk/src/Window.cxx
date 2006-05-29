@@ -292,7 +292,7 @@ void fl_do_deferred_calls() {
   // version of Windows for years and affects IE and other Microsoft
   // programs:
   if (keep_active && !grab()) {
-    //BringWindowToTop(keep_active);
+    BringWindowToTop(keep_active);
     SetActiveWindow(keep_active);
   }
   recurse = false;
@@ -772,7 +772,7 @@ void CreatedWindow::expose(const fltk::Rectangle& r) {
 */
 void Window::draw_overlay() {
   setcolor(RED);
-  fillrect(fltk::Rectangle(w(),h()));
+  fillrect(0,0,w(),h());
 }
 
 /** Indicate that the image made by draw_overlay() has changed and must

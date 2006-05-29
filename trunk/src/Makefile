@@ -99,6 +99,7 @@ CPPFILES = \
 	SharedImage.cxx \
 	ShortcutAssignment.cxx \
 	Slider.cxx \
+	StatusBarGroup.cxx \
 	StringList.cxx \
 	Style.cxx \
 	StyleSet.cxx \
@@ -122,6 +123,7 @@ CPPFILES = \
 	Window_fullscreen.cxx \
 	Window_hotspot.cxx \
 	Window_iconize.cxx \
+	WizardGroup.cxx \
 	add_idle.cxx \
 	addarc.cxx \
 	addcurve.cxx \

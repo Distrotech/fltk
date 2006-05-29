@@ -34,9 +34,11 @@
 #include <string.h>
 #include <stdarg.h>
 #include <fltk/FL_VERSION.h>
+
 #include "alignment_panel.h"
 #include "Fluid_Image.h"
 #include "FluidType.h"
+#include "PrefsData.h"
 #include "factory.h"
 
 ////////////////////////////////////////////////////////////////
@@ -306,13 +308,11 @@ const char *read_word(int wantbrace) {
 ////////////////////////////////////////////////////////////////
 
 // global int variables:
-extern int gridx, gridy, snap;
 static struct {const char* name; int* value;} inttable[] = {
-  {"gridx", &gridx},
-  {"gridy", &gridy},
-  {"snap", &snap}
+  {"gridx", prefs.gridxPtr()},
+  {"gridy", prefs.gridyPtr()},
+  {"snap", prefs.snapPtr()}
 };
-
 
 extern int header_file_set;
 extern int code_file_set;
@@ -330,12 +330,13 @@ int write_file(const char *filename, int selected_only) {
   if (!selected_only) {
     write_string("\nheader_name"); write_word(header_file_name);
     write_string("\ncode_name"); write_word(code_file_name);
-    for (unsigned int i=0; i<sizeof(inttable)/sizeof(*inttable); i++)
-      write_string("\n%s %d",inttable[i].name, *inttable[i].value);
+    write_string("\n%s %d","gridx", prefs.gridx());
+    write_string("\n%s %d","gridy", prefs.gridy());
+    write_string("\n%s %d","snap", prefs.snap());
   }
   if (theme && *theme) { write_string("\ntheme "); write_word(theme); }
   for (FluidType *p = FluidType::first; p;) {
-    if (!selected_only || p->selected) {
+    if (!selected_only || p->selected()) {
       p->write();
       write_string("\n");
       p = p->next_brother;
@@ -449,7 +450,7 @@ static void read_children(FluidType *p, int paste) {
       goto REUSE_C;
     }
 
-    t->open_ = 0;
+    t->open_ = false;
     for (;;) {
       const char *c = read_word();
       if (!c || !strcmp(c,"}")) break;
@@ -479,7 +480,7 @@ int read_file(const char *filename, int merge) {
   read_children(parent, merge);
   FluidType::current = parent;
   for (FluidType *o = FluidType::first; o; o = o->walk())
-    if (o->selected) {
+    if (o->selected()) {
       FluidType::current = o; break;
     }
   return close_read();

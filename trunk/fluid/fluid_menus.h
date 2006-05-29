@@ -1,11 +1,6 @@
+// "$Id:"
 //
-// "$Id"
-//
-// Fluid menus declaration for the Fast Light Tool Kit (FLTK).
-//
-// The widget describing an Fl_Window.  This is also all the code
-// for interacting with the overlay, which allows the user to
-// select, move, and resize the children widgets.
+// Stuff to build menus in the Fast Light toolkit Interface Designer (fluid)
 //
 // Copyright 1998-2005 by Bill Spitzak and others.
 //
@@ -27,12 +22,13 @@
 // Please report all bugs and problems on the following page:
 //
 //     http://www.fltk.org/str.php
-//
+
 #ifndef fltk_fluid_menus_h
 #define fltk_fluid_menus_h
 #include "FluidType.h"
 
 namespace fltk {
+
     class MenuBar;
     class ItemGroup;
     class Item;
@@ -41,17 +37,22 @@ namespace fltk {
     MenuBar* build_hierarchy(MenuBar* menubar);
     void fill_in_New_Menu(ItemGroup* menu);
     Item * fluidMenuItem(FluidType& wt,int n=-1);
-    Item * fluidMenuItem(FluidType& wt, xpmImage *i);
-    ItemGroup * fluidMenuGroup(const char * menu_name,int n=-1);
-    ItemGroup * fluidMenuGroup(const char * menu_name,xpmImage *i);
+
 }
 
-extern fltk::Item *history_item[10],*undo_item[2],*iwidget_bin,*itooltip,*isource_view;
-extern fltk::ItemGroup* newMenu;
+const int MAX_HISTORY = 10; //!< maximum number of items in menu File
+extern char absolute_history[MAX_HISTORY][1024];
+extern char relative_history[MAX_HISTORY][1024];
+
+extern fltk::Item *history_item[10],*undo_item[2],
+    *iwidget_bin,*itooltip,*isource_view,*istatusbar, *ishow_overlay;
+extern fltk::ItemGroup *newMenu;
 extern fltk::MenuBar* Main_Menu;
 
-#define DECL_MENUCB(n) void n(Widget *, void *)
-#define DECL_MENUCB2(n,type) void n(type *, void *)
+#define DECL_MENUCBV(n) void n(Widget *, void *)
+#define DECL_MENUCBL(n) void n(Widget *, long)
+#define DECL_MENUCBV2(n,type) void n(type *, void *)
+#define DECL_MENUCBL2(n,type) void n(type *, long)
 #define IMPL_MENUCB(n) void n(Widget *, void *) {}
 
 #endif

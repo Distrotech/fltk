@@ -37,7 +37,7 @@
   whatsoever (such as, I hope, putting them in your system's libraries!)
 
 */
-
+#include <config.h>
 #include <fltk/filename.h>
 #include <fltk/string.h>
 #include <stdlib.h>
@@ -46,7 +46,9 @@
 # include <direct.h>
 // Visual C++ 2005 incorrectly displays a warning about the use of POSIX APIs
 // on Windows, which is supposed to be POSIX compliant...
-#  define getcwd _getcwd
+#  if !defined(__DMC__)
+#    define getcwd _getcwd
+#  endif
 #else
 #  include <unistd.h>
 #  ifdef __EMX__
@@ -60,9 +62,7 @@ static inline bool isdirsep(char c) {return c=='/' || c=='\\';}
 #else
 #define isdirsep(c) ((c)=='/')
 #endif
-#if defined(__APPLE__) || defined(__MINGW32__)
-#  include <ctype.h>
-#endif
+#include <ctype.h>
 
 /**
   Return the filename \a from expanded to a full "absolute" path name

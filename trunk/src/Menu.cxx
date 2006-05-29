@@ -97,7 +97,8 @@ int List::children(const Menu* menu, const int* indexes, int level) {
   Group* group = (Group*)menu;
   while (level--) {
     int i = *indexes++;
-    //if (i < 0 || i >= group->children()) return -1;
+    // browser can return indexes pointing on -1 values so we must check this :
+    if (i < 0) return -1;    //if (i >= group->children()) return -1;
     Widget* widget = group->child(i);
     if (!widget->is_group()) return -1;
     group = (Group*)widget;
@@ -227,8 +228,8 @@ static NamedStyle style("Menu", revert, &Menu::default_style);
 */
 NamedStyle* Menu::default_style = &::style;
 
-Menu::Menu(int x,int y,int w, int h,const char* l)
-  : Group(x,y,w,h,l), list_(&default_list), item_(0) {
+Menu::Menu(int x,int y,int w, int h,const char* l, bool begin)
+  : Group(x,y,w,h,l,begin), list_(&default_list), item_(0) {
   resizable(0);
   callback(default_callback);
   style(default_style);

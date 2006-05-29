@@ -127,8 +127,6 @@ public:
 
   // Common image methods
   virtual void update() = 0;
-  //! determine if image has vectorial (true) or raster (false) data
-  virtual bool is_raster() const {return true;} // common image derived class are raster
   void destroy();
   void setsize(int w, int h);
   void make_current();
@@ -136,6 +134,7 @@ public:
 
   // Common image algorithms
   virtual void color_average(Color c, float i);
+  //! this will desaturate to 33% an image to make it look inactivate \see color_average()
   void inactive() { color_average(fltk::GRAY75, .33f); }
 
   // Drawing 

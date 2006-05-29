@@ -196,27 +196,25 @@ bool Widget::take_focus() {
 // to be checked to see if any should be called.
 
 struct Timeout {
-  float time;
+  double time;
   void (*cb)(void*);
   void* arg;
   Timeout* next;
 };
 static Timeout* first_timeout, *free_timeout;
 
-#ifndef _WIN32
-#include <sys/time.h>
-#endif
+/** Return portable time that increases by 1.0 each second.
 
-// I avoid the overhead of getting the current time when we have no
-// timeouts by setting this flag instead of getting the time.
-// In this case calling elapse_timeouts() does nothing, but records
-// the current time, and the next call will actualy elapse time.
-static char reset_clock = 1;
+    On Windows it represents the time since system start,
+    on Unixes, it's the gettimeofday().
 
-/** return portable elapsed time from system in seconds. 
-    on Windows it represents the time since system start,
-    on Unixes, it's the time of the day. Precision may vary with OSes, 
-    only uses it for measuring small time deltas with a minimum precision of 20 ms
+    Using a double, the numerical precision exceeds 1/1040000 even
+    for the Unix gettimeofday value (which is seconds since 1970).
+    However you should only store the \e difference between these
+    values in a float.
+
+    The precision of the returned value depends on the OS, but
+    the minimum precision is 20ms.
 */ 
 double fltk::get_time_secs() {
 #ifdef _WIN32
@@ -224,28 +222,26 @@ double fltk::get_time_secs() {
 #else
   struct timeval newclock;
   gettimeofday(&newclock, NULL);
-  return newclock.tv_sec + double(newclock.tv_usec)/1000000.0;
+  return (unsigned)newclock.tv_sec + double(newclock.tv_usec)/1000000.0;
 #endif
 }
 
 static void elapse_timeouts() {
-  static float prev = 0.0f;
-  float elapsed = float(get_time_secs()) -prev;
-  if (reset_clock) {
-    reset_clock = 0;
-  } else if (elapsed > 0) {
-    for (Timeout* t = first_timeout; t; t = t->next) t->time -= elapsed;
-  }
+  static double prev = 0;
+  double now = get_time_secs();
+  double elapsed = now-prev;
+  prev = now;
+  for (Timeout* t = first_timeout; t; t = t->next) t->time -= elapsed;
 }
 
 // Continuously-adjusted error value, this is a number <= 0 for how late
 // we were at calling the last timeout. This appears to make repeat_timeout
 // very accurate even when processing takes a significant portion of the
 // time interval:
-static float missed_timeout_by;
+static double missed_timeout_by;
 
-static void _add_timeout(float time, TimeoutHandler cb, void *arg) {
-  if (time < -.05f) time = 0; // prevent missed_timeout_by from accumulating
+static void _add_timeout(double time, TimeoutHandler cb, void *arg) {
+  if (time < -.05) time = 0; // prevent missed_timeout_by from accumulating
   Timeout* t = free_timeout;
   if (t) free_timeout = t->next;
   else t = new Timeout;
@@ -485,8 +481,8 @@ int fltk::wait(float time_to_wait) {
 
   if (first_timeout) {
     elapse_timeouts();
-    Timeout* t = first_timeout;
-    if (t->time < time_to_wait) time_to_wait = t->time;
+    float t = float(first_timeout->time);
+    if (t < time_to_wait) time_to_wait = t;
   }
 
   // run the system-specific part that waits for sockets & events:
@@ -498,7 +494,7 @@ int fltk::wait(float time_to_wait) {
     Timeout *t;
     while ((t = first_timeout)) {
       if (t->time > 0) break;
-      // We must remove timeout from array before doing the callback:
+      // We must remove timeout from array before doing the callback
       void (*cb)(void*) = t->cb;
       void *arg = t->arg;
       first_timeout = t->next;
@@ -510,8 +506,6 @@ int fltk::wait(float time_to_wait) {
       // return true because something was done:
       ret = 1;
     }
-  } else {
-    reset_clock = 1; // remember that elapse_timeouts was not called
   }
 
   if (idle && !in_idle) {in_idle = true; idle(); in_idle = false;}
@@ -559,8 +553,6 @@ int fltk::ready() {
   if (first_timeout) {
     elapse_timeouts();
     if (first_timeout->time <= 0) return 1;
-  } else {
-    reset_clock = 1;
   }
   // run the system-specific part:
   return fl_ready();
@@ -790,15 +782,7 @@ void fltk::Rectangle::set(const fltk::Rectangle& r, int w, int h, int flags) {
   h_ = h;
 }
 
-#if 0 // I commented these out because nothing seems to be calling them
-void Rectangle::intersect(const fltk::Rectangle& R) {
-  if (R.x() > x()) set_x(R.x());
-  if (R.r() < r()) set_r(R.r());
-  if (R.y() > y()) set_y(R.y());
-  if (R.b() < b()) set_b(R.b());
-}
-
-void Rectangle::merge(const fltk::Rectangle& R) {
+void fltk::Rectangle::merge(const fltk::Rectangle& R) {
   if (R.empty()) return;
   if (empty()) {*this = R; return;}
   if (R.x() < x()) set_x(R.x());
@@ -806,6 +790,15 @@ void Rectangle::merge(const fltk::Rectangle& R) {
   if (R.y() < y()) set_y(R.y());
   if (R.b() > b()) set_b(R.b());
 }
+
+#if 0 // I commented these out because nothing seems to be calling them
+void fltk::Rectangle::intersect(const fltk::Rectangle& R) {
+  if (R.x() > x()) set_x(R.x());
+  if (R.r() < r()) set_r(R.r());
+  if (R.y() > y()) set_y(R.y());
+  if (R.b() < b()) set_b(R.b());
+}
+
 #endif
 
 ////////////////////////////////////////////////////////////////
@@ -828,6 +821,40 @@ static void call_pending_if_not(Widget* i) {
 */
 bool fltk::event_inside(const fltk::Rectangle& r) {
   return r.contains(e_x, e_y);
+}
+
+//! return the corresponding str of an event, should not consume memory if api is not used
+const char * fltk::event_name(int event) {
+    const char * const event_n[]= {
+	"NO_EVENT",
+	"PUSH",
+	"RELEASE",
+	"ENTER",
+	"LEAVE",
+	"DRAG",
+	"FOCUS",
+	"UNFOCUS",
+	"KEY",
+	"KEYUP",
+	"FOCUS_CHANGE",
+	"MOVE",
+	"SHORTCUT",
+	"DEACTIVATE",
+	"ACTIVATE",
+	"HIDE",
+	"SHOW",
+	"PASTE",
+	"TIMEOUT",
+	"MOUSEWHEEL",
+	"DND_ENTER",
+	"DND_DRAG",
+	"DND_LEAVE",
+	"DND_RELEASE",
+	"TOOLTIP"
+    };
+    // always return inbounds data:
+    return (event>=0 && event < (int) (sizeof(event_n)/ sizeof(const char *)) ) ? 
+	event_n[event] : "<Unknown Event>";
 }
 
 /*! \fn Widget* fltk::focus()
@@ -858,6 +885,11 @@ void fltk::focus(Widget *o) {
     if (o) {
       unsigned saved = e_keysym;
       e_keysym = 0; // make widgets not think a keystroke moved focus
+      // Make focused Window including o be the first window:
+      Window *w; 
+      if (o->is_window()) w = (Window*)o; else  w = o->window(); 
+      while(w && w->window()) w=w->window();
+      if (w && w!=Window::first()) Window::first(w);
       o->handle(FOCUS);
       o->set_flag(FOCUSED);
       for (; (o = o->parent()); ) {
@@ -1187,9 +1219,21 @@ bool fltk::try_shortcut() {
   widget returns 0 (or the window or widget is null) then the functions
   pointed to by add_event_handler() are called.
 */
+
+#if 0 // set to 1 to dump to console non 0 events from this function
+# define DUMP_EVENTS
+# include <stdio.h>
+#endif
+
 bool fltk::handle(int event, Window* window)
 {
   e_type = event;
+
+#ifdef DUMP_EVENTS
+  static unsigned long evtnum=0L;
+  if (event) printf("event name = %8lu %s\n", ++evtnum, fltk::event_name(event));
+#endif
+
   if (fl_local_grab) return fl_local_grab(event);
 
   Widget* to = fl_actual_window = window;

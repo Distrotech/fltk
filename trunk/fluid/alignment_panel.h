@@ -6,12 +6,11 @@
 #include <fltk/TextBuffer.h>
 #include <fltk/TextDisplay.h>
 extern void load_history();
-extern fltk::Preferences fluid_prefs;
 extern fltk::TextBuffer *shell_run_buffer;
 #include <fltk/Window.h>
 extern fltk::Window* preferences_window;
 #include <fltk/TabGroup.h>
-extern fltk::TabGroup* tabs;
+extern fltk::TabGroup* pref_tabs;
 #include <fltk/Group.h>
 #include <fltk/CheckButton.h>
 extern fltk::CheckButton* openlast_button;
@@ -19,6 +18,7 @@ extern fltk::CheckButton* prevpos_button;
 extern fltk::CheckButton* completion_button;
 #include <fltk/ValueInput.h>
 extern fltk::ValueInput* recent_spinner;
+extern fltk::CheckButton* tabcolor_button;
 #include <fltk/Widget.h>
 #include <fltk/Input.h>
 extern void header_input_cb(fltk::Input*, void*);

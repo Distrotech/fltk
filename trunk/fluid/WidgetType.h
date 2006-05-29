@@ -1,13 +1,6 @@
+// "$Id:"
 //
-// "$Id"
-//
-// WidgetType include file for the Fast Light Tool Kit (FLTK).
-//
-// This class stores the image labels for widgets in fluid.  This is
-// not a class in fltk itself, and this will produce different types of
-// code depending on what the image type is.  There are private subclasses
-// in Fluid_Image.C for each type of image format.  Right now only xpm
-// files are supported.
+// Subclasses of FluidType for each type of Widget in FLTK.
 //
 // Copyright 1998-2006 by Bill Spitzak and others.
 //
@@ -27,12 +20,13 @@
 // USA.
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
-//
+
 #ifndef fltk_widget_type_h
 #define fltk_widget_type_h
 
 #include <fltk/Box.h>
 #include <fltk/TabGroup.h>
+#include <fltk/WizardGroup.h>
 #include <fltk/PopupMenu.h>
 #include <fltk/Choice.h>
 #include <fltk/MenuBar.h>
@@ -60,6 +54,8 @@
 #include <fltk/ValueOutput.h>
 #include <fltk/ValueSlider.h>
 #include <fltk/BarGroup.h>
+#include <fltk/StatusBarGroup.h>
+#include <fltk/HelpView.h>
 #include "FluidType.h"
 
 namespace fltk {
@@ -187,6 +183,16 @@ namespace fltk {
 	// live mode functionalities
 	Widget *enter_live_mode(int top);
 	int pixmapID() { return 13; }
+    };
+
+    class WizardGroupType : public GroupType {
+    public:
+	virtual const char *type_name() const {return "fltk::WizardGroup";}
+	Widget *widget(int x,int y,int w,int h) {
+	  return new WizardGroup(x,y,w,h);}
+	WidgetType *_make() {return new WizardGroupType();}
+	// live mode functionalities
+	int pixmapID() { return 21; }
     };
     
     extern const Enumeration scroll_type_menu[];
@@ -436,6 +442,30 @@ namespace fltk {
 	int pixmapID() { return 30; }
     };
     
+    class HelpViewType : public WidgetType {
+    public:
+      void ideal_size(int &w, int &h) {
+	fltk::HelpView *myo = (fltk::HelpView *)o;
+	fltk::setfont(myo->textfont(), (float) myo->textsize());
+	h -= fltk::box_dh(o->box());
+	w -= fltk::box_dw(o->box());
+	int ww = (int) fltk::getwidth("m");
+	w = ((w + ww - 1) / ww) * ww + fltk::box_dw(o->box());
+	h = (int) (((h + fltk::getascent() - 1) / fltk::getascent() ) * fltk::getascent() +
+	    fltk::box_dh(o->box()));
+	if (h < 30) h = 30;
+	if (w < 50) w = 50;
+      }
+      const char *type_name() const {return "fltk::HelpView";}
+	Widget *widget(int x,int y,int w,int h) {
+	HelpView *myo = new HelpView(x,y,w,h);
+	myo->value("<HTML><BODY><H1>HelpView Widget</H1>"
+		   "<P>This is a HelpView widget.</P></BODY></HTML>");
+	return myo;}
+      WidgetType *_make() {return new HelpViewType();}
+      int pixmapID() { return 35; }
+    };
+
     class ProgressBarType : public WidgetType {
     public:
 	virtual const char *type_name() const { return "fltk::ProgressBar"; }
@@ -529,6 +559,15 @@ namespace fltk {
       }
       WidgetType *_make() { return new BarGroupType(); }
       int pixmapID() { return 17; }
+    };
+    class StatusBarGroupType : public WidgetType {
+    public:
+      virtual const char *type_name() const { return "fltk::StatusBarGroup"; }
+      Widget *widget(int x, int y, int w, int h) {
+	return new fltk::StatusBarGroup(x, y, w, h);
+      }
+      WidgetType *_make() { return new StatusBarGroupType(); }
+      int pixmapID() { return 5; } // no nice bitmap yet use the WidgetType one
     };
 }
 #endif

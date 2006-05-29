@@ -24,6 +24,15 @@
 
 #include "FL_API.h"
 
+// rectangle macros that help keeping rectangle predicates as strict as possible 
+// even when not using rectangles in some situations (as when only using w h scalars)  
+// so that there is only one strict defintion for common predicates, 
+// if one change the following, it will be repercuted in all the core lib
+#define FLTK_RECT_EMPTY(w,h)        (w <= 0 || h <= 0)
+// we should always use the same evaluation for center_x, center_y  in all corelib code:
+//#define FLTK_CENTER_X(coord, length)  (coord + (length>>1))
+//#define FLTK_CENTER_Y(coord, length)  (coord + (length>>1))
+
 namespace fltk {
 
 class FL_API Rectangle {
@@ -61,7 +70,7 @@ class FL_API Rectangle {
   void set_b(int v) {h_ = v-y_;}
   /*! Set x(), y(), w(), and h() all at once. */
   void set(int x, int y, int w, int h) {x_=x; y_=y; w_=w; h_=h;}
-  /*! Sets  x, y, w, h so that's it's centered or aligned if flags!=0 inside the source r */
+  /*! Sets  x, y, w, h so that's it's centered or aligned (if flags!=0) inside the source r */
   void set (const Rectangle& r, int w, int h, int flags = 0);
   /*! Add \a d to x() without changing r() (it reduces w() by \a d). */
   void move_x(int d) {x_ += d; w_ -= d;}
@@ -76,9 +85,9 @@ class FL_API Rectangle {
   /*! Move entire rectangle by given distance in x and y. */
   void move(int dx, int dy) {x_ += dx; y_ += dy;}
   /*! True if w() or h() are less or equal to zero. */
-  bool empty() const {return w_ <= 0 || h_ <= 0;}
+  bool empty() const {return FLTK_RECT_EMPTY(w_, h_);}
   /*! Same as !empty(), true if w() and h() are both greater than zero. */
-  bool not_empty() const {return w_ > 0 && h_ > 0;}
+  bool not_empty() const {return  !FLTK_RECT_EMPTY(w_, h_);}
   /*! Integer center position. Rounded to the left if w() is odd. */
   int center_x() const {return x_+(w_>>1);}
   /*! Integer center position. Rounded to lower y if h() is odd. */
@@ -96,16 +105,18 @@ class FL_API Rectangle {
 
   /*! Copy constructor. */
   Rectangle(const Rectangle& r) : x_(r.x_),y_(r.y_),w_(r.w_),h_(r.h_) {}
-  /* fabien : factorized this useful construction into a new set() method */
+
+  /*! Constructor that calls set(). */
   Rectangle(const Rectangle& r, int w, int h, int flags = 0) {set(r,w,h,flags);}
 
   /*! True if rectangle contains the pixel who's upper-left corner is at x,y */
   bool contains(int x, int y) const {return x>=x_ && y>=y_ && x<x_+w_ && y<y_+h_;}
-  
+
+  /*! calculate bounding box of this union r */
+  void merge(const Rectangle& r);
+
 };
 
 }
 
 #endif
-
-

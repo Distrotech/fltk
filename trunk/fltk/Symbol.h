@@ -1,7 +1,4 @@
-//
 // "$Id$"
-//
-// The fltk drawing library
 //
 // Copyright 1998-2006 by Bill Spitzak and others.
 //
@@ -21,11 +18,9 @@
 // USA.
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
-//
 
 #ifndef fltk_Symbol_h
 #define fltk_Symbol_h
-
 #include "FL_API.h"
 #include "Color.h"
 #include "Rectangle.h"
@@ -64,8 +59,6 @@ class FL_API Symbol {
   virtual void inset(Rectangle& r) const;
   virtual bool fills_rectangle() const;
   virtual bool is_frame() const;
-  //! determine if image has vectorial (true) or raster (false) data
-  virtual bool is_raster() const {return false;} // common Symbols has vectorial data
 
   int dx() const;
   int dy() const;

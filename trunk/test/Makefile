@@ -62,6 +62,7 @@ CPPFILES = \
 	demo.cxx \
 	doublebuffer.cxx \
 	drawing.cxx \
+	drawtiming.cxx \
 	editor.cxx \
 	file_chooser.cxx \
 	fonts.cxx \
@@ -93,6 +94,7 @@ CPPFILES = \
 	symbols.cxx \
 	tabs.cxx \
 	tile.cxx \
+	timer.cxx \
 	fast_slow.cxx \
 	resize.cxx \
 	pack.cxx \
@@ -105,7 +107,8 @@ CPPFILES = \
 	menubar.cxx \
 	line_style.cxx \
 	utf.cxx \
-	valuators.cxx
+	valuators.cxx \
+	wizard.cxx
 
 CFILES	=
 
@@ -127,6 +130,7 @@ TARGETS = \
 	demo$(EXEEXT) \
 	doublebuffer$(EXEEXT) \
 	drawing$(EXEEXT) \
+	drawtiming$(EXEEXT) \
 	editor$(EXEEXT) \
 	exception$(EXEEXT) \
 	file_chooser$(EXEEXT) \
@@ -162,10 +166,12 @@ TARGETS = \
 	threads$(EXEEXT) \
 	tabs$(EXEEXT) \
 	tile$(EXEEXT) \
+	timer$(EXEEXT) \
 	utf$(EXEEXT) \
 	fullscreen$(EXEEXT) \
 	valuators$(EXEEXT) \
-	list$(EXEEXT)
+	list$(EXEEXT) \
+	wizard$(EXEEXT)
 
 # other programs that are minimally changed from fltk1.1:
 TARGETS += \

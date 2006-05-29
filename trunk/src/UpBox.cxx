@@ -44,12 +44,25 @@
 using namespace fltk;
 
 ////////////////////////////////////////////////////////////////
+class FL_API FocusFrame : public Box {
+public:
+  FocusFrame(const char* name) : Box(name) {}
+  void _draw(const fltk::Rectangle& r1) const {
+    if (!drawflags(FOCUSED)) return;
+    pen_mode(PEN_OVERLAY);
+    line_style(DOT,1);
+    strokerect(r1);
+    line_style(SOLID,1);
+    pen_mode(PEN_NORMAL);
+  }
+};
 
 class FL_API DottedFrame : public Box {
 public:
   void _draw(const fltk::Rectangle& r1) const {
     if (!drawflags(FOCUSED)) return;
-    fltk::Rectangle r(r1);
+
+    fltk::Rectangle r; transform(r1,r);
     if (r.w() > 12) {r.move_x(1); r.move_r(-1);}
     else if (r.w() <= 3) return;
     if (r.h() > 15) {r.move_y(1); r.move_b(-1);}
@@ -66,7 +79,6 @@ public:
       evenstipple = XCreateBitmapFromData(xdisplay, root, pattern, 8, 8);
       oddstipple = XCreateBitmapFromData(xdisplay, root, pattern+1, 8, 8);
     }
-    transform(r);
     XSetStipple(xdisplay, gc, (r.x()+r.y()-r1.x()-r1.y())&1 ? oddstipple : evenstipple);
     XSetFillStyle(xdisplay, gc, FillStippled);
     // X documentation claims a nonzero line width is necessary for stipple
@@ -90,7 +102,6 @@ public:
 
 /*
     // Draw using WIN32 API function (since 95)
-    transform(r);
     RECT r = {r.x(), r.y(), r.r()-1, r.b()-1};
     DrawFocusRect(dc, &r);
 */
@@ -119,7 +130,6 @@ public:
       DeleteObject(oddstipple);
     }
 
-    transform(r);
     HBRUSH brush = (r.x()+r.y()-r1.x()-r1.y())&1 ? oddbrush : evenbrush;
 
     // Select the patterned brush into the DC
@@ -144,6 +154,7 @@ public:
   DottedFrame(const char* name) : Box(name) {}
 };
 static DottedFrame dottedFrame("dotted_frame");
+static FocusFrame focusFrame("focus_frame");
 
 /*! \ingroup boxes
   Default value for focusbox(). This draws nothing if FOCUSED is
@@ -151,6 +162,7 @@ static DottedFrame dottedFrame("dotted_frame");
   one pixel inset.
 */
 Box* const fltk::DOTTED_FRAME = &dottedFrame;
+Box* const fltk::FOCUS_FRAME = &focusFrame;
 
 ////////////////////////////////////////////////////////////////
 
@@ -269,7 +281,7 @@ void FrameBox::_draw(const fltk::Rectangle& R) const
   setcolor(fg);
 }
 
-/** \fn FrameBox::FrameBox(const char* name, int dx,int dy,int dw,int dh, const char* pattern, const FrameBox* down)
+/** \fn FrameBox::FrameBox(const char* name, int dx,int dy,int dw,int dh, const char* pattern, const Box* down=0)
     Constructor where you give the thickness of the borders used by inset().
 */
 

@@ -19,6 +19,7 @@ CFG=FLTK - WIN32 RELEASE
 !MESSAGE 
 !MESSAGE "fltk - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "fltk - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "fltk - Win32 Release MinSize" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -65,7 +66,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "fltkd"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /Gm /Gi /GX /ZI /Od /I "." /I "../.." /I "../../fltk/compat" /I "../visualc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /Fr /FD /c
+# ADD CPP /nologo /MTd /W3 /Gm /Gi /GX /ZI /Od /I "." /I "../.." /I "../../fltk/compat" /I "../visualc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FR /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
@@ -76,12 +77,38 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo /out:"..\..\lib\fltk2d.lib"
 
+!ELSEIF  "$(CFG)" == "fltk - Win32 Release MinSize"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "fltk___Win32_Release_MinSize"
+# PROP BASE Intermediate_Dir "fltk___Win32_Release_MinSize"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "fltk___Win32_Release_MinSize"
+# PROP Intermediate_Dir "fltk___Win32_Release_MinSize"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GX /Os /Ob2 /I "." /I "../.." /I "../../fltk/compat" /I "../visualc" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FR /FD /c
+# SUBTRACT BASE CPP /YX
+# ADD CPP /nologo /MD /W1 /GX- /O1 /Ob2 /I "../.." /I "../../fltk/compat" /I "../visualc" /I "." /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /D "_MSC_DLL" /FR /FD /c
+# SUBTRACT CPP /YX
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"..\..\lib\fltk2.lib"
+# ADD LIB32 /nologo /out:"..\..\lib\fltk2.lib"
+
 !ENDIF 
 
 # Begin Target
 
 # Name "fltk - Win32 Release"
 # Name "fltk - Win32 Debug"
+# Name "fltk - Win32 Release MinSize"
 # Begin Group "header"
 
 # PROP Default_Filter "h"
@@ -451,6 +478,10 @@ SOURCE=..\..\fltk\slider.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\fltk\StatusBarGroup.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\fltk\string.h
 # End Source File
 # Begin Source File
@@ -544,6 +575,10 @@ SOURCE=..\..\fltk\win32.h
 # Begin Source File
 
 SOURCE=..\..\fltk\window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\fltk\WizardGroup.h
 # End Source File
 # Begin Source File
 
@@ -984,6 +1019,10 @@ SOURCE=..\..\src\Slider.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\StatusBarGroup.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\string.c
 # End Source File
 # Begin Source File
@@ -1089,6 +1128,10 @@ SOURCE=..\..\src\Window_iconize.cxx
 # Begin Source File
 
 SOURCE=..\..\src\win32\WinMain.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\WizardGroup.cxx
 # End Source File
 # Begin Source File
 

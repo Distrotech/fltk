@@ -6,6 +6,8 @@ code_name {.cxx}
 gridx 5 
 gridy 5 
 snap 3
+decl {\#include "PrefsData.h"} {} 
+
 decl {\#include "FluidType.h"} {} 
 
 decl {\#include <fltk/Preferences.h>} {public
@@ -20,9 +22,6 @@ decl {\#include <fltk/TextDisplay.h>} {public
 decl {extern void load_history();} {public
 } 
 
-decl {extern fltk::Preferences fluid_prefs;} {public
-} 
-
 decl {fltk::TextBuffer *shell_run_buffer;} {public
 } 
 
@@ -30,48 +29,46 @@ Function {make_preferences_window()} {open
 } {
   {fltk::Window} preferences_window {
     label {fluid Preferences} open
-    xywh {570 272 365 246} resizable non_modal visible
+    xywh {487 250 370 253} resizable non_modal visible
   } {
-    {fltk::TabGroup} tabs {open
-      xywh {0 0 360 210}
+    {fltk::TabGroup} pref_tabs {
+      callback {initialize_tab_colors();} open selected
+      xywh {5 4 360 210}
     } {
       {fltk::Group} {} {
         label General open
-        xywh {0 30 360 180} color 0x54c2d400
+        xywh {0 21 360 188} hide color 0x54c2d400
       } {
         {fltk::CheckButton} openlast_button {
           label {Open Previous File on Startup}
-          callback {fluid_prefs.set("open_previous_file", openlast_button->value());}
-          xywh {10 0 193 25}
-          extra_code {int b;
-fluid_prefs.get("open_previous_file", b, 0);
-openlast_button->value(b);}
+          callback {prefs.open_previous_file(openlast_button->value());}
+          xywh {10 5 193 25}
+          extra_code {openlast_button->value(prefs.open_previous_file() ? true : false);}
         }
         {fltk::CheckButton} prevpos_button {
           label {Remember Window Positions}
-          callback {fluid_prefs.set("prev_window_pos", prevpos_button->value());}
+          callback {prefs.prev_window_pos(prevpos_button->value());}
           xywh {10 25 193 25}
-          extra_code {int b;
-fluid_prefs.get("prev_window_pos", b, 1);
-prevpos_button->value(b);}
+          extra_code {prevpos_button->value(prefs.prev_window_pos() ? true : false);}
         }
         {fltk::CheckButton} completion_button {
           label {Show Completion Dialog Info}
-          callback {fluid_prefs.set("show_completion_dialogs", completion_button->value());}
-          xywh {10 50 186 25}
-          extra_code {int b;
-fluid_prefs.get("show_completion_dialogs", b, 1);
-completion_button->value(b);}
+          callback {prefs.show_completion_dialogs(completion_button->value());}
+          xywh {10 45 186 25}
+          extra_code {completion_button->value(prefs.show_completion_dialogs() ? true : false);}
         }
         {fltk::ValueInput} recent_spinner {
           label {\# Recent Files}
-          callback {fluid_prefs.set("recent_files", recent_spinner->value());
-load_history();} selected
-          xywh {13 75 40 25} align 8 when CHANGED
-          extra_code {int c;
-fluid_prefs.get("recent_files", c, 5);
-recent_spinner->maximum(10);
-recent_spinner->value(c);}
+          callback {prefs.recent_files((int) recent_spinner->value()); load_history();}
+          xywh {13 73 37 25} align 8 when CHANGED
+          extra_code {recent_spinner->maximum(10); recent_spinner->value(prefs.recent_files());}
+        }
+        {fltk::CheckButton} tabcolor_button {
+          label {Colorful tabs}
+          callback {prefs.tabcolor(o->value());
+initialize_tab_colors();}
+          xywh {10 105 100 25}
+          extra_code {o->value(prefs.tabcolor() ? true : false);}
         }
       }
       {fltk::Group} {} {
@@ -101,21 +98,21 @@ recent_spinner->value(c);}
         }
       }
       {fltk::Group} {} {
-        label Alignment
-        xywh {0 30 360 180} align 5 hide color 0xd49a5600
+        label Alignment open
+        xywh {0 21 360 189} align 5 color 0xd49a5600
       } {
         {fltk::Input} horizontal_input {
           label {Horizontal:}
           user_data 1 user_data_type long
           callback alignment_cb
-          xywh {75 0 100 22} labelsize 14 textsize 14
+          xywh {75 6 100 22} labelsize 14 textsize 14
           extra_code {o->when(fltk::WHEN_RELEASE|fltk::WHEN_ENTER_KEY);}
         }
         {fltk::Input} vertical_input {
           label {Vertical:}
           user_data 2 user_data_type long
           callback alignment_cb
-          xywh {238 0 100 22} labelsize 14 textsize 14
+          xywh {238 6 100 22} labelsize 14 textsize 14
           extra_code {o->when(fltk::WHEN_RELEASE|fltk::WHEN_ENTER_KEY);}
         }
         {fltk::Input} snap_input {
@@ -172,7 +169,7 @@ recent_spinner->value(c);}
     {fltk::Button} {} {
       label Close
       callback {preferences_window->hide();}
-      xywh {140 215 107 25}
+      xywh {139 222 106 25}
     }
   }
 } 
@@ -185,35 +182,27 @@ Function {make_shell_window()} {open
   } {
     {fltk::Input} shell_command_input {
       label {Command:}
-      callback {fluid_prefs.set("shell_command", shell_command_input->value());}
+      callback {prefs.shell_command(shell_command_input->value());}
       xywh {10 27 347 25} align 5 labelfont 1
-      extra_code {char buf[1024];
-fluid_prefs.get("shell_command", buf, "", sizeof(buf));
-shell_command_input->value(buf);}
+      extra_code {shell_command_input->value(prefs.shell_command());}
     }
     {fltk::CheckButton} shell_writecode_button {
       label {Write Code}
-      callback {fluid_prefs.set("shell_writecode", shell_writecode_button->value());}
+      callback {prefs.shell_writecode(shell_writecode_button->value());}
       xywh {127 61 93 19}
-      extra_code {int b;
-fluid_prefs.get("shell_writecode", b, 1);
-shell_writecode_button->value(b);}
+      extra_code {shell_writecode_button->value(prefs.shell_writecode() ? true : false);}
     }
     {fltk::CheckButton} shell_writemsgs_button {
       label {Write Messages}
-      callback {fluid_prefs.set("shell_writemsgs", shell_writemsgs_button->value());}
+      callback {prefs.shell_writemsgs(shell_writemsgs_button->value());}
       xywh {231 61 126 19} hide
-      extra_code {int b;
-fluid_prefs.get("shell_writemsgs", b, 0);
-shell_writemsgs_button->value(b);}
+      extra_code {shell_writemsgs_button->value(prefs.shell_writemsgs() ? true : false);}
     }
     {fltk::CheckButton} shell_savefl_button {
       label {Save Fluid File}
-      callback {fluid_prefs.set("shell_savefl", shell_savefl_button->value());}
+      callback {prefs.shell_savefl(shell_savefl_button->value());}
       xywh {10 61 108 19}
-      extra_code {int b;
-fluid_prefs.get("shell_savefl", b, 1);
-shell_savefl_button->value(b);}
+      extra_code {shell_savefl_button->value(prefs.shell_savefl() ? true : false);}
     }
     {fltk::ReturnButton} {} {
       label {Run Command}

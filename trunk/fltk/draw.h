@@ -55,13 +55,18 @@ FL_API void load_identity();
 FL_API void transform(float& x, float& y);
 FL_API void transform_distance(float& x, float& y);
 FL_API void transform(int& x, int& y);
-FL_API void transform(Rectangle&);
+FL_API void transform(const Rectangle& from, Rectangle& to);
+FL_API void transform(int x,int y,int w, int h, Rectangle& to);
 
 /*! \} */
 
 /*! \addtogroup clipping
   \{ */
-FL_API void push_clip(const Rectangle&);
+
+void push_clip(const Rectangle& rectangle);
+//! Same as push_clip(Rectangle(x,y,w,h)) but faster:
+void push_clip(int X,int Y, int W, int H);
+
 FL_API void clipout(const Rectangle&);
 FL_API void pop_clip();
 FL_API void push_no_clip();
@@ -105,6 +110,16 @@ enum {
   JOIN_ROUND	= 0x2000,
   JOIN_BEVEL	= 0x3000
 };
+enum PenMode {
+  PEN_NORMAL	= 0,
+  PEN_OVERLAY
+  // other future modes op. should be set here like
+  // PEN_BLACK
+  // PEN_WHITE
+};
+
+FL_API void pen_mode(PenMode mode);
+
 /*! \} */
 
 /*! \addtogroup path
@@ -129,8 +144,10 @@ FL_API void fillstrokepath(Color);
 
 /*! \addtogroup rectangle
   \{ */
-FL_API void fillrect(const Rectangle&);
-FL_API void strokerect(const Rectangle&);
+FL_API void fillrect(int, int, int, int);
+inline void fillrect(const Rectangle& r) {fillrect(r.x(),r.y(),r.w(),r.h());}
+FL_API void strokerect(int, int, int, int);
+inline void strokerect(const Rectangle& r) {strokerect(r.x(),r.y(),r.w(),r.h());}
 FL_API void drawpoint(int x, int y);
 FL_API void drawpoint(float x, float y);
 FL_API void drawline(int x0, int y0, int x1, int y1);

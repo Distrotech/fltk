@@ -350,6 +350,30 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name symbols
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name wizard
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name drawing
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name drawtiming
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "drawing"=.\drawing.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name fltk
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -609,6 +633,25 @@ Package=<4>
 
 ###############################################################################
 
+Project: "inactive"=.\inactive.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    inactive
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name fltk
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "input"=.\input.dsp - Package Owner=<4>
 
 Package=<5>
@@ -701,6 +744,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name fltk
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -880,6 +926,21 @@ Package=<4>
 ###############################################################################
 
 Project: "valuators"=.\valuators.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name fltk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "wizard"=.\wizard.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

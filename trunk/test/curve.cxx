@@ -40,9 +40,9 @@ int points;
 
 class Drawing : public Widget {
   void draw() {
-    push_clip(Rectangle(w(),h()));
+    push_clip(0,0,w(),h());
     setcolor(GRAY20);
-    fillrect(Rectangle(w(),h()));
+    fillrect(0,0,w(),h());
     push_matrix();
     if (xy[8]) {
       translate(w()/2, h()/2);

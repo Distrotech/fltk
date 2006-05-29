@@ -69,36 +69,42 @@ FluidType *GroupType::make() {
   return WidgetType::make();
 }
 
-// Enlarge the group to surround all it's children.  This is done to
+// Enlarge the group to surround all its children.  This is done to
 // all groups whenever the user moves any widgets.
 void fix_group_size(FluidType *t) {
   if (!t || !t->is_group() || t->is_menu_button()) return;
   fltk::Group* g = (fltk::Group*)((GroupType*)t)->o;
-  //if (g->resizable()) return;
-  int X = g->x();
-  int Y = g->y();
-  int R = g->w();
-  int B = g->h();
+  int X = g->x(), X0=X;
+  int Y = g->y(), Y0=Y;
+  int R = g->r();
+  int B = g->b();
+
   for (FluidType *nn = t->first_child; nn; nn = nn->next_brother) {
     if (nn->is_widget()) {
       fltk::Widget* o = ((WidgetType*)nn)->o;
-      int x = o->x();  if (x < X) X = x;
-      int y = o->y();  if (y < Y) Y = y;
-      int r = x+o->w();if (r > R) R = r;
-      int b = y+o->h();if (b > B) B = b;
+      int x = o->x();  if (x+X0 < X) 
+	  X = x+X0;
+      int y = o->y();  if (y+Y0 < Y) Y = y+Y0;
+      int r = o->r(); if (r+X0 > R) 
+	  R = r+X0;
+      int b = o->b(); if (b+Y0 > B) B = b+Y0;
     }
   }
-  g->resize(g->x()+X,g->y()+Y,R-X,B-Y);
-  if (X || Y) {
+
+  int dx = X - X0, dy = Y-Y0;
+  g->resize(X,Y,R-X,B-Y);
+  if (dx || dy) {
     for (FluidType *nn = t->first_child; nn; nn = nn->next_brother) {
       if (nn->is_widget()) {
 	fltk::Widget* o = ((WidgetType*)nn)->o;
-	o->x(o->x()-X);
-	o->y(o->y()-Y);
+	o->x(o->x()-dx);
+	o->y(o->y()-dy);
       }
     }
   }
+
   g->init_sizes();
+  fix_group_size(t->parent );
 }
 
 extern int force_parent;
@@ -143,7 +149,7 @@ void group_cb(Widget *, void *) {
     n->move_before(q);
     for (FluidType *t = q->parent->first_child; t;) {
 	FluidType* next = t->next_brother;
-	if (t->selected && t != n) {
+	if (t->selected() && t != n) {
 	    t->remove();
 	    t->add(n);
 	}
@@ -171,7 +177,7 @@ void ungroup_cb(fltk::Widget *, void *) {
     Widget* g = (Group*) ((WidgetType*)q)->o; 
     for (FluidType* n = q->first_child; n;) {
 	FluidType* next = n->next_brother;
-	if (n->selected) {
+	if (n->selected()) {
 	    n->remove();
 	    n->insert(q);
 	    if (n->is_widget()) {
@@ -224,7 +230,7 @@ const fltk::Enumeration pack_type_menu[] = {
 
 FluidType* TabsType::click_test(int x, int y) {
   fltk::TabGroup *t = (fltk::TabGroup*)o;
-  int i = t->which(x,y);
+  int i = t->which(x-t->x(),y-t->y());
   if (i < 0) return 0; // didn't click on tab
   // okay, run the tabs ui until they let go of mouse:
   t->handle(fltk::PUSH);

@@ -133,7 +133,7 @@ int Button::handle(int event, const Rectangle& rectangle) {
     // grab initial focus if we are an ReturnButton:
     return shortcut()==ReturnKey ? 2 : 1;
   case UNFOCUS:
-    redraw_highlight(); //(DAMAGE_HIGHLIGHT);
+    redraw(1); // redraw to remove the focus box.
     return 1;
   case KEY:
     if (event_key() == ' ' || event_key() == ReturnKey
@@ -220,9 +220,14 @@ void Button::draw(int glyph_width) const
       // Partially-transparent pixels will not draw right!
     } else if (context_image()) {
 	draw_background();
-    } else {
-      // Don't draw the label unnecessarily:
-      draw_label = false;
+    } else { // must redraw when we loose focus
+	// fabien: when we loose focus we must draw the background 
+	// to cleanup the previous focus dashed box :
+	// Note that this solution is not really satisfying, we should
+	// draw the dashed focus in xor mode so we make sure we don't need any other redraw
+	// this way only an unfocus rect would be necessary
+	// Don't draw the label unnecessarily: draw_label = false;
+      draw_background();
     }
     // this allows these buttons to be put into browser/menus:
     //fg = fl_item_labelcolor(this);

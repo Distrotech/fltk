@@ -1,7 +1,7 @@
-//
 // "$Id$"
 //
-// Widget type header file for the Fast Light Tool Kit (FLTK).
+// Base type of object constructed and manipualated by the
+// Fast Light toolkit Interface Designer (fluid)
 //
 // Each object described by Fluid is one of these objects.  They
 // are all stored in a double-linked list.
@@ -29,7 +29,7 @@
 // USA.
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
-//
+
 #ifndef fltk_fluid_type_h
 #define fltk_fluid_type_h
 
@@ -74,13 +74,24 @@ public:	// things that should not be public:
   FluidType* walk() const;
 
   static FluidType *first;
-
-  char new_selected; // browser highlight
-  char selected; // copied here by selection_changed()
-  char open_;	// open/close state of this parent in browser
-
+  
   FluidType *factory;
   const char *callback_name();
+
+  bool open_;	// open/close state of this parent in browser
+
+  static int selected_count() {return selected_count_;}
+  bool selected() const {return selected_;}
+  void selected(bool s) {
+      if (s==selected_) return;
+      if (s ) ++selected_count_; else --selected_count_; 
+      selected_=s;
+  }
+
+  bool new_selected; // browser highlight
+private:
+  bool selected_; // copied here by selection_changed()
+  static int selected_count_;
 
 public:
 
@@ -386,7 +397,6 @@ public:
 
 // object list operations:
 fltk::Widget *make_widget_browser(int x,int y,int w,int h);
-extern int modflag;
 void delete_all(int selected_only=0);
 void selection_changed(FluidType* new_current);
 
@@ -429,7 +439,11 @@ FLUID_API int storestring(const char *n, const char * & p, int nostrip=0);
 FLUID_API extern bool include_H_from_C;
 FLUID_API void select(FluidType* it, int value);
 FLUID_API void select_only(FluidType *);
-extern fltk::Preferences	fluid_prefs;	// FLUID preferences
+FLUID_API void refresh_browser_views();
+FLUID_API void initialize_tab_colors();
+
+extern int modflag;
+
 #endif
 //
 // End of "$Id$".

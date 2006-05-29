@@ -37,6 +37,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include "PrefsData.h"
 #include "coding_style.h"
 #include "factory.h"
 #include "undo.h"
@@ -75,8 +76,6 @@ const char* WidgetType::subclass() const {
 
 extern int reading_file;
 int force_parent;
-extern int gridx;
-extern int gridy;
 
 #include <fltk/StyleSet.h>
 extern fltk::StyleSet* fluid_style_set;
@@ -124,13 +123,13 @@ FluidType *WidgetType::make() {
   }
 
   // satisfy the grid requirements (otherwise it edits really strangely):
-  if (gridx>1) {
-    X = (X/gridx)*gridx;
-    W = ((W-1)/gridx+1)*gridx;
+  if (prefs.gridx()>1) {
+    X = (X/prefs.gridx())*prefs.gridx();
+    W = ((W-1)/prefs.gridx()+1)*prefs.gridx();
   }
-  if (gridy>1) {
-    Y = (Y/gridy)*gridy;
-    H = ((H-1)/gridy+1)*gridy;
+  if (prefs.gridy()>1) {
+    Y = (Y/prefs.gridy())*prefs.gridy();
+    H = ((H-1)/prefs.gridy()+1)*prefs.gridy();
   }
 
   // Construct the FluidType:
@@ -214,11 +213,11 @@ void sort(FluidType *parent) {
   for (FluidType* f = parent->first_child; f;) {
     sort(f);
     FluidType* next = f->next_brother;
-    if (f->selected && (f->is_widget() && !f->is_menu_item())) {
+    if (f->selected() && (f->is_widget() && !f->is_menu_item())) {
       fltk::Widget* fw = ((WidgetType*)f)->o;
       FluidType *g; // we will insert before this
       for (g = parent->first_child; g != f; g = g->next_brother) {
-	if (!g->selected) continue;
+	if (!g->selected()) continue;
 	fltk::Widget* gw = ((WidgetType*)g)->o;
 	if (gw->y() >= fw->y()+fw->h()) break;
 	if (gw->y()+gw->h() > fw->y() && gw->x() >= fw->x()+fw->w()) break;
@@ -277,7 +276,7 @@ void name_cb(fltk::Input* o, void *v) {
 
 #define for_all_selected_widgets() \
 for (FluidType *o = FluidType::first; o; o = o->walk()) \
-  if (o->selected && o->is_widget())
+  if (o->selected() && o->is_widget())
 
 void name_public_cb(fltk::CheckButton* i, void* v) {
   if (v == LOAD) {
@@ -1476,7 +1475,8 @@ static void load_panel() {
  */
 void WidgetType::open() {
   if (!the_panel) {
-      the_panel = make_widget_panel();
+    the_panel = make_widget_panel();
+    initialize_tab_colors();
     Fluid_Plugin *p = 0, **pp;
     for(pp = next_panel(plugins, p); pp-plugins<nbplugins; pp = next_panel(pp+1, p))
     {
@@ -1513,10 +1513,10 @@ void selection_changed(FluidType *p) {
       // back to the previous values:
       FluidType *q = 0;
       for (FluidType *o = FluidType::first; o; o = o->walk()) {
-        o->new_selected = o->selected;
-        if (!q && o->selected) q = o;
+        o->new_selected = o->selected();
+        if (!q && o->selected()) q = o;
       }
-      if (!p || !p->selected) p = q;
+      if (!p || !p->selected()) p = q;
       FluidType::current = p;
       redraw_browser();
       return;
@@ -1525,8 +1525,8 @@ void selection_changed(FluidType *p) {
   }
   // update the selected flags to new set:
   for (FluidType* o = FluidType::first; o; o = o->walk()) {
-    o->selected = o->new_selected;
-    //if (o->selected) FluidType::current = o;
+    o->selected(o->new_selected);
+    //if (o->selected()) FluidType::current = o;
   }
   if (p && p->new_selected) FluidType::current = p;
   redraw_overlays();
@@ -2281,13 +2281,11 @@ void live_mode_cb(LightButton*o,void *v) {
         Group::current(0);
         int w = live_widget->w();
         int h = live_widget->h();
+	// create main live mode Window, green backgnd no border
         live_window = new DoubleBufferWindow(w+20, h+55, "Fluid Live Mode Widget");
+	live_window->begin();
         live_window->box(fltk::FLAT_BOX);
         live_window->color(fltk::GREEN);
-        Group *rsz = new Group(0, h+20, 130, 35);
-        rsz->box(fltk::NO_BOX);
-        InvisibleBox*rsz_dummy = new InvisibleBox(fltk::NO_BOX, 110, h+20, 1, 25,"");
-        rsz->resizable(rsz_dummy);
         Button *btn = new Button(10, h+20, 100, 25, "Exit Live Mode");
         btn->labelsize(12);
         btn->callback(leave_live_mode_cb);
@@ -2305,6 +2303,7 @@ void live_mode_cb(LightButton*o,void *v) {
           if (mw || mh || MW || MH)
             live_window->size_range(mw, mh, MW, MH);
         }
+	live_window->end();
         live_window->show();
       } else o->value(0);
     } else o->value(0);

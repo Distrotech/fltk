@@ -380,12 +380,12 @@ void CodeType::open() {
 	code_panel_ok->callback(ok_callback);
 	code_panel_cancel->callback(cancel_callback);
     }
-    code_input->static_value(name());
+    code_input->text(name());
     const char* message = 0;
     for (;;) { // repeat as long as there are errors
 	if (message) fltk::alert(message);
 	if (!code_panel->exec()) break;
-	const char*c = code_input->value();
+	const char*c = code_input->text();
 	message = c_check(c); if (message) continue;
 	name(c);
 	break;
@@ -715,7 +715,7 @@ static void comment_ok_cb(fltk::Widget * w, void * data) {
     if (mod) modflag=1;
     if (modflag  && widget_browser) {
     	widget_browser->relayout();
-    	widget_browser->redraw();
+    	refresh_browser_views();
     }
     comment_panel->hide();
 }
