@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 fltk2.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcd" /out:"../../test/arc.exe" /libpath:"..\..\lib"
+# ADD LINK32 cairo.lib fltk2.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcd" /out:"../../test/arc.exe" /libpath:"..\..\lib"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "arc - Win32 Debug"
@@ -110,7 +110,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 fltk.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcd" /out:"../../test/arc.exe" /libpath:"..\..\lib"
 # SUBTRACT BASE LINK32 /pdb:none /incremental:yes
-# ADD LINK32 fltk2.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /machine:I386 /out:"../../test/arc.exe" /libpath:"..\..\lib"
+# ADD LINK32 cairo.lib fltk2.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /machine:I386 /out:"../../test/arc.exe" /libpath:"..\..\lib"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ENDIF 
@@ -128,8 +128,6 @@ SOURCE=..\..\test\arc.cxx
 
 !ELSEIF  "$(CFG)" == "arc - Win32 Debug"
 
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "arc - Win32 Release MinSize"
 
 !ENDIF 
@@ -138,6 +136,17 @@ SOURCE=..\..\test\arc.cxx
 # Begin Source File
 
 SOURCE=..\..\test\cairo.cxx
+
+!IF  "$(CFG)" == "arc - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "arc - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "arc - Win32 Release MinSize"
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

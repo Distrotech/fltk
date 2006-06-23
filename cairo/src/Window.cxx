@@ -76,7 +76,30 @@ Window *Widget::window() const {
   return 0;
 }
 
-void Window::draw() {Group::draw();}
+void Window::draw() {
+#if USE_CAIRO
+	// initialize for cairo surface and context
+# if !USE_X11
+	cairo_surface_t * surface;
+	cairo_t *cr, *old_cc;
+	old_cc = cc;
+	surface = cairo_create_surface(this);
+	cr = ::cairo_create(surface);
+	cc= cr;
+# endif
+#endif
+
+	Group::draw();
+
+#if USE_CAIRO
+        // release cairo context and surface
+# if !USE_X11
+        cc = old_cc;
+	cairo_destroy(cr);
+	cairo_surface_destroy (surface);
+# endif
+#endif
+}
 
 /*! Sets the window title, which is drawn in the titlebar by the system. */
 void Window::label(const char *name) {label(name, iconlabel());}

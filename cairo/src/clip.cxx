@@ -133,6 +133,13 @@ void fltk::push_clip(int x, int y, int w, int h) {
   // when dealing with x,y,w,h scalars evaluation in frequently used code
   // Here XRectangleRegion() as well as CreateRectRgn() both use scalars so let's
   // try not to build a Rectangle object that is not necessary:
+#if USE_CAIRO
+    transform(x,y);
+    cairo_rectangle(cc, x,y,w,h);
+    //cairo_stroke(cc);
+    cairo_clip(cc);
+#else
+
   Region region;
   if (FLTK_RECT_EMPTY(w,h)) {
 #if USE_X11
@@ -162,6 +169,7 @@ void fltk::push_clip(int x, int y, int w, int h) {
   }
   pushregion(region);
   fl_restore_clip();
+#endif
 }
 
 /**
@@ -211,6 +219,9 @@ void fltk::push_no_clip() {
   FLTK with the clip stack not empty unpredictable results occur.
 */
 void fltk::pop_clip() {
+#if USE_CAIRO
+ cairo_reset_clip(cc);
+#else
   if (rstackptr > 0) {
     Region oldr = rstack[rstackptr--];
 #if USE_X11
@@ -220,6 +231,7 @@ void fltk::pop_clip() {
 #endif
     fl_restore_clip();
   }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////
