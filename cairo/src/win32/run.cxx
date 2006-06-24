@@ -48,6 +48,8 @@
   FL_API cairo_t * fltk::cc=0;
 #endif
 
+////////////////////////////////////////////////////////////////
+// fabien: added Cairo support for WIN32
 #if USE_CAIRO
 namespace fltk {
     cairo_surface_t * cairo_create_surface(fltk::Window* w) {

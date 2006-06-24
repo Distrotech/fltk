@@ -52,7 +52,7 @@ public:
 	}
 	else {cr=old_cc=0;surface=0;}
 
-	Window::draw();
+	Group::draw();
 
 	if (draw_cb_) {
 	
@@ -137,7 +137,7 @@ void my_cairo_draw_cb(CairoWindow& window, cairo_surface_t* surface,cairo_t* cr)
 }
 
 int main(int argc, char** argv) {
-    Window window(300,500);
+    CairoWindow window(300,500);
     window.resizable(&window);
     window.color(fltk::WHITE);
     window.show(argc,argv);

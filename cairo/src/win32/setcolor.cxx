@@ -73,7 +73,7 @@ static void free_pen()
   current_pen = 0;
 }
 
-void fltk::line_style(int style, int width, char* dashes) {
+void fltk::line_style(int style, double  width, char* dashes) {
 #if !USE_CAIRO
   static DWORD Cap[4]= {PS_ENDCAP_ROUND, PS_ENDCAP_FLAT, PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE};
   static DWORD Join[4]={PS_JOIN_ROUND, PS_JOIN_MITER, PS_JOIN_ROUND, PS_JOIN_BEVEL};
@@ -89,8 +89,8 @@ void fltk::line_style(int style, int width, char* dashes) {
     lstyle = style & 0xff | Cap[(style>>8)&3] | Join[(style>>12)&3];
   }
   // for some reason zero width does not work at all:
-  if (!width) width = 1;
-  line_width = width;
+  if (!width) width = 1.0;
+  line_width = (int) width;
   if (current_pen) free_pen();
 #else
   int ndashes = dashes ? strlen(dashes) : 0;
@@ -115,12 +115,7 @@ void fltk::line_style(int style, int width, char* dashes) {
       *p++ = dash; *p++ = gap;
       break;
     case DOT:
-      *p++ = dot; *p++ = gap;
-      // Bug in XFree86 3.0? If I only use the above two pieces it does
-      // not completely "erase" the previous dash pattern. Making it longer
-      // like this seems to fix this. For some reason this bug is only for
-      // the dot pattern (not the dash), and only for 0-width lines:
-      *p++ = dot; *p++ = gap; *p++ = dot; *p++ = gap;
+      *p++ = dot; *p++ = gap;  *p++ = dot; *p++ = gap; *p++ = dot; *p++ = gap;
       break;
     case DASHDOT:
       *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap;

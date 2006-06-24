@@ -192,7 +192,7 @@ Window* find(XWindow xid);
 #  include <cairo-win32.h>
 # endif
 # elif defined(__APPLE__)
-#  error "NYI!"
+#  include <cairo-quartz.h>
 #else
   typedef struct _cairo cairo_t;
 #endif

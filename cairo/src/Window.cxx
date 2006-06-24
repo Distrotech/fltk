@@ -79,7 +79,13 @@ Window *Widget::window() const {
 void Window::draw() {
 #if USE_CAIRO
 	// initialize for cairo surface and context
-# if !USE_X11
+
+  // fabien: not the good solution, will remove it for all platform
+  // progressively. Will be replaced by a synchronization of
+  // cairo context with current dependent platform context update
+  // putting this stuff in draw is not good for performances
+  // as context may not change between 2 calls
+# if defined(WIN32)
 	cairo_surface_t * surface;
 	cairo_t *cr, *old_cc;
 	old_cc = cc;
@@ -93,7 +99,7 @@ void Window::draw() {
 
 #if USE_CAIRO
         // release cairo context and surface
-# if !USE_X11
+# if defined(WIN32)
         cc = old_cc;
 	cairo_destroy(cr);
 	cairo_surface_destroy (surface);

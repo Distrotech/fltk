@@ -221,7 +221,7 @@ Flags fltk::drawflags_;
   are set.
 */
 
-/*! \fn void fltk::line_style(int style, int width, char* dashes)
+/*! \fn void fltk::line_style(int style, double width, char* dashes)
 
   Set how to draw lines (the "pen"). If you change this it is your
   responsibility to set it back to the default with
@@ -245,8 +245,8 @@ Flags fltk::drawflags_;
 
   \a width is the number of pixels thick to draw the lines. Zero
   results in the system-defined default, which on both X and Windows
-  is somewhat different and nicer than 1.
-
+  is somewhat different and nicer than 1. Now allowing subpixel resolution
+  for Cairo.
   \a dashes is a pointer to an array of dash lengths, measured in
   pixels. The first location is how long to draw a solid portion, the
   next is how long to draw the gap, then the solid, etc. It is
