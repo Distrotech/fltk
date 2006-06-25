@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=ARC - WIN32 RELEASE MINSIZE
+CFG=arc - Win32 Debug Cairo
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,13 +13,14 @@ CFG=ARC - WIN32 RELEASE MINSIZE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "arc.mak" CFG="ARC - WIN32 RELEASE MINSIZE"
+!MESSAGE NMAKE /f "arc.mak" CFG="arc - Win32 Debug Cairo"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "arc - Win32 Release" (based on "Win32 (x86) Application")
 !MESSAGE "arc - Win32 Debug" (based on "Win32 (x86) Application")
 !MESSAGE "arc - Win32 Release MinSize" (based on "Win32 (x86) Application")
+!MESSAGE "arc - Win32 Debug Cairo" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -81,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 cairo.lib fltk2d.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcd" /out:"../../test/arcd.exe" /pdbtype:sept /libpath:"..\..\lib"
+# ADD LINK32 fltk2d.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcd" /out:"../../test/arcd.exe" /pdbtype:sept /libpath:"..\..\lib"
 # SUBTRACT LINK32 /pdb:none /incremental:no
 
 !ELSEIF  "$(CFG)" == "arc - Win32 Release MinSize"
@@ -113,6 +114,35 @@ LINK32=link.exe
 # ADD LINK32 cairo.lib fltk2.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /machine:I386 /out:"../../test/arc.exe" /libpath:"..\..\lib"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
+!ELSEIF  "$(CFG)" == "arc - Win32 Debug Cairo"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "arc___Win32_Debug_Cairo"
+# PROP BASE Intermediate_Dir "arc___Win32_Debug_Cairo"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "arc___Win32_Debug_Cairo"
+# PROP Intermediate_Dir "arc___Win32_Debug_Cairo"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MTd /Gm /Gi /GX /ZI /Od /I "." /I "../.." /I "../../fltk/compat" /I "../visualc" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FR /YX /FD /c
+# ADD CPP /nologo /MTd /Gm /Gi /GX /ZI /Od /I "." /I "../.." /I "../../fltk/compat" /I "../visualc" /D USE_CAIRO=1 /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /FR /YX /FD /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 cairo.lib  fltk2d.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcd" /out:"../../test/arcd.exe" /pdbtype:sept /libpath:"..\..\lib"
+# SUBTRACT BASE LINK32 /pdb:none /incremental:no
+# ADD LINK32 cairo.lib  fltk2d.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib msimg32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcd" /out:"../../test/arcd.exe" /pdbtype:sept /libpath:"..\..\lib"
+# SUBTRACT LINK32 /pdb:none /incremental:no
+
 !ENDIF 
 
 # Begin Target
@@ -120,18 +150,10 @@ LINK32=link.exe
 # Name "arc - Win32 Release"
 # Name "arc - Win32 Debug"
 # Name "arc - Win32 Release MinSize"
+# Name "arc - Win32 Debug Cairo"
 # Begin Source File
 
 SOURCE=..\..\test\arc.cxx
-
-!IF  "$(CFG)" == "arc - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "arc - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "arc - Win32 Release MinSize"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -144,6 +166,11 @@ SOURCE=..\..\test\cairo.cxx
 # PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "arc - Win32 Release MinSize"
+
+!ELSEIF  "$(CFG)" == "arc - Win32 Debug Cairo"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
 
 !ENDIF 
 
