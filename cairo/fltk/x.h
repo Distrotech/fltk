@@ -42,7 +42,7 @@
 #  include "win32.h"
 
 # elif defined(__APPLE__) && !USE_X11
-#  include "mac.h"
+#  include "osx.h"
 # else
 #  define USE_X11 1
 
@@ -190,9 +190,9 @@ Window* find(XWindow xid);
 #  include <cairo-xlib.h>
 # elif defined(_WIN32)
 #  include <cairo-win32.h>
-# endif
 # elif defined(__APPLE__)
 #  include <cairo-quartz.h>
+# endif
 #else
   typedef struct _cairo cairo_t;
 #endif

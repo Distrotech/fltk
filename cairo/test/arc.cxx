@@ -23,7 +23,8 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#define USE_CAIRO 1
+#include <config.h> // for  USE_CAIRO definition
+
 #include <fltk/x.h>
 
 #include <fltk/run.h>

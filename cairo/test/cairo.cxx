@@ -23,7 +23,9 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#define USE_CAIRO 1
+#include <config.h>
+
+#if USE_CAIRO
 
 #include <fltk/run.h>
 #include <fltk/x.h>
@@ -145,7 +147,14 @@ int main(int argc, char** argv) {
     
     return fltk::run();
 }
+#else
+#include <fltk/ask.h>
+int main(int argc, char** argv) {
+  fltk::message("please configure fltk with CAIRO enabled (--enable-cairo)"); 
+  return 0;
+}
 
+#endif
 
 //
 // End of "$Id: arc.cxx 5115 2006-05-12 16:00:00Z fabien $".
