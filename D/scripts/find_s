@@ -1,0 +1,7 @@
+find ~/dev/fltk-1.1.7-svn/FL -name '*.H' -exec echo cpf \{\} x\{\}x >> s \;
+find ~/dev/fltk-1.1.7-svn/FL -name '*.h' -exec echo cpf \{\} x\{\}x >> s \;
+find ~/dev/fltk-1.1.7-svn/src -name '*.H' -exec echo cpf \{\} x\{\}x >> s \;
+find ~/dev/fltk-1.1.7-svn/src -name '*.h' -exec echo cpf \{\} x\{\}x >> s \;
+find ~/dev/fltk-1.1.7-svn/src -name '*.cxx' -exec echo cpf \{\} x\{\}x >> s \;
+find ~/dev/fltk-1.1.7-svn/src -name '*.c' -exec echo cpf \{\} x\{\}x >> s \;
+

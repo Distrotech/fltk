@@ -1,0 +1,24 @@
+
+currently, I slammed all FLTK source and header files into
+fl. The fl directory should eventually contain only .di
+files, but for now it is just simpler too keep the .d files
+there.
+
+For easy debugging, the Makefiel is located in root. Also
+a silly thing to do, but it maked gdb sessions so much easier
+until we have set up a nice IDE on all platforms (contibutions
+very welcome!).
+
+'test' contains the original C++ test files as they are ported.
+Running "test/demo" will eventually show off all features that
+are already ported.
+
+No need to duplicate the C++ documentation here. Please download
+that from fltk.org and eventually merge it into "D" style comments.
+
+The "std" directory will contain all platform specific files, 
+either the finished files already, or at least a script that 
+will generate needed files from copyrighted C headers which
+we can't redistribute. It is up to the user to get hold of
+those C headers (which should generally be really easy).
+

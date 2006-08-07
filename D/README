@@ -1,0 +1,111 @@
+
+ "D"-native port of FLTK 1.1.8: D-FLTK
+=======================================
+
+                                                 Friday, July 28th, 2006
+
+  Why FLTK?
+
+"D" is a great language, no doubt. It is lacking a lightweight user 
+interface library. FLTK seems to be just right: it uses a "safe" subset
+of C++ that should be easy to port to "D". It is available on all platforms
+natively that are supported by "D". It is easy to learn, very stable,
+and in wide use.
+ 
+  Why not write a wrapper for th e C++ functions?
+
+Now that would be pretty half-assed, wouldn't it? How do you derive an
+exciting new Widget set from a wrapper? I want to learn "D", and I have a 
+feeling that everone involved in D-FLTK should become a pretty decent 
+"D" code when done (if not already).
+
+  What does the FLTK C++ community gain?
+
+FLTK1 is very complete, FLTK2 is a moving target though. Porting FLTK1
+will bring fresh wind into development of FLTK1 and introduce a larger
+user group. When FLTK2 stabilizes, the community should be large 
+enough to port an FLTK2 with all the benefits of FLTK1 in no time. But
+for now, let's stick with FLTK1.
+
+  How will this work?
+
+I am currently doing the initial port that will bring all low level 
+functions to "D" on Mac OS X. I hope to get some support on the X11 and
+MSWindows side by other "D" fans. Porting will be "top down", meaning
+I will implement the functions needed to support simple test applications,
+then continue to more complex tests until the base functions are all
+touched. After that, it'll be a (platform independent) breeze to move
+the remaining classes over.
+
+  Can we change ... about FLTK?
+
+Yes, but not in the first step. I am currently maintaining FLTK1 pretty much
+by myself, helping out with FLTK2 wherever I can. I need a different UI
+library in a different language as much as a stick in my right eye. So for
+now, D-FLTK will be as much of an exact copy of FLTK1 as possible/useful.
+Now, if D-FLTK will reach a viaable user base, we can start making changes
+(like removing the little-loved Fl_ prefix). I would however do that in the
+C++-FLTK and D-FLTK version at the same time (no more sticks in my eyes
+please ;). 
+
+There are exceptions where "D" is simply better than "C++" and the code
+does not substentially change. These are currently:
+- types: use "Fl_Boxtype" instead of "unisigend char" to store a box type
+- strings: "char*" will usually translate to "char[]" if they are a string
+- filenames: removed Fl_ and fl_, changed to all lower case
+
+  How can I help porting?
+
+I will put a running version of D-FLTK into an SVN repository, probably at
+fltk.org. You can download and update from there. Once you accumulated a
+bunch of changes, send me a patch file and I will apply it to the tree.
+Once you submitted a few decent patches, I will open the SVN archive
+for write access. Happy hacking!
+
+SVN location to be announced.
+
+  What are the coding conventions?
+
+I want to make this easy, fun, quick, plus I have a short attention span
+if I don't get rewards (I am such an "instant gratification" junkie...).
+So we will be porting by keeping the code compilabl;e and working at all
+times. Just port code in a way that the whole construct won't collapse. 
+Do not create tons of stubs that you'll fill in later - you will forget.
+
+C++ code is commented out using /+- and -+/. If is not C++, use a different
+comment style! Once you ported C++ code to a "D" section of code, *remove*
+the old C++ code! Have as little code laying around as possible. If you are 
+in the middle of coding and need to leave some bread crumbs to find you way
+back, leave a marker like this: /+= matt: continue here =+/ . 
+
+Genral "D" questions and possibe optimizations are marked /+? ?+/. If you
+are a "D" genius, please grep for /+? and answer the questions. Thanks.
+
+  What about documentation?
+
+If there are differences to the C++ API, please comment the change in a 
+"D" style documentation comment. For example, Fl_Widget::align() is changed
+to Fl_Widget.alignment(), because "align" is a reserved keyword in "D".
+
+We will over time port all FLTK documentation over into "D" style comments.
+Just do it whenever you feel like it. Copy the text from the "documentation"
+html files whenever your brain expldes from "D" and you need some simple
+copy'n'paste coding to "come down" again.
+
+But most importantly,
+
+  have fun!
+  
+  enjoy!
+  
+  don't stress!
+
+  and don't panic - just yet... .
+
+
+Matthias (dfltk@matthiasm.com)
+
+
+
+
+

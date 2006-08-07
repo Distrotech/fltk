@@ -1,0 +1,8 @@
+
+echo "/++++ automatic import of h, cxx and html files into one d file" >fl/$2.d
+cat FL_cpp/$1.h >>fl/$2.d
+cat src/$1.cxx >>fl/$2.d
+cat src/$1_mac.cxx >>fl/$2.d
+cat documentation/$1.cxx >>fl/$2.d
+echo "++++/" >>fl/$2.d
+

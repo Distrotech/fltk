@@ -1,0 +1,6 @@
+
+echo importing $1...
+echo "/+- This file was imported from C++ using a script" >>../fl/$2
+cat $1 >>../fl/$2
+echo "    End of automatic import -+/" >>../fl/$2
+
