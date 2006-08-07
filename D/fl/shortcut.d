@@ -206,26 +206,6 @@ int fl_old_shortcut(const char* s) {
   return n | *s;
 }
 
-// Tests for &x shortcuts in button labels:
-
-int Fl_Widget::test_shortcut(const char *l) {
-  char c = Fl::event_text()[0];
-  if (!c || !l) return 0;
-  for (;;) {
-    if (!*l) return 0;
-    if (*l++ == '&' && *l) {
-      if (*l == '&') l++;
-      else if (*l == c) return 1;
-      else return 0;
-    }
-  }
-}
-
-int Fl_Widget::test_shortcut() {
-  if (!(flags()&SHORTCUT_LABEL)) return 0;
-  return test_shortcut(label());
-}
-
 //
 // End of "$Id: fl_shortcut.cxx 5190 2006-06-09 16:16:34Z mike $".
 //

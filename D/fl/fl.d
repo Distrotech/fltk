@@ -312,11 +312,11 @@ public:
       return 1;
   
     case FL_SHOW:
-      wi.show(); // this calls Fl_Widget::show(), not Fl_Window::show()
+      wi.w_show(); // this calls Fl_Widget::show(), not Fl_Window::show()
       return 1;
 
     case FL_HIDE:
-      wi.hide(); // this calls Fl_Widget::hide(), not Fl_Window::hide()
+      wi.w_hide(); // this calls Fl_Widget::hide(), not Fl_Window::hide()
       return 1;
   /+= pri 2
     case FL_PUSH:
@@ -677,11 +677,16 @@ public:
   static void set_idle(void (*cb)()) {idle = cb;}
   static void grab(Fl_Window&win) {grab(&win);}
   static void release() {grab(0);}
-
+-+/
   // Visible focus methods...
-  static void visible_focus(int v) { visible_focus_ = v; }
-  static int  visible_focus() { return visible_focus_; }
+  static void visible_focus(int v) { 
+    visible_focus_ = v; 
+  }
 
+  static int  visible_focus() { 
+    return visible_focus_; 
+  }
+/+-
   // Drag-n-drop text operation methods...
   static void dnd_text_ops(int v) { dnd_text_ops_ = v; }
   static int  dnd_text_ops() { return dnd_text_ops_; }
@@ -701,8 +706,10 @@ public:
 /+-
   static void watch_widget_pointer(Fl_Widget *&w);
   static void release_widget_pointer(Fl_Widget *&w);
-  static void clear_widget_pointer(Fl_Widget const *w);
 -+/
+  static void clear_widget_pointer(Fl_Widget w) {
+    /+= =+/
+  }
 }
 
 
@@ -1419,64 +1426,6 @@ void Fl::paste(Fl_Widget &receiver) {
 #include <FL/fl_draw.H>
 
 
-void Fl_Widget::damage(uchar fl, int X, int Y, int W, int H) {
-  Fl_Widget* wi = this;
-  // mark all parent widgets between this and window with FL_DAMAGE_CHILD:
-  while (wi->type() < FL_WINDOW) {
-    wi->damage_ |= fl;
-    wi = wi->parent();
-    if (!wi) return;
-    fl = FL_DAMAGE_CHILD;
-  }
-  Fl_X* i = Fl_X::i((Fl_Window*)wi);
-  if (!i) return; // window not mapped, so ignore it
-
-  // clip the damage to the window and quit if none:
-  if (X < 0) {W += X; X = 0;}
-  if (Y < 0) {H += Y; Y = 0;}
-  if (W > wi->w()-X) W = wi->w()-X;
-  if (H > wi->h()-Y) H = wi->h()-Y;
-  if (W <= 0 || H <= 0) return;
-
-  if (!X && !Y && W==wi->w() && H==wi->h()) {
-    // if damage covers entire window delete region:
-    wi->damage(fl);
-    return;
-  }
-
-  if (wi->damage()) {
-    // if we already have damage we must merge with existing region:
-    if (i->region) {
-#ifdef WIN32
-      Fl_Region R = XRectangleRegion(X, Y, W, H);
-      CombineRgn(i->region, i->region, R, RGN_OR);
-      XDestroyRegion(R);
-#elif defined(__APPLE_QD__)
-      Fl_Region R = NewRgn(); 
-      SetRectRgn(R, X, Y, X+W, Y+H);
-      UnionRgn(R, i->region, i->region);
-      DisposeRgn(R);
-#elif defined(__APPLE_QUARTZ__)
-      Fl_Region R = NewRgn();
-      SetRectRgn(R, X, Y, X+W, Y+H);
-      UnionRgn(R, i->region, i->region);
-      DisposeRgn(R);
-#else
-      XRectangle R;
-      R.x = X; R.y = Y; R.width = W; R.height = H;
-      XUnionRectWithRegion(&R, i->region, i->region);
-#endif
-    }
-    wi->damage_ |= fl;
-  } else {
-    // create a new region:
-    if (i->region) XDestroyRegion(i->region);
-    i->region = XRectangleRegion(X,Y,W,H);
-    wi->damage_ = fl;
-  }
-  Fl::damage(FL_DAMAGE_CHILD);
-}
-
 #ifdef WIN32
 #  include "Fl_win32.cxx"
 #elif defined(__APPLE__)
@@ -1568,6 +1517,12 @@ void Fl::clear_widget_pointer(Fl_Widget const *w)
       *widget_watch[i] = 0L;
     }
   }
+}
+Fl_Widget *Fl::readqueue() {
+  if (obj_tail==obj_head) return 0;
+  Fl_Widget *o = obj_queue[obj_tail++];
+  if (obj_tail >= QUEUE_SIZE) obj_tail = 0;
+  return o;
 }
 
 

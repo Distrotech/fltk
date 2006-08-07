@@ -166,10 +166,51 @@ public:
     draw_it_active = 1;
   }
 
-/+-
-  void draw_focus() {draw_focus(box(),x(),y(),w(),h());}
-  void draw_focus(Fl_Boxtype, int,int,int,int) const;
--+/
+  void draw_focus() {
+    draw_focus(box(),x(),y(),w(),h());
+  }
+
+  // draw a focus box for the widget...
+  void draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) {
+    if (!Fl.visible_focus()) return;
+    switch (B) {
+      case FL_DOWN_BOX:
+      case FL_DOWN_FRAME:
+      case FL_THIN_DOWN_BOX:
+      case FL_THIN_DOWN_FRAME:
+        X ++;
+        Y ++;
+      default:
+        break;
+    }
+  
+    fl_color(fl_contrast(FL_BLACK, color()));
+  
+  /+  #if defined(WIN32) || defined(__APPLE_QD__)
+    // Windows 95/98/ME do not implement the dotted line style, so draw
+    // every other pixel around the focus area...
+    //
+    // Also, QuickDraw (MacOS) does not support line styles specifically,
+    // and the hack we use in fl_line_style() will not draw horizontal lines
+    // on odd-numbered rows...
+    int i, xx, yy;
+  
+    X += Fl::box_dx(B);
+    Y += Fl::box_dy(B);
+    W -= Fl::box_dw(B) + 2;
+    H -= Fl::box_dh(B) + 2;
+  
+    for (xx = 0, i = 1; xx < W; xx ++, i ++) if (i & 1) fl_point(X + xx, Y);
+    for (yy = 0; yy < H; yy ++, i ++) if (i & 1) fl_point(X + W, Y + yy);
+    for (xx = W; xx > 0; xx --, i ++) if (i & 1) fl_point(X + xx, Y + H);
+    for (yy = H; yy > 0; yy --, i ++) if (i & 1) fl_point(X, Y + yy);
+  #else +/
+    fl_line_style(FL_DOT);
+    fl_rect(X + Fl.box_dx(B), Y + Fl.box_dy(B),
+            W - Fl.box_dw(B) - 1, H - Fl.box_dh(B) - 1);
+    fl_line_style(FL_SOLID);
+  /+ #endif // WIN32 +/
+  }
 
   void draw_label() {
     int X = x_+Fl.box_dx(box());
@@ -183,9 +224,16 @@ public:
   }
 
 public:
-/+-
-  virtual ~Fl_Widget();
--+/
+  // Destruction does not remove from any parent group!  And groups when
+  // destroyed destroy all their children.  This is convienent and fast.
+  // However, it is only legal to destroy a "root" such as an Fl_Window,
+  // and automatic destructors may be called.
+  ~this() {
+    Fl.clear_widget_pointer(this);
+    /+? if (flags() & COPIED_LABEL) free((void *)(label_.value)); ?+/
+    parent_ = null; // Don't throw focus to a parent widget.
+    fl_throw_focus(this);
+  }
 
   void draw() {
     /+ assert(0); +/
@@ -203,13 +251,29 @@ public:
     parent_ = p; 
   }
 
-  Fl_Type type() { return type_; }
-  void type(Fl_Type t) { type_ = t; }
+  Fl_Type type() { 
+    return type_; 
+  }
 
-  int x() { return x_; }
-  int y() { return y_; }
-  int w() { return w_; }
-  int h() { return h_; }
+  void type(Fl_Type t) { 
+    type_ = t; 
+  }
+
+  int x() { 
+    return x_; 
+  }
+
+  int y() { 
+    return y_; 
+  }
+
+  int w() { 
+    return w_; 
+  }
+
+  int h() { 
+    return h_; 
+  }
 
   void resize(int X, int Y, int W, int H) {
     x_ = X; y_ = Y; w_ = W; h_ = H;
@@ -309,10 +373,15 @@ public:
   void labeltype(Fl_Labeltype a) {
     label_.type = a;
   }
-/+-
-  Fl_Color labelcolor() const {return (Fl_Color)label_.color;}
-  void labelcolor(unsigned a) {label_.color=a;}
--+/
+  
+  Fl_Color labelcolor() {
+    return label_.color;
+  }
+
+  void labelcolor(Fl_Color a) {
+    label_.color=a;
+  }
+
   Fl_Font labelfont() {
     return label_.font;
   }
@@ -460,10 +529,30 @@ public:
     return 1;
   }
 
-/+-
-  void activate();
-  void deactivate();
--+/
+  void activate() {
+    if (!active()) {
+      clear_flag(INACTIVE);
+      if (active_r()) {
+        redraw();
+        redraw_label();
+        handle(FL_ACTIVATE);
+        if (inside(Fl.focus())) Fl.focus().take_focus();
+      }
+    }
+  }
+  
+  void deactivate() {
+    if (active_r()) {
+      set_flag(INACTIVE);
+      redraw();
+      redraw_label();
+      handle(FL_DEACTIVATE);
+      fl_throw_focus(this);
+    } else {
+      set_flag(INACTIVE);
+    }
+  }
+
   int output() {
     return (flags_&OUTPUT);
   }
@@ -556,10 +645,31 @@ public:
     if (callback_ != cb)  
       clear_changed();
   }
-/+-
-  int test_shortcut();
-  static int test_shortcut(const char*);
--+/
+
+  int test_shortcut(char[] l) {
+  /+-
+    char c = Fl::event_text()[0];
+    if (!c || !l) return 0;
+    for (;;) {
+      if (!*l) return 0;
+      if (*l++ == '&' && *l) {
+        if (*l == '&') l++;
+        else if (*l == c) return 1;
+        else return 0;
+      }
+    }
+  -+/
+    return 0;
+  }
+  
+  int test_shortcut() {
+  /+-
+    if (!(flags()&SHORTCUT_LABEL)) return 0;
+    return test_shortcut(label());
+  -+/
+    return 0;
+  }
+
   int contains(Fl_Widget o) {
     for (; o; o = o.parent_) 
       if (o == this) return 1;
@@ -567,7 +677,7 @@ public:
   }
 
   int inside(Fl_Widget o) {
-    if (o==null)
+    if (!o)
       return 0;
     else 
       return o.contains(this);
@@ -731,107 +841,10 @@ public:
     color2_ = a;
   }
 
+  final void w_show() { Fl_Widget.show(); }
+  final void w_hide() { Fl_Widget.hide(); }
 }
 
 //
 // End of "$Id: widget.d 4421 2005-07-15 09:34:53Z matt $".
 //
-
-/+- This file was imported from C++ using a script
-
-Fl_Widget *Fl::readqueue() {
-  if (obj_tail==obj_head) return 0;
-  Fl_Widget *o = obj_queue[obj_tail++];
-  if (obj_tail >= QUEUE_SIZE) obj_tail = 0;
-  return o;
-}
-    
-////////////////////////////////////////////////////////////////
-
-int FL_NORMAL_SIZE = 14;
-
-extern void fl_throw_focus(Fl_Widget*); // in Fl_x.cxx
-
-// Destruction does not remove from any parent group!  And groups when
-// destroyed destroy all their children.  This is convienent and fast.
-// However, it is only legal to destroy a "root" such as an Fl_Window,
-// and automatic destructors may be called.
-Fl_Widget::~Fl_Widget() {
-  Fl::clear_widget_pointer(this);
-  if (flags() & COPIED_LABEL) free((void *)(label_.value));
-  parent_ = 0; // Don't throw focus to a parent widget.
-  fl_throw_focus(this);
-}
-
-// draw a focus box for the widget...
-void
-Fl_Widget::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
-  if (!Fl::visible_focus()) return;
-  switch (B) {
-    case FL_DOWN_BOX:
-    case FL_DOWN_FRAME:
-    case FL_THIN_DOWN_BOX:
-    case FL_THIN_DOWN_FRAME:
-      X ++;
-      Y ++;
-    default:
-      break;
-  }
-
-  fl_color(fl_contrast(FL_BLACK, color()));
-
-#if defined(WIN32) || defined(__APPLE_QD__)
-  // Windows 95/98/ME do not implement the dotted line style, so draw
-  // every other pixel around the focus area...
-  //
-  // Also, QuickDraw (MacOS) does not support line styles specifically,
-  // and the hack we use in fl_line_style() will not draw horizontal lines
-  // on odd-numbered rows...
-  int i, xx, yy;
-
-  X += Fl::box_dx(B);
-  Y += Fl::box_dy(B);
-  W -= Fl::box_dw(B) + 2;
-  H -= Fl::box_dh(B) + 2;
-
-  for (xx = 0, i = 1; xx < W; xx ++, i ++) if (i & 1) fl_point(X + xx, Y);
-  for (yy = 0; yy < H; yy ++, i ++) if (i & 1) fl_point(X + W, Y + yy);
-  for (xx = W; xx > 0; xx --, i ++) if (i & 1) fl_point(X + xx, Y + H);
-  for (yy = H; yy > 0; yy --, i ++) if (i & 1) fl_point(X, Y + yy);
-#else
-  fl_line_style(FL_DOT);
-  fl_rect(X + Fl::box_dx(B), Y + Fl::box_dy(B),
-          W - Fl::box_dw(B) - 1, H - Fl::box_dh(B) - 1);
-  fl_line_style(FL_SOLID);
-#endif // WIN32
-}
-
-
-void Fl_Widget::activate() {
-  if (!active()) {
-    clear_flag(INACTIVE);
-    if (active_r()) {
-      redraw();
-      redraw_label();
-      handle(FL_ACTIVATE);
-      if (inside(Fl::focus())) Fl::focus()->take_focus();
-    }
-  }
-}
-
-void Fl_Widget::deactivate() {
-  if (active_r()) {
-    set_flag(INACTIVE);
-    redraw();
-    redraw_label();
-    handle(FL_DEACTIVATE);
-    fl_throw_focus(this);
-  } else {
-    set_flag(INACTIVE);
-  }
-}
-
-
-
-
-    End of automatic import -+/

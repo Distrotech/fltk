@@ -66,6 +66,7 @@ FL_EXPORT void fl_point(int x, int y);
 
 // line type:
 FL_EXPORT void fl_line_style(int style, int width=0, char* dashes=0);
+-+/
 enum {
   FL_SOLID	= 0,
   FL_DASH	= 1,
@@ -81,7 +82,7 @@ enum {
   FL_JOIN_ROUND	= 0x2000,
   FL_JOIN_BEVEL	= 0x3000
 };
-
+/+-
 // rectangles tweaked to exactly fill the pixel rectangle:
 FL_EXPORT void fl_rect(int x, int y, int w, int h);
 inline void fl_rect(int x, int y, int w, int h, Fl_Color c) {fl_color(c); fl_rect(x,y,w,h);}

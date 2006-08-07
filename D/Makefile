@@ -27,6 +27,8 @@ DFILES = \
 
 OBJECTS = $(DFILES:.d=.o)
 
+DFLAGS = -g -fbounds-check -funittest -fversion=Apple 
+
 all: hello
 
 hello:  test/hello.o $(OBJECTS)

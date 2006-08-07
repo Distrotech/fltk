@@ -343,7 +343,105 @@ public:
   }   
 
   void hide() {
-    /+= port me from fl.fl.d =+/
+    clear_visible();
+  
+    if (!shown()) return;
+  
+    // remove from the list of windows:
+    Fl_X ip = i;
+    Fl_X* pp = &Fl_X.first;
+    /+=for (; *pp != ip; pp = &(pp.next)) 
+      if (!pp) return;=+/
+    *pp = ip.next;
+  
+    version (Apple) { 
+      // remove all childwindow links
+      for ( Fl_X pc = Fl_X.first; pc; pc = pc.next )
+      {
+        if ( pc.xidNext == ip ) pc.xidNext = ip.xidNext;
+        if ( pc.xidChildren == ip ) pc.xidChildren = ip.xidNext;
+      }
+    }
+  
+    i = null;
+  
+    // recursively remove any subwindows:
+    for (Fl_X wi = Fl_X.first; wi;) {
+      Fl_Window W = wi.w;
+      if (W.window() == this) {
+        W.hide();
+        W.set_visible();
+        wi = Fl_X.first;
+      } else wi = wi.next;
+    }
+  
+    if (this == Fl.modal_) { // we are closing the modal window, find next one:
+      Fl_Window W;
+      for (W = Fl.first_window(); W; W = Fl.next_window(W))
+        if (W.modal()) break;
+      Fl.modal_ = W;
+    }
+  
+    // Make sure no events are sent to this window:
+    fl_throw_focus(this);
+    handle(FL_HIDE);
+  
+  /+- #ifdef WIN32
+    // this little trick keeps the current clipboard alive, even if we are about
+    // to destroy the window that owns the selection.
+    if (GetClipboardOwner()==ip->xid) {
+      Fl_Window *w1 = Fl::first_window();
+      if (w1 && OpenClipboard(fl_xid(w1))) {
+        EmptyClipboard();
+        SetClipboardData(CF_TEXT, NULL);
+        CloseClipboard();
+      }
+    }
+    // Send a message to myself so that I'll get out of the event loop...
+    PostMessage(ip->xid, WM_APP, 0, 0);
+    if (ip->private_dc) fl_release_dc(ip->xid, ip->private_dc);
+      if (ip->xid == fl_window && fl_gc) {
+        fl_release_dc(fl_window, fl_gc);
+        fl_window = (HWND)-1;
+        fl_gc = 0;
+      }
+  #elif defined(__APPLE_QUARTZ__) -+/
+    Fl_X.q_release_context(ip);
+    if ( ip.xid == fl_window )
+      fl_window = null;
+  /+- #endif -+/
+  
+    if (ip.region) XDestroyRegion(ip.region);
+  
+  /+- #ifdef WIN32
+    // this little trickery seems to avoid the popup window stacking problem
+    HWND p = GetForegroundWindow();
+    if (p==GetParent(ip->xid)) {
+      ShowWindow(ip->xid, SW_HIDE);
+      ShowWindow(p, SW_SHOWNA);
+    }
+    XDestroyWindow(fl_display, ip->xid);
+  #elif defined(__APPLE_QUARTZ__) -+/
+    version (Apple) {
+      if ( !parent() ) // don't destroy shared windows!
+      {
+        // + RemoveTrackingHandler( dndTrackingHandler, ip->xid );
+        // + RemoveReceiveHandler( dndReceiveHandler, ip->xid );
+        XDestroyWindow(0, ip.xid);
+      }
+    }
+  /+-#else
+  # if USE_XFT
+    fl_destroy_xft_draw(ip->xid);
+  # endif
+    XDestroyWindow(fl_display, ip->xid);
+  #endif
+  #ifdef WIN32
+    // Try to stop the annoying "raise another program" behavior
+    if (non_modal() && Fl::first_window() && Fl::first_window()->shown())
+      Fl::first_window()->show();
+  #endif -+/
+    delete ip;
   }
 
   void show(char[][] args) {

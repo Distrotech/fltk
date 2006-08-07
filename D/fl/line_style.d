@@ -27,9 +27,9 @@
 
 module fl.line_style;
 
+public import fl.x;
 public import fl.fl;
 public import fl.draw;
-public import fl.x;
 
 private import std.c.osx.carbon.carbon;
 
@@ -57,8 +57,9 @@ version (Apple) {
 
 }
 
+void fl_line_style(int style, int width=0, char* dashes=null) {
+  version (Win32) {
 /+-
-void fl_line_style(int style, int width, char* dashes) {
 #ifdef WIN32
   // According to Bill, the "default" cap and join should be the
   // "fastest" mode supported for the platform.  I don't know why
@@ -99,45 +100,50 @@ void fl_line_style(int style, int width, char* dashes) {
   if (style > 2) style = 2;
   PenPat(styles + style);
 #elif defined(__APPLE_QUARTZ__)
-  static enum CGLineCap Cap[4] = { kCGLineCapButt, kCGLineCapButt, 
-                                   kCGLineCapRound, kCGLineCapSquare };
-  static enum CGLineJoin Join[4] = { kCGLineJoinMiter, kCGLineJoinMiter, 
-                                    kCGLineJoinRound, kCGLineJoinBevel };
-  if (width<1) width = 1;
-  fl_quartz_line_width_ = (float)width; 
-  fl_quartz_line_cap_ = Cap[(style>>8)&3];
-  fl_quartz_line_join_ = Join[(style>>12)&3];
-  char *d = dashes; 
-  static float pattern[16];
-  if (d && *d) {
-    float *p = pattern;
-    while (*d) { *p++ = (float)*d++; }
-    fl_quartz_line_pattern = pattern;
-    fl_quartz_line_pattern_size = d-dashes;
-  } else if (style & 0xff) {
-    char dash, dot, gap;
-    // adjust lengths to account for cap:
-    if (style & 0x200) {
-      dash = char(2*width);
-      dot = 1; 
-      gap = char(2*width-1);
+-+/
+  } else version (Apple) {
+    static CGLineCap Cap[4] = [ CGLineCap.kCGLineCapButt, CGLineCap.kCGLineCapButt, 
+                                     CGLineCap.kCGLineCapRound, CGLineCap.kCGLineCapSquare ];
+    static CGLineJoin Join[4] = [ CGLineJoin.kCGLineJoinMiter, CGLineJoin.kCGLineJoinMiter, 
+                                      CGLineJoin.kCGLineJoinRound, CGLineJoin.kCGLineJoinBevel ];
+    if (width<1) width = 1;
+    fl_quartz_line_width_ = width; 
+    fl_quartz_line_cap_ = Cap[(style>>8)&3];
+    fl_quartz_line_join_ = Join[(style>>12)&3];
+    char *d = dashes; 
+    static float pattern[16];
+    if (d && *d) {
+      float *p = pattern;
+      while (*d) { *p++ = *d++; }
+      fl_quartz_line_pattern = pattern;
+      fl_quartz_line_pattern_size = d-dashes;
+    } else if (style & 0xff) {
+      char dash, dot, gap;
+      // adjust lengths to account for cap:
+      if (style & 0x200) {
+        dash = 2*width;
+        dot = 1; 
+        gap = 2*width-1;
+      } else {
+        dash = 3*width;
+        dot = gap = width;
+      }
+      float *p = pattern;
+      int nn = 0;
+      switch (style & 0xff) {
+      case FL_DASH:       nn=2; *p++ = dash; *p++ = gap; break;
+      case FL_DOT:        nn=2; *p++ = dot; *p++ = gap; break;
+      case FL_DASHDOT:    nn=4; *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; break;
+      case FL_DASHDOTDOT: nn=6; *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; *p++ = dot; *p++ = gap; break;
+      }
+      fl_quartz_line_pattern_size = nn;
+      fl_quartz_line_pattern = pattern;
     } else {
-      dash = char(3*width);
-      dot = gap = char(width);
+      fl_quartz_line_pattern = null; fl_quartz_line_pattern_size = 0;
     }
-    float *p = pattern;
-    switch (style & 0xff) {
-    case FL_DASH:       *p++ = dash; *p++ = gap; break;
-    case FL_DOT:        *p++ = dot; *p++ = gap; break;
-    case FL_DASHDOT:    *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; break;
-    case FL_DASHDOTDOT: *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; *p++ = dot; *p++ = gap; break;
-    }
-    fl_quartz_line_pattern_size = p-pattern;
-    fl_quartz_line_pattern = pattern;
-  } else {
-    fl_quartz_line_pattern = 0; fl_quartz_line_pattern_size = 0;
+    fl_quartz_restore_line_style_();
   }
-  fl_quartz_restore_line_style_();
+/+-
 #else
   int ndashes = dashes ? strlen(dashes) : 0;
   // emulate the WIN32 dash patterns on X
@@ -170,10 +176,10 @@ void fl_line_style(int style, int width, char* dashes) {
 		     Cap[(style>>8)&3], Join[(style>>12)&3]);
   if (ndashes) XSetDashes(fl_display, fl_gc, 0, dashes, ndashes);
 #endif
+-+/
 }
 
 
 //
 // End of "$Id: fl_line_style.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/
