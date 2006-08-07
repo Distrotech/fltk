@@ -18,7 +18,12 @@ DFILES = \
 	fl/group.d \
 	fl/enumerations.d \
 	fl/x.d \
-	fl/mac.d
+	fl/mac.d \
+	std/c/osx/carbon/carbon.d \
+	std/c/osx/carbon/cfstring.d \
+	std/c/osx/carbon/cgcontext.d \
+	std/c/osx/carbon/types.d \
+	std/c/osx/carbon/windowmanager.d
 
 OBJECTS = $(DFILES:.d=.o)
 

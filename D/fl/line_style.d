@@ -32,7 +32,6 @@ public import fl.draw;
 public import fl.x;
 
 private import std.c.osx.carbon.carbon;
-private import std.c.osx.coregraphics.coregraphics;
 
 /+-
 #include <FL/Fl.H>
