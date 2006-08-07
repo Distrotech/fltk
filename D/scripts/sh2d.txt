@@ -1,10 +1,24 @@
 
+;i/System/Library/Frameworks/ApplicationServices.framework/Frameworks/QD.framework/Headers
+;o../std/c/osx/qd
+;tQuickdraw.h
+
+i/System/Library/Frameworks/CoreServices.framework/Headers
+o../std/c/osx/coreservices
+tCoreServices.h
+
+i/System/Library//Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Headers
+o../std/c/osx/carboncore
+tCarbonCore.h
+tMacTypes.h
+
 i/System/Library/Frameworks/Carbon.framework/Headers
 o../std/c/osx/carbon
 tCarbon.h
 
 i/System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreGraphics.framework/Headers
 o../std/c/osx/coregraphics
+tCoreGraphics.h
 tCGBase.h
 tCGContext.h
 

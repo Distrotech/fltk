@@ -1,0 +1,8 @@
+
+The "D" header files in this directory tree were hand-written using
+OS X documentation from the public Apple web site. It would be
+much better if these files could be created automatically from
+the "C" header files.
+
+An attempt at a converter is in the "D/scripts" directory.
+

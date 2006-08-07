@@ -29,8 +29,6 @@ public import fl.fl;
 public import fl.window;
 public import fl.box;
 
-public import std.c.osx.coregraphics.cgcontext;
-
 int main(char[][] args) {
   Fl_Window window = new Fl_Window(300,180,"D-FLTK test: hello.d");
   Fl_Box box = new Fl_Box(FL_UP_BOX,20,40,260,100,"Hello, World!");

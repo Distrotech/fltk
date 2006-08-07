@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 char *in_path;
 char *out_path;
@@ -10,6 +12,7 @@ char *out_path;
 unsigned int ifdefs = 0;
 
 const int TE_NO_WORD = 1;
+const int TE_REPLACE_LINE = 2;
 
 typedef struct {
   char *srch, *repl;
@@ -17,18 +20,32 @@ typedef struct {
 } TEntry;
 
 TEntry tlut[] = {
+  { "(void)", "()", TE_NO_WORD },
+  { "( void )", "()", TE_NO_WORD },
+  { "AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER", "" },
+  { "AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER_BUT_DEPRECATED_IN_MAC_OS_X_VERSION_10_4", "" },
   { "AVAILABLE_MAC_OS_X_VERSION_10_1_AND_LATER", "" },
   { "AVAILABLE_MAC_OS_X_VERSION_10_2_AND_LATER", "" },
   { "AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER", "" },
   { "AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER", "" },
-  { "CG_EXTERN", "extern (C)" },
+  { "CALLBACK_API_C( long , ProcPtr )()", "int (*ProcPtr)()", TE_NO_WORD },
+  { "CALLBACK_API( void , Register68kProcPtr )()", "void (*Register68kProcPtr)()", TE_NO_WORD },
+  { "CG_EXTERN", "" },
   { "CG_EXTERN_C_BEGIN", "" },
   { "CG_EXTERN_C_END", "" },
+  { "TimeBaseRecord", "alias void* TimeBase;", TE_REPLACE_LINE },
   { "const", "" },
+  { "extern", "" },
   { "long long", "long" },
   { "long", "int" },
+  { "signed char", "byte" },
+  { "signed int", "int" },
+  { "signed long long", "long" },
+  { "signed long", "int" },
+  { "signed short", "short" },
   { "typedef enum", "alias" },
   { "typedef struct", "alias" },
+  { "typedef union", "alias" },
   { "unsigned char", "ubyte" },
   { "unsigned int", "uint" },
   { "unsigned long long", "ulong" },
@@ -49,6 +66,51 @@ const char sTAlnum[] = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123
 const char sDigit[] = "123456790";
 const char sNum[] = "123456790.eExXlL";
 
+// create a directpry path and empty "D" file
+void makefile(char *s) {
+  char buf[1024];
+  char *p = buf+3;
+  strcpy(buf, "../");
+  strcat(buf, s);
+  for (;;) {
+    p = strchr(p, '.');
+    if (p) {
+      *p = 0;
+      mkdir(buf, 0777);
+      *p = '/';
+      p++;
+    } else {
+      char *sem = strchr(buf, ';');
+      if (sem) *sem = 0;
+      strcat(buf, ".d");
+      FILE *f = fopen(buf, "rb");
+      if (!f) 
+        f = fopen(buf, "wb");
+      fclose(f);
+      break;
+    }
+  }
+}
+
+// create a directory path
+void strmkdir(char *s) {
+  char buf[1024];
+  char *p = buf;
+  strcpy(buf, s);
+  for (;;) {
+    p = strchr(p, '/');
+    if (p) {
+      *p = 0;
+      mkdir(buf, 0777);
+      *p = '/';
+      p++;
+    } else {
+      mkdir(buf, 0777);
+      break;
+    }
+  }
+}
+
 int findInList(char *s) {
   int i;
   // ++ please put a binary search function in here!
@@ -64,6 +126,7 @@ int findInList(char *s) {
 }
 
 void simpleWordReplace(char *d) {
+  char *o = d;
   char buf[2048];
   strcpy(buf, d);
   char *s = buf;
@@ -72,9 +135,14 @@ void simpleWordReplace(char *d) {
     if (!*s) break;
     int n = findInList(s);
     if (n>=0) {
-      char *st = tlut[n].repl;
-      while (*st) *d++ = *st++;
-      s += tlut[n].len;
+      if (tlut[n].flags & TE_REPLACE_LINE) {
+        strcpy(o, tlut[n].repl);
+        return;  
+      } else {
+        char *st = tlut[n].repl;
+        while (*st) *d++ = *st++;
+        s += tlut[n].len;
+      }
     } else {
       char c = *s;
       if (strchr(sTAlpha, c)) {
@@ -159,6 +227,7 @@ void translateInclude(char *d) {
   strcpy(buf, d);
   char *s = buf+9;
   strcpy(d, "public import std.c.osx.");
+  char *path = d+14;
   d += 24;
   for (;;) {
     char c = *s++;
@@ -170,6 +239,7 @@ void translateInclude(char *d) {
   }
   *d++ =';';
   *d = 0;
+  makefile(path);
 }
 
 void translateDefine(char *d) {
@@ -181,11 +251,14 @@ void translateDefine(char *d) {
 // the same keyword, for example "alias myType myType".
 void removeNonsenseAlias(char *d, int o) {
   char *b = d+o;
+  while (isspace(*b)) b++;
   char *s = strchr(b, ' ');
   if (!s) return;
+  while (isspace(*s)) s++;
   char *e = strchr(s, ';');
   if (!e) return;
-  if (strncmp(b, s+1, e-s-1)==0) {
+  int n = e-s;
+  if (strncmp(b, s, n)==0 && isspace(b[n])) {
     *d = 0;
   }
 }
@@ -241,7 +314,9 @@ void translate(FILE *src, FILE *dst) {
       if (*buf==0) continue;
       if (strncmp(buf, "alias ", 6)==0) removeNonsenseAlias(buf, 6); 
       else if (strncmp(buf, "typedef ", 8)==0) removeNonsenseAlias(buf, 8); 
-      if (*buf==0) continue;
+      char *f = buf;
+      while (isspace(*f)) f++;
+      if (*f==0 || *f=='#') continue;
       fputs(buf, dst);
       fputc('\n', dst);
     }
@@ -252,6 +327,7 @@ void translate(char *srcname) {
   char buf[1024];
   char *dstname = strdup(srcname);
   dstname[strlen(dstname)-1] = 'd';
+  strmkdir(out_path);
   sprintf(buf, "%s/%s", out_path, dstname); 
   strtolower(buf);
   printf("Translating \"%s\" to \"%s\"\n", srcname, dstname);
@@ -281,7 +357,10 @@ void translate(char *srcname) {
     if (c==0) break;
   }
   fprintf(dst, "module %s;\n\n", buf);
+  fprintf(dst, "public import std.c.osx.fltk;\n\n");
+  fprintf(dst, "extern (C) {\n\n");
   translate(src, dst);
+  fprintf(dst, "\n} // extern (C)\n\n");
   fclose(src);
   fclose(dst);
 }
