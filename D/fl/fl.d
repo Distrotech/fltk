@@ -710,6 +710,45 @@ public:
   static void clear_widget_pointer(Fl_Widget w) {
     /+= =+/
   }
+
+  static void dflt_warning(char[] format, ...) {
+    /+-
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fputc('\n', stderr);
+    fflush(stderr);
+    -+/
+  }
+  
+  static void dflt_error(char[] format, ...) {
+    /+-
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fputc('\n', stderr);
+    fflush(stderr);
+    -+/
+  }
+  
+  static void dflt_fatal(char[] format, ...) {
+    /+-
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fputc('\n', stderr);
+    fflush(stderr);
+    ::exit(1);
+    -+/
+  }
+  
+  static void function(char[] format, ...) warning = &dflt_warning;
+  static void function(char[] format, ...) error   = &dflt_error;
+  static void function(char[] format, ...) fatal   = &dflt_fatal;
+
 }
 
 

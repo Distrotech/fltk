@@ -19,6 +19,7 @@ DFILES = \
 	fl/enumerations.d \
 	fl/x.d \
 	fl/mac.d \
+	std/c/osx/qd/quickdraw.d \
 	std/c/osx/carbon/carbon.d \
 	std/c/osx/carbon/cfstring.d \
 	std/c/osx/carbon/cgcontext.d \

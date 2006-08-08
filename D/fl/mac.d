@@ -451,7 +451,13 @@ public:
     fl_quartz_restore_line_style_();
   }
 
-  static void q_clear_clipping();  // remove all clipping from a Quartz context
+  // The only way to reset clipping to its original state is to pop the current graphics
+  // state and restore the global state.
+  static void q_clear_clipping() {
+    if (!fl_gc) return;
+    CGContextRestoreGState(fl_gc);
+    CGContextSaveGState(fl_gc);
+  }
 
   static void q_release_context(Fl_X x=null) { // free all resources associated with fl_gc
     if (x && x.gc!=fl_gc) return;
@@ -2134,13 +2140,6 @@ extern class Fl_FontSize *fl_fontsize;
 extern void fl_font(class Fl_FontSize*);
 extern void fl_quartz_restore_line_style_();
 
-// The only way to reset clipping to its original state is to pop the current graphics
-// state and restore the global state.
-void Fl_X::q_clear_clipping() {
-  if (!fl_gc) return;
-  CGContextRestoreGState(fl_gc);
-  CGContextSaveGState(fl_gc);
-}
 
 void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   CGContextSaveGState(fl_gc);

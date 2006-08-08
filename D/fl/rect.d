@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: fl_rect.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: rect.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Rectangle drawing routines for the Fast Light Tool Kit (FLTK).
 //
@@ -30,11 +29,11 @@
 // and thus are always linked into an fltk program.
 // Also all fl_clip routines, since they are always linked in so
 // that minimal update works.
--+/
 
 module fl.rect;
 
 private import std.c.osx.carbon.carbon;
+private import std.c.osx.qd.quickdraw;
 
 private import fl.x;
 private import fl.mac;
@@ -479,14 +478,13 @@ void fl_point(int x, int y) {
 }
 
 ////////////////////////////////////////////////////////////////
-/+-
-#define STACK_SIZE 10
-#define STACK_MAX (STACK_SIZE - 1)
+static const int STACK_SIZE = 10;
+static const int STACK_MAX = STACK_SIZE - 1;
 static Fl_Region rstack[STACK_SIZE];
-static int rstackptr=0;
-int fl_clip_state_number=0; // used by gl_begin.cxx to update GL clip
+static int rstackptr = 0;
+int fl_clip_state_number = 0; // used by gl_begin.cxx to update GL clip
 
-#if !defined(WIN32) && !defined(__APPLE__)
+/+- #if !defined(WIN32) && !defined(__APPLE__)
 // Missing X call: (is this the fastest way to init a 1-rectangle region?)
 // MSWindows equivalent exists, implemented inline in win32.H
 Fl_Region XRectangleRegion(int x, int y, int w, int h) {
@@ -506,121 +504,86 @@ extern Fl_Region fl_window_region;
 //          and friends.
 extern Fl_Region fl_window_region;
 #endif
+-+/
 
 // undo any clobbering of clip done by your program:
 void fl_restore_clip() {
   fl_clip_state_number++;
   Fl_Region r = rstack[rstackptr];
-#ifdef WIN32
+/+- #ifdef WIN32
   SelectClipRgn(fl_gc, r); //if r is NULL, clip is automatically cleared
-#elif defined(__APPLE_QD__)
-# if 1
-  // This code is required to allow true subwindows to work on Mac.
-  // During regular operation however, this seems overkill.
-  // See also: Fl_Window::make_current()
-  if ( fl_window ) {
-    GrafPtr port = GetWindowPort( fl_window );
-    if ( port ) { // port will be NULL if we are using a GWorld (and fl_window_region is invalid)
-      RgnHandle portClip = NewRgn();
-      CopyRgn( fl_window_region, portClip ); // changed
-      if ( r ) 
-        SectRgn( portClip, r, portClip );
-      SetPortClipRegion( port, portClip );
-      DisposeRgn( portClip );
-    }
-  } else {
-    if (r) 
-      SetClip(r);
-    else {
-      Rect rect; rect.left=0; rect.top=0; rect.right=0x7fff; rect.bottom=0x7fff;
-      ClipRect(&rect);
+#elif defined(__APPLE_QUARTZ__) -+/
+  version (Apple) {
+    if ( fl_window )
+    {
+      GrafPtr port = GetWindowPort( fl_window );
+      if ( port ) { 
+        RgnHandle portClip = NewRgn();
+        CopyRgn( fl_window_region, portClip ); // changed
+        if ( r )
+          SectRgn( portClip, r, portClip );
+        Rect portRect; GetPortBounds(port, &portRect);
+        Fl_X.q_clear_clipping();
+        ClipCGContextToRegion(fl_gc, &portRect, portClip );
+        Fl_X.q_fill_context();
+        DisposeRgn( portClip );
+      }
     }
   }
-# else
-  if (r) SetClip(r);
-  else {
-    Rect rect; rect.left=0; rect.top=0; rect.right=0x7fff; rect.bottom=0x7fff;
-    ClipRect(&rect);
-  }
-# endif
-#elif defined(__APPLE_QUARTZ__)
-  if ( fl_window )
-  {
-    GrafPtr port = GetWindowPort( fl_window );
-    if ( port ) { 
-      RgnHandle portClip = NewRgn();
-      CopyRgn( fl_window_region, portClip ); // changed
-      if ( r )
-        SectRgn( portClip, r, portClip );
-      Rect portRect; GetPortBounds(port, &portRect);
-      Fl_X::q_clear_clipping();
-      ClipCGContextToRegion(fl_gc, &portRect, portClip );
-      Fl_X::q_fill_context();
-      DisposeRgn( portClip );
-    }
-  }
-#else
+/+-#else
   if (r) XSetRegion(fl_display, fl_gc, r);
   else XSetClipMask(fl_display, fl_gc, 0);
-#endif
+#endif-+/
 }
--+/
 
 // Replace the top of the clip stack:
 void fl_clip_region(Fl_Region r) {
-  /+= pri 2
   Fl_Region oldr = rstack[rstackptr];
   if (oldr) XDestroyRegion(oldr);
   rstack[rstackptr] = r;
   fl_restore_clip();
-  =+/
 }
 
-/+-
 // Return the current clip region...
 Fl_Region fl_clip_region() {
   return rstack[rstackptr];
 }
 
 // Intersect & push a new clip rectangle:
--+/
 void fl_push_clip(int x, int y, int w, int h) {
-/+-
   Fl_Region r;
   if (w > 0 && h > 0) {
     r = XRectangleRegion(x,y,w,h);
     Fl_Region current = rstack[rstackptr];
     if (current) {
-#ifdef WIN32
+/+-#ifdef WIN32
       CombineRgn(r,r,current,RGN_AND);
-#elif defined(__APPLE_QD__)
-      SectRgn(r, current, r); 
-#elif defined(__APPLE_QUARTZ__)
-      SectRgn(r, current, r);
-#else
+#elif defined(__APPLE_QUARTZ__) -+/
+      version (Apple) {
+        SectRgn(r, current, r);
+      }
+/+-#else
       Fl_Region temp = XCreateRegion();
       XIntersectRegion(current, r, temp);
       XDestroyRegion(r);
       r = temp;
-#endif
+#endif-+/
     }
   } else { // make empty clip region:
-#ifdef WIN32
+/+-#ifdef WIN32
     r = CreateRectRgn(0,0,0,0);
-#elif defined(__APPLE_QD__)
-    r = NewRgn(); 
-    SetEmptyRgn(r);
-#elif defined(__APPLE_QUARTZ__)
-    r = NewRgn();
-    SetEmptyRgn(r);
-#else
+#elif defined(__APPLE_QUARTZ__) -+/
+    version (Apple) {
+      r = NewRgn();
+      SetEmptyRgn(r);
+    }
+/+-#else
     r = XCreateRegion();
-#endif
+#endif-+/
   }
   if (rstackptr < STACK_MAX) rstack[++rstackptr] = r;
-  else Fl::warning("fl_push_clip: clip stack overflow!\n");
+  else Fl.warning("fl_push_clip: clip stack overflow!\n");
   fl_restore_clip();
--+/
 }
 
 // make there be no clip (used by fl_begin_offscreen() only!)
@@ -634,48 +597,41 @@ void fl_push_no_clip() {
 
 // pop back to previous clip:
 void fl_pop_clip() {
-/+-
   if (rstackptr > 0) {
     Fl_Region oldr = rstack[rstackptr--];
     if (oldr) XDestroyRegion(oldr);
-  } else Fl::warning("fl_pop_clip: clip stack underflow!\n");
+  } else Fl.warning("fl_pop_clip: clip stack underflow!\n");
   fl_restore_clip();
--+/
 }
 
 // does this rectangle intersect current clip?
 int fl_not_clipped(int x, int y, int w, int h) {
-/+= pri 2
   if (x+w <= 0 || y+h <= 0) return 0;
   Fl_Region r = rstack[rstackptr];
-#ifdef WIN32
+/+-#ifdef WIN32
   if (!r) return 1;
   RECT rect;
   rect.left = x; rect.top = y; rect.right = x+w; rect.bottom = y+h;
   return RectInRegion(r,&rect);
-#elif defined(__APPLE_QD__)
-  if (!r) return 1;
-  Rect rect;
-  rect.left = x; rect.top = y; rect.right = x+w; rect.bottom = y+h;
-  return RectInRgn(&rect, r);
-#elif defined(__APPLE_QUARTZ__)
-  if (!r) return 1;
-  Rect rect;
-  rect.left = x; rect.top = y; rect.right = x+w; rect.bottom = y+h;
-  return RectInRgn(&rect, r);
-#else
+#elif defined(__APPLE_QUARTZ__) -+/
+  version (Apple) {
+    if (!r) return 1;
+    Rect rect;
+    rect.left = x; rect.top = y; rect.right = x+w; rect.bottom = y+h;
+    return RectInRgn(&rect, r);
+  }
+/+-#else
   return r ? XRectInRegion(r, x, y, w, h) : 1;
 #endif
-=+/
-  return 1;
+-+/
 }
-/+-
+
 // return rectangle surrounding intersection of this rectangle and clip:
-int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
+int fl_clip_box(int x, int y, int w, int h, out int X, out int Y, out int W, out int H){
   X = x; Y = y; W = w; H = h;
   Fl_Region r = rstack[rstackptr];
   if (!r) return 0;
-#ifdef WIN32
+/+-#ifdef WIN32
 // The win32 API makes no distinction between partial and complete
 // intersection, so we have to check for partial intersection ourselves.
 // However, given that the regions may be composite, we have to do
@@ -697,34 +653,23 @@ int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
   DeleteObject(temp);
   DeleteObject(rr);
   return ret;
-#elif defined(__APPLE_QD__)
-  RgnHandle rr = NewRgn();
-  SetRectRgn( rr, x, y, x+w, y+h );
-  SectRgn( r, rr, rr );
-  Rect rp; GetRegionBounds(rr, &rp);
-  X = rp.left;
-  Y = rp.top;
-  W = rp.right - X;
-  H = rp.bottom - Y;
-  DisposeRgn( rr );
-  if ( H==0 ) return 2;
-  if ( h==H && w==W ) return 0;
-  return 0;
-#elif defined(__APPLE_QUARTZ__)
-  RgnHandle rr = NewRgn();
-  SetRectRgn( rr, x, y, x+w, y+h );
-  SectRgn( r, rr, rr );
-  Rect rp; GetRegionBounds(rr, &rp);
-  X = rp.left;
-  Y = rp.top;
-  W = rp.right - X;
-  H = rp.bottom - Y;
-  DisposeRgn( rr );
-  if ( H==0 ) return 2;
-  if ( h==H && w==W ) return 0;
-  return 0;
-#else
-  switch (XRectInRegion(r, x, y, w, h)) {
+#elif defined(__APPLE_QUARTZ__) -+/
+  version (Apple) {
+    RgnHandle rr = NewRgn();
+    SetRectRgn( rr, x, y, x+w, y+h );
+    SectRgn( r, rr, rr );
+    Rect rp; GetRegionBounds(rr, &rp);
+    X = rp.left;
+    Y = rp.top;
+    W = rp.right - X;
+    H = rp.bottom - Y;
+    DisposeRgn( rr );
+    if ( H==0 ) return 2;
+    if ( h==H && w==W ) return 0;
+    return 0;
+  }
+/+-  #else
+    switch (XRectInRegion(r, x, y, w, h)) {
   case 0: // completely outside
     W = H = 0;
     return 2;
@@ -743,9 +688,9 @@ int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
   XDestroyRegion(rr);
   return 1;
 #endif
+-+/
 }
 
 //
 // End of "$Id: fl_rect.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/
