@@ -8,6 +8,8 @@ import std.c.osx.carbon.cfstring;
 
 extern (C) {
 
+void SysBeep(short duration);
+
 void SetWTitle(WindowRef, char*);
 Rect * GetPortBounds (
    CGrafPtr port,

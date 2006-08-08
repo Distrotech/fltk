@@ -315,7 +315,8 @@ public:
   }
 
   int shown() {
-    return (&i != null);
+    if (i) return 1;
+    return 0;
   }
 
   void show() {
@@ -349,10 +350,11 @@ public:
   
     // remove from the list of windows:
     Fl_X ip = i;
-    Fl_X* pp = &Fl_X.first;
+    //Fl_X* pp = &Fl_X.first;
     /+=for (; *pp != ip; pp = &(pp.next)) 
       if (!pp) return;=+/
-    *pp = ip.next;
+    //*pp = ip.next;
+    Fl_X.first = null;
   
     version (Apple) { 
       // remove all childwindow links

@@ -26,12 +26,12 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef fl_ask_H
-#  define fl_ask_H
+-+/
+module fl.ask;
 
-#  include "Enumerations.H"
+public import fl.enumerations;
 
-class Fl_Widget;
+private import std.c.osx.carbon.carbon;
 
 enum {
   FL_BEEP_DEFAULT = 0,
@@ -41,7 +41,7 @@ enum {
   FL_BEEP_PASSWORD,
   FL_BEEP_NOTIFICATION
 };
-
+/+-
 #  ifdef __GNUC__
 #    define __fl_attr(x) __attribute__ (x)
 #    if __GNUC__ < 3
@@ -306,10 +306,10 @@ const char* fl_yes= "Yes";
 const char* fl_ok = "OK";
 const char* fl_cancel= "Cancel";
 const char* fl_close= "Close";
-
+-+/
 // fltk functions:
-void fl_beep(int type) {
-#ifdef WIN32
+void fl_beep(int type=FL_BEEP_DEFAULT) {
+/+-#ifdef WIN32
   switch (type) {
     case FL_BEEP_QUESTION :
     case FL_BEEP_PASSWORD :
@@ -328,16 +328,18 @@ void fl_beep(int type) {
       MessageBeep(0xFFFFFFFF);
       break;
   }
-#elif defined(__APPLE__)
-  switch (type) {
-    case FL_BEEP_DEFAULT :
-    case FL_BEEP_ERROR :
-      SysBeep(30);
-      break;
-    default :
-      break;
+#elif defined(__APPLE__)-+/
+  version (Apple) {
+    switch (type) {
+      case FL_BEEP_DEFAULT :
+      case FL_BEEP_ERROR :
+        SysBeep(30);
+        break;
+      default :
+        break;
+    }
   }
-#else
+/+-#else
   switch (type) {
     case FL_BEEP_DEFAULT :
     case FL_BEEP_ERROR :
@@ -351,9 +353,9 @@ void fl_beep(int type) {
       XBell(fl_display, 50);
       break;
   }
-#endif // WIN32
+#endif // WIN32-+/
 }
-
+/+-
 void fl_message(const char *fmt, ...) {
   va_list ap;
 

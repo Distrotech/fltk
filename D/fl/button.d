@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,59 +25,109 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Button_H
-#define Fl_Button_H
+module fl.button;
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
+public import fl.fl;
+public import fl.widget;
+public import fl.group;
 
-// values for type()
-#define FL_NORMAL_BUTTON	0
-#define FL_TOGGLE_BUTTON	1
-#define FL_RADIO_BUTTON		(FL_RESERVED_TYPE+2)
-#define FL_HIDDEN_BUTTON	3 // for Forms compatability
+class Fl_Button : Fl_Widget {
 
-extern FL_EXPORT int fl_old_shortcut(const char*);
-
-class FL_EXPORT Fl_Button : public Fl_Widget {
+private:
 
   int shortcut_;
   char value_;
   char oldval;
-  uchar down_box_;
+  Fl_Boxtype down_box_;
 
 protected:
 
-  virtual void draw();
+  void draw() {
+    if (type() == FL_HIDDEN_BUTTON) return;
+    Fl_Color col = value() ? selection_color() : color();
+    draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(), col);
+    draw_label();
+    if (Fl.focus() && Fl.focus() == this) draw_focus();
+  }
 
 public:
-
+/+-
   virtual int handle(int);
-  Fl_Button(int,int,int,int,const char * = 0);
-  int value(int);
-  char value() const {return value_;}
-  int set() {return value(1);}
-  int clear() {return value(0);}
-  void setonly(); // this should only be called on FL_RADIO_BUTTONs
-  int shortcut() const {return shortcut_;}
-  void shortcut(int s) {shortcut_ = s;}
-  Fl_Boxtype down_box() const {return (Fl_Boxtype)down_box_;}
-  void down_box(Fl_Boxtype b) {down_box_ = b;}
+-+/
+  this(int X, int Y, int W, int H, char[] l=null) {
+    super(X,Y,W,H,l);
+    box(FL_UP_BOX);
+    down_box(FL_NO_BOX);
+    value_ = oldval = 0;
+    shortcut_ = 0;
+    set_flag(SHORTCUT_LABEL);
+  }
 
+  int value(int v) {
+    v = v ? 1 : 0;
+    oldval = v;
+    clear_changed();
+    if (value_ != v) {
+      value_ = v;
+      redraw();
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  char value() {
+    return value_;
+  }
+
+  int set() {
+    return value(1);
+  }
+
+  int clear() { 
+    return value(0);
+  }
+
+  void setonly() { // set this radio button on, turn others off
+    value(1);
+    Fl_Group g = parent();
+    Fl_Widget* a = g.array();
+    for (int i = g.children(); i--;) {
+      Fl_Widget o = *a++;
+      if (o != this && o.type()==FL_RADIO_BUTTON) 
+        (cast(Fl_Button)o).value(0);
+    }
+  }
+
+  int shortcut() {
+    return shortcut_;
+  }
+
+  void shortcut(int s) {
+    shortcut_ = s;
+  }
+
+  Fl_Boxtype down_box() {
+    return down_box_;
+  }
+
+  void down_box(Fl_Boxtype b) {
+    down_box_ = b;
+  }
+/+-
   // back compatability:
   void shortcut(const char *s) {shortcut(fl_old_shortcut(s));}
   Fl_Color down_color() const {return selection_color();}
   void down_color(unsigned c) {selection_color(c);}
+-+/
 };
-
-#endif
+/+-
 
 //
-// End of "$Id: Fl_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: button.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
-/+- This file was imported from C++ using a script
+
+This file was imported from C++ using a script
 //
 // "$Id: Fl_Button.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -114,38 +163,6 @@ public:
 // There are a lot of subclasses, named Fl_*_Button.  Some of
 // them are implemented by setting the type() value and testing it
 // here.  This includes Fl_Radio_Button and Fl_Toggle_Button
-
-int Fl_Button::value(int v) {
-  v = v ? 1 : 0;
-  oldval = v;
-  clear_changed();
-  if (value_ != v) {
-    value_ = v;
-    redraw();
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-void Fl_Button::setonly() { // set this radio button on, turn others off
-  value(1);
-  Fl_Group* g = (Fl_Group*)parent();
-  Fl_Widget*const* a = g->array();
-  for (int i = g->children(); i--;) {
-    Fl_Widget* o = *a++;
-    if (o != this && o->type()==FL_RADIO_BUTTON) ((Fl_Button*)o)->value(0);
-  }
-}
-
-void Fl_Button::draw() {
-  if (type() == FL_HIDDEN_BUTTON) return;
-  Fl_Color col = value() ? selection_color() : color();
-//if (col == FL_GRAY && Fl::belowmouse()==this) col = FL_LIGHT1;
-  draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(), col);
-  draw_label();
-  if (Fl::focus() == this) draw_focus();
-}
 
 int Fl_Button::handle(int event) {
   int newval;
@@ -229,15 +246,6 @@ int Fl_Button::handle(int event) {
   default:
     return 0;
   }
-}
-
-Fl_Button::Fl_Button(int X, int Y, int W, int H, const char *l)
-: Fl_Widget(X,Y,W,H,l) {
-  box(FL_UP_BOX);
-  down_box(FL_NO_BOX);
-  value_ = oldval = 0;
-  shortcut_ = 0;
-  set_flag(SHORTCUT_LABEL);
 }
 
 //

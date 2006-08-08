@@ -452,6 +452,10 @@ typedef ubyte Fl_Type;
 // reserved type numbers (necessary for my cheapo RTTI) start here.
 // grep the header files for "RESERVED_TYPE" to find the next available
 // number.
+const Fl_Type FL_NORMAL_BUTTON = 0;
+const Fl_Type FL_TOGGLE_BUTTON = 1;
+const Fl_Type FL_RADIO_BUTTON = (FL_RESERVED_TYPE+2);
+const Fl_Type FL_HIDDEN_BUTTON = 3;
 const Fl_Type FL_RESERVED_TYPE = 100;
 const Fl_Type FL_WINDOW = 0xf0;
 const Fl_Type FL_DOUBLE_WINDOW = 0xf1;

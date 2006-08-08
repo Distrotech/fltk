@@ -117,11 +117,15 @@ public:
   static void current(Fl_Group g) {
     current_ = g;
   }
-/+-
 
-  int children() const {return children_;}
-  Fl_Widget* child(int n) const {return array()[n];}
--+/
+  int children() {
+    return children_;
+  }
+
+  Fl_Widget child(int n) {
+    return array()[n];
+  }
+
   int find(Fl_Widget o) {
     Fl_Widget* a = array();
     int i; 

@@ -1,8 +1,10 @@
 
 DFILES = \
 	fl/fl.d \
+	fl/ask.d \
 	fl/box.d \
 	fl/boxtype.d \
+	fl/button.d \
 	fl/color.d \
 	fl/color_mac.d \
 	fl/draw.d \
@@ -30,9 +32,14 @@ OBJECTS = $(DFILES:.d=.o)
 
 DFLAGS = -g -fbounds-check -funittest -fversion=Apple 
 
-all: hello
+all: hello button
 
 hello:  test/hello.o $(OBJECTS)
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
+
+button:  test/button.o $(OBJECTS)
 	echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
@@ -46,5 +53,6 @@ hello:  test/hello.o $(OBJECTS)
 clean:
 	rm $(OBJECTS)
 	rm test/hello.o
+	rm test/button.o
 
 
