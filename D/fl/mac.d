@@ -292,8 +292,8 @@ public:
   
       if (w.non_modal() && Fl_X.first && !fl_disable_transient_for) {
         // find some other window to be "transient for":
-        Fl_Window w = Fl_X.first.w;
-        while (w.parent()) w = w.window(); // todo: this code does not make any sense! (w!=w??)
+        Fl_Window w2 = Fl_X.first.w;
+        while (w2.parent()) w2 = w2.window(); // todo: this code does not make any sense! (w!=w??)
       }
   
       Rect wRect;
@@ -1250,15 +1250,15 @@ static double do_queued_events( double time = 0.0 )
   EventTimeout timeout = time;
   if (!ReceiveNextEvent(0, null, timeout, true, &event)) {
     got_events = 1;
-    OSErr ret = SendEventToEventTarget( event, target );
-    if (ret!=noErr) {
+    OSErr err = SendEventToEventTarget( event, target );
+    if (err!=noErr) {
       EventRecord clevent;
       ConvertEventRefToEventRecord(event, &clevent);
       if (clevent.what==kHighLevelEvent) {
-        ret = AEProcessAppleEvent(&clevent);
+        err = AEProcessAppleEvent(&clevent);
       }
     }
-    if (   ret==eventNotHandledErr
+    if (   err==eventNotHandledErr
         && GetEventClass(event)==kEventClassMouse
         && GetEventKind(event)==kEventMouseDown ) {
       WindowRef win; Point pos;

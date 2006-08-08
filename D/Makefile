@@ -33,14 +33,14 @@ all: hello
 
 hello:  test/hello.o $(OBJECTS)
 	echo Linking $@...
-	gdc -g -fversion=Apple -framework Carbon $< $(OBJECTS) -o $@
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 .SUFFIXES: .d .fl
 
 .d.o:
 	echo Compiling $<...
-	gdc -g -fversion=Apple -c $< -o $@
+	gdc $(DFLAGS) -c $< -o $@
 
 clean:
 	rm $(OBJECTS)
