@@ -98,10 +98,166 @@ public: /+? "friend" ?+/
 public:
 
   int handle(Fl_Event event) {
-    /+= pri 1 =+/
-    return 0;
-  }
 
+    Fl_Widget* a = array();
+    int i;
+    Fl_Widget o;
+  
+    switch (event) {
+ /+- 
+    case FL_FOCUS:
+      switch (navkey()) {
+      default:
+        if (savedfocus_ && savedfocus_->take_focus()) return 1;
+      case FL_Right:
+      case FL_Down:
+        for (i = children(); i--;) if ((*a++)->take_focus()) return 1;
+        break;
+      case FL_Left:
+      case FL_Up:
+        for (i = children(); i--;) if (a[i]->take_focus()) return 1;
+        break;
+      }
+      return 0;
+  
+    case FL_UNFOCUS:
+      savedfocus_ = fl_oldfocus;
+      return 0;
+  
+    case FL_KEYBOARD:
+      return navigation(navkey());
+  
+    case FL_SHORTCUT:
+      for (i = children(); i--;) {
+        o = a[i];
+        if (o->takesevents() && Fl::event_inside(o) && send(o,FL_SHORTCUT))
+	  return 1;
+      }
+      for (i = children(); i--;) {
+        o = a[i];
+        if (o->takesevents() && !Fl::event_inside(o) && send(o,FL_SHORTCUT))
+	  return 1;
+      }
+      if ((Fl::event_key() == FL_Enter || Fl::event_key() == FL_KP_Enter)) return navigation(FL_Down);
+      return 0;
+  
+    case FL_ENTER:
+    case FL_MOVE:
+      for (i = children(); i--;) {
+        o = a[i];
+        if (o->visible() && Fl::event_inside(o)) {
+	  if (o->contains(Fl::belowmouse())) {
+	    return send(o,FL_MOVE);
+	  } else {
+	    Fl::belowmouse(o);
+	    if (send(o,FL_ENTER)) return 1;
+	  }
+        }
+      }
+      Fl::belowmouse(this);
+      return 1;
+  
+    case FL_DND_ENTER:
+    case FL_DND_DRAG:
+      for (i = children(); i--;) {
+        o = a[i];
+        if (o->takesevents() && Fl::event_inside(o)) {
+	  if (o->contains(Fl::belowmouse())) {
+	    return send(o,FL_DND_DRAG);
+	  } else if (send(o,FL_DND_ENTER)) {
+	    if (!o->contains(Fl::belowmouse())) Fl::belowmouse(o);
+	    return 1;
+	  }
+        }
+      }
+      Fl::belowmouse(this);
+      return 0;
+-+/  
+    case FL_PUSH:
+      for (i = children(); i--;) {
+        o = a[i];
+        if (o.takesevents() && Fl.event_inside(o)) {
+	  if (send(o, FL_PUSH)) {
+	    if (Fl.pushed() && !o.contains(Fl.pushed())) Fl.pushed(o);
+	    return 1;
+	  }
+        }
+      }
+      return 0;
+  
+    case FL_RELEASE:
+    case FL_DRAG:
+      o = Fl.pushed();
+      if (o && o == this) return 0;
+      else if (o) send(o,event);
+      else {
+        for (i = children(); i--;) {
+	  o = a[i];
+	  if (o.takesevents() && Fl.event_inside(o)) {
+	    if (send(o,event)) return 1;
+	  }
+        }
+      }
+      return 0;
+/+-
+    case FL_MOUSEWHEEL:
+      for (i = children(); i--;) {
+        o = a[i];
+        if (o->takesevents() && Fl::event_inside(o) && send(o,FL_MOUSEWHEEL))
+	  return 1;
+      }
+      for (i = children(); i--;) {
+        o = a[i];
+        if (o->takesevents() && !Fl::event_inside(o) && send(o,FL_MOUSEWHEEL))
+	  return 1;
+      }
+      return 0;
+  
+    case FL_DEACTIVATE:
+    case FL_ACTIVATE:
+      for (i = children(); i--;) {
+        o = *a++;
+        if (o->active()) o->handle(event);
+      }
+      return 1;
+  
+    case FL_SHOW:
+    case FL_HIDE:
+      for (i = children(); i--;) {
+        o = *a++;
+        if (event == FL_HIDE && o == Fl::focus()) {
+          // Give up input focus...
+	  int old_event = Fl::e_number;
+          o->handle(Fl::e_number = FL_UNFOCUS);
+	  Fl::e_number = old_event;
+	  Fl::focus(0);
+        }
+        if (o->visible()) o->handle(event);
+      }
+      return 1;
+-+/  
+    default:
+      // For all other events, try to give to each child, starting at focus:
+      for (i = 0; i < children(); i ++)
+        if (Fl.focus_ && Fl.focus_ == a[i]) break;
+  
+      if (i >= children()) i = 0;
+  
+      if (children()) {
+        for (int j = i;;) {
+          if (a[j].takesevents() || event != FL_MOUSEWHEEL) {
+            if (send(a[j], event)) return 1;
+	  }
+          j++;
+          if (j >= children()) j = 0;
+          if (j == i) break;
+        }
+      }
+  
+      return 0;
+    }
+  }
+  
   void begin() {
     current_ = this;
   }
@@ -295,24 +451,25 @@ Fl_Group* Fl_Group::current_;
 // class member: current_, so these methods can't be inlined...
 
 extern Fl_Widget* fl_oldfocus; // set by Fl::focus
+-+/
 
 // For back-compatability, we must adjust all events sent to child
 // windows so they are relative to that window.
 
-static int send(Fl_Widget* o, int event) {
-  if (o->type() < FL_WINDOW) return o->handle(event);
+static int send(Fl_Widget o, Fl_Event event) {
+  if (o.type() < FL_WINDOW) return o.handle(event);
   switch ( event )
   {
   case FL_DND_ENTER:
   case FL_DND_DRAG:
     // figure out correct type of event:
-    event = (o->contains(Fl::belowmouse())) ? FL_DND_DRAG : FL_DND_ENTER;
+    event = (o.contains(Fl.belowmouse())) ? FL_DND_DRAG : FL_DND_ENTER;
   }
-  int save_x = Fl::e_x; Fl::e_x -= o->x();
-  int save_y = Fl::e_y; Fl::e_y -= o->y();
-  int ret = o->handle(event);
-  Fl::e_y = save_y;
-  Fl::e_x = save_x;
+  int save_x = Fl.e_x; Fl.e_x -= o.x();
+  int save_y = Fl.e_y; Fl.e_y -= o.y();
+  int ret = o.handle(event);
+  Fl.e_y = save_y;
+  Fl.e_x = save_x;
   switch ( event )
   {
   case FL_ENTER:
@@ -320,12 +477,13 @@ static int send(Fl_Widget* o, int event) {
     // Successful completion of FL_ENTER means the widget is now the
     // belowmouse widget, but only call Fl::belowmouse if the child
     // widget did not do so:
-    if (!o->contains(Fl::belowmouse())) Fl::belowmouse(o);
+    if (!o.contains(Fl.belowmouse())) Fl.belowmouse(o);
     break;
   }
   return ret;
 }
 
+/+-
 // translate the current keystroke into up/down/left/right for navigation:
 #define ctrl(x) (x^0x40)
 static int navkey() {
@@ -348,166 +506,6 @@ static int navkey() {
   return 0;
 }
 
-int Fl_Group::handle(int event) {
-
-  Fl_Widget*const* a = array();
-  int i;
-  Fl_Widget* o;
-
-  switch (event) {
-
-  case FL_FOCUS:
-    switch (navkey()) {
-    default:
-      if (savedfocus_ && savedfocus_->take_focus()) return 1;
-    case FL_Right:
-    case FL_Down:
-      for (i = children(); i--;) if ((*a++)->take_focus()) return 1;
-      break;
-    case FL_Left:
-    case FL_Up:
-      for (i = children(); i--;) if (a[i]->take_focus()) return 1;
-      break;
-    }
-    return 0;
-
-  case FL_UNFOCUS:
-    savedfocus_ = fl_oldfocus;
-    return 0;
-
-  case FL_KEYBOARD:
-    return navigation(navkey());
-
-  case FL_SHORTCUT:
-    for (i = children(); i--;) {
-      o = a[i];
-      if (o->takesevents() && Fl::event_inside(o) && send(o,FL_SHORTCUT))
-	return 1;
-    }
-    for (i = children(); i--;) {
-      o = a[i];
-      if (o->takesevents() && !Fl::event_inside(o) && send(o,FL_SHORTCUT))
-	return 1;
-    }
-    if ((Fl::event_key() == FL_Enter || Fl::event_key() == FL_KP_Enter)) return navigation(FL_Down);
-    return 0;
-
-  case FL_ENTER:
-  case FL_MOVE:
-    for (i = children(); i--;) {
-      o = a[i];
-      if (o->visible() && Fl::event_inside(o)) {
-	if (o->contains(Fl::belowmouse())) {
-	  return send(o,FL_MOVE);
-	} else {
-	  Fl::belowmouse(o);
-	  if (send(o,FL_ENTER)) return 1;
-	}
-      }
-    }
-    Fl::belowmouse(this);
-    return 1;
-
-  case FL_DND_ENTER:
-  case FL_DND_DRAG:
-    for (i = children(); i--;) {
-      o = a[i];
-      if (o->takesevents() && Fl::event_inside(o)) {
-	if (o->contains(Fl::belowmouse())) {
-	  return send(o,FL_DND_DRAG);
-	} else if (send(o,FL_DND_ENTER)) {
-	  if (!o->contains(Fl::belowmouse())) Fl::belowmouse(o);
-	  return 1;
-	}
-      }
-    }
-    Fl::belowmouse(this);
-    return 0;
-
-  case FL_PUSH:
-    for (i = children(); i--;) {
-      o = a[i];
-      if (o->takesevents() && Fl::event_inside(o)) {
-	if (send(o,FL_PUSH)) {
-	  if (Fl::pushed() && !o->contains(Fl::pushed())) Fl::pushed(o);
-	  return 1;
-	}
-      }
-    }
-    return 0;
-
-  case FL_RELEASE:
-  case FL_DRAG:
-    o = Fl::pushed();
-    if (o == this) return 0;
-    else if (o) send(o,event);
-    else {
-      for (i = children(); i--;) {
-	o = a[i];
-	if (o->takesevents() && Fl::event_inside(o)) {
-	  if (send(o,event)) return 1;
-	}
-      }
-    }
-    return 0;
-
-  case FL_MOUSEWHEEL:
-    for (i = children(); i--;) {
-      o = a[i];
-      if (o->takesevents() && Fl::event_inside(o) && send(o,FL_MOUSEWHEEL))
-	return 1;
-    }
-    for (i = children(); i--;) {
-      o = a[i];
-      if (o->takesevents() && !Fl::event_inside(o) && send(o,FL_MOUSEWHEEL))
-	return 1;
-    }
-    return 0;
-
-  case FL_DEACTIVATE:
-  case FL_ACTIVATE:
-    for (i = children(); i--;) {
-      o = *a++;
-      if (o->active()) o->handle(event);
-    }
-    return 1;
-
-  case FL_SHOW:
-  case FL_HIDE:
-    for (i = children(); i--;) {
-      o = *a++;
-      if (event == FL_HIDE && o == Fl::focus()) {
-        // Give up input focus...
-	int old_event = Fl::e_number;
-        o->handle(Fl::e_number = FL_UNFOCUS);
-	Fl::e_number = old_event;
-	Fl::focus(0);
-      }
-      if (o->visible()) o->handle(event);
-    }
-    return 1;
-
-  default:
-    // For all other events, try to give to each child, starting at focus:
-    for (i = 0; i < children(); i ++)
-      if (Fl::focus_ == a[i]) break;
-
-    if (i >= children()) i = 0;
-
-    if (children()) {
-      for (int j = i;;) {
-        if (a[j]->takesevents() || event != FL_MOUSEWHEEL) {
-          if (send(a[j], event)) return 1;
-	}
-        j++;
-        if (j >= children()) j = 0;
-        if (j == i) break;
-      }
-    }
-
-    return 0;
-  }
-}
 
 //void Fl_Group::focus(Fl_Widget *o) {Fl::focus(o); o->handle(FL_FOCUS);}
 

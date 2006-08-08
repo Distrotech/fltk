@@ -230,17 +230,36 @@ public:
   static void add_idle(void (*cb)(void*), void* = 0);
   static int  has_idle(void (*cb)(void*), void* = 0);
   static void remove_idle(void (*cb)(void*), void* = 0);
-  static int damage() {return damage_;}
+-+/
+  static int damage() {
+    return damage_;
+  }
+/+-
   static void redraw();
 -+/
   static void flush() {
-    /+= pri 1: port me over =+/
+    if (damage()) {
+      damage_ = 0;
+      for (Fl_X i = Fl_X.first; i; i = i.next) {
+        if (i.wait_for_expose) {damage_ = 1; continue;}
+        Fl_Window wi = i.w;
+        if (!wi.visible_r()) continue;
+        if (wi.damage()) {i.flush(); wi.clear_damage();}
+        // destroy damage regions for windows that don't use them:
+        if (i.region) {XDestroyRegion(i.region); i.region = null;}
+      }
+    }
+ 
+    version (Win32) { 
+      GdiFlush();
+    } else version (Apple) {
+      if (fl_gc)
+        CGContextFlush(fl_gc);
+    } else version (x11) {
+      if (fl_display) XFlush(fl_display);
+    }
   }
-/+-
-  static void (*warning)(const char*, ...);
-  static void (*error)(const char*, ...);
-  static void (*fatal)(const char*, ...);
--+/
+
   static Fl_Window first_window() {
     Fl_X i = Fl_X.first;
     return i ? i.w : null;
@@ -291,9 +310,20 @@ public:
   static int compose(inout int del);
 -+/
   static void compose_reset() {compose_state = 0;}
+
+  static int event_inside(int xx,int yy,int ww,int hh) {
+    int mx = e_x - xx;
+    int my = e_y - yy;
+    return (mx >= 0 && mx < ww && my >= 0 && my < hh);
+  }
+  
+  static int event_inside(Fl_Widget o) {
+    int mx = e_x - o.x();
+    int my = e_y - o.y();
+    return (mx >= 0 && mx < o.w() && my >= 0 && my < o.h());
+  }
+  
 /+-
-  static int event_inside(int,int,int,int);
-  static int event_inside(const Fl_Widget*);
   static int test_shortcut(int);
 -+/
 
@@ -318,20 +348,17 @@ public:
     case FL_HIDE:
       wi.w_hide(); // this calls Fl_Widget::hide(), not Fl_Window::hide()
       return 1;
-  /+= pri 2
+
     case FL_PUSH:
-  #ifdef DEBUG
-      printf("Fl::handle(e=%d, window=%p);\n", e, window);
-  #endif // DEBUG
-  
       if (grab()) wi = grab();
       else if (modal() && wi != modal()) return 0;
       pushed_ = wi;
-      Fl_Tooltip::current(wi);
+      Fl_Tooltip.current(wi);
       if (send(e, wi, window)) return 1;
       // raise windows that are clicked on:
-      window->show();
+      window.show();
       return 1;
+/+-
   
     case FL_DND_ENTER:
     case FL_DND_DRAG:
@@ -347,7 +374,7 @@ public:
     case FL_DND_RELEASE:
       wi = belowmouse();
       break;
-  
+-+/
     case FL_MOVE:
     case FL_DRAG:
       fl_xmousewin = window; // this should already be set, but just in case.
@@ -357,17 +384,16 @@ public:
         e_number = e = FL_DRAG;
         break;
       }
-      if (modal() && wi != modal()) wi = 0;
+      if (modal() && wi != modal()) wi = null;
       if (grab()) wi = grab();
-      {Fl_Widget* pbm = belowmouse();
-      int ret = (wi && send(e, wi, window));
-      if (pbm != belowmouse()) {
-  #ifdef DEBUG
-        printf("Fl::handle(e=%d, window=%p);\n", e, window);
-  #endif // DEBUG
-        Fl_Tooltip::enter(belowmouse());
+      {
+        Fl_Widget pbm = belowmouse();
+        int ret = (wi && send(e, wi, window));
+        if (pbm && pbm != belowmouse()) {
+          Fl_Tooltip.enter(belowmouse());
+        }
+        return ret;
       }
-      return ret;}
   
     case FL_RELEASE: {
   //    printf("FL_RELEASE: window=%p, pushed() = %p, grab() = %p, modal() = %p\n",
@@ -375,15 +401,15 @@ public:
   
       if (grab()) {
         wi = grab();
-        pushed_ = 0; // must be zero before callback is done!
+        pushed_ = null; // must be zero before callback is done!
       } else if (pushed()) {
         wi = pushed();
-        pushed_ = 0; // must be zero before callback is done!
+        pushed_ = null; // must be zero before callback is done!
       } else if (modal() && wi != modal()) return 0;
       int r = send(e, wi, window);
       fl_fix_focus();
       return r;}
- =+/ 
+
     case FL_UNFOCUS:
       window = null;
     case FL_FOCUS:
@@ -492,9 +518,9 @@ public:
     return pushed_;
   }
 
-/+-
-  static void pushed(Fl_Widget*);
--+/
+  static void pushed(Fl_Widget o) {
+    pushed_ = o;
+  }
 
   static Fl_Widget focus() {
     return focus_;
@@ -859,18 +885,6 @@ Fl::version() {
 //                       the given rectangle.
 //
 
-int Fl::event_inside(int xx,int yy,int ww,int hh) /*const*/ {
-  int mx = e_x - xx;
-  int my = e_y - yy;
-  return (mx >= 0 && mx < ww && my >= 0 && my < hh);
-}
-
-int Fl::event_inside(const Fl_Widget *o) /*const*/ {
-  int mx = e_x - o->x();
-  int my = e_y - o->y();
-  return (mx >= 0 && mx < o->w() && my >= 0 && my < o->h());
-}
-
 //
 //
 // timer support
@@ -1128,33 +1142,6 @@ void Fl::redraw() {
   for (Fl_X* i = Fl_X::first; i; i = i->next) i->w->redraw();
 }
 
-void Fl::flush() {
-  if (damage()) {
-    damage_ = 0;
-    for (Fl_X* i = Fl_X::first; i; i = i->next) {
-      if (i->wait_for_expose) {damage_ = 1; continue;}
-      Fl_Window* wi = i->w;
-      if (!wi->visible_r()) continue;
-      if (wi->damage()) {i->flush(); wi->clear_damage();}
-      // destroy damage regions for windows that don't use them:
-      if (i->region) {XDestroyRegion(i->region); i->region = 0;}
-    }
-  }
-
-#ifdef WIN32
-  GdiFlush();
-#elif defined(__APPLE_QD__)
-  GrafPtr port;
-  GetPort( &port );
-  if ( port )
-    QDFlushPortBuffer( port, 0 );
-#elif defined (__APPLE_QUARTZ__)
-  if (fl_gc)
-    CGContextFlush(fl_gc);
-#else
-  if (fl_display) XFlush(fl_display);
-#endif
-}
 -+/
 ////////////////////////////////////////////////////////////////
 // Event handlers:
@@ -1206,10 +1193,6 @@ Fl_Widget fl_oldfocus; // kludge for Fl_Group...
 
 static byte dnd_flag = 0; // make 'belowmouse' send DND_LEAVE instead of LEAVE
 /+-
-void Fl::pushed(Fl_Widget *o) {
-  pushed_ = o;
-}
-
 static void nothing(Fl_Widget *) {}
 void (*Fl_Tooltip::enter)(Fl_Widget *) = nothing;
 void (*Fl_Tooltip::exit)(Fl_Widget *) = nothing;
