@@ -34,16 +34,14 @@ module fl.x;
 
 public import fl.enumerations;
 
-//version (Apple) {
+version (Apple) {
   public import fl.mac;
-//}
-
-version (X11) {
+} else version (X11) {
   public import fl.x11;
-}
-
-version (Win32) {
+} else version (Win32) {
   public import fl.win32;
+} else {
+  // we must define a machine type
 }
 
 //
