@@ -32,8 +32,14 @@
 
 module fl.rect;
 
-private import std.c.osx.carbon.carbon;
-private import std.c.osx.qd.quickdraw;
+version (Win32) {
+  private import std.c.windows.windows;
+}
+
+version (Apple) {
+  private import std.c.osx.carbon.carbon;
+  private import std.c.osx.qd.quickdraw;
+}
 
 private import fl.x;
 private import fl.mac;

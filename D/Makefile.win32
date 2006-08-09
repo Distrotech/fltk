@@ -1,0 +1,61 @@
+
+DFILES = \
+	fl/fl.d \
+	fl/ask.d \
+	fl/box.d \
+	fl/boxtype.d \
+	fl/button.d \
+	fl/color.d \
+	fl/color_mac.d \
+	fl/draw.d \
+	fl/font.d \
+	fl/font_mac.d \
+	fl/image.d \
+	fl/labeltype.d \
+	fl/line_style.d \
+	fl/rect.d \
+	fl/tooltip.d \
+	fl/widget.d \
+	fl/window.d \
+	fl/group.d \
+	fl/enumerations.d \
+	fl/x.d \
+	fl/win32.d \
+	std/c/osx/qd/quickdraw.d \
+	std/c/osx/carbon/carbon.d \
+	std/c/osx/carbon/cfstring.d \
+	std/c/osx/carbon/cgcontext.d \
+	std/c/osx/carbon/types.d \
+	std/c/osx/carbon/windowmanager.d
+
+OBJECTS = $(DFILES:.d=.o)
+
+DFLAGS = -g -unittest -version=win32 
+
+ECHO = /usr/bin/echo
+
+DMD = c:/dmd/bin/dmd.exe
+
+
+all: hello button
+
+hello:  test/hello.o $(OBJECTS)
+	$(ECHO) Linking $@...
+	$(DMD) $(DFLAGS) $< $(OBJECTS) -of$@
+
+button: test/button.o $(OBJECTS)
+	$(ECHO) Linking $@...
+	$(DMD) $(DFLAGS) $< $(OBJECTS) -of$@
+
+.SUFFIXES: .d .fl
+
+.d.o:
+	$(ECHO) Compiling $<...
+	$(DMD) $(DFLAGS) -c $< -of$@
+
+clean:
+	del $(OBJECTS)
+	del test/hello.o
+	del test/button.o
+
+
