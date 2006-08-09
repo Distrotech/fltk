@@ -36,38 +36,21 @@ private import fl.image;
 private import fl.boxtype;
 private import fl.tooltip;
 
-/+- This file was imported from C++ using a script
-#ifndef Fl_H
-#  define Fl_H
-
-#  include "Enumerations.H"
-#  ifndef Fl_Object
-#    define Fl_Object Fl_Widget
-#  endif
-
-#  ifdef check
-#    undef check
-#  endif
-
-class Fl_Widget;
-class Fl_Window;
-class Fl_Image;
-struct Fl_Label;
--+/
 typedef void function(Fl_Label, int,int,int,int, Fl_Align) Fl_Label_Draw_F;
 typedef void function(Fl_Label, inout int, inout int) Fl_Label_Measure_F;
 typedef void function(int,int,int,int, Fl_Color) Fl_Box_Draw_F;
 
 typedef void function(void*) Fl_Timeout_Handler;
 
+
+Fl_Window fl_xfocus;	// which window X thinks has focus
+Fl_Window fl_xmousewin;// which window X thinks has FL_ENTER
+
+
 class Fl {
 
 private:
   const double FOREVER = 1e20;
-
-/+-
-  Fl() {}; // no constructor!
--+/
 
 public: // should be private!
 
@@ -693,6 +676,7 @@ public:
 
 /+-
   static void set_atclose(void (*f)(Fl_Window*,void*)) {atclose = f;}
+-+/
   static int event_shift() {return e_state&FL_SHIFT;}
   static int event_ctrl() {return e_state&FL_CTRL;}
   static int event_alt() {return e_state&FL_ALT;}
@@ -700,6 +684,7 @@ public:
   static int event_button1() {return e_state&FL_BUTTON1;}
   static int event_button2() {return e_state&FL_BUTTON2;}
   static int event_button3() {return e_state&FL_BUTTON3;}
+/+-
   static void set_idle(void (*cb)()) {idle = cb;}
   static void grab(Fl_Window&win) {grab(&win);}
   static void release() {grab(0);}
@@ -767,8 +752,8 @@ public:
     va_end(args);
     fputc('\n', stderr);
     fflush(stderr);
-    ::exit(1);
     -+/
+    std.c.stdlib.exit(1);
   }
   
   static void function(char[] format, ...) warning = &dflt_warning;
@@ -783,50 +768,6 @@ public:
 //
 
 /+- This file was imported from C++ using a script
-//
-// "$Id: Fl.cxx 5257 2006-07-16 20:37:41Z matt $"
-//
-// Main event handling code for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2006 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
-// warning: the Apple Quartz version still uses some Quickdraw calls,
-//          mostly to get around the single active context in QD and 
-//          to implement clipping. This should be changed into pure
-//          Quartz calls in the near future.
-
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/x.H>
-#include <FL/Fl_Tooltip.H>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "flstring.h"
-
-#ifdef DEBUG
-#  include <stdio.h>
-#endif // DEBUG
 
 #ifdef WIN32
 #  include <ole2.h>
@@ -864,8 +805,6 @@ int		Fl::visible_focus_ = 1,
 		Fl::dnd_text_ops_ = 1;
 
 -+/
-Fl_Window fl_xfocus;	// which window X thinks has focus
-Fl_Window fl_xmousewin;// which window X thinks has FL_ENTER
 /+-
 Fl_Window *Fl::grab_;	// most recent Fl::grab()
 Fl_Window *Fl::modal_;	// topmost modal() window

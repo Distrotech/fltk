@@ -350,11 +350,18 @@ public:
   
     // remove from the list of windows:
     Fl_X ip = i;
-    //Fl_X* pp = &Fl_X.first;
-    /+=for (; *pp != ip; pp = &(pp.next)) 
-      if (!pp) return;=+/
-    //*pp = ip.next;
-    Fl_X.first = null;
+    if (ip == Fl_X.first) {
+      Fl_X.first = ip.next;
+    } else {
+      Fl_X pp = Fl_X.first;
+      for (;;) {
+        if (!pp) return;
+        Fl_X pn = pp.next;
+        if (pn==ip) break;
+        pp = pn;
+      }
+      pp.next = ip.next;
+    }
   
     version (Apple) { 
       // remove all childwindow links
