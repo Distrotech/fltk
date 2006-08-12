@@ -210,48 +210,64 @@ public:
     return super.handle(ev);
   }
 
-/+-
-  virtual void resize(int,int,int,int);
-void Fl_Window::resize(int X,int Y,int W,int H) {
-  if (W<=0) W = 1; // OS X does not like zero width windows
-  if (H<=0) H = 1;
-  int is_a_resize = (W != w() || H != h());
-//  printf("Fl_Winodw::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
-//         X, Y, W, H, is_a_resize, resize_from_system, this);
-  if (X != x() || Y != y()) set_flag(FL_FORCE_POSITION);
-  else if (!is_a_resize) return;
-  if ( (resize_from_system!=this) && (!parent()) && shown()) {
-    if (is_a_resize) {
-      if (resizable()) {
-        if (W<minw) minw = W; // user request for resize takes priority
-        if (W>maxw) maxw = W; // over a previously set size_range
-        if (H<minh) minh = H;
-        if (H>maxh) maxh = H;
-        size_range(minw, minh, maxw, maxh);
-      } else { 
-        size_range(W, H, W, H);
-      }
-      Rect dim; dim.left=X; dim.top=Y; dim.right=X+W; dim.bottom=Y+H;
-      SetWindowBounds(i->xid, kWindowContentRgn, &dim);
-      Rect all; all.top=-32000; all.bottom=32000; all.left=-32000; all.right=32000;
-      InvalWindowRect( i->xid, &all );    
+  void resize(int X,int Y,int W,int H) {
+    if (W<=0) W = 1; // OS X does not like zero width windows
+    if (H<=0) H = 1;
+    int is_a_resize = (W != w() || H != h());
+  //  printf("Fl_Winodw::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
+  //         X, Y, W, H, is_a_resize, resize_from_system, this);
+    if (X != x() || Y != y()) set_flag(FL_FORCE_POSITION);
+    else if (!is_a_resize) return;
+    if ( (resize_from_system!=this) && (!parent()) && shown()) {
+      if (is_a_resize) {
+        if (resizable()) {
+          if (W<minw) minw = W; // user request for resize takes priority
+          if (W>maxw) maxw = W; // over a previously set size_range
+          if (H<minh) minh = H;
+          if (H>maxh) maxh = H;
+          size_range(minw, minh, maxw, maxh);
+        } else { 
+          size_range(W, H, W, H);
+        }
+        Rect dim; dim.left=X; dim.top=Y; dim.right=X+W; dim.bottom=Y+H;
+        SetWindowBounds(i.xid, kWindowContentRgn, &dim);
+        Rect all; all.top=-32000; all.bottom=32000; all.left=-32000; all.right=32000;
+        InvalWindowRect( i.xid, &all );    
+      } else {
+        MoveWindow(i.xid, X, Y, 0);
+      } 
+    }   
+    resize_from_system = null;
+    if (is_a_resize) { 
+      Fl_Group.resize(X,Y,W,H);
+      if (shown()) { 
+        redraw(); 
+      }     
     } else {
-      MoveWindow(i->xid, X, Y, 0);
-    } 
-  }   
-  resize_from_system = 0;
-  if (is_a_resize) { 
-    Fl_Group::resize(X,Y,W,H);
-    if (shown()) { 
-      redraw(); 
+      x(X); y(Y); 
     }     
-  } else {
-    x(X); y(Y); 
   }     
-}     
 
-  void border(int b);
--+/
+  void border(int b) {
+    if (b) {
+      if (border()) return;
+      clear_flag(FL_NOBORDER);
+    } else {
+      if (!border()) return;
+      set_flag(FL_NOBORDER);
+    }
+    version (win32) {
+      // not yet implemented, but it's possible
+      // for full fullscreen we have to make the window topmost as well
+    } 
+    version (Apple) {
+      // warning: not implemented in Quartz/Carbon
+    }
+    version (X11) {
+      if (shown()) Fl_X.i(this).sendxjunk();
+    }
+  }
+
   void clear_border() {
     set_flag(FL_NOBORDER);
   }
@@ -283,11 +299,70 @@ void Fl_Window::resize(int X,int Y,int W,int H) {
   int non_modal() {
     return flags() & (FL_NON_MODAL|FL_MODAL);
   }
-/+-
-  void hotspot(int x, int y, int offscreen = 0);
-  void hotspot(const Fl_Widget*, int offscreen = 0);
-  void hotspot(const Fl_Widget p, int offscreen = 0) {hotspot(&p,offscreen);}
--+/
+
+  void hotspot(int X, int Y, int offscreen=0) {
+    int mx,my;
+  
+    // Update the screen position based on the mouse position.
+    Fl.get_mouse(mx,my);
+    X = mx-X; Y = my-Y;
+  
+    // If offscreen is 0 (the default), make sure that the window
+    // stays on the screen, if possible.
+    if (!offscreen) {
+      version (win32) {
+        // These will be used by reference, so we must passed different variables
+        int bt,bx,by;
+        x(X);y(Y);
+        Fl_X.fake_X_wm(this, X, Y, bt, bx, by);
+        //force FL_FORCE_POSITION to be set in Fl_Window::resize()
+        if (X==x()) x(X-1);
+      }
+      version (Apple) {
+        // These will be used by reference, so we must passed different variables
+        int bt,bx,by;
+        x(X);y(Y);
+        Fl_X.fake_X_wm(this, X, Y, bt, bx, by);
+        //force FL_FORCE_POSITION to be set in Fl_Window::resize()
+        if (X==x()) x(X-1);
+      } 
+      version (x11) {
+        int scr_x, scr_y, scr_w, scr_h;
+        Fl.screen_xywh(scr_x, scr_y, scr_w, scr_h);
+    
+        if (border()) {
+          // Ensure border is on screen; these values are generic enough
+          // to work with many window managers, and are based on KDE defaults.
+          const int top = 20;
+          const int left = 4;
+          const int right = 4;
+          const int bottom = 8;
+          if (X+w()+right > scr_w-scr_x) X = scr_w-scr_x-right-w();
+          if (X-left < scr_x) X = left;
+          if (Y+h()+bottom > scr_h-scr_y) Y = scr_h-scr_y-bottom-h();
+          if (Y-top < scr_y) Y = top;
+        }
+        // now insure contents are on-screen (more important than border):
+        if (X+w() > scr_w-scr_x) X = scr_w-scr_x-w();
+        if (X < scr_x) X = scr_x;
+        if (Y+h() > scr_h-scr_y) Y = scr_h-scr_y-h();
+        if (Y < scr_y) Y = scr_y;
+      }
+    }
+  
+    position(X,Y);
+  }
+  
+  void hotspot(Fl_Widget o, int offscreen=0) {
+    int X = o.w()/2;
+    int Y = o.h()/2;
+    while (o && o != this) {
+      X += o.x(); Y += o.y();
+      o = o.window();
+    }
+    hotspot(X, Y, offscreen);
+  }
+
   void free_position() {
     clear_flag(FL_FORCE_POSITION);
   }
@@ -495,11 +570,65 @@ void Fl_Window::resize(int X,int Y,int W,int H) {
     /+= pri 3: implement me =+/
     show();
   }
-/+-
-  void fullscreen();
-  void fullscreen_off(int,int,int,int);
-  void iconize();
--+/
+
+  void fullscreen() {
+    version (win32) {
+      int sx, sy, sw, sh;
+      Fl.screen_xywh(sx, sy, sw, sh, x()+w()/2, y()+h()/2);
+      // if we are on the main screen, we will leave the system menu bar unobstructed
+      if (Fl.x()>=sx && Fl.y()>=sy && Fl.x()+Fl.w()<=sx+sw && Fl.y()+Fl.h()<=sy+sh) {
+        sx = Fl.x(); sy = Fl.y(); 
+        sw = Fl.w(); sh = Fl.h();
+      }
+      if (x()==sx) x(sx+1); // make sure that we actually execute the resize
+      resize(sx, sy, sw, sh);
+    }
+    version (Apple) {
+      border(0);
+      int sx, sy, sw, sh;
+      Fl.screen_xywh(sx, sy, sw, sh, x()+w()/2, y()+h()/2);
+      // if we are on the main screen, we will leave the system menu bar unobstructed
+      if (Fl.x()>=sx && Fl.y()>=sy && Fl.x()+Fl.w()<=sx+sw && Fl.y()+Fl.h()<=sy+sh) {
+        sx = Fl.x(); sy = Fl.y(); 
+        sw = Fl.w(); sh = Fl.h();
+      }
+      if (x()==sx) x(sx+1); // make sure that we actually execute the resize
+      resize(sx, sy, sw, sh);
+    }
+    version (x11) {
+      border(0);
+      if (!x()) x(1); // force it to call XResizeWindow()
+      resize(0,0,Fl.w(),Fl.h());
+    }
+  }
+  
+  void fullscreen_off(int X,int Y,int W,int H) {
+    // this order produces less blinking on IRIX:
+    resize(X,Y,W,H);
+    version (Apple) {
+      border(1);
+    }
+    version (x11) {
+      border(1);
+    }
+  }
+
+  void iconize() {
+    if (!shown()) {
+      fl_show_iconic = 1;
+      show();
+    } else {
+      version (win32) {
+        ShowWindow(i.xid, SW_SHOWMINNOACTIVE);
+      }
+      version (Apple) {
+        CollapseWindow( i.xid, true );
+      }
+      version (x11) {
+        XIconifyWindow(fl_display, i.xid, fl_screen);
+      }
+    }
+  }
 
   int x_root() {
     Fl_Window p = window();

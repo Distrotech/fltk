@@ -697,6 +697,7 @@ enum {
 
 extern (C) {
 
+void LocalToGlobal(Point * pt);
 OSStatus KLGetCurrentKeyboardLayout(KeyboardLayoutRef * oKeyboardLayout);
 OSStatus KLGetKeyboardLayoutProperty(
   KeyboardLayoutRef           iKeyboardLayout,

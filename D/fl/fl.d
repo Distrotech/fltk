@@ -367,22 +367,19 @@ void Fl::remove_fd(int n)
   static int event_y_root()	{return e_y_root;}
   static int event_dx()	{return e_dx;}
   static int event_dy()	{return e_dy;}
-/+-
-  static void get_mouse(int &,int &);
-/**
- * get the current mouse pointer world coordinates
- */
-void Fl::get_mouse(int &x, int &y) 
-{
-  fl_open_display();
-  Point loc; 
-  GetMouse( &loc );
-  LocalToGlobal( &loc );
-  x = loc.h;
-  y = loc.v;
-}
 
--+/
+  /**
+   * get the current mouse pointer world coordinates
+   */
+  static void get_mouse(out int x, out int y) {
+    fl_open_display();
+    Point loc; 
+    GetMouse( &loc );
+    LocalToGlobal( &loc );
+    x = loc.h;
+    y = loc.v;
+  }
+
   static int event_clicks()	{return e_clicks;}
   static void event_clicks(int i) {e_clicks = i;}
   static int event_is_click()	{return e_is_click;}
@@ -788,7 +785,12 @@ void Fl::paste(Fl_Widget &receiver, int clipboard) {
   static void screen_xywh(int &x, int &y, int &w, int &h) {
     screen_xywh(x, y, w, h, e_x_root, e_y_root);
   }
-  static void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my);
+-+/
+  static void screen_xywh(out int x, out int y, out int w, out int h, int mx, int my) {
+    /+= implement me =+/
+    x = Fl.x; y = Fl.y; w = Fl.w; h = Fl.h;
+  }
+/+-
   static void screen_xywh(int &x, int &y, int &w, int &h, int n);
 
   // color map:

@@ -4,7 +4,8 @@ This is a list of files that have been ported to "D":
 fl/box.d
 fl/button.d
 fl/color_mac.d
-fl/group.d  (optimization questions)
+fl/group.d               (optimization questions)
 fl/enumerations.d
+fl/widget.d              (except other platforms and a few questions)
 
 
