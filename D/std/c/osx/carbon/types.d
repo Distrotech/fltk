@@ -42,6 +42,7 @@ alias void* CGFontRef;
 alias void* CGPatternRef;
 alias void* ATSUTextLayout;
 alias void* ATSUStyle;
+alias void* ScrapRef;
 alias double EventTime;
 
 alias uint ThemeBrush;

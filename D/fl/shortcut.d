@@ -52,43 +52,6 @@
 #include <FL/x.H>
 #endif
 
-int Fl::test_shortcut(int shortcut) {
-  if (!shortcut) return 0;
-
-  int v = shortcut & 0xffff;
-#ifdef __APPLE__
-  if (v > 32 && v < 0x7f || v >= 0x80 && v <= 0xff) {
-#else
-  // most X11 use MSWindows Latin-1 if set to Western encoding, so 0x80 to 0xa0 are defined
-  if (v > 32 && v < 0x7f || v >= 0x80 && v <= 0xff) {
-#endif
-    if (isupper(v)) {
-      shortcut |= FL_SHIFT;
-    }
-  }
-
-  int shift = Fl::event_state();
-  // see if any required shift flags are off:
-  if ((shortcut&shift) != (shortcut&0x7fff0000)) return 0;
-  // record shift flags that are wrong:
-  int mismatch = (shortcut^shift)&0x7fff0000;
-  // these three must always be correct:
-  if (mismatch&(FL_META|FL_ALT|FL_CTRL)) return 0;
-
-  int key = shortcut & 0xffff;
-
-  // if shift is also correct, check for exactly equal keysyms:
-  if (!(mismatch&(FL_SHIFT)) && key == Fl::event_key()) return 1;
-
-  // try matching ascii, ignore shift:
-  if (key == event_text()[0]) return 1;
-
-  // kludge so that Ctrl+'_' works (as opposed to Ctrl+'^_'):
-  if ((shift&FL_CTRL) && key >= 0x3f && key <= 0x5F
-      && event_text()[0]==(key^0x40)) return 1;
-  return 0;
-}
-
 #if defined(WIN32) || defined(__APPLE__) // if not X
 // This table must be in numeric order by fltk (X) keysym number:
 struct Keyname {int key; const char* name;};

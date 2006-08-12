@@ -212,6 +212,44 @@ public:
 
 /+-
   virtual void resize(int,int,int,int);
+void Fl_Window::resize(int X,int Y,int W,int H) {
+  if (W<=0) W = 1; // OS X does not like zero width windows
+  if (H<=0) H = 1;
+  int is_a_resize = (W != w() || H != h());
+//  printf("Fl_Winodw::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
+//         X, Y, W, H, is_a_resize, resize_from_system, this);
+  if (X != x() || Y != y()) set_flag(FL_FORCE_POSITION);
+  else if (!is_a_resize) return;
+  if ( (resize_from_system!=this) && (!parent()) && shown()) {
+    if (is_a_resize) {
+      if (resizable()) {
+        if (W<minw) minw = W; // user request for resize takes priority
+        if (W>maxw) maxw = W; // over a previously set size_range
+        if (H<minh) minh = H;
+        if (H>maxh) maxh = H;
+        size_range(minw, minh, maxw, maxh);
+      } else { 
+        size_range(W, H, W, H);
+      }
+      Rect dim; dim.left=X; dim.top=Y; dim.right=X+W; dim.bottom=Y+H;
+      SetWindowBounds(i->xid, kWindowContentRgn, &dim);
+      Rect all; all.top=-32000; all.bottom=32000; all.left=-32000; all.right=32000;
+      InvalWindowRect( i->xid, &all );    
+    } else {
+      MoveWindow(i->xid, X, Y, 0);
+    } 
+  }   
+  resize_from_system = 0;
+  if (is_a_resize) { 
+    Fl_Group::resize(X,Y,W,H);
+    if (shown()) { 
+      redraw(); 
+    }     
+  } else {
+    x(X); y(Y); 
+  }     
+}     
+
   void border(int b);
 -+/
   void clear_border() {

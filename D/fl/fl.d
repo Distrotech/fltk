@@ -36,6 +36,8 @@ private import fl.image;
 private import fl.boxtype;
 private import fl.tooltip;
 
+private import std.ctype;
+
 typedef void function(Fl_Label, int,int,int,int, Fl_Align) Fl_Label_Draw_F;
 typedef void function(Fl_Label, inout int, inout int) Fl_Label_Measure_F;
 typedef void function(int,int,int,int, Fl_Color) Fl_Box_Draw_F;
@@ -45,6 +47,12 @@ typedef void function(void*) Fl_Timeout_Handler;
 
 Fl_Window fl_xfocus;	// which window X thinks has focus
 Fl_Window fl_xmousewin;// which window X thinks has FL_ENTER
+
+Fl_Widget fl_selection_requestor = null;
+char[2]* fl_selection_buffer;
+int[2] fl_selection_length;
+int[2] fl_selection_buffer_length;
+static ScrapRef myScrap = null;
 
 
 class Fl {
@@ -200,14 +208,102 @@ public:
 /+-
   static Fl_Widget* readqueue();
   static void add_timeout(double t, Fl_Timeout_Handler,void* = 0);
+void Fl::add_timeout(double time, Fl_Timeout_Handler cb, void* data)
+{
+   // check, if this timer slot exists already
+   for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout& t = mac_timers[i];
+        // if so, simply change the fire interval
+        if (t.callback == cb  &&  t.data == data) {
+            SetEventLoopTimerNextFireTime(t.timer, (EventTimerInterval)time);
+            t.pending = 1;
+            return;
+        }
+    }
+    // no existing timer to use. Create a new one:
+    int timer_id = -1;
+    // find an empty slot in the timer array
+    for (int i = 0;  i < mac_timer_used;  ++i) {
+        if ( !mac_timers[i].timer ) {
+            timer_id = i;
+            break;
+        }
+    }
+    // if there was no empty slot, append a new timer
+    if (timer_id == -1) {
+        // make space if needed
+        if (mac_timer_used == mac_timer_alloc) {
+            realloc_timers();
+        }
+        timer_id = mac_timer_used++;
+    }
+    // now install a brand new timer
+    MacTimeout& t = mac_timers[timer_id];
+    EventTimerInterval fireDelay = (EventTimerInterval)time;
+    EventLoopTimerUPP  timerUPP = NewEventLoopTimerUPP(do_timer);
+    EventLoopTimerRef  timerRef = 0;
+    OSStatus err = InstallEventLoopTimer(GetMainEventLoop(), fireDelay, 0, timerUPP, data, &timerRef);
+    if (err == noErr) {
+        t.callback = cb;
+        t.data     = data;
+        t.timer    = timerRef;
+        t.upp      = timerUPP;
+        t.pending  = 1;
+    } else {
+        if (timerRef) 
+            RemoveEventLoopTimer(timerRef);
+        if (timerUPP)
+            DisposeEventLoopTimerUPP(timerUPP);
+    }
+}
+
   static void repeat_timeout(double t, Fl_Timeout_Handler,void* = 0);
+void Fl::repeat_timeout(double time, Fl_Timeout_Handler cb, void* data)
+{
+    // currently, repeat_timeout does not subtract the trigger time of the previous timer event as it should.
+    add_timeout(time, cb, data);
+}
+
   static int  has_timeout(Fl_Timeout_Handler, void* = 0);
+int Fl::has_timeout(Fl_Timeout_Handler cb, void* data)
+{
+   for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout& t = mac_timers[i];
+        if (t.callback == cb  &&  t.data == data && t.pending) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
   static void remove_timeout(Fl_Timeout_Handler, void* = 0);
+void Fl::remove_timeout(Fl_Timeout_Handler cb, void* data)
+{
+   for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout& t = mac_timers[i];
+        if (t.callback == cb  && ( t.data == data || data == NULL)) {
+            delete_timer(t);
+        }
+    }
+}
+
   static void add_check(Fl_Timeout_Handler, void* = 0);
   static int  has_check(Fl_Timeout_Handler, void* = 0);
   static void remove_check(Fl_Timeout_Handler, void* = 0);
   static void add_fd(int fd, int when, void (*cb)(int,void*),void* =0);
-  static void add_fd(int fd, void (*cb)(int, void*), void* = 0);
+  static void add_fd(int fd, void (*cb)(int, void*), void* = 1);
+void Fl::add_fd( int n, int events, void (*cb)(int, void*), void *v )
+    { dataready.AddFD(n, events, cb, v); }
+
+void Fl::add_fd(int fd, void (*cb)(int, void*), void* v)
+    { dataready.AddFD(fd, POLLIN, cb, v); }
+
+void Fl::remove_fd(int n, int events)
+    { dataready.RemoveFD(n, events); }
+
+void Fl::remove_fd(int n)
+    { dataready.RemoveFD(n, -1); }
+
   static void remove_fd(int, int when);
   static void remove_fd(int);
   static void add_idle(void (*cb)(void*), void* = 0);
@@ -273,6 +369,19 @@ public:
   static int event_dy()	{return e_dy;}
 /+-
   static void get_mouse(int &,int &);
+/**
+ * get the current mouse pointer world coordinates
+ */
+void Fl::get_mouse(int &x, int &y) 
+{
+  fl_open_display();
+  Point loc; 
+  GetMouse( &loc );
+  LocalToGlobal( &loc );
+  x = loc.h;
+  y = loc.v;
+}
+
 -+/
   static int event_clicks()	{return e_clicks;}
   static void event_clicks(int i) {e_clicks = i;}
@@ -306,9 +415,44 @@ public:
     return (mx >= 0 && mx < o.w() && my >= 0 && my < o.h());
   }
   
-/+-
-  static int test_shortcut(int);
--+/
+  static int test_shortcut(int shortcut) {
+    if (!shortcut) return 0;
+  
+    int v = shortcut & 0xffff;
+    bool testUpper = false;
+    version (Apple) {
+      testUpper = (v > 32 && v < 0x7f || v >= 0x80 && v <= 0xff);
+    } else {
+      // most X11 use MSWindows Latin-1 if set to Western encoding, so 0x80 to 0xa0 are defined
+      testUpper = (v > 32 && v < 0x7f || v >= 0x80 && v <= 0xff);
+    }
+    if (testUpper) {
+      if (isupper(v)) {
+        shortcut |= FL_SHIFT;
+      }
+    }
+  
+    int shift = Fl.event_state();
+    // see if any required shift flags are off:
+    if ((shortcut&shift) != (shortcut&0x7fff0000)) return 0;
+    // record shift flags that are wrong:
+    int mismatch = (shortcut^shift)&0x7fff0000;
+    // these three must always be correct:
+    if (mismatch&(FL_META|FL_ALT|FL_CTRL)) return 0;
+  
+    int key = shortcut & 0xffff;
+  
+    // if shift is also correct, check for exactly equal keysyms:
+    if (!(mismatch&(FL_SHIFT)) && key == Fl.event_key()) return 1;
+  
+    // try matching ascii, ignore shift:
+    if (key == event_text()[0]) return 1;
+  
+    // kludge so that Ctrl+'_' works (as opposed to Ctrl+'^_'):
+    if ((shift&FL_CTRL) && key >= 0x3f && key <= 0x5F
+        && event_text()[0]==(key^0x40)) return 1;
+    return 0;
+  }
 
   // event destinations:
   static int handle(Fl_Event e, Fl_Window window) {
@@ -399,18 +543,14 @@ public:
       fl_xfocus = window;
       fl_fix_focus();
       return 1;
-  /+= pri 3
+
     case FL_KEYBOARD:
-  #ifdef DEBUG
-      printf("Fl::handle(e=%d, window=%p);\n", e, window);
-  #endif // DEBUG
-  
-      Fl_Tooltip::enter((Fl_Widget*)0);
+      Fl_Tooltip.enter(null);
   
       fl_xfocus = window; // this should not happen!  But maybe it does:
   
       // Try it as keystroke, sending it to focus and all parents:
-      for (wi = grab() ? grab() : focus(); wi; wi = wi->parent())
+      for (wi = grab() ? grab() : focus(); wi; wi = wi.parent())
         if (send(FL_KEYBOARD, wi, window)) return 1;
   
       // recursive call to try shortcut:
@@ -418,9 +558,9 @@ public:
   
       // and then try a shortcut with the case of the text swapped, by
       // changing the text and falling through to FL_SHORTCUT case:
-      {unsigned char* c = (unsigned char*)event_text(); // cast away const
-      if (!isalpha(*c)) return 0;
-      *c = isupper(*c) ? tolower(*c) : toupper(*c);}
+      char c = event_text()[0];
+      if (!isalpha(c)) return 0;
+      event_text[0] = isupper(c) ? tolower(c) : toupper(c);
       e_number = e = FL_SHORTCUT;
   
     case FL_SHORTCUT:
@@ -428,7 +568,7 @@ public:
   
       // Try it as shortcut, sending to mouse widget and all parents:
       wi = belowmouse(); if (!wi) {wi = modal(); if (!wi) wi = window;}
-      for (; wi; wi = wi->parent()) if (send(FL_SHORTCUT, wi, window)) return 1;
+      for (; wi; wi = wi.parent()) if (send(FL_SHORTCUT, wi, window)) return 1;
   
       // try using add_handle() functions:
       if (send_handlers(FL_SHORTCUT)) return 1;
@@ -436,12 +576,11 @@ public:
       // make Escape key close windows:
       if (event_key()==FL_Escape) {
         wi = modal(); if (!wi) wi = window;
-        wi->do_callback();
+        wi.do_callback();
         return 1;
       }
-  
       return 0;
-  =+/
+
     case FL_ENTER:
       fl_xmousewin = window;
       fl_fix_focus();
@@ -458,16 +597,14 @@ public:
         fl_fix_focus();
       }
       return 1;
-  /+= later
+
     case FL_MOUSEWHEEL:
       fl_xfocus = window; // this should not happen!  But maybe it does:
-  
       // Try sending it to the grab and then the window:
       if (grab()) {
         if (send(FL_MOUSEWHEEL, grab(), window)) return 1;
       }
       if (send(FL_MOUSEWHEEL, window, window)) return 1;
-=+/
     default:
       break;
     }
@@ -540,7 +677,68 @@ public:
 
   // cut/paste:
   static void copy(const char* stuff, int len, int clipboard = 0);
+/**
+ * create a selection
+ * owner: widget that created the selection
+ * stuff: pointer to selected data
+ * size of selected data
+ */
+void Fl::copy(const char *stuff, int len, int clipboard) {
+  if (!stuff || len<0) return;
+  if (len+1 > fl_selection_buffer_length[clipboard]) {
+    delete[] fl_selection_buffer[clipboard];
+    fl_selection_buffer[clipboard] = new char[len+100];
+    fl_selection_buffer_length[clipboard] = len+100;
+  }
+  memcpy(fl_selection_buffer[clipboard], stuff, len);
+  fl_selection_buffer[clipboard][len] = 0; // needed for direct paste
+  fl_selection_length[clipboard] = len;
+  if (clipboard) {
+    ClearCurrentScrap();
+    OSStatus ret = GetCurrentScrap( &myScrap );
+    if ( ret != noErr ) {
+      myScrap = 0;
+      return;
+    }
+    // Previous version changed \n to \r before sending the text, but I would
+    // prefer to leave the local buffer alone, so a copied buffer may be
+    // needed. Check to see if this is necessary on OS/X.
+    PutScrapFlavor( myScrap, kScrapFlavorTypeText, 0,
+                    len, fl_selection_buffer[1] );
+  }
+}
+
   static void paste(Fl_Widget &receiver, int clipboard /*=0*/);
+void Fl::paste(Fl_Widget &receiver, int clipboard) {
+  if (clipboard) {
+    // see if we own the selection, if not go get it:
+    ScrapRef scrap = 0;
+    Size len = 0;
+    if (GetCurrentScrap(&scrap) == noErr && scrap != myScrap &&
+        GetScrapFlavorSize(scrap, kScrapFlavorTypeText, &len) == noErr) {
+      if ( len >= fl_selection_buffer_length[1] ) {
+        fl_selection_buffer_length[1] = len + 32;
+        delete[] fl_selection_buffer[1];
+        fl_selection_buffer[1] = new char[len + 32];
+      }
+      fl_selection_length[1] = len; len++;
+      GetScrapFlavorData( scrap, kScrapFlavorTypeText, &len,
+                          fl_selection_buffer[1] );
+      fl_selection_buffer[1][fl_selection_length[1]] = 0;
+      // turn all \r characters into \n:
+      for (int x = 0; x < len; x++) {
+        if (fl_selection_buffer[1][x] == '\r')
+          fl_selection_buffer[1][x] = '\n';
+      }
+    }
+  }
+  Fl::e_text = fl_selection_buffer[clipboard];
+  Fl::e_length = fl_selection_length[clipboard];
+  if (!Fl::e_text) Fl::e_text = (char *)"";
+  receiver.handle(FL_PASTE);
+  return;
+}
+
   static int dnd();
   // These are for back-compatability only:
   static Fl_Widget* selection_owner() {return selection_owner_;}

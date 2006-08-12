@@ -87,12 +87,12 @@ public:
       }
       if (when() & FL_WHEN_RELEASE) do_callback();
       return 1;
-/+-
+
     case FL_SHORTCUT:
       if (!(shortcut() ?
-	    Fl::test_shortcut(shortcut()) : test_shortcut())) return 0;
+	    Fl.test_shortcut(shortcut()) : test_shortcut())) return 0;
       
-      if (Fl::visible_focus() && handle(FL_FOCUS)) Fl::focus(this);
+      if (Fl.visible_focus() && handle(FL_FOCUS)) Fl.focus(this);
   
       if (type() == FL_RADIO_BUTTON && !value_) {
         setonly();
@@ -104,7 +104,7 @@ public:
         if (when() & FL_WHEN_CHANGED) do_callback();
       } else if (when() & FL_WHEN_RELEASE) do_callback();
       return 1;
--+/
+
     case FL_FOCUS :
     case FL_UNFOCUS :
       if (Fl.visible_focus()) {

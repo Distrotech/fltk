@@ -50,6 +50,7 @@ private import fl.color_mac;
 private import fl.line_style;
 
 private import std.math;
+private import std.ctype;
 
 // Some random X equivalents
 struct XPoint { int x, y; };
@@ -635,12 +636,12 @@ static WindowRef fl_os_capture = null; // the dispatch handler will redirect mos
 
 enum { kEventClassFLTK = ('f'<<24)|('l'<<16)|('t'<<8)|'k' };
 enum { kEventFLTKBreakLoop = 1, kEventFLTKDataReady };
-/+-
+
 /**
-* Mac keyboard lookup table
+ * Mac keyboard lookup table
  */
-static unsigned short macKeyLookUp[128] =
-{
+static ushort macKeyLookUp[128] =
+[
     'a', 's', 'd', 'f', 'h', 'g', 'z', 'x',
     'c', 'v', '^', 'b', 'q', 'w', 'e', 'r',
 
@@ -666,8 +667,7 @@ static unsigned short macKeyLookUp[128] =
 
     0, FL_Pause, FL_Help, FL_Home, FL_Page_Up, FL_Delete, FL_F+4, FL_End,
     FL_F+2, FL_Page_Down, FL_F+1, FL_Left, FL_Right, FL_Down, FL_Up, 0/*FL_Power*/,
-};
--+/
+];
 
 /**
  * convert the current mouse chord into the FLTK modifier state
@@ -685,25 +685,24 @@ static void mods_to_e_state( UInt32 mods )
   //printf( "State 0x%08x (%04x)\n", Fl::e_state, mods );
 }
 
-/+-
 /**
  * convert the current mouse chord into the FLTK keysym
  */
 static void mods_to_e_keysym( UInt32 mods )
 {
-  if ( mods & cmdKey ) Fl::e_keysym = FL_Meta_L;
-  else if ( mods & kEventKeyModifierNumLockMask ) Fl::e_keysym = FL_Num_Lock;
-  else if ( mods & optionKey ) Fl::e_keysym = FL_Alt_L;
-  else if ( mods & rightOptionKey ) Fl::e_keysym = FL_Alt_R;
-  else if ( mods & controlKey ) Fl::e_keysym = FL_Control_L;
-  else if ( mods & rightControlKey ) Fl::e_keysym = FL_Control_R;
-  else if ( mods & shiftKey ) Fl::e_keysym = FL_Shift_L;
-  else if ( mods & rightShiftKey ) Fl::e_keysym = FL_Shift_R;
-  else if ( mods & alphaLock ) Fl::e_keysym = FL_Caps_Lock;
-  else Fl::e_keysym = 0;
+  if ( mods & cmdKey ) Fl.e_keysym = FL_Meta_L;
+  else if ( mods & kEventKeyModifierNumLockMask ) Fl.e_keysym = FL_Num_Lock;
+  else if ( mods & optionKey ) Fl.e_keysym = FL_Alt_L;
+  else if ( mods & rightOptionKey ) Fl.e_keysym = FL_Alt_R;
+  else if ( mods & controlKey ) Fl.e_keysym = FL_Control_L;
+  else if ( mods & rightControlKey ) Fl.e_keysym = FL_Control_R;
+  else if ( mods & shiftKey ) Fl.e_keysym = FL_Shift_L;
+  else if ( mods & rightShiftKey ) Fl.e_keysym = FL_Shift_R;
+  else if ( mods & alphaLock ) Fl.e_keysym = FL_Caps_Lock;
+  else Fl.e_keysym = 0;
   //printf( "to sym 0x%08x (%04x)\n", Fl::e_keysym, mods );
 }
--+/
+
 // these pointers are set by the Fl::lock() function:
 static void nothing() {}
 void function() fl_lock_function = &nothing;
@@ -961,18 +960,7 @@ void DataReady::CancelThread(const char *reason)
   /*LOCK*/  if ( _cancelpipe[1] ) { close(_cancelpipe[1]); _cancelpipe[1] = 0; }
   DataUnlock();
 }
-
-void Fl::add_fd( int n, int events, void (*cb)(int, void*), void *v )
-    { dataready.AddFD(n, events, cb, v); }
-
-void Fl::add_fd(int fd, void (*cb)(int, void*), void* v)
-    { dataready.AddFD(fd, POLLIN, cb, v); }
-
-void Fl::remove_fd(int n, int events)
-    { dataready.RemoveFD(n, events); }
-
-void Fl::remove_fd(int n)
-    { dataready.RemoveFD(n, -1); }
+-+/
 
 /**
  * Check if there is actually a message pending!
@@ -980,9 +968,8 @@ void Fl::remove_fd(int n)
 int fl_ready()
 {
   EventRef event;
-  return !ReceiveNextEvent(0, NULL, 0.0, false, &event);
+  return !ReceiveNextEvent(0, null, 0.0, false, &event);
 }
--+/
 
 /**
  * handle Apple Menu items (can be created using the Fl_Sys_Menu_Bar
@@ -1116,7 +1103,6 @@ static OSStatus carbonDispatchHandler( EventHandlerCallRef nextHandler, EventRef
   return ret;
 }
 
-/+-
 /**
  * break the current event loop
  */
@@ -1126,13 +1112,13 @@ static void breakMacEventLoop()
 
   fl_lock_function();
 
-  CreateEvent( 0, kEventClassFLTK, kEventFLTKBreakLoop, 0, kEventAttributeUserEvent, &breakEvent );
+  CreateEvent( null, kEventClassFLTK, kEventFLTKBreakLoop, 0, kEventAttributeUserEvent, &breakEvent );
   PostEventToQueue( GetCurrentEventQueue(), breakEvent, kEventPriorityStandard );
   ReleaseEvent( breakEvent );
 
   fl_unlock_function();
 }
-
+/+-
 //
 // MacOS X timers
 //
@@ -1416,36 +1402,34 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
  */
 static OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler, EventRef event, void *userData )
 {
-/+= pri 3
   // Handle the new "MightyMouse" mouse wheel events. Please, someone explain
   // to me why Apple changed the API on this even though the current API
   // supports two wheels just fine. Matthias,
   fl_lock_function();
 
   fl_os_event = event;
-  Fl_Window *window = (Fl_Window*)userData;
+  Fl_Window window = cast(Fl_Window)userData;
 
   EventMouseWheelAxis axis;
-  GetEventParameter( event, kEventParamMouseWheelAxis, typeMouseWheelAxis, NULL, sizeof(EventMouseWheelAxis), NULL, &axis );
-  long delta;
-  GetEventParameter( event, kEventParamMouseWheelDelta, typeLongInteger, NULL, sizeof(long), NULL, &delta );
+  GetEventParameter( event, kEventParamMouseWheelAxis, typeMouseWheelAxis, null, 
+      EventMouseWheelAxis.sizeof, null, &axis );
+  int delta;
+  GetEventParameter( event, kEventParamMouseWheelDelta, typeLongInteger, null, delta.sizeof, null, &delta );
 //  fprintf(stderr, "axis=%d, delta=%d\n", axis, delta);
   if ( axis == kEventMouseWheelAxisX ) {
-    Fl::e_dx = -delta;
-    Fl::e_dy = 0;
-    if ( Fl::e_dx) Fl::handle( FL_MOUSEWHEEL, window );
+    Fl.e_dx = -delta;
+    Fl.e_dy = 0;
+    if ( Fl.e_dx) Fl.handle( FL_MOUSEWHEEL, window );
   } else if ( axis == kEventMouseWheelAxisY ) {
-    Fl::e_dx = 0;
-    Fl::e_dy = -delta;
-    if ( Fl::e_dy) Fl::handle( FL_MOUSEWHEEL, window );
+    Fl.e_dx = 0;
+    Fl.e_dy = -delta;
+    if ( Fl.e_dy) Fl.handle( FL_MOUSEWHEEL, window );
   } else {
     fl_unlock_function();
-
     return eventNotHandledErr;
   }
 
   fl_unlock_function();
- =+/ 
   return noErr;
 }
 
@@ -1543,26 +1527,24 @@ static OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, EventRef ev
   return noErr;
 }
 
-/+-
 /**
  * convert the keyboard return code into the symbol on the keycaps
  */
-static unsigned short keycode_to_sym( UInt32 keyCode, UInt32 mods, unsigned short deflt )
+static ushort keycode_to_sym( UInt32 keyCode, UInt32 mods, ushort deflt )
 {
-  static Ptr map = 0;
+  static Ptr map = null;
   UInt32 state = 0;
   if (!map) {
-    map = (Ptr)GetScriptManagerVariable(smKCHRCache);
+    map = cast(Ptr)GetScriptManagerVariable(smKCHRCache);
     if (!map) {
       long kbID = GetScriptManagerVariable(smKeyScript);
-      map = *GetResource('KCHR', kbID);
+      map = GetResource(('K'<<24)|('C'<<16)|('H'<<8)|'R', kbID);
     }
   }
   if (map)
     return KeyTranslate(map, keyCode|mods, &state );
   return deflt;
 }
--+/
 
 /**
  * handle carbon keyboard events
@@ -1570,10 +1552,9 @@ static unsigned short keycode_to_sym( UInt32 keyCode, UInt32 mods, unsigned shor
 static OSStatus carbonKeyboardHandler( 
   EventHandlerCallRef nextHandler, EventRef event, void *userData )
 {
-/+= pri 2
   static char buffer[5];
-  int sendEvent = 0;
-  Fl_Window *window = (Fl_Window*)userData;
+  Fl_Event sendEvent = 0;
+  Fl_Window window = cast(Fl_Window)userData;
   UInt32 mods;
   static UInt32 prevMods = 0xffffffff;
 
@@ -1583,18 +1564,18 @@ static OSStatus carbonKeyboardHandler(
   
   // get the modifiers for any of the events
   GetEventParameter( event, kEventParamKeyModifiers, typeUInt32, 
-                     NULL, sizeof(UInt32), NULL, &mods );
+                     null, UInt32.sizeof, null, &mods );
   if ( prevMods == 0xffffffff ) prevMods = mods;
   
   // get the key code only for key events
   UInt32 keyCode = 0;
-  unsigned char key = 0;
-  unsigned short sym = 0;
+  char key = 0;
+  ushort sym = 0;
   if (kind!=kEventRawKeyModifiersChanged) {
     GetEventParameter( event, kEventParamKeyCode, typeUInt32, 
-                       NULL, sizeof(UInt32), NULL, &keyCode );
+                       null, UInt32.sizeof, null, &keyCode );
     GetEventParameter( event, kEventParamKeyMacCharCodes, typeChar, 
-                       NULL, sizeof(char), NULL, &key );
+                       null, char.sizeof, null, &key );
   }
   /* output a human readbale event identifier for debugging
   const char *ev = "";
@@ -1618,31 +1599,31 @@ static OSStatus carbonKeyboardHandler(
       UInt32 ktState = 0;
       KeyboardLayoutRef klr;
       KLGetCurrentKeyboardLayout(&klr);
-      const void *kchar = 0; KLGetKeyboardLayoutProperty(klr, kKLKCHRData, &kchar);
+      void *kchar = null; KLGetKeyboardLayoutProperty(klr, kKLKCHRData, &kchar);
       KeyTranslate(kchar, (mods&0xff00) | keyCode, &ktState); // send the dead key
       key = KeyTranslate(kchar, 0x31, &ktState); // fake a space key press
-      Fl::e_state |= 0x40000000; // mark this as a dead key
+      Fl.e_state |= 0x40000000; // mark this as a dead key
     } else {
-      Fl::e_state &= 0xbfffffff; // clear the deadkey flag
+      Fl.e_state &= 0xbfffffff; // clear the deadkey flag
     }
     sendEvent = FL_KEYBOARD;
     // fall through
   case kEventRawKeyUp:
     if ( !sendEvent ) {
       sendEvent = FL_KEYUP;
-      Fl::e_state &= 0xbfffffff; // clear the deadkey flag
+      Fl.e_state &= 0xbfffffff; // clear the deadkey flag
     }
     // if the user pressed alt/option, event_key should have the keycap, 
     // but event_text should generate the international symbol
     if ( isalpha(key) )
       sym = tolower(key);
-    else if ( Fl::e_state&FL_CTRL && key<32 )
+    else if ( Fl.e_state&FL_CTRL && key<32 )
       sym = key+96;
-    else if ( Fl::e_state&FL_ALT ) // find the keycap of this key
+    else if ( Fl.e_state&FL_ALT ) // find the keycap of this key
       sym = keycode_to_sym( keyCode & 0x7f, 0, macKeyLookUp[ keyCode & 0x7f ] );
     else
       sym = macKeyLookUp[ keyCode & 0x7f ];
-    Fl::e_keysym = Fl::e_original_keysym = sym;
+    Fl.e_keysym = Fl.e_original_keysym = sym;
     // Handle FL_KP_Enter on regular keyboards and on Powerbooks
     if ( keyCode==0x4c || keyCode==0x34) key=0x0d;
     // Matt: the Mac has no concept of a NumLock key, or at least not visible
@@ -1652,12 +1633,12 @@ static OSStatus carbonKeyboardHandler(
     if ( (sym >= FL_KP && sym <= FL_KP_Last) || !(sym & 0xff00) ||
             sym == FL_Tab || sym == FL_Enter) {
       buffer[0] = key;
-      Fl::e_length = 1;
+      Fl.e_length = 1;
     } else {
       buffer[0] = 0;
-      Fl::e_length = 0;
+      Fl.e_length = 0;
     }
-    Fl::e_text = buffer;
+    Fl.e_text = buffer;
     // insert UnicodeHandling here!
     break;
   case kEventRawKeyModifiersChanged: {
@@ -1665,17 +1646,17 @@ static OSStatus carbonKeyboardHandler(
     if ( tMods )
     {
       mods_to_e_keysym( tMods );
-      if ( Fl::e_keysym ) 
+      if ( Fl.e_keysym ) 
         sendEvent = ( prevMods<mods ) ? FL_KEYBOARD : FL_KEYUP;
-      Fl::e_length = 0;
+      Fl.e_length = 0;
       buffer[0] = 0;
       prevMods = mods;
     }
     mods_to_e_state( mods );
     break; }
   }
-  while (window->parent()) window = window->window();
-  if (sendEvent && Fl::handle(sendEvent,window)) {
+  while (window.parent()) window = window.window();
+  if (sendEvent && Fl.handle(sendEvent,window)) {
     fl_unlock_function();  
     return noErr; // return noErr if FLTK handled the event
   } else {
@@ -1685,7 +1666,6 @@ static OSStatus carbonKeyboardHandler(
     // Matt: 'noErr'. System keyboard events still seem to work just fine.
     return noErr;
   }
-  =+/
   return noErr;
 }
 
@@ -1806,33 +1786,15 @@ void fl_open_display() {
 void fl_close_display()  {
 }
 
-/+-
-
-/**
- * get the current mouse pointer world coordinates
- */
-void Fl::get_mouse(int &x, int &y) 
-{
-  fl_open_display();
-  Point loc; 
-  GetMouse( &loc );
-  LocalToGlobal( &loc );
-  x = loc.h;
-  y = loc.v;
-}
-
-
 /**
  * convert Mac keystrokes to FLTK
  */
-unsigned short mac2fltk(ulong macKey) 
+ushort mac2fltk(uint macKey) 
 {
-  unsigned short cc = macKeyLookUp[(macKey>>8)&0x7f];
+  ushort cc = macKeyLookUp[(macKey>>8)&0x7f];
   if (cc) return cc;
   return macKey&0xff;
 }
-
--+/
 
 /**
  * Handle all clipping and redraw for the given port
@@ -2091,46 +2053,6 @@ const char *fl_filename_name( const char *name )
   return q;
 }
 
-/**
- * resize a window
- */
-void Fl_Window::resize(int X,int Y,int W,int H) {
-  if (W<=0) W = 1; // OS X does not like zero width windows
-  if (H<=0) H = 1;
-  int is_a_resize = (W != w() || H != h());
-//  printf("Fl_Winodw::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
-//         X, Y, W, H, is_a_resize, resize_from_system, this);
-  if (X != x() || Y != y()) set_flag(FL_FORCE_POSITION);
-  else if (!is_a_resize) return;
-  if ( (resize_from_system!=this) && (!parent()) && shown()) {
-    if (is_a_resize) {
-      if (resizable()) {
-        if (W<minw) minw = W; // user request for resize takes priority
-        if (W>maxw) maxw = W; // over a previously set size_range
-        if (H<minh) minh = H;
-        if (H>maxh) maxh = H;
-        size_range(minw, minh, maxw, maxh);
-      } else {
-        size_range(W, H, W, H);
-      }
-      Rect dim; dim.left=X; dim.top=Y; dim.right=X+W; dim.bottom=Y+H;
-      SetWindowBounds(i->xid, kWindowContentRgn, &dim);
-      Rect all; all.top=-32000; all.bottom=32000; all.left=-32000; all.right=32000;
-      InvalWindowRect( i->xid, &all );    
-    } else {
-      MoveWindow(i->xid, X, Y, 0);
-    }
-  }
-  resize_from_system = 0;
-  if (is_a_resize) {
-    Fl_Group::resize(X,Y,W,H);
-    if (shown()) { 
-      redraw(); 
-    }
-  } else {
-    x(X); y(Y); 
-  }
-}
 
 
 // helper function to manage the current CGContext fl_gc
@@ -2161,158 +2083,5 @@ void Fl_X::q_end_image() {
 }
 
 #endif
+-+/
 
-////////////////////////////////////////////////////////////////
-// Cut & paste.
-
-Fl_Widget *fl_selection_requestor = 0;
-char *fl_selection_buffer[2];
-int fl_selection_length[2];
-int fl_selection_buffer_length[2];
-static ScrapRef myScrap = 0;
-
-/**
- * create a selection
- * owner: widget that created the selection
- * stuff: pointer to selected data
- * size of selected data
- */
-void Fl::copy(const char *stuff, int len, int clipboard) {
-  if (!stuff || len<0) return;
-  if (len+1 > fl_selection_buffer_length[clipboard]) {
-    delete[] fl_selection_buffer[clipboard];
-    fl_selection_buffer[clipboard] = new char[len+100];
-    fl_selection_buffer_length[clipboard] = len+100;
-  }
-  memcpy(fl_selection_buffer[clipboard], stuff, len);
-  fl_selection_buffer[clipboard][len] = 0; // needed for direct paste
-  fl_selection_length[clipboard] = len;
-  if (clipboard) {
-    ClearCurrentScrap();
-    OSStatus ret = GetCurrentScrap( &myScrap );
-    if ( ret != noErr ) {
-      myScrap = 0;
-      return;
-    }
-    // Previous version changed \n to \r before sending the text, but I would
-    // prefer to leave the local buffer alone, so a copied buffer may be
-    // needed. Check to see if this is necessary on OS/X.
-    PutScrapFlavor( myScrap, kScrapFlavorTypeText, 0,
-		    len, fl_selection_buffer[1] );
-  }
-}
-
-// Call this when a "paste" operation happens:
-void Fl::paste(Fl_Widget &receiver, int clipboard) {
-  if (clipboard) {
-    // see if we own the selection, if not go get it:
-    ScrapRef scrap = 0;
-    Size len = 0;
-    if (GetCurrentScrap(&scrap) == noErr && scrap != myScrap &&
-	GetScrapFlavorSize(scrap, kScrapFlavorTypeText, &len) == noErr) {
-      if ( len >= fl_selection_buffer_length[1] ) {
-	fl_selection_buffer_length[1] = len + 32;
-	delete[] fl_selection_buffer[1];
-	fl_selection_buffer[1] = new char[len + 32];
-      }
-      fl_selection_length[1] = len; len++;
-      GetScrapFlavorData( scrap, kScrapFlavorTypeText, &len,
-			  fl_selection_buffer[1] );
-      fl_selection_buffer[1][fl_selection_length[1]] = 0;
-      // turn all \r characters into \n:
-      for (int x = 0; x < len; x++) {
-	if (fl_selection_buffer[1][x] == '\r')
-	  fl_selection_buffer[1][x] = '\n';
-      }
-    }
-  }
-  Fl::e_text = fl_selection_buffer[clipboard];
-  Fl::e_length = fl_selection_length[clipboard];
-  if (!Fl::e_text) Fl::e_text = (char *)"";
-  receiver.handle(FL_PASTE);
-  return;
-}
-
-void Fl::add_timeout(double time, Fl_Timeout_Handler cb, void* data)
-{
-   // check, if this timer slot exists already
-   for (int i = 0;  i < mac_timer_used;  ++i) {
-        MacTimeout& t = mac_timers[i];
-        // if so, simply change the fire interval
-        if (t.callback == cb  &&  t.data == data) {
-            SetEventLoopTimerNextFireTime(t.timer, (EventTimerInterval)time);
-            t.pending = 1;
-            return;
-        }
-    }
-    // no existing timer to use. Create a new one:
-    int timer_id = -1;
-    // find an empty slot in the timer array
-    for (int i = 0;  i < mac_timer_used;  ++i) {
-        if ( !mac_timers[i].timer ) {
-            timer_id = i;
-            break;
-        }
-    }
-    // if there was no empty slot, append a new timer
-    if (timer_id == -1) {
-        // make space if needed
-        if (mac_timer_used == mac_timer_alloc) {
-            realloc_timers();
-        }
-        timer_id = mac_timer_used++;
-    }
-    // now install a brand new timer
-    MacTimeout& t = mac_timers[timer_id];
-    EventTimerInterval fireDelay = (EventTimerInterval)time;
-    EventLoopTimerUPP  timerUPP = NewEventLoopTimerUPP(do_timer);
-    EventLoopTimerRef  timerRef = 0;
-    OSStatus err = InstallEventLoopTimer(GetMainEventLoop(), fireDelay, 0, timerUPP, data, &timerRef);
-    if (err == noErr) {
-        t.callback = cb;
-        t.data     = data;
-        t.timer    = timerRef;
-        t.upp      = timerUPP;
-        t.pending  = 1;
-    } else {
-        if (timerRef) 
-            RemoveEventLoopTimer(timerRef);
-        if (timerUPP)
-            DisposeEventLoopTimerUPP(timerUPP);
-    }
-}
-
-void Fl::repeat_timeout(double time, Fl_Timeout_Handler cb, void* data)
-{
-    // currently, repeat_timeout does not subtract the trigger time of the previous timer event as it should.
-    add_timeout(time, cb, data);
-}
-
-int Fl::has_timeout(Fl_Timeout_Handler cb, void* data)
-{
-   for (int i = 0;  i < mac_timer_used;  ++i) {
-        MacTimeout& t = mac_timers[i];
-        if (t.callback == cb  &&  t.data == data && t.pending) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void Fl::remove_timeout(Fl_Timeout_Handler cb, void* data)
-{
-   for (int i = 0;  i < mac_timer_used;  ++i) {
-        MacTimeout& t = mac_timers[i];
-        if (t.callback == cb  && ( t.data == data || data == NULL)) {
-            delete_timer(t);
-        }
-    }
-}
-
-
-
-//
-// End of "$Id: Fl_mac.cxx 5258 2006-07-17 20:14:50Z matt $".
-//
-
-    End of automatic import -+/

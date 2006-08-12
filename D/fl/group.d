@@ -42,9 +42,50 @@ private:
   Fl_Widget resizable_;
   int children_;
   short[] sizes_; // remembered initial sizes of children
-/+-
-  int navigation(int);
--+/
+
+  int navigation(int key) {
+    if (children() <= 1) return 0;
+    int i;
+    for (i = 0; ; i++) {
+      if (i >= children_) return 0;
+      if (array_[i].contains(Fl.focus())) break;
+    }
+    Fl_Widget previous = array_[i];
+  
+    for (;;) {
+      switch (key) {
+      case FL_Right:
+      case FL_Down:
+        i++;
+        if (i >= children_) {
+	  if (parent()) return 0;
+	  i = 0;
+        }
+        break;
+      case FL_Left:
+      case FL_Up:
+        if (i) i--;
+        else {
+	  if (parent()) return 0;
+	  i = children_-1;
+        }
+        break;
+      default:
+        return 0;
+      }
+      Fl_Widget o = array_[i];
+      if (o == previous) return 0;
+      switch (key) {
+      case FL_Down:
+      case FL_Up:
+        // for up/down, the widgets have to overlap horizontally:
+        if (o.x() >= previous.x()+previous.w() ||
+	    o.x()+o.w() <= previous.x()) continue;
+      }
+      if (o.take_focus()) return 1;
+    }
+  }
+
   static Fl_Group current_;
 
 protected:
@@ -104,18 +145,18 @@ public:
     Fl_Widget o;
   
     switch (event) {
- /+- 
+
     case FL_FOCUS:
       switch (navkey()) {
       default:
-        if (savedfocus_ && savedfocus_->take_focus()) return 1;
+        if (savedfocus_ && savedfocus_.take_focus()) return 1;
       case FL_Right:
       case FL_Down:
-        for (i = children(); i--;) if ((*a++)->take_focus()) return 1;
+        for (i = children(); i--;) if ((*a++).take_focus()) return 1;
         break;
       case FL_Left:
       case FL_Up:
-        for (i = children(); i--;) if (a[i]->take_focus()) return 1;
+        for (i = children(); i--;) if (a[i].take_focus()) return 1;
         break;
       }
       return 0;
@@ -130,33 +171,33 @@ public:
     case FL_SHORTCUT:
       for (i = children(); i--;) {
         o = a[i];
-        if (o->takesevents() && Fl::event_inside(o) && send(o,FL_SHORTCUT))
+        if (o.takesevents() && Fl.event_inside(o) && send(o,FL_SHORTCUT))
 	  return 1;
       }
       for (i = children(); i--;) {
         o = a[i];
-        if (o->takesevents() && !Fl::event_inside(o) && send(o,FL_SHORTCUT))
+        if (o.takesevents() && !Fl.event_inside(o) && send(o,FL_SHORTCUT))
 	  return 1;
       }
-      if ((Fl::event_key() == FL_Enter || Fl::event_key() == FL_KP_Enter)) return navigation(FL_Down);
+      if ((Fl.event_key() == FL_Enter || Fl.event_key() == FL_KP_Enter)) return navigation(FL_Down);
       return 0;
   
     case FL_ENTER:
     case FL_MOVE:
       for (i = children(); i--;) {
         o = a[i];
-        if (o->visible() && Fl::event_inside(o)) {
-	  if (o->contains(Fl::belowmouse())) {
+        if (o.visible() && Fl.event_inside(o)) {
+	  if (o.contains(Fl.belowmouse())) {
 	    return send(o,FL_MOVE);
 	  } else {
-	    Fl::belowmouse(o);
+	    Fl.belowmouse(o);
 	    if (send(o,FL_ENTER)) return 1;
 	  }
         }
       }
-      Fl::belowmouse(this);
+      Fl.belowmouse(this);
       return 1;
-  
+ /+- 
     case FL_DND_ENTER:
     case FL_DND_DRAG:
       for (i = children(); i--;) {
@@ -483,15 +524,14 @@ static int send(Fl_Widget o, Fl_Event event) {
   return ret;
 }
 
-/+-
 // translate the current keystroke into up/down/left/right for navigation:
-#define ctrl(x) (x^0x40)
+/+-#define ctrl(x) (x^0x40)-+/
 static int navkey() {
-  switch (Fl::event_key()) {
+  switch (Fl.event_key()) {
   case 0: // not an FL_KEYBOARD/FL_SHORTCUT event
     break;
   case FL_Tab:
-    if (!Fl::event_state(FL_SHIFT)) return FL_Right;
+    if (!Fl.event_state(FL_SHIFT)) return FL_Right;
   case 0xfe20: // XK_ISO_Left_Tab
     return FL_Left;
   case FL_Right:
@@ -506,7 +546,7 @@ static int navkey() {
   return 0;
 }
 
-
+/+-
 //void Fl_Group::focus(Fl_Widget *o) {Fl::focus(o); o->handle(FL_FOCUS);}
 
 #if 0
@@ -516,51 +556,8 @@ const char *nameof(Fl_Widget *o) {
   return o->label();
 }
 #endif
-
-// try to move the focus in response to a keystroke:
-int Fl_Group::navigation(int key) {
-  if (children() <= 1) return 0;
-  int i;
-  for (i = 0; ; i++) {
-    if (i >= children_) return 0;
-    if (array_[i]->contains(Fl::focus())) break;
-  }
-  Fl_Widget *previous = array_[i];
-
-  for (;;) {
-    switch (key) {
-    case FL_Right:
-    case FL_Down:
-      i++;
-      if (i >= children_) {
-	if (parent()) return 0;
-	i = 0;
-      }
-      break;
-    case FL_Left:
-    case FL_Up:
-      if (i) i--;
-      else {
-	if (parent()) return 0;
-	i = children_-1;
-      }
-      break;
-    default:
-      return 0;
-    }
-    Fl_Widget* o = array_[i];
-    if (o == previous) return 0;
-    switch (key) {
-    case FL_Down:
-    case FL_Up:
-      // for up/down, the widgets have to overlap horizontally:
-      if (o->x() >= previous->x()+previous->w() ||
-	  o->x()+o->w() <= previous->x()) continue;
-    }
-    if (o->take_focus()) return 1;
-  }
-}
-
+-+/
+/+-
 ////////////////////////////////////////////////////////////////
 
 void Fl_Group::clear() {

@@ -647,27 +647,30 @@ public:
   }
 
   int test_shortcut(char[] l) {
-  /+-
-    char c = Fl::event_text()[0];
+    char c = Fl.event_text()[0];
     if (!c || !l) return 0;
-    for (;;) {
-      if (!*l) return 0;
-      if (*l++ == '&' && *l) {
-        if (*l == '&') l++;
-        else if (*l == c) return 1;
-        else return 0;
+    bool mayBeShortcut = false;
+    foreach(s; l) {
+      if (mayBeShortcut) {
+        if (s=='&') {
+          mayBeShortcut = false;
+        } else {
+          if (s==c)
+            return 1;
+          else
+            return 0;
+        }
+      } else {
+        if (s=='&')
+          mayBeShortcut = true;
       }
     }
-  -+/
     return 0;
   }
   
   int test_shortcut() {
-  /+-
     if (!(flags()&SHORTCUT_LABEL)) return 0;
     return test_shortcut(label());
-  -+/
-    return 0;
   }
 
   int contains(Fl_Widget o) {

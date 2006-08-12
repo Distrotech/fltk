@@ -77,6 +77,8 @@ alias void* MenuRef;
 alias void* EventTargetRef;
 alias void* EventHandlerCallRef;
 alias void* EventHandlerRef;
+alias void* EventQueueRef;
+alias void* KeyboardLayoutRef;
 //alias void* GrafPtr;
 //alias void* GWorldPtr;
 //alias void* CGContextRef;
@@ -604,7 +606,110 @@ enum {
    rightControlKey = 1 << rightControlKeyBit
 };
 
+typedef UInt32 EventAttributes;
+enum {
+  kEventAttributeNone           = 0,
+  kEventAttributeUserEvent      = 1 << 0,
+  kEventAttributeMonitored      = 1 << 3
+};
+
+typedef SInt16 EventPriority;
+enum {
+  kEventPriorityLow             = 0,
+  kEventPriorityStandard        = 1,
+  kEventPriorityHigh            = 2
+};
+
+typedef UInt16 EventMouseWheelAxis;
+enum {
+  kEventMouseWheelAxisX         = 0,
+  kEventMouseWheelAxisY         = 1
+};
+
+enum {
+  kEventParamTSMSendRefCon      = ('t'<<24)|('s'<<16)|('r'<<8)|'c', /*    typeLongInteger*/
+  kEventParamTSMSendComponentInstance = ('t'<<24)|('s'<<16)|('c'<<8)|'i' /*    typeComponentInstance*/
+};
+
+enum {
+  typeSMInt                     = typeSInt16,
+  typeShortInteger              = typeSInt16,
+  typeInteger                   = typeSInt32,
+  typeLongInteger               = typeSInt32,
+  typeMagnitude                 = typeUInt32,
+  typeComp                      = typeSInt64,
+  typeSMFloat                   = typeIEEE32BitFloatingPoint,
+  typeShortFloat                = typeIEEE32BitFloatingPoint,
+  typeFloat                     = typeIEEE64BitFloatingPoint,
+  typeLongFloat                 = typeIEEE64BitFloatingPoint,
+  typeExtended                  = ('e'<<24)|('x'<<16)|('t'<<8)|'e'
+};
+
+enum {
+  smVersion                     = 0,    /*Script Manager version number*/
+  smMunged                      = 2,    /*Globals change count*/
+  smEnabled                     = 4,    /*Count of enabled scripts, incl Roman*/
+  smBidirect                    = 6,    /*At least one bidirectional script*/
+  smFontForce                   = 8,    /*Force font flag*/
+  smIntlForce                   = 10,   /*Force intl flag*/
+  smForced                      = 12,   /*Script was forced to system script*/
+  smDefault                     = 14,   /*Script was defaulted to Roman script*/
+  smPrint                       = 16,   /*Printer action routine*/
+  smSysScript                   = 18,   /*System script*/
+  smLastScript                  = 20,   /*Last keyboard script*/
+  smKeyScript                   = 22,   /*Keyboard script*/
+  smSysRef                      = 24,   /*System folder refNum*/
+  smKeyCache                    = 26,   /*obsolete*/
+  smKeySwap                     = 28,   /*Swapping table handle*/
+  smGenFlags                    = 30,   /*General flags long*/
+  smOverride                    = 32,   /*Script override flags*/
+  smCharPortion                 = 34,   /*Ch vs SpExtra proportion*/
+                                        /* New for System 7.0: */
+  smDoubleByte                  = 36,   /*Flag for double-byte script installed*/
+  smKCHRCache                   = 38,   /*Returns pointer to KCHR cache*/
+  smRegionCode                  = 40,   /*Returns current region code (verXxx)*/
+  smKeyDisableState             = 42    /*Returns current keyboard disable state*/
+};
+
+enum {
+  kEventParamKeyCode            = ('k'<<24)|('c'<<16)|('o'<<8)|'d', /* typeUInt32*/
+  kEventParamKeyMacCharCodes    = ('k'<<24)|('c'<<16)|('h'<<8)|'r', /* typeChar*/
+  kEventParamKeyModifiers       = ('k'<<24)|('m'<<16)|('o'<<8)|'d', /* typeUInt32*/
+  kEventParamKeyUnicodes        = ('k'<<24)|('u'<<16)|('n'<<8)|'i', /* typeUnicodeText*/
+  kEventParamKeyboardType       = ('k'<<24)|('b'<<16)|('d'<<8)|'t', /* typeUInt32*/
+  typeEventHotKeyID             = ('h'<<24)|('k'<<16)|('i'<<8)|'d' /* EventHotKeyID*/
+};
+
+typedef UInt32 KeyboardLayoutPropertyTag;
+enum {
+  kKLKCHRData                   = 0,
+  kKLuchrData                   = 1,
+  kKLIdentifier                 = 2,
+  kKLIcon                       = 3,
+  kKLLocalizedName              = 4,
+  kKLName                       = 5,
+  kKLGroupIdentifier            = 6,
+  kKLKind                       = 7,
+  kKLLanguageCode               = 9
+};
+
+
+
 extern (C) {
+
+OSStatus KLGetCurrentKeyboardLayout(KeyboardLayoutRef * oKeyboardLayout);
+OSStatus KLGetKeyboardLayoutProperty(
+  KeyboardLayoutRef           iKeyboardLayout,
+  KeyboardLayoutPropertyTag   iPropertyTag,
+  void **               oValue);
+
+Handle GetResource( ResType   theType, short     theID);
+int GetScriptManagerVariable(short selector);
+UInt32 
+KeyTranslate(
+  void *  transData,
+  UInt16        keycode,
+  UInt32 *      state);
 /+
 OSStatus CreateNewWindow (
    WindowClass windowClass,
@@ -620,7 +725,7 @@ OSStatus CreateNewWindow (
    HISize* inMinLimits,
    HISize* inMaxLimits
 );+/
-
+EventQueueRef GetCurrentEventQueue();
 OSStatus ReceiveNextEvent (
    UInt32 inNumTypes,
    EventTypeSpec * inList,
@@ -629,6 +734,7 @@ OSStatus ReceiveNextEvent (
    EventRef * outEvent
 );
 
+OSStatus PostEventToQueue( EventQueueRef   inQueue, EventRef        inEvent, EventPriority   inPriority);
 void FlushEvents ( EventMask whichMask, EventMask stopMask);
 
 void ReleaseEvent ( EventRef inEvent);
@@ -704,6 +810,13 @@ OSStatus GetEventParameter (
    uint* outActualSize,
    void* outData
 );
+OSStatus CreateEvent(
+  CFAllocatorRef    inAllocator,        /* can be NULL */
+  UInt32            inClassID,
+  UInt32            inKind,
+  EventTime         inWhen,
+  EventAttributes   inAttributes,
+  EventRef *        outEvent);
 
 Cursor* GetQDGlobalsArrow ( Cursor* arrow);
 //RgnHandle NewRgn ();
