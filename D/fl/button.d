@@ -30,6 +30,7 @@ module fl.button;
 public import fl.fl;
 public import fl.widget;
 public import fl.group;
+public import fl.shortcut;
 
 class Fl_Button : Fl_Widget {
 
@@ -118,10 +119,9 @@ public:
         } else redraw();
         return 1;
       } else return 0;
-/+-
     case FL_KEYBOARD :
-      if (Fl::focus() == this && Fl::event_key() == ' ' &&
-          !(Fl::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
+      if (Fl.focus() == this && Fl.event_key() == ' ' &&
+          !(Fl.event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
         set_changed();
         if (type() == FL_RADIO_BUTTON && !value_) {
 	  setonly();
@@ -133,7 +133,6 @@ public:
         if (when() & FL_WHEN_RELEASE) do_callback();
         return 1;
       }
--+/
     default:
       return 0;
     }
@@ -199,12 +198,19 @@ public:
   void down_box(Fl_Boxtype b) {
     down_box_ = b;
   }
-/+-
+
   // back compatability:
-  void shortcut(const char *s) {shortcut(fl_old_shortcut(s));}
-  Fl_Color down_color() const {return selection_color();}
-  void down_color(unsigned c) {selection_color(c);}
--+/
+  void shortcut(char[] s) {
+    shortcut(fl_old_shortcut(s));
+  }
+
+  Fl_Color down_color() {
+    return selection_color();
+  }
+
+  void down_color(Fl_Color c) {
+    selection_color(c);
+  }
 };
 
 //

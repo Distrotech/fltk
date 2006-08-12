@@ -41,7 +41,14 @@
 // and zero for FL_SHIFT means "don't care".
 // This allows punctuation shortcuts like "#" to work (rather than
 // calling it "shift+3")
+-+/
 
+public import fl.fl;
+public import fl.enumerations;
+
+public import std.string;
+
+/+-
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Button.H>
@@ -159,17 +166,17 @@ const char * fl_shortcut_label(int shortcut) {
 
 // Emulation of XForms named shortcuts
 #include <stdlib.h>
-int fl_old_shortcut(const char* s) {
-  if (!s || !*s) return 0;
-  int n = 0;
-  if (*s == '#') {n |= FL_ALT; s++;}
-  if (*s == '+') {n |= FL_SHIFT; s++;}
-  if (*s == '^') {n |= FL_CTRL; s++;}
-  if (*s && s[1]) return n | (int)strtol(s,0,0); // allow 0xf00 to get any key
-  return n | *s;
+-+/
+int fl_old_shortcut(char[] s) {
+  if (!s || !s.length) return 0;
+  int n = 0, i = 0, len = s.length;
+  if (i<len && s[i] == '#') {n |= FL_ALT; i++;}
+  if (i<len && s[i] == '+') {n |= FL_SHIFT; i++;}
+  if (i<len && s[i] == '^') {n |= FL_CTRL; i++;}
+  if (i<len+1) return n | atoi(s[i..$]); // allow 0xf00 to get any key
+  return n | s[i];
 }
 
 //
 // End of "$Id: fl_shortcut.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

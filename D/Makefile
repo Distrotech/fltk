@@ -14,6 +14,7 @@ DFILES = \
 	fl/labeltype.d \
 	fl/line_style.d \
 	fl/rect.d \
+	fl/shortcut.d \
 	fl/tooltip.d \
 	fl/widget.d \
 	fl/window.d \
