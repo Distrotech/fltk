@@ -610,16 +610,13 @@ public:
   }
 
 private:
-  const int QUEUE_SIZE = 20;
-  static Fl_Widget obj_queue[QUEUE_SIZE];
-  static int obj_head, obj_tail;
 
   static void default_callback(Fl_Widget o, void* v) {
-    obj_queue[obj_head++] = o;
-    if (obj_head >= QUEUE_SIZE) obj_head = 0;
-    if (obj_head == obj_tail) {
-      obj_tail++;
-      if (obj_tail >= QUEUE_SIZE) obj_tail = 0;
+    Fl.obj_queue[Fl.obj_head++] = o;
+    if (Fl.obj_head >= Fl.QUEUE_SIZE) Fl.obj_head = 0;
+    if (Fl.obj_head == Fl.obj_tail) {
+      Fl.obj_tail++;
+      if (Fl.obj_tail >= Fl.QUEUE_SIZE) Fl.obj_tail = 0;
     }
   }
 

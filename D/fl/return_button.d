@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: Fl_Return_Button.H 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -26,25 +25,25 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Return_Button_H
-#define Fl_Return_Button_H
-#include "Fl_Button.H"
+module fl.return_button;
 
-class FL_EXPORT Fl_Return_Button : public Fl_Button {
+public import fl.button;
+
+class Fl_Return_Button : Fl_Button {
+/+=
 protected:
   void draw();
 public:
   int handle(int);
-  Fl_Return_Button(int X, int Y, int W, int H,const char *l=0)
-    : Fl_Button(X,Y,W,H,l) {}
-};
-
-#endif
+=+/
+  this(int X, int Y, int W, int H,char[] l=null) {
+    super(X,Y,W,H,l);
+  }
+}
 
 //
 // End of "$Id: Fl_Return_Button.H 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
 // "$Id: Fl_Return_Button.cxx 5190 2006-06-09 16:16:34Z mike $"

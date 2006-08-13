@@ -218,7 +218,7 @@ public:
   //         X, Y, W, H, is_a_resize, resize_from_system, this);
     if (X != x() || Y != y()) set_flag(FL_FORCE_POSITION);
     else if (!is_a_resize) return;
-    if ( (resize_from_system!=this) && (!parent()) && shown()) {
+    if ( (!resize_from_system || (resize_from_system!=this)) && (!parent()) && shown()) {
       if (is_a_resize) {
         if (resizable()) {
           if (W<minw) minw = W; // user request for resize takes priority

@@ -107,26 +107,44 @@ public:
   static int arg(int, char**, int&);
   static int args(int, char**, int&, int (*)(int,char**,int&) = 0);
   static const char* const help;
-  static void args(int, char**);
+-+/
+  static void args(char[][] aa) {
+    /+= implement me later =+/
+  }
+/+-
 
   // things called by initialization:
   static void display(const char*);
   static int visual(int);
   static int gl_visual(int, int *alist=0);
   static void own_colormap();
-  static void get_system_colors();
+-+/
+  static void get_system_colors() {
+    /+= implement me later =+/
+  }
+/+-
   static void foreground(uchar, uchar, uchar);
   static void background(uchar, uchar, uchar);
   static void background2(uchar, uchar, uchar);
 
   // schemes:
-  static int scheme(const char*);
+-+/
+  static int scheme(char[] s) {
+    /+= implement me later =+/
+    return 0;
+  }
+/+-
   static const char* scheme() {return scheme_;}
   static int reload_scheme();
 
   // execution:
-  static int wait();
 -+/
+  static int wait() {
+    if (!Fl_X.first) return 0;
+    wait(FOREVER);
+    return Fl_X.first ? 1 : 0; // return true if there is a window
+  }
+
   static double wait(double time_to_wait) {
     // delete all widgets that were listed during callbacks
     do_widget_deletion();
@@ -205,8 +223,18 @@ public:
       wait(FOREVER);
     return 0;
   }
+
+  const int QUEUE_SIZE = 20;
+  static Fl_Widget obj_queue[QUEUE_SIZE];
+  static int obj_head, obj_tail;
+
+  static Fl_Widget readqueue() {
+    if (obj_tail==obj_head) return null;
+    Fl_Widget o = obj_queue[obj_tail++];
+    if (obj_tail >= QUEUE_SIZE) obj_tail = 0;
+    return o;
+  }
 /+-
-  static Fl_Widget* readqueue();
   static void add_timeout(double t, Fl_Timeout_Handler,void* = 0);
 void Fl::add_timeout(double time, Fl_Timeout_Handler cb, void* data)
 {
@@ -1219,12 +1247,6 @@ static Fl_Win32_At_Exit win32_at_exit;
 
 
 
-int Fl::wait() {
-  if (!Fl_X::first) return 0;
-  wait(FOREVER);
-  return Fl_X::first != 0; // return true if there is a window
-}
-
 int Fl::check() {
   wait(0.0);
   return Fl_X::first != 0; // return true if there is a window
@@ -1678,12 +1700,6 @@ void Fl::clear_widget_pointer(Fl_Widget const *w)
       *widget_watch[i] = 0L;
     }
   }
-}
-Fl_Widget *Fl::readqueue() {
-  if (obj_tail==obj_head) return 0;
-  Fl_Widget *o = obj_queue[obj_tail++];
-  if (obj_tail >= QUEUE_SIZE) obj_tail = 0;
-  return o;
 }
 
 

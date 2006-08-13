@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: Fl_Input.H 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -26,28 +25,41 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Input_H
-#define Fl_Input_H
+module fl.input;
 
-#include "Fl_Input_.H"
+public import fl.input_;
+public import fl.fl;
 
-class FL_EXPORT Fl_Input : public Fl_Input_ {
+class Fl_Input : Fl_Input_ {
+
+private:
+/+=
   int handle_key();
   int shift_position(int p);
   int shift_up_down_position(int p);
   void handle_mouse(int keepmark=0);
+=+/
 public:
-  void draw();
+
+  void draw() {
+    if (input_type() == FL_HIDDEN_INPUT) return;
+    Fl_Boxtype b = box();
+    if (damage() & FL_DAMAGE_ALL) draw_box(b, color());
+    super.drawtext(x()+Fl.box_dx(b), y()+Fl.box_dy(b),
+		        w()-Fl.box_dw(b), h()-Fl.box_dh(b));
+  }
+/+=
   int handle(int);
-  Fl_Input(int,int,int,int,const char * = 0);
+=+/
+  this(int x, int y, int w, int h, char[] l=null) {
+    super(x, y, w, h, l);
+  }
 };
 
-#endif 
 
 //
 // End of "$Id: Fl_Input.H 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
 // "$Id: Fl_Input.cxx 5190 2006-06-09 16:16:34Z mike $"
@@ -94,14 +106,6 @@ public:
 # include <locale.h>
 #endif
 
-
-void Fl_Input::draw() {
-  if (input_type() == FL_HIDDEN_INPUT) return;
-  Fl_Boxtype b = box();
-  if (damage() & FL_DAMAGE_ALL) draw_box(b, color());
-  Fl_Input_::drawtext(x()+Fl::box_dx(b), y()+Fl::box_dy(b),
-		      w()-Fl::box_dw(b), h()-Fl::box_dh(b));
-}
 
 // kludge so shift causes selection to extend:
 int Fl_Input::shift_position(int p) {

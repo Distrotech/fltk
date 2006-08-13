@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: Fl_Input_.H 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -26,31 +25,33 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Input__H
-#define Fl_Input__H
+module fl.input_;
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
+public import fl.widget;
+public import fl.draw;
+public import fl.rect;
 
-#define FL_NORMAL_INPUT		0
-#define FL_FLOAT_INPUT		1
-#define FL_INT_INPUT		2
-#define FL_HIDDEN_INPUT		3
-#define FL_MULTILINE_INPUT	4
-#define FL_SECRET_INPUT		5
-#define FL_INPUT_TYPE		7
-#define FL_INPUT_READONLY	8
-#define FL_NORMAL_OUTPUT	(FL_NORMAL_INPUT | FL_INPUT_READONLY)
-#define FL_MULTILINE_OUTPUT	(FL_MULTILINE_INPUT | FL_INPUT_READONLY)
-#define FL_INPUT_WRAP		16
-#define FL_MULTILINE_INPUT_WRAP	(FL_MULTILINE_INPUT | FL_INPUT_WRAP)
-#define FL_MULTILINE_OUTPUT_WRAP (FL_MULTILINE_INPUT | FL_INPUT_READONLY | FL_INPUT_WRAP)
+const Fl_Type FL_NORMAL_INPUT = 0;
+const Fl_Type FL_FLOAT_INPUT = 1;
+const Fl_Type FL_INT_INPUT = 2;
+const Fl_Type FL_HIDDEN_INPUT = 3;
+const Fl_Type FL_MULTILINE_INPUT = 4;
+const Fl_Type FL_SECRET_INPUT = 5;
+const Fl_Type FL_INPUT_TYPE = 7;
+const Fl_Type FL_INPUT_READONLY = 8;
+const Fl_Type FL_NORMAL_OUTPUT = (FL_NORMAL_INPUT | FL_INPUT_READONLY);
+const Fl_Type FL_MULTILINE_OUTPUT = (FL_MULTILINE_INPUT | FL_INPUT_READONLY);
+const Fl_Type FL_INPUT_WRAP = 16;
+const Fl_Type FL_MULTILINE_INPUT_WRAP	= (FL_MULTILINE_INPUT | FL_INPUT_WRAP);
+const Fl_Type FL_MULTILINE_OUTPUT_WRAP = (FL_MULTILINE_INPUT | FL_INPUT_READONLY | FL_INPUT_WRAP);
 
-class FL_EXPORT Fl_Input_ : public Fl_Widget {
 
-  const char* value_;
-  char* buffer;
+class Fl_Input_ : Fl_Widget {
+
+private:
+
+  char[] value_;
+  char[] buffer;
 
   int size_;
   int bufsize;
@@ -60,12 +61,12 @@ class FL_EXPORT Fl_Input_ : public Fl_Widget {
   int mu_p;
   int maximum_size_;
 
-  uchar erase_cursor_only;
-  uchar textfont_;
-  uchar textsize_;
-  unsigned textcolor_;
-  unsigned cursor_color_;
-
+  ubyte erase_cursor_only;
+  Fl_Font textfont_;
+  ubyte textsize_;
+  Fl_Color textcolor_;
+  Fl_Color cursor_color_;
+/+-
   const char* expand(const char*, char*) const;
   double expandpos(const char*, const char*, const char*, int*) const;
   void minimal_update(int, int);
@@ -73,41 +74,273 @@ class FL_EXPORT Fl_Input_ : public Fl_Widget {
   void put_in_buffer(int newsize);
 
   void setfont() const;
-
+-+/
 protected:
-
+/+-
   int word_start(int i) const;
   int word_end(int i) const;
   int line_start(int i) const;
   int line_end(int i) const;
-  void drawtext(int, int, int, int);
+-+/
+  void drawtext(int X, int Y, int W, int H) {
+  /+=
+    int do_mu = !(damage()&FL_DAMAGE_ALL);
+  
+    if (Fl::focus()!=this && !size()) {
+      if (do_mu) { // we have to erase it if cursor was there
+        draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
+                 W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
+      }
+      return;
+    }
+  
+    int selstart, selend;
+    if (Fl::focus()!=this && /*Fl::selection_owner()!=this &&*/ Fl::pushed()!=this)
+      selstart = selend = 0;
+    else if (position() <= mark()) {
+      selstart = position(); selend = mark();
+    } else {
+      selend = position(); selstart = mark();
+    }
+  
+    setfont();
+    const char *p, *e;
+    char buf[MAXBUF];
+  
+    // count how many lines and put the last one into the buffer:
+    // And figure out where the cursor is:
+    int height = fl_height();
+    int lines;
+    int curx, cury;
+    for (p=value(), curx=cury=lines=0; ;) {
+      e = expand(p, buf);
+      if (position() >= p-value() && position() <= e-value()) {
+        curx = int(expandpos(p, value()+position(), buf, 0)+.5);
+        if (Fl::focus()==this && !was_up_down) up_down_pos = curx;
+        cury = lines*height;
+        int newscroll = xscroll_;
+        if (curx > newscroll+W-20) {
+	  // figure out scrolling so there is space after the cursor:
+	  newscroll = curx+20-W;
+	  // figure out the furthest left we ever want to scroll:
+	  int ex = int(expandpos(p, e, buf, 0))+2-W;
+	  // use minimum of both amounts:
+	  if (ex < newscroll) newscroll = ex;
+        } else if (curx < newscroll+20) {
+	  newscroll = curx-20;
+        }
+        if (newscroll < 0) newscroll = 0;
+        if (newscroll != xscroll_) {
+	  xscroll_ = newscroll;
+	  mu_p = 0; erase_cursor_only = 0;
+        }
+      }
+      lines++;
+      if (e >= value_+size_) break;
+      p = e+1;
+    }
+  
+    // adjust the scrolling:
+    if (input_type()==FL_MULTILINE_INPUT) {
+      int newy = yscroll_;
+      if (cury < newy) newy = cury;
+      if (cury > newy+H-height) newy = cury-H+height;
+      if (newy < -1) newy = -1;
+      if (newy != yscroll_) {yscroll_ = newy; mu_p = 0; erase_cursor_only = 0;}
+    } else {
+      yscroll_ = -(H-height)/2;
+    }
+  =+/
+    fl_push_clip(X, Y, W, H);
+  /+=
+    Fl_Color tc = active_r() ? textcolor() : fl_inactive(textcolor());
+  
+    p = value();
+    // visit each line and draw it:
+    int desc = height-fl_descent();
+    float xpos = (float)(X - xscroll_ + 1);
+    int ypos = -yscroll_;
+    for (; ypos < H;) {
+  
+      // re-expand line unless it is the last one calculated above:
+      if (lines>1) e = expand(p, buf);
+  
+      if (ypos <= -height) goto CONTINUE; // clipped off top
+  
+      if (do_mu) {	// for minimal update:
+        const char* pp = value()+mu_p; // pointer to where minimal update starts
+        if (e < pp) goto CONTINUE2; // this line is before the changes
+        if (readonly()) erase_cursor_only = 0; // this isn't the most efficient way
+        if (erase_cursor_only && p > pp) goto CONTINUE2; // this line is after
+        // calculate area to erase:
+        float r = (float)(X+W);
+        float xx;
+        if (p >= pp) {
+	  xx = (float)X;
+	  if (erase_cursor_only) r = xpos+2;
+	  else if (readonly()) xx -= 3;
+        } else {
+	  xx = xpos + (float)expandpos(p, pp, buf, 0);
+	  if (erase_cursor_only) r = xx+2;
+	  else if (readonly()) xx -= 3;
+        }
+        // clip to and erase it:
+        fl_push_clip((int)xx-1-height/8, Y+ypos, (int)(r-xx+2+height/4), height);
+        draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
+                 W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
+        // it now draws entire line over it
+        // this should not draw letters to left of erased area, but
+        // that is nyi.
+      }
+  
+      // Draw selection area if required:
+      if (selstart < selend && selstart <= e-value() && selend > p-value()) {
+        const char* pp = value()+selstart;
+        float x1 = xpos;
+        int offset1 = 0;
+        if (pp > p) {
+	  fl_color(tc);
+	  x1 += (float)expandpos(p, pp, buf, &offset1);
+	  fl_draw(buf, offset1, xpos, (float)(Y+ypos+desc));
+        }
+        pp = value()+selend;
+        float x2 = (float)(X+W);
+        int offset2;
+        if (pp <= e) x2 = xpos + (float)expandpos(p, pp, buf, &offset2);
+        else offset2 = strlen(buf);
+        fl_color(selection_color());
+        fl_rectf((int)(x1+0.5), Y+ypos, (int)(x2-x1+0.5), height);
+        fl_color(fl_contrast(textcolor(), selection_color()));
+        fl_draw(buf+offset1, offset2-offset1, x1, (float)(Y+ypos+desc));
+        if (pp < e) {
+	  fl_color(tc);
+	  fl_draw(buf+offset2, strlen(buf+offset2), x2, (float)(Y+ypos+desc));
+        }
+      } else {
+        // draw unselected text
+        fl_color(tc);
+        fl_draw(buf, strlen(buf), xpos, (float)(Y+ypos+desc));
+      }
+  
+      if (do_mu) fl_pop_clip();
+  
+    CONTINUE2:
+      // draw the cursor:
+      if (Fl::focus() == this && selstart == selend &&
+	  position() >= p-value() && position() <= e-value()) {
+        fl_color(cursor_color());
+        if (readonly()) {
+          fl_line((int)(xpos+curx-2.5f), Y+ypos+height-1,
+	          (int)(xpos+curx+0.5f), Y+ypos+height-4,
+	          (int)(xpos+curx+3.5f), Y+ypos+height-1);
+        } else {
+          fl_rectf((int)(xpos+curx+0.5), Y+ypos, 2, height);
+        }
+      }
+  
+    CONTINUE:
+      ypos += height;
+      if (e >= value_+size_) break;
+      if (*e == '\n' || *e == ' ') e++;
+      p = e;
+    }
+  
+    // for minimal update, erase all lines below last one if necessary:
+    if (input_type()==FL_MULTILINE_INPUT && do_mu && ypos<H
+        && (!erase_cursor_only || p <= value()+mu_p)) {
+      if (ypos < 0) ypos = 0;
+      fl_push_clip(X, Y+ypos, W, H-ypos);
+      draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
+               W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
+      fl_pop_clip();
+    }
+  =+/
+    fl_pop_clip();
+  }
+/+-
   int up_down_position(int, int keepmark=0);
   void handle_mouse(int, int, int, int, int keepmark=0);
   int handletext(int e, int, int, int, int);
   void maybe_do_callback();
-  int xscroll() const {return xscroll_;}
-  int yscroll() const {return yscroll_;}
+-+/
+  int xscroll() {
+    return xscroll_;
+  }
+
+  int yscroll() {
+    return yscroll_;
+  }
 
 public:
 
-  void resize(int, int, int, int);
+  void resize(int X, int Y, int W, int H) {
+    if (W != w()) xscroll_ = 0;
+    if (H != h()) yscroll_ = 0;
+    super.resize(X, Y, W, H);
+  }
 
-  Fl_Input_(int, int, int, int, const char* = 0);
-  ~Fl_Input_();
+  this(int X, int Y, int W, int H, char[] l=null) {
+    super(x, y, w, h, l);
+    box(FL_DOWN_BOX);
+    color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
+    alignment(FL_ALIGN_LEFT);
+    textsize_ = FL_NORMAL_SIZE;
+    textfont_ = FL_HELVETICA;
+    textcolor_ = FL_FOREGROUND_COLOR;
+    cursor_color_ = FL_FOREGROUND_COLOR; // was FL_BLUE
+    mark_ = position_ = size_ = 0;
+    bufsize = 0;
+    buffer  = null;
+    value_ = "";
+    xscroll_ = yscroll_ = 0;
+    maximum_size_ = 32767;
+  }
+  ~this() {
+    if (undowidget && undowidget == this) undowidget = null;
+    buffer = null;
+  }
 
-  int value(const char*);
+  int value(char[] v) {
+    /+= =+/
+    value_ = v.dup;
+    return 0;
+  }
+/+-
   int value(const char*, int);
   int static_value(const char*);
   int static_value(const char*, int);
-  const char* value() const {return value_;}
-  char index(int i) const {return value_[i];}
-  int size() const {return size_;}
-  void size(int W, int H) { Fl_Widget::size(W, H); }
-  int maximum_size() const {return maximum_size_;}
-  void maximum_size(int m) {maximum_size_ = m;}
+-+/
+  char[] value() {
+    return value_;
+  }
+  char index(int i) {
+    return value_[i];
+  }
 
-  int position() const {return position_;}
-  int mark() const {return mark_;}
+  int size() {
+    return size_;
+  }
+
+  void size(int W, int H) { 
+    super.size(W, H); 
+  }
+
+  int maximum_size() {
+    return maximum_size_;
+  }
+
+  void maximum_size(int m) {
+    maximum_size_ = m;
+  }
+
+  int position() {
+    return position_;
+  }
+
+  int mark() {
+    return mark_;
+  }
+/+-
   int position(int p, int m);
   int position(int p) {return position(p, p);}
   int mark(int m) {return position(position(), m);}
@@ -119,65 +352,61 @@ public:
   int copy(int clipboard);
   int undo();
   int copy_cuts();
+-+/
 
-  Fl_Font textfont() const {return (Fl_Font)textfont_;}
-  void textfont(uchar s) {textfont_ = s;}
-  uchar textsize() const {return textsize_;}
-  void textsize(uchar s) {textsize_ = s;}
-  Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-  void textcolor(unsigned n) {textcolor_ = n;}
-  Fl_Color cursor_color() const {return (Fl_Color)cursor_color_;}
-  void cursor_color(unsigned n) {cursor_color_ = n;}
+  Fl_Font textfont() {
+    return textfont_;
+  }
 
-  int input_type() const {return type() & FL_INPUT_TYPE; }
-  void input_type(int t) { type((uchar)(t | readonly())); }
-  int readonly() const { return type() & FL_INPUT_READONLY; }
+  void textfont(Fl_Font s) {
+    textfont_ = s;
+  }
+
+  ubyte textsize() {
+    return textsize_;
+  }
+
+  void textsize(ubyte s) {
+    textsize_ = s;
+  }
+
+  Fl_Color textcolor() { 
+    return textcolor_;
+  }
+
+  void textcolor(Fl_Color n) {
+    textcolor_ = n;
+  }
+
+  Fl_Color cursor_color() {
+    return cursor_color_;
+  }
+
+  void cursor_color(Fl_Color n) {
+    cursor_color_ = n;
+  }
+
+  Fl_Type input_type() { 
+    return cast(Fl_Type)(type() & FL_INPUT_TYPE); 
+  }
+
+  void input_type(Fl_Type t) { 
+    type(cast(Fl_Type)(t | readonly())); 
+  }
+
+  Fl_Type readonly() { 
+    return cast(Fl_Type)(type() & FL_INPUT_READONLY); 
+  }
+/+-
   void readonly(int b) { if (b) type((uchar)(type() | FL_INPUT_READONLY));
                          else type((uchar)(type() & ~FL_INPUT_READONLY)); }
   int wrap() const { return type() & FL_INPUT_WRAP; }
   void wrap(int b) { if (b) type((uchar)(type() | FL_INPUT_WRAP));
                          else type((uchar)(type() & ~FL_INPUT_WRAP)); }
+-+/
 };
 
-#endif 
-
-//
-// End of "$Id: Fl_Input_.H 4288 2005-04-16 00:13:17Z mike $".
-//
-    End of automatic import -+/
-/+- This file was imported from C++ using a script
-//
-// "$Id: Fl_Input_.cxx 5190 2006-06-09 16:16:34Z mike $"
-//
-// Common input widget routines for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
-// This is the base class for Fl_Input.  You can use it directly
-// if you are one of those people who like to define their own
-// set of editing keys.  It may also be useful for adding scrollbars
-// to the input field.
-
+/+-
 #include <FL/Fl.H>
 #include <FL/Fl_Input_.H>
 #include <FL/Fl_Window.H>
@@ -319,181 +548,8 @@ static int was_up_down;
 void Fl_Input_::setfont() const {
  fl_font(textfont(), textsize());
 }
-
-void Fl_Input_::drawtext(int X, int Y, int W, int H) {
-  int do_mu = !(damage()&FL_DAMAGE_ALL);
-
-  if (Fl::focus()!=this && !size()) {
-    if (do_mu) { // we have to erase it if cursor was there
-      draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
-               W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
-    }
-    return;
-  }
-
-  int selstart, selend;
-  if (Fl::focus()!=this && /*Fl::selection_owner()!=this &&*/ Fl::pushed()!=this)
-    selstart = selend = 0;
-  else if (position() <= mark()) {
-    selstart = position(); selend = mark();
-  } else {
-    selend = position(); selstart = mark();
-  }
-
-  setfont();
-  const char *p, *e;
-  char buf[MAXBUF];
-
-  // count how many lines and put the last one into the buffer:
-  // And figure out where the cursor is:
-  int height = fl_height();
-  int lines;
-  int curx, cury;
-  for (p=value(), curx=cury=lines=0; ;) {
-    e = expand(p, buf);
-    if (position() >= p-value() && position() <= e-value()) {
-      curx = int(expandpos(p, value()+position(), buf, 0)+.5);
-      if (Fl::focus()==this && !was_up_down) up_down_pos = curx;
-      cury = lines*height;
-      int newscroll = xscroll_;
-      if (curx > newscroll+W-20) {
-	// figure out scrolling so there is space after the cursor:
-	newscroll = curx+20-W;
-	// figure out the furthest left we ever want to scroll:
-	int ex = int(expandpos(p, e, buf, 0))+2-W;
-	// use minimum of both amounts:
-	if (ex < newscroll) newscroll = ex;
-      } else if (curx < newscroll+20) {
-	newscroll = curx-20;
-      }
-      if (newscroll < 0) newscroll = 0;
-      if (newscroll != xscroll_) {
-	xscroll_ = newscroll;
-	mu_p = 0; erase_cursor_only = 0;
-      }
-    }
-    lines++;
-    if (e >= value_+size_) break;
-    p = e+1;
-  }
-
-  // adjust the scrolling:
-  if (input_type()==FL_MULTILINE_INPUT) {
-    int newy = yscroll_;
-    if (cury < newy) newy = cury;
-    if (cury > newy+H-height) newy = cury-H+height;
-    if (newy < -1) newy = -1;
-    if (newy != yscroll_) {yscroll_ = newy; mu_p = 0; erase_cursor_only = 0;}
-  } else {
-    yscroll_ = -(H-height)/2;
-  }
-
-  fl_clip(X, Y, W, H);
-  Fl_Color tc = active_r() ? textcolor() : fl_inactive(textcolor());
-
-  p = value();
-  // visit each line and draw it:
-  int desc = height-fl_descent();
-  float xpos = (float)(X - xscroll_ + 1);
-  int ypos = -yscroll_;
-  for (; ypos < H;) {
-
-    // re-expand line unless it is the last one calculated above:
-    if (lines>1) e = expand(p, buf);
-
-    if (ypos <= -height) goto CONTINUE; // clipped off top
-
-    if (do_mu) {	// for minimal update:
-      const char* pp = value()+mu_p; // pointer to where minimal update starts
-      if (e < pp) goto CONTINUE2; // this line is before the changes
-      if (readonly()) erase_cursor_only = 0; // this isn't the most efficient way
-      if (erase_cursor_only && p > pp) goto CONTINUE2; // this line is after
-      // calculate area to erase:
-      float r = (float)(X+W);
-      float xx;
-      if (p >= pp) {
-	xx = (float)X;
-	if (erase_cursor_only) r = xpos+2;
-	else if (readonly()) xx -= 3;
-      } else {
-	xx = xpos + (float)expandpos(p, pp, buf, 0);
-	if (erase_cursor_only) r = xx+2;
-	else if (readonly()) xx -= 3;
-      }
-      // clip to and erase it:
-      fl_push_clip((int)xx-1-height/8, Y+ypos, (int)(r-xx+2+height/4), height);
-      draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
-               W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
-      // it now draws entire line over it
-      // this should not draw letters to left of erased area, but
-      // that is nyi.
-    }
-
-    // Draw selection area if required:
-    if (selstart < selend && selstart <= e-value() && selend > p-value()) {
-      const char* pp = value()+selstart;
-      float x1 = xpos;
-      int offset1 = 0;
-      if (pp > p) {
-	fl_color(tc);
-	x1 += (float)expandpos(p, pp, buf, &offset1);
-	fl_draw(buf, offset1, xpos, (float)(Y+ypos+desc));
-      }
-      pp = value()+selend;
-      float x2 = (float)(X+W);
-      int offset2;
-      if (pp <= e) x2 = xpos + (float)expandpos(p, pp, buf, &offset2);
-      else offset2 = strlen(buf);
-      fl_color(selection_color());
-      fl_rectf((int)(x1+0.5), Y+ypos, (int)(x2-x1+0.5), height);
-      fl_color(fl_contrast(textcolor(), selection_color()));
-      fl_draw(buf+offset1, offset2-offset1, x1, (float)(Y+ypos+desc));
-      if (pp < e) {
-	fl_color(tc);
-	fl_draw(buf+offset2, strlen(buf+offset2), x2, (float)(Y+ypos+desc));
-      }
-    } else {
-      // draw unselected text
-      fl_color(tc);
-      fl_draw(buf, strlen(buf), xpos, (float)(Y+ypos+desc));
-    }
-
-    if (do_mu) fl_pop_clip();
-
-  CONTINUE2:
-    // draw the cursor:
-    if (Fl::focus() == this && selstart == selend &&
-	position() >= p-value() && position() <= e-value()) {
-      fl_color(cursor_color());
-      if (readonly()) {
-        fl_line((int)(xpos+curx-2.5f), Y+ypos+height-1,
-	        (int)(xpos+curx+0.5f), Y+ypos+height-4,
-	        (int)(xpos+curx+3.5f), Y+ypos+height-1);
-      } else {
-        fl_rectf((int)(xpos+curx+0.5), Y+ypos, 2, height);
-      }
-    }
-
-  CONTINUE:
-    ypos += height;
-    if (e >= value_+size_) break;
-    if (*e == '\n' || *e == ' ') e++;
-    p = e;
-  }
-
-  // for minimal update, erase all lines below last one if necessary:
-  if (input_type()==FL_MULTILINE_INPUT && do_mu && ypos<H
-      && (!erase_cursor_only || p <= value()+mu_p)) {
-    if (ypos < 0) ypos = 0;
-    fl_push_clip(X, Y+ypos, W, H-ypos);
-    draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
-             W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
-    fl_pop_clip();
-  }
-
-  fl_pop_clip();
-}
-
+-+/
+/+-
 static int isword(char c) {
   return (c&128 || isalnum(c) || strchr("#%&-/@\\_~", c));
 }
@@ -674,17 +730,18 @@ int Fl_Input_::copy(int clipboard) {
   }
   return 0;
 }
+-+/
 
-#define MAXFLOATSIZE 40
-
-static char* undobuffer;
+const int MAXFLOATSIZE  = 40;
+static char[] undobuffer;
 static int undobufferlength;
-static Fl_Input_* undowidget;
+static Fl_Input_ undowidget;
 static int undoat;	// points after insertion
 static int undocut;	// number of characters deleted there
 static int undoinsert;	// number of characters inserted
 static int yankcut;	// length of valid contents of buffer, even if undocut=0
 
+/+-
 static void undobuffersize(int n) {
   if (n > undobufferlength) {
     if (undobuffer) {
@@ -938,23 +995,6 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
 
 /*------------------------------*/
 
-Fl_Input_::Fl_Input_(int X, int Y, int W, int H, const char* l)
-: Fl_Widget(X, Y, W, H, l) {
-  box(FL_DOWN_BOX);
-  color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
-  align(FL_ALIGN_LEFT);
-  textsize_ = (uchar)FL_NORMAL_SIZE;
-  textfont_ = FL_HELVETICA;
-  textcolor_ = FL_FOREGROUND_COLOR;
-  cursor_color_ = FL_FOREGROUND_COLOR; // was FL_BLUE
-  mark_ = position_ = size_ = 0;
-  bufsize = 0;
-  buffer  = 0;
-  value_ = "";
-  xscroll_ = yscroll_ = 0;
-  maximum_size_ = 32767;
-}
-
 void Fl_Input_::put_in_buffer(int len) {
   if (value_ == buffer && bufsize > len) {
     buffer[size_] = 0;
@@ -1020,30 +1060,12 @@ int Fl_Input_::static_value(const char* str, int len) {
   return 1;
 }
 
-int Fl_Input_::static_value(const char* str) {
-  return static_value(str, str ? strlen(str) : 0);
-}
-
 int Fl_Input_::value(const char* str, int len) {
   int r = static_value(str, len);
   if (len) put_in_buffer(len);
   return r;
 }
 
-int Fl_Input_::value(const char* str) {
-  return value(str, str ? strlen(str) : 0);
-}
-
-void Fl_Input_::resize(int X, int Y, int W, int H) {
-  if (W != w()) xscroll_ = 0;
-  if (H != h()) yscroll_ = 0;
-  Fl_Widget::resize(X, Y, W, H);
-}
-
-Fl_Input_::~Fl_Input_() {
-  if (undowidget == this) undowidget = 0;
-  if (bufsize) free((void*)buffer);
-}
 
 //
 // End of "$Id: Fl_Input_.cxx 5190 2006-06-09 16:16:34Z mike $".

@@ -11,9 +11,12 @@ DFILES = \
 	fl/font.d \
 	fl/font_mac.d \
 	fl/image.d \
+	fl/input.d \
+	fl/input_.d \
 	fl/labeltype.d \
 	fl/line_style.d \
 	fl/rect.d \
+	fl/return_button.d \
 	fl/shortcut.d \
 	fl/tooltip.d \
 	fl/widget.d \
@@ -33,7 +36,7 @@ OBJECTS = $(DFILES:.d=.o)
 
 DFLAGS = -g -fbounds-check -funittest -fversion=Apple 
 
-all: hello button
+all: message hello button
 
 hello:  test/hello.o $(OBJECTS)
 	echo Linking $@...
@@ -41,6 +44,11 @@ hello:  test/hello.o $(OBJECTS)
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 button:  test/button.o $(OBJECTS)
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
+
+message:  test/message.o $(OBJECTS)
 	echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
