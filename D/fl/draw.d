@@ -277,8 +277,8 @@ version (Apple) {
 // Sets width to the width of the string in the current font.
 
 static char*  expand(
-    char* from, char* buf, double maxw, inout int n, 
-    inout double width, int wrap, int draw_symbols) 
+    char* from, char* buf, double maxw, out int n, 
+    out double width, int wrap, int draw_symbols) 
 {
   char* o = buf;
   char* e = buf+(MAXBUF-4);
@@ -343,9 +343,7 @@ void fl_draw(
     void function(char[] str, int x, int y) callthis,
     Fl_Image img=null, int draw_symbols=1) 
 {
-  // terminate our string with a '0'
-  if (str[length-1]!=0) str~=0;
-
+  if (str[$-1]!=0) str~=0;
   char* p;
   char* e;
   char buf[MAXBUF];
@@ -497,7 +495,6 @@ void fl_draw(
   Fl_Image img=null,
   int draw_symbols=1) {
   if ((!str || !str.length) && !img) return;
-  if (str[length-1]!=0) str~=0;
   if (w && h && !fl_not_clipped(x, y, w, h) && (alignment & FL_ALIGN_INSIDE)) return;
   if (alignment & FL_ALIGN_CLIP) fl_push_clip(x, y, w, h);
   fl_draw(str, x, y, w, h, alignment, &fl.font_mac.fl_draw, img, draw_symbols);
@@ -511,7 +508,7 @@ void fl_measure(char[] str, inout int w, inout int h, int draw_symbols=1) {
     h = 0; 
     return;
   }
-  if (str[length-1]!=0) str~=0;
+  if (str[$-1]!=0) str~=0;
   h = fl_height();
   char* p;
   char* e;

@@ -1,5 +1,5 @@
 //
-// "$Id: fl_ask.H 4279 2005-04-13 19:35:28Z mike $"
+// "$Id: ask.d 4279 2005-04-13 19:35:28Z mike $"
 //
 // Standard dialog header file for the Fast Light Tool Kit (FLTK).
 //
@@ -110,16 +110,15 @@ static Fl_Window makeform() {
  */
 
 void resizeform() {
-/+=
   int	i;
   int	message_w, message_h;
   int	icon_size;
-  int	button_w[3], button_h[3];
+  int[3] button_w, button_h;
   int	x, w, h, max_w, max_h;
 
   fl_font(fl_message_font_, fl_message_size_);
   message_w = message_h = 0;
-  fl_measure(message->label(), message_w, message_h);
+  fl_measure(message.label(), message_w, message_h);
 
   message_w += 10;
   message_h += 10;
@@ -128,15 +127,15 @@ void resizeform() {
   if (message_h < 30)
     message_h = 30;
 
-  fl_font(button[0]->labelfont(), button[0]->labelsize());
+  fl_font(button[0].labelfont(), button[0].labelsize());
 
-  memset(button_w, 0, sizeof(button_w));
-  memset(button_h, 0, sizeof(button_h));
+  memset(button_w, 0, button_w.sizeof);
+  memset(button_h, 0, button_h.sizeof);
 
   for (max_h = 25, i = 0; i < 3; i ++)
-    if (button[i]->visible())
+    if (button[i].visible())
     {
-      fl_measure(button[i]->label(), button_w[i], button_h[i]);
+      fl_measure(button[i].label(), button_w[i], button_h[i]);
 
       if (i == 1)
         button_w[1] += 20;
@@ -148,7 +147,7 @@ void resizeform() {
         max_h = button_h[i];
     }
 
-  if (input->visible()) icon_size = message_h + 25;
+  if (input.visible()) icon_size = message_h + 25;
   else icon_size = message_h;
 
   max_w = message_w + 10 + icon_size;
@@ -162,25 +161,24 @@ void resizeform() {
   w = max_w + 20;
   h = max_h + 30 + icon_size;
 
-  message_form->size(w, h);
-  message_form->size_range(w, h, w, h);
+  message_form.size(w, h);
+  message_form.size_range(w, h, w, h);
 
-  message->resize(20 + icon_size, 10, message_w, message_h);
-  icon->resize(10, 10, icon_size, icon_size);
-  icon->labelsize((uchar)(icon_size - 10));
-  input->resize(20 + icon_size, 10 + message_h, message_w, 25);
+  message.resize(20 + icon_size, 10, message_w, message_h);
+  icon.resize(10, 10, icon_size, icon_size);
+  icon.labelsize(icon_size - 10);
+  input.resize(20 + icon_size, 10 + message_h, message_w, 25);
 
   for (x = w, i = 0; i < 3; i ++)
     if (button_w[i])
     {
       x -= button_w[i];
-      button[i]->resize(x, h - 10 - max_h, button_w[i] - 10, max_h);
+      button[i].resize(x, h - 10 - max_h, button_w[i] - 10, max_h);
 
 //      printf("button %d (%s) is %dx%d+%d,%d\n", i, button[i]->label(),
 //             button[i]->w(), button[i]->h(),
 //	     button[i]->x(), button[i]->y());
     }
-=+/
 }
 
 static int innards(char[] fmt, void *ap,
@@ -339,5 +337,5 @@ char[] fl_password(char[] fmt, char[] defstr, ...) {
 }
 
 //
-// End of "$Id: fl_ask.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: ask.d 5190 2006-06-09 16:16:34Z mike $".
 //

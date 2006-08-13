@@ -32,6 +32,8 @@ private import fl.x;
 private import fl.fl;
 private import fl.window;
 
+private import std.stdio;
+
 class Fl_FontSize {
 public:
   Fl_FontSize next;    // linked list for this Fl_Fontdesc
@@ -172,14 +174,12 @@ static UniChar[] utf16buf;
 UniChar[] fl_macToUtf16(char[] txt)
 {
   uint i, len = txt.length;
-  utf16buf.length = len + 2;
+  utf16buf.length = len;
   char *src = txt.ptr;
   UniChar *dst = utf16buf;
-  for (i=0; i<len; i++) {
-    UniChar c = cast(UniChar)(*src++);
-    *dst++ = (c<128) ? c : utf16lut[c-128];
+  foreach(c; txt) {
+    *dst++ = (c<128) ? cast(UniChar)c : utf16lut[c-128];
   }
-  *dst = 0;
   return utf16buf;
 }
 
