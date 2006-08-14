@@ -1,5 +1,5 @@
 
-all: boxtype
+all: boxtype hello
 #all: message hello button
 
 
@@ -21,6 +21,7 @@ DFILES = \
 	fl/line_style.d \
 	fl/rect.d \
 	fl/return_button.d \
+	fl/single_window.d \
 	fl/shortcut.d \
 	fl/tooltip.d \
 	fl/widget.d \
@@ -42,12 +43,24 @@ DFLAGS = -g -fbounds-check -funittest -fversion=Apple
 
 
 boxtype:  test/boxtype.o $(OBJECTS)
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 button:  test/button.o $(OBJECTS)
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 hello:  test/hello.o $(OBJECTS)
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 message:  test/message.o $(OBJECTS)
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 
 .SUFFIXES: .d .fl .o
@@ -55,11 +68,6 @@ message:  test/message.o $(OBJECTS)
 .d.o:
 	echo Compiling $<...
 	gdc $(DFLAGS) -c $< -o $@
-
-.o:
-	echo Linking $@...
-	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
-	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 clean:
 	rm $(OBJECTS)
