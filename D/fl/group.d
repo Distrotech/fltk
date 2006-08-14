@@ -83,6 +83,7 @@ private:
         // for up/down, the widgets have to overlap horizontally:
         if (o.x() >= previous.x()+previous.w() ||
 	    o.x()+o.w() <= previous.x()) continue;
+      default: break;
       }
       if (o.take_focus()) return 1;
     }

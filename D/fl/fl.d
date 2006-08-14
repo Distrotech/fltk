@@ -83,8 +83,8 @@ public: // should be private!
   static Fl_Window modal_;
   static Fl_Window grab_;
   static int compose_state;
-  static int visible_focus_;
-  static int dnd_text_ops_;
+  static int visible_focus_ = 1;
+  static int dnd_text_ops_ = 1;
 
   static void damage(Fl_Damage d) {
     damage_ = d;
@@ -424,6 +424,9 @@ void Fl::remove_fd(int n)
   static char[] event_text() {return e_text;}
   static int event_length() {return e_length;}
   static int compose(inout int del) {
+    del = 0;
+    ubyte ascii = cast(ubyte)e_text[0];
+    if (ascii >= 32 && ascii != 127) return 1;
     /+= =+/ return 0;
   }
   static void compose_reset() {compose_state = 0;}
@@ -735,8 +738,11 @@ void Fl::copy(const char *stuff, int len, int clipboard) {
                     len, fl_selection_buffer[1] );
   }
 }
-
-  static void paste(Fl_Widget &receiver, int clipboard /*=0*/);
+=+/
+  static void paste(Fl_Widget receiver, int clipboard) {
+    /+= =+/
+  }
+/+=
 void Fl::paste(Fl_Widget &receiver, int clipboard) {
   if (clipboard) {
     // see if we own the selection, if not go get it:

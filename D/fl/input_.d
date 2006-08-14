@@ -795,7 +795,7 @@ public:
     }
   
     if (ilen) {
-      if (undowidget == this && b == undoat)
+      if (undowidget is this && b == undoat)
         undoinsert += ilen;
       else {
         undocut = 0;

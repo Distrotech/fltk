@@ -47,7 +47,7 @@ private:
         Fl.compose_reset(); // ignore any foreign letters...
   
         // initialize the list of legal characters inside a floating point number
-/+=
+/+-
   #ifdef HAVE_LOCALECONV
         if (!legal_fp_chars) {
           int len = strlen(standard_fp_chars);
@@ -71,7 +71,7 @@ private:
           }
         }
   #endif // HAVE_LOCALECONV
-  =+/
+  -+/
         // This is complex to allow "0xff12" hex to be typed:
         if (!caret() && (ascii == '+' || ascii == '-') ||
 	    (ascii >= '0' && ascii <= '9') ||
@@ -92,14 +92,14 @@ private:
       }
       return 1;
     }
-/+=  
-    switch (Fl::event_key()) {
+
+    switch (Fl.event_key()) {
     case FL_Insert:
-      if (Fl::event_state() & FL_CTRL) ascii = ctrl('C');
-      else if (Fl::event_state() & FL_SHIFT) ascii = ctrl('V');
+      if (Fl.event_state() & FL_CTRL) ascii = ctrl('C');
+      else if (Fl.event_state() & FL_SHIFT) ascii = ctrl('V');
       break;
     case FL_Delete:
-      if (Fl::event_state() & FL_SHIFT) ascii = ctrl('X');
+      if (Fl.event_state() & FL_SHIFT) ascii = ctrl('X');
       else ascii = ctrl('D');
       break;    
     case FL_Left:
@@ -119,14 +119,14 @@ private:
     case FL_Down:
       ascii = ctrl('N'); break;
     case FL_Home:
-      if (Fl::event_state() & FL_CTRL) {
+      if (Fl.event_state() & FL_CTRL) {
         shift_position(0);
         return 1;
       }
       ascii = ctrl('A');
       break;
     case FL_End:
-      if (Fl::event_state() & FL_CTRL) {
+      if (Fl.event_state() & FL_CTRL) {
         shift_position(size());
         return 1;
       }
@@ -145,8 +145,9 @@ private:
       else 
         return 0;	// reserved for shortcuts
     case FL_Tab:
-      if (Fl::event_state(FL_CTRL|FL_SHIFT) || input_type()!=FL_MULTILINE_INPUT || readonly()) return 0;
+      if (Fl.event_state(FL_CTRL|FL_SHIFT) || input_type()!=FL_MULTILINE_INPUT || readonly()) return 0;
       return replace(caret(), mark(), &ascii, 1);
+/+=
   #ifdef __APPLE__
     case 'c' :
     case 'v' :
@@ -161,29 +162,31 @@ private:
   //    printf("using '%c' (0x%02x)...\n", ascii, ascii);
       break;
   #endif // __APPLE__
+=+/
+    default: break;
     }
   
     int i;
     switch (ascii) {
-    case ctrl('A'):
+    case 'A'^0x40:
       return shift_position(line_start(caret())) + NORMAL_INPUT_MOVE;
-    case ctrl('B'):
+    case 'B'^0x40:
       return shift_position(caret()-1) + NORMAL_INPUT_MOVE;
-    case ctrl('C'): // copy
+    case 'C'^0x40: // copy
       return copy(1);
-    case ctrl('D'):
-    case ctrl('?'):
+    case 'D'^0x40:
+    case '?'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
       }
       if (mark() != caret()) return cut();
       else return cut(1);
-    case ctrl('E'):
+    case 'E'^0x40:
       return shift_position(line_end(caret())) + NORMAL_INPUT_MOVE;
-    case ctrl('F'):
+    case 'F'^0x40:
       return shift_position(caret()+1) + NORMAL_INPUT_MOVE;
-    case ctrl('H'):
+    case 'H'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
@@ -191,7 +194,7 @@ private:
       if (mark() != caret()) cut();
       else cut(-1);
       return 1;
-    case ctrl('K'):
+    case 'K'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
@@ -201,7 +204,7 @@ private:
       if (i == caret() && i < size()) i++;
       cut(caret(), i);
       return copy_cuts();
-    case ctrl('N'):
+    case 'N'^0x40:
       i = caret();
       if (line_end(i) >= size()) return NORMAL_INPUT_MOVE;
       while (repeat_num--) {  
@@ -211,7 +214,7 @@ private:
       }
       shift_up_down_position(i);
       return 1;
-    case ctrl('P'):
+    case 'P'^0x40:
       i = caret();
       if (!line_start(i)) return NORMAL_INPUT_MOVE;
       while(repeat_num--) {
@@ -221,39 +224,39 @@ private:
       }
       shift_up_down_position(line_start(i));
       return 1;
-    case ctrl('U'):
+    case 'U'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
       }
       return cut(0, size());
-    case ctrl('V'):
-    case ctrl('Y'):
+    case 'V'^0x40:
+    case 'Y'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
       }
-      Fl::paste(*this, 1);
+      Fl.paste(this, 1);
       return 1;
-    case ctrl('X'):
-    case ctrl('W'):
+    case 'X'^0x40:
+    case 'W'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
       }
       copy(1);
       return cut();
-    case ctrl('Z'):
-    case ctrl('_'):
+    case 'Z'^0x40:
+    case '_'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
       }
       return undo();
-    case ctrl('I'):
-    case ctrl('J'):
-    case ctrl('L'):
-    case ctrl('M'):
+    case 'I'^0x40:
+    case 'J'^0x40:
+    case 'L'^0x40:
+    case 'M'^0x40:
       if (readonly()) {
         fl_beep();
         return 1;
@@ -261,22 +264,20 @@ private:
       // insert a few selected control characters literally:
       if (input_type() != FL_FLOAT_INPUT && input_type() != FL_INT_INPUT)
         return replace(caret(), mark(), &ascii, 1);
+    default: break;
     }
- =+/ 
+ 
     return 0;
   }
-/+=
-  int shift_position(int p);
-// kludge so shift causes selection to extend:
-int Fl_Input::shift_position(int p) {
-  return caret(p, Fl::event_state(FL_SHIFT) ? mark() : p);
-}
-  int shift_up_down_position(int p);
-int Fl_Input::shift_up_down_position(int p) {
-  return up_down_position(p, Fl::event_state(FL_SHIFT));
-}
-  void handle_mouse(int keepmark=0);
-=+/
+
+  int shift_position(int p) {
+    return caret(p, Fl.event_state(FL_SHIFT) ? mark() : p);
+  }
+
+  int shift_up_down_position(int p) {
+    return up_down_position(p, Fl.event_state(FL_SHIFT));
+  }
+
 public:
 
   void draw() {
@@ -286,7 +287,8 @@ public:
     super.drawtext(x()+Fl.box_dx(b), y()+Fl.box_dy(b),
 		        w()-Fl.box_dw(b), h()-Fl.box_dh(b));
   }
-  int handle(int event) {
+
+  int handle(Fl_Event event) {
     static int dnd_save_position, dnd_save_mark, drag_start = -1, newpos;
     static Fl_Widget dnd_save_focus;
     switch (event) {
@@ -344,7 +346,7 @@ public:
         drag_start = -1;
       }
   =+/
-      if (Fl.focus() != this) {
+      if (!(Fl.focus() is this)) {
         Fl.focus(this);
         handle(FL_FOCUS);
       }
@@ -445,35 +447,21 @@ public:
   }
 };
 
-/+-
-#include <stdio.h>
-#include <stdlib.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Input.H>
-#include <FL/fl_draw.H>
-#include <FL/fl_ask.H>
-#include "flstring.h"
-
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
--+/
-
-/+-
 // If you define this symbol as zero you will get the peculiar fltk
 // behavior where moving off the end of an input field will move the
 // cursor into the next field:
 // define it as 1 to prevent cursor movement from going to next field:
-#define NORMAL_INPUT_MOVE 0
+static const int NORMAL_INPUT_MOVE = 0;
 
-#define ctrl(x) ((x)^0x40)
+static int ctrl(int x) {
+  return ((x)^0x40);
+}
 
 // List of characters that are legal in a floating point input field.
 // This text string is created at run-time to take the current locale
 // into account (for example, continental Europe uses a comma instead
 // of a decimal point). For back compatibility reasons, we always 
 // allow the decimal point.
--+/
 /+=
 #ifdef HAVE_LOCALECONV
 static const char *standard_fp_chars = ".eE+-"; 
