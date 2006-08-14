@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: fl_round_box.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: round_box.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Round box drawing routines for the Fast Light Tool Kit (FLTK).
 //
@@ -27,22 +26,23 @@
 //
 
 // Box drawing code for an obscure box type.
-// These box types are in seperate files so they are not linked
-// in if not used.
 
-#include <FL/Fl.H>
-#include <FL/fl_draw.H>
+module fl.round_box;
 
-// A compiler from a certain very large software company will not compile
+private import fl.fl;
+private import fl.draw;
+private import fl.boxtype;
+
+// A "C++" compiler from a certain very large software company will not compile
 // the function pointer assignment due to the name conflict with fl_arc.
 // This function is to fix that:
 void fl_arc_i(int x,int y,int w,int h,double a1,double a2) {
   fl_arc(x,y,w,h,a1,a2);
 }
 
-enum {UPPER_LEFT, LOWER_RIGHT, CLOSED, FILL};
+static enum {UPPER_LEFT, LOWER_RIGHT, CLOSED, FILL};
 
-static void draw(int which, int x,int y,int w,int h, int inset, uchar color)
+static void draw(int which, int x,int y,int w,int h, int inset, ubyte color)
 {
   if (inset*2 >= w) inset = (w-1)/2;
   if (inset*2 >= h) inset = (h-1)/2;
@@ -52,9 +52,9 @@ static void draw(int which, int x,int y,int w,int h, int inset, uchar color)
   h -= 2*inset;
   int d = w <= h ? w : h;
   if (d <= 1) return;
-  fl_color((Fl_Color)color);
-  void (*f)(int,int,int,int,double,double);
-  f = (which==FILL) ? fl_pie : fl_arc_i;
+  fl_color(cast(Fl_Color)color);
+  void function(int,int,int,int,double,double) f;
+  f = (which==FILL) ? &fl_pie : &fl_arc_i;
   if (which >= CLOSED) {
     f(x+w-d, y, d, d, w<=h ? 0 : -90, w<=h ? 180 : 90);
     f(x, y+h-d, d, d, w<=h ? 180 : 90, w<=h ? 360 : 270);
@@ -81,10 +81,8 @@ static void draw(int which, int x,int y,int w,int h, int inset, uchar color)
   }
 }
 
-extern uchar* fl_gray_ramp();
-
 void fl_round_down_box(int x, int y, int w, int h, Fl_Color bgcolor) {
-  uchar *g = fl_gray_ramp();
+  ubyte *g = fl_gray_ramp();
   draw(FILL,	    x,   y, w,   h, 2, bgcolor);
   draw(UPPER_LEFT,  x+1, y, w-2, h, 0, g['N']);
   draw(UPPER_LEFT,  x+1, y, w-2, h, 1, g['H']);
@@ -98,7 +96,7 @@ void fl_round_down_box(int x, int y, int w, int h, Fl_Color bgcolor) {
 }
 
 void fl_round_up_box(int x, int y, int w, int h, Fl_Color bgcolor) {
-  uchar *g = fl_gray_ramp();
+  ubyte *g = fl_gray_ramp();
   draw(FILL,	    x,   y, w,   h, 2, bgcolor);
   draw(LOWER_RIGHT, x+1, y, w-2, h, 0, g['H']);
   draw(LOWER_RIGHT, x+1, y, w-2, h, 1, g['N']);
@@ -111,14 +109,6 @@ void fl_round_up_box(int x, int y, int w, int h, Fl_Color bgcolor) {
   draw(CLOSED,	    x,   y, w,   h, 0, g['A']);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
-Fl_Boxtype fl_define_FL_ROUND_UP_BOX() {
-  fl_internal_boxtype(_FL_ROUND_DOWN_BOX, fl_round_down_box);
-  fl_internal_boxtype(_FL_ROUND_UP_BOX, fl_round_up_box);
-  return _FL_ROUND_UP_BOX;
-}
-
 //
-// End of "$Id: fl_round_box.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: round_box.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

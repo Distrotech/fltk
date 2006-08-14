@@ -21,9 +21,11 @@ DFILES = \
 	fl/labeltype.d \
 	fl/line_style.d \
 	fl/oval_box.d \
+	fl/plastic.d \
 	fl/rect.d \
 	fl/return_button.d \
 	fl/rounded_box.d \
+	fl/round_box.d \
 	fl/single_window.d \
 	fl/shadow_box.d \
 	fl/shortcut.d \

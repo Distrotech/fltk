@@ -380,11 +380,6 @@ Fl_Color fl_rgb_color(ubyte g)
     return cast(Fl_Color)(((((g << 8) | g) << 8) | g) << 8);
 }
 
-Fl_Color fl_gray_ramp(int i) 
-{
-  return cast(Fl_Color)(i+FL_GRAY_RAMP);
-}
-
 Fl_Color fl_color_cube(int r, int g, int b) 
 {
   return cast(Fl_Color)((b*FL_NUM_RED + r) * FL_NUM_GREEN + g + FL_COLOR_CUBE);

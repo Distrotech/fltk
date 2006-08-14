@@ -34,7 +34,7 @@ public import fl.box;
 int N = 0;
 const int W = 200;
 const int H = 50;
-const int ROWS = 10;
+const int ROWS = 11;
 
 Fl_Window window;
 
@@ -91,6 +91,9 @@ int main(char[][] args) {
   bt("FL_PLASTIC_DOWN_FRAME",FL_PLASTIC_DOWN_FRAME);
   bt("FL_PLASTIC_THIN_UP_BOX",FL_PLASTIC_THIN_UP_BOX);
   bt("FL_PLASTIC_THIN_DOWN_BOX",FL_PLASTIC_THIN_DOWN_BOX);
+  N += 2;
+  bt("FL_PLASTIC_ROUND_UP_BOX",FL_PLASTIC_ROUND_UP_BOX);
+  bt("FL_PLASTIC_ROUND_DOWN_BOX",FL_PLASTIC_ROUND_DOWN_BOX);
   window.resizable(window);
   window.end();
   window.show();

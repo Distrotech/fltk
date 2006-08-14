@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: fl_plastic.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: plastic.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // "Plastic" drawing routines for the Fast Light Tool Kit (FLTK).
 //
@@ -33,55 +32,56 @@
 // These box types are in seperate files so they are not linked
 // in if not used.
 
-#include <FL/Fl.H>
-#include <FL/fl_draw.H>
-#include "flstring.h"
+module fl.plastic;
+
+private import fl.fl;
+private import fl.draw;
+
+private import std.c.string;
 
 //
 // Uncomment the following line to restore the old plastic box type
 // appearance.
 //
 
-//#define USE_OLD_PLASTIC_BOX
-#define USE_OLD_PLASTIC_COLOR
+//version = use_old_plastic_box;
+version = use_old_plastic_color;
 
-extern uchar *fl_gray_ramp();
-
-inline Fl_Color shade_color(uchar gc, Fl_Color bc) {
-#ifdef USE_OLD_PLASTIC_COLOR
-  return fl_color_average((Fl_Color)gc, bc, 0.75f);
-#else
-  unsigned	grgb = Fl::get_color((Fl_Color)gc),
-		brgb = Fl::get_color(bc);
-  int		red, green, blue, gray;
-
-
-  gray  = ((grgb >> 24) & 255);
-  red   = gray * ((brgb >> 24) & 255) / 255 + gray * gray / 510;
-  gray  = ((grgb >> 16) & 255);
-  green = gray * ((brgb >> 16) & 255) / 255 + gray * gray / 510;
-  gray  = ((grgb >> 8) & 255);
-  blue  = gray * ((brgb >> 8) & 255) / 255 + gray * gray / 510;
-
-  if (red > 255)
-    red = 255;
-
-  if (green > 255)
-    green = 255;
-
-  if (blue > 255)
-    blue = 255;
-
-  if (Fl::draw_box_active())
-    return fl_rgb_color(red, green, blue);
-  else
-    return fl_color_average(FL_GRAY, fl_rgb_color(red, green, blue), 0.75f);
-#endif // USE_OLD_PLASTIC_COLOR
+static Fl_Color shade_color(ubyte gc, Fl_Color bc) {
+  version (use_old_plastic_color) {
+    return fl_color_average(cast(Fl_Color)gc, bc, 0.75f);
+  } else {
+    Fl_Color	grgb = Fl.get_color(cast(Fl_Color)gc),
+		brgb = Fl.get_color(bc);
+    int		red, green, blue, gray;
+  
+  
+    gray  = ((grgb >> 24) & 255);
+    red   = gray * ((brgb >> 24) & 255) / 255 + gray * gray / 510;
+    gray  = ((grgb >> 16) & 255);
+    green = gray * ((brgb >> 16) & 255) / 255 + gray * gray / 510;
+    gray  = ((grgb >> 8) & 255);
+    blue  = gray * ((brgb >> 8) & 255) / 255 + gray * gray / 510;
+  
+    if (red > 255)
+      red = 255;
+  
+    if (green > 255)
+      green = 255;
+  
+    if (blue > 255)
+      blue = 255;
+  
+    if (Fl.draw_box_active())
+      return fl_rgb_color(red, green, blue);
+    else
+      return fl_color_average(FL_GRAY, fl_rgb_color(red, green, blue), 0.75f);
+  }
 }
 
 
-static void frame_rect(int x, int y, int w, int h, const char *c, Fl_Color bc) {
-  uchar *g = fl_gray_ramp();
+static void frame_rect(int x, int y, int w, int h, char* c, Fl_Color bc) {
+  ubyte* g = fl_gray_ramp();
   int b = strlen(c) / 4 + 1;
 
   for (x += b, y += b, w -= 2 * b, h -= 2 * b; b > 1; b --)
@@ -100,8 +100,8 @@ static void frame_rect(int x, int y, int w, int h, const char *c, Fl_Color bc) {
 }
 
 
-static void frame_round(int x, int y, int w, int h, const char *c, Fl_Color bc) {
-  uchar *g = fl_gray_ramp();
+static void frame_round(int x, int y, int w, int h, char *c, Fl_Color bc) {
+  ubyte *g = fl_gray_ramp();
   int b = strlen(c) / 4 + 1;
 
   if (w==h) {
@@ -154,8 +154,8 @@ static void frame_round(int x, int y, int w, int h, const char *c, Fl_Color bc) 
 }
 
 
-static void shade_rect(int x, int y, int w, int h, const char *c, Fl_Color bc) {
-  uchar		*g = fl_gray_ramp();
+static void shade_rect(int x, int y, int w, int h, char* c, Fl_Color bc) {
+  ubyte		*g = fl_gray_ramp();
   int		i, j;
   int		clen = strlen(c) - 1;
   int		chalf = clen / 2;
@@ -226,8 +226,8 @@ static void shade_rect(int x, int y, int w, int h, const char *c, Fl_Color bc) {
   }
 }
 
-static void shade_round(int x, int y, int w, int h, const char *c, Fl_Color bc) {
-  uchar		*g = fl_gray_ramp();
+static void shade_round(int x, int y, int w, int h, char* c, Fl_Color bc) {
+  ubyte*	g = fl_gray_ramp();
   int		i;
   int		clen = strlen(c) - 1;
   int		chalf = clen / 2;
@@ -280,14 +280,14 @@ static void shade_round(int x, int y, int w, int h, const char *c, Fl_Color bc) 
 }
 
 
-static void up_frame(int x, int y, int w, int h, Fl_Color c) {
-  frame_rect(x, y, w, h - 1, "KLDIIJLM", c);
+static void fl_plastic_up_frame(int x, int y, int w, int h, Fl_Color c) {
+  frame_rect(x, y, w, h - 1, "KLDIIJLM\0", c);
 }
 
 
 static void narrow_thin_box(int x, int y, int w, int h, Fl_Color c) {
   if (h<=0 || w<=0) return;
-  uchar *g = fl_gray_ramp();
+  ubyte* g = fl_gray_ramp();
   fl_color(shade_color(g['R'], c));
   fl_rectf(x+1, y+1, w-2, h-2);
   fl_color(shade_color(g['I'], c));
@@ -302,51 +302,51 @@ static void narrow_thin_box(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void thin_up_box(int x, int y, int w, int h, Fl_Color c) {
-#ifdef USE_OLD_PLASTIC_BOX
-  shade_rect(x + 2, y + 2, w - 4, h - 5, "RVQNOPQRSTUVWVQ", c);
-  up_frame(x, y, w, h, c);
-#else
-  if (w > 4 && h > 4) {
-    shade_rect(x + 1, y + 1, w - 2, h - 3, "RQOQSUWQ", c);
-    frame_rect(x, y, w, h - 1, "IJLM", c);
+void fl_plastic_thin_up_box(int x, int y, int w, int h, Fl_Color c) {
+  version (use_old_plastic_box) {
+    shade_rect(x + 2, y + 2, w - 4, h - 5, "RVQNOPQRSTUVWVQ\0", c);
+    fl_plastic_up_frame(x, y, w, h, c);
   } else {
-    narrow_thin_box(x, y, w, h, c);
+    if (w > 4 && h > 4) {
+      shade_rect(x + 1, y + 1, w - 2, h - 3, "RQOQSUWQ\0", c);
+      frame_rect(x, y, w, h - 1, "IJLM", c);
+    } else {
+      narrow_thin_box(x, y, w, h, c);
+    }
   }
-#endif // USE_OLD_PLASTIC_BOX
 }
 
 
-static void up_box(int x, int y, int w, int h, Fl_Color c) {
-#ifdef USE_OLD_PLASTIC_BOX
-  shade_rect(x + 2, y + 2, w - 4, h - 5, "RVQNOPQRSTUVWVQ", c);
-  up_frame(x, y, w, h, c);
-#else
-  if (w > 8 && h > 8) {
-    shade_rect(x + 1, y + 1, w - 2, h - 3, "RVQNOPQRSTUVWVQ", c);
-    frame_rect(x, y, w, h - 1, "IJLM", c);
+void fl_plastic_up_box(int x, int y, int w, int h, Fl_Color c) {
+  version (use_old_plastic_box) {
+    shade_rect(x + 2, y + 2, w - 4, h - 5, "RVQNOPQRSTUVWVQ\0", c);
+    fl_plastic_up_frame(x, y, w, h, c);
   } else {
-    thin_up_box(x, y, w, h, c);
+    if (w > 8 && h > 8) {
+      shade_rect(x + 1, y + 1, w - 2, h - 3, "RVQNOPQRSTUVWVQ\0", c);
+      frame_rect(x, y, w, h - 1, "IJLM", c);
+    } else {
+      fl_plastic_thin_up_box(x, y, w, h, c);
+    }
   }
-#endif // USE_OLD_PLASTIC_BOX
 }
 
 
-static void up_round(int x, int y, int w, int h, Fl_Color c) {
-  shade_round(x, y, w, h, "RVQNOPQRSTUVWVQ", c);
+static void fl_plastic_round_up_box(int x, int y, int w, int h, Fl_Color c) {
+  shade_round(x, y, w, h, "RVQNOPQRSTUVWVQ\0", c);
   frame_round(x, y, w, h, "IJLM", c);
 }
 
 
-static void down_frame(int x, int y, int w, int h, Fl_Color c) {
-  frame_rect(x, y, w, h - 1, "LLLLTTRR", c);
+static void fl_plastic_down_frame(int x, int y, int w, int h, Fl_Color c) {
+  frame_rect(x, y, w, h - 1, "LLLLTTRR\0", c);
 }
 
 
-static void down_box(int x, int y, int w, int h, Fl_Color c) {
+static void fl_plastic_down_box(int x, int y, int w, int h, Fl_Color c) {
   if (w > 6 && h > 6) {
-    shade_rect(x + 2, y + 2, w - 4, h - 5, "STUVWWWVT", c);
-    down_frame(x, y, w, h, c);
+    shade_rect(x + 2, y + 2, w - 4, h - 5, "STUVWWWVT\0", c);
+    fl_plastic_down_frame(x, y, w, h, c);
   }
   else {
     narrow_thin_box(x, y, w, h, c);
@@ -354,30 +354,12 @@ static void down_box(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void down_round(int x, int y, int w, int h, Fl_Color c) {
-  shade_round(x, y, w, h, "STUVWWWVT", c);
-  frame_round(x, y, w, h, "IJLM", c);
-}
-
-
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
-
-
-Fl_Boxtype fl_define_FL_PLASTIC_UP_BOX() {
-  fl_internal_boxtype(_FL_PLASTIC_UP_BOX, up_box);
-  fl_internal_boxtype(_FL_PLASTIC_DOWN_BOX, down_box);
-  fl_internal_boxtype(_FL_PLASTIC_UP_FRAME, up_frame);
-  fl_internal_boxtype(_FL_PLASTIC_DOWN_FRAME, down_frame);
-  fl_internal_boxtype(_FL_PLASTIC_THIN_UP_BOX, thin_up_box);
-  fl_internal_boxtype(_FL_PLASTIC_THIN_DOWN_BOX, down_box);
-  fl_internal_boxtype(_FL_PLASTIC_ROUND_UP_BOX, up_round);
-  fl_internal_boxtype(_FL_PLASTIC_ROUND_DOWN_BOX, down_round);
-
-  return _FL_PLASTIC_UP_BOX;
+static void fl_plastic_round_down_box(int x, int y, int w, int h, Fl_Color c) {
+  shade_round(x, y, w, h, "STUVWWWVT\0", c);
+  frame_round(x, y, w, h, "IJLM\0", c);
 }
 
 
 //
-// End of "$Id: fl_plastic.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: plastic.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/
