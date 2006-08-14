@@ -687,7 +687,7 @@ public:
   }
 
   char[] value() {
-    return value_;
+    return value_[0..strlen(value_.ptr)];
   }
   char index(int i) {
     return value_[i];
