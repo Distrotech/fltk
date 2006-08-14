@@ -710,10 +710,6 @@ void DebugPrintWindowGroup (
    WindowGroupRef inGroup
 );
 
-OSStatus HideSheetWindow (
-   WindowRef inSheet
-);
-
 OSStatus DisableScreenUpdates ();
 
 void DisposeWindow (
