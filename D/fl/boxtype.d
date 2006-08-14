@@ -118,7 +118,7 @@ void fl_no_box(int x, int y, int w, int h, Fl_Color c)
 
 void fl_flat_box(int x, int y, int w, int h, Fl_Color c)
 {
-  fl_color(FL_BACKGROUND_COLOR);
+  fl_color(c);
   fl_rectf(x, y, w, h);
 }
 
