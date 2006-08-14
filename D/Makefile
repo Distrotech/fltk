@@ -1,4 +1,8 @@
 
+all: boxtype
+#all: message hello button
+
+
 DFILES = \
 	fl/fl.d \
 	fl/ask.d \
@@ -36,28 +40,26 @@ OBJECTS = $(DFILES:.d=.o)
 
 DFLAGS = -g -fbounds-check -funittest -fversion=Apple 
 
-all: message hello button
 
-hello:  test/hello.o $(OBJECTS)
-	echo Linking $@...
-	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
-	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
+boxtype:  test/boxtype.o $(OBJECTS)
 
 button:  test/button.o $(OBJECTS)
-	echo Linking $@...
-	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
-	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
+
+hello:  test/hello.o $(OBJECTS)
 
 message:  test/message.o $(OBJECTS)
-	echo Linking $@...
-	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
-	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
-.SUFFIXES: .d .fl
+
+.SUFFIXES: .d .fl .o
 
 .d.o:
 	echo Compiling $<...
 	gdc $(DFLAGS) -c $< -o $@
+
+.o:
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 clean:
 	rm $(OBJECTS)
