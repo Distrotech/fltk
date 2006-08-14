@@ -36,6 +36,8 @@ public import fl.boxtype;
 public import fl.font_mac;
 public import fl.image;
 public import fl.draw;
+public import fl.vertex;
+public import fl.arc;
 
 private import std.stdio;
 private import std.string;

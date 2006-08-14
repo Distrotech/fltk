@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: fl_arci.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: arci.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Arc (integer) drawing functions for the Fast Light Tool Kit (FLTK).
 //
@@ -36,29 +35,27 @@
 
 // 3/10/98: created
 
-#include <FL/fl_draw.H>
-#include <FL/x.H>
-#ifdef WIN32
-#include <FL/math.h>
-#endif
-#ifdef __APPLE__
-#include <config.h>
-#endif
+module fl.arci;
+
+private import fl.draw;
+private import fl.x;
+private import std.math;
+
 
 void fl_arc(int x,int y,int w,int h,double a1,double a2) {
   if (w <= 0 || h <= 0) return;
-#ifdef WIN32
-  int xa = x+w/2+int(w*cos(a1/180.0*M_PI));
-  int ya = y+h/2-int(h*sin(a1/180.0*M_PI));
-  int xb = x+w/2+int(w*cos(a2/180.0*M_PI));
-  int yb = y+h/2-int(h*sin(a2/180.0*M_PI));
+/+-#ifdef WIN32
+  int xa = x+w/2+int(w*cos(a1/180.0*PI));
+  int ya = y+h/2-int(h*sin(a1/180.0*PI));
+  int xb = x+w/2+int(w*cos(a2/180.0*PI));
+  int yb = y+h/2-int(h*sin(a2/180.0*PI));
   Arc(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb); 
 #elif defined(__APPLE_QD__)
   Rect r; r.left=x; r.right=x+w; r.top=y; r.bottom=y+h;
   a1 = a2-a1; a2 = 450-a2;
   FrameArc(&r, (short int)a2, (short int)a1);
-#elif defined(__APPLE_QUARTZ__)
-  a1 = (-a1)/180.0f*M_PI; a2 = (-a2)/180.0f*M_PI;
+#elif defined(__APPLE_QUARTZ__)-+/
+  a1 = (-a1)/180.0f*PI; a2 = (-a2)/180.0f*PI;
   float cx = x + 0.5f*w - 0.5f, cy = y + 0.5f*h - 0.5f;
   if (w!=h) {
     CGContextSaveGState(fl_gc);
@@ -71,27 +68,27 @@ void fl_arc(int x,int y,int w,int h,double a1,double a2) {
     CGContextAddArc(fl_gc, cx, cy, r, a1, a2, 1);
   }
   CGContextStrokePath(fl_gc);
-#else
+/+-#else
   XDrawArc(fl_display, fl_window, fl_gc, x,y,w-1,h-1, int(a1*64),int((a2-a1)*64));
-#endif
+#endif-+/
 }
 
 void fl_pie(int x,int y,int w,int h,double a1,double a2) {
   if (w <= 0 || h <= 0) return;
-#ifdef WIN32
+/+-#ifdef WIN32
   if (a1 == a2) return;
-  int xa = x+w/2+int(w*cos(a1/180.0*M_PI));
-  int ya = y+h/2-int(h*sin(a1/180.0*M_PI));
-  int xb = x+w/2+int(w*cos(a2/180.0*M_PI));
-  int yb = y+h/2-int(h*sin(a2/180.0*M_PI));
+  int xa = x+w/2+int(w*cos(a1/180.0*PI));
+  int ya = y+h/2-int(h*sin(a1/180.0*PI));
+  int xb = x+w/2+int(w*cos(a2/180.0*PI));
+  int yb = y+h/2-int(h*sin(a2/180.0*PI));
   SelectObject(fl_gc, fl_brush());
   Pie(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb); 
 #elif defined(__APPLE_QD__)
   Rect r; r.left=x; r.right=x+w; r.top=y; r.bottom=y+h;
   a1 = a2-a1; a2 = 450-a2;
   PaintArc(&r, (short int)a2, (short int)a1);
-#elif defined(__APPLE_QUARTZ__)
-  a1 = (-a1)/180.0f*M_PI; a2 = (-a2)/180.0f*M_PI;
+#elif defined(__APPLE_QUARTZ__)-+/
+  a1 = (-a1)/180.0f*PI; a2 = (-a2)/180.0f*PI;
   float cx = x + 0.5f*w - 0.5f, cy = y + 0.5f*h - 0.5f;
   if (w!=h) {
     CGContextSaveGState(fl_gc);
@@ -108,12 +105,11 @@ void fl_pie(int x,int y,int w,int h,double a1,double a2) {
     CGContextClosePath(fl_gc);
   }
   CGContextFillPath(fl_gc);
-#else
+/+-#else
   XFillArc(fl_display, fl_window, fl_gc, x,y,w-1,h-1, int(a1*64),int((a2-a1)*64));
-#endif
+#endif-+/
 }
 
 //
-// End of "$Id: fl_arci.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: arci.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

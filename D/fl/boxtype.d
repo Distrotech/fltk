@@ -35,6 +35,10 @@ public import fl.fl;
 public import fl.widget;
 public import fl.draw;
 
+private import fl.shadow_box;
+private import fl.rounded_box;
+private import fl.oval_box;
+
 const ubyte BORDER_WIDTH = 2;
 
 ////////////////////////////////////////////////////////////////
@@ -234,21 +238,21 @@ Fl_Box_Table fl_box_table[256] = [
   {&fl_engraved_frame,  2,2,4,4,1},
   {&fl_embossed_frame,  2,2,4,4,1},
   {&fl_border_box,      1,1,2,2,1},
-  {&fl_border_box,      1,1,5,5,0}, // _FL_SHADOW_BOX,
+  {&fl_shadow_box,      1,1,5,5,0}, // _FL_SHADOW_BOX,
   {&fl_border_frame,    1,1,2,2,1},
-  {&fl_border_frame,    1,1,5,5,0}, // _FL_SHADOW_FRAME,
-  {&fl_border_box,      1,1,2,2,0}, // _FL_ROUNDED_BOX,
-  {&fl_border_box,      1,1,2,2,0}, // _FL_RSHADOW_BOX,
-  {&fl_border_frame,    1,1,2,2,0}, // _FL_ROUNDED_FRAME
-  {&fl_flat_box,        0,0,0,0,0}, // _FL_RFLAT_BOX,
+  {&fl_shadow_frame,    1,1,5,5,0}, // _FL_SHADOW_FRAME,
+  {&fl_rounded_box,     1,1,2,2,0}, // _FL_ROUNDED_BOX,
+  {&fl_rshadow_box,     1,1,2,2,0}, // _FL_RSHADOW_BOX,
+  {&fl_rounded_frame,   1,1,2,2,0}, // _FL_ROUNDED_FRAME
+  {&fl_rflat_box,       0,0,0,0,0}, // _FL_RFLAT_BOX,
   {&fl_up_box,          3,3,6,6,0}, // _FL_ROUND_UP_BOX
   {&fl_down_box,        3,3,6,6,0}, // _FL_ROUND_DOWN_BOX,
   {&fl_up_box,          0,0,0,0,0}, // _FL_DIAMOND_UP_BOX
   {&fl_down_box,        0,0,0,0,0}, // _FL_DIAMOND_DOWN_BOX
-  {&fl_border_box,      1,1,2,2,0}, // _FL_OVAL_BOX,
-  {&fl_border_box,      1,1,2,2,0}, // _FL_OVAL_SHADOW_BOX,
-  {&fl_border_frame,    1,1,2,2,0}, // _FL_OVAL_FRAME
-  {&fl_flat_box,        0,0,0,0,0}, // _FL_OVAL_FLAT_BOX,
+  {&fl_oval_box,        1,1,2,2,0}, // _FL_OVAL_BOX,
+  {&fl_oval_shadow_box, 1,1,2,2,0}, // _FL_OVAL_SHADOW_BOX,
+  {&fl_oval_frame,      1,1,2,2,0}, // _FL_OVAL_FRAME
+  {&fl_oval_flat_box,   0,0,0,0,0}, // _FL_OVAL_FLAT_BOX,
   {&fl_up_box,          4,4,8,8,0}, // _FL_PLASTIC_UP_BOX,
   {&fl_down_box,        2,2,4,4,0}, // _FL_PLASTIC_DOWN_BOX,
   {&fl_up_frame,        2,2,4,4,0}, // _FL_PLASTIC_UP_FRAME,

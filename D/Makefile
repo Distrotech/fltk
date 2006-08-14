@@ -1,10 +1,11 @@
 
-all: boxtype hello
+all: boxtype 
 #all: message hello button
 
 
 DFILES = \
 	fl/fl.d \
+	fl/arc.d \
 	fl/ask.d \
 	fl/box.d \
 	fl/boxtype.d \
@@ -19,13 +20,17 @@ DFILES = \
 	fl/input_.d \
 	fl/labeltype.d \
 	fl/line_style.d \
+	fl/oval_box.d \
 	fl/rect.d \
 	fl/return_button.d \
+	fl/rounded_box.d \
 	fl/single_window.d \
+	fl/shadow_box.d \
 	fl/shortcut.d \
 	fl/tooltip.d \
 	fl/widget.d \
 	fl/window.d \
+	fl/vertex.d \
 	fl/group.d \
 	fl/enumerations.d \
 	fl/x.d \

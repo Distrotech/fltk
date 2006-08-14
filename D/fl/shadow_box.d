@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: fl_shadow_box.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: shadow_box.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Shadow box drawing routines for the Fast Light Tool Kit (FLTK).
 //
@@ -26,12 +25,14 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
-#include <FL/fl_draw.H>
+module fl.shadow_box;
 
-#define BW 3
+private import fl.fl;
+private import fl.draw;
 
-static void fl_shadow_frame(int x, int y, int w, int h, Fl_Color c) {
+static const int BW = 3;
+
+void fl_shadow_frame(int x, int y, int w, int h, Fl_Color c) {
   fl_color(FL_DARK3);
   fl_rectf(x+BW, y+h-BW,  w - BW, BW);
   fl_rectf(x+w-BW,  y+BW, BW,  h - BW);
@@ -39,20 +40,12 @@ static void fl_shadow_frame(int x, int y, int w, int h, Fl_Color c) {
   fl_rect(x,y,w-BW,h-BW);
 }
 
-static void fl_shadow_box(int x, int y, int w, int h, Fl_Color c) {
+void fl_shadow_box(int x, int y, int w, int h, Fl_Color c) {
   fl_color(c);
   fl_rectf(x+1,y+1,w-2-BW,h-2-BW);
   fl_shadow_frame(x,y,w,h,FL_GRAY0);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
-Fl_Boxtype fl_define_FL_SHADOW_BOX() {
-  fl_internal_boxtype(_FL_SHADOW_FRAME, fl_shadow_frame);
-  fl_internal_boxtype(_FL_SHADOW_BOX, fl_shadow_box);
-  return _FL_SHADOW_BOX;
-}
-
 //
-// End of "$Id: fl_shadow_box.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: shadow_box.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/
