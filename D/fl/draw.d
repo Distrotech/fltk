@@ -336,6 +336,23 @@ static char*  expand(
   return p;
 }
 
+void fl_draw(char[] str, int x, int y) {
+  OSStatus err;
+    // convert to UTF-16 first 
+  UniChar[] uniStr = fl_macToUtf16(str);
+    // now collect our ATSU resources
+  ATSUTextLayout layout = fl_fontsize.layout;
+
+  ByteCount iSize = CGContextRef.sizeof;
+  ATSUAttributeTag iTag = kATSUCGContextTag;
+  ATSUAttributeValuePtr iValuePtr=&fl_gc;
+  ATSUSetLayoutControls(layout, 1, &iTag, &iSize, &iValuePtr);
+
+  uint n = uniStr.length;
+  err = ATSUSetTextPointerLocation(layout, uniStr.ptr, kATSUFromTextBeginning, n, n);
+  err = ATSUDrawText(layout, kATSUFromTextBeginning, n, FloatToFixed(x), FloatToFixed(y));
+}
+
 void fl_draw(
     char str[],	// the (multi-line) string
     int x, int y, int w, int h,	// bounding box
@@ -497,7 +514,7 @@ void fl_draw(
   if ((!str || !str.length) && !img) return;
   if (w && h && !fl_not_clipped(x, y, w, h) && (alignment & FL_ALIGN_INSIDE)) return;
   if (alignment & FL_ALIGN_CLIP) fl_push_clip(x, y, w, h);
-  fl_draw(str, x, y, w, h, alignment, &fl.font_mac.fl_draw, img, draw_symbols);
+  fl_draw(str, x, y, w, h, alignment, &fl_draw, img, draw_symbols);
   if (alignment & FL_ALIGN_CLIP) fl_pop_clip();
   //fl.font_mac.fl_draw(str, x, y);
 }

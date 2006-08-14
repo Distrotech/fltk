@@ -268,23 +268,6 @@ double fl_width(char* str, int len) {
   return fl_width(dstr);
 }
 
-void fl_draw(char[] str, int x, int y) {
-  OSStatus err;
-    // convert to UTF-16 first 
-  UniChar[] uniStr = fl_macToUtf16(str);
-    // now collect our ATSU resources
-  ATSUTextLayout layout = fl_fontsize.layout;
-
-  ByteCount iSize = CGContextRef.sizeof;
-  ATSUAttributeTag iTag = kATSUCGContextTag;
-  ATSUAttributeValuePtr iValuePtr=&fl_gc;
-  ATSUSetLayoutControls(layout, 1, &iTag, &iSize, &iValuePtr);
-
-  uint n = uniStr.length;
-  err = ATSUSetTextPointerLocation(layout, uniStr.ptr, kATSUFromTextBeginning, n, n);
-  err = ATSUDrawText(layout, kATSUFromTextBeginning, n, FloatToFixed(x), FloatToFixed(y));
-}
-
 //
 // End of "$Id: fl_font_mac.cxx 5190 2006-06-09 16:16:34Z mike $".
 //

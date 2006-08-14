@@ -665,6 +665,8 @@ static int navkey() {
     return FL_Up;
   case FL_Down:
     return FL_Down;
+  default:
+    break;
   }
   return 0;
 }

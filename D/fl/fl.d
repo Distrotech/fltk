@@ -423,9 +423,9 @@ void Fl::remove_fd(int n)
 -+/
   static char[] event_text() {return e_text;}
   static int event_length() {return e_length;}
-/+-
-  static int compose(inout int del);
--+/
+  static int compose(inout int del) {
+    /+= =+/ return 0;
+  }
   static void compose_reset() {compose_state = 0;}
 
   static int event_inside(int xx,int yy,int ww,int hh) {
@@ -648,7 +648,7 @@ void Fl::remove_fd(int n)
   static void belowmouse(Fl_Widget o) {
     if (grab()) return; // don't do anything while grab is on
     Fl_Widget p = belowmouse_;
-    if (o != p) {
+    if (!(o is p)) {
       belowmouse_ = o;
       Fl_Event old_event = e_number;
       e_number = dnd_flag ? FL_DND_LEAVE : FL_LEAVE;
@@ -675,7 +675,7 @@ void Fl::remove_fd(int n)
     if (o && !o.visible_focus()) return;
     if (grab()) return; // don't do anything while grab is on
     Fl_Widget p = focus_;
-    if (o != p) {
+    if (!(o is p)) {
       Fl.compose_reset();
       focus_ = o;
       // make sure that fl_xfocus is set to the top level window
@@ -699,9 +699,12 @@ void Fl::remove_fd(int n)
 /+-
   static void add_handler(int (*h)(int));
   static void remove_handler(int (*h)(int));
-
+=+/
   // cut/paste:
-  static void copy(const char* stuff, int len, int clipboard = 0);
+  static void copy( char* stuff, int len, int clipboard = 0) {
+    /+= =+/
+  }
+/+=
 /**
  * create a selection
  * owner: widget that created the selection
@@ -1367,55 +1370,49 @@ void (*Fl_Tooltip::exit)(Fl_Widget *) = nothing;
 -+/
 
 void fl_fix_focus() {
-  /+= pri 1
-#ifdef DEBUG
-  puts("fl_fix_focus();");
-#endif // DEBUG
-
-  if (Fl::grab()) return; // don't do anything while grab is on.
+  if (Fl.grab()) return; // don't do anything while grab is on.
 
   // set focus based on Fl::modal() and fl_xfocus
-  Fl_Widget* w = fl_xfocus;
+  Fl_Widget w = fl_xfocus;
   if (w) {
-    int saved = Fl::e_keysym;
-    if (Fl::e_keysym < (FL_Button + FL_LEFT_MOUSE) ||
-        Fl::e_keysym > (FL_Button + FL_RIGHT_MOUSE))
-      Fl::e_keysym = 0; // make sure widgets don't think a keystroke moved focus
-    while (w->parent()) w = w->parent();
-    if (Fl::modal()) w = Fl::modal();
-    if (!w->contains(Fl::focus()))
-      if (!w->take_focus()) Fl::focus(w);
-    Fl::e_keysym = saved;
+    int saved = Fl.e_keysym;
+    if (Fl.e_keysym < (FL_Button + FL_LEFT_MOUSE) ||
+        Fl.e_keysym > (FL_Button + FL_RIGHT_MOUSE))
+      Fl.e_keysym = 0; // make sure widgets don't think a keystroke moved focus
+    while (w.parent()) w = w.parent();
+    if (Fl.modal()) w = Fl.modal();
+    if (!w.contains(Fl.focus()))
+      if (!w.take_focus()) Fl.focus(w);
+    Fl.e_keysym = saved;
   } else
-    Fl::focus(0);
+    Fl.focus(null);
 
 // MRS: Originally we checked the button state, but a user reported that it
 //      broke click-to-focus in FLWM?!?
 //  if (!(Fl::event_state() & 0x7f00000 /*FL_BUTTONS*/)) {
-  if (!Fl::pushed()) {
+  if (!Fl.pushed()) {
     // set belowmouse based on Fl::modal() and fl_xmousewin:
     w = fl_xmousewin;
     if (w) {
-      if (Fl::modal()) w = Fl::modal();
-      if (!w->contains(Fl::belowmouse())) {
-        int old_event = Fl::e_number;
-	w->handle(Fl::e_number = FL_ENTER);
-	Fl::e_number = old_event;
-	if (!w->contains(Fl::belowmouse())) Fl::belowmouse(w);
+      if (Fl.modal()) w = Fl.modal();
+      if (!w.contains(Fl.belowmouse())) {
+        Fl_Event old_event = Fl.e_number;
+	w.handle(Fl.e_number = FL_ENTER);
+	Fl.e_number = old_event;
+	if (!w.contains(Fl.belowmouse())) Fl.belowmouse(w);
       } else {
 	// send a FL_MOVE event so the enter/leave state is up to date
-	Fl::e_x = Fl::e_x_root-fl_xmousewin->x();
-	Fl::e_y = Fl::e_y_root-fl_xmousewin->y();
-        int old_event = Fl::e_number;
-	w->handle(Fl::e_number = FL_MOVE);
-	Fl::e_number = old_event;
+	Fl.e_x = Fl.e_x_root-fl_xmousewin.x();
+	Fl.e_y = Fl.e_y_root-fl_xmousewin.y();
+        Fl_Event old_event = Fl.e_number;
+	w.handle(Fl.e_number = FL_MOVE);
+	Fl.e_number = old_event;
       }
     } else {
-      Fl::belowmouse(0);
-      Fl_Tooltip::enter(0);
+      Fl.belowmouse(null);
+      Fl_Tooltip.enter(null);
     }
   }
-  =+/
 }
 
 // This function is called by ~Fl_Widget() and by Fl_Widget::deactivate
