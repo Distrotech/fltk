@@ -133,8 +133,11 @@ public:
     /+= implement me later =+/
     return 0;
   }
+
+  static char[] scheme() {
+    return scheme_;
+  }
 /+-
-  static const char* scheme() {return scheme_;}
   static int reload_scheme();
 
   // execution:
@@ -384,9 +387,10 @@ void Fl::remove_fd(int n)
 
   static Fl_Window modal() {return modal_;}
   static Fl_Window grab() {return grab_;}
-/+-
-  static void grab(Fl_Window*);
--+/
+  static void grab(Fl_Window w) {
+    /+= =+/
+  }
+
   // event information:
   static Fl_Event event()		{return e_number;}
   static int event_x()	{return e_x;}
@@ -819,10 +823,11 @@ void Fl::paste(Fl_Widget &receiver, int clipboard) {
 
   // multi-head support:
   static int screen_count();
-  static void screen_xywh(int &x, int &y, int &w, int &h) {
+-+/
+  static void screen_xywh(out int x, out int y, out int w, out int h) {
     screen_xywh(x, y, w, h, e_x_root, e_y_root);
   }
--+/
+
   static void screen_xywh(out int x, out int y, out int w, out int h, int mx, int my) {
     /+= implement me =+/
     x = Fl.x; y = Fl.y; w = Fl.w; h = Fl.h;
@@ -924,8 +929,11 @@ void Fl::paste(Fl_Widget &receiver, int clipboard) {
 /+-
   static void set_idle(void (*cb)()) {idle = cb;}
   static void grab(Fl_Window&win) {grab(&win);}
-  static void release() {grab(0);}
 -+/
+  static void release() {
+    grab(null);
+  }
+
   // Visible focus methods...
   static void visible_focus(int v) { 
     visible_focus_ = v; 

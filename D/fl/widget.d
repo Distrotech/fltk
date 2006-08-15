@@ -38,10 +38,10 @@ private import fl.draw;
 private import fl.tooltip;
 private import fl.labeltype;
 
-alias void function(Fl_Widget, void*) Fl_Callback;
+typedef void function(Fl_Widget, void*) Fl_Callback;
 typedef Fl_Callback* Fl_Callback_p;
-alias void function(Fl_Widget) Fl_Callback0;
-alias void function(Fl_Widget, int) Fl_Callback1;
+typedef void function(Fl_Widget) Fl_Callback0;
+typedef void function(Fl_Widget, int) Fl_Callback1;
 
 struct Fl_Label {
   char[] value;

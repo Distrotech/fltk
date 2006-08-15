@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_Window.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: menu_window.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Menu window header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,28 +25,45 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Menu_Window_H
-#define Fl_Menu_Window_H
+module fl.menu_window;
 
-#include "Fl_Single_Window.H"
+public import fl.single_window;
 
-class FL_EXPORT Fl_Menu_Window : public Fl_Single_Window {
+class Fl_Menu_Window : Fl_Single_Window {
+
+private:
+
   enum {NO_OVERLAY = 128};
+
 public:
+/+=
   void show();
   void erase();
   void flush();
   void hide();
-  int overlay() {return !(flags()&NO_OVERLAY);}
-  void set_overlay() {clear_flag(NO_OVERLAY);}
-  void clear_overlay() {set_flag(NO_OVERLAY);}
+=+/
+  int overlay() {
+    return !(flags()&NO_OVERLAY);
+  }
+
+  void set_overlay() {
+    clear_flag(NO_OVERLAY);
+  }
+
+  void clear_overlay() {
+    set_flag(NO_OVERLAY);
+  }
+/+=
   ~Fl_Menu_Window();
   Fl_Menu_Window(int W, int H, const char *l = 0)
     : Fl_Single_Window(W,H,l) { image(0); }
-  Fl_Menu_Window(int X, int Y, int W, int H, const char *l = 0)
-    : Fl_Single_Window(X,Y,W,H,l) { image(0); }
-};
-
+=+/
+  this(int X, int Y, int W, int H, char[] l=null) {
+    super(X,Y,W,H,l);
+    image(null); 
+  }
+}
+/+=
 #endif
 
 //

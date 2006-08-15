@@ -29,6 +29,9 @@ module fl.image;
 
 public import fl.enumerations;
 
+private import fl.widget;
+private import fl.menu_item;
+
 /+-
 class Fl_Widget;
 struct Fl_Menu_Item;
@@ -74,9 +77,13 @@ class Fl_Image {
   virtual void color_average(Fl_Color c, float i);
   void inactive() { color_average(FL_GRAY, .33f); }
   virtual void desaturate();
-  virtual void label(Fl_Widget*w);
-  virtual void label(Fl_Menu_Item*m);
--+/
+=+/
+  void label(Fl_Widget w) {
+    /+= =+/
+  }
+  void label(Fl_Menu_Item* m) {
+    /+= =+/
+  }
   void draw(int X, int Y, int W, int H, int cx=0, int cy=0) {
     /+= later =+/
   }

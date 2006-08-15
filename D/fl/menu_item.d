@@ -30,6 +30,16 @@ module fl.menu_item;
 public import fl.widget;
 public import fl.image;
 
+private import fl.menu_;
+private import fl.menu;
+private import fl.draw;
+private import fl.group;
+private import fl.window;
+
+static const int LEADING = 4;
+static Fl_Menu_ button;
+static menustate* p;
+
 enum { // values for flags:
   FL_MENU_INACTIVE = 1,
   FL_MENU_TOGGLE= 2,
@@ -43,30 +53,61 @@ enum { // values for flags:
 };
 
 struct Fl_Menu_Item {
+
   char[]   text;	// label()
   int      shortcut_;
   Fl_Callback callback_;
   void*    user_data_;
   int      flags;
-  ubyte    labeltype_;
+  Fl_Labeltype labeltype_;
   Fl_Font  labelfont_;
   ubyte    labelsize_;
   Fl_Color labelcolor_;
-/+=
+
   // advance N items, skipping submenus:
-  const Fl_Menu_Item *next(int=1) const;
-  Fl_Menu_Item *next(int i=1) {
-    return (Fl_Menu_Item*)(((const Fl_Menu_Item*)this)->next(i));}
-  const Fl_Menu_Item *first() const { return next(0); }
-  Fl_Menu_Item *first() { return next(0); }
+  Fl_Menu_Item* next(int n=1) {
+    if (n < 0) return null; // this is so selected==-1 returns NULL
+    Fl_Menu_Item* m = this;
+    int nest = 0;
+    if (!m.visible()) n++;
+    while (n>0) {
+      if (!m.text) {
+        if (!nest) return m;
+        nest--;
+      } else if (m.flags&FL_SUBMENU) {
+        nest++;
+      }
+      m++;
+      if (!nest && m.visible()) n--;
+    }
+    return m;
+  }
+
+  Fl_Menu_Item* first() { 
+    return next(0); 
+  } 
 
   // methods on menu items:
-  const char* label() const {return text;}
-  void label(const char* a) {text=a;}
-  void label(Fl_Labeltype a,const char* b) {labeltype_ = a; text = b;}
-  Fl_Labeltype labeltype() const {return (Fl_Labeltype)labeltype_;}
-  void labeltype(Fl_Labeltype a) {labeltype_ = a;}
-=+/
+  char[] label() {
+    return text;
+  }
+
+  void label(char[] a) {
+    text=a;
+  }
+
+  void label(Fl_Labeltype a, char[] b) {
+    labeltype_ = a; text = b;
+  }
+
+  Fl_Labeltype labeltype() {
+    return labeltype_;
+  }
+
+  void labeltype(Fl_Labeltype a) {
+    labeltype_ = a;
+  }
+
   Fl_Color labelcolor() {
     return labelcolor_;
   }
@@ -74,74 +115,458 @@ struct Fl_Menu_Item {
   void labelcolor(Fl_Color a) {
     labelcolor_ = a;
   }
-/+=
-  Fl_Font labelfont() const {return (Fl_Font)labelfont_;}
-  void labelfont(uchar a) {labelfont_ = a;}
-  uchar labelsize() const {return labelsize_;}
-  void labelsize(uchar a) {labelsize_ = a;}
-  Fl_Callback_p callback() const {return callback_;}
-  void callback(Fl_Callback* c, void* p) {callback_=c; user_data_=p;}
-  void callback(Fl_Callback* c) {callback_=c;}
-  void callback(Fl_Callback0*c) {callback_=(Fl_Callback*)c;}
-  void callback(Fl_Callback1*c, long p=0) {callback_=(Fl_Callback*)c; user_data_=(void*)p;}
-  void* user_data() const {return user_data_;}
-  void user_data(void* v) {user_data_ = v;}
-  long argument() const {return (long)user_data_;}
-  void argument(long v) {user_data_ = (void*)v;}
-  int shortcut() const {return shortcut_;}
-  void shortcut(int s) {shortcut_ = s;}
-  int submenu() const {return flags&(FL_SUBMENU|FL_SUBMENU_POINTER);}
-  int checkbox() const {return flags&FL_MENU_TOGGLE;}
-  int radio() const {return flags&FL_MENU_RADIO;}
-  int value() const {return flags&FL_MENU_VALUE;}
-  void set() {flags |= FL_MENU_VALUE;}
-  void clear() {flags &= ~FL_MENU_VALUE;}
-  void setonly();
-  int visible() const {return !(flags&FL_MENU_INVISIBLE);}
-  void show() {flags &= ~FL_MENU_INVISIBLE;}
-  void hide() {flags |= FL_MENU_INVISIBLE;}
-  int active() const {return !(flags&FL_MENU_INACTIVE);}
-  void activate() {flags &= ~FL_MENU_INACTIVE;}
-  void deactivate() {flags |= FL_MENU_INACTIVE;}
-  int activevisible() const {return !(flags&0x11);}
+
+  Fl_Font labelfont() {
+    return labelfont_;
+  }
+
+  void labelfont(Fl_Font a) {
+    labelfont_ = a;
+  }
+
+  ubyte labelsize() {
+    return labelsize_;
+  }
+
+  void labelsize(ubyte a) {
+    labelsize_ = a;
+  }
+
+  Fl_Callback callback() {
+    return callback_;
+  }
+
+  void callback(Fl_Callback c, void* p) {
+    callback_=c; user_data_=p;
+  }
+
+  void callback(Fl_Callback c) {
+    callback_=c;
+  }
+
+  void callback(Fl_Callback0 c) {
+    callback_=cast(Fl_Callback)c;
+  }
+
+  void callback(Fl_Callback1 c, int p=0) {
+    callback_=cast(Fl_Callback)c; 
+    user_data_=cast(void*)p;
+  }
+
+  void* user_data() {
+    return user_data_;
+  }
+
+  void user_data(void* v) {
+    user_data_ = v;
+  }
+
+  int argument() { 
+    return cast(int)user_data_;
+  }
+
+  void argument(int v) {
+    user_data_ = cast(void*)v;
+  }
+
+  int shortcut() {
+    return shortcut_;
+  }
+
+  void shortcut(int s) {
+    shortcut_ = s;
+  }
+
+  int submenu() {
+    return flags&(FL_SUBMENU|FL_SUBMENU_POINTER);
+  }
+
+  int checkbox() {
+    return flags&FL_MENU_TOGGLE;
+  }
+
+  int radio() {
+    return flags&FL_MENU_RADIO;
+  }
+
+  int value() {
+    return flags&FL_MENU_VALUE;
+  }
+
+  void set() {
+    flags |= FL_MENU_VALUE;
+  }
+
+  void clear() {
+    flags &= ~FL_MENU_VALUE;
+  }
+
+  void setonly() {
+    flags |= FL_MENU_RADIO | FL_MENU_VALUE;
+    Fl_Menu_Item* j;
+    for (j = this; ; ) {  // go down
+      if (j.flags & FL_MENU_DIVIDER) break; // stop on divider lines
+      j++;
+      if (!j.text || !j.radio()) break; // stop after group
+      j.clear();
+    }
+    for (j = this-1; ; j--) { // go up
+      if (!j.text || (j.flags&FL_MENU_DIVIDER) || !j.radio()) break;
+      j.clear();
+    }
+  }
+
+  int visible() {
+    return !(flags&FL_MENU_INVISIBLE);
+  }
+
+  void show() {
+    flags &= ~FL_MENU_INVISIBLE;
+  }
+
+  void hide() {
+    flags |= FL_MENU_INVISIBLE;
+  }
+
+  int active() {
+    return !(flags&FL_MENU_INACTIVE);
+  }
+
+  void activate() { 
+    flags &= ~FL_MENU_INACTIVE;
+  }
+
+  void deactivate() {
+    flags |= FL_MENU_INACTIVE;
+  }
+
+  int activevisible() {
+    return !(flags&0x11);
+  }
 
   // compatibility for FLUID so it can set the image of a menu item...
-  void image(Fl_Image* a) {a->label(this);}
-  void image(Fl_Image& a) {a.label(this);}
+  void image(Fl_Image a) {
+    a.label(this);
+  }
 
   // used by menubar:
-  int measure(int* h, const Fl_Menu_*) const;
-  void draw(int x, int y, int w, int h, const Fl_Menu_*, int t=0) const;
+  int measure(int* hp, Fl_Menu_ m) {
+    Fl_Label l;
+    l.value   = text;
+    l.image   = null;
+    l.deimage = null;
+    l.type    = labeltype_;
+    l.font    = (labelsize_ || labelfont_) ? labelfont_ : (m ? m.textfont() : FL_HELVETICA);
+    l.size    = labelsize_ ? labelsize_ : (m ? m.textsize() : FL_NORMAL_SIZE);
+    l.color   = FL_FOREGROUND_COLOR; // this makes no difference?
+    fl_draw_shortcut = 1;
+    int w = 0; int h = 0;
+    if (hp)
+      l.measure(w, *hp);
+    else
+      l.measure(w, h);
+    fl_draw_shortcut = 0;
+    if (flags & (FL_MENU_TOGGLE|FL_MENU_RADIO)) w += 14;
+    return w;
+  }
+
+  void draw(int x, int y, int w, int h, Fl_Menu_ m, int selected=0) {
+    Fl_Label l;
+    l.value   = text;
+    l.image   = null;
+    l.deimage = null;
+    l.type    = labeltype_;
+    l.font    = (labelsize_ || labelfont_) ? labelfont_ : (m ? m.textfont() : FL_HELVETICA);
+    l.size    = labelsize_ ? labelsize_ : (m ? m.textsize() : FL_NORMAL_SIZE);
+    l.color   = labelcolor_ ? labelcolor_ : m ? m.textcolor() : FL_FOREGROUND_COLOR;
+    if (!active()) l.color = fl_inactive(l.color);
+    Fl_Color color = m ? m.color() : FL_GRAY;
+    if (selected) {
+      Fl_Color r = m ? m.selection_color() : FL_SELECTION_COLOR;
+      Fl_Boxtype b = (m && m.down_box()) ? m.down_box() : FL_FLAT_BOX;
+      if (fl_contrast(r,color)!=r) { // back compatability boxtypes
+        if (selected == 2) { // menu title
+          r = color;
+          b = m ? m.box() : FL_UP_BOX;
+        } else {
+          r = cast(Fl_Color)(FL_COLOR_CUBE-1); // white
+          l.color = fl_contrast(labelcolor_, r);
+        }
+      } else {
+        l.color = fl_contrast(labelcolor_, r);
+      }
+      if (selected == 2) { // menu title
+        fl_draw_box(b, x, y, w, h, r);
+        x += 3;
+        w -= 8;
+      } else {
+        fl_draw_box(b, x+1, y-(LEADING-2)/2, w-2, h+(LEADING-2), r);
+      }
+    }
+  
+    if (flags & (FL_MENU_TOGGLE|FL_MENU_RADIO)) {
+      int d = (h - FL_NORMAL_SIZE + 1) / 2;
+      int W = h - 2 * d;
+  
+      if (flags & FL_MENU_RADIO) {
+        fl_draw_box(FL_ROUND_DOWN_BOX, x+2, y+d, W, W, FL_BACKGROUND2_COLOR);
+        if (value()) {
+          fl_color(labelcolor_);
+          int tW = (W - Fl.box_dw(FL_ROUND_DOWN_BOX)) / 2 + 1;
+          if ((W - tW) & 1) tW++; // Make sure difference is even to center
+          int td = Fl.box_dx(FL_ROUND_DOWN_BOX) + 1;
+          switch (tW) {
+            // Larger circles draw fine...
+            default :
+              fl_pie(x + td + 2, y + d + td, tW, tW, 0.0, 360.0);
+              break;
+  
+            // Small circles don't draw well on many systems...
+            case 6 :
+              fl_rectf(x + td + 4, y + d + td, tW - 4, tW);
+              fl_rectf(x + td + 3, y + d + td + 1, tW - 2, tW - 2);
+              fl_rectf(x + td + 2, y + d + td + 2, tW, tW - 4);
+              break;
+  
+            case 5 :
+            case 4 :
+            case 3 :
+              fl_rectf(x + td + 3, y + d + td, tW - 2, tW);
+              fl_rectf(x + td + 2, y + d + td + 1, tW, tW - 2);
+              break;
+  
+            case 2 :
+            case 1 :
+              fl_rectf(x + td + 2, y + d + td, tW, tW);
+              break;
+          }
+        }
+      } else {
+        fl_draw_box(FL_DOWN_BOX, x+2, y+d, W, W, FL_BACKGROUND2_COLOR);
+        if (value()) {
+          fl_color(labelcolor_);
+          int tx = x + 5;
+          int tw = W - 6;
+          int d1 = tw/3;
+          int d2 = tw-d1;
+          int ty = y + d + (W+d2)/2-d1-2;
+          for (int n = 0; n < 3; n++, ty++) {
+            fl_line(tx, ty, tx+d1, ty+d1);
+            fl_line(tx+d1, ty+d1, tx+tw-1, ty+d1-d2+1);
+          }
+        }
+      }
+      x += W + 3;
+      w -= W + 3;
+    }
+  
+    if (!fl_draw_shortcut) fl_draw_shortcut = 1;
+    l.draw(x+3, y, w>6 ? w-6 : 0, h, FL_ALIGN_LEFT);
+    fl_draw_shortcut = 0;
+  }
 
   // popup menus without using an Fl_Menu_ widget:
-  const Fl_Menu_Item* popup(
-    int X, int Y,
-    const char *title = 0,
-    const Fl_Menu_Item* picked=0,
-    const Fl_Menu_* = 0) const;
-  const Fl_Menu_Item* pulldown(
+  Fl_Menu_Item* popup(int X, int Y, char[] title=null, Fl_Menu_Item* picked=null, Fl_Menu_ but=null) {
+    static Fl_Menu_Item dummy; // static so it is all zeros
+    dummy.text = title;
+    return pulldown(X, Y, 0, 0, picked, but, title ? &dummy : null);
+  }
+
+  Fl_Menu_Item* pulldown(
     int X, int Y, int W, int H,
-    const Fl_Menu_Item* picked = 0,
-    const Fl_Menu_* = 0,
-    const Fl_Menu_Item* title = 0,
-    int menubar=0) const;
+    Fl_Menu_Item* initial_item=null, Fl_Menu_ pbutton=null, Fl_Menu_Item* t=null, int menubar=0) 
+  {
+    Fl_Group.current(null); // fix possible user error...
+  
+    button = pbutton;
+    if (pbutton) {
+      for (Fl_Window w = pbutton.window(); w; w = w.window()) {
+        X += w.x();
+        Y += w.y();
+      }
+    } else {
+      X += Fl.event_x_root()-Fl.event_x();
+      Y += Fl.event_y_root()-Fl.event_y();
+    }
+    menuwindow mw = new menuwindow(this, X, Y, W, H, initial_item, t, menubar);
+    Fl.grab(mw);
+    menustate pp; p = &pp;
+    pp.p[0] = mw;
+    pp.nummenus = 1;
+    pp.menubar = menubar;
+    pp.state = INITIAL_STATE;
+        
+    menuwindow fakemenu = null; // kludge for buttons in menubar
+  
+    // preselected item, pop up submenus if necessary:
+    if (initial_item && mw.selected >= 0) {
+      setitem(0, mw.selected);
+      goto STARTUP;
+    }
+  
+    pp.current_item = null; pp.menu_number = 0; pp.item_number = -1;
+    if (menubar) {
+      // find the initial menu
+      if (!mw.handle(FL_DRAG)) {
+        Fl.release();
+        return null;
+      }
+    }
+    initial_item = pp.current_item;
+    if (initial_item) goto STARTUP;
+  
+    // the main loop, runs until p.state goes to DONE_STATE:
+    for (;;) {
+  
+      // make sure all the menus are shown:
+      {for (int k = menubar; k < pp.nummenus; k++)
+        if (!pp.p[k].shown()) {
+          if (pp.p[k].title) pp.p[k].title.show();
+          pp.p[k].show();
+        }
+      }
+  
+      // get events:
+      {Fl_Menu_Item* oldi = pp.current_item;
+      Fl.wait();
+      if (pp.state == DONE_STATE) break; // done.
+      if (pp.current_item == oldi) continue;}
+      // only do rest if item changes:
+  
+      delete fakemenu; fakemenu = null; // turn off "menubar button"
+  
+      if (!pp.current_item) { // pointing at nothing
+        // turn off selection in deepest menu, but don't erase other menus:
+        pp.p[pp.nummenus-1].set_selected(-1);
+        continue;
+      }
+  
+      delete fakemenu; fakemenu = null;
+      initial_item = null; // stop the startup code
+      pp.p[pp.menu_number].autoscroll(pp.item_number);
+  
+    STARTUP:
+      menuwindow cw = pp.p[pp.menu_number];
+      Fl_Menu_Item* m = pp.current_item;
+      if (!m.activevisible()) { // pointing at inactive item
+        cw.set_selected(-1);
+        initial_item = null; // turn off startup code
+        continue;
+      }
+      cw.set_selected(pp.item_number);
+  
+      if (m==initial_item) initial_item=null; // stop the startup code if item found
+      if (m.submenu()) {
+        Fl_Menu_Item* title = m;
+        Fl_Menu_Item* menutable;
+        if (m.flags&FL_SUBMENU) menutable = m+1;
+        else menutable = cast(Fl_Menu_Item*)(m.user_data_); /+= =+/
+        // figure out where new menu goes:
+        int nX, nY;
+        if (!pp.menu_number && pp.menubar) {      // menu off a menubar:
+          nX = cw.x() + cw.titlex(pp.item_number);
+          nY = cw.y() + cw.h();
+          initial_item = null;
+        } else {
+          nX = cw.x() + cw.w();
+          nY = cw.y() + pp.item_number * cw.itemheight;
+          title = null;
+        }
+        if (initial_item) { // bring up submenu containing initial item:
+          menuwindow n = new menuwindow(menutable,X,Y,W,H,initial_item,title,0,0,cw.x());
+          pp.p[pp.nummenus++] = n;
+          // move all earlier menus to line up with this new one:
+          if (n.selected>=0) {
+            int dy = n.y()-nY;
+            int dx = n.x()-nX;
+            for (int menu = 0; menu <= pp.menu_number; menu++) {
+              menuwindow tt = pp.p[menu];
+              int nx = tt.x()+dx; if (nx < 0) {nx = 0; dx = -tt.x();}
+              int ny = tt.y()+dy; if (ny < 0) {ny = 0; dy = -tt.y();}
+              tt.position(nx, ny);
+            }
+            setitem(pp.nummenus-1, n.selected);
+            goto STARTUP;
+          }
+        } else if (pp.nummenus > pp.menu_number+1 &&
+                   pp.p[pp.menu_number+1].menu == menutable) {
+          // the menu is already up:
+          while (pp.nummenus > pp.menu_number+2) delete pp.p[--pp.nummenus];
+          pp.p[pp.nummenus-1].set_selected(-1);
+        } else {
+          // delete all the old menus and create new one:
+          while (pp.nummenus > pp.menu_number+1) delete pp.p[--pp.nummenus];
+          pp.p[pp.nummenus++] = new menuwindow(menutable, nX, nY,
+                                            title?1:0, 0, null, title, 0, menubar, cw.x());
+        }
+      } else { // !m.submenu():
+        while (pp.nummenus > pp.menu_number+1) delete pp.p[--pp.nummenus];
+        if (!pp.menu_number && pp.menubar) {
+          // kludge so "menubar buttons" turn "on" by using menu title:
+          fakemenu = new menuwindow(null,
+                                    cw.x()+cw.titlex(pp.item_number),
+                                    cw.y()+cw.h(), 0, 0,
+                                    null, m, 0, 1);
+          fakemenu.title.show();
+        }
+      }
+    }
+    Fl_Menu_Item* m = pp.current_item;
+    Fl.release();
+    delete fakemenu;
+    while (pp.nummenus>1) delete pp.p[--pp.nummenus];
+    mw.hide();
+    return m;
+  }
+
+/+=
   const Fl_Menu_Item* test_shortcut() const;
   const Fl_Menu_Item* find_shortcut(int *ip=0) const;
+=+/
+  void do_callback(Fl_Widget o) {
+    callback_(o, user_data_);
+  }
 
-  void do_callback(Fl_Widget* o) const {callback_(o, user_data_);}
-  void do_callback(Fl_Widget* o,void* arg) const {callback_(o, arg);}
-  void do_callback(Fl_Widget* o,long arg) const {callback_(o, (void*)arg);}
+  void do_callback(Fl_Widget o,void* arg) {
+    callback_(o, arg);
+  }
+
+  void do_callback(Fl_Widget o, int arg) {
+    callback_(o, cast(void*)arg);
+  }
 
   // back-compatability, do not use:
-  int checked() const {return flags&FL_MENU_VALUE;}
-  void check() {flags |= FL_MENU_VALUE;}
-  void uncheck() {flags &= ~FL_MENU_VALUE;}
-  int add(const char*, int shortcut, Fl_Callback*, void* =0, int = 0);
+  int checked() {
+    return flags&FL_MENU_VALUE;
+  }
+
+  void check() {
+    flags |= FL_MENU_VALUE;
+  }
+
+  void uncheck() {
+    flags &= ~FL_MENU_VALUE;
+  }
+/+=
+  int add(char[] a, int shortcut, Fl_Callback c, void* d=0, int e= 0);
   int add(const char*a, const char* b, Fl_Callback* c,
 	  void* d = 0, int e = 0) {
     return add(a,fl_old_shortcut(b),c,d,e);}
-  int size() const ;
 =+/
+  int size() { 
+    Fl_Menu_Item* m = this;
+    int nest = 0;
+    for (;;) {
+      if (!m.text) {
+        if (!nest) return (m-this+1);
+        nest--;
+      } else if (m.flags & FL_SUBMENU) {
+        nest++;
+      }
+      m++;
+    }
+  }
+
 }
 
 alias Fl_Menu_Item Fl_Menu; // back compatability
@@ -158,6 +583,19 @@ enum {	// back-compatability enum:
   FL_PUP_INVISIBLE = FL_MENU_INVISIBLE,
   FL_PUP_SUBMENU = FL_SUBMENU_POINTER
 };
+
+static void setitem(Fl_Menu_Item* i, int m, int n) {
+  p.current_item = i;
+  p.menu_number = m;
+  p.item_number = n;
+}
+
+static void setitem(int m, int n) {
+  menustate* pp = p;
+  pp.current_item = (n >= 0) ? pp.p[m].menu.next(n) : null;
+  pp.menu_number = m;
+  pp.item_number = n;
+}
 
 //
 // End of "$Id: menu_item.d 4288 2005-04-16 00:13:17Z mike $".

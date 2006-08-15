@@ -630,6 +630,7 @@ static int send(Fl_Widget o, Fl_Event event) {
   case FL_DND_DRAG:
     // figure out correct type of event:
     event = (o.contains(Fl.belowmouse())) ? FL_DND_DRAG : FL_DND_ENTER;
+  default: break;
   }
   int save_x = Fl.e_x; Fl.e_x -= o.x();
   int save_y = Fl.e_y; Fl.e_y -= o.y();
@@ -645,6 +646,7 @@ static int send(Fl_Widget o, Fl_Event event) {
     // widget did not do so:
     if (!o.contains(Fl.belowmouse())) Fl.belowmouse(o);
     break;
+  default: break;
   }
   return ret;
 }

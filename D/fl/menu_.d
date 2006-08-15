@@ -69,16 +69,30 @@ public:
 
   const Fl_Menu_Item* test_shortcut() {return picked(menu()->test_shortcut());}
   void global();
+=+/
 
-  const Fl_Menu_Item *menu() const {return menu_;}
-  void menu(const Fl_Menu_Item *m);
+  Fl_Menu_Item *menu() {
+    return menu_;
+  }
+
+  void menu(Fl_Menu_Item[] m) {
+    clear();
+    value_ = m;
+    menu_ = m;
+  }
+
+/+=
   void copy(const Fl_Menu_Item *m, void* user_data = 0);
   int  add(const char*, int shortcut, Fl_Callback*, void* = 0, int = 0);
   int  add(const char* a, const char* b, Fl_Callback* c,
 	  void* d = 0, int e = 0) {return add(a,fl_old_shortcut(b),c,d,e);}
   int  size() const ;
   void size(int W, int H) { Fl_Widget::size(W, H); }
-  void clear();
+=+/
+  void clear() {
+    /+= =+/
+    }
+/+=
   int  add(const char *);
   void replace(int,const char *);
   void remove(int);
@@ -92,27 +106,36 @@ public:
   int value(int i) {return value(menu_+i);}
   const char *text() const {return value_ ? value_->text : 0;}
   const char *text(int i) const {return menu_[i].text;}
-
-  Fl_Font textfont() const {return (Fl_Font)textfont_;}
 =+/
+
+  Fl_Font textfont() {
+    return textfont_;
+  }
+
   void textfont(Fl_Font c) {
     textfont_=c;
   }
-/+=
-  uchar textsize() const {return textsize_;}
-=+/
+
+  ubyte textsize() {
+    return textsize_;
+  }
+
   void textsize(ubyte c) {
     textsize_=c;
   }
-/+=
-  Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-=+/
+
+  Fl_Color textcolor() {
+    return textcolor_;
+  }
+
   void textcolor(Fl_Color c) {
     textcolor_=c;
   }
-/+=
-  Fl_Boxtype down_box() const {return (Fl_Boxtype)down_box_;}
-=+/
+
+  Fl_Boxtype down_box() {
+    return down_box_;
+  }
+
   void down_box(Fl_Boxtype b) {
     down_box_ = b;
   }
@@ -236,32 +259,11 @@ const Fl_Menu_Item* Fl_Menu_::picked(const Fl_Menu_Item* v) {
   return v;
 }
 
-// turn on one of a set of radio buttons
-void Fl_Menu_Item::setonly() {
-  flags |= FL_MENU_RADIO | FL_MENU_VALUE;
-  Fl_Menu_Item* j;
-  for (j = this; ; ) {	// go down
-    if (j->flags & FL_MENU_DIVIDER) break; // stop on divider lines
-    j++;
-    if (!j->text || !j->radio()) break; // stop after group
-    j->clear();
-  }
-  for (j = this-1; ; j--) { // go up
-    if (!j->text || (j->flags&FL_MENU_DIVIDER) || !j->radio()) break;
-    j->clear();
-  }
-}
-
 }
 
 int Fl_Menu_::size() const {
   if (!menu_) return 0;
   return menu_->size();
-}
-
-void Fl_Menu_::menu(const Fl_Menu_Item* m) {
-  clear();
-  value_ = menu_ = (Fl_Menu_Item*)m;
 }
 
 // this version is ok with new Fl_Menu_add code with fl_menu_array_owner:

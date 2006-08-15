@@ -1,6 +1,6 @@
 
-ALL = menubar
-#ALL = arc boxtype message hello button
+#ALL = menubar
+ALL = arc boxtype message hello button
 
 all: $(ALL) 
 
@@ -24,9 +24,11 @@ DFILES = \
 	fl/input_.d \
 	fl/labeltype.d \
 	fl/line_style.d \
+	fl/menu.d \
 	fl/menu_.d \
 	fl/menu_bar.d \
 	fl/menu_item.d \
+	fl/menu_window.d \
 	fl/oval_box.d \
 	fl/plastic.d \
 	fl/rect.d \
@@ -97,9 +99,9 @@ message:  test/message.o $(OBJECTS)
 	gdc $(DFLAGS) -c $< -o $@
 
 clean:
-	rm -rf fl/*.o
-	rm -rf std/c/osx/*/*.o
-	rm -rf test/*.o
-	rm -rf $(ALL)
+	rm -f fl/*.o
+	rm -f std/c/osx/*/*.o
+	rm -f test/*.o
+	rm -f $(ALL)
 
 

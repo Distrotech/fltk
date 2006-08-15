@@ -63,7 +63,6 @@ void quit_cb(Fl_Widget w, void* d) {
 -+/
 }
 
-/+=
 Fl_Menu_Item hugemenu[100];
 
 Fl_Menu_Item menutable[] = [
@@ -164,7 +163,6 @@ Fl_Menu_Item menutable[] = [
   {"button",FL_F+4, null, null, FL_MENU_TOGGLE},
   {null}
 ];
-=+/
 
 /+-
 Fl_Menu_Item pulldown[] = {
@@ -185,20 +183,18 @@ Fl_Menu_* menus[4];
 
 int main(char[][] args) {
   //Fl::set_color(Fl_Color(15),0,0,128);
-/+=
   for (int i=0; i<99; i++) {
     char buf[100];
     sprintf(buf,"item %d",i);
     hugemenu[i].text = toString(buf).dup;
   }
-=+/
   Fl_Window window = new Fl_Window(WIDTH,400);
 /+=
   window.callback(window_cb);
 =+/
   Fl_Menu_Bar menubar = new Fl_Menu_Bar(0,0,WIDTH,30);
-/+=
   menubar.menu(menutable);
+/+=
   menubar.callback(test_cb);
   menus[0] = &menubar;
   Fl_Menu_Button mb1(100,100,120,25,"&menubutton"); mb1.menu(pulldown);
