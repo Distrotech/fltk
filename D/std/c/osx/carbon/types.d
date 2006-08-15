@@ -164,18 +164,10 @@ alias short MenuID;
 
 alias void* AppleEventRef;
 
-typedef OSErr (*AEEventHandlerProcPtr)(
-   AppleEventRef theAppleEvent,
-   AppleEventRef reply,
-   UInt32 handlerRefcon
-) ;
+alias OSErr function(AppleEventRef, AppleEventRef, UInt32) AEEventHandlerProcPtr;
 alias AEEventHandlerProcPtr AEEventHandlerUPP;
 
-typedef OSStatus (*EventHandlerProcPtr) (
-   EventHandlerCallRef inHandlerCallRef,
-   EventRef inEvent,
-   void* inUserData
-);
+typedef OSStatus function(EventHandlerCallRef, EventRef, void*) EventHandlerProcPtr;
 alias EventHandlerProcPtr EventHandlerUPP;
 
 const int noErr = 0;

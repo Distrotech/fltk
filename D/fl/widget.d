@@ -38,10 +38,10 @@ private import fl.draw;
 private import fl.tooltip;
 private import fl.labeltype;
 
-typedef void function(Fl_Widget, void*) Fl_Callback;
+alias void function(Fl_Widget, void*) Fl_Callback;
 typedef Fl_Callback* Fl_Callback_p;
-typedef void function(Fl_Widget) Fl_Callback0;
-typedef void function(Fl_Widget, int) Fl_Callback1;
+alias void function(Fl_Widget) Fl_Callback0;
+alias void function(Fl_Widget, int) Fl_Callback1;
 
 struct Fl_Label {
   char[] value;
@@ -220,6 +220,7 @@ public:
   }
 
   void draw_label(int X, int Y, int W, int H) {
+    if ((alignment()&15) && !(alignment() & FL_ALIGN_INSIDE)) return;
     draw_label(X,Y,W,H,alignment());
   }
 

@@ -30,7 +30,7 @@ private import fl.double_window;
 private import fl.hor_value_slider;
 private import fl.draw;
 
-double[6] args = [140, 140, 50, 0, 360, 0];
+double[6] arg = [140, 140, 50, 0, 360, 0];
 char[6][] name = ["X", "Y", "R", "start", "end", "rotate"];
 
 class Drawing : Fl_Widget {
@@ -39,21 +39,21 @@ class Drawing : Fl_Widget {
     fl_color(FL_DARK3);
     fl_rectf(x(),y(),w(),h());
     fl_push_matrix();
-    if (args[5]) {
+    if (arg[5]) {
       fl_translate(x()+w()/2.0, y()+h()/2.0);
-      fl_rotate(args[5]);
+      fl_rotate(arg[5]);
       fl_translate(-(x()+w()/2.0), -(y()+h()/2.0));
     }
     fl_color(FL_WHITE);
     fl_translate(x(),y());
     fl_begin_complex_polygon();
-    fl_arc(args[0],args[1],args[2],args[3],args[4]);
+    fl_arc(arg[0],arg[1],arg[2],arg[3],arg[4]);
     fl_gap();
     fl_arc(140,140,20,0,-360);
     fl_end_complex_polygon();
     fl_color(FL_RED);
     fl_begin_line();
-    fl_arc(args[0],args[1],args[2],args[3],args[4]);
+    fl_arc(arg[0],arg[1],arg[2],arg[3],arg[4]);
     fl_end_line();
     fl_pop_matrix();
     fl_pop_clip();
@@ -68,7 +68,7 @@ Drawing d;
 
 void slider_cb(Fl_Widget o, void* v) {
   Fl_Slider s = cast(Fl_Slider)o;
-  args[cast(int)v] = s.value();
+  arg[cast(int)v] = s.value();
   d.redraw();
 }
 
@@ -80,13 +80,14 @@ int main(char[][] args) {
   int y = 300;
   for (int n = 0; n<6; n++) {
     Fl_Slider s = new Fl_Hor_Value_Slider(50,y,240,25,name[n]); y += 25;
+    s.type(FL_HOR_SLIDER);
     if (n<3) {s.minimum(0); s.maximum(300);}
     else if (n==5) {s.minimum(0); s.maximum(360);}
     else {s.minimum(-360); s.maximum(360);}
     s.step(1);
-    /+=s.value(args[n]);=+/
+    s.value(arg[n]);
     s.alignment(FL_ALIGN_LEFT);
-    /+=s.callback(slider_cb, cast(void*)n);=+/
+    s.callback(&slider_cb, cast(void*)n);
   }
 
   window.end();

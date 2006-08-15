@@ -176,8 +176,7 @@ public:
     return 1;
   }
 
-  int format(char[] buffer) {
-    if (buffer[$-1]!=0) buffer ~= 0; 
+  int format(char* buffer) {
     double v = value();
     // MRS: THIS IS A HACK - RECOMMEND ADDING BUFFER SIZE ARGUMENT
     if (!A || !B) return snprintf(buffer, 128, "%g", v);

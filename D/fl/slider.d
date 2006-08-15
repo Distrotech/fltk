@@ -276,12 +276,39 @@ public:
     box(t==FL_HOR_NICE_SLIDER || t==FL_VERT_NICE_SLIDER ? FL_FLAT_BOX : FL_DOWN_BOX);
     _Fl_Slider();
   }
-/+-
-  int scrollvalue(int windowtop,int windowsize,int first,int totalsize);
-  void bounds(double a, double b);
-  float slider_size() const {return slider_size_;}
-  void slider_size(double v);
--+/
+
+  int scrollvalue(int p, int W, int t, int l) {
+  //	p = position, first line displayed
+  //	w = window, number of lines displayed
+  //	t = top, number of first line
+  //	l = length, total number of lines
+    step(1, 1);
+    if (p+W > t+l) l = p+W-t;
+    slider_size(W >= l ? 1.0 : cast(double)(W)/cast(double)(l));
+    bounds(t, l-W+t);
+    return value(p);
+  }
+
+  void bounds(double a, double b) {
+    if (minimum() != a || maximum() != b) {
+      super.bounds(a, b); 
+      damage(FL_DAMAGE_EXPOSE);
+    }
+  }
+
+  float slider_size() {
+    return slider_size_;
+  }
+
+  void slider_size(double v) {
+    if (v <  0) v = 0;
+    if (v > 1) v = 1;
+    if (slider_size_ != cast(float)(v)) {
+      slider_size_ = cast(float)(v); 
+      damage(FL_DAMAGE_EXPOSE);
+    }
+  }
+
   Fl_Boxtype slider() {
     return slider_;
   }
@@ -291,60 +318,6 @@ public:
   }
 }
 
-/+-
-
-}
-
-}
-
-}
-
-void Fl_Slider::slider_size(double v) {
-  if (v <  0) v = 0;
-  if (v > 1) v = 1;
-  if (slider_size_ != float(v)) {
-    slider_size_ = float(v); 
-    damage(FL_DAMAGE_EXPOSE);
-  }
-}
-
-void Fl_Slider::bounds(double a, double b) {
-  if (minimum() != a || maximum() != b) {
-    Fl_Valuator::bounds(a, b); 
-    damage(FL_DAMAGE_EXPOSE);
-  }
-}
-
-int Fl_Slider::scrollvalue(int p, int W, int t, int l) {
-//	p = position, first line displayed
-//	w = window, number of lines displayed
-//	t = top, number of first line
-//	l = length, total number of lines
-  step(1, 1);
-  if (p+W > t+l) l = p+W-t;
-  slider_size(W >= l ? 1.0 : double(W)/double(l));
-  bounds(t, l-W+t);
-  return value(p);
-}
-
-// All slider interaction is done as though the slider ranges from
-// zero to one, and the left (bottom) edge of the slider is at the
-// given position.  Since when the slider is all the way to the
-// right (top) the left (bottom) edge is not all the way over, a
-// position on the widget itself covers a wider range than 0-1,
-// actually it ranges from 0 to 1/(1-size).
-
-}
-
-}
-
-}
-
-}
-
-}
-
 //
-// End of "$Id: Fl_Slider.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: slider.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

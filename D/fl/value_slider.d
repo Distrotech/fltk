@@ -29,80 +29,89 @@ module fl.value_slider;
 
 public import fl.slider;
 
+private import fl.fl;
+private import fl.draw;
+
 
 class Fl_Value_Slider : Fl_Slider {
-/+-
-    uchar textfont_, textsize_;
-    unsigned textcolor_;
+
+private:
+
+  Fl_Font textfont_;
+  ubyte textsize_;
+  Fl_Color textcolor_;
+
 public:
-    void draw();
-    int handle(int);
-    Fl_Value_Slider(int x,int y,int w,int h, const char *l = 0);
-    Fl_Font textfont() const {return (Fl_Font)textfont_;}
-    void textfont(uchar s) {textfont_ = s;}
-    uchar textsize() const {return textsize_;}
-    void textsize(uchar s) {textsize_ = s;}
-    Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-    void textcolor(unsigned s) {textcolor_ = s;}
--+/
-  this(int x, int y, int w, int h, char[] l=null) {
-    super(x, y, w, h, l);
+
+  void draw() {
+    int sxx = x(), syy = y(), sww = w(), shh = h();
+    int bxx = x(), byy = y(), bww = w(), bhh = h();
+    if (horizontal()) {
+      bww = 35; sxx += 35; sww -= 35;
+    } else {
+      syy += 25; bhh = 25; shh -= 25;
+    }
+    if (damage()&FL_DAMAGE_ALL) draw_box(box(),sxx,syy,sww,shh,color());
+    super.draw(sxx+Fl.box_dx(box()),
+		    syy+Fl.box_dy(box()),
+		    sww-Fl.box_dw(box()),
+		    shh-Fl.box_dh(box()));
+    draw_box(box(),bxx,byy,bww,bhh,color());
+    char buf[128];
+    format(buf.ptr);
+    fl_font(textfont(), textsize());
+    fl_color(active_r() ? textcolor() : fl_inactive(textcolor()));
+    fl_draw(buf, bxx, byy, bww, bhh, FL_ALIGN_CLIP);
+  }
+
+  int handle(Fl_Event event) {
+    if (event == FL_PUSH && Fl.visible_focus()) {
+      Fl.focus(this);
+      redraw();
+    }
+    int sxx = x(), syy = y(), sww = w(), shh = h();
+    if (horizontal()) {
+      sxx += 35; sww -= 35;
+    } else {
+      syy += 25; shh -= 25;
+    }
+    return super.handle(event,
+      sxx+Fl.box_dx(box()), syy+Fl.box_dy(box()),
+      sww-Fl.box_dw(box()), shh-Fl.box_dh(box()));
+  }
+
+  this(int X, int Y, int W, int H, char[] l=null) {
+    super(X,Y,W,H,l);
+    step(1,100);
+    textfont_ = FL_HELVETICA;
+    textsize_ = 10;
+    textcolor_ = FL_FOREGROUND_COLOR;
+  }
+
+  Fl_Font textfont() {
+    return textfont_;
+  }
+
+  void textfont(Fl_Font s) {
+    textfont_ = s;
+  }
+
+  ubyte textsize() {
+    return textsize_;
+  }
+
+  void textsize(ubyte s) {
+    textsize_ = s;
+  }
+
+  Fl_Color textcolor() {
+    return textcolor_;
+  }
+
+  void textcolor(Fl_Color s) {
+    textcolor_ = s;
   }
 }
-
-/+-
-#include <FL/Fl.H>
-#include <FL/Fl_Value_Slider.H>
-#include <FL/fl_draw.H>
-#include <math.h>
-
-Fl_Value_Slider::Fl_Value_Slider(int X, int Y, int W, int H, const char*l)
-: Fl_Slider(X,Y,W,H,l) {
-  step(1,100);
-  textfont_ = FL_HELVETICA;
-  textsize_ = 10;
-  textcolor_ = FL_FOREGROUND_COLOR;
-}
-
-void Fl_Value_Slider::draw() {
-  int sxx = x(), syy = y(), sww = w(), shh = h();
-  int bxx = x(), byy = y(), bww = w(), bhh = h();
-  if (horizontal()) {
-    bww = 35; sxx += 35; sww -= 35;
-  } else {
-    syy += 25; bhh = 25; shh -= 25;
-  }
-  if (damage()&FL_DAMAGE_ALL) draw_box(box(),sxx,syy,sww,shh,color());
-  Fl_Slider::draw(sxx+Fl::box_dx(box()),
-		  syy+Fl::box_dy(box()),
-		  sww-Fl::box_dw(box()),
-		  shh-Fl::box_dh(box()));
-  draw_box(box(),bxx,byy,bww,bhh,color());
-  char buf[128];
-  format(buf);
-  fl_font(textfont(), textsize());
-  fl_color(active_r() ? textcolor() : fl_inactive(textcolor()));
-  fl_draw(buf, bxx, byy, bww, bhh, FL_ALIGN_CLIP);
-}
-
-int Fl_Value_Slider::handle(int event) {
-  if (event == FL_PUSH && Fl::visible_focus()) {
-    Fl::focus(this);
-    redraw();
-  }
-  int sxx = x(), syy = y(), sww = w(), shh = h();
-  if (horizontal()) {
-    sxx += 35; sww -= 35;
-  } else {
-    syy += 25; shh -= 25;
-  }
-  return Fl_Slider::handle(event,
-			   sxx+Fl::box_dx(box()),
-			   syy+Fl::box_dy(box()),
-			   sww-Fl::box_dw(box()),
-			   shh-Fl::box_dh(box()));
-}
--+/
 
 //
 // End of "$Id: value_slider.d 5190 2006-06-09 16:16:34Z mike $".

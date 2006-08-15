@@ -554,22 +554,9 @@ struct WStateData {
 };
 typedef WStateData * WStateDataPtr;
 
-typedef long (*WindowDefProcPtr) (
-   short varCode,
-   WindowRef window,
-   short message,
-   long param
-);
+alias int function(short, WindowRef, short, int) WindowDefProcPtr;
 
-typedef OSStatus (*WindowPaintProcPtr)
-(
-   GDHandle device,
-   GrafPtr qdContext,
-   WindowRef window,
-   RgnHandle inClientPaintRgn,
-   RgnHandle outSystemPaintRgn,
-   void * refCon
-); 
+alias OSStatus function (GDHandle, GrafPtr, WindowRef, RgnHandle, RgnHandle, void*) WindowPaintProcPtr; 
 
 // ---- Functions
 
