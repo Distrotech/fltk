@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: menu_.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Menu base class header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,29 +25,42 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Menu__H
-#define Fl_Menu__H
+module fl.menu_;
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
-#include "Fl_Menu_Item.H"
+public import fl.widget;
+public import fl.menu_item;
 
-class FL_EXPORT Fl_Menu_ : public Fl_Widget {
+class Fl_Menu_ : Fl_Widget {
 
-  Fl_Menu_Item *menu_;
-  const Fl_Menu_Item *value_;
+private:
+
+  Fl_Menu_Item[] menu_;
+  Fl_Menu_Item* value_;
 
 protected:
 
-  uchar alloc;
-  uchar down_box_;
-  uchar textfont_;
-  uchar textsize_;
-  unsigned textcolor_;
+  ubyte alloc;
+  Fl_Boxtype down_box_;
+  Fl_Font textfont_;
+  ubyte textsize_;
+  Fl_Color textcolor_;
 
 public:
-  Fl_Menu_(int,int,int,int,const char * =0);
+  this(int X,int Y,int W,int H,char[] l) {
+    super(X,Y,W,H,l);
+    set_flag(SHORTCUT_LABEL);
+    box(FL_UP_BOX);
+    when(FL_WHEN_RELEASE_ALWAYS);
+    value_ = null;
+    menu_ = null;
+    alloc = 0;
+    selection_color(FL_SELECTION_COLOR);
+    textfont(FL_HELVETICA);
+    textsize(FL_NORMAL_SIZE);
+    textcolor(FL_FOREGROUND_COLOR);
+    down_box(FL_NO_BOX);
+  }
+/+=
   ~Fl_Menu_();
 
   int item_pathname(char *name, int namelen, const Fl_Menu_Item *finditem=0) const;
@@ -82,67 +94,36 @@ public:
   const char *text(int i) const {return menu_[i].text;}
 
   Fl_Font textfont() const {return (Fl_Font)textfont_;}
-  void textfont(uchar c) {textfont_=c;}
+=+/
+  void textfont(Fl_Font c) {
+    textfont_=c;
+  }
+/+=
   uchar textsize() const {return textsize_;}
-  void textsize(uchar c) {textsize_=c;}
+=+/
+  void textsize(ubyte c) {
+    textsize_=c;
+  }
+/+=
   Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-  void textcolor(unsigned c) {textcolor_=c;}
-
+=+/
+  void textcolor(Fl_Color c) {
+    textcolor_=c;
+  }
+/+=
   Fl_Boxtype down_box() const {return (Fl_Boxtype)down_box_;}
-  void down_box(Fl_Boxtype b) {down_box_ = b;}
-
+=+/
+  void down_box(Fl_Boxtype b) {
+    down_box_ = b;
+  }
+/+=
   // back compatability:
   Fl_Color down_color() const {return selection_color();}
   void down_color(unsigned c) {selection_color(c);}
-};
+=+/
+}
 
-#endif
-
-//
-// End of "$Id: Fl_Menu_.H 4288 2005-04-16 00:13:17Z mike $".
-//
-    End of automatic import -+/
-/+- This file was imported from C++ using a script
-//
-// "$Id: Fl_Menu_.cxx 5190 2006-06-09 16:16:34Z mike $"
-//
-// Common menu code for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
-// This is a base class for all items that have a menu:
-//	Fl_Menu_Bar, Fl_Menu_Button, Fl_Choice
-// This provides storage for a menu item, functions to add/modify/delete
-// items, and a call for when the user picks a menu item.
-
-// More code in Fl_Menu_add.cxx
-
-#include <FL/Fl.H>
-#include <FL/Fl_Menu_.H>
-#include "flstring.h"
-#include <stdio.h>
-#include <stdlib.h>
-
+/+=
 // Set 'pathname' of specified menuitem
 //    If finditem==NULL, mvalue() is used (the most recently picked menuitem)
 //    Returns:
@@ -271,18 +252,6 @@ void Fl_Menu_Item::setonly() {
   }
 }
 
-Fl_Menu_::Fl_Menu_(int X,int Y,int W,int H,const char* l)
-: Fl_Widget(X,Y,W,H,l) {
-  set_flag(SHORTCUT_LABEL);
-  box(FL_UP_BOX);
-  when(FL_WHEN_RELEASE_ALWAYS);
-  value_ = menu_ = 0;
-  alloc = 0;
-  selection_color(FL_SELECTION_COLOR);
-  textfont(FL_HELVETICA);
-  textsize((uchar)FL_NORMAL_SIZE);
-  textcolor(FL_FOREGROUND_COLOR);
-  down_box(FL_NO_BOX);
 }
 
 int Fl_Menu_::size() const {
@@ -331,8 +300,8 @@ void Fl_Menu_::clear() {
     alloc = 0;
   }
 }
+=+/
 
 //
-// End of "$Id: Fl_Menu_.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: menu_.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

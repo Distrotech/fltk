@@ -205,6 +205,7 @@ const Fl_Boxtype FL_DIAMOND_BOX = FL_DIAMOND_DOWN_BOX;
 
 typedef ubyte Fl_Labeltype;
 const Fl_Labeltype FL_NORMAL_LABEL	= 0;
+const Fl_Labeltype FL_SYMBOL_LABEL	= FL_NORMAL_LABEL;
 const Fl_Labeltype FL_NO_LABEL		= 1;
 const Fl_Labeltype FL_SHADOW_LABEL	= 2;
 const Fl_Labeltype FL_ENGRAVED_LABEL	= 3;

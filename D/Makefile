@@ -1,6 +1,8 @@
 
-all: message
-#all: arc boxtype message hello button
+ALL = menubar
+#ALL = arc boxtype message hello button
+
+all: $(ALL) 
 
 
 DFILES = \
@@ -22,6 +24,9 @@ DFILES = \
 	fl/input_.d \
 	fl/labeltype.d \
 	fl/line_style.d \
+	fl/menu_.d \
+	fl/menu_bar.d \
+	fl/menu_item.d \
 	fl/oval_box.d \
 	fl/plastic.d \
 	fl/rect.d \
@@ -55,27 +60,32 @@ DFLAGS = -g -fbounds-check -funittest -fversion=Apple
 
 
 arc:  test/arc.o $(OBJECTS)
-	echo Linking $@...
+	@ echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 boxtype:  test/boxtype.o $(OBJECTS)
-	echo Linking $@...
+	@ echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 button:  test/button.o $(OBJECTS)
-	echo Linking $@...
+	@ echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 hello:  test/hello.o $(OBJECTS)
-	echo Linking $@...
+	@ echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
+
+menubar:  test/menubar.o $(OBJECTS)
+	@ echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 message:  test/message.o $(OBJECTS)
-	echo Linking $@...
+	@ echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
@@ -83,12 +93,13 @@ message:  test/message.o $(OBJECTS)
 .SUFFIXES: .d .fl .o
 
 .d.o:
-	echo Compiling $<...
+	@ echo Compiling $<...
 	gdc $(DFLAGS) -c $< -o $@
 
 clean:
-	rm $(OBJECTS)
-	rm test/hello.o
-	rm test/button.o
+	rm -rf fl/*.o
+	rm -rf std/c/osx/*/*.o
+	rm -rf test/*.o
+	rm -rf $(ALL)
 
 

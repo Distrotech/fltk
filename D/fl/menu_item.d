@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_Item.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: menu_item.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Menu item header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,15 +25,10 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Menu_Item_H
-#define Fl_Menu_Item_H
+module fl.menu_item;
 
-#  include "Fl_Widget.H"
-#  include "Fl_Image.H"
-
-#  if defined(__APPLE__) && defined(check)
-#    undef check
-#  endif
+public import fl.widget;
+public import fl.image;
 
 enum { // values for flags:
   FL_MENU_INACTIVE = 1,
@@ -48,21 +42,17 @@ enum { // values for flags:
   FL_MENU_HORIZONTAL = 0x100
 };
 
-extern FL_EXPORT int fl_old_shortcut(const char*);
-
-class Fl_Menu_;
-
-struct FL_EXPORT Fl_Menu_Item {
-  const char *text;	// label()
-  int shortcut_;
-  Fl_Callback *callback_;
-  void *user_data_;
-  int flags;
-  uchar labeltype_;
-  uchar labelfont_;
-  uchar labelsize_;
-  unsigned labelcolor_;
-
+struct Fl_Menu_Item {
+  char[]   text;	// label()
+  int      shortcut_;
+  Fl_Callback callback_;
+  void*    user_data_;
+  int      flags;
+  ubyte    labeltype_;
+  Fl_Font  labelfont_;
+  ubyte    labelsize_;
+  Fl_Color labelcolor_;
+/+=
   // advance N items, skipping submenus:
   const Fl_Menu_Item *next(int=1) const;
   Fl_Menu_Item *next(int i=1) {
@@ -76,8 +66,15 @@ struct FL_EXPORT Fl_Menu_Item {
   void label(Fl_Labeltype a,const char* b) {labeltype_ = a; text = b;}
   Fl_Labeltype labeltype() const {return (Fl_Labeltype)labeltype_;}
   void labeltype(Fl_Labeltype a) {labeltype_ = a;}
-  Fl_Color labelcolor() const {return (Fl_Color)labelcolor_;}
-  void labelcolor(unsigned a) {labelcolor_ = a;}
+=+/
+  Fl_Color labelcolor() {
+    return labelcolor_;
+  }
+
+  void labelcolor(Fl_Color a) {
+    labelcolor_ = a;
+  }
+/+=
   Fl_Font labelfont() const {return (Fl_Font)labelfont_;}
   void labelfont(uchar a) {labelfont_ = a;}
   uchar labelsize() const {return labelsize_;}
@@ -144,9 +141,10 @@ struct FL_EXPORT Fl_Menu_Item {
 	  void* d = 0, int e = 0) {
     return add(a,fl_old_shortcut(b),c,d,e);}
   int size() const ;
-};
+=+/
+}
 
-typedef Fl_Menu_Item Fl_Menu; // back compatability
+alias Fl_Menu_Item Fl_Menu; // back compatability
 
 enum {	// back-compatability enum:
   FL_PUP_NONE	= 0,
@@ -161,9 +159,6 @@ enum {	// back-compatability enum:
   FL_PUP_SUBMENU = FL_SUBMENU_POINTER
 };
 
-#endif
-
 //
-// End of "$Id: Fl_Menu_Item.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: menu_item.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
