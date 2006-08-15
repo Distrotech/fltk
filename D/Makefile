@@ -1,6 +1,6 @@
 
-all: arc
-#all: boxtype message hello button
+all: message
+#all: arc boxtype message hello button
 
 
 DFILES = \

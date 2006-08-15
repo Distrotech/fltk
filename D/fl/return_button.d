@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Return_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: return_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Return button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -29,52 +29,9 @@ module fl.return_button;
 
 public import fl.button;
 
-class Fl_Return_Button : Fl_Button {
-/+=
-protected:
-  void draw();
-public:
-  int handle(int);
-=+/
-  this(int X, int Y, int W, int H,char[] l=null) {
-    super(X,Y,W,H,l);
-  }
-}
+private import fl.fl;
+private import fl.draw;
 
-//
-// End of "$Id: Fl_Return_Button.H 4288 2005-04-16 00:13:17Z mike $".
-//
-/+- This file was imported from C++ using a script
-//
-// "$Id: Fl_Return_Button.cxx 5190 2006-06-09 16:16:34Z mike $"
-//
-// Return button widget for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
-#include <FL/Fl.H>
-#include <FL/Fl_Return_Button.H>
-#include <FL/fl_draw.H>
 
 int fl_return_arrow(int x, int y, int w, int h) {
   int size = w; if (h<size) size = h;
@@ -94,27 +51,38 @@ int fl_return_arrow(int x, int y, int w, int h) {
   return 1;
 }
 
-void Fl_Return_Button::draw() {
-  if (type() == FL_HIDDEN_BUTTON) return;
-  draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(),
-	   value() ? selection_color() : color());
-  int W = h();
-  if (w()/3 < W) W = w()/3;
-  fl_return_arrow(x()+w()-W-4, y(), W, h());
-  draw_label(x(), y(), w()-W+4, h());
-  if (Fl::focus() == this) draw_focus();
-}
 
-int Fl_Return_Button::handle(int event) {
-  if (event == FL_SHORTCUT &&
-      (Fl::event_key() == FL_Enter || Fl::event_key() == FL_KP_Enter)) {
-    do_callback();
-    return 1;
-  } else
-    return Fl_Button::handle(event);
+class Fl_Return_Button : Fl_Button {
+
+protected:
+
+  void draw() {
+    if (type() == FL_HIDDEN_BUTTON) return;
+    draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(),
+	     value() ? selection_color() : color());
+    int W = h();
+    if (w()/3 < W) W = w()/3;
+    fl_return_arrow(x()+w()-W-4, y(), W, h());
+    draw_label(x(), y(), w()-W+4, h());
+    if (Fl.focus() is this) draw_focus();
+  }
+
+public:
+
+  int handle(Fl_Event event) {
+    if (event == FL_SHORTCUT &&
+        (Fl.event_key() == FL_Enter || Fl.event_key() == FL_KP_Enter)) {
+      do_callback();
+      return 1;
+    } else
+      return super.handle(event);
+  }
+
+  this(int X, int Y, int W, int H,char[] l=null) {
+    super(X,Y,W,H,l);
+  }
 }
 
 //
-// End of "$Id: Fl_Return_Button.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: return_button.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

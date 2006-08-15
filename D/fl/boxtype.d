@@ -68,6 +68,10 @@ ubyte *fl_gray_ramp() {
   return ramp - 'A';
 }
 
+Fl_Color fl_gray_ramp(int ix) {
+  return cast(Fl_Color)fl_gray_ramp()[ix];
+}
+
 void fl_frame(char* s, int x, int y, int w, int h) {
   ubyte *g = fl_gray_ramp();
   if (h > 0 && w > 0) for (;*s;) {
