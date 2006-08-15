@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Hor_Value_Slider.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: hor_value_slider.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Horizontal value slider header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +25,19 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Hor_Value_Slider_H
-#define Fl_Hor_Value_Slider_H
+module fl.hor_value_slider;
 
-#include "Fl_Value_Slider.H"
+public import fl.value_slider;
 
-class Fl_Hor_Value_Slider : public Fl_Value_Slider {
+
+class Fl_Hor_Value_Slider : Fl_Value_Slider {
 public:
-    Fl_Hor_Value_Slider(int X,int Y,int W,int H,const char *l=0)
-	: Fl_Value_Slider(X,Y,W,H,l) {type(FL_HOR_SLIDER);}
-};
-
-#endif
+  this(int X,int Y,int W,int H,char[] l=null) {
+    super(X,Y,W,H,l);
+    type(FL_HOR_SLIDER);
+  }
+}
 
 //
-// End of "$Id: Fl_Hor_Value_Slider.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: hor_value_slider.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/

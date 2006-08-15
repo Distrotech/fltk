@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Value_Slider.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: value_slider.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Value slider header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,12 +25,13 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Value_Slider_H
-#define Fl_Value_Slider_H
+module fl.value_slider;
 
-#include "Fl_Slider.H"
+public import fl.slider;
 
-class FL_EXPORT Fl_Value_Slider : public Fl_Slider {
+
+class Fl_Value_Slider : Fl_Slider {
+/+-
     uchar textfont_, textsize_;
     unsigned textcolor_;
 public:
@@ -44,42 +44,13 @@ public:
     void textsize(uchar s) {textsize_ = s;}
     Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
     void textcolor(unsigned s) {textcolor_ = s;}
-};
+-+/
+  this(int x, int y, int w, int h, char[] l=null) {
+    super(x, y, w, h, l);
+  }
+}
 
-#endif
-
-//
-// End of "$Id: Fl_Value_Slider.H 4288 2005-04-16 00:13:17Z mike $".
-//
-    End of automatic import -+/
-/+- This file was imported from C++ using a script
-//
-// "$Id: Fl_Value_Slider.cxx 5190 2006-06-09 16:16:34Z mike $"
-//
-// Value slider widget for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
+/+-
 #include <FL/Fl.H>
 #include <FL/Fl_Value_Slider.H>
 #include <FL/fl_draw.H>
@@ -131,8 +102,8 @@ int Fl_Value_Slider::handle(int event) {
 			   sww-Fl::box_dw(box()),
 			   shh-Fl::box_dh(box()));
 }
+-+/
 
 //
-// End of "$Id: Fl_Value_Slider.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: value_slider.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

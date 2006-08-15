@@ -56,12 +56,11 @@ extern FL_EXPORT Fl_Color fl_color_;
 inline Fl_Color fl_color() {return fl_color_;}
 
 // clip:
-FL_EXPORT void fl_push_clip(int x, int y, int w, int h);
-#define fl_clip fl_push_clip
-FL_EXPORT void fl_push_no_clip();
-FL_EXPORT void fl_pop_clip();
-FL_EXPORT int fl_not_clipped(int x, int y, int w, int h);
-FL_EXPORT int fl_clip_box(int, int, int, int, int& x, int& y, int& w, int& h);
+-+/
+void fl_clip(int x, int y, int w, int h) {
+  fl_push_clip(x, y, w, h);
+}
+/+-
 
 // points:
 FL_EXPORT void fl_point(int x, int y);

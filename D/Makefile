@@ -1,6 +1,6 @@
 
-all: boxtype 
-#all: message hello button
+all: arc
+#all: boxtype message hello button
 
 
 DFILES = \
@@ -12,9 +12,11 @@ DFILES = \
 	fl/button.d \
 	fl/color.d \
 	fl/color_mac.d \
+	fl/double_window.d \
 	fl/draw.d \
 	fl/font.d \
 	fl/font_mac.d \
+	fl/hor_value_slider.d \
 	fl/image.d \
 	fl/input.d \
 	fl/input_.d \
@@ -26,12 +28,15 @@ DFILES = \
 	fl/return_button.d \
 	fl/rounded_box.d \
 	fl/round_box.d \
-	fl/single_window.d \
 	fl/shadow_box.d \
 	fl/shortcut.d \
+	fl/single_window.d \
+	fl/slider.d \
 	fl/tooltip.d \
 	fl/widget.d \
 	fl/window.d \
+	fl/valuator.d \
+	fl/value_slider.d \
 	fl/vertex.d \
 	fl/group.d \
 	fl/enumerations.d \
@@ -48,6 +53,11 @@ OBJECTS = $(DFILES:.d=.o)
 
 DFLAGS = -g -fbounds-check -funittest -fversion=Apple 
 
+
+arc:  test/arc.o $(OBJECTS)
+	echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 boxtype:  test/boxtype.o $(OBJECTS)
 	echo Linking $@...
