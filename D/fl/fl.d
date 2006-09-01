@@ -372,14 +372,15 @@ public:
       int r = send(e, wi, window);
       fl_fix_focus();
       return r;}
-/+====  
+
     case FL_UNFOCUS:
-      window = 0;
+      window = null;
     case FL_FOCUS:
       fl_xfocus = window;
       fl_fix_focus();
       return 1;
   
+/+====  
     case FL_KEYBOARD:
   
       Fl_Tooltip.enter((Fl_Widget )0);

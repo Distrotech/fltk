@@ -122,9 +122,40 @@ protected:
       widget.clear_damage();
     }
   }
-/+=
-  short* sizes();
-=+/
+
+  short* sizes() {
+    if (!sizes_) {
+      short* p = sizes_ = new short[4*(children_+2)];
+      // first thing in sizes array is the group's size:
+      if (type() < FL_WINDOW) {p[0] = x(); p[2] = y();} else {p[0] = p[2] = 0;}
+      p[1] = p[0]+w(); p[3] = p[2]+h();
+      // next is the resizable's size:
+      p[4] = p[0]; // init to the group's size
+      p[5] = p[1];
+      p[6] = p[2];
+      p[7] = p[3];
+      Fl_Widget r = resizable();
+      if (r && !(r is this)) { // then clip the resizable to it
+        int t;
+        t = r.x(); if (t > p[0]) p[4] = t;
+        t +=r.w(); if (t < p[1]) p[5] = t;
+        t = r.y(); if (t > p[2]) p[6] = t;
+        t +=r.h(); if (t < p[3]) p[7] = t;
+      }
+      // next is all the children's sizes:
+      p += 8;
+      Fl_Widget* a = array();
+      for (int i=children_; i--;) {
+        Fl_Widget o = *a++;
+        *p++ = o.x();
+        *p++ = o.x()+o.w();
+        *p++ = o.y();
+        *p++ = o.y()+o.h();
+      }
+    }
+    return sizes_;
+  }
+
 public:
   int handle(int event) {
     Fl_Widget* a = array();
@@ -306,9 +337,61 @@ public:
     return children_ <= 1 ? cast(Fl_Widget*)(&array_) : array_;
   }
 
-/+=
-  void resize(int,int,int,int);
-=+/
+  void resize(int X, int Y, int W, int H) {
+  
+    if (!resizable() || W==w() && H==h() ) {
+  
+      if (type() < FL_WINDOW) {
+        int dx = X-x();
+        int dy = Y-y();
+        Fl_Widget* a = array();
+        for (int i=children_; i--;) {
+          Fl_Widget o = *a++;
+          o.resize(o.x()+dx, o.y()+dy, o.w(), o.h());
+        }
+      }
+  
+    } else if (children_) {
+  
+      short* p = sizes();
+  
+      // get changes in size/position from the initial size:
+      int dx = X - p[0];
+      int dw = W - (p[1]-p[0]);
+      int dy = Y - p[2];
+      int dh = H - (p[3]-p[2]);
+      if (type() >= FL_WINDOW) dx = dy = 0;
+      p += 4;
+  
+      // get initial size of resizable():
+      int IX = *p++;
+      int IR = *p++;
+      int IY = *p++;
+      int IB = *p++;
+  
+      Fl_Widget* a = array();
+      for (int i=children_; i--;) {
+        Fl_Widget o = *a++;
+        int XX = *p++;
+        if (XX >= IR) XX += dw;
+        else if (XX > IX) XX = IX+((XX-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
+        int R = *p++;
+        if (R >= IR) R += dw;
+        else if (R > IX) R = IX+((R-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
+  
+        int YY = *p++;
+        if (YY >= IB) YY += dh;
+        else if (YY > IY) YY = IY+((YY-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
+        int B = *p++;
+        if (B >= IB) B += dh;
+        else if (B > IY) B = IY+((B-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
+        o.resize(XX+dx, YY+dy, R-XX, B-YY);
+      }
+    }
+  
+    super.resize(X,Y,W,H);
+  }
+  
   this(int X,int Y,int W,int H,char* l=null) {
     super(X,Y,W,H,l);
     alignment(FL_ALIGN_TOP);
@@ -602,110 +685,6 @@ int Fl_Group.navigation(int key) {
 // algorithim.  If you change this be sure to fix Fl_Tile which
 // also uses this array!
 
-
-short* Fl_Group.sizes() {
-  if (!sizes_) {
-    short* p = sizes_ = new short[4*(children_+2)];
-    // first thing in sizes array is the group's size:
-    if (type() < FL_WINDOW) {p[0] = x(); p[2] = y();} else {p[0] = p[2] = 0;}
-    p[1] = p[0]+w(); p[3] = p[2]+h();
-    // next is the resizable's size:
-    p[4] = p[0]; // init to the group's size
-    p[5] = p[1];
-    p[6] = p[2];
-    p[7] = p[3];
-    Fl_Widget  r = resizable();
-    if (r && r != this) { // then clip the resizable to it
-      int t;
-      t = r.x(); if (t > p[0]) p[4] = t;
-      t +=r.w(); if (t < p[1]) p[5] = t;
-      t = r.y(); if (t > p[2]) p[6] = t;
-      t +=r.h(); if (t < p[3]) p[7] = t;
-    }
-    // next is all the children's sizes:
-    p += 8;
-    Fl_Widget const* a = array();
-    for (int i=children_; i--;) {
-      Fl_Widget  o = *a++;
-      *p++ = o.x();
-      *p++ = o.x()+o.w();
-      *p++ = o.y();
-      *p++ = o.y()+o.h();
-    }
-  }
-  return sizes_;
-}
-
-void Fl_Group.resize(int X, int Y, int W, int H) {
-
-  if (!resizable() || W==w() && H==h() ) {
-
-    if (type() < FL_WINDOW) {
-      int dx = X-x();
-      int dy = Y-y();
-      Fl_Widget const* a = array();
-      for (int i=children_; i--;) {
-	Fl_Widget  o = *a++;
-	o.resize(o.x()+dx, o.y()+dy, o.w(), o.h());
-      }
-    }
-
-  } else if (children_) {
-
-    short* p = sizes();
-
-    // get changes in size/position from the initial size:
-    int dx = X - p[0];
-    int dw = W - (p[1]-p[0]);
-    int dy = Y - p[2];
-    int dh = H - (p[3]-p[2]);
-    if (type() >= FL_WINDOW) dx = dy = 0;
-    p += 4;
-
-    // get initial size of resizable():
-    int IX = *p++;
-    int IR = *p++;
-    int IY = *p++;
-    int IB = *p++;
-
-    Fl_Widget const* a = array();
-    for (int i=children_; i--;) {
-      Fl_Widget  o = *a++;
-#if 1
-      int XX = *p++;
-      if (XX >= IR) XX += dw;
-      else if (XX > IX) XX = IX+((XX-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
-      int R = *p++;
-      if (R >= IR) R += dw;
-      else if (R > IX) R = IX+((R-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
-
-      int YY = *p++;
-      if (YY >= IB) YY += dh;
-      else if (YY > IY) YY = IY+((YY-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
-      int B = *p++;
-      if (B >= IB) B += dh;
-      else if (B > IY) B = IY+((B-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
-} else { // much simpler code from Francois Ostiguy:
-      int XX = *p++;
-      if (XX >= IR) XX += dw;
-      else if (XX > IX) XX += dw * (XX-IX)/(IR-IX);
-      int R = *p++;
-      if (R >= IR) R += dw;
-      else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
-
-      int YY = *p++;
-      if (YY >= IB) YY += dh;
-      else if (YY > IY) YY = YY + dh*(YY-IY)/(IB-IY);
-      int B = *p++;
-      if (B >= IB) B += dh;
-      else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
-}
-      o.resize(XX+dx, YY+dy, R-XX, B-YY);
-    }
-  }
-
-  Fl_Widget.resize(X,Y,W,H);
-}
 
 // Force a child to redraw:
 extern char fl_draw_shortcut;

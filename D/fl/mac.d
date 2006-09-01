@@ -1375,9 +1375,10 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
     ret = noErr;
     break;
   case kEventWindowBoundsChanged: {
-/+====
-    GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, null, Rect.sizeof, null, &currentBounds );
-    GetEventParameter( event, kEventParamOriginalBounds, typeQDRectangle, null, Rect.sizeof, null, &originalBounds );
+    GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, null, 
+      Rect.sizeof, null, &currentBounds );
+    GetEventParameter( event, kEventParamOriginalBounds, typeQDRectangle, null, 
+      Rect.sizeof, null, &originalBounds );
     int X = currentBounds.left, W = currentBounds.right-X;
     int Y = currentBounds.top, H = currentBounds.bottom-Y;
     resize_from_system = window;
@@ -1388,7 +1389,6 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
       if ( window.shown() ) 
         handleUpdateEvent( fl_xid( window ) );
     } 
-====+/
     break; }
 /+====
   case kEventWindowShown:

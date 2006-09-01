@@ -203,13 +203,22 @@ public:
   int y() {return y_;}
   int w() {return w_;}
   int h() {return h_;}
-/+=
-  void resize(int,int,int,int);
-  int damage_resize(int,int,int,int);
+
+  void resize(int X, int Y, int W, int H) {
+    x_ = X; y_ = Y; w_ = W; h_ = H;
+  }
+  
+  // this is useful for parent widgets to call to resize children:
+  int damage_resize(int X, int Y, int W, int H) {
+    if (x() == X && y() == Y && w() == W && h() == H) return 0;
+    resize(X, Y, W, H);
+    redraw();
+    return 1;
+  }
+
   void position(int X,int Y) {resize(X,Y,w_,h_);}
   void size(int W,int H) {resize(x_,y_,W,H);}
 
-=+/
   Fl_Align alignment() {return align_;}
   void alignment(ubyte a) {align_ = a;}
   Fl_Boxtype box() {return box_;}
@@ -569,21 +578,6 @@ Fl_Widget  Fl.readqueue() {
 ////////////////////////////////////////////////////////////////
 
 
-int FL_NORMAL_SIZE = 14;
-
-}
-
-void Fl_Widget.resize(int X, int Y, int W, int H) {
-  x_ = X; y_ = Y; w_ = W; h_ = H;
-}
-
-// this is useful for parent widgets to call to resize children:
-int Fl_Widget.damage_resize(int X, int Y, int W, int H) {
-  if (x() == X && y() == Y && w() == W && h() == H) return 0;
-  resize(X, Y, W, H);
-  redraw();
-  return 1;
-}
 
 extern void fl_throw_focus(Fl_Widget ); // in Fl_x.cxx
 

@@ -202,9 +202,43 @@ public:
   
     return super.handle(ev);
   }
-/+=
 
-  void resize(int,int,int,int);
+  void resize(int X,int Y,int W,int H) {
+    if (W<=0) W = 1; // OS X does not like zero width windows
+    if (H<=0) H = 1;
+    int is_a_resize = (W != w() || H != h());
+    if (X != x() || Y != y()) set_flag(FL_FORCE_POSITION);
+    else if (!is_a_resize) return;
+    if ( !(resize_from_system is this) && (!parent()) && shown()) {
+      if (is_a_resize) {
+        if (resizable()) {
+          if (W<minw) minw = W; // user request for resize takes priority
+          if (W>maxw) maxw = W; // over a previously set size_range
+          if (H<minh) minh = H;
+          if (H>maxh) maxh = H;
+          size_range(minw, minh, maxw, maxh);
+        } else {
+          size_range(W, H, W, H);
+        }
+        Rect dim; dim.left=X; dim.top=Y; dim.right=X+W; dim.bottom=Y+H;
+        SetWindowBounds(i.xid, kWindowContentRgn, &dim);
+        Rect all; all.top=-32000; all.bottom=32000; all.left=-32000; all.right=32000;
+        InvalWindowRect( i.xid, &all );    
+      } else {
+        MoveWindow(i.xid, X, Y, 0);
+      }
+    }
+    resize_from_system = null;
+    if (is_a_resize) {
+      Fl_Group.resize(X,Y,W,H);
+      if (shown()) { 
+        redraw(); 
+      }
+    } else {
+      x(X); y(Y); 
+    }
+  }
+/+=
   void border(int b);
 =+/
   void clear_border()	{set_flag(FL_NOBORDER);}

@@ -106,6 +106,7 @@ public:
         if (when() & FL_WHEN_CHANGED) do_callback();
       } else if (when() & FL_WHEN_RELEASE) do_callback();
       return 1;
+====+/
     case FL_FOCUS :
     case FL_UNFOCUS :
       if (Fl.visible_focus()) {
@@ -113,12 +114,13 @@ public:
   	// Widgets with the FL_NO_BOX boxtype need a parent to
   	// redraw, since it is responsible for redrawing the
   	// background...
-  	int X = x() > 0 ? x() - 1 : 0;
-  	int Y = y() > 0 ? y() - 1 : 0;
-  	if (window()) window()->damage(FL_DAMAGE_ALL, X, Y, w() + 2, h() + 2);
+          int X = x() > 0 ? x() - 1 : 0;
+          int Y = y() > 0 ? y() - 1 : 0;
+          if (window()) window().damage(FL_DAMAGE_ALL, X, Y, w() + 2, h() + 2);
         } else redraw();
         return 1;
       } else return 0;
+/+====
     case FL_KEYBOARD :
       if (Fl.focus() == this && Fl.event_key() == ' ' &&
           !(Fl.event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
