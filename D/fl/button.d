@@ -89,7 +89,7 @@ public:
       }
       if (when() & FL_WHEN_RELEASE) do_callback();
       return 1;
-/+===
+/+=== FL_SHORTCUT handling
     case FL_SHORTCUT:
       if (!(shortcut() ?
   	  Fl.test_shortcut(shortcut()) : test_shortcut())) return 0;
@@ -120,7 +120,7 @@ public:
         } else redraw();
         return 1;
       } else return 0;
-/+====
+/+==== FL_KEYBOARD handling
     case FL_KEYBOARD :
       if (Fl.focus() == this && Fl.event_key() == ' ' &&
           !(Fl.event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {

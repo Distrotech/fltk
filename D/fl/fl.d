@@ -87,10 +87,8 @@ public: // should be private!
   static void function() idle = null;
   static char* scheme_;
   static Fl_Image  scheme_bg_;
-/+=
-
   static int e_original_keysym; // late addition
-=+/
+
 public:
 /+=
   // API version number
@@ -255,7 +253,7 @@ public:
   static Fl_Window  grab() {return grab_;}
 /+=
   static void grab(Fl_Window );
-
+=+/
   // event information:
   static int event()		{return e_number;}
   static int event_x()	{return e_x;}
@@ -264,7 +262,9 @@ public:
   static int event_y_root()	{return e_y_root;}
   static int event_dx()	{return e_dx;}
   static int event_dy()	{return e_dy;}
+/+=
   static void get_mouse(int &,int &);
+=+/
   static int event_clicks()	{return e_clicks;}
   static void event_clicks(int i) {e_clicks = i;}
   static int event_is_click()	{return e_is_click;}
@@ -274,10 +274,13 @@ public:
   static int event_state(int i) {return e_state&i;}
   static int event_key()	{return e_keysym;}
   static int event_original_key(){return e_original_keysym;}
+/+=
   static int event_key(int);
   static int get_key(int);
+=+/
   static char* event_text() {return e_text;}
   static int event_length() {return e_length;}
+/+=
   static int compose(int &del);
 =+/
   static void compose_reset() {compose_state = 0;}
@@ -305,7 +308,6 @@ public:
       if (grab() || modal() && window != modal()) return 0;
       wi.do_callback();
       return 1;
-/+====  
   
     case FL_SHOW:
       wi.show(); // this calls Fl_Widget.show(), not Fl_Window.show()
@@ -314,7 +316,7 @@ public:
     case FL_HIDE:
       wi.hide(); // this calls Fl_Widget.hide(), not Fl_Window.hide()
       return 1;
-====+/  
+
     case FL_PUSH:
       if (grab()) wi = grab();
       else if (modal() && !(wi is modal())) return 0;
@@ -324,7 +326,7 @@ public:
       // raise windows that are clicked on:
       window.show();
       return 1;
-/+====
+/+==== DND handling
     case FL_DND_ENTER:
     case FL_DND_DRAG:
       dnd_flag = 1;
@@ -380,7 +382,7 @@ public:
       fl_fix_focus();
       return 1;
   
-/+====  
+/+====  KEYBOARD handling
     case FL_KEYBOARD:
   
       Fl_Tooltip.enter((Fl_Widget )0);
@@ -419,7 +421,7 @@ public:
       }
   
       return 0;
-  
+ ====+/ 
     case FL_ENTER:
       fl_xmousewin = window;
       fl_fix_focus();
@@ -428,10 +430,10 @@ public:
   
     case FL_LEAVE:
       if (!pushed_) {
-        belowmouse(0);
-        Fl_Tooltip.enter(0);
+        belowmouse(null);
+        Fl_Tooltip.enter(null);
       }
-      if (window == fl_xmousewin) {fl_xmousewin = 0; fl_fix_focus();}
+      if (window is fl_xmousewin) {fl_xmousewin = null; fl_fix_focus();}
       return 1;
   
     case FL_MOUSEWHEEL:
@@ -442,7 +444,7 @@ public:
         if (send(FL_MOUSEWHEEL, grab(), window)) return 1;
       }
       if (send(FL_MOUSEWHEEL, window, window)) return 1;
-====+/
+
     default:
       break;
     }
@@ -1009,17 +1011,17 @@ void Fl.redraw() {
 }
 
 }
-
+=+/
 ////////////////////////////////////////////////////////////////
 // Event handlers:
 
 struct handler_link {
-  int (*handle)(int);
+  int function(int) handle;
   handler_link *next;
 };
 
-static handler_link *handlers = 0;
-
+static handler_link* handlers = null;
+/+=
 void Fl.add_handler(int (*ha)(int)) {
   handler_link *l = new handler_link;
   l.handle = ha;
@@ -1046,10 +1048,8 @@ void Fl.remove_handler(int (*ha)(int)) {
 int function(int) fl_local_grab = null; // used by fl_dnd.cxx
 
 static int send_handlers(int e) {
-/+===
   for (handler_link *hl = handlers; hl; hl = hl.next)
     if (hl.handle(e)) return 1;
-===+/
   return 0;
 }
 

@@ -101,7 +101,7 @@ int fl_return_arrow(int x,int y,int w,int h);
 =+/
 // provided for back compatability:
 int fl_draw_symbol(char *label,int x,int y,int w,int h,Fl_Color col) {  
-/+===
+/+=== symbols drawing
   char *p = label;
   if (*p++ != '@') return 0;
   fl_init_symbols();

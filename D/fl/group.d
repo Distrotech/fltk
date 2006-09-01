@@ -38,7 +38,7 @@ class Fl_Group : Fl_Widget {
 private:
 
   Fl_Widget* array_;
-  Fl_Widget  savedfocus_;
+  Fl_Widget savedfocus_;
   Fl_Widget resizable_;
   int children_;
   short* sizes_; // remembered initial sizes of children
@@ -163,18 +163,18 @@ public:
     Fl_Widget o;
   
     switch (event) {
- /+==== 
+
     case FL_FOCUS:
       switch (navkey()) {
       default:
         if (savedfocus_ && savedfocus_.take_focus()) return 1;
       case FL_Right:
       case FL_Down:
-        for (i = children(); i--;) if ((*a++)->take_focus()) return 1;
+        for (i = children(); i--;) if ((*a++).take_focus()) return 1;
         break;
       case FL_Left:
       case FL_Up:
-        for (i = children(); i--;) if (a[i]->take_focus()) return 1;
+        for (i = children(); i--;) if (a[i].take_focus()) return 1;
         break;
       }
       return 0;
@@ -182,7 +182,7 @@ public:
     case FL_UNFOCUS:
       savedfocus_ = fl_oldfocus;
       return 0;
-  
+  /+====  KEYBOARD and SHORTCUT handling
     case FL_KEYBOARD:
       return navigation(navkey());
   
@@ -215,7 +215,7 @@ public:
       }
       Fl.belowmouse(this);
       return 1;
-/+====  
+/+====  DND handling
     case FL_DND_ENTER:
     case FL_DND_DRAG:
       for (i = children(); i--;) {
@@ -258,7 +258,7 @@ public:
         }
       }
       return 0;
-/+====  
+
     case FL_MOUSEWHEEL:
       for (i = children(); i--;) {
         o = a[i];
@@ -271,7 +271,7 @@ public:
   	return 1;
       }
       return 0;
-  
+
     case FL_DEACTIVATE:
     case FL_ACTIVATE:
       for (i = children(); i--;) {
@@ -279,7 +279,7 @@ public:
         if (o.active()) o.handle(event);
       }
       return 1;
- ====+/ 
+
     case FL_SHOW:
     case FL_HIDE:
       for (i = children(); i--;) {
@@ -490,10 +490,10 @@ public:
     sizes_ = null;
   }
 
-/+=
   // back compatability function:
-  void focus(Fl_Widget  o) {o.take_focus();}
-  Fl_Widget    _ddfdesign_kludge() {return resizable_;}
+  void focus(Fl_Widget o) {o.take_focus();}
+  Fl_Widget _ddfdesign_kludge() {return resizable_;}
+/+=
   void forms_end();
 =+/
 }
@@ -593,6 +593,7 @@ static int send(Fl_Widget  o, int event) {
 /+=
 // translate the current keystroke into up/down/left/right for navigation:
 #define ctrl(x) (x^0x40)
+=+/
 static int navkey() {
   switch (Fl.event_key()) {
   case 0: // not an FL_KEYBOARD/FL_SHORTCUT event
@@ -609,10 +610,12 @@ static int navkey() {
     return FL_Up;
   case FL_Down:
     return FL_Down;
+  default:
   }
   return 0;
 }
 
+/+=
 //void Fl_Group.focus(Fl_Widget  o) {Fl.focus(o); o.handle(FL_FOCUS);}
 
 #if 0

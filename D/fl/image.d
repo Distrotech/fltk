@@ -78,7 +78,7 @@ public:
   void label(Fl_Menu_Item*m);
 =+/
   void draw(int X, int Y, int W, int H, int cx=0, int cy=0) {
-    /+=== ===+/
+    /+=== image drawing ===+/
   }
   void draw(int X, int Y) {draw(X, Y, w(), h(), 0, 0);}
 /+=

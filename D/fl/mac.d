@@ -41,16 +41,6 @@ private import fl.tooltip;
 private import std.stdio;
 private import std.c.math;
 
-/+=
-// Standard MacOS Carbon API includes...
-#include <Carbon/Carbon.h>
-
-// Now make some fixes to the headers...
-#undef check			// Dunno where this comes from...
-
-// Some random X equivalents
-alias WindowPtr Window;
-=+/
 struct XPoint { int x, y; };
 struct XRectangle {int x, y, width, height;};
 alias RgnHandle Fl_Region;
@@ -68,10 +58,8 @@ void XDestroyRegion(Fl_Region r) {
   DisposeRgn(r);
 }
 
-/+=
 // This object contains all mac-specific stuff about a window:
 // WARNING: this object is highly subject to change!
-=+/
 class Fl_X {
 
 public:
@@ -336,15 +324,12 @@ public:
       Fl_X.first = x;
       { // Install Carbon Event handlers 
         OSStatus ret;
-/+===
         // will not be disposed by Carbon...
-        EventHandlerUPP mousewheelHandler = NewEventHandlerUPP( carbonMousewheelHandler );
-        static EventTypeSpec mousewheelEvents[] = {
-          { kEventClassMouse, kEventMouseWheelMoved } };
-        ret = InstallWindowEventHandler( x.xid, mousewheelHandler,
-  	        (int)(sizeof(mousewheelEvents)/sizeof(mousewheelEvents[0])),
-  		mousewheelEvents, w, 0L );
-===+/
+        EventHandlerUPP mousewheelHandler = NewEventHandlerUPP( &carbonMousewheelHandler );
+        static EventTypeSpec mousewheelEvents[] = [
+          { kEventClassMouse, kEventMouseWheelMoved } ];
+        ret = InstallWindowEventHandler( x.xid, mousewheelHandler, mousewheelEvents.length,
+  		mousewheelEvents, w, null );
         // will not be disposed by Carbon...
         EventHandlerUPP mouseHandler = NewEventHandlerUPP( &carbonMouseHandler );
         static EventTypeSpec mouseEvents[] = [
@@ -353,7 +338,7 @@ public:
           { kEventClassMouse, kEventMouseMoved },
           { kEventClassMouse, kEventMouseDragged } ];
         ret = InstallWindowEventHandler( x.xid, mouseHandler, 4, mouseEvents, w, null );
-/+==
+/+=== Carbon Keyboard handler
         // will not be disposed by Carbon...
         EventHandlerUPP keyboardHandler = NewEventHandlerUPP( carbonKeyboardHandler );
         static EventTypeSpec keyboardEvents[] = {
@@ -377,7 +362,7 @@ public:
           { kEventClassWindow, kEventWindowBoundsChanging },
           { kEventClassWindow, kEventWindowBoundsChanged } ];
         ret = InstallWindowEventHandler( x.xid, windowHandler, windowEvents.length, windowEvents, w, null );
-/+===
+/+=== DND handling
         ret = InstallTrackingHandler( dndTrackingHandler, x.xid, w );
         ret = InstallReceiveHandler( dndReceiveHandler, x.xid, w );
 ===+/
@@ -690,6 +675,7 @@ static ushort macKeyLookUp[128] =
     0, FL_Pause, FL_Help, FL_Home, FL_Page_Up, FL_Delete, FL_F+4, FL_End,
     FL_F+2, FL_Page_Down, FL_F+1, FL_Left, FL_Right, FL_Down, FL_Up, 0/*FL_Power*/,
 };
+=+/
 
 /**
  * convert the current mouse chord into the FLTK modifier state
@@ -707,7 +693,7 @@ static void mods_to_e_state( UInt32 mods )
   //printf( "State 0x%08x (%04x)\n", Fl.e_state, mods );
 }
 
-
+/+=
 /**
  * convert the current mouse chord into the FLTK keysym
  */
@@ -1014,7 +1000,7 @@ int fl_ready()
 OSStatus HandleMenu( HICommand *cmd )
 {
   return eventNotHandledErr;
-/+==
+/+== Apple Menu Bar event handling
   OSStatus ret = eventNotHandledErr;
   // attributes, commandIDm menu.menuRef, menu.menuItemIndex
   UInt32 ref;
@@ -1390,7 +1376,6 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
         handleUpdateEvent( fl_xid( window ) );
     } 
     break; }
-/+====
   case kEventWindowShown:
     if ( !window.parent() )
     {
@@ -1407,7 +1392,7 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
     if ( !window.parent() ) Fl.handle( FL_HIDE, window);
     break;
   case kEventWindowActivated:
-    if ( window!=activeWindow ) 
+    if (!(window is activeWindow)) 
     {
       GetWindowClass( fl_xid( window ), &winClass );
       if ( winClass != kHelpWindowClass ) {	// help windows can't get the focus!
@@ -1417,27 +1402,24 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
     }
     break;
   case kEventWindowDeactivated:
-    if ( window==activeWindow ) 
+    if ( window is activeWindow ) 
     {
       Fl.handle( FL_UNFOCUS, window);
-      activeWindow = 0;
+      activeWindow = null;
     }
     break;
-====+/
   case kEventWindowClose:
     Fl.handle( FL_CLOSE, window ); // this might or might not close the window
     // if there are no more windows, send a high-level quit event
     if (!Fl_X.first) QuitAppleEventHandler( null, null, 0 );
     ret = noErr; // returning noErr tells Carbon to stop following up on this event
     break;
-/+====
   case kEventWindowCollapsed:
     window.clear_visible();
     break;
   case kEventWindowExpanded:
     window.set_visible();
     break;
-====+/
   default:
   }
 
@@ -1446,12 +1428,11 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
   return ret;
 }
 
-/+=
 /**
  * Carbon Mousewheel handler
  * This needs to be linked into all new window event handlers
  */
-static pascal OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler, EventRef event, void *userData )
+static OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler, EventRef event, void *userData )
 {
   // Handle the new "MightyMouse" mouse wheel events. Please, someone explain
   // to me why Apple changed the API on this even though the current API
@@ -1459,13 +1440,14 @@ static pascal OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler,
   fl_lock_function();
 
   fl_os_event = event;
-  Fl_Window  window = (Fl_Window )userData;
+  Fl_Window window = cast(Fl_Window)userData;
 
   EventMouseWheelAxis axis;
-  GetEventParameter( event, kEventParamMouseWheelAxis, typeMouseWheelAxis, NULL, sizeof(EventMouseWheelAxis), NULL, &axis );
+  GetEventParameter( event, kEventParamMouseWheelAxis, typeMouseWheelAxis, null, 
+    EventMouseWheelAxis.sizeof, null, &axis );
   int delta;
-  GetEventParameter( event, kEventParamMouseWheelDelta, typeLongInteger, NULL, sizeof(int), NULL, &delta );
-//  fprintf(stderr, "axis=%d, delta=%d\n", axis, delta);
+  GetEventParameter( event, kEventParamMouseWheelDelta, typeLongInteger, null, 
+    int.sizeof, null, &delta );
   if ( axis == kEventMouseWheelAxisX ) {
     Fl.e_dx = -delta;
     Fl.e_dy = 0;
@@ -1476,7 +1458,6 @@ static pascal OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler,
     if ( Fl.e_dy) Fl.handle( FL_MOUSEWHEEL, window );
   } else {
     fl_unlock_function();
-
     return eventNotHandledErr;
   }
 
@@ -1484,7 +1465,6 @@ static pascal OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler,
   
   return noErr;
 }
-=+/
 
 /**
  * convert the current mouse chord into the FLTK modifier state
