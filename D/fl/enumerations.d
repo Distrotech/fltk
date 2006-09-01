@@ -29,7 +29,6 @@ module fl.enumerations;
 
 private import fl.color;
 
-/+=
 //
 // The FLTK version number; this is changed slightly from the beta versions
 // because the old "double" definition would not allow for conditional
@@ -47,11 +46,9 @@ private import fl.color;
 const int FL_MAJOR_VERSION = 1; 
 const int FL_MINOR_VERSION = 1; 
 const int FL_PATCH_VERSION = 8; 
-const int FL_VERSION = ((double)FL_MAJOR_VERSION + \; 
-				 (double)FL_MINOR_VERSION * 0.01 + \
-				 (double)FL_PATCH_VERSION * 0.0001)
-
-=+/
+const double FL_VERSION = FL_MAJOR_VERSION +
+			FL_MINOR_VERSION * 0.01 +
+			FL_PATCH_VERSION * 0.0001;
 
 alias int Fl_Event;
 const Fl_Event FL_NO_EVENT	= 0;
@@ -404,8 +401,8 @@ const int inactive = fl_inactive;
 } // FLTK_1_0_COMPAT
 
 }
+=+/
 
 //
-// End of "$Id: Enumerations.H 5271 2006-07-27 19:26:11Z mike $".
+// End of "$Id: enumerations.d 5271 2006-07-27 19:26:11Z mike $".
 //
-    End of automatic import -+/

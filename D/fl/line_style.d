@@ -34,6 +34,7 @@ private import fl.flstring;
 
 version (__APPLE__) {
   private import std.c.osx.carbon.carbon;
+  private import std.c.osx.qd.quickdraw;
 
   float fl_quartz_line_width_ = 1.0f;
   static CGLineCap fl_quartz_line_cap_ = CGLineCap.kCGLineCapButt;
@@ -74,11 +75,11 @@ void fl_line_style(int style, int width=0, char* dashes=null) {
     DeleteObject(oldpen);
     DeleteObject(fl_current_xmap.pen);
     fl_current_xmap.pen = newpen;
-  } else version (__APPLE_QUARTZ__) {
-    static CGLineCap Cap[4] = [ kCGLineCapButt, kCGLineCapButt, 
-                                     kCGLineCapRound, kCGLineCapSquare ];
-    static CGLineJoin Join[4] = [ kCGLineJoinMiter, kCGLineJoinMiter, 
-                                      kCGLineJoinRound, kCGLineJoinBevel ];
+  } else version (__APPLE__) {
+    static CGLineCap Cap[4] = [ CGLineCap.kCGLineCapButt, CGLineCap.kCGLineCapButt, 
+                                     CGLineCap.kCGLineCapRound, CGLineCap.kCGLineCapSquare ];
+    static CGLineJoin Join[4] = [ CGLineJoin.kCGLineJoinMiter, CGLineJoin.kCGLineJoinMiter, 
+                                      CGLineJoin.kCGLineJoinRound, CGLineJoin.kCGLineJoinBevel ];
     if (width<1) width = 1;
     fl_quartz_line_width_ = cast(float)width; 
     fl_quartz_line_cap_ = Cap[(style>>8)&3];
@@ -108,14 +109,13 @@ void fl_line_style(int style, int width=0, char* dashes=null) {
       case FL_DASHDOT:    *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; break;
       case FL_DASHDOTDOT: *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; *p++ = dot; *p++ = gap; break;
       }
-      fl_quartz_line_pattern_size = p-pattern;
+      fl_quartz_line_pattern_size = p-pattern.ptr;
       fl_quartz_line_pattern = pattern;
     } else {
-      fl_quartz_line_pattern = 0; fl_quartz_line_pattern_size = 0;
+      fl_quartz_line_pattern = null; fl_quartz_line_pattern_size = 0;
     }
     fl_quartz_restore_line_style_();
   } else {
-/+=
     int ndashes = dashes ? strlen(dashes) : 0;
     // emulate the WIN32 dash patterns on X
     char buf[7];
@@ -146,7 +146,6 @@ void fl_line_style(int style, int width=0, char* dashes=null) {
   		     ndashes ? LineOnOffDash : LineSolid,
   		     Cap[(style>>8)&3], Join[(style>>12)&3]);
     if (ndashes) XSetDashes(fl_display, fl_gc, 0, dashes, ndashes);
-=+/
   }
 }
 

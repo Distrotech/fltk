@@ -68,7 +68,7 @@ public: // should be private!
   static int e_clicks;
   static int e_is_click;
   static int e_keysym;
-  static char* e_text;
+  static char* e_text = "\0";;
   static int e_length;
   static Fl_Widget belowmouse_;
   static Fl_Widget pushed_;
@@ -78,8 +78,8 @@ public: // should be private!
   static Fl_Window  modal_;
   static Fl_Window  grab_;
   static int compose_state;
-  static int visible_focus_;
-  static int dnd_text_ops_;
+  static int visible_focus_ = 1;
+  static int dnd_text_ops_ = 1;
 
   static void damage(int d) { damage_ = d; }
   static void function() idle = null;
@@ -88,10 +88,12 @@ public: // should be private!
   static int e_original_keysym; // late addition
 
 public:
-/+=
   // API version number
-  static double version();
+  static double get_version() {
+    return FL_VERSION;
+  }
 
+/+=
   // argument parsers:
   static int arg(int, char**, int&);
   static int args(int, char**, int&, int (*)(int,char**,int&) = 0);
@@ -214,9 +216,11 @@ public:
   static void remove_idle(void (*cb)(void*), void* = 0);
 =+/
   static int damage() {return damage_;}
-/+=
-  static void redraw();
-=+/
+
+  static void redraw() {
+    for (Fl_X i = Fl_X.first; i; i = i.next) i.w.redraw();
+  }
+
   static void flush() {
     if (damage()) {
       damage_ = 0;
@@ -242,14 +246,17 @@ public:
   static void function(char*, ...) warning = &empty;
   static void function(char*, ...) error = &empty;
   static void function(char*, ...) fatal = &empty;
+
   static Fl_Window first_window() {
     Fl_X i = Fl_X.first;
     return i ? i.w : null;
   }
 
-/+=
-  static void first_window(Fl_Window );
-=+/
+  static void first_window(Fl_Window window) {
+    if (!window || !window.shown()) return;
+    fl_find(fl_xid(window));
+  }
+
   static Fl_Window next_window(Fl_Window window) {
     Fl_X i = Fl_X.i(window).next;
     return i ? i.w : null;
@@ -419,10 +426,9 @@ public:
       fl_fix_focus();
       return 1;
   
-/+====  KEYBOARD handling
     case FL_KEYBOARD:
   
-      Fl_Tooltip.enter((Fl_Widget )0);
+      Fl_Tooltip.enter(null);
   
       fl_xfocus = window; // this should not happen!  But maybe it does:
   
@@ -435,7 +441,7 @@ public:
   
       // and then try a shortcut with the case of the text swapped, by
       // changing the text and falling through to FL_SHORTCUT case:
-      {ubyte* c = (ubyte*)event_text(); // cast away const
+      {ubyte* c = cast(ubyte*)event_text(); // cast away const
       if (!isalpha(*c)) return 0;
       *c = isupper(*c) ? tolower(*c) : toupper(*c);}
       e_number = e = FL_SHORTCUT;
@@ -458,7 +464,7 @@ public:
       }
   
       return 0;
- ====+/ 
+
     case FL_ENTER:
       fl_xmousewin = window;
       fl_fix_focus();
@@ -546,9 +552,11 @@ public:
   static void copy(char* stuff, int len, int clipboard = 0);
   static void paste(Fl_Widget  receiver, int clipboard /*=0*/);
   static int dnd();
+=+/
   // These are for back-compatability only:
-  static Fl_Widget  selection_owner() {return selection_owner_;}
-  static void selection_owner(Fl_Widget );
+  static Fl_Widget selection_owner() {return selection_owner_;}
+  static void selection_owner(Fl_Widget owner) {selection_owner_ = owner;}
+/+=
   static void selection(Fl_Widget  owner, char*, int len);
   static void paste(Fl_Widget  receiver);
 =+/
@@ -773,8 +781,6 @@ int		Fl.damage_,
                 Fl.e_original_keysym;
 char		*Fl.e_text = (char *)"";
 int		Fl.e_length;
-int		Fl.visible_focus_ = 1,
-		Fl.dnd_text_ops_ = 1;
 
 =+/
 Fl_Window  fl_xfocus;	// which window X thinks has focus
@@ -787,10 +793,6 @@ Fl_Window  Fl.modal_;	// topmost modal() window
 // 'Fl.version()' - Return the API version number...
 //
 
-double
-Fl.version() {
-  return FL_VERSION;
-}
 
 
 //
@@ -1051,18 +1053,6 @@ Fl_Window fl_find(WindowRef xid) {
   return null;
 }
 
-/+=
-void Fl.first_window(Fl_Window  window) {
-  if (!window || !window.shown()) return;
-  fl_find(fl_xid(window));
-}
-
-void Fl.redraw() {
-  for (Fl_X  i = Fl_X.first; i; i = i.next) i.w->redraw();
-}
-
-}
-=+/
 ////////////////////////////////////////////////////////////////
 // Event handlers:
 
@@ -1110,10 +1100,6 @@ Fl_Widget fl_oldfocus; // kludge for Fl_Group...
 static char dnd_flag = 0; // make 'belowmouse' send DND_LEAVE instead of LEAVE
 
 /+=
-
-static void nothing(Fl_Widget  ) {}
-void (*Fl_Tooltip.enter)(Fl_Widget  ) = nothing;
-void (*Fl_Tooltip.exit)(Fl_Widget  ) = nothing;
 
 // Update modal(), focus() and other state according to system state,
 // and send FL_ENTER, FL_LEAVE, FL_FOCUS, and/or FL_UNFOCUS events.
@@ -1169,21 +1155,7 @@ void fl_fix_focus() {
   }
 }
 
-/+=
-version (!WIN32) {
-extern Fl_Widget  fl_selection_requestor; // from Fl_x.cxx
-}
-
-// This function is called by ~Fl_Widget() and by Fl_Widget.deactivate
-// and by Fl_Widget.hide().  It indicates that the widget does not want
-// to receive any more events, and also removes all global variables that
-// point at the widget.
-// I changed this from the 1.0.1 behavior, the older version could send
-// FL_LEAVE or FL_UNFOCUS events to the widget.  This appears to not be
-// desirable behavior and caused flwm to crash.
-=+/
-
-void fl_throw_focus(Fl_Widget  o) {
+void fl_throw_focus(Fl_Widget o) {
   if (o.contains(Fl.pushed())) Fl.pushed_ = null;
   version (WIN32) {
   } else {
@@ -1198,11 +1170,6 @@ void fl_throw_focus(Fl_Widget  o) {
   fl_fix_focus();
 }
 
-////////////////////////////////////////////////////////////////
-
-// Call to.handle but first replace the mouse x/y with the correct
-// values to account for nested X windows. 'window' is the outermost
-// window the event was posted to by X:
 static int send(int event, Fl_Widget to, Fl_Window window) {
   int dx, dy;
   int old_event = Fl.e_number;
@@ -1225,71 +1192,8 @@ static int send(int event, Fl_Widget to, Fl_Window window) {
 
 /+=
 ////////////////////////////////////////////////////////////////
-// hide() destroys the X window, it does not do unmap!
-
-#if !defined(WIN32) && USE_XFT
-extern void fl_destroy_xft_draw(Window);
-}
-
-
-// FL_SHOW and FL_HIDE are called whenever the visibility of this widget
-// or any parent changes.  We must correctly map/unmap the system's window.
-
-// For top-level windows it is assummed the window has already been
-// mapped or unmapped!!!  This is because this should only happen when
-// Fl_Window.show() or Fl_Window.hide() is called, or in response to
-// iconize/deiconize events from the system.
-
-int Fl_Window.handle(int ev)
-{
-  if (parent()) {
-    switch (ev) {
-    case FL_SHOW:
-      if (!shown()) show();
-      else {
-version (__APPLE_QD__) {
-        MacMapWindow(this, fl_xid(this));
-} else version (__APPLE_QUARTZ__) {
-        MacMapWindow(this, fl_xid(this));
-} else {
-        XMapWindow(fl_display, fl_xid(this)); // extra map calls are harmless
-} // __APPLE__
-      }
-      break;
-    case FL_HIDE:
-      if (shown()) {
-	// Find what really turned invisible, if is was a parent window
-	// we do nothing.  We need to avoid unnecessary unmap calls
-	// because they cause the display to blink when the parent is
-	// remapped.  However if this or any intermediate non-window
-	// widget has really had hide() called directly on it, we must
-	// unmap because when the parent window is remapped we don't
-	// want to reappear.
-	if (visible()) {
-	 Fl_Widget  p = parent(); for (;p.visible();p = p.parent()) {}
-	 if (p.type() >= FL_WINDOW) break; // don't do the unmap
-	}
-version (__APPLE_QD__) {
-	MacUnmapWindow(this, fl_xid(this));
-} else version (__APPLE_QUARTZ__) {
-	MacUnmapWindow(this, fl_xid(this));
-} else {
-	XUnmapWindow(fl_display, fl_xid(this));
-} // __APPLE__
-      }
-      break;
-    }
-//  } else if (ev == FL_FOCUS || ev == FL_UNFOCUS) {
-//    Fl_Tooltip.exit(Fl_Tooltip.current());
-  }
-
-  return Fl_Group.handle(ev);
-}
-
-////////////////////////////////////////////////////////////////
 // Back compatability cut & paste functions for fltk 1.1 only:
 
-void Fl.selection_owner(Fl_Widget  owner) {selection_owner_ = owner;}
 
 void Fl.selection(Fl_Widget  owner, char* text, int len) {
   selection_owner_ = &owner;
@@ -1299,22 +1203,6 @@ void Fl.selection(Fl_Widget  owner, char* text, int len) {
 void Fl.paste(Fl_Widget  receiver) {
   Fl.paste(receiver, 0);
 }
-
-////////////////////////////////////////////////////////////////
-
-private import fl.draw;
-
-
-version (WIN32) {
-#  include "Fl_win32.cxx"
-} else version (__APPLE__) {
-#  include "Fl_mac.cxx"
-}
-
-//
-// The following methods allow callbacks to schedule the deletion of
-// widgets at "safe" times.
-//
 =+/
 
 static int num_dwidgets = 0, alloc_dwidgets = 0;
@@ -1341,10 +1229,6 @@ Fl.delete_widget(Fl_Widget  wi) {
   dwidgets[num_dwidgets] = wi;
   num_dwidgets ++;
 }
-
-
-}
-
 
 void Fl.watch_widget_pointer(Fl_Widget   w) 
 {

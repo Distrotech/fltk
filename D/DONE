@@ -5,5 +5,7 @@ fl/box.d
 fl/line_style.d
 fl/widget.d
 fl/button.d
+fl/group.d
+
 
 

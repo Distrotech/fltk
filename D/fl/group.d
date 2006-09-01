@@ -31,6 +31,7 @@ public import fl.widget;
 private import fl.enumerations;
 private import fl.fl;
 private import fl.draw;
+private import fl.forms_compatability;
 private import std.c.stdlib;
 
 
@@ -42,16 +43,53 @@ private:
   Fl_Widget resizable_;
   int children_;
   short* sizes_; // remembered initial sizes of children
-/+=
-  int navigation(int);
-=+/
+
+  int navigation(int key) {
+    if (children() <= 1) return 0;
+    int i;
+    for (i = 0; ; i++) {
+      if (i >= children_) return 0;
+      if (array_[i].contains(Fl.focus())) break;
+    }
+    Fl_Widget previous = array_[i];
+  
+    for (;;) {
+      switch (key) {
+      case FL_Right:
+      case FL_Down:
+        i++;
+        if (i >= children_) {
+  	if (parent()) return 0;
+  	i = 0;
+        }
+        break;
+      case FL_Left:
+      case FL_Up:
+        if (i) i--;
+        else {
+  	if (parent()) return 0;
+  	i = children_-1;
+        }
+        break;
+      default:
+        return 0;
+      }
+      Fl_Widget o = array_[i];
+      if (o == previous) return 0;
+      switch (key) {
+      case FL_Down:
+      case FL_Up:
+        // for up/down, the widgets have to overlap horizontally:
+        if (o.x() >= previous.x()+previous.w() ||
+  	  o.x()+o.w() <= previous.x()) continue;
+      default:
+      }
+      if (o.take_focus()) return 1;
+    }
+  }
+
   static Fl_Group current_ = null;
-/+=
- 
-  // unimplemented copy ctor and assignment operator
-  Fl_Group(Fl_Group );
-  Fl_Group  operator=(Fl_Group );
-=+/
+
 protected:
   void draw() {
     if (damage() & ~FL_DAMAGE_CHILD) { // redraw the entire thing:
@@ -182,7 +220,7 @@ public:
     case FL_UNFOCUS:
       savedfocus_ = fl_oldfocus;
       return 0;
-  /+====  KEYBOARD and SHORTCUT handling
+
     case FL_KEYBOARD:
       return navigation(navkey());
   
@@ -199,7 +237,7 @@ public:
       }
       if ((Fl.event_key() == FL_Enter || Fl.event_key() == FL_KP_Enter)) return navigation(FL_Down);
       return 0;
-====+/  
+
     case FL_ENTER:
     case FL_MOVE:
       for (i = children(); i--;) {
@@ -215,7 +253,7 @@ public:
       }
       Fl.belowmouse(this);
       return 1;
-/+====  DND handling
+
     case FL_DND_ENTER:
     case FL_DND_DRAG:
       for (i = children(); i--;) {
@@ -231,7 +269,7 @@ public:
       }
       Fl.belowmouse(this);
       return 0;
-====+/  
+
     case FL_PUSH:
       for (i = children(); i--;) {
         o = a[i];
@@ -442,9 +480,8 @@ public:
     init_sizes();
   }
 
-/+=
   void insert(Fl_Widget o, Fl_Widget before) {insert(o,find(before));}
-=+/
+
   void remove(Fl_Widget  o) {
     if (!children_) return;
     int i = find(o);
@@ -482,9 +519,8 @@ public:
 
   void resizable(Fl_Widget o) {resizable_ = o;}
   Fl_Widget resizable() {return resizable_;}
-/+=
-  void add_resizable(Fl_Widget  o) {resizable_ = &o; add(o);}
-=+/
+  void add_resizable(Fl_Widget o) {resizable_ = o; add(o);}
+
   void init_sizes() {
     delete sizes_; 
     sizes_ = null;
@@ -493,77 +529,71 @@ public:
   // back compatability function:
   void focus(Fl_Widget o) {o.take_focus();}
   Fl_Widget _ddfdesign_kludge() {return resizable_;}
-/+=
-  void forms_end();
-=+/
+
+  void forms_end() {
+    // set the dimensions of a group to surround contents
+    if (children() && !w()) {
+      Fl_Widget* a = array();
+      Fl_Widget o = *a++;
+      int rx = o.x();
+      int ry = o.y();
+      int rw = rx+o.w();
+      int rh = ry+o.h();
+      for (int i=children_-1; i--;) {
+        o = *a++;
+        if (o.x() < rx) rx = o.x();
+        if (o.y() < ry) ry = o.y();
+        if (o.x()+o.w() > rw) rw = o.x()+o.w();
+        if (o.y()+o.h() > rh) rh = o.y()+o.h();
+      }
+      x(rx);
+      y(ry);
+      w(rw-rx);
+      h(rh-ry);
+    }
+    // flip all the children's coordinate systems:
+    if (fl_flip) {
+      Fl_Widget o = (type()>=FL_WINDOW) ? this : window();
+      int Y = o.h();
+      Fl_Widget* a = array();
+      for (int i=children(); i--;) {
+        Fl_Widget ow = *a++;
+        int newy = Y-ow.y()-ow.h();
+        ow.y(newy);
+      }
+    }
+    end();
+  }
 }
 
-/+=
 // dummy class used to end child groups in constructors for complex
 // subclasses of Fl_Group:
 class Fl_End {
 public:
-  Fl_End() {Fl_Group.current()->end();}
-};
-
+  this() {Fl_Group.current().end();}
 }
 
-//
-// End of "$Id: group.d 4421 2005-07-15 09:34:53Z matt $".
-//
-    End of automatic import -+/
-/+- This file was imported from C++ using a script
-//
-// "$Id: group.d 5190 2006-06-09 16:16:34Z mike $"
-//
-// Group widget for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
+static int navkey() {
+  switch (Fl.event_key()) {
+  case 0: // not an FL_KEYBOARD/FL_SHORTCUT event
+    break;
+  case FL_Tab:
+    if (!Fl.event_state(FL_SHIFT)) return FL_Right;
+  case 0xfe20: // XK_ISO_Left_Tab
+    return FL_Left;
+  case FL_Right:
+    return FL_Right;
+  case FL_Left:
+    return FL_Left;
+  case FL_Up:
+    return FL_Up;
+  case FL_Down:
+    return FL_Down;
+  default:
+  }
+  return 0;
+}
 
-// The Fl_Group is the only defined container type in FLTK.
-
-// Fl_Window itself is a subclass of this, and most of the event
-// handling is designed so windows themselves work correctly.
-
-#include <stdio.h>
-#include <FL/Fl.H>
-private import fl.group;
-private import fl.window;
-private import fl.draw;
-#include <stdlib.h>
-
-Fl_Group  Fl_Group.current_;
-
-
-
-// Metrowerks CodeWarrior and others can't export the static
-// class member: current_, so these methods can't be inlined...
-
-extern Fl_Widget  fl_oldfocus; // set by Fl.focus
-
-// For back-compatability, we must adjust all events sent to child
-// windows so they are relative to that window.
-=+/
 static int send(Fl_Widget  o, int event) {
   if (o.type() < FL_WINDOW) return o.handle(event);
   switch ( event )
@@ -590,109 +620,7 @@ static int send(Fl_Widget  o, int event) {
   }
   return ret;
 }
-/+=
-// translate the current keystroke into up/down/left/right for navigation:
-#define ctrl(x) (x^0x40)
-=+/
-static int navkey() {
-  switch (Fl.event_key()) {
-  case 0: // not an FL_KEYBOARD/FL_SHORTCUT event
-    break;
-  case FL_Tab:
-    if (!Fl.event_state(FL_SHIFT)) return FL_Right;
-  case 0xfe20: // XK_ISO_Left_Tab
-    return FL_Left;
-  case FL_Right:
-    return FL_Right;
-  case FL_Left:
-    return FL_Left;
-  case FL_Up:
-    return FL_Up;
-  case FL_Down:
-    return FL_Down;
-  default:
-  }
-  return 0;
-}
-
-/+=
-//void Fl_Group.focus(Fl_Widget  o) {Fl.focus(o); o.handle(FL_FOCUS);}
-
-#if 0
-const char *nameof(Fl_Widget  o) {
-  if (!o) return "NULL";
-  if (!o.label()) return "<no label>";
-  return o.label();
-}
-}
-
-// try to move the focus in response to a keystroke:
-int Fl_Group.navigation(int key) {
-  if (children() <= 1) return 0;
-  int i;
-  for (i = 0; ; i++) {
-    if (i >= children_) return 0;
-    if (array_[i]->contains(Fl.focus())) break;
-  }
-  Fl_Widget  previous = array_[i];
-
-  for (;;) {
-    switch (key) {
-    case FL_Right:
-    case FL_Down:
-      i++;
-      if (i >= children_) {
-	if (parent()) return 0;
-	i = 0;
-      }
-      break;
-    case FL_Left:
-    case FL_Up:
-      if (i) i--;
-      else {
-	if (parent()) return 0;
-	i = children_-1;
-      }
-      break;
-    default:
-      return 0;
-    }
-    Fl_Widget  o = array_[i];
-    if (o == previous) return 0;
-    switch (key) {
-    case FL_Down:
-    case FL_Up:
-      // for up/down, the widgets have to overlap horizontally:
-      if (o.x() >= previous.x()+previous.w() ||
-	  o.x()+o.w() <= previous.x()) continue;
-    }
-    if (o.take_focus()) return 1;
-  }
-}
-
-////////////////////////////////////////////////////////////////
-
-
-
-
-////////////////////////////////////////////////////////////////
-
-// Rather lame kludge here, I need to detect windows and ignore the
-// changes to X,Y, since all children are relative to X,Y.  That
-// is why I check type():
-
-// sizes array stores the initial positions of widgets as
-// left,right,top,bottom quads.  The first quad is the group, the
-// second is the resizable (clipped to the group), and the
-// rest are the children.  This is a convienent order for the
-// algorithim.  If you change this be sure to fix Fl_Tile which
-// also uses this array!
-
-
-// Force a child to redraw:
-extern char fl_draw_shortcut;
 
 //
-// End of "$Id: group.d 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: group.d 4421 2005-07-15 09:34:53Z matt $".
 //
-    End of automatic import -+/

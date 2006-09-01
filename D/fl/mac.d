@@ -338,16 +338,14 @@ public:
           { kEventClassMouse, kEventMouseMoved },
           { kEventClassMouse, kEventMouseDragged } ];
         ret = InstallWindowEventHandler( x.xid, mouseHandler, 4, mouseEvents, w, null );
-/+=== Carbon Keyboard handler
         // will not be disposed by Carbon...
-        EventHandlerUPP keyboardHandler = NewEventHandlerUPP( carbonKeyboardHandler );
-        static EventTypeSpec keyboardEvents[] = {
+        EventHandlerUPP keyboardHandler = NewEventHandlerUPP( &carbonKeyboardHandler );
+        static EventTypeSpec keyboardEvents[] = [
           { kEventClassKeyboard, kEventRawKeyDown },
           { kEventClassKeyboard, kEventRawKeyRepeat },
           { kEventClassKeyboard, kEventRawKeyUp },
-          { kEventClassKeyboard, kEventRawKeyModifiersChanged } };
-        ret = InstallWindowEventHandler( x.xid, keyboardHandler, 4, keyboardEvents, w, 0L );
-===+/
+          { kEventClassKeyboard, kEventRawKeyModifiersChanged } ];
+        ret = InstallWindowEventHandler( x.xid, keyboardHandler, 4, keyboardEvents, w, null );
         // will not be disposed by Carbon...
         EventHandlerUPP windowHandler = NewEventHandlerUPP( &carbonWindowHandler );
         static EventTypeSpec windowEvents[] = [
@@ -643,12 +641,11 @@ extern Fl_Window  fl_xmousewin;
 enum { kEventClassFLTK = ('f'<<24)|('l'<<16)|('t'<<8)|'k' };
 enum { kEventFLTKBreakLoop = 1, kEventFLTKDataReady };
 
-/+=
 /**
  * Mac keyboard lookup table
  */
 static ushort macKeyLookUp[128] =
-{
+[
     'a', 's', 'd', 'f', 'h', 'g', 'z', 'x',
     'c', 'v', '^', 'b', 'q', 'w', 'e', 'r',
 
@@ -674,8 +671,7 @@ static ushort macKeyLookUp[128] =
 
     0, FL_Pause, FL_Help, FL_Home, FL_Page_Up, FL_Delete, FL_F+4, FL_End,
     FL_F+2, FL_Page_Down, FL_F+1, FL_Left, FL_Right, FL_Down, FL_Up, 0/*FL_Power*/,
-};
-=+/
+];
 
 /**
  * convert the current mouse chord into the FLTK modifier state
@@ -693,7 +689,6 @@ static void mods_to_e_state( UInt32 mods )
   //printf( "State 0x%08x (%04x)\n", Fl.e_state, mods );
 }
 
-/+=
 /**
  * convert the current mouse chord into the FLTK keysym
  */
@@ -711,7 +706,6 @@ static void mods_to_e_keysym( UInt32 mods )
   else Fl.e_keysym = 0;
   //printf( "to sym 0x%08x (%04x)\n", Fl.e_keysym, mods );
 }
-=+/
 
 // these pointers are set by the Fl.lock() function:
 static void nothing() {}
@@ -1573,19 +1567,19 @@ static OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, EventRef ev
   return noErr;
 }
 
-/+=
 /**
  * convert the keyboard return code into the symbol on the keycaps
  */
 static ushort keycode_to_sym( UInt32 keyCode, UInt32 mods, ushort deflt )
 {
-  static Ptr map = 0;
+  static Ptr map = null;
   UInt32 state = 0;
   if (!map) {
-    map = (Ptr)GetScriptManagerVariable(smKCHRCache);
+    map = cast(Ptr)GetScriptManagerVariable(smKCHRCache);
     if (!map) {
       int kbID = GetScriptManagerVariable(smKeyScript);
-      map = *GetResource('KCHR', kbID);
+      uint k4 = (('K'<<24)|('C'<<16)|('H'<<8)|'R');
+      map = GetResource(k4, kbID);
     }
   }
   if (map)
@@ -1596,12 +1590,12 @@ static ushort keycode_to_sym( UInt32 keyCode, UInt32 mods, ushort deflt )
 /**
  * handle carbon keyboard events
  */
-pascal OSStatus carbonKeyboardHandler( 
+OSStatus carbonKeyboardHandler( 
   EventHandlerCallRef nextHandler, EventRef event, void *userData )
 {
   static char buffer[5];
   int sendEvent = 0;
-  Fl_Window  window = (Fl_Window )userData;
+  Fl_Window window = cast(Fl_Window)userData;
   UInt32 mods;
   static UInt32 prevMods = 0xffffffff;
 
@@ -1611,7 +1605,7 @@ pascal OSStatus carbonKeyboardHandler(
   
   // get the modifiers for any of the events
   GetEventParameter( event, kEventParamKeyModifiers, typeUInt32, 
-                     NULL, sizeof(UInt32), NULL, &mods );
+                     null, UInt32.sizeof, null, &mods );
   if ( prevMods == 0xffffffff ) prevMods = mods;
   
   // get the key code only for key events
@@ -1620,9 +1614,9 @@ pascal OSStatus carbonKeyboardHandler(
   ushort sym = 0;
   if (kind!=kEventRawKeyModifiersChanged) {
     GetEventParameter( event, kEventParamKeyCode, typeUInt32, 
-                       NULL, sizeof(UInt32), NULL, &keyCode );
+                       null, UInt32.sizeof, null, &keyCode );
     GetEventParameter( event, kEventParamKeyMacCharCodes, typeChar, 
-                       NULL, sizeof(char), NULL, &key );
+                       null, char.sizeof, null, &key );
   }
   /* output a human readbale event identifier for debugging
   char *ev = "";
@@ -1646,7 +1640,7 @@ pascal OSStatus carbonKeyboardHandler(
       UInt32 ktState = 0;
       KeyboardLayoutRef klr;
       KLGetCurrentKeyboardLayout(&klr);
-      void *kchar = 0; KLGetKeyboardLayoutProperty(klr, kKLKCHRData, &kchar);
+      void* kchar = null; KLGetKeyboardLayoutProperty(klr, kKLKCHRData, &kchar);
       KeyTranslate(kchar, (mods&0xff00) | keyCode, &ktState); // send the dead key
       key = KeyTranslate(kchar, 0x31, &ktState); // fake a space key press
       Fl.e_state |= 0x40000000; // mark this as a dead key
@@ -1701,6 +1695,7 @@ pascal OSStatus carbonKeyboardHandler(
     }
     mods_to_e_state( mods );
     break; }
+  default:
   }
   while (window.parent()) window = window.window();
   if (sendEvent && Fl.handle(sendEvent,window)) {
@@ -1716,7 +1711,7 @@ pascal OSStatus carbonKeyboardHandler(
 }
 
 
-
+/+=
 /**
  * Open callback function to call...
  */

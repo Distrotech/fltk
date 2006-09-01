@@ -37,6 +37,7 @@ private import fl.draw;
 private import fl.labeltype;
 
 private import std.c.stdlib;
+private import std.string;
 
 alias void function(Fl_Widget, void*) Fl_Callback;
 alias Fl_Callback Fl_Callback_p; // needed for BORLAND
@@ -261,6 +262,9 @@ public:
     }
     redraw_label();
   }
+ 
+  void label(char[] a) { copy_label(toStringz(a)); }
+  void label(void* a) { label(cast(char*)a); }
 
   void label(Fl_Labeltype a,char* b) {label_.type = a; label_.value = b;}
   Fl_Labeltype labeltype() {return label_.type;}
