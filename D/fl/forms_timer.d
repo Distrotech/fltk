@@ -28,49 +28,49 @@
 
 // Emulate the Forms Timer object
 // You don't want to use this if you just want a timeout, call
-// Fl::add_timeout directly!
+// Fl.add_timeout directly!
 
 #include <FL/Fl.H>
-#include <FL/Fl_Timer.H>
-#include <FL/fl_draw.H>
-#ifdef WIN32
-#  ifdef __MWERKS__
+private import fl.timer;
+private import fl.draw;
+version (WIN32) {
+version (__MWERKS__) {
 #    include <time.h>
-#  else
+} else {
 #    include <sys/types.h> 
 #    include <sys/timeb.h>
-#  endif
-#else
+}
+} else {
 #  include <time.h>
 #  include <sys/time.h>
-#endif
+}
 #include <stdio.h>
 
-#define FL_TIMER_BLINKRATE	0.2
+const int FL_TIMER_BLINKRATE = 0.2; 
 
-void fl_gettime(long* sec, long* usec) {
-#ifdef WIN32
-# ifdef __MWERKS__
+void fl_gettime(int* sec, int* usec) {
+version (WIN32) {
+version (__MWERKS__) {
   time_t localTime = time(NULL);
   struct tm *now = localtime(&localTime);
-  *sec = now->tm_sec + 60*now->tm_min + 3600*now->tm_hour + 24*3600*now->tm_yday;
+  *sec = now.tm_sec + 60*now.tm_min + 3600*now.tm_hour + 24*3600*now.tm_yday;
   *usec = 0;
-# else
+} else {
   struct timeb tp;
   ftime(&tp);
   *sec = tp.time;
   *usec = tp.millitm * 1000;
-# endif
-#else
+}
+} else {
   struct timeval tp;
   struct timezone tzp;
   gettimeofday(&tp, &tzp);
   *sec = tp.tv_sec;
   *usec = tp.tv_usec;
-#endif
+}
 }
 
-void Fl_Timer::draw() {
+void Fl_Timer.draw() {
   int tt;
   Fl_Color col;
   char str[32];
@@ -96,14 +96,14 @@ void Fl_Timer::draw() {
     draw_label();
 }
 
-void Fl_Timer::stepcb(void* v) {
-  ((Fl_Timer*)v)->step();
+void Fl_Timer.stepcb(void* v) {
+  ((Fl_Timer )v)->step();
 }
 
-void Fl_Timer::step() {
+void Fl_Timer.step() {
   if (!on) return;
   double lastdelay = delay;
-  long sec, usec; fl_gettime(&sec, &usec);
+  int sec, usec; fl_gettime(&sec, &usec);
   delay -= (double) (sec - lastsec) + (double) (usec - lastusec) / 1000000.0;
   lastsec = sec; lastusec = usec;
   if (lastdelay > 0.0 && delay <= 0.0) {
@@ -112,26 +112,26 @@ void Fl_Timer::step() {
       delay = 0;
     } else {
       redraw();
-      Fl::add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
+      Fl.add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
     }
     set_changed();
     do_callback();
   } else {
     if (type() == FL_VALUE_TIMER) redraw();
-    Fl::add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
+    Fl.add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
   }
 }
 
-int Fl_Timer::handle(int event) {
+int Fl_Timer.handle(int event) {
   if (event == FL_RELEASE && delay <= 0) value(0.0);
   return 0;
 }
 
 Fl_Timer::~Fl_Timer() {
-  Fl::remove_timeout(stepcb, this);
+  Fl.remove_timeout(stepcb, this);
 }
 
-Fl_Timer::Fl_Timer(uchar t, int X, int Y, int W, int H, const char* l)
+Fl_Timer.Fl_Timer(ubyte t, int X, int Y, int W, int H, char* l)
 : Fl_Widget(X, Y, W, H, l) {
   box(FL_DOWN_BOX);
   selection_color(FL_RED);
@@ -140,28 +140,28 @@ Fl_Timer::Fl_Timer(uchar t, int X, int Y, int W, int H, const char* l)
   direction_ = 0;
   type(t);
   if (t == FL_HIDDEN_TIMER) clear_visible();
-  if (t == FL_VALUE_TIMER) align(FL_ALIGN_LEFT);
+  if (t == FL_VALUE_TIMER) alignment(FL_ALIGN_LEFT);
 }
 
-void Fl_Timer::value(double d) {
+void Fl_Timer.value(double d) {
   delay = total = d;
   on = (d > 0.0);
   fl_gettime(&(lastsec), &(lastusec));
   if (type() != FL_HIDDEN_TIMER) redraw();
-  Fl::remove_timeout(stepcb, this);
-  if (on) Fl::add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
+  Fl.remove_timeout(stepcb, this);
+  if (on) Fl.add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
 }
 
-void Fl_Timer::suspended(char d) {
+void Fl_Timer.suspended(char d) {
   if (!d) {
     if (on) return;
     on = (delay > 0.0);
     fl_gettime(&(lastsec), &(lastusec));
-    if (on) Fl::add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
+    if (on) Fl.add_timeout(FL_TIMER_BLINKRATE, stepcb, this);
   } else {
     if (!on) return;
     on = 0;
-    Fl::remove_timeout(stepcb, this);
+    Fl.remove_timeout(stepcb, this);
   }
 }
 

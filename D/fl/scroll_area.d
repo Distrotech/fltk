@@ -33,7 +33,7 @@
 #include <config.h>
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 
 // scroll a rectangle and redraw the newly exposed portions:
 void fl_scroll(int X, int Y, int W, int H, int dx, int dy,
@@ -73,7 +73,7 @@ void fl_scroll(int X, int Y, int W, int H, int dx, int dy,
     clip_y = Y+src_h;
     clip_h = H-src_h;
   }
-#ifdef WIN32
+version (WIN32) {
   BitBlt(fl_gc, dest_x, dest_y, src_w, src_h, fl_gc, src_x, src_y,SRCCOPY);
   // NYI: need to redraw areas that the source of BitBlt was bad due to
   // overlapped windows, probably similar to X version:
@@ -83,38 +83,38 @@ void fl_scroll(int X, int Y, int W, int H, int dx, int dy,
 
   // Compute the X position of the current window;
   // this only works when scrolling in response to
-  // a user event; Fl_Window::x/y_root() do not work
+  // a user event; Fl_Window.x/y_root() do not work
   // on WIN32...
-  wx = Fl::event_x_root() - Fl::event_x();
-  wy = Fl::event_y_root() - Fl::event_y();
+  wx = Fl.event_x_root() - Fl.event_x();
+  wy = Fl.event_y_root() - Fl.event_y();
 
   temp = wx + src_x;
-  if (temp < Fl::x()) {
-    draw_area(data, dest_x, dest_y, Fl::x() - temp, src_h);
+  if (temp < Fl.x()) {
+    draw_area(data, dest_x, dest_y, Fl.x() - temp, src_h);
   }
   temp  = wx + src_x + src_w;
-  limit = Fl::x() + Fl::w();
+  limit = Fl.x() + Fl.w();
   if (temp > limit) {
     draw_area(data, dest_x + src_w - temp + limit, dest_y, temp - limit, src_h);
   }
 
   temp = wy + src_y;
-  if (temp < Fl::y()) {
-    draw_area(data, dest_x, dest_y, src_w, Fl::y() - temp);
+  if (temp < Fl.y()) {
+    draw_area(data, dest_x, dest_y, src_w, Fl.y() - temp);
   }
   temp  = wy + src_y + src_h;
-  limit = Fl::y() + Fl::h();
+  limit = Fl.y() + Fl.h();
   if (temp > limit) {
     draw_area(data, dest_x, dest_y + src_h - temp + limit, src_w, temp - limit);
   }
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   Rect src = { src_y, src_x, src_y+src_h, src_x+src_w };
   Rect dst = { dest_y, dest_x, dest_y+src_h, dest_x+src_w };
   static RGBColor bg = { 0xffff, 0xffff, 0xffff }; RGBBackColor( &bg );
   static RGBColor fg = { 0x0000, 0x0000, 0x0000 }; RGBForeColor( &fg );
   CopyBits( GetPortBitMapForCopyBits( GetWindowPort(fl_window) ),
             GetPortBitMapForCopyBits( GetWindowPort(fl_window) ), &src, &dst, srcCopy, 0L);
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: there does not seem to be an equivalent to this function in Quartz
   // ScrollWindowRect is a QuickDraw function and won't work here.
   Rect src = { src_y, src_x, src_y+src_h, src_x+src_w };
@@ -123,7 +123,7 @@ void fl_scroll(int X, int Y, int W, int H, int dx, int dy,
   static RGBColor fg = { 0x0000, 0x0000, 0x0000 }; RGBForeColor( &fg );
   CopyBits( GetPortBitMapForCopyBits( GetWindowPort(fl_window) ),
             GetPortBitMapForCopyBits( GetWindowPort(fl_window) ), &src, &dst, srcCopy, 0L);
-#else
+} else {
   XCopyArea(fl_display, fl_window, fl_window, fl_gc,
 	    src_x, src_y, src_w, src_h, dest_x, dest_y);
   // we have to sync the display and get the GraphicsExpose events! (sigh)
@@ -135,7 +135,7 @@ void fl_scroll(int X, int Y, int W, int H, int dx, int dy,
 	      e.xexpose.width, e.xexpose.height);
     if (!e.xgraphicsexpose.count) break;
   }
-#endif
+}
   if (dx) draw_area(data, clip_x, dest_y, clip_w, src_h);
   if (dy) draw_area(data, X, clip_y, W, clip_h);
 }

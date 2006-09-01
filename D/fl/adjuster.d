@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Adjuster.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: adjuster.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Adjuster widget header file for the Fast Light Tool Kit (FLTK).
 //
@@ -28,14 +27,14 @@
 
 // 3-button "slider", made for Nuke
 
-#ifndef Fl_Adjuster_H
-#define Fl_Adjuster_H
+module fl.adjuster;
 
-#ifndef Fl_Valuator_H
-#include "Fl_Valuator.H"
-#endif
+/+=
+module fl.valuator;
+public import fl.valuator;
+}
 
-class FL_EXPORT Fl_Adjuster : public Fl_Valuator {
+class Fl_Adjuster : Fl_Valuator {
   int drag;
   int ix;
   int soft_;
@@ -44,20 +43,20 @@ protected:
   int handle(int);
   void value_damage();
 public:
-  Fl_Adjuster(int X,int Y,int W,int H,const char *l=0);
+  Fl_Adjuster(int X,int Y,int W,int H,char *l=0);
   void soft(int s) {soft_ = s;}
-  int soft() const {return soft_;}
+  int soft() {return soft_;}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Adjuster.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: adjuster.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Adjuster.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: adjuster.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Adjuster widget for the Fast Light Tool Kit (FLTK).
 //
@@ -85,21 +84,21 @@ public:
 
 
 #include <FL/Fl.H>
-#include <FL/Fl_Adjuster.H>
-#include <FL/Fl_Bitmap.H>
-#include <FL/fl_draw.H>
+private import fl.adjuster;
+private import fl.bitmap;
+private import fl.draw;
 
-#include "fastarrow.h"
+private import fl.fastarrow;
 static Fl_Bitmap fastarrow(fastarrow_bits, fastarrow_width, fastarrow_height);
-#include "mediumarrow.h"
+private import fl.mediumarrow;
 static Fl_Bitmap mediumarrow(mediumarrow_bits, mediumarrow_width, mediumarrow_height);
-#include "slowarrow.h"
+private import fl.slowarrow;
 static Fl_Bitmap slowarrow(slowarrow_bits, slowarrow_width, slowarrow_height);
 
 // changing the value does not change the appearance:
-void Fl_Adjuster::value_damage() {}
+void Fl_Adjuster.value_damage() {}
 
-void Fl_Adjuster::draw() {
+void Fl_Adjuster.draw() {
   int dx, dy, W, H;
   if (w()>=h()) {
     dx = W = w()/3;
@@ -121,21 +120,21 @@ void Fl_Adjuster::draw() {
 		   y()+dy+(H-mediumarrow_height)/2, W, H);
   slowarrow.draw(x()+2*dx+(W-slowarrow_width)/2,
 		 y()+(H-slowarrow_width)/2, W, H);
-  if (Fl::focus() == this) draw_focus();
+  if (Fl.focus() == this) draw_focus();
 }
 
-int Fl_Adjuster::handle(int event) {
+int Fl_Adjuster.handle(int event) {
   double v;
   int delta;
-  int mx = Fl::event_x();
+  int mx = Fl.event_x();
   switch (event) {
     case FL_PUSH:
-      if (Fl::visible_focus()) Fl::focus(this);
+      if (Fl.visible_focus()) Fl.focus(this);
       ix = mx;
       if (w()>=h())
 	drag = 3*(mx-x())/w() + 1;
       else
-	drag = 3-3*(Fl::event_y()-y()-1)/h();
+	drag = 3-3*(Fl.event_y()-y()-1)/h();
       handle_push();
       redraw();
       return 1;
@@ -164,8 +163,8 @@ int Fl_Adjuster::handle(int event) {
       handle_drag(soft() ? softclamp(v) : clamp(v));
       return 1;
     case FL_RELEASE:
-      if (Fl::event_is_click()) { // detect click but no drag
-	if (Fl::event_state()&0xF0000) delta = -10;
+      if (Fl.event_is_click()) { // detect click but no drag
+	if (Fl.event_state()&0xF0000) delta = -10;
 	else delta = 10;
 	switch (drag) {
 	case 3: v = increment(previous_value(), delta); break;
@@ -179,7 +178,7 @@ int Fl_Adjuster::handle(int event) {
       handle_release();
       return 1;
     case FL_KEYBOARD :
-      switch (Fl::event_key()) {
+      switch (Fl.event_key()) {
 	case FL_Up:
           if (w() > h()) return 0;
 	  handle_drag(clamp(increment(value(),-1)));
@@ -203,7 +202,7 @@ int Fl_Adjuster::handle(int event) {
 
     case FL_FOCUS:
     case FL_UNFOCUS:
-      if (Fl::visible_focus()) {
+      if (Fl.visible_focus()) {
         redraw();
         return 1;
       } else return 0;
@@ -215,7 +214,7 @@ int Fl_Adjuster::handle(int event) {
   return 0;
 }
 
-Fl_Adjuster::Fl_Adjuster(int X, int Y, int W, int H, const char* l)
+Fl_Adjuster.Fl_Adjuster(int X, int Y, int W, int H, char* l)
   : Fl_Valuator(X, Y, W, H, l) {
   box(FL_UP_BOX);
   step(1, 10000);
@@ -225,6 +224,6 @@ Fl_Adjuster::Fl_Adjuster(int X, int Y, int W, int H, const char* l)
 }
 
 //
-// End of "$Id: Fl_Adjuster.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: adjuster.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

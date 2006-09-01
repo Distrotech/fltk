@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Shared_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: shared_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Shared image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,60 +26,60 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Shared_Image_H
-#  define Fl_Shared_Image_H
+module fl.shared_image;
 
-#  include "Fl_Image.H"
+
+public import fl.image;
 
 
 // Test function for adding new formats
-typedef Fl_Image *(*Fl_Shared_Handler)(const char *name, uchar *header,
+alias Fl_Image  (*Fl_Shared_Handler)(char *name, ubyte *header,
                                        int headerlen);
 
 // Shared images class. 
-class FL_EXPORT Fl_Shared_Image : public Fl_Image {
+class Fl_Shared_Image : Fl_Image {
   protected:
 
-  static Fl_Shared_Image **images_;	// Shared images
+  static Fl_Shared_Image  *images_;	// Shared images
   static int	num_images_;		// Number of shared images
   static int	alloc_images_;		// Allocated shared images
-  static Fl_Shared_Handler *handlers_;	// Additional format handlers
+  static Fl_Shared_Handler  handlers_;	// Additional format handlers
   static int	num_handlers_;		// Number of format handlers
   static int	alloc_handlers_;	// Allocated format handlers
 
-  const char	*name_;			// Name of image file
+  char	*name_;			// Name of image file
   int		original_;		// Original image?
   int		refcount_;		// Number of times this image has been used
-  Fl_Image	*image_;		// The image that is shared
+  Fl_Image	 image_;		// The image that is shared
   int		alloc_image_;		// Was the image allocated?
 
-  static int	compare(Fl_Shared_Image **i0, Fl_Shared_Image **i1);
+  static int	compare(Fl_Shared_Image  *i0, Fl_Shared_Image  *i1);
 
   // Use get() and release() to load/delete images in memory...
   Fl_Shared_Image();
-  Fl_Shared_Image(const char *n, Fl_Image *img = 0);
-  virtual ~Fl_Shared_Image();
+  Fl_Shared_Image(char *n, Fl_Image  img = 0);
+  ~Fl_Shared_Image();
   void add();
   void update();
 
   public:
 
-  const char	*name() { return name_; }
+  char	*name() { return name_; }
   int		refcount() { return refcount_; }
   void		release();
   void		reload();
 
-  virtual Fl_Image *copy(int W, int H);
-  Fl_Image *copy() { return copy(w(), h()); }
-  virtual void color_average(Fl_Color c, float i);
-  virtual void desaturate();
-  virtual void draw(int X, int Y, int W, int H, int cx, int cy);
+  Fl_Image  copy(int W, int H);
+  Fl_Image  copy() { return copy(w(), h()); }
+  void color_average(Fl_Color c, float i);
+  void desaturate();
+  void draw(int X, int Y, int W, int H, int cx, int cy);
   void draw(int X, int Y) { draw(X, Y, w(), h(), 0, 0); }
-  virtual void uncache();
+  void uncache();
 
-  static Fl_Shared_Image *find(const char *n, int W = 0, int H = 0);
-  static Fl_Shared_Image *get(const char *n, int W = 0, int H = 0);
-  static Fl_Shared_Image **images();
+  static Fl_Shared_Image  find(char *n, int W = 0, int H = 0);
+  static Fl_Shared_Image  get(char *n, int W = 0, int H = 0);
+  static Fl_Shared_Image  *images();
   static int		num_images();
   static void		add_handler(Fl_Shared_Handler f);
   static void		remove_handler(Fl_Shared_Handler f);
@@ -91,17 +91,17 @@ class FL_EXPORT Fl_Shared_Image : public Fl_Image {
 // of the core FLTK library...
 //
 
-FL_EXPORT extern void fl_register_images();
+extern void fl_register_images();
 
-#endif // !Fl_Shared_Image_H
+} // !Fl_Shared_Image_H
 
 //
-// End of "$Id: Fl_Shared_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// End of "$Id: shared_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Shared_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: shared_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Shared image code for the Fast Light Tool Kit (FLTK).
 //
@@ -129,25 +129,25 @@ FL_EXPORT extern void fl_register_images();
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
 #include <FL/Fl.H>
-#include <FL/Fl_Shared_Image.H>
-#include <FL/Fl_XBM_Image.H>
-#include <FL/Fl_XPM_Image.H>
+private import fl.shared_image;
+private import fl.xbm_image;
+private import fl.xpm_image;
 
 
 //
 // Global class vars...
 //
 
-Fl_Shared_Image **Fl_Shared_Image::images_ = 0;	// Shared images
-int	Fl_Shared_Image::num_images_ = 0;	// Number of shared images
-int	Fl_Shared_Image::alloc_images_ = 0;	// Allocated shared images
+Fl_Shared_Image  *Fl_Shared_Image.images_ = 0;	// Shared images
+int	Fl_Shared_Image.num_images_ = 0;	// Number of shared images
+int	Fl_Shared_Image.alloc_images_ = 0;	// Allocated shared images
 
-Fl_Shared_Handler *Fl_Shared_Image::handlers_ = 0;// Additional format handlers
-int	Fl_Shared_Image::num_handlers_ = 0;	// Number of format handlers
-int	Fl_Shared_Image::alloc_handlers_ = 0;	// Allocated format handlers
+Fl_Shared_Handler  Fl_Shared_Image.handlers_ = 0;// Additional format handlers
+int	Fl_Shared_Image.num_handlers_ = 0;	// Number of format handlers
+int	Fl_Shared_Image.alloc_handlers_ = 0;	// Allocated format handlers
 
 
 //
@@ -155,28 +155,28 @@ int	Fl_Shared_Image::alloc_handlers_ = 0;	// Allocated format handlers
 //
 
 extern "C" {
-  typedef int (*compare_func_t)(const void *, const void *);
+  alias int (*compare_func_t)(void *, void *);
 }
 
 
-// Static methods that really should be inline, but some WIN32 compilers
+// Static methods that really should be , but some WIN32 compilers
 // can't handle it...
-Fl_Shared_Image **Fl_Shared_Image::images() {
+Fl_Shared_Image  *Fl_Shared_Image.images() {
   return images_;
 }
 
-int Fl_Shared_Image::num_images() {
+int Fl_Shared_Image.num_images() {
   return num_images_;
 }
 
 
 //
-// 'Fl_Shared_Image::compare()' - Compare two shared images...
+// 'Fl_Shared_Image.compare()' - Compare two shared images...
 //
 
 int
-Fl_Shared_Image::compare(Fl_Shared_Image **i0,		// I - First image
-                         Fl_Shared_Image **i1) {	// I - Second image
+Fl_Shared_Image.compare(Fl_Shared_Image  *i0,		// I - First image
+                         Fl_Shared_Image  *i1) {	// I - Second image
   int i = strcmp((*i0)->name(), (*i1)->name());
 
   if (i) return i;
@@ -188,10 +188,10 @@ Fl_Shared_Image::compare(Fl_Shared_Image **i0,		// I - First image
 
 
 //
-// 'Fl_Shared_Image::Fl_Shared_Image()' - Basic constructor.
+// 'Fl_Shared_Image.Fl_Shared_Image()' - Basic constructor.
 //
 
-Fl_Shared_Image::Fl_Shared_Image() : Fl_Image(0,0,0) {
+Fl_Shared_Image.Fl_Shared_Image() : Fl_Image(0,0,0) {
   name_        = 0;
   refcount_    = 1;
   original_    = 0;
@@ -201,11 +201,11 @@ Fl_Shared_Image::Fl_Shared_Image() : Fl_Image(0,0,0) {
 
 
 //
-// 'Fl_Shared_Image::Fl_Shared_Image()' - Add an image to the image cache.
+// 'Fl_Shared_Image.Fl_Shared_Image()' - Add an image to the image cache.
 //
 
-Fl_Shared_Image::Fl_Shared_Image(const char *n,		// I - Filename
-                                 Fl_Image   *img)	// I - Image
+Fl_Shared_Image.Fl_Shared_Image(char *n,		// I - Filename
+                                 Fl_Image    img)	// I - Image
   : Fl_Image(0,0,0) {
   name_ = new char[strlen(n) + 1];
   strcpy((char *)name_, n);
@@ -221,19 +221,19 @@ Fl_Shared_Image::Fl_Shared_Image(const char *n,		// I - Filename
 
 
 //
-// 'Fl_Shared_Image::add()' - Add a shared image to the array.
+// 'Fl_Shared_Image.add()' - Add a shared image to the array.
 //
 
 void
-Fl_Shared_Image::add() {
-  Fl_Shared_Image	**temp;		// New image pointer array...
+Fl_Shared_Image.add() {
+  Fl_Shared_Image	 *temp;		// New image pointer array...
 
   if (num_images_ >= alloc_images_) {
     // Allocate more memory...
-    temp = new Fl_Shared_Image *[alloc_images_ + 32];
+    temp = new Fl_Shared_Image  [alloc_images_ + 32];
 
     if (alloc_images_) {
-      memcpy(temp, images_, alloc_images_ * sizeof(Fl_Shared_Image *));
+      memcpy(temp, images_, alloc_images_ * sizeof(Fl_Shared_Image  ));
 
       delete[] images_;
     }
@@ -246,23 +246,23 @@ Fl_Shared_Image::add() {
   num_images_ ++;
 
   if (num_images_ > 1) {
-    qsort(images_, num_images_, sizeof(Fl_Shared_Image *),
+    qsort(images_, num_images_, sizeof(Fl_Shared_Image  ),
           (compare_func_t)compare);
   }
 }
 
 
 //
-// 'Fl_Shared_Image::update()' - Update the dimensions of the shared images.
+// 'Fl_Shared_Image.update()' - Update the dimensions of the shared images.
 //
 
 void
-Fl_Shared_Image::update() {
+Fl_Shared_Image.update() {
   if (image_) {
-    w(image_->w());
-    h(image_->h());
-    d(image_->d());
-    data(image_->data(), image_->count());
+    w(image_.w());
+    h(image_.h());
+    d(image_.d());
+    data(image_.data(), image_.count());
   }
 }
 
@@ -278,11 +278,11 @@ Fl_Shared_Image::~Fl_Shared_Image() {
 
 
 //
-// 'Fl_Shared_Image::release()' - Release and possibly destroy a shared image.
+// 'Fl_Shared_Image.release()' - Release and possibly destroy a shared image.
 //
 
 void
-Fl_Shared_Image::release() {
+Fl_Shared_Image.release() {
   int	i;	// Looping var...
 
   refcount_ --;
@@ -294,7 +294,7 @@ Fl_Shared_Image::release() {
 
       if (i < num_images_) {
         memmove(images_ + i, images_ + i + 1,
-               (num_images_ - i) * sizeof(Fl_Shared_Image *));
+               (num_images_ - i) * sizeof(Fl_Shared_Image  ));
       }
 
       break;
@@ -312,16 +312,16 @@ Fl_Shared_Image::release() {
 
 
 //
-// 'Fl_Shared_Image::reload()' - Reload the shared image...
+// 'Fl_Shared_Image.reload()' - Reload the shared image...
 //
 
 void
-Fl_Shared_Image::reload() {
+Fl_Shared_Image.reload() {
   // Load image from disk...
   int		i;		// Looping var
   FILE		*fp;		// File pointer
-  uchar		header[64];	// Buffer for auto-detecting files
-  Fl_Image	*img;		// New image
+  ubyte		header[64];	// Buffer for auto-detecting files
+  Fl_Image	 img;		// New image
 
   if (!name_) return;
 
@@ -351,9 +351,9 @@ Fl_Shared_Image::reload() {
 
     alloc_image_ = 1;
 
-    if ((img->w() != w() && w()) || (img->h() != h() && h())) {
+    if ((img.w() != w() && w()) || (img.h() != h() && h())) {
       // Make sure the reloaded image is the same size as the existing one.
-      Fl_Image *temp = img->copy(w(), h());
+      Fl_Image  temp = img.copy(w(), h());
       delete img;
       image_ = temp;
     } else {
@@ -366,101 +366,101 @@ Fl_Shared_Image::reload() {
 
 
 //
-// 'Fl_Shared_Image::copy()' - Copy and resize a shared image...
+// 'Fl_Shared_Image.copy()' - Copy and resize a shared image...
 //
 
-Fl_Image *
-Fl_Shared_Image::copy(int W, int H) {
-  Fl_Image		*temp_image;	// New image file
-  Fl_Shared_Image	*temp_shared;	// New shared image
+Fl_Image  
+Fl_Shared_Image.copy(int W, int H) {
+  Fl_Image		 temp_image;	// New image file
+  Fl_Shared_Image	 temp_shared;	// New shared image
 
   // Make a copy of the image we're sharing...
   if (!image_) temp_image = 0;
-  else temp_image = image_->copy(W, H);
+  else temp_image = image_.copy(W, H);
 
   // Then make a new shared image...
   temp_shared = new Fl_Shared_Image();
 
-  temp_shared->name_ = new char[strlen(name_) + 1];
-  strcpy((char *)temp_shared->name_, name_);
+  temp_shared.name_ = new char[strlen(name_) + 1];
+  strcpy((char *)temp_shared.name_, name_);
 
-  temp_shared->refcount_    = 1;
-  temp_shared->image_       = temp_image;
-  temp_shared->alloc_image_ = 1;
+  temp_shared.refcount_    = 1;
+  temp_shared.image_       = temp_image;
+  temp_shared.alloc_image_ = 1;
 
-  temp_shared->update();
+  temp_shared.update();
 
   return temp_shared;
 }
 
 
 //
-// 'Fl_Shared_Image::color_average()' - Blend colors...
+// 'Fl_Shared_Image.color_average()' - Blend colors...
 //
 
 void
-Fl_Shared_Image::color_average(Fl_Color c,	// I - Color to blend with
+Fl_Shared_Image.color_average(Fl_Color c,	// I - Color to blend with
                                float    i) {	// I - Blend fraction
   if (!image_) return;
 
-  image_->color_average(c, i);
+  image_.color_average(c, i);
   update();
 }
 
 
 //
-// 'Fl_Shared_Image::desaturate()' - Convert the image to grayscale...
+// 'Fl_Shared_Image.desaturate()' - Convert the image to grayscale...
 //
 
 void
-Fl_Shared_Image::desaturate() {
+Fl_Shared_Image.desaturate() {
   if (!image_) return;
 
-  image_->desaturate();
+  image_.desaturate();
   update();
 }
 
 
 //
-// 'Fl_Shared_Image::draw()' - Draw a shared image...
+// 'Fl_Shared_Image.draw()' - Draw a shared image...
 //
 
 void
-Fl_Shared_Image::draw(int X, int Y, int W, int H, int cx, int cy) {
-  if (image_) image_->draw(X, Y, W, H, cx, cy);
-  else Fl_Image::draw(X, Y, W, H, cx, cy);
+Fl_Shared_Image.draw(int X, int Y, int W, int H, int cx, int cy) {
+  if (image_) image_.draw(X, Y, W, H, cx, cy);
+  else Fl_Image.draw(X, Y, W, H, cx, cy);
 }
 
 
 //
-// 'Fl_Shared_Image::uncache()' - Uncache the shared image...
+// 'Fl_Shared_Image.uncache()' - Uncache the shared image...
 //
 
 void
-Fl_Shared_Image::uncache()
+Fl_Shared_Image.uncache()
 {
-  if (image_) image_->uncache();
+  if (image_) image_.uncache();
 }
 
 
 //
-// 'Fl_Shared_Image::find()' - Find a shared image...
+// 'Fl_Shared_Image.find()' - Find a shared image...
 //
 
-Fl_Shared_Image *
-Fl_Shared_Image::find(const char *n, int W, int H) {
-  Fl_Shared_Image	*key,		// Image key
+Fl_Shared_Image  
+Fl_Shared_Image.find(char *n, int W, int H) {
+  Fl_Shared_Image	 key,		// Image key
 			**match;	// Matching image
 
   if (num_images_) {
     key = new Fl_Shared_Image();
-    key->name_ = new char[strlen(n) + 1];
-    strcpy((char *)key->name_, n);
-    key->w(W);
-    key->h(H);
+    key.name_ = new char[strlen(n) + 1];
+    strcpy((char *)key.name_, n);
+    key.w(W);
+    key.h(H);
 
-    match = (Fl_Shared_Image **)bsearch(&key, images_, num_images_,
-                                        sizeof(Fl_Shared_Image *),
+    match = (Fl_Shared_Image  *)bsearch(&key, images_, num_images_,
+                                        sizeof(Fl_Shared_Image  ),
                                         (compare_func_t)compare);
 
     delete key;
@@ -476,29 +476,29 @@ Fl_Shared_Image::find(const char *n, int W, int H) {
 
 
 //
-// 'Fl_Shared_Image::get()' - Get a shared image...
+// 'Fl_Shared_Image.get()' - Get a shared image...
 //
 
-Fl_Shared_Image *
-Fl_Shared_Image::get(const char *n, int W, int H) {
-  Fl_Shared_Image	*temp;		// Image
+Fl_Shared_Image  
+Fl_Shared_Image.get(char *n, int W, int H) {
+  Fl_Shared_Image	 temp;		// Image
 
   if ((temp = find(n, W, H)) != NULL) return temp;
 
   if ((temp = find(n)) == NULL) {
     temp = new Fl_Shared_Image(n);
 
-    if (!temp->image_) {
+    if (!temp.image_) {
       delete temp;
       return NULL;
     }
 
-    temp->add();
+    temp.add();
   }
 
-  if ((temp->w() != W || temp->h() != H) && W && H) {
-    temp = (Fl_Shared_Image *)temp->copy(W, H);
-    temp->add();
+  if ((temp.w() != W || temp.h() != H) && W && H) {
+    temp = (Fl_Shared_Image  )temp.copy(W, H);
+    temp.add();
   }
 
   return temp;
@@ -506,13 +506,13 @@ Fl_Shared_Image::get(const char *n, int W, int H) {
 
 
 //
-// 'Fl_Shared_Image::add_handler()' - Add a shared image handler.
+// 'Fl_Shared_Image.add_handler()' - Add a shared image handler.
 //
 
 void
-Fl_Shared_Image::add_handler(Fl_Shared_Handler f) {
+Fl_Shared_Image.add_handler(Fl_Shared_Handler f) {
   int			i;		// Looping var...
-  Fl_Shared_Handler	*temp;		// New image handler array...
+  Fl_Shared_Handler	 temp;		// New image handler array...
 
   // First see if we have already added the handler...
   for (i = 0; i < num_handlers_; i ++) {
@@ -539,11 +539,11 @@ Fl_Shared_Image::add_handler(Fl_Shared_Handler f) {
 
 
 //
-// 'Fl_Shared_Image::remove_handler()' - Remove a shared image handler.
+// 'Fl_Shared_Image.remove_handler()' - Remove a shared image handler.
 //
 
 void
-Fl_Shared_Image::remove_handler(Fl_Shared_Handler f) {
+Fl_Shared_Image.remove_handler(Fl_Shared_Handler f) {
   int	i;				// Looping var...
 
   // First see if the handler has been added...
@@ -565,6 +565,6 @@ Fl_Shared_Image::remove_handler(Fl_Shared_Handler f) {
 
 
 //
-// End of "$Id: Fl_Shared_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: shared_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

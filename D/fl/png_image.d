@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_PNG_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: png_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // PNG image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,26 +26,26 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_PNG_Image_H
-#define Fl_PNG_Image_H
-#  include "Fl_Image.H"
+module fl.png_image;
 
-class FL_EXPORT Fl_PNG_Image : public Fl_RGB_Image {
+public import fl.image;
+
+class Fl_PNG_Image : Fl_RGB_Image {
 
   public:
 
-  Fl_PNG_Image(const char* filename);
+  Fl_PNG_Image(char* filename);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_PNG_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: png_image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_PNG_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: png_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_PNG_Image routines.
 //
@@ -73,7 +73,7 @@ class FL_EXPORT Fl_PNG_Image : public Fl_RGB_Image {
 //
 // Contents:
 //
-//   Fl_PNG_Image::Fl_PNG_Image() - Load a PNG image file.
+//   Fl_PNG_Image.Fl_PNG_Image() - Load a PNG image file.
 //
 
 //
@@ -81,31 +81,31 @@ class FL_EXPORT Fl_PNG_Image : public Fl_RGB_Image {
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_PNG_Image.H>
+private import fl.png_image;
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 extern "C"
 {
-#if defined(HAVE_LIBPNG) && defined(HAVE_LIBZ)
+version (HAVE_LIBPNG) && defined(HAVE_LIBZ) {
 #  include <zlib.h>
-#  ifdef HAVE_PNG_H
+version (HAVE_PNG_H) {
 #    include <png.h>
-#  else
+} else {
 #    include <libpng/png.h>
-#  endif // HAVE_PNG_H
-#endif // HAVE_LIBPNG && HAVE_LIBZ
+} // HAVE_PNG_H
+} // HAVE_LIBPNG && HAVE_LIBZ
 }
 
 
 //
-// 'Fl_PNG_Image::Fl_PNG_Image()' - Load a PNG image file.
+// 'Fl_PNG_Image.Fl_PNG_Image()' - Load a PNG image file.
 //
 
-Fl_PNG_Image::Fl_PNG_Image(const char *png) // I - File to read
+Fl_PNG_Image.Fl_PNG_Image(char *png) // I - File to read
   : Fl_RGB_Image(0,0,0) {
-#if defined(HAVE_LIBPNG) && defined(HAVE_LIBZ)
+version (HAVE_LIBPNG) && defined(HAVE_LIBZ) {
   int		i;			// Looping var
   FILE		*fp;			// File pointer
   int		channels;		// Number of color channels
@@ -121,9 +121,9 @@ Fl_PNG_Image::Fl_PNG_Image(const char *png) // I - File to read
   pp   = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   info = png_create_info_struct(pp);
 
-  if (setjmp(pp->jmpbuf))
+  if (setjmp(pp.jmpbuf))
   {
-    Fl::warning("PNG file \"%s\" contains errors!\n", png);
+    Fl.warning("PNG file \"%s\" contains errors!\n", png);
     return;
   }
 
@@ -133,36 +133,36 @@ Fl_PNG_Image::Fl_PNG_Image(const char *png) // I - File to read
   // Get the image dimensions and convert to grayscale or RGB...
   png_read_info(pp, info);
 
-  if (info->color_type == PNG_COLOR_TYPE_PALETTE)
+  if (info.color_type == PNG_COLOR_TYPE_PALETTE)
     png_set_expand(pp);
 
-  if (info->color_type & PNG_COLOR_MASK_COLOR)
+  if (info.color_type & PNG_COLOR_MASK_COLOR)
     channels = 3;
   else
     channels = 1;
 
-  if ((info->color_type & PNG_COLOR_MASK_ALPHA) || info->num_trans)
+  if ((info.color_type & PNG_COLOR_MASK_ALPHA) || info.num_trans)
     channels ++;
 
-  w((int)(info->width));
-  h((int)(info->height));
+  w((int)(info.width));
+  h((int)(info.height));
   d(channels);
 
-  if (info->bit_depth < 8)
+  if (info.bit_depth < 8)
   {
     png_set_packing(pp);
     png_set_expand(pp);
   }
-  else if (info->bit_depth == 16)
+  else if (info.bit_depth == 16)
     png_set_strip_16(pp);
 
-#  if defined(HAVE_PNG_GET_VALID) && defined(HAVE_PNG_SET_TRNS_TO_ALPHA)
+version (HAVE_PNG_GET_VALID) && defined(HAVE_PNG_SET_TRNS_TO_ALPHA) {
   // Handle transparency...
   if (png_get_valid(pp, info, PNG_INFO_tRNS))
     png_set_tRNS_to_alpha(pp);
-#  endif // HAVE_PNG_GET_VALID && HAVE_PNG_SET_TRNS_TO_ALPHA
+} // HAVE_PNG_GET_VALID && HAVE_PNG_SET_TRNS_TO_ALPHA
 
-  array = new uchar[w() * h() * d()];
+  array = new ubyte[w() * h() * d()];
   alloc_array = 1;
 
   // Allocate pointers...
@@ -175,15 +175,15 @@ Fl_PNG_Image::Fl_PNG_Image(const char *png) // I - File to read
   for (i = png_set_interlace_handling(pp); i > 0; i --)
     png_read_rows(pp, rows, NULL, h());
 
-#ifdef WIN32
+version (WIN32) {
   // Some Windows graphics drivers don't honor transparency when RGB == white
   if (channels == 4) {
     // Convert RGB to 0 when alpha == 0...
-    uchar *ptr = (uchar *)array;
+    ubyte *ptr = (ubyte *)array;
     for (i = w() * h(); i > 0; i --, ptr += 4)
       if (!ptr[3]) ptr[0] = ptr[1] = ptr[2] = 0;
   }
-#endif // WIN32
+} // WIN32
 
   // Free memory and return...
   delete[] rows;
@@ -192,11 +192,11 @@ Fl_PNG_Image::Fl_PNG_Image(const char *png) // I - File to read
   png_destroy_read_struct(&pp, &info, NULL);
 
   fclose(fp);
-#endif // HAVE_LIBPNG && HAVE_LIBZ
+} // HAVE_LIBPNG && HAVE_LIBZ
 }
 
 
 //
-// End of "$Id: Fl_PNG_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: png_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

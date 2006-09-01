@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Multi_Label.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: multi_label.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Multi-label header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,30 +26,30 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Multi_Label_H
-#define Fl_Multi_Label_H
+module fl.multi_label;
+
 
 class Fl_Widget;
 struct Fl_Menu_Item;
 
-struct FL_EXPORT Fl_Multi_Label {
-  const char* labela;
-  const char* labelb;
-  uchar typea;
-  uchar typeb;
-  void label(Fl_Widget*);
+struct Fl_Multi_Label {
+  char* labela;
+  char* labelb;
+  ubyte typea;
+  ubyte typeb;
+  void label(Fl_Widget );
   void label(Fl_Menu_Item*);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Multi_Label.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: multi_label.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Multi_Label.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: multi_label.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Multi-label widget for the Fast Light Tool Kit (FLTK).
 //
@@ -79,17 +79,17 @@ struct FL_EXPORT Fl_Multi_Label {
 // be one of these it allows an infinte number!)
 
 #include <FL/Fl.H>
-#include <FL/Fl_Widget.H>
-#include <FL/Fl_Menu_Item.H>
-#include <FL/Fl_Multi_Label.H>
+private import fl.widget;
+private import fl.menu_item;
+private import fl.multi_label;
 
 static void multi_labeltype(
-    const Fl_Label* o, int x, int y, int w, int h, Fl_Align a)
+    Fl_Label  o, int x, int y, int w, int h, Fl_Align a)
 {
-  Fl_Multi_Label* b = (Fl_Multi_Label*)(o->value);
+  Fl_Multi_Label  b = (Fl_Multi_Label )(o.value);
   Fl_Label local = *o;
-  local.value = b->labela;
-  local.type = b->typea;
+  local.value = b.labela;
+  local.type = b.typea;
   int W = w; int H = h; local.measure(W, H);
   local.draw(x,y,w,h,a);
   if (a & FL_ALIGN_BOTTOM) h -= H;
@@ -97,35 +97,35 @@ static void multi_labeltype(
   else if (a & FL_ALIGN_RIGHT) w -= W;
   else if (a & FL_ALIGN_LEFT) {x += W; w -= W;}
   else {int d = (h+H)/2; y += d; h -= d;}
-  local.value = b->labelb;
-  local.type = b->typeb;
+  local.value = b.labelb;
+  local.type = b.typeb;
   local.draw(x,y,w,h,a);
 }
 
 // measurement is only correct for left-to-right appending...
-static void multi_measure(const Fl_Label* o, int& w, int& h) {
-  Fl_Multi_Label* b = (Fl_Multi_Label*)(o->value);
+static void multi_measure(Fl_Label  o, int& w, int& h) {
+  Fl_Multi_Label  b = (Fl_Multi_Label )(o.value);
   Fl_Label local = *o;
-  local.value = b->labela;
-  local.type = b->typea;
+  local.value = b.labela;
+  local.type = b.typea;
   local.measure(w,h);
-  local.value = b->labelb;
-  local.type = b->typeb;
+  local.value = b.labelb;
+  local.type = b.typeb;
   int W = 0; int H = 0; local.measure(W,H);
   w += W; if (H>h) h = H;
 }
 
-void Fl_Multi_Label::label(Fl_Widget* o) {
-  Fl::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
-  o->label(_FL_MULTI_LABEL, (const char*)this);
+void Fl_Multi_Label.label(Fl_Widget  o) {
+  Fl.set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
+  o.label(_FL_MULTI_LABEL, (char*)this);
 }
 
-void Fl_Multi_Label::label(Fl_Menu_Item* o) {
-  Fl::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
-  o->label(_FL_MULTI_LABEL, (const char*)this);
+void Fl_Multi_Label.label(Fl_Menu_Item* o) {
+  Fl.set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
+  o.label(_FL_MULTI_LABEL, (char*)this);
 }
 
 //
-// End of "$Id: Fl_Multi_Label.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: multi_label.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

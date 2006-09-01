@@ -28,23 +28,23 @@
 
 #include <FL/forms.H>
 
-Fl_FormsPixmap::Fl_FormsPixmap(
-  Fl_Boxtype t, int X, int Y, int W, int H, const char* l)
+Fl_FormsPixmap.Fl_FormsPixmap(
+  Fl_Boxtype t, int X, int Y, int W, int H, char* l)
 : Fl_Widget(X, Y, W, H, l) {
   box(t);
   b = 0;
   color(FL_BLACK);
-  align(FL_ALIGN_BOTTOM);
+  alignment(FL_ALIGN_BOTTOM);
 }
 
-void Fl_FormsPixmap::set(char*const* bits) {
+void Fl_FormsPixmap.set(char*const* bits) {
   delete b;
   b = new Fl_Pixmap(bits);
 }
 
-void Fl_FormsPixmap::draw() {
+void Fl_FormsPixmap.draw() {
   draw_box(box(), selection_color());
-  if (b) {fl_color(color()); b->draw(x(), y(), w(), h());}
+  if (b) {fl_color(color()); b.draw(x(), y(), w(), h());}
   draw_label();
 }
 

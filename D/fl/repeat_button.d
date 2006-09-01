@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Repeat_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: repeat_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Repeat button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,32 +26,32 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Repeat_Button_H
-#define Fl_Repeat_Button_H
-#include "Fl.H"
-#include "Fl_Button.H"
+module fl.repeat_button;
 
-class FL_EXPORT Fl_Repeat_Button : public Fl_Button {
+public import fl.fl;
+public import fl.button;
+
+class Fl_Repeat_Button : Fl_Button {
   static void repeat_callback(void *);
 public:
   int handle(int);
-  Fl_Repeat_Button(int X,int Y,int W,int H,const char *l=0)
+  Fl_Repeat_Button(int X,int Y,int W,int H,char *l=0)
     : Fl_Button(X,Y,W,H,l) {}
   void deactivate() {
-    Fl::remove_timeout(repeat_callback,this);
-    Fl_Button::deactivate();
+    Fl.remove_timeout(repeat_callback,this);
+    Fl_Button.deactivate();
   }
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Repeat_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: repeat_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Repeat_Button.cxx 5219 2006-06-21 06:52:10Z matt $"
+// "$Id: repeat_button.d 5219 2006-06-21 06:52:10Z matt $"
 //
 // Repeat button widget for the Fast Light Tool Kit (FLTK).
 //
@@ -78,18 +78,18 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Repeat_Button.H>
+private import fl.repeat_button;
 
-#define INITIALREPEAT .5
-#define REPEAT .1
+const int INITIALREPEAT = .5; 
+const int REPEAT = .1; 
 
-void Fl_Repeat_Button::repeat_callback(void *v) {
-  Fl_Button *b = (Fl_Button*)v;
-  Fl::add_timeout(REPEAT,repeat_callback,b);
-  b->do_callback();
+void Fl_Repeat_Button.repeat_callback(void *v) {
+  Fl_Button  b = (Fl_Button )v;
+  Fl.add_timeout(REPEAT,repeat_callback,b);
+  b.do_callback();
 }
 
-int Fl_Repeat_Button::handle(int event) {
+int Fl_Repeat_Button.handle(int event) {
   int newval;
   switch (event) {
   case FL_HIDE:
@@ -98,26 +98,26 @@ int Fl_Repeat_Button::handle(int event) {
     newval = 0; goto J1;
   case FL_PUSH:
   case FL_DRAG:
-    if (Fl::visible_focus()) Fl::focus(this);
-    newval = Fl::event_inside(this);
+    if (Fl.visible_focus()) Fl.focus(this);
+    newval = Fl.event_inside(this);
   J1:
     if (!active()) 
       newval = 0;
     if (value(newval)) {
       if (newval) {
-	Fl::add_timeout(INITIALREPEAT,repeat_callback,this);
+	Fl.add_timeout(INITIALREPEAT,repeat_callback,this);
 	do_callback();
       } else {
-	Fl::remove_timeout(repeat_callback,this);
+	Fl.remove_timeout(repeat_callback,this);
       }
     }
     return 1;
   default:
-    return Fl_Button::handle(event);
+    return Fl_Button.handle(event);
   }
 }
 
 //
-// End of "$Id: Fl_Repeat_Button.cxx 5219 2006-06-21 06:52:10Z matt $".
+// End of "$Id: repeat_button.d 5219 2006-06-21 06:52:10Z matt $".
 //
     End of automatic import -+/

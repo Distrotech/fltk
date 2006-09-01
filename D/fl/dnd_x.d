@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_dnd_x.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -26,10 +25,13 @@
 //     http://www.fltk.org/str.php
 //
 
+module fl.dnd_x;
+
+/+=
 #include <FL/Fl.H>
-#include <FL/Fl_Window.H>
+private import fl.window;
 #include <FL/x.H>
-#include "flstring.h"
+private import fl.flstring;
 
 
 extern Atom fl_XdndAware;
@@ -49,17 +51,17 @@ extern char fl_i_own_selection[2];
 extern char *fl_selection_buffer[2];
 
 extern void fl_sendClientMessage(Window window, Atom message,
-                                 unsigned long d0,
-                                 unsigned long d1=0,
-                                 unsigned long d2=0,
-                                 unsigned long d3=0,
-                                 unsigned long d4=0);
+                                 uint d0,
+                                 uint d1=0,
+                                 uint d2=0,
+                                 uint d3=0,
+                                 uint d4=0);
 
 // return version # of Xdnd this window supports.  Also change the
 // window to the proxy if it uses a proxy:
 static int dnd_aware(Window& window) {
-  Atom actual; int format; unsigned long count, remaining;
-  unsigned char *data = 0;
+  Atom actual; int format; uint count, remaining;
+  ubyte *data = 0;
   XGetWindowProperty(fl_display, window, fl_XdndAware,
 		     0, 4, False, XA_ATOM,
 		     &actual, &format,
@@ -70,39 +72,39 @@ static int dnd_aware(Window& window) {
 }
 
 static int grabfunc(int event) {
-  if (event == FL_RELEASE) Fl::pushed(0);
+  if (event == FL_RELEASE) Fl.pushed(0);
   return 0;
 }
 
 extern int (*fl_local_grab)(int); // in Fl.cxx
 
 // send an event to an fltk window belonging to this program:
-static int local_handle(int event, Fl_Window* window) {
+static int local_handle(int event, Fl_Window  window) {
   fl_local_grab = 0;
-  Fl::e_x = Fl::e_x_root-window->x();
-  Fl::e_y = Fl::e_y_root-window->y();
-  int ret = Fl::handle(event,window);
+  Fl.e_x = Fl.e_x_root-window.x();
+  Fl.e_y = Fl.e_y_root-window.y();
+  int ret = Fl.handle(event,window);
   fl_local_grab = grabfunc;
   return ret;
 }
 
-int Fl::dnd() {
-  Fl_Window *source_fl_win = Fl::first_window();
-  Fl::first_window()->cursor((Fl_Cursor)21);
-  Window source_window = fl_xid(Fl::first_window());
+int Fl.dnd() {
+  Fl_Window  source_fl_win = Fl.first_window();
+  Fl.first_window()->cursor((Fl_Cursor)21);
+  Window source_window = fl_xid(Fl.first_window());
   fl_local_grab = grabfunc;
   Window target_window = 0;
-  Fl_Window* local_window = 0;
+  Fl_Window  local_window = 0;
   int dndversion = 4; int dest_x, dest_y;
   XSetSelectionOwner(fl_display, fl_XdndSelection, fl_message_window, fl_event_time);
 
-  while (Fl::pushed()) {
+  while (Fl.pushed()) {
 
     // figure out what window we are pointing at:
     Window new_window = 0; int new_version = 0;
-    Fl_Window* new_local_window = 0;
+    Fl_Window  new_local_window = 0;
     for (Window child = RootWindow(fl_display, fl_screen);;) {
-      Window root; unsigned int junk3;
+      Window root; uint junk3;
       XQueryPointer(fl_display, child, &root, &child,
 		    &e_x_root, &e_y_root, &dest_x, &dest_y, &junk3);
       if (!child) {
@@ -161,7 +163,7 @@ int Fl::dnd() {
 			   0, (e_x_root<<16)|e_y_root, fl_event_time,
 			   fl_XdndActionCopy);
     }
-    Fl::wait();
+    Fl.wait();
   }
 
   if (local_window) {
@@ -180,8 +182,8 @@ int Fl::dnd() {
     msg.time = fl_event_time+1;
     msg.x = dest_x;
     msg.y = dest_y;
-    msg.x_root = Fl::e_x_root;
-    msg.y_root = Fl::e_y_root;
+    msg.x_root = Fl.e_x_root;
+    msg.y_root = Fl.e_y_root;
     msg.state = 0x0;
     msg.button = Button2;
     XSendEvent(fl_display, target_window, False, 0L, (XEvent*)&msg);
@@ -192,7 +194,7 @@ int Fl::dnd() {
   }
 
   fl_local_grab = 0;
-  source_fl_win->cursor(FL_CURSOR_DEFAULT);
+  source_fl_win.cursor(FL_CURSOR_DEFAULT);
   return 1;
 }
 

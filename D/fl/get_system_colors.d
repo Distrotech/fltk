@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_get_system_colors.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: get_system_colors.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // System color support for the Fast Light Tool Kit (FLTK).
 //
@@ -27,32 +27,32 @@
 //
 
 #include <FL/Fl.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <FL/x.H>
 #include <FL/math.h>
-#include "flstring.h"
+private import fl.flstring;
 #include <stdio.h>
 #include <stdlib.h>
-#include <FL/Fl_Pixmap.H>
-#include <FL/Fl_Tiled_Image.H>
+private import fl.pixmap;
+private import fl.tiled_image;
 #include "tile.xpm"
 
-#if defined(__APPLE__) && defined(__MWERKS__)
-extern "C" int putenv(const char*);
-#endif // __APPLE__ && __MWERKS__
+version (__APPLE__) && defined(__MWERKS__) {
+extern "C" int putenv(char*);
+} // __APPLE__ && __MWERKS__
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+version (WIN32) && !defined(__CYGWIN__) {
 // Visual C++ 2005 incorrectly displays a warning about the use of POSIX APIs
 // on Windows, which is supposed to be POSIX compliant...
-#  define putenv _putenv
-#endif // WIN32 && !__CYGWIN__
+const int putenv = _putenv; 
+} // WIN32 && !__CYGWIN__
 
 static char	fl_bg_set = 0;
 static char	fl_bg2_set = 0;
 static char	fl_fg_set = 0;
 
 
-void Fl::background(uchar r, uchar g, uchar b) {
+void Fl.background(ubyte r, ubyte g, ubyte b) {
   fl_bg_set = 1;
 
   // replace the gray ramp so that FL_GRAY is this color
@@ -64,45 +64,45 @@ void Fl::background(uchar r, uchar g, uchar b) {
   double powb = log(b/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
   for (int i = 0; i < FL_NUM_GRAY; i++) {
     double gray = i/(FL_NUM_GRAY-1.0);
-    Fl::set_color(fl_gray_ramp(i),
-		  uchar(pow(gray,powr)*255+.5),
-		  uchar(pow(gray,powg)*255+.5),
-		  uchar(pow(gray,powb)*255+.5));
+    Fl.set_color(fl_gray_ramp(i),
+		  ubyte(pow(gray,powr)*255+.5),
+		  ubyte(pow(gray,powg)*255+.5),
+		  ubyte(pow(gray,powb)*255+.5));
   }
 }
 
-void Fl::foreground(uchar r, uchar g, uchar b) {
+void Fl.foreground(ubyte r, ubyte g, ubyte b) {
   fl_fg_set = 1;
 
-  Fl::set_color(FL_FOREGROUND_COLOR,r,g,b);
+  Fl.set_color(FL_FOREGROUND_COLOR,r,g,b);
 }
 
-void Fl::background2(uchar r, uchar g, uchar b) {
+void Fl.background2(ubyte r, ubyte g, ubyte b) {
   fl_bg2_set = 1;
 
-  Fl::set_color(FL_BACKGROUND2_COLOR,r,g,b);
-  Fl::set_color(FL_FOREGROUND_COLOR,
+  Fl.set_color(FL_BACKGROUND2_COLOR,r,g,b);
+  Fl.set_color(FL_FOREGROUND_COLOR,
                 get_color(fl_contrast(FL_FOREGROUND_COLOR,FL_BACKGROUND2_COLOR)));
 }
 
-// these are set by Fl::args() and override any system colors:
+// these are set by Fl.args() and override any system colors:
 const char *fl_fg = NULL;
 const char *fl_bg = NULL;
 const char *fl_bg2 = NULL;
 
-static void set_selection_color(uchar r, uchar g, uchar b) {
-  Fl::set_color(FL_SELECTION_COLOR,r,g,b);
+static void set_selection_color(ubyte r, ubyte g, ubyte b) {
+  Fl.set_color(FL_SELECTION_COLOR,r,g,b);
 }
 
-#if defined(WIN32) || defined(__APPLE__)
+version (WIN32) || defined(__APPLE__) {
 
 #  include <stdio.h>
 // simulation of XParseColor:
-int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b) {
+int fl_parse_color(char* p, ubyte& r, ubyte& g, ubyte& b) {
   if (*p == '#') p++;
   int n = strlen(p);
   int m = n/3;
-  const char *pattern = 0;
+  char *pattern = 0;
   switch(m) {
   case 1: pattern = "%1x%1x%1x"; break;
   case 2: pattern = "%2x%2x%2x"; break;
@@ -116,53 +116,53 @@ int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b) {
   case 3: R >>= 4; G >>= 4; B >>= 4; break;
   case 4: R >>= 8; G >>= 8; B >>= 8; break;
   }
-  r = (uchar)R; g = (uchar)G; b = (uchar)B;
+  r = (ubyte)R; g = (ubyte)G; b = (ubyte)B;
   return 1;
 }
-#else
+} else {
 // Wrapper around XParseColor...
-int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b) {
+int fl_parse_color(char* p, ubyte& r, ubyte& g, ubyte& b) {
   XColor x;
   if (!fl_display) fl_open_display();
   if (XParseColor(fl_display, fl_colormap, p, &x)) {
-    r = (uchar)(x.red>>8);
-    g = (uchar)(x.green>>8);
-    b = (uchar)(x.blue>>8);
+    r = (ubyte)(x.red>>8);
+    g = (ubyte)(x.green>>8);
+    b = (ubyte)(x.blue>>8);
     return 1;
   } else return 0;
 }
-#endif // WIN32 || __APPLE__
+} // WIN32 || __APPLE__
 
-#if defined(WIN32)
+version (WIN32) {
 static void
-getsyscolor(int what, const char* arg, void (*func)(uchar,uchar,uchar))
+getsyscolor(int what, char* arg, void (*func)(ubyte,ubyte,ubyte))
 {
   if (arg) {
-    uchar r,g,b;
+    ubyte r,g,b;
     if (!fl_parse_color(arg, r,g,b))
-      Fl::error("Unknown color: %s", arg);
+      Fl.error("Unknown color: %s", arg);
     else
       func(r,g,b);
   } else {
     DWORD x = GetSysColor(what);
-    func(uchar(x&255), uchar(x>>8), uchar(x>>16));
+    func(ubyte(x&255), ubyte(x>>8), ubyte(x>>16));
   }
 }
 
-void Fl::get_system_colors() {
-  if (!fl_bg2_set) getsyscolor(COLOR_WINDOW,	fl_bg2,Fl::background2);
-  if (!fl_fg_set) getsyscolor(COLOR_WINDOWTEXT,	fl_fg, Fl::foreground);
-  if (!fl_bg_set) getsyscolor(COLOR_BTNFACE,	fl_bg, Fl::background);
+void Fl.get_system_colors() {
+  if (!fl_bg2_set) getsyscolor(COLOR_WINDOW,	fl_bg2,Fl.background2);
+  if (!fl_fg_set) getsyscolor(COLOR_WINDOWTEXT,	fl_fg, Fl.foreground);
+  if (!fl_bg_set) getsyscolor(COLOR_BTNFACE,	fl_bg, Fl.background);
   getsyscolor(COLOR_HIGHLIGHT,	0,     set_selection_color);
 }
 
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 // MacOS X currently supports two color schemes - Blue and Graphite.
 // Since we aren't emulating the Aqua interface (even if Apple would
 // let us), we use some defaults that are similar to both.  The
-// Fl::scheme("plastic") color/box scheme provides a usable Aqua-like
+// Fl.scheme("plastic") color/box scheme provides a usable Aqua-like
 // look-n-feel...
-void Fl::get_system_colors()
+void Fl.get_system_colors()
 {
   fl_open_display();
 
@@ -181,11 +181,11 @@ void Fl::get_system_colors()
     set_selection_color(0x00, 0x00, 0x80);
   else
     set_selection_color(c.red, c.green, c.blue);
-#else
+} else {
   set_selection_color(0x00, 0x00, 0x80);
-#endif
 }
-#else
+}
+} else {
 
 // Read colors that KDE writes to the xrdb database.
 
@@ -197,7 +197,7 @@ void Fl::get_system_colors()
 // the same color as the windows).
 
 static void
-getsyscolor(const char *key1, const char* key2, const char *arg, const char *defarg, void (*func)(uchar,uchar,uchar))
+getsyscolor(char *key1, char* key2, char *arg, char *defarg, void (*func)(ubyte,ubyte,ubyte))
 {
   if (!arg) {
     arg = XGetDefault(fl_display, key1, key2);
@@ -205,29 +205,29 @@ getsyscolor(const char *key1, const char* key2, const char *arg, const char *def
   }
   XColor x;
   if (!XParseColor(fl_display, fl_colormap, arg, &x))
-    Fl::error("Unknown color: %s", arg);
+    Fl.error("Unknown color: %s", arg);
   else
     func(x.red>>8, x.green>>8, x.blue>>8);
 }
 
-void Fl::get_system_colors()
+void Fl.get_system_colors()
 {
   fl_open_display();
-  const char* key1 = 0;
-  if (Fl::first_window()) key1 = Fl::first_window()->xclass();
+  char* key1 = 0;
+  if (Fl.first_window()) key1 = Fl.first_window()->xclass();
   if (!key1) key1 = "fltk";
-  if (!fl_bg2_set) getsyscolor("Text","background",	fl_bg2,	"#ffffff", Fl::background2);
-  if (!fl_fg_set) getsyscolor(key1,  "foreground",	fl_fg,	"#000000", Fl::foreground);
-  if (!fl_bg_set) getsyscolor(key1,  "background",	fl_bg,	"#c0c0c0", Fl::background);
+  if (!fl_bg2_set) getsyscolor("Text","background",	fl_bg2,	"#ffffff", Fl.background2);
+  if (!fl_fg_set) getsyscolor(key1,  "foreground",	fl_fg,	"#000000", Fl.foreground);
+  if (!fl_bg_set) getsyscolor(key1,  "background",	fl_bg,	"#c0c0c0", Fl.background);
   getsyscolor(key1,  "selectBackground",0,	"#000080", set_selection_color);
 }
 
-#endif
+}
 
 
-//// Simple implementation of 2.0 Fl::scheme() interface...
-#define D1 BORDER_WIDTH
-#define D2 (BORDER_WIDTH+BORDER_WIDTH)
+//// Simple implementation of 2.0 Fl.scheme() interface...
+const int D1 = BORDER_WIDTH; 
+const int D2 = (BORDER_WIDTH+BORDER_WIDTH); 
 
 extern void	fl_up_box(int, int, int, int, Fl_Color);
 extern void	fl_down_box(int, int, int, int, Fl_Color);
@@ -241,21 +241,21 @@ extern void	fl_down_frame(int, int, int, int, Fl_Color);
 extern void	fl_thin_up_frame(int, int, int, int, Fl_Color);
 extern void	fl_thin_down_frame(int, int, int, int, Fl_Color);
 
-const char	*Fl::scheme_ = (const char *)0;
-Fl_Image	*Fl::scheme_bg_ = (Fl_Image *)0;
+const char	*Fl.scheme_ = (char *)0;
+Fl_Image	 Fl.scheme_bg_ = (Fl_Image  )0;
 
 static Fl_Pixmap	tile(tile_xpm);
 
-int Fl::scheme(const char *s) {
+int Fl.scheme(char *s) {
   if (!s) {
     if ((s = getenv("FLTK_SCHEME")) == NULL) {
 #if !defined(WIN32) && !defined(__APPLE__)
-      const char* key = 0;
-      if (Fl::first_window()) key = Fl::first_window()->xclass();
+      char* key = 0;
+      if (Fl.first_window()) key = Fl.first_window()->xclass();
       if (!key) key = "fltk";
       fl_open_display();
       s = XGetDefault(fl_display, key, "scheme");
-#endif // !WIN32 && !__APPLE__
+} // !WIN32 && !__APPLE__
     }
   }
 
@@ -277,17 +277,17 @@ int Fl::scheme(const char *s) {
   return reload_scheme();
 }
 
-int Fl::reload_scheme() {
-  Fl_Window *win;
+int Fl.reload_scheme() {
+  Fl_Window  win;
 
   if (scheme_ && !strcasecmp(scheme_, "plastic")) {
     // Update the tile image to match the background color...
-    uchar r, g, b;
+    ubyte r, g, b;
     int nr, ng, nb;
     int i;
-//    static uchar levels[3] = { 0xff, 0xef, 0xe8 };
+//    static ubyte levels[3] = { 0xff, 0xef, 0xe8 };
     // OSX 10.3 and higher use a background with less contrast...
-    static uchar levels[3] = { 0xff, 0xf8, 0xf4 };
+    static ubyte levels[3] = { 0xff, 0xf8, 0xf4 };
 
     get_color(FL_GRAY, r, g, b);
 
@@ -327,7 +327,7 @@ int Fl::reload_scheme() {
     // Use the standard FLTK look-n-feel...
     if (scheme_bg_) {
       delete scheme_bg_;
-      scheme_bg_ = (Fl_Image *)0;
+      scheme_bg_ = (Fl_Image  )0;
     }
 
     set_boxtype(FL_UP_FRAME,        fl_up_frame, D1, D1, D2, D2);
@@ -345,10 +345,10 @@ int Fl::reload_scheme() {
 
   // Set (or clear) the background tile for all windows...
   for (win = first_window(); win; win = next_window(win)) {
-    win->labeltype(scheme_bg_ ? FL_NORMAL_LABEL : FL_NO_LABEL);
-    win->align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
-    win->image(scheme_bg_);
-    win->redraw();
+    win.labeltype(scheme_bg_ ? FL_NORMAL_LABEL : FL_NO_LABEL);
+    win.alignment(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
+    win.image(scheme_bg_);
+    win.redraw();
   }
 
   return 1;
@@ -356,6 +356,6 @@ int Fl::reload_scheme() {
 
 
 //
-// End of "$Id: Fl_get_system_colors.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: get_system_colors.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

@@ -26,7 +26,7 @@
 //     http://www.fltk.org/str.php
 //
 
-Fl_FontSize::Fl_FontSize(const char* name, int size) {
+Fl_FontSize.Fl_FontSize(char* name, int size) {
   int weight = FW_NORMAL;
   int italic = 0;
   switch (*name++) {
@@ -55,16 +55,16 @@ Fl_FontSize::Fl_FontSize(const char* name, int size) {
   if (!fl_gc) fl_GetDC(0);
   SelectObject(fl_gc, fid);
   GetTextMetrics(fl_gc, &metr);
-//  BOOL ret = GetCharWidthFloat(fl_gc, metr.tmFirstChar, metr.tmLastChar, font->width+metr.tmFirstChar);
+//  BOOL ret = GetCharWidthFloat(fl_gc, metr.tmFirstChar, metr.tmLastChar, font.width+metr.tmFirstChar);
 // ...would be the right call, but is not implemented into Window95! (WinNT?)
   GetCharWidth(fl_gc, 0, 255, width);
 #if HAVE_GL
   listbase = 0;
-#endif
+}
   minsize = maxsize = size;
 }
 
-Fl_FontSize* fl_fontsize;
+Fl_FontSize  fl_fontsize;
 
 Fl_FontSize::~Fl_FontSize() {
 #if HAVE_GL
@@ -72,12 +72,12 @@ Fl_FontSize::~Fl_FontSize() {
 // as it will link in GL unnecessarily.  There should be some kind
 // of "free" routine pointer, or a subclass?
 // if (listbase) {
-//  int base = font->min_char_or_byte2;
-//  int size = font->max_char_or_byte2-base+1;
+//  int base = font.min_char_or_byte2;
+//  int size = font.max_char_or_byte2-base+1;
 //  int base = 0; int size = 256;
 //  glDeleteLists(listbase+base,size);
 // }
-#endif
+}
   if (this == fl_fontsize) fl_fontsize = 0;
   DeleteObject(fid);
 }
@@ -105,17 +105,17 @@ static Fl_Fontdesc built_in_table[] = {
 {" Wingdings"},
 };
 
-Fl_Fontdesc* fl_fonts = built_in_table;
+Fl_Fontdesc  fl_fonts = built_in_table;
 
-static Fl_FontSize* find(int fnum, int size) {
-  Fl_Fontdesc* s = fl_fonts+fnum;
-  if (!s->name) s = fl_fonts; // use 0 if fnum undefined
-  Fl_FontSize* f;
-  for (f = s->first; f; f = f->next)
-    if (f->minsize <= size && f->maxsize >= size) return f;
-  f = new Fl_FontSize(s->name, size);
-  f->next = s->first;
-  s->first = f;
+static Fl_FontSize  find(int fnum, int size) {
+  Fl_Fontdesc  s = fl_fonts+fnum;
+  if (!s.name) s = fl_fonts; // use 0 if fnum undefined
+  Fl_FontSize  f;
+  for (f = s.first; f; f = f.next)
+    if (f.minsize <= size && f.maxsize >= size) return f;
+  f = new Fl_FontSize(s.name, size);
+  f.next = s.first;
+  s.first = f;
   return f;
 }
 
@@ -133,35 +133,35 @@ void fl_font(int fnum, int size) {
 }
 
 int fl_height() {
-  if (fl_fontsize) return (fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent);
+  if (fl_fontsize) return (fl_fontsize.metr.tmAscent + fl_fontsize.metr.tmDescent);
   else return -1;
 }
 
 int fl_descent() {
-  if (fl_fontsize) return fl_fontsize->metr.tmDescent;
+  if (fl_fontsize) return fl_fontsize.metr.tmDescent;
   else return -1;
 }
 
-double fl_width(const char* c, int n) {
+double fl_width(char* c, int n) {
   if (!fl_fontsize) return -1.0;
   double w = 0.0;
-  while (n--) w += fl_fontsize->width[uchar(*c++)];
+  while (n--) w += fl_fontsize.width[ubyte(*c++)];
   return w;
 }
 
-double fl_width(uchar c) {
-  if (fl_fontsize) return fl_fontsize->width[c];
+double fl_width(ubyte c) {
+  if (fl_fontsize) return fl_fontsize.width[c];
   else return -1.0;
 }
 
-void fl_draw(const char* str, int n, int x, int y) {
+void fl_draw(char* str, int n, int x, int y) {
   COLORREF oldColor = SetTextColor(fl_gc, fl_RGB());
-  if (fl_fontsize) SelectObject(fl_gc, fl_fontsize->fid);
+  if (fl_fontsize) SelectObject(fl_gc, fl_fontsize.fid);
   TextOut(fl_gc, x, y, str, n);
   SetTextColor(fl_gc, oldColor);
 }
 
-void fl_draw(const char* str, int n, float x, float y) {
+void fl_draw(char* str, int n, float x, float y) {
   fl_draw(str, n, (int)x, (int)y);
 }
 

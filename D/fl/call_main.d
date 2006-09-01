@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 /*
- * "$Id: fl_call_main.c 4288 2005-04-16 00:13:17Z mike $"
+ * "$Id: fl_call_main.c 5274 2006-08-02 18:03:10Z mike $"
  *
  * Copyright 1998-2005 by Bill Spitzak and others.
  *
@@ -47,28 +46,31 @@
  * Microsoft(r) Windows(r) that allows for it.
  */
 
-#if defined(WIN32) && !defined(FL_DLL) && !defined (__GNUC__)
+module fl.call_main;
+
+/+=
+version (WIN32) && !defined(FL_DLL) && !defined (__GNUC__) {
 
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef __MWERKS__
+version (__MWERKS__) {
 # include <crtl.h>
-#endif
+}
 
 extern int main(int, char *[]);
 
-#ifdef BORLAND5
-# define __argc _argc
-# define __argv _argv
-#endif
+version (BORLAND5) {
+const int __argc = _argc; 
+const int __argv = _argv; 
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                              LPSTR lpCmdLine, int nCmdShow) {
   int rc;
 
-#ifdef _DEBUG
+version (_DEBUG) {
  /*
   * If we are using compiling in debug mode, open a console window so
   * we can see any printf's, etc...
@@ -83,27 +85,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   freopen("conin$", "r", stdin);
   freopen("conout$", "w", stdout);
   freopen("conout$", "w", stderr);
-#endif /* _DEBUG */
+} /* _DEBUG */
 
   /* Run the standard main entry point function... */
   rc = main(__argc, __argv);
 
-#ifdef _DEBUG
+version (_DEBUG) {
   fclose(stdin);
   fclose(stdout);
   fclose(stderr);
-#endif /* _DEBUG */
+} /* _DEBUG */
 
   return rc;
 }
 
-#else
+} else {
 /* This code to prevent "empty translation unit" or similar warnings... */
-static void dummy(void) {dummy();}
-#endif
+static void dummy(void) {}
+}
 
 /*
- * End of "$Id: fl_call_main.c 4288 2005-04-16 00:13:17Z mike $".
+ * End of "$Id: fl_call_main.c 5274 2006-08-02 18:03:10Z mike $".
  */
 
     End of automatic import -+/

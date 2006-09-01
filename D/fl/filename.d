@@ -26,39 +26,39 @@
  *     http://www.fltk.org/str.php
  */
 
-#ifndef FL_FILENAME_H
+version (!FL_FILENAME_H) {
 #  define FL_FILENAME_H
 
-#  include "Fl_Export.H"
+public import fl.export;
 
-#  define FL_PATH_MAX 256 /* all buffers are this length */
+const int FL_PATH_MAX = 256;  /* all buffers are this length */
 
-FL_EXPORT const char *fl_filename_name(const char *);
-FL_EXPORT const char *fl_filename_ext(const char *);
-FL_EXPORT char *fl_filename_setext(char *to, int tolen, const char *ext);
-FL_EXPORT int fl_filename_expand(char *to, int tolen, const char *from);
-FL_EXPORT int fl_filename_absolute(char *to, int tolen, const char *from);
-FL_EXPORT int fl_filename_relative(char *to, int tolen, const char *from);
-FL_EXPORT int fl_filename_match(const char *name, const char *pattern);
-FL_EXPORT int fl_filename_isdir(const char *name);
+const char *fl_filename_name(char *);
+const char *fl_filename_ext(char *);
+char *fl_filename_setext(char *to, int tolen, char *ext);
+int fl_filename_expand(char *to, int tolen, char *from);
+int fl_filename_absolute(char *to, int tolen, char *from);
+int fl_filename_relative(char *to, int tolen, char *from);
+int fl_filename_match(char *name, char *pattern);
+int fl_filename_isdir(char *name);
 
-#  ifdef __cplusplus
+version (__cplusplus) {
 /*
  * Under WIN32, we include filename.H from numericsort.c; this should probably change...
  */
 
-inline char *fl_filename_setext(char *to, const char *ext) { return fl_filename_setext(to, FL_PATH_MAX, ext); }
-inline int fl_filename_expand(char *to, const char *from) { return fl_filename_expand(to, FL_PATH_MAX, from); }
-inline int fl_filename_absolute(char *to, const char *from) { return fl_filename_absolute(to, FL_PATH_MAX, from); }
-inline int fl_filename_relative(char *to, const char *from) { return fl_filename_relative(to, FL_PATH_MAX, from); }
-#  endif /* __cplusplus */
+char *fl_filename_setext(char *to, char *ext) { return fl_filename_setext(to, FL_PATH_MAX, ext); }
+int fl_filename_expand(char *to, char *from) { return fl_filename_expand(to, FL_PATH_MAX, from); }
+int fl_filename_absolute(char *to, char *from) { return fl_filename_absolute(to, FL_PATH_MAX, from); }
+int fl_filename_relative(char *to, char *from) { return fl_filename_relative(to, FL_PATH_MAX, from); }
+} /* __cplusplus */
 
 
-#  if defined(WIN32) && !defined(__CYGWIN__) && !defined(__WATCOMC__)
+version (WIN32) && !defined(__CYGWIN__) && !defined(__WATCOMC__) {
 
 struct dirent {char d_name[1];};
 
-#  elif defined(__APPLE__) && defined(__PROJECTBUILDER__)
+} else version (__APPLE__) && defined(__PROJECTBUILDER__) {
 
 /* Apple's ProjectBuilder has the nasty habit of including recursively
  * down the file tree. To avoid re-including <FL/dirent.h> we must 
@@ -69,11 +69,11 @@ struct dirent {char d_name[1];};
 #    include <sys/types.h>
 #    include "/usr/include/dirent.h"
 
-#  elif defined(__WATCOMC__)
+} else version (__WATCOMC__) {
 #    include <sys/types.h>
 #    include <direct.h>
 
-#  else
+} else {
 /*
  * WARNING: on some systems (very few nowadays?) <dirent.h> may not exist.
  * The correct information is in one of these files:
@@ -90,49 +90,49 @@ struct dirent {char d_name[1];};
  */
 #    include <sys/types.h>
 #    include <dirent.h>
-#  endif
+}
 
-#  ifdef __cplusplus
+version (__cplusplus) {
 extern "C" {
-#  endif /* __cplusplus */
+} /* __cplusplus */
 
-FL_EXPORT int fl_alphasort(struct dirent **, struct dirent **);
-FL_EXPORT int fl_casealphasort(struct dirent **, struct dirent **);
-FL_EXPORT int fl_casenumericsort(struct dirent **, struct dirent **);
-FL_EXPORT int fl_numericsort(struct dirent **, struct dirent **);
+int fl_alphasort(struct dirent **, struct dirent **);
+int fl_casealphasort(struct dirent **, struct dirent **);
+int fl_casenumericsort(struct dirent **, struct dirent **);
+int fl_numericsort(struct dirent **, struct dirent **);
 
-typedef int (Fl_File_Sort_F)(struct dirent **, struct dirent **);
+alias int (Fl_File_Sort_F)(struct dirent **, struct dirent **);
 
-#  ifdef __cplusplus
+version (__cplusplus) {
 }
 
 /*
  * Portable "scandir" function.  Ugly but necessary...
  */
 
-FL_EXPORT int fl_filename_list(const char *d, struct dirent ***l,
-                               Fl_File_Sort_F *s = fl_numericsort);
-#  endif /* __cplusplus */
+int fl_filename_list(char *d, struct dirent ***l,
+                               Fl_File_Sort_F  s = fl_numericsort);
+} /* __cplusplus */
 
 /*
  * FLTK 1.0.x compatibility definitions...
  */
 
-#  ifdef FLTK_1_0_COMPAT
-#    define filename_absolute	fl_filename_absolute
-#    define filename_expand	fl_filename_expand
-#    define filename_ext	fl_filename_ext
-#    define filename_isdir	fl_filename_isdir
-#    define filename_list	fl_filename_list
-#    define filename_match	fl_filename_match
-#    define filename_name	fl_filename_name
-#    define filename_relative	fl_filename_relative
-#    define filename_setext	fl_filename_setext
-#    define numericsort		fl_numericsort
-#  endif /* FLTK_1_0_COMPAT */
+version (FLTK_1_0_COMPAT) {
+const int filename_absolute = fl_filename_absolute; 
+const int filename_expand = fl_filename_expand; 
+const int filename_ext = fl_filename_ext; 
+const int filename_isdir = fl_filename_isdir; 
+const int filename_list = fl_filename_list; 
+const int filename_match = fl_filename_match; 
+const int filename_name = fl_filename_name; 
+const int filename_relative = fl_filename_relative; 
+const int filename_setext = fl_filename_setext; 
+const int numericsort = fl_numericsort; 
+} /* FLTK_1_0_COMPAT */
 
 
-#endif /* FL_FILENAME_H */
+} /* FL_FILENAME_H */
 
 /*
  * End of "$Id: filename.H 4548 2005-08-29 20:16:36Z matt $".

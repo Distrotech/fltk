@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Chart.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: chart.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Forms chart header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,76 +25,76 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Chart_H
-#define Fl_Chart_H
+module fl.chart;
+/+=
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
+module fl.widget;
+public import fl.widget;
+}
 
 // values for type()
-#define FL_BAR_CHART		0
-#define FL_HORBAR_CHART		1
-#define FL_LINE_CHART		2
-#define FL_FILL_CHART		3
-#define FL_SPIKE_CHART		4
-#define FL_PIE_CHART		5
-#define FL_SPECIALPIE_CHART	6
+const int FL_BAR_CHART = 0; 
+const int FL_HORBAR_CHART = 1; 
+const int FL_LINE_CHART = 2; 
+const int FL_FILL_CHART = 3; 
+const int FL_SPIKE_CHART = 4; 
+const int FL_PIE_CHART = 5; 
+const int FL_SPECIALPIE_CHART = 6; 
 
-#define FL_FILLED_CHART  FL_FILL_CHART	// compatibility
+const int FL_FILLED_CHART = FL_FILL_CHART; 	// compatibility
 
-#define FL_CHART_MAX		128
-#define FL_CHART_LABEL_MAX	18
+const int FL_CHART_MAX = 128; 
+const int FL_CHART_LABEL_MAX = 18; 
 
 struct FL_CHART_ENTRY {
    float val;
-   unsigned col;
+   uint col;
    char str[FL_CHART_LABEL_MAX+1];
 };
 
-class FL_EXPORT Fl_Chart : public Fl_Widget {
+class Fl_Chart : Fl_Widget {
     int numb;
     int maxnumb;
     int sizenumb;
     FL_CHART_ENTRY *entries;
     double min,max;
-    uchar autosize_;
-    uchar textfont_,textsize_;
-    unsigned textcolor_;
+    ubyte autosize_;
+    ubyte textfont_,textsize_;
+    uint textcolor_;
 protected:
     void draw();
 public:
-    Fl_Chart(int,int,int,int,const char * = 0);
+    Fl_Chart(int,int,int,int,char * = 0);
     ~Fl_Chart();
     void clear();
-    void add(double, const char * =0, unsigned=0);
-    void insert(int, double, const char * =0, unsigned=0);
-    void replace(int, double, const char * =0, unsigned=0);
-    void bounds(double *a,double *b) const {*a = min; *b = max;}
+    void add(double, char * =0, uint=0);
+    void insert(int, double, char * =0, uint=0);
+    void replace(int, double, char * =0, uint=0);
+    void bounds(double *a,double *b) {*a = min; *b = max;}
     void bounds(double a,double b);
-    int size() const {return numb;}
-    void size(int W, int H) { Fl_Widget::size(W, H); }
-    int maxsize() const {return maxnumb;}
+    int size() {return numb;}
+    void size(int W, int H) { Fl_Widget.size(W, H); }
+    int maxsize() {return maxnumb;}
     void maxsize(int);
-    Fl_Font textfont() const {return (Fl_Font)textfont_;}
-    void textfont(uchar s) {textfont_ = s;}
-    uchar textsize() const {return textsize_;}
-    void textsize(uchar s) {textsize_ = s;}
-    Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-    void textcolor(unsigned n) {textcolor_ = n;}
-    uchar autosize() const {return autosize_;}
-    void autosize(uchar n) {autosize_ = n;}
+    Fl_Font textfont() {return (Fl_Font)textfont_;}
+    void textfont(ubyte s) {textfont_ = s;}
+    ubyte textsize() {return textsize_;}
+    void textsize(ubyte s) {textsize_ = s;}
+    Fl_Color textcolor() {return (Fl_Color)textcolor_;}
+    void textcolor(uint n) {textcolor_ = n;}
+    ubyte autosize() {return autosize_;}
+    void autosize(ubyte n) {autosize_ = n;}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Chart.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: chart.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Chart.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: chart.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Forms-compatible chart widget for the Fast Light Tool Kit (FLTK).
 //
@@ -123,12 +122,12 @@ public:
 
 #include <FL/math.h>
 #include <FL/Fl.H>
-#include <FL/Fl_Chart.H>
-#include <FL/fl_draw.H>
-#include "flstring.h"
+private import fl.chart;
+private import fl.draw;
+private import fl.flstring;
 #include <stdlib.h>
 
-#define ARCINC	(2.0*M_PI/360.0)
+const int ARCINC = (2.0*M_PI/360.0); 
 
 // this function is in fl_boxtype.cxx:
 void fl_rectbound(int x,int y,int w,int h, Fl_Color color);
@@ -326,14 +325,14 @@ static void draw_piechart(int x,int y,int w,int h,
     }
 }
 
-void Fl_Chart::draw() {
+void Fl_Chart.draw() {
 
     draw_box();
     Fl_Boxtype b = box();
-    int xx = x()+Fl::box_dx(b); // was 9 instead of dx...
-    int yy = y()+Fl::box_dy(b);
-    int ww = w()-Fl::box_dw(b);
-    int hh = h()-Fl::box_dh(b);
+    int xx = x()+Fl.box_dx(b); // was 9 instead of dx...
+    int yy = y()+Fl.box_dy(b);
+    int ww = w()-Fl.box_dw(b);
+    int hh = h()-Fl.box_dh(b);
     fl_push_clip(xx, yy, ww, hh);
 
     ww--; hh--; // adjust for line thickness
@@ -376,15 +375,15 @@ void Fl_Chart::draw() {
 
 /*------------------------------*/
 
-#define FL_CHART_BOXTYPE	FL_BORDER_BOX
-#define FL_CHART_COL1		FL_COL1
-#define FL_CHART_LCOL		FL_LCOL
-#define FL_CHART_ALIGN		FL_ALIGN_BOTTOM
+const int FL_CHART_BOXTYPE = FL_BORDER_BOX; 
+const int FL_CHART_COL1 = FL_COL1; 
+const int FL_CHART_LCOL = FL_LCOL; 
+const int FL_CHART_ALIGN = FL_ALIGN_BOTTOM; 
 
-Fl_Chart::Fl_Chart(int X, int Y, int W, int H,const char *l) :
+Fl_Chart.Fl_Chart(int X, int Y, int W, int H,char *l) :
 Fl_Widget(X,Y,W,H,l) {
   box(FL_BORDER_BOX);
-  align(FL_ALIGN_BOTTOM);
+  alignment(FL_ALIGN_BOTTOM);
   numb       = 0;
   maxnumb    = 0;
   sizenumb   = FL_CHART_MAX;
@@ -400,12 +399,12 @@ Fl_Chart::~Fl_Chart() {
   free(entries);
 }
 
-void Fl_Chart::clear() {
+void Fl_Chart.clear() {
   numb = 0;
   redraw();
 }
 
-void Fl_Chart::add(double val, const char *str, unsigned col) {
+void Fl_Chart.add(double val, char *str, uint col) {
   /* Allocate more entries if required */
   if (numb >= sizenumb) {
     sizenumb += FL_CHART_MAX;
@@ -427,7 +426,7 @@ void Fl_Chart::add(double val, const char *str, unsigned col) {
   redraw();
 }
 
-void Fl_Chart::insert(int ind, double val, const char *str, unsigned col) {
+void Fl_Chart.insert(int ind, double val, char *str, uint col) {
   int i;
   if (ind < 1 || ind > numb+1) return;
   /* Allocate more entries if required */
@@ -449,7 +448,7 @@ void Fl_Chart::insert(int ind, double val, const char *str, unsigned col) {
   redraw();
 }
 
-void Fl_Chart::replace(int ind,double val, const char *str, unsigned col) {
+void Fl_Chart.replace(int ind,double val, char *str, uint col) {
   if (ind < 1 || ind > numb) return;
   entries[ind-1].val = float(val);
   entries[ind-1].col = col;
@@ -461,13 +460,13 @@ void Fl_Chart::replace(int ind,double val, const char *str, unsigned col) {
   redraw();
 }
 
-void Fl_Chart::bounds(double mymin, double mymax) {
-  this->min = mymin;
-  this->max = mymax;
+void Fl_Chart.bounds(double mymin, double mymax) {
+  this.min = mymin;
+  this.max = mymax;
   redraw();
 }
 
-void Fl_Chart::maxsize(int m) {
+void Fl_Chart.maxsize(int m) {
   int i;
   /* Fill in the new number */
   if (m < 0) return;
@@ -482,6 +481,6 @@ void Fl_Chart::maxsize(int m) {
 }
 
 //
-// End of "$Id: Fl_Chart.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: chart.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

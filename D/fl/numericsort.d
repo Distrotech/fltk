@@ -37,21 +37,21 @@
 #include <FL/filename.H>
 
 #if !defined(WIN32) || defined(__CYGWIN__)
-#  ifdef HAVE_DIRENT_H
+version (HAVE_DIRENT_H) {
 #    include <dirent.h>
-#  else
-#    define dirent direct
+} else {
+const int dirent = direct; 
 #    if HAVE_SYS_NDIR_H
 #      include <sys/ndir.h>
-#    endif /* HAVE_SYS_NDIR_H */
+} /* HAVE_SYS_NDIR_H */
 #    if HAVE_SYS_DIR_H
 #      include <sys/dir.h>
-#    endif /* HAVE_SYS_DIR_H */
+} /* HAVE_SYS_DIR_H */
 #    if HAVE_NDIR_H
 #      include <ndir.h>
-#    endif /* HAVE_NDIR_H */
-#  endif /* HAVE_DIRENT_H */
-#endif /* !WIN32 || __CYGWIN__ */
+} /* HAVE_NDIR_H */
+} /* HAVE_DIRENT_H */
+} /* !WIN32 || __CYGWIN__ */
 
 /*
  * 'numericsort()' - Compare two directory entries, possibly with
@@ -59,8 +59,8 @@
  */
 
 static int numericsort(struct dirent **A, struct dirent **B, int cs) {
-  const char* a = (*A)->d_name;
-  const char* b = (*B)->d_name;
+  char* a = (*A)->d_name;
+  char* b = (*B)->d_name;
   int ret = 0;
   for (;;) {
     if (isdigit(*a & 255) && isdigit(*b & 255)) {

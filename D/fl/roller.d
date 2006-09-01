@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Roller.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: roller.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Roller header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,30 +26,30 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Roller_H
-#define Fl_Roller_H
+module fl.roller;
 
-#ifndef Fl_Valuator_H
-#include "Fl_Valuator.H"
-#endif
 
-class FL_EXPORT Fl_Roller : public Fl_Valuator {
+module fl.valuator;
+public import fl.valuator;
+}
+
+class Fl_Roller : Fl_Valuator {
 protected:
   void draw();
 public:
   int handle(int);
-  Fl_Roller(int X,int Y,int W,int H,const char* L=0);
+  Fl_Roller(int X,int Y,int W,int H,char* L=0);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Roller.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: roller.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Roller.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: roller.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Roller widget for the Fast Light Tool Kit (FLTK).
 //
@@ -78,17 +78,17 @@ public:
 // Rapid-App style knob
 
 #include <FL/Fl.H>
-#include <FL/Fl_Roller.H>
-#include <FL/fl_draw.H>
+private import fl.roller;
+private import fl.draw;
 #include <math.h>
 
-int Fl_Roller::handle(int event) {
+int Fl_Roller.handle(int event) {
   static int ipos;
-  int newpos = horizontal() ? Fl::event_x() : Fl::event_y();
+  int newpos = horizontal() ? Fl.event_x() : Fl.event_y();
   switch (event) {
   case FL_PUSH:
-    if (Fl::visible_focus()) {
-      Fl::focus(this);
+    if (Fl.visible_focus()) {
+      Fl.focus(this);
       redraw();
     }
     handle_push();
@@ -101,7 +101,7 @@ int Fl_Roller::handle(int event) {
     handle_release();
     return 1;
   case FL_KEYBOARD :
-    switch (Fl::event_key()) {
+    switch (Fl.event_key()) {
       case FL_Up:
         if (horizontal()) return 0;
 	handle_drag(clamp(increment(value(),-1)));
@@ -124,7 +124,7 @@ int Fl_Roller::handle(int event) {
     // break not required because of switch...
   case FL_FOCUS :
   case FL_UNFOCUS :
-    if (Fl::visible_focus()) {
+    if (Fl.visible_focus()) {
       redraw();
       return 1;
     } else return 0;
@@ -136,16 +136,16 @@ int Fl_Roller::handle(int event) {
   }
 }
 
-void Fl_Roller::draw() {
+void Fl_Roller.draw() {
   if (damage()&FL_DAMAGE_ALL) draw_box();
-  int X = x()+Fl::box_dx(box());
-  int Y = y()+Fl::box_dy(box());
-  int W = w()-Fl::box_dw(box())-1;
-  int H = h()-Fl::box_dh(box())-1;
+  int X = x()+Fl.box_dx(box());
+  int Y = y()+Fl.box_dy(box());
+  int W = w()-Fl.box_dw(box())-1;
+  int H = h()-Fl.box_dh(box())-1;
   if (W<=0 || H <=0) return;
   int offset = step() ? int(value()/step()) : 0;
-  const double ARC = 1.5; // 1/2 the number of radians visible
-  const double delta = .2; // radians per knurl
+  double ARC = 1.5; // 1/2 the number of radians visible
+  double delta = .2; // radians per knurl
   if (horizontal()) { // horizontal one
     // draw shaded ends of wheel:
     int h1 = W/4+1; // distance from end that shading starts
@@ -216,16 +216,16 @@ void Fl_Roller::draw() {
     }
   }
 
-  if (Fl::focus() == this) draw_focus(FL_THIN_UP_FRAME, x(), y(), w(), h());
+  if (Fl.focus() == this) draw_focus(FL_THIN_UP_FRAME, x(), y(), w(), h());
 }
 
-Fl_Roller::Fl_Roller(int X,int Y,int W,int H,const char* L)
+Fl_Roller.Fl_Roller(int X,int Y,int W,int H,char* L)
   : Fl_Valuator(X,Y,W,H,L) {
   box(FL_UP_BOX);
   step(1,1000);
 }
 
 //
-// End of "$Id: Fl_Roller.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: roller.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

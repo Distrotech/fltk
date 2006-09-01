@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Help_View.H 5207 2006-06-18 15:53:26Z matt $"
+// "$Id: help_view.d 5207 2006-06-18 15:53:26Z matt $"
 //
 // Help Viewer widget definitions.
 //
@@ -27,19 +27,19 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Help_View_H
-#  define Fl_Help_View_H
+module fl.help_view;
+
 
 //
 // Include necessary header files...
 //
 
 #  include <stdio.h>
-#  include "Fl.H"
-#  include "Fl_Group.H"
-#  include "Fl_Scrollbar.H"
-#  include "fl_draw.H"
-#  include "Fl_Shared_Image.H"
+public import fl.fl;
+public import fl.group;
+public import fl.scrollbar;
+public import fl.fl_draw;
+public import fl.shared_image;
 
 
 //
@@ -47,7 +47,7 @@
 //
 
 
-typedef const char *(Fl_Help_Func)(Fl_Widget *, const char *);
+alias char *(Fl_Help_Func)(Fl_Widget  , char *);
 
 
 //
@@ -56,9 +56,9 @@ typedef const char *(Fl_Help_Func)(Fl_Widget *, const char *);
 
 struct Fl_Help_Block
 {
-  const char	*start,		// Start of text
+  char	*start,		// Start of text
 		*end;		// End of text
-  uchar		border;		// Draw border?
+  ubyte		border;		// Draw border?
   Fl_Color	bgcolor;	// Background color
   int		x,		// Indentation/starting X coordinate
 		y,		// Starting Y coordinate
@@ -95,7 +95,7 @@ struct Fl_Help_Target
 // Fl_Help_View class...
 //
 
-class FL_EXPORT Fl_Help_View : public Fl_Group	//// Help viewer widget
+class Fl_Help_View : Fl_Group	//// Help viewer widget
 {
   enum { RIGHT = -1, CENTER, LEFT };	// Alignments
 
@@ -104,26 +104,26 @@ class FL_EXPORT Fl_Help_View : public Fl_Group	//// Help viewer widget
 		bgcolor_,		// Background color
 		textcolor_,		// Text color
 		linkcolor_;		// Link color
-  uchar		textfont_,		// Default font for text
+  ubyte		textfont_,		// Default font for text
 		textsize_;		// Default font size
-  const char	*value_;		// HTML text value
+  char	*value_;		// HTML text value
 
   int		nblocks_,		// Number of blocks/paragraphs
 		ablocks_;		// Allocated blocks
-  Fl_Help_Block	*blocks_;		// Blocks
+  Fl_Help_Block	 blocks_;		// Blocks
 
   int		nfonts_;		// Number of fonts in stack
-  uchar		fonts_[100][2];		// Font stack
+  ubyte		fonts_[100][2];		// Font stack
 
-  Fl_Help_Func	*link_;			// Link transform function
+  Fl_Help_Func	 link_;			// Link transform function
 
   int		nlinks_,		// Number of links
 		alinks_;		// Allocated links
-  Fl_Help_Link	*links_;		// Links
+  Fl_Help_Link	 links_;		// Links
 
   int		ntargets_,		// Number of targets
 		atargets_;		// Allocated targets
-  Fl_Help_Target *targets_;		// Targets
+  Fl_Help_Target  targets_;		// Targets
 
   char		directory_[1024];	// Directory for current file
   char		filename_[1024];	// Current filename
@@ -145,84 +145,84 @@ class FL_EXPORT Fl_Help_View : public Fl_Group	//// Help viewer widget
   static int    mouse_x;
   static int    mouse_y;
   static int    current_pos;
-  static Fl_Help_View *current_view;
+  static Fl_Help_View  current_view;
   static Fl_Color hv_selection_color;
   static Fl_Color hv_selection_text_color;
 
-  Fl_Help_Block	*add_block(const char *s, int xx, int yy, int ww, int hh, uchar border = 0);
-  void		add_link(const char *n, int xx, int yy, int ww, int hh);
-  void		add_target(const char *n, int yy);
-  static int	compare_targets(const Fl_Help_Target *t0, const Fl_Help_Target *t1);
-  int		do_align(Fl_Help_Block *block, int line, int xx, int a, int &l);
+  Fl_Help_Block	 add_block(char *s, int xx, int yy, int ww, int hh, ubyte border = 0);
+  void		add_link(char *n, int xx, int yy, int ww, int hh);
+  void		add_target(char *n, int yy);
+  static int	compare_targets(Fl_Help_Target  t0, Fl_Help_Target  t1);
+  int		do_align(Fl_Help_Block  block, int line, int xx, int a, int &l);
   void		draw();
   void		format();
-  void		format_table(int *table_width, int *columns, const char *table);
-  int		get_align(const char *p, int a);
-  const char	*get_attr(const char *p, const char *n, char *buf, int bufsize);
-  Fl_Color	get_color(const char *n, Fl_Color c);
-  Fl_Shared_Image *get_image(const char *name, int W, int H);
-  int		get_length(const char *l);
+  void		format_table(int *table_width, int *columns, char *table);
+  int		get_align(char *p, int a);
+  char	*get_attr(char *p, char *n, char *buf, int bufsize);
+  Fl_Color	get_color(char *n, Fl_Color c);
+  Fl_Shared_Image  get_image(char *name, int W, int H);
+  int		get_length(char *l);
   int		handle(int);
 
-  void		initfont(uchar &f, uchar &s) { nfonts_ = 0;
+  void		initfont(ubyte &f, ubyte &s) { nfonts_ = 0;
 			fl_font(f = fonts_[0][0] = textfont_,
 			        s = fonts_[0][1] = textsize_); }
-  void		pushfont(uchar f, uchar s) { if (nfonts_ < 99) nfonts_ ++;
+  void		pushfont(ubyte f, ubyte s) { if (nfonts_ < 99) nfonts_ ++;
 			fl_font(fonts_[nfonts_][0] = f,
 			        fonts_[nfonts_][1] = s); }
-  void		popfont(uchar &f, uchar &s) { if (nfonts_ > 0) nfonts_ --;
+  void		popfont(ubyte &f, ubyte &s) { if (nfonts_ > 0) nfonts_ --;
 			fl_font(f = fonts_[nfonts_][0],
 			        s = fonts_[nfonts_][1]); }
 
-  void          hv_draw(const char *t, int x, int y);
+  void          hv_draw(char *t, int x, int y);
   char          begin_selection();
   char          extend_selection();
   void          end_selection(int c=0);
   void          clear_global_selection();
-  Fl_Help_Link  *find_link(int, int);
-  void          follow_link(Fl_Help_Link*);
+  Fl_Help_Link   find_link(int, int);
+  void          follow_link(Fl_Help_Link );
 
 public:
 
-  Fl_Help_View(int xx, int yy, int ww, int hh, const char *l = 0);
+  Fl_Help_View(int xx, int yy, int ww, int hh, char *l = 0);
   ~Fl_Help_View();
-  const char	*directory() const { if (directory_[0]) return (directory_);
-  					else return ((const char *)0); }
-  const char	*filename() const { if (filename_[0]) return (filename_);
-  					else return ((const char *)0); }
-  int		find(const char *s, int p = 0);
-  void		link(Fl_Help_Func *fn) { link_ = fn; }
-  int		load(const char *f);
+  char	*directory() { if (directory_[0]) return (directory_);
+  					else return ((char *)0); }
+  char	*filename() { if (filename_[0]) return (filename_);
+  					else return ((char *)0); }
+  int		find(char *s, int p = 0);
+  void		link(Fl_Help_Func  fn) { link_ = fn; }
+  int		load(char *f);
   void		resize(int,int,int,int);
-  int		size() const { return (size_); }
-  void		size(int W, int H) { Fl_Widget::size(W, H); }
+  int		size() { return (size_); }
+  void		size(int W, int H) { Fl_Widget.size(W, H); }
   void		textcolor(Fl_Color c) { if (textcolor_ == defcolor_) textcolor_ = c; defcolor_ = c; }
-  Fl_Color	textcolor() const { return (defcolor_); }
-  void		textfont(uchar f) { textfont_ = f; format(); }
-  uchar		textfont() const { return (textfont_); }
-  void		textsize(uchar s) { textsize_ = s; format(); }
-  uchar		textsize() const { return (textsize_); }
-  const char	*title() { return (title_); }
-  void		topline(const char *n);
+  Fl_Color	textcolor() { return (defcolor_); }
+  void		textfont(ubyte f) { textfont_ = f; format(); }
+  ubyte		textfont() { return (textfont_); }
+  void		textsize(ubyte s) { textsize_ = s; format(); }
+  ubyte		textsize() { return (textsize_); }
+  char	*title() { return (title_); }
+  void		topline(char *n);
   void		topline(int);
-  int		topline() const { return (topline_); }
+  int		topline() { return (topline_); }
   void		leftline(int);
-  int		leftline() const { return (leftline_); }
-  void		value(const char *v);
-  const char	*value() const { return (value_); }
+  int		leftline() { return (leftline_); }
+  void		value(char *v);
+  char	*value() { return (value_); }
   void          clear_selection();
   void          select_all();
 };
 
-#endif // !Fl_Help_View_H
+} // !Fl_Help_View_H
 
 //
-// End of "$Id: Fl_Help_View.H 5207 2006-06-18 15:53:26Z matt $".
+// End of "$Id: help_view.d 5207 2006-06-18 15:53:26Z matt $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Help_View.cxx 5265 2006-07-25 19:14:11Z mike $"
+// "$Id: help_view.d 5265 2006-07-25 19:14:11Z mike $"
 //
 // Fl_Help_View widget routines.
 //
@@ -250,26 +250,26 @@ public:
 //
 // Contents:
 //
-//   Fl_Help_View::add_block()       - Add a text block to the list.
-//   Fl_Help_View::add_link()        - Add a new link to the list.
-//   Fl_Help_View::add_target()      - Add a new target to the list.
-//   Fl_Help_View::compare_targets() - Compare two targets.
-//   Fl_Help_View::do_align()        - Compute the alignment for a line in
+//   Fl_Help_View.add_block()       - Add a text block to the list.
+//   Fl_Help_View.add_link()        - Add a new link to the list.
+//   Fl_Help_View.add_target()      - Add a new target to the list.
+//   Fl_Help_View.compare_targets() - Compare two targets.
+//   Fl_Help_View.do_align()        - Compute the alignment for a line in
 //                                     a block.
-//   Fl_Help_View::draw()            - Draw the Fl_Help_View widget.
-//   Fl_Help_View::format()          - Format the help text.
-//   Fl_Help_View::format_table()    - Format a table...
-//   Fl_Help_View::get_align()       - Get an alignment attribute.
-//   Fl_Help_View::get_attr()        - Get an attribute value from the string.
-//   Fl_Help_View::get_color()       - Get an alignment attribute.
-//   Fl_Help_View::handle()          - Handle events in the widget.
-//   Fl_Help_View::Fl_Help_View()    - Build a Fl_Help_View widget.
+//   Fl_Help_View.draw()            - Draw the Fl_Help_View widget.
+//   Fl_Help_View.format()          - Format the help text.
+//   Fl_Help_View.format_table()    - Format a table...
+//   Fl_Help_View.get_align()       - Get an alignment attribute.
+//   Fl_Help_View.get_attr()        - Get an attribute value from the string.
+//   Fl_Help_View.get_color()       - Get an alignment attribute.
+//   Fl_Help_View.handle()          - Handle events in the widget.
+//   Fl_Help_View.Fl_Help_View()    - Build a Fl_Help_View widget.
 //   Fl_Help_View::~Fl_Help_View()   - Destroy a Fl_Help_View widget.
-//   Fl_Help_View::load()            - Load the specified file.
-//   Fl_Help_View::resize()          - Resize the help widget.
-//   Fl_Help_View::topline()         - Set the top line to the named target.
-//   Fl_Help_View::topline()         - Set the top line by number.
-//   Fl_Help_View::value()           - Set the help text directly.
+//   Fl_Help_View.load()            - Load the specified file.
+//   Fl_Help_View.resize()          - Resize the help widget.
+//   Fl_Help_View.topline()         - Set the top line to the named target.
+//   Fl_Help_View.topline()         - Set the top line by number.
+//   Fl_Help_View.value()           - Set the help text directly.
 //   scrollbar_callback()            - A callback for the scrollbar.
 //
 
@@ -277,27 +277,27 @@ public:
 // Include necessary header files...
 //
 
-#include <FL/Fl_Help_View.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Pixmap.H>
+private import fl.help_view;
+private import fl.window;
+private import fl.pixmap;
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
 
-#if defined(WIN32) && ! defined(__CYGWIN__)
+version (WIN32) && ! defined(__CYGWIN__) {
 #  include <io.h>
 #  include <direct.h>
 // Visual C++ 2005 incorrectly displays a warning about the use of POSIX APIs
 // on Windows, which is supposed to be POSIX compliant...
-#  define getcwd _getcwd
-#else
+const int getcwd = _getcwd; 
+} else {
 #  include <unistd.h>
-#endif // WIN32
+} // WIN32
 
-#define MAX_COLUMNS	200
+const int MAX_COLUMNS = 200; 
 
 
 //
@@ -306,7 +306,7 @@ public:
 
 extern "C"
 {
-  typedef int (*compare_func_t)(const void *, const void *);
+  alias int (*compare_func_t)(void *, void *);
 }
 
 
@@ -314,16 +314,16 @@ extern "C"
 // Local functions...
 //
 
-static int	quote_char(const char *);
-static void	scrollbar_callback(Fl_Widget *s, void *);
-static void	hscrollbar_callback(Fl_Widget *s, void *);
+static int	quote_char(char *);
+static void	scrollbar_callback(Fl_Widget  s, void *);
+static void	hscrollbar_callback(Fl_Widget  s, void *);
 
 
 //
 // Broken image...
 //
 
-static const char *broken_xpm[] =
+static char *broken_xpm[] =
 		{
 		  "16 24 4 1",
 		  "@ c #000000",
@@ -393,30 +393,30 @@ fl_push_clip(int, int, int, int);
 fl_xyline(int, int, int);
 fl_rect()
 fl_line()
-img->draw()
+img.draw()
 */
 
-int Fl_Help_View::selection_first = 0;
-int Fl_Help_View::selection_last = 0;
-int Fl_Help_View::selection_push_first = 0;
-int Fl_Help_View::selection_push_last = 0;
-int Fl_Help_View::selection_drag_first = 0;
-int Fl_Help_View::selection_drag_last = 0;
-int Fl_Help_View::selected = 0;
-int Fl_Help_View::draw_mode = 0;
-int Fl_Help_View::mouse_x = 0;
-int Fl_Help_View::mouse_y = 0;
-int Fl_Help_View::current_pos = 0;
-Fl_Help_View *Fl_Help_View::current_view = 0L;
-Fl_Color Fl_Help_View::hv_selection_color;
-Fl_Color Fl_Help_View::hv_selection_text_color;
+int Fl_Help_View.selection_first = 0;
+int Fl_Help_View.selection_last = 0;
+int Fl_Help_View.selection_push_first = 0;
+int Fl_Help_View.selection_push_last = 0;
+int Fl_Help_View.selection_drag_first = 0;
+int Fl_Help_View.selection_drag_last = 0;
+int Fl_Help_View.selected = 0;
+int Fl_Help_View.draw_mode = 0;
+int Fl_Help_View.mouse_x = 0;
+int Fl_Help_View.mouse_y = 0;
+int Fl_Help_View.current_pos = 0;
+Fl_Help_View  Fl_Help_View.current_view = 0L;
+Fl_Color Fl_Help_View.hv_selection_color;
+Fl_Color Fl_Help_View.hv_selection_text_color;
 
 /*
  * Limitation: if a word contains &code; notations, we will calculate a wrong length.
  *
  * This function must be optimized for speed!
  */
-void Fl_Help_View::hv_draw(const char *t, int x, int y)
+void Fl_Help_View.hv_draw(char *t, int x, int y)
 {
   if (selected && current_view==this && current_pos<selection_last && current_pos>=selection_first) {
     Fl_Color c = fl_color();
@@ -451,18 +451,18 @@ void Fl_Help_View::hv_draw(const char *t, int x, int y)
 
 
 //
-// 'Fl_Help_View::add_block()' - Add a text block to the list.
+// 'Fl_Help_View.add_block()' - Add a text block to the list.
 //
 
-Fl_Help_Block *					// O - Pointer to new block
-Fl_Help_View::add_block(const char   *s,	// I - Pointer to start of block text
+Fl_Help_Block  					// O - Pointer to new block
+Fl_Help_View.add_block(char   *s,	// I - Pointer to start of block text
                 	int           xx,	// I - X position of block
 			int           yy,	// I - Y position of block
 			int           ww,	// I - Right margin of block
 			int           hh,	// I - Height of block
-			unsigned char border)	// I - Draw border?
+			ubyte border)	// I - Draw border?
 {
-  Fl_Help_Block	*temp;				// New block
+  Fl_Help_Block	 temp;				// New block
 
 
 //  printf("add_block(s = %p, xx = %d, yy = %d, ww = %d, hh = %d, border = %d)\n",
@@ -473,21 +473,21 @@ Fl_Help_View::add_block(const char   *s,	// I - Pointer to start of block text
     ablocks_ += 16;
 
     if (ablocks_ == 16)
-      blocks_ = (Fl_Help_Block *)malloc(sizeof(Fl_Help_Block) * ablocks_);
+      blocks_ = (Fl_Help_Block  )malloc(sizeof(Fl_Help_Block) * ablocks_);
     else
-      blocks_ = (Fl_Help_Block *)realloc(blocks_, sizeof(Fl_Help_Block) * ablocks_);
+      blocks_ = (Fl_Help_Block  )realloc(blocks_, sizeof(Fl_Help_Block) * ablocks_);
   }
 
   temp = blocks_ + nblocks_;
   memset(temp, 0, sizeof(Fl_Help_Block));
-  temp->start   = s;
-  temp->end     = s;
-  temp->x       = xx;
-  temp->y       = yy;
-  temp->w       = ww;
-  temp->h       = hh;
-  temp->border  = border;
-  temp->bgcolor = bgcolor_;
+  temp.start   = s;
+  temp.end     = s;
+  temp.x       = xx;
+  temp.y       = yy;
+  temp.w       = ww;
+  temp.h       = hh;
+  temp.border  = border;
+  temp.bgcolor = bgcolor_;
   nblocks_ ++;
 
   return (temp);
@@ -495,17 +495,17 @@ Fl_Help_View::add_block(const char   *s,	// I - Pointer to start of block text
 
 
 //
-// 'Fl_Help_View::add_link()' - Add a new link to the list.
+// 'Fl_Help_View.add_link()' - Add a new link to the list.
 //
 
 void
-Fl_Help_View::add_link(const char *n,	// I - Name of link
+Fl_Help_View.add_link(char *n,	// I - Name of link
                       int        xx,	// I - X position of link
 		      int        yy,	// I - Y position of link
 		      int        ww,	// I - Width of link text
 		      int        hh)	// I - Height of link text
 {
-  Fl_Help_Link	*temp;			// New link
+  Fl_Help_Link	 temp;			// New link
   char		*target;		// Pointer to target name
 
 
@@ -514,41 +514,41 @@ Fl_Help_View::add_link(const char *n,	// I - Name of link
     alinks_ += 16;
 
     if (alinks_ == 16)
-      links_ = (Fl_Help_Link *)malloc(sizeof(Fl_Help_Link) * alinks_);
+      links_ = (Fl_Help_Link  )malloc(sizeof(Fl_Help_Link) * alinks_);
     else
-      links_ = (Fl_Help_Link *)realloc(links_, sizeof(Fl_Help_Link) * alinks_);
+      links_ = (Fl_Help_Link  )realloc(links_, sizeof(Fl_Help_Link) * alinks_);
   }
 
   temp = links_ + nlinks_;
 
-  temp->x       = xx;
-  temp->y       = yy;
-  temp->w       = xx + ww;
-  temp->h       = yy + hh;
+  temp.x       = xx;
+  temp.y       = yy;
+  temp.w       = xx + ww;
+  temp.h       = yy + hh;
 
-  strlcpy(temp->filename, n, sizeof(temp->filename));
+  strlcpy(temp.filename, n, sizeof(temp.filename));
 
-  if ((target = strrchr(temp->filename, '#')) != NULL)
+  if ((target = strrchr(temp.filename, '#')) != NULL)
   {
     *target++ = '\0';
-    strlcpy(temp->name, target, sizeof(temp->name));
+    strlcpy(temp.name, target, sizeof(temp.name));
   }
   else
-    temp->name[0] = '\0';
+    temp.name[0] = '\0';
 
   nlinks_ ++;
 }
 
 
 //
-// 'Fl_Help_View::add_target()' - Add a new target to the list.
+// 'Fl_Help_View.add_target()' - Add a new target to the list.
 //
 
 void
-Fl_Help_View::add_target(const char *n,	// I - Name of target
+Fl_Help_View.add_target(char *n,	// I - Name of target
                 	int        yy)	// I - Y position of target
 {
-  Fl_Help_Target	*temp;			// New target
+  Fl_Help_Target	 temp;			// New target
 
 
   if (ntargets_ >= atargets_)
@@ -556,38 +556,38 @@ Fl_Help_View::add_target(const char *n,	// I - Name of target
     atargets_ += 16;
 
     if (atargets_ == 16)
-      targets_ = (Fl_Help_Target *)malloc(sizeof(Fl_Help_Target) * atargets_);
+      targets_ = (Fl_Help_Target  )malloc(sizeof(Fl_Help_Target) * atargets_);
     else
-      targets_ = (Fl_Help_Target *)realloc(targets_, sizeof(Fl_Help_Target) * atargets_);
+      targets_ = (Fl_Help_Target  )realloc(targets_, sizeof(Fl_Help_Target) * atargets_);
   }
 
   temp = targets_ + ntargets_;
 
-  temp->y = yy;
-  strlcpy(temp->name, n, sizeof(temp->name));
+  temp.y = yy;
+  strlcpy(temp.name, n, sizeof(temp.name));
 
   ntargets_ ++;
 }
 
 
 //
-// 'Fl_Help_View::compare_targets()' - Compare two targets.
+// 'Fl_Help_View.compare_targets()' - Compare two targets.
 //
 
 int							// O - Result of comparison
-Fl_Help_View::compare_targets(const Fl_Help_Target *t0,	// I - First target
-                             const Fl_Help_Target *t1)	// I - Second target
+Fl_Help_View.compare_targets(Fl_Help_Target  t0,	// I - First target
+                             Fl_Help_Target  t1)	// I - Second target
 {
-  return (strcasecmp(t0->name, t1->name));
+  return (strcasecmp(t0.name, t1.name));
 }
 
 
 //
-// 'Fl_Help_View::do_align()' - Compute the alignment for a line in a block.
+// 'Fl_Help_View.do_align()' - Compute the alignment for a line in a block.
 //
 
 int						// O - New line
-Fl_Help_View::do_align(Fl_Help_Block *block,	// I - Block to add to
+Fl_Help_View.do_align(Fl_Help_Block  block,	// I - Block to add to
                       int          line,	// I - Current line
 		      int          xx,		// I - Current X position
 		      int          a,		// I - Current alignment
@@ -598,18 +598,18 @@ Fl_Help_View::do_align(Fl_Help_Block *block,	// I - Block to add to
 
   switch (a)
   {
-    case RIGHT :	// Right align
-	offset = block->w - xx;
+    case RIGHT :	// Right alignment
+	offset = block.w - xx;
 	break;
     case CENTER :	// Center
-	offset = (block->w - xx) / 2;
+	offset = (block.w - xx) / 2;
 	break;
-    default :		// Left align
+    default :		// Left alignment
 	offset = 0;
 	break;
   }
 
-  block->line[line] = block->x + offset;
+  block.line[line] = block.x + offset;
 
   if (line < 31)
     line ++;
@@ -626,22 +626,22 @@ Fl_Help_View::do_align(Fl_Help_Block *block,	// I - Block to add to
 
 
 //
-// 'Fl_Help_View::draw()' - Draw the Fl_Help_View widget.
+// 'Fl_Help_View.draw()' - Draw the Fl_Help_View widget.
 //
 
 void
-Fl_Help_View::draw()
+Fl_Help_View.draw()
 {
   int			i;		// Looping var
-  const Fl_Help_Block	*block;		// Pointer to current block
-  const char		*ptr,		// Pointer to text in block
+  Fl_Help_Block	 block;		// Pointer to current block
+  char		*ptr,		// Pointer to text in block
 			*attrs;		// Pointer to start of element attributes
   char			*s,		// Pointer into buffer
 			buf[1024],	// Text buffer
 			attr[1024];	// Attribute buffer
   int			xx, yy, ww, hh;	// Current positions and sizes
   int			line;		// Current line
-  unsigned char		font, fsize;	// Current font and size
+  ubyte		font, fsize;	// Current font and size
   int			head, pre,	// Flags for text
 			needspace;	// Do we need whitespace?
   Fl_Boxtype		b = box() ? box() : FL_DOWN_BOX;
@@ -669,8 +669,8 @@ Fl_Help_View::draw()
   }
   if (i == 2) {
     fl_color(FL_GRAY);
-    fl_rectf(x() + ww - Fl::box_dw(b) + Fl::box_dx(b),
-             y() + hh - Fl::box_dh(b) + Fl::box_dy(b), 17, 17);
+    fl_rectf(x() + ww - Fl.box_dw(b) + Fl.box_dx(b),
+             y() + hh - Fl.box_dh(b) + Fl.box_dy(b), 17, 17);
   }
 
   if (!value_)
@@ -683,17 +683,17 @@ Fl_Help_View::draw()
   }
 
   // Clip the drawing to the inside of the box...
-  fl_push_clip(x() + Fl::box_dx(b), y() + Fl::box_dy(b),
-               ww - Fl::box_dw(b), hh - Fl::box_dh(b));
+  fl_push_clip(x() + Fl.box_dx(b), y() + Fl.box_dy(b),
+               ww - Fl.box_dw(b), hh - Fl.box_dh(b));
   fl_color(textcolor_);
 
   // Draw all visible blocks...
   for (i = 0, block = blocks_; i < nblocks_; i ++, block ++)
-    if ((block->y + block->h) >= topline_ && block->y < (topline_ + h()))
+    if ((block.y + block.h) >= topline_ && block.y < (topline_ + h()))
     {
       line      = 0;
-      xx        = block->line[line];
-      yy        = block->y - topline_;
+      xx        = block.line[line];
+      yy        = block.y - topline_;
       hh        = 0;
       pre       = 0;
       head      = 0;
@@ -702,7 +702,7 @@ Fl_Help_View::draw()
 
       initfont(font, fsize);
 
-      for (ptr = block->start, s = buf; ptr < block->end;)
+      for (ptr = block.start, s = buf; ptr < block.end;)
       {
 	if ((*ptr == '<' || isspace((*ptr)&255)) && s > buf)
 	{
@@ -713,14 +713,14 @@ Fl_Help_View::draw()
             s  = buf;
             ww = (int)fl_width(buf);
 
-            if (needspace && xx > block->x)
+            if (needspace && xx > block.x)
 	      xx += (int)fl_width(' ');
 
-            if ((xx + ww) > block->w)
+            if ((xx + ww) > block.w)
 	    {
 	      if (line < 31)
 	        line ++;
-	      xx = block->line[line];
+	      xx = block.line[line];
 	      yy += hh;
 	      hh = 0;
 	    }
@@ -756,7 +756,7 @@ Fl_Help_View::draw()
                 current_pos = ptr-value_;
 		if (line < 31)
 	          line ++;
-		xx = block->line[line];
+		xx = block.line[line];
 		yy += hh;
 		hh = fsize + 2;
 	      }
@@ -841,18 +841,18 @@ Fl_Help_View::draw()
 	  {
 	    if (line < 31)
 	      line ++;
-	    xx = block->line[line];
+	    xx = block.line[line];
             yy += hh;
 	    hh = 0;
 	  }
 	  else if (strcasecmp(buf, "HR") == 0)
 	  {
-	    fl_line(block->x + x(), yy + y(), block->w + x(),
+	    fl_line(block.x + x(), yy + y(), block.w + x(),
 	            yy + y());
 
 	    if (line < 31)
 	      line ++;
-	    xx = block->line[line];
+	    xx = block.line[line];
             yy += 2 * hh;
 	    hh = 0;
 	  }
@@ -875,11 +875,11 @@ Fl_Help_View::draw()
             if (tolower(buf[0]) == 'h')
 	    {
 	      font  = FL_HELVETICA_BOLD;
-	      fsize = (uchar)(textsize_ + '7' - buf[1]);
+	      fsize = (ubyte)(textsize_ + '7' - buf[1]);
 	    }
 	    else if (strcasecmp(buf, "DT") == 0)
 	    {
-	      font  = (uchar)(textfont_ | FL_ITALIC);
+	      font  = (ubyte)(textfont_ | FL_ITALIC);
 	      fsize = textsize_;
 	    }
 	    else if (strcasecmp(buf, "PRE") == 0)
@@ -891,13 +891,13 @@ Fl_Help_View::draw()
 
             if (strcasecmp(buf, "LI") == 0)
 	    {
-#ifdef __APPLE_QUARTZ__
+version (__APPLE_QUARTZ__) {
               fl_font(FL_SYMBOL, fsize); 
               hv_draw("\245", xx - fsize + x() - leftline_, yy + y());
-#else
+} else {
               fl_font(FL_SYMBOL, fsize);
               hv_draw("\267", xx - fsize + x() - leftline_, yy + y());
-#endif
+}
 	    }
 
 	    pushfont(font, fsize);
@@ -963,10 +963,10 @@ Fl_Help_View::draw()
 	    else
 	      pushfont(font = textfont_, fsize);
 
-            tx = block->x - 4 - leftline_;
-	    ty = block->y - topline_ - fsize - 3;
-            tw = block->w - block->x + 7;
-	    th = block->h + fsize - 5;
+            tx = block.x - 4 - leftline_;
+	    ty = block.y - topline_ - fsize - 3;
+            tw = block.w - block.x + 7;
+	    th = block.h + fsize - 5;
 
             if (tx < 0)
 	    {
@@ -983,14 +983,14 @@ Fl_Help_View::draw()
             tx += x();
 	    ty += y();
 
-            if (block->bgcolor != bgcolor_)
+            if (block.bgcolor != bgcolor_)
 	    {
-	      fl_color(block->bgcolor);
+	      fl_color(block.bgcolor);
               fl_rectf(tx, ty, tw, th);
               fl_color(textcolor_);
 	    }
 
-            if (block->border)
+            if (block.border)
               fl_rect(tx, ty, tw, th);
 	  }
 	  else if (strcasecmp(buf, "I") == 0 ||
@@ -1027,7 +1027,7 @@ Fl_Help_View::draw()
 	  }
 	  else if (strcasecmp(buf, "IMG") == 0)
 	  {
-	    Fl_Shared_Image *img = 0;
+	    Fl_Shared_Image  img = 0;
 	    int		width, height;
 	    char	wattr[8], hattr[8];
 
@@ -1039,8 +1039,8 @@ Fl_Help_View::draw()
 
 	    if (get_attr(attrs, "SRC", attr, sizeof(attr))) {
 	      img = get_image(attr, width, height);
-	      if (!width) width = img->w();
-	      if (!height) height = img->h();
+	      if (!width) width = img.w();
+	      if (!height) height = img.h();
 	    }
 
 	    if (!width || !height) {
@@ -1051,21 +1051,21 @@ Fl_Help_View::draw()
 
 	    ww = width;
 
-	    if (needspace && xx > block->x)
+	    if (needspace && xx > block.x)
 	      xx += (int)fl_width(' ');
 
-	    if ((xx + ww) > block->w)
+	    if ((xx + ww) > block.w)
 	    {
 	      if (line < 31)
 		line ++;
 
-	      xx = block->line[line];
+	      xx = block.line[line];
 	      yy += hh;
 	      hh = 0;
 	    }
 
 	    if (img) 
-	      img->draw(xx + x() - leftline_,
+	      img.draw(xx + x() - leftline_,
 	                yy + y() - fl_height() + fl_descent() + 2);
 
 	    xx += ww;
@@ -1084,7 +1084,7 @@ Fl_Help_View::draw()
 
 	  if (line < 31)
 	    line ++;
-	  xx = block->line[line];
+	  xx = block.line[line];
 	  yy += hh;
 	  hh = fsize + 2;
 	  needspace = 0;
@@ -1141,14 +1141,14 @@ Fl_Help_View::draw()
       {
 	ww = (int)fl_width(buf);
 
-        if (needspace && xx > block->x)
+        if (needspace && xx > block.x)
 	  xx += (int)fl_width(' ');
 
-	if ((xx + ww) > block->w)
+	if ((xx + ww) > block.w)
 	{
 	  if (line < 31)
 	    line ++;
-	  xx = block->line[line];
+	  xx = block.line[line];
 	  yy += hh;
 	  hh = 0;
 	}
@@ -1164,7 +1164,7 @@ Fl_Help_View::draw()
     }
 
   fl_pop_clip();
-  if (Fl::focus()==this) {
+  if (Fl.focus()==this) {
     ww = w() ;
     hh = h();
     if (hscrollbar_.visible()) hh -= 18;
@@ -1175,17 +1175,17 @@ Fl_Help_View::draw()
 
 
 //
-// 'Fl_Help_View::find()' - Find the specified string...
+// 'Fl_Help_View.find()' - Find the specified string...
 //
 
 int						// O - Matching position or -1 if not found
-Fl_Help_View::find(const char *s,		// I - String to find
+Fl_Help_View.find(char *s,		// I - String to find
                    int        p)		// I - Starting position
 {
   int		i,				// Looping var
 		c;				// Current character
-  Fl_Help_Block	*b;				// Current block
-  const char	*bp,				// Block matching pointer
+  Fl_Help_Block	 b;				// Current block
+  char	*bp,				// Block matching pointer
 		*bs,				// Start of current comparison
 		*sp;				// Search string pointer
 
@@ -1198,16 +1198,16 @@ Fl_Help_View::find(const char *s,		// I - String to find
 
   // Look for the string...
   for (i = nblocks_, b = blocks_; i > 0; i --, b ++) {
-    if (b->end < (value_ + p))
+    if (b.end < (value_ + p))
       continue;
 
-    if (b->start < (value_ + p)) bp = value_ + p;
-    else bp = b->start;
+    if (b.start < (value_ + p)) bp = value_ + p;
+    else bp = b.start;
 
-    for (sp = s, bs = bp; *sp && *bp && bp < b->end; bp ++) {
+    for (sp = s, bs = bp; *sp && *bp && bp < b.end; bp ++) {
       if (*bp == '<') {
         // skip to end of element...
-	while (*bp && bp < b->end && *bp != '>') bp ++;
+	while (*bp && bp < b.end && *bp != '>') bp ++;
 	continue;
       } else if (*bp == '&') {
         // decode HTML entity...
@@ -1226,8 +1226,8 @@ Fl_Help_View::find(const char *s,		// I - String to find
 
     if (!*sp) {
       // Found a match!
-      topline(b->y - b->h);
-      return (b->end - value_);
+      topline(b.y - b.h);
+      return (b.end - value_);
     }
   }
 
@@ -1237,20 +1237,20 @@ Fl_Help_View::find(const char *s,		// I - String to find
 
 
 //
-// 'Fl_Help_View::format()' - Format the help text.
+// 'Fl_Help_View.format()' - Format the help text.
 //
 
 void
-Fl_Help_View::format()
+Fl_Help_View.format()
 {
   int		i;		// Looping var
   int		done;		// Are we done yet?
-  Fl_Help_Block	*block,		// Current block
+  Fl_Help_Block	 block,		// Current block
 		*cell;		// Current table cell
   int		cells[MAX_COLUMNS],
 				// Cells in the current row...
 		row;		// Current table row (block number)
-  const char	*ptr,		// Pointer into block
+  char	*ptr,		// Pointer into block
 		*start,		// Pointer to start of element
 		*attrs;		// Pointer to start of element attributes
   char		*s,		// Pointer into buffer
@@ -1262,8 +1262,8 @@ Fl_Help_View::format()
   int		xx, yy, ww, hh;	// Size of current text fragment
   int		line;		// Current line in block
   int		links;		// Links for current line
-  unsigned char	font, fsize;	// Current font and size
-  unsigned char	border;		// Draw border?
+  ubyte	font, fsize;	// Current font and size
+  ubyte	border;		// Draw border?
   int		talign,		// Current alignment
 		newalign,	// New alignment
 		head,		// In the <HEAD> section?
@@ -1340,18 +1340,18 @@ Fl_Help_View::format()
 	    break;
 	  }
 
-          if (needspace && xx > block->x)
+          if (needspace && xx > block.x)
 	    ww += (int)fl_width(' ');
 
-  //        printf("line = %d, xx = %d, ww = %d, block->x = %d, block->w = %d\n",
-  //	       line, xx, ww, block->x, block->w);
+  //        printf("line = %d, xx = %d, ww = %d, block.x = %d, block.w = %d\n",
+  //	       line, xx, ww, block.x, block.w);
 
-          if ((xx + ww) > block->w)
+          if ((xx + ww) > block.w)
 	  {
             line     = do_align(block, line, xx, newalign, links);
-	    xx       = block->x;
+	    xx       = block.x;
 	    yy       += hh;
-	    block->h += hh;
+	    block.h += hh;
 	    hh       = 0;
 	  }
 
@@ -1382,9 +1382,9 @@ Fl_Help_View::format()
               if (xx > hsize_) break;
 
               line     = do_align(block, line, xx, newalign, links);
-              xx       = block->x;
+              xx       = block.x;
 	      yy       += hh;
-	      block->h += hh;
+	      block.h += hh;
 	      hh       = fsize + 2;
 	    }
 	    else
@@ -1486,8 +1486,8 @@ Fl_Help_View::format()
 	else if (strcasecmp(buf, "BR") == 0)
 	{
           line     = do_align(block, line, xx, newalign, links);
-          xx       = block->x;
-	  block->h += hh;
+          xx       = block.x;
+	  block.h += hh;
           yy       += hh;
 	  hh       = 0;
 	}
@@ -1509,36 +1509,36 @@ Fl_Help_View::format()
 		 strcasecmp(buf, "PRE") == 0 ||
 		 strcasecmp(buf, "TABLE") == 0)
 	{
-          block->end = start;
+          block.end = start;
           line       = do_align(block, line, xx, newalign, links);
-          xx         = block->x;
-          block->h   += hh;
+          xx         = block.x;
+          block.h   += hh;
 
           if (strcasecmp(buf, "UL") == 0 ||
 	      strcasecmp(buf, "OL") == 0 ||
 	      strcasecmp(buf, "DL") == 0)
           {
-	    block->h += fsize + 2;
+	    block.h += fsize + 2;
 	    xx       += 4 * fsize;
 	  }
           else if (strcasecmp(buf, "TABLE") == 0)
 	  {
 	    if (get_attr(attrs, "BORDER", attr, sizeof(attr)))
-	      border = (uchar)atoi(attr);
+	      border = (ubyte)atoi(attr);
 	    else
 	      border = 0;
 
             tc = rc = get_color(get_attr(attrs, "BGCOLOR", attr, sizeof(attr)), bgcolor_);
 
-	    block->h += fsize + 2;
+	    block.h += fsize + 2;
 
             format_table(&table_width, columns, start);
 
             if ((xx + table_width) > hsize_) {
-#ifdef DEBUG
+version (DEBUG) {
               printf("xx=%d, table_width=%d, hsize_=%d\n", xx, table_width,
 	             hsize_);
-#endif // DEBUG
+} // DEBUG
 	      hsize_ = xx + table_width;
 	      done   = 0;
 	      break;
@@ -1565,11 +1565,11 @@ Fl_Help_View::format()
           if (tolower(buf[0]) == 'h' && isdigit(buf[1]))
 	  {
 	    font  = FL_HELVETICA_BOLD;
-	    fsize = (uchar)(textsize_ + '7' - buf[1]);
+	    fsize = (ubyte)(textsize_ + '7' - buf[1]);
 	  }
 	  else if (strcasecmp(buf, "DT") == 0)
 	  {
-	    font  = (uchar)(textfont_ | FL_ITALIC);
+	    font  = (ubyte)(textfont_ | FL_ITALIC);
 	    fsize = textsize_;
 	  }
 	  else if (strcasecmp(buf, "PRE") == 0)
@@ -1586,7 +1586,7 @@ Fl_Help_View::format()
 
 	  pushfont(font, fsize);
 
-          yy = block->y + block->h;
+          yy = block.y + block.h;
           hh = 0;
 
           if ((tolower(buf[0]) == 'h' && isdigit(buf[1])) ||
@@ -1601,7 +1601,7 @@ Fl_Help_View::format()
 	  }
 
           if (row)
-	    block = add_block(start, xx, yy, block->w, 0);
+	    block = add_block(start, xx, yy, block.w, 0);
 	  else
 	    block = add_block(start, xx, yy, hsize_, 0);
 
@@ -1628,19 +1628,19 @@ Fl_Help_View::format()
 		 strcasecmp(buf, "/TABLE") == 0)
 	{
           line       = do_align(block, line, xx, newalign, links);
-          xx         = block->x;
-          block->end = ptr;
+          xx         = block.x;
+          block.end = ptr;
 
           if (strcasecmp(buf, "/UL") == 0 ||
 	      strcasecmp(buf, "/OL") == 0 ||
 	      strcasecmp(buf, "/DL") == 0)
 	  {
 	    xx       -= 4 * fsize;
-	    block->h += fsize + 2;
+	    block.h += fsize + 2;
 	  }
           else if (strcasecmp(buf, "/TABLE") == 0) 
           {
-	    block->h += fsize + 2;
+	    block.h += fsize + 2;
             // the current block is *not* the table block, so the current xx is 
             // meaningless. Set it back to page x, so the next block will be aligned 
             // reasonably. This fails fro table-in-table html!
@@ -1659,14 +1659,14 @@ Fl_Help_View::format()
           while (isspace((*ptr)&255))
 	    ptr ++;
 
-          block->h += hh;
+          block.h += hh;
           yy       += hh;
 
           if (tolower(buf[2]) == 'l')
             yy += fsize + 2;
 
           if (row)
-	    block = add_block(ptr, xx, yy, block->w, 0);
+	    block = add_block(ptr, xx, yy, block.w, 0);
 	  else
 	    block = add_block(ptr, xx, yy, hsize_, 0);
 
@@ -1677,34 +1677,34 @@ Fl_Help_View::format()
 	}
 	else if (strcasecmp(buf, "TR") == 0)
 	{
-          block->end = start;
+          block.end = start;
           line       = do_align(block, line, xx, newalign, links);
-          xx         = block->x;
-          block->h   += hh;
+          xx         = block.x;
+          block.h   += hh;
 
           if (row)
 	  {
             yy = blocks_[row].y + blocks_[row].h;
 
 	    for (cell = blocks_ + row + 1; cell <= block; cell ++)
-	      if ((cell->y + cell->h) > yy)
-		yy = cell->y + cell->h;
+	      if ((cell.y + cell.h) > yy)
+		yy = cell.y + cell.h;
 
             block = blocks_ + row;
 
-            block->h = yy - block->y + 2;
+            block.h = yy - block.y + 2;
 
 	    for (i = 0; i < column; i ++)
 	      if (cells[i])
 	      {
 		cell = blocks_ + cells[i];
-		cell->h = block->h;
+		cell.h = block.h;
 	      }
 	  }
 
           memset(cells, 0, sizeof(cells));
 
-	  yy        = block->y + block->h - 4;
+	  yy        = block.y + block.h - 4;
 	  hh        = 0;
           block     = add_block(start, xx, yy, hsize_, 0);
 	  row       = block - blocks_;
@@ -1717,29 +1717,29 @@ Fl_Help_View::format()
 	else if (strcasecmp(buf, "/TR") == 0 && row)
 	{
           line       = do_align(block, line, xx, newalign, links);
-          block->end = start;
-	  block->h   += hh;
+          block.end = start;
+	  block.h   += hh;
 
           xx = blocks_[row].x;
 
           yy = blocks_[row].y + blocks_[row].h;
 
 	  for (cell = blocks_ + row + 1; cell <= block; cell ++)
-	    if ((cell->y + cell->h) > yy)
-	      yy = cell->y + cell->h;
+	    if ((cell.y + cell.h) > yy)
+	      yy = cell.y + cell.h;
 
           block = blocks_ + row;
 
-          block->h = yy - block->y + 2;
+          block.h = yy - block.y + 2;
 
 	  for (i = 0; i < column; i ++)
 	    if (cells[i])
 	    {
 	      cell = blocks_ + cells[i];
-	      cell->h = block->h;
+	      cell.h = block.h;
 	    }
 
-	  yy        = block->y + block->h - 4;
+	  yy        = block.y + block.h - 4;
           block     = add_block(start, xx, yy, hsize_, 0);
 	  needspace = 0;
 	  row       = 0;
@@ -1752,11 +1752,11 @@ Fl_Help_View::format()
 
 
           line       = do_align(block, line, xx, newalign, links);
-          block->end = start;
-	  block->h   += hh;
+          block.end = start;
+	  block.h   += hh;
 
           if (strcasecmp(buf, "TH") == 0)
-	    font = (uchar)(textfont_ | FL_BOLD);
+	    font = (ubyte)(textfont_ | FL_BOLD);
 	  else
 	    font = textfont_;
 
@@ -1774,7 +1774,7 @@ Fl_Help_View::format()
           for (i = 0, ww = -6; i < colspan; i ++)
 	    ww += columns[column + i] + 6;
 
-          if (block->end == block->start && nblocks_ > 1)
+          if (block.end == block.start && nblocks_ > 1)
 	  {
 	    nblocks_ --;
 	    block --;
@@ -1794,7 +1794,7 @@ Fl_Help_View::format()
 
 	  column += colspan;
 
-          block->bgcolor = get_color(get_attr(attrs, "BGCOLOR", attr,
+          block.bgcolor = get_color(get_attr(attrs, "BGCOLOR", attr,
 	                                      sizeof(attr)), rc);
 	}
 	else if ((strcasecmp(buf, "/TD") == 0 ||
@@ -1852,7 +1852,7 @@ Fl_Help_View::format()
 	  popfont(font, fsize);
 	else if (strcasecmp(buf, "IMG") == 0)
 	{
-	  Fl_Shared_Image	*img = 0;
+	  Fl_Shared_Image	 img = 0;
 	  int		width;
 	  int		height;
 
@@ -1864,8 +1864,8 @@ Fl_Help_View::format()
 
 	  if (get_attr(attrs, "SRC", attr, sizeof(attr))) {
 	    img    = get_image(attr, width, height);
-	    width  = img->w();
-	    height = img->h();
+	    width  = img.w();
+	    height = img.h();
 	  }
 
 	  ww = width;
@@ -1876,15 +1876,15 @@ Fl_Help_View::format()
 	    break;
 	  }
 
-	  if (needspace && xx > block->x)
+	  if (needspace && xx > block.x)
 	    ww += (int)fl_width(' ');
 
-	  if ((xx + ww) > block->w)
+	  if ((xx + ww) > block.w)
 	  {
 	    line     = do_align(block, line, xx, newalign, links);
-	    xx       = block->x;
+	    xx       = block.x;
 	    yy       += hh;
-	    block->h += hh;
+	    block.h += hh;
 	    hh       = 0;
 	  }
 
@@ -1910,9 +1910,9 @@ Fl_Help_View::format()
 	}
 
 	line      = do_align(block, line, xx, newalign, links);
-	xx        = block->x;
+	xx        = block.x;
 	yy        += hh;
-	block->h  += hh;
+	block.h  += hh;
 	needspace = 0;
 	ptr ++;
       }
@@ -1955,8 +1955,8 @@ Fl_Help_View::format()
       *s = '\0';
       ww = (int)fl_width(buf);
 
-  //    printf("line = %d, xx = %d, ww = %d, block->x = %d, block->w = %d\n",
-  //	   line, xx, ww, block->x, block->w);
+  //    printf("line = %d, xx = %d, ww = %d, block.x = %d, block.w = %d\n",
+  //	   line, xx, ww, block.x, block.w);
 
       if (ww > hsize_) {
 	hsize_ = ww;
@@ -1964,15 +1964,15 @@ Fl_Help_View::format()
 	break;
       }
 
-      if (needspace && xx > block->x)
+      if (needspace && xx > block.x)
 	ww += (int)fl_width(' ');
 
-      if ((xx + ww) > block->w)
+      if ((xx + ww) > block.w)
       {
 	line     = do_align(block, line, xx, newalign, links);
-	xx       = block->x;
+	xx       = block.x;
 	yy       += hh;
-	block->h += hh;
+	block.h += hh;
 	hh       = 0;
       }
 
@@ -1984,7 +1984,7 @@ Fl_Help_View::format()
 
     do_align(block, line, xx, newalign, links);
 
-    block->end = ptr;
+    block.end = ptr;
     size_      = yy + hh;
   }
 
@@ -1993,26 +1993,26 @@ Fl_Help_View::format()
     qsort(targets_, ntargets_, sizeof(Fl_Help_Target),
           (compare_func_t)compare_targets);
 
-  int dx = Fl::box_dw(b) - Fl::box_dx(b);
-  int dy = Fl::box_dh(b) - Fl::box_dy(b);
+  int dx = Fl.box_dw(b) - Fl.box_dx(b);
+  int dy = Fl.box_dh(b) - Fl.box_dy(b);
 
   if (hsize_ > (w() - 24)) {
     hscrollbar_.show();
 
     if (size_ < (h() - 24)) {
       scrollbar_.hide();
-      hscrollbar_.resize(x() + Fl::box_dx(b), y() + h() - 17 - dy, w() - Fl::box_dw(b), 17);
+      hscrollbar_.resize(x() + Fl.box_dx(b), y() + h() - 17 - dy, w() - Fl.box_dw(b), 17);
     } else {
       scrollbar_.show();
-      scrollbar_.resize(x() + w() - 17 - dx, y() + Fl::box_dy(b), 17, h() - 17 - Fl::box_dh(b));
-      hscrollbar_.resize(x() + Fl::box_dx(b), y() + h() - 17 - dy, w() - 17 - Fl::box_dw(b), 17);
+      scrollbar_.resize(x() + w() - 17 - dx, y() + Fl.box_dy(b), 17, h() - 17 - Fl.box_dh(b));
+      hscrollbar_.resize(x() + Fl.box_dx(b), y() + h() - 17 - dy, w() - 17 - Fl.box_dw(b), 17);
     }
   } else {
     hscrollbar_.hide();
 
     if (size_ < (h() - 8)) scrollbar_.hide();
     else {
-      scrollbar_.resize(x() + w() - 17 - dx, y() + Fl::box_dy(b), 17, h() - Fl::box_dh(b));
+      scrollbar_.resize(x() + w() - 17 - dx, y() + Fl.box_dy(b), 17, h() - Fl.box_dh(b));
       scrollbar_.show();
     }
   }
@@ -2034,13 +2034,13 @@ Fl_Help_View::format()
 
 
 //
-// 'Fl_Help_View::format_table()' - Format a table...
+// 'Fl_Help_View.format_table()' - Format a table...
 //
 
 void
-Fl_Help_View::format_table(int        *table_width,	// O - Total table width
+Fl_Help_View.format_table(int        *table_width,	// O - Total table width
                            int        *columns,		// O - Column widths
-	                   const char *table)		// I - Pointer to start of table
+	                   char *table)		// I - Pointer to start of table
 {
   int		column,					// Current column
 		num_columns,				// Number of columns
@@ -2056,11 +2056,11 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 		attr[1024],				// Other attribute
 		wattr[1024],				// WIDTH attribute
 		hattr[1024];				// HEIGHT attribute
-  const char	*ptr,					// Pointer into table
+  char	*ptr,					// Pointer into table
 		*attrs,					// Pointer to attributes
 		*start;					// Start of element
   int		minwidths[MAX_COLUMNS];			// Minimum widths for each column
-  unsigned char	font, fsize;				// Current font and size
+  ubyte	font, fsize;				// Current font and size
 
 
   // Clear widths...
@@ -2154,11 +2154,11 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
         if (tolower(buf[0]) == 'h' && isdigit(buf[1]))
 	{
 	  font  = FL_HELVETICA_BOLD;
-	  fsize = (uchar)(textsize_ + '7' - buf[1]);
+	  fsize = (ubyte)(textsize_ + '7' - buf[1]);
 	}
 	else if (strcasecmp(buf, "DT") == 0)
 	{
-	  font  = (uchar)(textfont_ | FL_ITALIC);
+	  font  = (ubyte)(textfont_ | FL_ITALIC);
 	  fsize = textsize_;
 	}
 	else if (strcasecmp(buf, "PRE") == 0)
@@ -2268,7 +2268,7 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 	incell    = 1;
 
         if (strcasecmp(buf, "TH") == 0)
-	  font = (uchar)(textfont_ | FL_BOLD);
+	  font = (ubyte)(textfont_ | FL_BOLD);
 	else
 	  font = textfont_;
 
@@ -2313,7 +2313,7 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 	popfont(font, fsize);
       else if (strcasecmp(buf, "IMG") == 0 && incell)
       {
-	Fl_Shared_Image	*img = 0;
+	Fl_Shared_Image	 img = 0;
 	int		iwidth, iheight;
 
 
@@ -2324,8 +2324,8 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 
         if (get_attr(attrs, "SRC", attr, sizeof(attr))) {
 	  img     = get_image(attr, iwidth, iheight);
-	  iwidth  = img->w();
-	  iheight = img->h();
+	  iwidth  = img.w();
+	  iheight = img.h();
 	}
 
 	if (iwidth > minwidths[column])
@@ -2382,9 +2382,9 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
   else
     *table_width = 0;
 
-#ifdef DEBUG
+version (DEBUG) {
   printf("num_columns = %d, table_width = %d\n", num_columns, *table_width);
-#endif // DEBUG
+} // DEBUG
 
   if (num_columns == 0)
     return;
@@ -2393,12 +2393,12 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
   for (column = 0, width = 0; column < num_columns; column ++)
     width += columns[column];
 
-#ifdef DEBUG
+version (DEBUG) {
   printf("width = %d, w() = %d\n", width, w());
   for (column = 0; column < num_columns; column ++)
     printf("    columns[%d] = %d, minwidths[%d] = %d\n", column, columns[column],
            column, minwidths[column]);
-#endif // DEBUG
+} // DEBUG
 
   // Adjust the width if needed...
   int scale_width = *table_width;
@@ -2409,17 +2409,17 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
   }
 
   if (width < scale_width) {
-#ifdef DEBUG
+version (DEBUG) {
     printf("Scaling table up to %d from %d...\n", scale_width, width);
-#endif // DEBUG
+} // DEBUG
 
     *table_width = 0;
 
     scale_width = (scale_width - width) / num_columns;
 
-#ifdef DEBUG
+version (DEBUG) {
     printf("adjusted scale_width = %d\n", scale_width);
-#endif // DEBUG
+} // DEBUG
 
     for (column = 0; column < num_columns; column ++) {
       columns[column] += scale_width;
@@ -2428,18 +2428,18 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
     }
   }
   else if (width > scale_width) {
-#ifdef DEBUG
+version (DEBUG) {
     printf("Scaling table down to %d from %d...\n", scale_width, width);
-#endif // DEBUG
+} // DEBUG
 
     for (column = 0; column < num_columns; column ++) {
       width       -= minwidths[column];
       scale_width -= minwidths[column];
     }
 
-#ifdef DEBUG
+version (DEBUG) {
     printf("adjusted width = %d, scale_width = %d\n", width, scale_width);
-#endif // DEBUG
+} // DEBUG
 
     if (width > 0) {
       for (column = 0; column < num_columns; column ++) {
@@ -2457,20 +2457,20 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
   else if (*table_width == 0)
     *table_width = width;
 
-#ifdef DEBUG
+version (DEBUG) {
   printf("FINAL table_width = %d\n", *table_width);
   for (column = 0; column < num_columns; column ++)
     printf("    columns[%d] = %d\n", column, columns[column]);
-#endif // DEBUG
+} // DEBUG
 }
 
 
 //
-// 'Fl_Help_View::get_align()' - Get an alignment attribute.
+// 'Fl_Help_View.get_align()' - Get an alignment attribute.
 //
 
 int					// O - Alignment
-Fl_Help_View::get_align(const char *p,	// I - Pointer to start of attrs
+Fl_Help_View.get_align(char *p,	// I - Pointer to start of attrs
                         int        a)	// I - Default alignment
 {
   char	buf[255];			// Alignment value
@@ -2489,12 +2489,12 @@ Fl_Help_View::get_align(const char *p,	// I - Pointer to start of attrs
 
 
 //
-// 'Fl_Help_View::get_attr()' - Get an attribute value from the string.
+// 'Fl_Help_View.get_attr()' - Get an attribute value from the string.
 //
 
 const char *					// O - Pointer to buf or NULL
-Fl_Help_View::get_attr(const char *p,		// I - Pointer to start of attributes
-                      const char *n,		// I - Name of attribute
+Fl_Help_View.get_attr(char *p,		// I - Pointer to start of attributes
+                      char *n,		// I - Name of attribute
 		      char       *buf,		// O - Buffer for attribute value
 		      int        bufsize)	// I - Size of buffer
 {
@@ -2564,17 +2564,17 @@ Fl_Help_View::get_attr(const char *p,		// I - Pointer to start of attributes
 
 
 //
-// 'Fl_Help_View::get_color()' - Get an alignment attribute.
+// 'Fl_Help_View.get_color()' - Get an alignment attribute.
 //
 
 Fl_Color				// O - Color value
-Fl_Help_View::get_color(const char *n,	// I - Color name
+Fl_Help_View.get_color(char *n,	// I - Color name
                         Fl_Color   c)	// I - Default color value
 {
   int	i;				// Looping var
   int	rgb, r, g, b;			// RGB values
-  static const struct {			// Color name table
-    const char *name;
+  static struct {			// Color name table
+    char *name;
     int r, g, b;
   }	colors[] = {
     { "black",		0x00, 0x00, 0x00 },
@@ -2614,7 +2614,7 @@ Fl_Help_View::get_color(const char *n,	// I - Color name
       g = ((rgb >> 4) & 15) * 17;
       b = (rgb & 15) * 17;
     }
-    return (fl_rgb_color((uchar)r, (uchar)g, (uchar)b));
+    return (fl_rgb_color((ubyte)r, (ubyte)g, (ubyte)b));
   } else {
     for (i = 0; i < (int)(sizeof(colors) / sizeof(colors[0])); i ++)
       if (!strcasecmp(n, colors[i].name)) {
@@ -2626,16 +2626,16 @@ Fl_Help_View::get_color(const char *n,	// I - Color name
 
 
 //
-// 'Fl_Help_View::get_image()' - Get an inline image.
+// 'Fl_Help_View.get_image()' - Get an image.
 //
 
-Fl_Shared_Image *
-Fl_Help_View::get_image(const char *name, int W, int H) {
-  const char	*localname;		// Local filename
+Fl_Shared_Image  
+Fl_Help_View.get_image(char *name, int W, int H) {
+  char	*localname;		// Local filename
   char		dir[1024];		// Current directory
   char		temp[1024],		// Temporary filename
 		*tempptr;		// Pointer into temporary name
-  Fl_Shared_Image *ip;			// Image pointer...
+  Fl_Shared_Image  ip;			// Image pointer...
 
   // See if the image can be found...
   if (strchr(directory_, ':') != NULL && strchr(name, ':') == NULL) {
@@ -2669,19 +2669,19 @@ Fl_Help_View::get_image(const char *name, int W, int H) {
 
   if (strncmp(localname, "file:", 5) == 0) localname += 5;
 
-  if ((ip = Fl_Shared_Image::get(localname, W, H)) == NULL)
-    ip = (Fl_Shared_Image *)&broken_image;
+  if ((ip = Fl_Shared_Image.get(localname, W, H)) == NULL)
+    ip = (Fl_Shared_Image  )&broken_image;
 
   return ip;
 }
 
 
 //
-// 'Fl_Help_View::get_length()' - Get a length value, either absolute or %.
+// 'Fl_Help_View.get_length()' - Get a length value, either absolute or %.
 //
 
 int
-Fl_Help_View::get_length(const char *l) {	// I - Value
+Fl_Help_View.get_length(char *l) {	// I - Value
   int	val;					// Integer value
 
   if (!l[0]) return 0;
@@ -2698,29 +2698,29 @@ Fl_Help_View::get_length(const char *l) {	// I - Value
 }
 
 
-Fl_Help_Link *Fl_Help_View::find_link(int xx, int yy)
+Fl_Help_Link  Fl_Help_View.find_link(int xx, int yy)
 {
   int		i;
-  Fl_Help_Link	*linkp;
+  Fl_Help_Link	 linkp;
   for (i = nlinks_, linkp = links_; i > 0; i --, linkp ++) {
-    if (xx >= linkp->x && xx < linkp->w &&
-        yy >= linkp->y && yy < linkp->h)
+    if (xx >= linkp.x && xx < linkp.w &&
+        yy >= linkp.y && yy < linkp.h)
       break;
   }
   return i ? linkp : 0L;
 }
 
-void Fl_Help_View::follow_link(Fl_Help_Link *linkp)
+void Fl_Help_View.follow_link(Fl_Help_Link  linkp)
 {
   char		target[32];	// Current target
 
   clear_selection();
 
-  strlcpy(target, linkp->name, sizeof(target));
+  strlcpy(target, linkp.name, sizeof(target));
 
   set_changed();
 
-  if (strcmp(linkp->filename, filename_) != 0 && linkp->filename[0])
+  if (strcmp(linkp.filename, filename_) != 0 && linkp.filename[0])
   {
     char	dir[1024];	// Current directory
     char	temp[1024],	// Temporary filename
@@ -2728,35 +2728,35 @@ void Fl_Help_View::follow_link(Fl_Help_Link *linkp)
 
 
     if (strchr(directory_, ':') != NULL &&
-        strchr(linkp->filename, ':') == NULL)
+        strchr(linkp.filename, ':') == NULL)
     {
-      if (linkp->filename[0] == '/')
+      if (linkp.filename[0] == '/')
       {
         strlcpy(temp, directory_, sizeof(temp));
         if ((tempptr = strrchr(strchr(directory_, ':') + 3, '/')) != NULL)
-	  strlcpy(tempptr, linkp->filename, sizeof(temp));
+	  strlcpy(tempptr, linkp.filename, sizeof(temp));
 	else
-	  strlcat(temp, linkp->filename, sizeof(temp));
+	  strlcat(temp, linkp.filename, sizeof(temp));
       }
       else
-	snprintf(temp, sizeof(temp), "%s/%s", directory_, linkp->filename);
+	snprintf(temp, sizeof(temp), "%s/%s", directory_, linkp.filename);
     }
-    else if (linkp->filename[0] != '/' && strchr(linkp->filename, ':') == NULL)
+    else if (linkp.filename[0] != '/' && strchr(linkp.filename, ':') == NULL)
     {
       if (directory_[0])
-	snprintf(temp, sizeof(temp), "%s/%s", directory_, linkp->filename);
+	snprintf(temp, sizeof(temp), "%s/%s", directory_, linkp.filename);
       else
       {
 	getcwd(dir, sizeof(dir));
-	snprintf(temp, sizeof(temp), "file:%s/%s", dir, linkp->filename);
+	snprintf(temp, sizeof(temp), "file:%s/%s", dir, linkp.filename);
       }
     }
     else
-      strlcpy(temp, linkp->filename, sizeof(temp));
+      strlcpy(temp, linkp.filename, sizeof(temp));
 
-    if (linkp->name[0])
+    if (linkp.name[0])
       snprintf(temp + strlen(temp), sizeof(temp) - strlen(temp), "#%s",
-	       linkp->name);
+	       linkp.name);
 
     load(temp);
   }
@@ -2768,13 +2768,13 @@ void Fl_Help_View::follow_link(Fl_Help_Link *linkp)
   leftline(0);
 }
 
-void Fl_Help_View::clear_selection()
+void Fl_Help_View.clear_selection()
 {
   if (current_view==this)
     clear_global_selection();
 }
 
-void Fl_Help_View::select_all()
+void Fl_Help_View.select_all()
 {
   clear_global_selection();
   if (!value_) return;
@@ -2783,7 +2783,7 @@ void Fl_Help_View::select_all()
   selected = 1;
 }
 
-void Fl_Help_View::clear_global_selection()
+void Fl_Help_View.clear_global_selection()
 {
   if (selected) redraw();
   selection_push_first = selection_push_last = 0;
@@ -2792,10 +2792,10 @@ void Fl_Help_View::clear_global_selection()
   selected = 0;
 }
 
-char Fl_Help_View::begin_selection()
+char Fl_Help_View.begin_selection()
 {
   clear_global_selection();
-  mouse_x = Fl::event_x(); mouse_y = Fl::event_y();
+  mouse_x = Fl.event_x(); mouse_y = Fl.event_y();
   draw_mode = 1;
   current_view = this;
   window()->make_current();
@@ -2805,13 +2805,13 @@ char Fl_Help_View::begin_selection()
   return 0;
 }
 
-char Fl_Help_View::extend_selection()
+char Fl_Help_View.extend_selection()
 {
-  if (Fl::event_is_click())
+  if (Fl.event_is_click())
     return 0;
   selected = 1;
   int sf = selection_first, sl = selection_last;
-  mouse_x = Fl::event_x(); mouse_y = Fl::event_y();
+  mouse_x = Fl.event_x(); mouse_y = Fl.event_y();
   draw_mode = 2;
   window()->make_current();
   draw();
@@ -2825,10 +2825,10 @@ char Fl_Help_View::extend_selection()
   return 1;
 }
 
-// convert a command with up to four letters into an unsigned int
-static unsigned int command(const char *cmd)
+// convert a command with up to four letters into an uint
+static uint command(char *cmd)
 {
-  unsigned int ret = (tolower(cmd[0])<<24);
+  uint ret = (tolower(cmd[0])<<24);
   char c = cmd[1];
   if (c=='>' || c==' ' || c==0) return ret;
   ret |= (tolower(c)<<16);
@@ -2845,7 +2845,7 @@ static unsigned int command(const char *cmd)
 
 #define CMD(a, b, c, d) ((a<<24)|(b<<16)|(c<<8)|d)
 
-void Fl_Help_View::end_selection(int clipboard) 
+void Fl_Help_View.end_selection(int clipboard) 
 {
   if (!selected || current_view!=this) 
     return;
@@ -2854,7 +2854,7 @@ void Fl_Help_View::end_selection(int clipboard)
   char p = 0, pre = 0;;
   int len = strlen(value_);
   char *txt = (char*)malloc(len+1), *d = txt;
-  const char *s = value_, *cmd, *src;
+  char *s = value_, *cmd, *src;
   for (;;) {
     char c = *s++;
     if (c==0) break;
@@ -2921,23 +2921,23 @@ void Fl_Help_View::end_selection(int clipboard)
     }
   }
   *d = 0;
-  Fl::copy(txt, strlen(txt), clipboard);
+  Fl.copy(txt, strlen(txt), clipboard);
   free(txt);
 }
 
 #define ctrl(x) ((x)&0x1f)
 
 //
-// 'Fl_Help_View::handle()' - Handle events in the widget.
+// 'Fl_Help_View.handle()' - Handle events in the widget.
 //
 
 int				// O - 1 if we handled it, 0 otherwise
-Fl_Help_View::handle(int event)	// I - Event to handle
+Fl_Help_View.handle(int event)	// I - Event to handle
 {
-  static Fl_Help_Link *linkp;   // currently clicked link
+  static Fl_Help_Link  linkp;   // currently clicked link
 
-  int xx = Fl::event_x() - x() + leftline_;
-  int yy = Fl::event_y() - y() + topline_;
+  int xx = Fl.event_x() - x() + leftline_;
+  int yy = Fl.event_y() - y() + topline_;
 
   switch (event)
   {
@@ -2949,13 +2949,13 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       redraw();
       return 1;
     case FL_ENTER :
-      Fl_Group::handle(event);
+      Fl_Group.handle(event);
       return 1;
     case FL_LEAVE :
       fl_cursor(FL_CURSOR_DEFAULT);
       break;
     case FL_MOVE:
-      if (Fl_Group::handle(event))
+      if (Fl_Group.handle(event))
         return 1;
       if (find_link(xx, yy))
         fl_cursor(FL_CURSOR_HAND);
@@ -2963,11 +2963,11 @@ Fl_Help_View::handle(int event)	// I - Event to handle
         fl_cursor(FL_CURSOR_DEFAULT);
       return 1;
     case FL_PUSH:
-      if (Fl::focus() != this) {
-        Fl::focus(this);
+      if (Fl.focus() != this) {
+        Fl.focus(this);
         handle(FL_FOCUS);
       }
-      if (Fl_Group::handle(event))
+      if (Fl_Group.handle(event))
         return 1;
       linkp = find_link(xx, yy);
       if (linkp) {
@@ -2982,7 +2982,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       return 1;
     case FL_DRAG:
       if (linkp) {
-        if (Fl::event_is_click()) {
+        if (Fl.event_is_click()) {
           fl_cursor(FL_CURSOR_HAND);
         } else {
           fl_cursor(FL_CURSOR_DEFAULT); // should be "FL_CURSOR_CANCEL" if we had it
@@ -3000,7 +3000,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       return 1;
     case FL_RELEASE:
       if (linkp) {
-        if (Fl::event_is_click()) {
+        if (Fl.event_is_click()) {
           follow_link(linkp);
         }
         fl_cursor(FL_CURSOR_DEFAULT);
@@ -3013,7 +3013,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       }
       return 1;
     case FL_SHORTCUT: {
-      char ascii = Fl::event_text()[0];
+      char ascii = Fl.event_text()[0];
       switch (ascii) {
         case ctrl('A'): select_all(); redraw(); return 1;
         case ctrl('X'): end_selection(1); return 1;
@@ -3021,18 +3021,18 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       }
       break; }
   }
-  return (Fl_Group::handle(event));
+  return (Fl_Group.handle(event));
 }
 
 //
-// 'Fl_Help_View::Fl_Help_View()' - Build a Fl_Help_View widget.
+// 'Fl_Help_View.Fl_Help_View()' - Build a Fl_Help_View widget.
 //
 
-Fl_Help_View::Fl_Help_View(int        xx,	// I - Left position
+Fl_Help_View.Fl_Help_View(int        xx,	// I - Left position
                 	   int        yy,	// I - Top position
 			   int        ww,	// I - Width in pixels
 			   int        hh,	// I - Height in pixels
-			   const char *l)
+			   char *l)
     : Fl_Group(xx, yy, ww, hh, l),
       scrollbar_(xx + ww - 17, yy, 17, hh - 17),
       hscrollbar_(xx, yy + hh - 17, ww - 17, 17)
@@ -3050,19 +3050,19 @@ Fl_Help_View::Fl_Help_View(int        xx,	// I - Left position
 
   ablocks_      = 0;
   nblocks_      = 0;
-  blocks_       = (Fl_Help_Block *)0;
+  blocks_       = (Fl_Help_Block  )0;
 
   nfonts_       = 0;
 
-  link_         = (Fl_Help_Func *)0;
+  link_         = (Fl_Help_Func  )0;
 
   alinks_       = 0;
   nlinks_       = 0;
-  links_        = (Fl_Help_Link *)0;
+  links_        = (Fl_Help_Link  )0;
 
   atargets_     = 0;
   ntargets_     = 0;
-  targets_      = (Fl_Help_Target *)0;
+  targets_      = (Fl_Help_Target  )0;
 
   directory_[0] = '\0';
   filename_[0]  = '\0';
@@ -3106,17 +3106,17 @@ Fl_Help_View::~Fl_Help_View()
 
 
 //
-// 'Fl_Help_View::load()' - Load the specified file.
+// 'Fl_Help_View.load()' - Load the specified file.
 //
 
 int				// O - 0 on success, -1 on error
-Fl_Help_View::load(const char *f)// I - Filename to load (may also have target)
+Fl_Help_View.load(char *f)// I - Filename to load (may also have target)
 {
   FILE		*fp;		// File to read from
-  long		len;		// Length of file
+  int		len;		// Length of file
   char		*target;	// Target in file
   char		*slash;		// Directory separator
-  const char	*localname;	// Local filename
+  char	*localname;	// Local filename
   char		error[1024];	// Error buffer
   char		newname[1024];	// New filename buffer
 
@@ -3178,7 +3178,7 @@ Fl_Help_View::load(const char *f)// I - Filename to load (may also have target)
       len = ftell(fp);
       rewind(fp);
 
-      value_ = (const char *)calloc(len + 1, 1);
+      value_ = (char *)calloc(len + 1, 1);
       fread((void *)value_, 1, len, fp);
       fclose(fp);
     }
@@ -3206,11 +3206,11 @@ Fl_Help_View::load(const char *f)// I - Filename to load (may also have target)
 
 
 //
-// 'Fl_Help_View::resize()' - Resize the help widget.
+// 'Fl_Help_View.resize()' - Resize the help widget.
 //
 
 void
-Fl_Help_View::resize(int xx,	// I - New left position
+Fl_Help_View.resize(int xx,	// I - New left position
                      int yy,	// I - New top position
 		     int ww,	// I - New width
 		     int hh)	// I - New height
@@ -3219,23 +3219,23 @@ Fl_Help_View::resize(int xx,	// I - New left position
 					// Box to draw...
 
 
-  Fl_Widget::resize(xx, yy, ww, hh);
+  Fl_Widget.resize(xx, yy, ww, hh);
 
-  scrollbar_.resize(x() + w() - 17 - Fl::box_dw(b) + Fl::box_dx(b), y() + Fl::box_dy(b),
-                    17, h() - 17 - Fl::box_dh(b));
-  hscrollbar_.resize(x() + Fl::box_dx(b), y() + h() - 17 - Fl::box_dh(b) + Fl::box_dy(b),
-                     w() - 17 - Fl::box_dw(b), 17);
+  scrollbar_.resize(x() + w() - 17 - Fl.box_dw(b) + Fl.box_dx(b), y() + Fl.box_dy(b),
+                    17, h() - 17 - Fl.box_dh(b));
+  hscrollbar_.resize(x() + Fl.box_dx(b), y() + h() - 17 - Fl.box_dh(b) + Fl.box_dy(b),
+                     w() - 17 - Fl.box_dw(b), 17);
 
   format();
 }
 
 
 //
-// 'Fl_Help_View::topline()' - Set the top line to the named target.
+// 'Fl_Help_View.topline()' - Set the top line to the named target.
 //
 
 void
-Fl_Help_View::topline(const char *n)	// I - Target name
+Fl_Help_View.topline(char *n)	// I - Target name
 {
   Fl_Help_Target key,			// Target name key
 		*target;		// Pointer to matching target
@@ -3246,20 +3246,20 @@ Fl_Help_View::topline(const char *n)	// I - Target name
 
   strlcpy(key.name, n, sizeof(key.name));
 
-  target = (Fl_Help_Target *)bsearch(&key, targets_, ntargets_, sizeof(Fl_Help_Target),
+  target = (Fl_Help_Target  )bsearch(&key, targets_, ntargets_, sizeof(Fl_Help_Target),
                                  (compare_func_t)compare_targets);
 
   if (target != NULL)
-    topline(target->y);
+    topline(target.y);
 }
 
 
 //
-// 'Fl_Help_View::topline()' - Set the top line by number.
+// 'Fl_Help_View.topline()' - Set the top line by number.
 //
 
 void
-Fl_Help_View::topline(int t)	// I - Top line number
+Fl_Help_View.topline(int t)	// I - Top line number
 {
   if (!value_)
     return;
@@ -3280,11 +3280,11 @@ Fl_Help_View::topline(int t)	// I - Top line number
 
 
 //
-// 'Fl_Help_View::leftline()' - Set the left position.
+// 'Fl_Help_View.leftline()' - Set the left position.
 //
 
 void
-Fl_Help_View::leftline(int l)	// I - Left position
+Fl_Help_View.leftline(int l)	// I - Left position
 {
   if (!value_)
     return;
@@ -3303,11 +3303,11 @@ Fl_Help_View::leftline(int l)	// I - Left position
 
 
 //
-// 'Fl_Help_View::value()' - Set the help text directly.
+// 'Fl_Help_View.value()' - Set the help text directly.
 //
 
 void
-Fl_Help_View::value(const char *v)	// I - Text to view
+Fl_Help_View.value(char *v)	// I - Text to view
 {
   clear_selection();
 
@@ -3326,24 +3326,24 @@ Fl_Help_View::value(const char *v)	// I - Text to view
   leftline(0);
 }
 
-#ifdef ENC
+version (ENC) {
 # undef ENC
-#endif
-#ifdef __APPLE__
+}
+version (__APPLE__) {
 # define ENC(a, b) b
-#else
+} else {
 # define ENC(a, b) a
-#endif
+}
 
 //
 // 'quote_char()' - Return the character code associated with a quoted char.
 //
 
 static int			// O - Code or -1 on error
-quote_char(const char *p) {	// I - Quoted string
+quote_char(char *p) {	// I - Quoted string
   int	i;			// Looping var
   static struct {
-    const char	*name;
+    char	*name;
     int		namelen;
     int		code;
   }	*nameptr,		// Pointer into name array
@@ -3461,8 +3461,8 @@ quote_char(const char *p) {	// I - Quoted string
     else return atoi(p+1);
   }
   for (i = (int)(sizeof(names) / sizeof(names[0])), nameptr = names; i > 0; i --, nameptr ++)
-    if (strncmp(p, nameptr->name, nameptr->namelen) == 0)
-      return nameptr->code;
+    if (strncmp(p, nameptr.name, nameptr.namelen) == 0)
+      return nameptr.code;
 
   return -1;
 }
@@ -3473,9 +3473,9 @@ quote_char(const char *p) {	// I - Quoted string
 //
 
 static void
-scrollbar_callback(Fl_Widget *s, void *)
+scrollbar_callback(Fl_Widget  s, void *)
 {
-  ((Fl_Help_View *)(s->parent()))->topline(int(((Fl_Scrollbar*)s)->value()));
+  ((Fl_Help_View  )(s.parent()))->topline(int(((Fl_Scrollbar )s)->value()));
 }
 
 
@@ -3484,13 +3484,13 @@ scrollbar_callback(Fl_Widget *s, void *)
 //
 
 static void
-hscrollbar_callback(Fl_Widget *s, void *)
+hscrollbar_callback(Fl_Widget  s, void *)
 {
-  ((Fl_Help_View *)(s->parent()))->leftline(int(((Fl_Scrollbar*)s)->value()));
+  ((Fl_Help_View  )(s.parent()))->leftline(int(((Fl_Scrollbar )s)->value()));
 }
 
 
 //
-// End of "$Id: Fl_Help_View.cxx 5265 2006-07-25 19:14:11Z mike $".
+// End of "$Id: help_view.d 5265 2006-07-25 19:14:11Z mike $".
 //
     End of automatic import -+/

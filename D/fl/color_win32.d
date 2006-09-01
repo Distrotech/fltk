@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_color_win32.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -31,23 +30,27 @@
 // changes can be made.  Not to be confused with the X colormap, which
 // I try to hide completely.
 
-// SGI compiler seems to have problems with unsigned char arguments
+// SGI compiler seems to have problems with ubyte arguments
 // being used to index arrays.  So I always copy them to an integer
 // before use.
+
+module fl.color_win32;
+
+/+=
 
 #include <config.h>
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 
-static unsigned fl_cmap[256] = {
-#include "fl_cmap.h" // this is a file produced by "cmap.cxx":
+static uint fl_cmap[256] = {
+private import fl.cmap; // this is a file produced by "cmap.cxx":
 };
 
 // Translations to win32 data structures:
 Fl_XMap fl_xmap[256];
 
-Fl_XMap* fl_current_xmap;
+Fl_XMap  fl_current_xmap;
 
 HPALETTE fl_palette;
 static HGDIOBJ tmppen=0;
@@ -71,7 +74,7 @@ void fl_restore_pen(void) {
     savepen = 0;
 }
 
-static void clear_xmap(Fl_XMap& xmap) {
+static void clear_xmap(Fl_XMap  xmap) {
   if (xmap.pen) {
     HGDIOBJ tmppen = GetStockObject(BLACK_PEN);
     HGDIOBJ oldpen = SelectObject(fl_gc, tmppen);       // Push out the current pen of the gc
@@ -82,7 +85,7 @@ static void clear_xmap(Fl_XMap& xmap) {
   }
 }
 
-static void set_xmap(Fl_XMap& xmap, COLORREF c) {
+static void set_xmap(Fl_XMap  xmap, COLORREF c) {
   xmap.rgb = c;
   if (xmap.pen) {
       HGDIOBJ oldpen = SelectObject(fl_gc,GetStockObject(BLACK_PEN)); // replace current pen with safe one
@@ -97,29 +100,29 @@ Fl_Color fl_color_;
 
 void fl_color(Fl_Color i) {
   if (i & 0xffffff00) {
-    unsigned rgb = (unsigned)i;
-    fl_color((uchar)(rgb >> 24), (uchar)(rgb >> 16), (uchar)(rgb >> 8));
+    uint rgb = (uint)i;
+    fl_color((ubyte)(rgb >> 24), (ubyte)(rgb >> 16), (ubyte)(rgb >> 8));
   } else {
     fl_color_ = i;
-    Fl_XMap &xmap = fl_xmap[i];
+    Fl_XMap  xmap = fl_xmap[i];
     if (!xmap.pen) {
 #if USE_COLORMAP
       if (fl_palette) {
 	set_xmap(xmap, PALETTEINDEX(i));
       } else {
-#endif
-	unsigned c = fl_cmap[i];
-	set_xmap(xmap, RGB(uchar(c>>24), uchar(c>>16), uchar(c>>8)));
+}
+	uint c = fl_cmap[i];
+	set_xmap(xmap, RGB(ubyte(c>>24), ubyte(c>>16), ubyte(c>>8)));
 #if USE_COLORMAP
       }
-#endif
+}
     }
     fl_current_xmap = &xmap;
     SelectObject(fl_gc, (HGDIOBJ)(xmap.pen));
   }
 }
 
-void fl_color(uchar r, uchar g, uchar b) {
+void fl_color(ubyte r, ubyte g, ubyte b) {
   static Fl_XMap xmap;
   COLORREF c = RGB(r,g,b);
   fl_color_ = fl_rgb_color(r, g, b);
@@ -136,14 +139,14 @@ HBRUSH fl_brush() {
 }
 
 HBRUSH fl_brush_action(int action) {
-  Fl_XMap *xmap = fl_current_xmap;
+  Fl_XMap  xmap = fl_current_xmap;
   // Wonko: we use some statistics to cache only a limited number
   // of brushes:
-#define FL_N_BRUSH 16
+const int FL_N_BRUSH = 16; 
   static struct Fl_Brush {
     HBRUSH brush;
-    unsigned short usage;
-    Fl_XMap* backref;
+    ushort usage;
+    Fl_XMap  backref;
   } brushes[FL_N_BRUSH];
 
   if (action) {
@@ -155,7 +158,7 @@ HBRUSH fl_brush_action(int action) {
     return NULL;
   }
 
-  int i = xmap->brush; // find the associated brush
+  int i = xmap.brush; // find the associated brush
   if (i != -1) { // if the brush was allready allocated
     if (brushes[i].brush == NULL) goto CREATE_BRUSH;
     if ( (++brushes[i].usage) > 32000 ) { // keep a usage statistic
@@ -182,22 +185,22 @@ HBRUSH fl_brush_action(int action) {
     if (oldbrush != brushes[i].brush) SelectObject(fl_gc,oldbrush);  // reload old one
     DeleteObject(brushes[i].brush);      // delete the one in list
     brushes[i].brush = NULL;
-    brushes[i].backref->brush = -1;
+    brushes[i].backref.brush = -1;
   }
 CREATE_BRUSH:
-  brushes[i].brush = CreateSolidBrush(xmap->rgb);
+  brushes[i].brush = CreateSolidBrush(xmap.rgb);
   brushes[i].usage = 0;
   brushes[i].backref = xmap;
-  xmap->brush = i;
+  xmap.brush = i;
   return brushes[i].brush;
 }
 
-void Fl::free_color(Fl_Color i, int overlay) {
+void Fl.free_color(Fl_Color i, int overlay) {
   if (overlay) return; // do something about GL overlay?
   clear_xmap(fl_xmap[i]);
 }
 
-void Fl::set_color(Fl_Color i, unsigned c) {
+void Fl.set_color(Fl_Color i, uint c) {
   if (fl_cmap[i] != c) {
     clear_xmap(fl_xmap[i]);
     fl_cmap[i] = c;
@@ -223,19 +226,19 @@ fl_select_palette(void)
     // come out quite badly.
 
     // I lamely try to get this variable-sized object allocated on stack:
-    ulong foo[(sizeof(LOGPALETTE)+256*sizeof(PALETTEENTRY))/sizeof(ulong)+1];
+    uint foo[(sizeof(LOGPALETTE)+256*sizeof(PALETTEENTRY))/sizeof(uint)+1];
     LOGPALETTE *pPal = (LOGPALETTE*)foo;
 
-    pPal->palVersion    = 0x300;
-    pPal->palNumEntries = nColors;
+    pPal.palVersion    = 0x300;
+    pPal.palNumEntries = nColors;
 
     // Build 256 colors from the standard FLTK colormap...
 
     for (int i = 0; i < nColors; i ++) {
-      pPal->palPalEntry[i].peRed   = (fl_cmap[i] >> 24) & 255;
-      pPal->palPalEntry[i].peGreen = (fl_cmap[i] >> 16) & 255;
-      pPal->palPalEntry[i].peBlue  = (fl_cmap[i] >>  8) & 255;
-      pPal->palPalEntry[i].peFlags = 0;
+      pPal.palPalEntry[i].peRed   = (fl_cmap[i] >> 24) & 255;
+      pPal.palPalEntry[i].peGreen = (fl_cmap[i] >> 16) & 255;
+      pPal.palPalEntry[i].peBlue  = (fl_cmap[i] >>  8) & 255;
+      pPal.palPalEntry[i].peFlags = 0;
     };
 
     // Create the palette:
@@ -248,7 +251,7 @@ fl_select_palette(void)
   return fl_palette;
 }
 
-#endif
+}
 
 //
 // End of "$Id: fl_color_win32.cxx 5190 2006-06-09 16:16:34Z mike $".

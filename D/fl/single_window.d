@@ -1,3 +1,4 @@
+/+- This file was imported from C++ using a script
 //
 // "$Id: single_window.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -27,37 +28,30 @@
 
 module fl.single_window;
 
+
 public import fl.window;
 
 class Fl_Single_Window : Fl_Window {
-
 public:
-
-/+=
   void show();
-  void show(int a, char **b) {Fl_Window::show(a,b);}
+  void show(int a, char **b) {Fl_Window.show(a,b);}
   void flush();
-=+/
-  this(int W, int H, char[] l=null) {
-    super(W, H, l);
-  }
-
-  this(int X, int Y, int W, int H, char[] l=null) {
-    super(X, Y, W, H, l);
-  }
-/+=
+  Fl_Single_Window(int W, int H, char *l=0)
+    : Fl_Window(W,H,l) {}
+  Fl_Single_Window(int X, int Y, int W, int H, char *l=0)
+    : Fl_Window(X,Y,W,H,l) {}
   int make_current();
-=+/
+};
+
 }
 
-
 //
-// End of "$Id: Fl_Single_Window.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: single_window.d 4288 2005-04-16 00:13:17Z mike $".
 //
-
+    End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Single_Window.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: single_window.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Single-buffered window for the Fast Light Tool Kit (FLTK).
 //
@@ -89,12 +83,12 @@ public:
 //	buffered.  You can turn it off using this subclass in case
 //	your display looks better without it.
 
-#include <FL/Fl_Single_Window.H>
+private import fl.single_window;
 
-void Fl_Single_Window::show() {Fl_Window::show();}
-void Fl_Single_Window::flush() {Fl_Window::flush();}
+void Fl_Single_Window.show() {Fl_Window.show();}
+void Fl_Single_Window.flush() {Fl_Window.flush();}
 
 //
-// End of "$Id: Fl_Single_Window.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: single_window.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

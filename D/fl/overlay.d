@@ -32,32 +32,32 @@
 // it.
 
 #include <FL/x.H>
-#include <FL/fl_draw.H>
-#ifdef __APPLE__
+private import fl.draw;
+version (__APPLE__) {
 #include <config.h>
-#endif
+}
 
 static int px,py,pw,ph;
 
 static void draw_current_rect() {
-#ifdef WIN32
+version (WIN32) {
   int old = SetROP2(fl_gc, R2_NOT);
   fl_rect(px, py, pw, ph);
   SetROP2(fl_gc, old);
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   PenMode( patXor );
   fl_rect(px, py, pw, ph);
   PenMode( patCopy );
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: Quartz does not support xor drawing
   // Use the Fl_Overlay_Window instead.
   fl_rect(px, py, pw, ph);
-#else
+} else {
   XSetFunction(fl_display, fl_gc, GXxor);
   XSetForeground(fl_display, fl_gc, 0xffffffff);
   XDrawRectangle(fl_display, fl_window, fl_gc, px, py, pw, ph);
   XSetFunction(fl_display, fl_gc, GXcopy);
-#endif
+}
 }
 
 void fl_overlay_clear() {

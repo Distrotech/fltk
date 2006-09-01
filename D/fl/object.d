@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Object.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: object.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Old Fl_Object header file for the Fast Light Tool Kit (FLTK).
 //
@@ -27,12 +27,12 @@
 //
 
 // This file is provided for back compatability only.  Please use Fl_Widget
-#ifndef Fl_Object
-#define Fl_Object Fl_Widget
-#endif
-#include "Fl_Widget.H"
+version (!Fl_Object) {
+const int Fl_Object = Fl_Widget; 
+}
+public import fl.widget;
 
 //
-// End of "$Id: Fl_Object.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: object.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

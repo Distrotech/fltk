@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Font.H 5171 2006-06-02 14:17:41Z matt $"
+// "$Id: font.d 5334 2006-08-19 15:24:55Z matt $"
 //
 // Font definitions for the Fast Light Tool Kit (FLTK).
 //
@@ -36,77 +35,89 @@
 // linked list of these.  These are created the first time each system
 // font/size combination is used.
 
-#ifndef FL_FONT_
+module fl.font;
+
+version (__APPLE__) {
+  public import fl.font_mac;
+  private import std.c.osx.carbon.carbon;
+}
+
+/+=
+version (!FL_FONT_) {
 #define FL_FONT_
 
 #include <config.h>
 
 #  if USE_XFT
-typedef struct _XftFont XftFont;
-#  endif // USE_XFT
-
+alias struct _XftFont XftFont;
+} // USE_XFT
+=+/
+/+= defined in the machine dependent source
 class Fl_FontSize {
 public:
-  Fl_FontSize *next;	// linked list for this Fl_Fontdesc
-#  ifdef WIN32
-  HFONT fid;
-  int width[256];
-  TEXTMETRIC metr;
-  FL_EXPORT Fl_FontSize(const char* fontname, int size);
-#  elif defined(__APPLE_QD__)
-  FL_EXPORT Fl_FontSize(const char* fontname, int size);
-  short font, face, size;
-  short ascent, descent;
-  short width[256];
-  bool knowMetrics;
-#  elif defined(__APPLE_QUARTZ__)
-  FL_EXPORT Fl_FontSize(const char* fontname, int size);
-  ATSUTextLayout layout;
-  ATSUStyle style;
-  short ascent, descent, q_width;
-  char *q_name;
-  int size;
-#  elif USE_XFT
-  XftFont* font;
-  const char* encoding;
-  int size;
-  FL_EXPORT Fl_FontSize(const char* xfontname);
-#  else
-  XFontStruct* font;	// X font information
-  FL_EXPORT Fl_FontSize(const char* xfontname);
-#  endif
+  Fl_FontSize  next;	// linked list for this Fl_Fontdesc
+  version (WIN32) {
+    HFONT fid;
+    int width[256];
+    TEXTMETRIC metr;
+    this(char* fontname, int size);
+  } else version (__APPLE__) {
+    this(char* fontname, int size);
+    ATSUTextLayout layout;
+    ATSUStyle style;
+    short ascent, descent, q_width;
+    short[256] width;
+    bool knowWidths;
+    char* q_name;
+    int size;
+  } else version (USE_XFT) {
+    XftFont* font;
+    char* encoding;
+    int size;
+    this(char* xfontname);
+  } else {
+    XFontStruct* font;	// X font information
+    this(char* xfontname);
+  }
   int minsize;		// smallest point size that should use this
   int maxsize;		// largest point size that should use this
-#  if HAVE_GL
-  unsigned int listbase;// base of display list, 0 = none
-#  endif
-  FL_EXPORT ~Fl_FontSize();
-};
+  version(HAVE_GL) {
+    uint listbase;// base of display list, 0 = none
+  }
+/+=
+  ~Fl_FontSize();
+=+/
+}
+=+/
 
-extern FL_EXPORT Fl_FontSize *fl_fontsize; // the currently selected one
+/+=
+extern Fl_FontSize  fl_fontsize; // the currently selected one
+=+/
 
 struct Fl_Fontdesc {
-  const char *name;
+  char *name;
   char fontname[128];	// "Pretty" font name
-  Fl_FontSize *first;	// linked list of sizes of this style
-#  ifndef WIN32
-  char **xlist;		// matched X font names
-  int n;		// size of xlist, negative = don't free xlist!
-#  endif
-};
+  Fl_FontSize  first;	// linked list of sizes of this style
+  version (WIN32) {
+  } else {
+    char **xlist;		// matched X font names
+    int n;		// size of xlist, negative = don't free xlist!
+  }
+}
 
-extern FL_EXPORT Fl_Fontdesc *fl_fonts; // the table
+/+=
+extern Fl_Fontdesc  fl_fonts; // the table
 
-#  ifndef WIN32
+version (!WIN32) {
 // functions for parsing X font names:
-FL_EXPORT const char* fl_font_word(const char *p, int n);
-FL_EXPORT char *fl_find_fontsize(char *name);
-#  endif
+const char* fl_font_word(char *p, int n);
+char *fl_find_fontsize(char *name);
+}
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Font.H 5171 2006-06-02 14:17:41Z matt $".
+// End of "$Id: font.d 5334 2006-08-19 15:24:55Z matt $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
@@ -138,34 +149,35 @@ FL_EXPORT char *fl_find_fontsize(char *name);
 //
 
 // Select fonts from the FLTK font table.
-#include "flstring.h"
+private import fl.flstring;
 #include <FL/Fl.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <FL/x.H>
-#include "Fl_Font.H"
+private import fl.font;
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef WIN32
+version (WIN32) {
 #  include "fl_font_win32.cxx"
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 #  include "fl_font_mac.cxx"
 #elif USE_XFT
 #  include "fl_font_xft.cxx"
-#else
+} else {
 #  include "fl_font_x.cxx"
-#endif // WIN32
+} // WIN32
 
 
-double fl_width(const char* c) {
+double fl_width(char* c) {
   if (c) return fl_width(c, strlen(c));
   else return 0.0f;
 }
 
-void fl_draw(const char* str, int x, int y) {
+void fl_draw(char* str, int x, int y) {
   fl_draw(str, strlen(str), x, y);
 }
+
 
 //
 // End of "$Id: fl_font.cxx 5190 2006-06-09 16:16:34Z mike $".

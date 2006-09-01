@@ -17,11 +17,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 USA.  */
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+version (WIN32) && !defined(__CYGWIN__) {
 #  include "scandir_win32.c"
-#else
+} else {
 
-#  include "flstring.h"
+private import fl.flstring;
 
 #  if !HAVE_SCANDIR
 #    include <stdlib.h>
@@ -31,22 +31,22 @@ USA.  */
 #    if HAVE_DIRENT_H
 #      include <dirent.h>
 #      define NAMLEN(dirent) strlen((dirent)->d_name)
-#    else
-#      define dirent direct
+} else {
+const int dirent = direct; 
 #      define NAMLEN(dirent) (dirent)->d_namlen
 #      if HAVE_SYS_NDIR_H
 #        include <sys/ndir.h>
-#      endif
+}
 #      if HAVE_SYS_DIR_H
 #        include <sys/dir.h>
-#      endif
+}
 #      if HAVE_NDIR_H
 #        include <ndir.h>
-#      endif
-#    endif
+}
+}
 
 int
-fl_scandir(const char *dir, struct dirent ***namelist,
+fl_scandir(char *dir, struct dirent ***namelist,
 	   int (*select)(struct dirent *),
 	   int (*compar)(struct dirent **, struct dirent **))
 {
@@ -89,7 +89,7 @@ fl_scandir(const char *dir, struct dirent ***namelist,
 #    define _D_ALLOC_NAMLEN(d) (sizeof (d)->d_name > 1 ? sizeof (d)->d_name : \
                               _D_EXACT_NAMLEN (d) + 1)
 
-      dsize = &d->d_name[_D_ALLOC_NAMLEN (d)] - (char *) d;
+      dsize = &d.d_name[_D_ALLOC_NAMLEN (d)] - (char *) d;
       v[i] = (struct dirent *) malloc (dsize);
       if (v[i] == NULL)
         goto lose;
@@ -112,13 +112,13 @@ fl_scandir(const char *dir, struct dirent ***namelist,
   errno = save;
 
   /* Sort the list if we have a comparison function to sort with.  */
-  if (compar) qsort (v, i, sizeof (*v), (int (*)(const void *, const void *))compar);
+  if (compar) qsort (v, i, sizeof (*v), (int (*)(void *, void *))compar);
   *namelist = v;
   return i;
 }
 
-#  endif
-#endif
+}
+}
 
 /*
  * End of "$Id: scandir.c 4052 2005-02-24 21:55:12Z mike $".

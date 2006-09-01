@@ -26,7 +26,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include "fl_ask.H"
+public import fl.fl_ask;
 
 //
 // End of "$Id: fl_message.H 4288 2005-04-16 00:13:17Z mike $".

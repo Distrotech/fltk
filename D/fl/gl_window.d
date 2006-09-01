@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Gl_Window.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: gl_window.d 5322 2006-08-17 09:49:43Z matt $"
 //
 // OpenGL header file for the Fast Light Tool Kit (FLTK).
 //
@@ -25,55 +25,58 @@
 //
 //     http://www.fltk.org/str.php
 //
-#ifndef Fl_Gl_Window_H
-#define Fl_Gl_Window_H
+module fl.gl_window;
 
-#include "Fl_Window.H"
 
-#ifndef GLContext
-typedef void* GLContext; // actually a GLXContext or HGLDC
-#endif
+public import fl.window;
+
+version (!GLContext) {
+alias void* GLContext; // actually a GLXContext or HGLDC
+}
 
 class Fl_Gl_Choice; // structure to hold result of glXChooseVisual
 
-class FL_EXPORT Fl_Gl_Window : public Fl_Window {
+class Fl_Gl_Window : Fl_Window {
 
   int mode_;
-  const int *alist;
-  Fl_Gl_Choice *g;
+  int *alist;
+  Fl_Gl_Choice  g;
   GLContext context_;
-  char valid_;
+  char valid_f_;
   char damage1_; // damage() of back buffer
-  virtual void draw_overlay();
+  void draw_overlay();
   void init();
 
   void *overlay;
   void make_overlay();
   friend class _Fl_Gl_Overlay;
 
-  static int can_do(int, const int *);
-  int mode(int, const int *);
+  static int can_do(int, int *);
+  int mode(int, int *);
 
 public:
 
   void show();
-  void show(int a, char **b) {Fl_Window::show(a,b);}
+  void show(int a, char **b) {Fl_Window.show(a,b);}
   void flush();
   void hide();
   void resize(int,int,int,int);
 
-  char valid() const {return valid_;}
-  void valid(char v) {valid_ = v;}
+  char valid() {return valid_f_ & 1;}
+  void valid(char v) {if (v) valid_f_ |= 1; else valid_f_ &= 0xfe;}
   void invalidate();
 
-  static int can_do(int m) {return can_do(m,0);}
-  static int can_do(const int *m) {return can_do(0, m);}
-  int can_do() {return can_do(mode_,alist);}
-  Fl_Mode mode() const {return (Fl_Mode)mode_;}
-  int mode(int a) {return mode(a,0);}
-  int mode(const int *a) {return mode(0, a);}
+  char context_valid() {return valid_f_ & 2;}
+  void context_valid(char v) {if (v) valid_f_ |= 2; else valid_f_ &= 0xfd;}
 
-  void* context() const {return context_;}
+  static int can_do(int m) {return can_do(m,0);}
+  static int can_do(int *m) {return can_do(0, m);}
+  int can_do() {return can_do(mode_,alist);}
+  Fl_Mode mode() {return (Fl_Mode)mode_;}
+  int mode(int a) {return mode(a,0);}
+  int mode(int *a) {return mode(0, a);}
+
+  void* context() {return context_;}
   void context(void*, int destroy_flag = 0);
   void make_current();
   void swap_buffers();
@@ -85,20 +88,20 @@ public:
   void make_overlay_current();
 
   ~Fl_Gl_Window();
-  Fl_Gl_Window(int W, int H, const char *l=0) : Fl_Window(W,H,l) {init();}
-  Fl_Gl_Window(int X, int Y, int W, int H, const char *l=0)
+  Fl_Gl_Window(int W, int H, char *l=0) : Fl_Window(W,H,l) {init();}
+  Fl_Gl_Window(int X, int Y, int W, int H, char *l=0)
     : Fl_Window(X,Y,W,H,l) {init();}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Gl_Window.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: gl_window.d 5322 2006-08-17 09:49:43Z matt $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Gl_Window.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: gl_window.d 5322 2006-08-17 09:49:43Z matt $"
 //
 // OpenGL window code for the Fast Light Tool Kit (FLTK).
 //
@@ -124,13 +127,13 @@ public:
 //     http://www.fltk.org/str.php
 //
 
-#include "flstring.h"
+private import fl.flstring;
 #if HAVE_GL
 
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include "Fl_Gl_Choice.H"
-#include <FL/Fl_Gl_Window.H>
+private import fl.gl_choice;
+private import fl.gl_window;
 #include <stdlib.h>
 
 ////////////////////////////////////////////////////////////////
@@ -149,97 +152,102 @@ public:
 // GL_SWAP_TYPE, it should be equal to one of these symbols:
 
 // contents of back buffer after glXSwapBuffers():
-#define UNDEFINED 1 	// anything
-#define SWAP 2		// former front buffer (same as unknown)
-#define COPY 3		// unchanged
-#define NODAMAGE 4	// unchanged even by X expose() events
+const int UNDEFINED = 1;  	// anything
+const int SWAP = 2; 		// former front buffer (same as unknown)
+const int COPY = 3; 		// unchanged
+const int NODAMAGE = 4; 	// unchanged even by X expose() events
 
 static char SWAP_TYPE = 0 ; // 0 = determine it from environment variable
 
 ////////////////////////////////////////////////////////////////
 
-int Fl_Gl_Window::can_do(int a, const int *b) {
-  return Fl_Gl_Choice::find(a,b) != 0;
+int Fl_Gl_Window.can_do(int a, int *b) {
+  return Fl_Gl_Choice.find(a,b) != 0;
 }
 
-void Fl_Gl_Window::show() {
+void Fl_Gl_Window.show() {
   if (!shown()) {
     if (!g) {
-      g = Fl_Gl_Choice::find(mode_,alist);
+      g = Fl_Gl_Choice.find(mode_,alist);
 
       if (!g && (mode_ & FL_DOUBLE) == FL_SINGLE) {
-        g = Fl_Gl_Choice::find(mode_ | FL_DOUBLE,alist);
+        g = Fl_Gl_Choice.find(mode_ | FL_DOUBLE,alist);
 	if (g) mode_ |= FL_FAKE_SINGLE;
       }
 
       if (!g) {
-        Fl::error("Insufficient GL support");
+        Fl.error("Insufficient GL support");
 	return;
       }
     }
 #if !defined(WIN32) && !defined(__APPLE__)
-    Fl_X::make_xid(this, g->vis, g->colormap);
-    if (overlay && overlay != this) ((Fl_Gl_Window*)overlay)->show();
-#endif
+    Fl_X.make_xid(this, g.vis, g.colormap);
+    if (overlay && overlay != this) ((Fl_Gl_Window )overlay)->show();
+}
   }
-  Fl_Window::show();
+  Fl_Window.show();
 }
 
-void Fl_Gl_Window::invalidate() {
+void Fl_Gl_Window.invalidate() {
   valid(0);
-#ifndef WIN32
-  if (overlay) ((Fl_Gl_Window*)overlay)->valid(0);
-#endif
+  context_valid(0);
+version (!WIN32) {
+  if (overlay) {
+    ((Fl_Gl_Window )overlay)->valid(0);
+    ((Fl_Gl_Window )overlay)->context_valid(0);
+  }
+}
 }
 
-int Fl_Gl_Window::mode(int m, const int *a) {
+int Fl_Gl_Window.mode(int m, int *a) {
   if (m == mode_ && a == alist) return 0;
-#ifndef __APPLE__
+version (!__APPLE__) {
   int oldmode = mode_;
-#endif // !__APPLE__
+} // !__APPLE__
 #if !defined(WIN32) && !defined(__APPLE__)
-  Fl_Gl_Choice* oldg = g;
-#endif // !WIN32 && !__APPLE__
+  Fl_Gl_Choice  oldg = g;
+} // !WIN32 && !__APPLE__
   context(0);
   mode_ = m; alist = a;
   if (shown()) {
-    g = Fl_Gl_Choice::find(m, a);
-#if defined(WIN32)
+    g = Fl_Gl_Choice.find(m, a);
+version (WIN32) {
     if (!g || (oldmode^m)&FL_DOUBLE) {
       hide();
       show();
     }
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
     redraw();
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
     // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
     redraw();
-#else
+} else {
     // under X, if the visual changes we must make a new X window (yuck!):
-    if (!g || g->vis->visualid!=oldg->vis->visualid || (oldmode^m)&FL_DOUBLE) {
+    if (!g || g.vis.visualid!=oldg.vis.visualid || (oldmode^m)&FL_DOUBLE) {
       hide();
       show();
     }
-#endif
+}
   } else {
     g = 0;
   }
   return 1;
 }
 
-#define NON_LOCAL_CONTEXT 0x80000000
+const int NON_LOCAL_CONTEXT = 0x80000000; 
 
-void Fl_Gl_Window::make_current() {
-//  puts("Fl_Gl_Window::make_current()");
+void Fl_Gl_Window.make_current() {
+//  puts("Fl_Gl_Window.make_current()");
 //  printf("make_current: context_=%p\n", context_);
   if (!context_) {
     mode_ &= ~NON_LOCAL_CONTEXT;
     context_ = fl_create_gl_context(this, g);
     valid(0);
+    context_valid(0);
   }
   fl_set_gl_context(this, context_);
 
-#ifdef __APPLE__
+version (__APPLE__) {
   // Set the buffer rectangle here, since in resize() we won't have the
   // correct parent window size to work with...
   GLint xywh[4];
@@ -258,15 +266,15 @@ void Fl_Gl_Window::make_current() {
   aglEnable(context_, AGL_BUFFER_RECT);
   aglSetInteger(context_, AGL_BUFFER_RECT, xywh);
 //  printf("make_current: xywh=[%d %d %d %d]\n", xywh[0], xywh[1], xywh[2], xywh[3]);
-#endif // __APPLE__
+} // __APPLE__
 
-#if defined(WIN32) && USE_COLORMAP
+version (WIN32) && USE_COLORMAP {
   if (fl_palette) {
     fl_GetDC(fl_xid(this));
     SelectPalette(fl_gc, fl_palette, FALSE);
     RealizePalette(fl_gc);
   }
-#endif // USE_COLORMAP
+} // USE_COLORMAP
   if (mode_ & FL_FAKE_SINGLE) {
     glDrawBuffer(GL_FRONT);
     glReadBuffer(GL_FRONT);
@@ -274,49 +282,52 @@ void Fl_Gl_Window::make_current() {
   current_ = this;
 }
 
-void Fl_Gl_Window::ortho() {
+void Fl_Gl_Window.ortho() {
 // Alpha NT seems to have a broken OpenGL that does not like negative coords:
-#ifdef _M_ALPHA
+version (_M_ALPHA) {
   glLoadIdentity();
   glViewport(0, 0, w(), h());
   glOrtho(0, w(), 0, h(), -1, 1);
-#else
+} else {
   GLint v[2];
   glGetIntegerv(GL_MAX_VIEWPORT_DIMS, v);
   glLoadIdentity();
   glViewport(w()-v[0], h()-v[1], v[0], v[1]);
   glOrtho(w()-v[0], w(), h()-v[1], h(), -1, 1);
-#endif
+}
 }
 
-void Fl_Gl_Window::swap_buffers() {
-#ifdef WIN32
+void Fl_Gl_Window.swap_buffers() {
+version (WIN32) {
 #  if HAVE_GL_OVERLAY
   // Do not swap the overlay, to match GLX:
-  BOOL ret = wglSwapLayerBuffers(Fl_X::i(this)->private_dc, WGL_SWAP_MAIN_PLANE);
+  BOOL ret = wglSwapLayerBuffers(Fl_X.i(this)->private_dc, WGL_SWAP_MAIN_PLANE);
   DWORD err = GetLastError();;
-#  else
-  SwapBuffers(Fl_X::i(this)->private_dc);
-#  endif
-#elif defined(__APPLE_QD__)
+} else {
+  SwapBuffers(Fl_X.i(this)->private_dc);
+}
+} else version (__APPLE_QD__) {
   aglSwapBuffers((AGLContext)context_);
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
   aglSwapBuffers((AGLContext)context_);
-#else
+} else {
   glXSwapBuffers(fl_display, fl_xid(this));
-#endif
+}
 }
 
 #if HAVE_GL_OVERLAY && defined(WIN32)
-uchar fl_overlay; // changes how fl_color() works
+ubyte fl_overlay; // changes how fl_color() works
 int fl_overlay_depth = 0;
-#endif
+}
 
-void Fl_Gl_Window::flush() {
-  uchar save_valid = valid_;
+void Fl_Gl_Window.flush() {
+  ubyte save_valid = valid_f_ & 1;
+#if HAVE_GL_OVERLAY && defined(WIN32)
+  ubyte save_valid_f = valid_f_;
+}
 
-#ifdef __APPLE_QD__
+version (__APPLE_QD__) {
   //: clear previous clipping in this shared port
   GrafPtr port = GetWindowPort( fl_xid(this) );
   Rect rect; SetRect( &rect, 0, 0, 0x7fff, 0x7fff );
@@ -324,7 +335,7 @@ void Fl_Gl_Window::flush() {
   SetPort( port );
   ClipRect( &rect );
   SetPort( old );
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
   //: clear previous clipping in this shared port
   GrafPtr port = GetWindowPort( fl_xid(this) );
@@ -333,7 +344,7 @@ void Fl_Gl_Window::flush() {
   SetPort( port );
   ClipRect( &rect );
   SetPort( old );
-#endif
+}
 
 #if HAVE_GL_OVERLAY && defined(WIN32)
 
@@ -343,27 +354,27 @@ void Fl_Gl_Window::flush() {
   if (overlay && overlay != this
       && (damage()&(FL_DAMAGE_OVERLAY|FL_DAMAGE_EXPOSE) || !save_valid)) {
     // SGI 320 messes up overlay with user-defined cursors:
-    if (Fl_X::i(this)->cursor && Fl_X::i(this)->cursor != fl_default_cursor) {
+    if (Fl_X.i(this)->cursor && Fl_X.i(this)->cursor != fl_default_cursor) {
       fixcursor = true; // make it restore cursor later
       SetCursor(0);
     }
     fl_set_gl_context(this, (GLContext)overlay);
     if (fl_overlay_depth)
-      wglRealizeLayerPalette(Fl_X::i(this)->private_dc, 1, TRUE);
+      wglRealizeLayerPalette(Fl_X.i(this)->private_dc, 1, TRUE);
     glDisable(GL_SCISSOR_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
     fl_overlay = 1;
     draw_overlay();
     fl_overlay = 0;
-    valid(save_valid);
-    wglSwapLayerBuffers(Fl_X::i(this)->private_dc, WGL_SWAP_OVERLAY1);
+    valid_f_ = save_valid_f;
+    wglSwapLayerBuffers(Fl_X.i(this)->private_dc, WGL_SWAP_OVERLAY1);
     // if only the overlay was damaged we are done, leave main layer alone:
     if (damage() == FL_DAMAGE_OVERLAY) {
-      if (fixcursor) SetCursor(Fl_X::i(this)->cursor);
+      if (fixcursor) SetCursor(Fl_X.i(this)->cursor);
       return;
     }
   }
-#endif
+}
 
   make_current();
 
@@ -372,15 +383,15 @@ void Fl_Gl_Window::flush() {
     glDrawBuffer(GL_BACK);
 
     if (!SWAP_TYPE) {
-#ifdef __APPLE_QD__
+version (__APPLE_QD__) {
       SWAP_TYPE = COPY;
-#elif defined __APPLE_QUARTZ__
+} else version __APPLE_QUARTZ__ {
       // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
       SWAP_TYPE = COPY;
-#else
+} else {
       SWAP_TYPE = UNDEFINED;
-#endif
-      const char* c = getenv("GL_SWAP_TYPE");
+}
+      char* c = getenv("GL_SWAP_TYPE");
       if (c) {
 	if (!strcmp(c,"COPY")) SWAP_TYPE = COPY;
 	else if (!strcmp(c, "NODAMAGE")) SWAP_TYPE = NODAMAGE;
@@ -411,7 +422,7 @@ void Fl_Gl_Window::flush() {
 	// we use a seperate context for the copy because rasterpos must be 0
 	// and depth test needs to be off:
 	static GLContext ortho_context = 0;
-	static Fl_Gl_Window* ortho_window = 0;
+	static Fl_Gl_Window  ortho_window = 0;
 	int orthoinit = !ortho_context;
 	if (orthoinit) ortho_context = fl_create_gl_context(this, g);
 	fl_set_gl_context(this, ortho_context);
@@ -453,44 +464,45 @@ void Fl_Gl_Window::flush() {
   }
 
 #if HAVE_GL_OVERLAY && defined(WIN32)
-  if (fixcursor) SetCursor(Fl_X::i(this)->cursor);
-#endif
+  if (fixcursor) SetCursor(Fl_X.i(this)->cursor);
+}
   valid(1);
+  context_valid(1);
 }
 
-void Fl_Gl_Window::resize(int X,int Y,int W,int H) {
-//  printf("Fl_Gl_Window::resize(X=%d, Y=%d, W=%d, H=%d)\n", X, Y, W, H);
+void Fl_Gl_Window.resize(int X,int Y,int W,int H) {
+//  printf("Fl_Gl_Window.resize(X=%d, Y=%d, W=%d, H=%d)\n", X, Y, W, H);
 //  printf("current: x()=%d, y()=%d, w()=%d, h()=%d\n", x(), y(), w(), h());
 
   if (W != w() || H != h()) valid(0);
 
-#ifdef __APPLE__
+version (__APPLE__) {
   if (X != x() || Y != y() || W != w() || H != h()) aglUpdateContext(context_);
 #elif !defined(WIN32)
   if ((W != w() || H != h()) && !resizable() && overlay && overlay != this) {
-    ((Fl_Gl_Window*)overlay)->resize(0,0,W,H);
+    ((Fl_Gl_Window )overlay)->resize(0,0,W,H);
   }
-#endif
-
-  Fl_Window::resize(X,Y,W,H);
 }
 
-void Fl_Gl_Window::context(void* v, int destroy_flag) {
+  Fl_Window.resize(X,Y,W,H);
+}
+
+void Fl_Gl_Window.context(void* v, int destroy_flag) {
   if (context_ && !(mode_&NON_LOCAL_CONTEXT)) fl_delete_gl_context(context_);
   context_ = (GLContext)v;
   if (destroy_flag) mode_ &= ~NON_LOCAL_CONTEXT;
   else mode_ |= NON_LOCAL_CONTEXT;
 }    
 
-void Fl_Gl_Window::hide() {
+void Fl_Gl_Window.hide() {
   context(0);
 #if HAVE_GL_OVERLAY && defined(WIN32)
   if (overlay && overlay != this) {
     fl_delete_gl_context((GLContext)overlay);
     overlay = 0;
   }
-#endif
-  Fl_Window::hide();
+}
+  Fl_Window.hide();
 }
 
 Fl_Gl_Window::~Fl_Gl_Window() {
@@ -498,7 +510,7 @@ Fl_Gl_Window::~Fl_Gl_Window() {
 //  delete overlay; this is done by ~Fl_Group
 }
 
-void Fl_Gl_Window::init() {
+void Fl_Gl_Window.init() {
   end(); // we probably don't want any children
   box(FL_NO_BOX);
 
@@ -507,21 +519,21 @@ void Fl_Gl_Window::init() {
   context_ = 0;
   g        = 0;
   overlay  = 0;
-  valid_   = 0;
+  valid_f_ = 0;
   damage1_ = 0;
 
 #if 0 // This breaks resizing on Linux/X11
   int H = h();
   h(1); // Make sure we actually do something in resize()...
   resize(x(), y(), w(), H);
-#endif // 0
+} // 0
 }
 
-void Fl_Gl_Window::draw_overlay() {}
+void Fl_Gl_Window.draw_overlay() {}
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Gl_Window.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: gl_window.d 5322 2006-08-17 09:49:43Z matt $".
 //
     End of automatic import -+/

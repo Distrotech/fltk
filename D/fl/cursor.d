@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_cursor.cxx 5261 2006-07-18 08:19:14Z matt $"
 //
@@ -32,19 +31,22 @@
 // This avoids a field in the Fl_Window, and I suspect is more
 // portable to other systems.
 
+module fl.cursor;
+
+/+=
 #include <FL/Fl.H>
-#include <FL/Fl_Window.H>
+private import fl.window;
 #include <FL/x.H>
 #if !defined(WIN32) && !defined(__APPLE__)
 #  include <X11/cursorfont.h>
-#endif
-#include <FL/fl_draw.H>
+}
+private import fl.draw;
 
 void fl_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
-  if (Fl::first_window()) Fl::first_window()->cursor(c,fg,bg);
+  if (Fl.first_window()) Fl.first_window()->cursor(c,fg,bg);
 }
 
-void Fl_Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void Fl_Window.default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 //  if (c == FL_CURSOR_DEFAULT) c = FL_CURSOR_ARROW;
 
   cursor_default = c;
@@ -54,26 +56,26 @@ void Fl_Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
   cursor(c, fg, bg);
 }
 
-#ifdef WIN32
+version (WIN32) {
 
-#  ifndef IDC_HAND
-#    define IDC_HAND	MAKEINTRESOURCE(32649)
-#  endif // !IDC_HAND
+version (!IDC_HAND) {
+const int IDC_HAND = MAKEINTRESOURCE(32649); 
+} // !IDC_HAND
 
-void Fl_Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
+void Fl_Window.cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
   if (!shown()) return;
   // the cursor must be set for the top level window, not for subwindows
-  Fl_Window *w = window(), *toplevel = this;
-  while (w) { toplevel = w; w = w->window(); }
-  if (toplevel != this) { toplevel->cursor(c, c1, c2); return; }
+  Fl_Window  w = window(), *toplevel = this;
+  while (w) { toplevel = w; w = w.window(); }
+  if (toplevel != this) { toplevel.cursor(c, c1, c2); return; }
   // now set the actual cursor
   if (c == FL_CURSOR_DEFAULT) {
     c = cursor_default;
   }
   if (c > FL_CURSOR_NESW) {
-    i->cursor = 0;
+    i.cursor = 0;
   } else if (c == FL_CURSOR_DEFAULT) {
-    i->cursor = fl_default_cursor;
+    i.cursor = fl_default_cursor;
   } else {
     LPSTR n;
     switch (c) {
@@ -111,21 +113,21 @@ void Fl_Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
     case FL_CURSOR_NWSE:	n = IDC_SIZENWSE; break;
     default:			n = IDC_NO; break;
     }
-    i->cursor = LoadCursor(NULL, n);
+    i.cursor = LoadCursor(NULL, n);
   }
-  SetCursor(i->cursor);
+  SetCursor(i.cursor);
 }
 
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 
-#ifdef __BIG_ENDIAN__
+version (__BIG_ENDIAN__) {
 # define E(x) x
-#elif defined __LITTLE_ENDIAN__
+} else version __LITTLE_ENDIAN__ {
 // Don't worry. This will be resolved at compile time
 # define E(x) (x>>8)|((x<<8)&0xff00)
-#else
+} else {
 # error "Either __LITTLE_ENDIAN__ or __BIG_ENDIAN__ must be defined"
-#endif
+}
 
 static Cursor crsrHAND =
 {
@@ -202,48 +204,48 @@ static Cursor crsrARROW =
 
 #undef E
 
-void Fl_Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
+void Fl_Window.cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
   if (!shown()) return;
   if (c == FL_CURSOR_DEFAULT) {
     c = cursor_default;
   }
   switch (c) {
-  case FL_CURSOR_CROSS:     i->cursor = GetCursor( crossCursor ); break;
-  case FL_CURSOR_WAIT:      i->cursor = GetCursor( watchCursor ); break;
-  case FL_CURSOR_INSERT:    i->cursor = GetCursor( iBeamCursor ); break;
+  case FL_CURSOR_CROSS:     i.cursor = GetCursor( crossCursor ); break;
+  case FL_CURSOR_WAIT:      i.cursor = GetCursor( watchCursor ); break;
+  case FL_CURSOR_INSERT:    i.cursor = GetCursor( iBeamCursor ); break;
   case FL_CURSOR_N:
   case FL_CURSOR_S:
-  case FL_CURSOR_NS:        i->cursor = &crsrNSptr; break;
-  case FL_CURSOR_HELP:	i->cursor = &crsrHELPptr; break;
-  case FL_CURSOR_HAND:	i->cursor = &crsrHANDptr; break;
-  case FL_CURSOR_MOVE:	i->cursor = &crsrMOVEptr; break;
+  case FL_CURSOR_NS:        i.cursor = &crsrNSptr; break;
+  case FL_CURSOR_HELP:	i.cursor = &crsrHELPptr; break;
+  case FL_CURSOR_HAND:	i.cursor = &crsrHANDptr; break;
+  case FL_CURSOR_MOVE:	i.cursor = &crsrMOVEptr; break;
   case FL_CURSOR_NE:
   case FL_CURSOR_SW:
-  case FL_CURSOR_NESW:	i->cursor = &crsrNESWptr; break;
+  case FL_CURSOR_NESW:	i.cursor = &crsrNESWptr; break;
   case FL_CURSOR_E:
   case FL_CURSOR_W:
-  case FL_CURSOR_WE:	i->cursor = &crsrWEptr; break;
+  case FL_CURSOR_WE:	i.cursor = &crsrWEptr; break;
   case FL_CURSOR_SE:
   case FL_CURSOR_NW:
-  case FL_CURSOR_NWSE:	i->cursor = &crsrNWSEptr; break;
-  case FL_CURSOR_NONE:	i->cursor = &crsrNONEptr; break;
-  case FL_CURSOR_ARROW:   	i->cursor = &crsrARROWptr; break;
+  case FL_CURSOR_NWSE:	i.cursor = &crsrNWSEptr; break;
+  case FL_CURSOR_NONE:	i.cursor = &crsrNONEptr; break;
+  case FL_CURSOR_ARROW:   	i.cursor = &crsrARROWptr; break;
   case FL_CURSOR_DEFAULT:
   default:
-    i->cursor = fl_default_cursor; break;
+    i.cursor = fl_default_cursor; break;
   }
-  SetCursor( *i->cursor );
+  SetCursor( *i.cursor );
 }
 
-#else
+} else {
 
 // I like the MSWindows resize cursors, so I duplicate them here:
 
-#define CURSORSIZE 16
-#define HOTXY 7
+const int CURSORSIZE = 16; 
+const int HOTXY = 7; 
 static struct TableEntry {
-  uchar bits[CURSORSIZE*CURSORSIZE/8];
-  uchar mask[CURSORSIZE*CURSORSIZE/8];
+  ubyte bits[CURSORSIZE*CURSORSIZE/8];
+  ubyte mask[CURSORSIZE*CURSORSIZE/8];
   Cursor cursor;
 } table[] = {
   {{	// FL_CURSOR_NS
@@ -281,7 +283,7 @@ static struct TableEntry {
   {{0}, {0}} // FL_CURSOR_NONE & unknown
 };
 
-void Fl_Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void Fl_Window.cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
   if (!shown()) return;
   Cursor xc;
   int deleteit = 0;
@@ -296,30 +298,30 @@ void Fl_Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
   } else {
     if (c >= FL_CURSOR_NS) {
       TableEntry *q = (c > FL_CURSOR_NESW) ? table+4 : table+(c-FL_CURSOR_NS);
-      if (!(q->cursor)) {
+      if (!(q.cursor)) {
 	XColor dummy = { 0 };
 	Pixmap p = XCreateBitmapFromData(fl_display,
-	  RootWindow(fl_display, fl_screen), (const char*)(q->bits),
+	  RootWindow(fl_display, fl_screen), (char*)(q.bits),
 	  CURSORSIZE, CURSORSIZE);
 	Pixmap m = XCreateBitmapFromData(fl_display,
-	  RootWindow(fl_display, fl_screen), (const char*)(q->mask),
+	  RootWindow(fl_display, fl_screen), (char*)(q.mask),
 	  CURSORSIZE, CURSORSIZE);
-	q->cursor = XCreatePixmapCursor(fl_display, p,m,&dummy, &dummy,
+	q.cursor = XCreatePixmapCursor(fl_display, p,m,&dummy, &dummy,
 					HOTXY, HOTXY);
 	XFreePixmap(fl_display, m);
 	XFreePixmap(fl_display, p);
       }
-      xc = q->cursor;
+      xc = q.cursor;
     } else {
       xc = XCreateFontCursor(fl_display, (c-1)*2);
       deleteit = 1;
     }
     XColor fgc;
-    uchar r,g,b;
-    Fl::get_color(fg,r,g,b);
+    ubyte r,g,b;
+    Fl.get_color(fg,r,g,b);
     fgc.red = r<<8; fgc.green = g<<8; fgc.blue = b<<8;
     XColor bgc;
-    Fl::get_color(bg,r,g,b);
+    Fl.get_color(bg,r,g,b);
     bgc.red = r<<8; bgc.green = g<<8; bgc.blue = b<<8;
     XRecolorCursor(fl_display, xc, &fgc, &bgc);
   }
@@ -327,7 +329,7 @@ void Fl_Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
   if (deleteit) XFreeCursor(fl_display, xc);
 }
 
-#endif
+}
 
 //
 // End of "$Id: fl_cursor.cxx 5261 2006-07-18 08:19:14Z matt $".

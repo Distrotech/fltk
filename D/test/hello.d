@@ -25,13 +25,13 @@
 //     http://www.fltk.org/str.php
 //
 
-public import fl.fl;
-public import fl.window;
-public import fl.box;
+private import fl.fl;
+private import fl.window;
+private import fl.box;
 
 int main(char[][] args) {
-  Fl_Window window = new Fl_Window(300,180,"D-FLTK test: hello.d");
-  Fl_Box box = new Fl_Box(FL_UP_BOX,20,40,260,100,"Hello, World!");
+  Fl_Window window = new Fl_Window(300,180,"D-FLTK test: hello.d\0");
+  Fl_Box box = new Fl_Box(FL_UP_BOX,20,40,260,100,"Hello, World!\0");
   box.labelfont(FL_BOLD+FL_ITALIC);
   box.labelsize(36);
   box.labeltype(FL_SHADOW_LABEL);

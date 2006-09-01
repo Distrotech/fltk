@@ -1,7 +1,7 @@
 //
-// "$Id: mac.d 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: mac.d 5379 2006-08-29 11:03:05Z matt $"
 //
-// Mac specific system interface for the Fast Light Tool Kit (FLTK).
+// Mac header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2005 by Bill Spitzak and others.
 //
@@ -25,37 +25,38 @@
 //     http://www.fltk.org/str.php
 //
 
-// Do not directly include this file, instead use fl.x .  It will
-// include this file if version(Apple) is set.  This is to encourage
+// Do not directly include this file, instead use <FL/x.H>.  It will
+// include this file if "__APPLE__" is defined.  This is to encourage
 // portability of even the system-specific code...
 
 module fl.mac;
 
-/+-
-#ifndef Fl_X_H
-#  error "Never use <FL/mac.H> directly; include <FL/x.H> instead."
-#endif // !Fl_X_H
--+/
-
-// Standard MacOS Carbon API includes...
 public import std.c.osx.carbon.carbon;
-
-private import fl.fl;
 private import fl.draw;
 private import fl.widget;
 private import fl.window;
+private import fl.group;
+private import fl.fl;
 private import fl.tooltip;
-private import fl.font_mac;
-private import fl.color_mac;
-private import fl.line_style;
+private import std.stdio;
+private import std.c.math;
 
-private import std.math;
-private import std.ctype;
+/+=
+// Standard MacOS Carbon API includes...
+#include <Carbon/Carbon.h>
+
+// Now make some fixes to the headers...
+#undef check			// Dunno where this comes from...
 
 // Some random X equivalents
+alias WindowPtr Window;
+=+/
 struct XPoint { int x, y; };
 struct XRectangle {int x, y, width, height;};
 alias RgnHandle Fl_Region;
+/+=
+void fl_clip_region(Fl_Region);
+=+/
 
 Fl_Region XRectangleRegion(int x, int y, int w, int h) {
   Fl_Region R = NewRgn();
@@ -67,25 +68,14 @@ void XDestroyRegion(Fl_Region r) {
   DisposeRgn(r);
 }
 
-void XDestroyWindow(int x, WindowRef w) {
-  DisposeWindow(w);
-}
-
-void XMapWindow(int x, WindowRef w) {
-  ShowWindow(w);
-}
-
-void XUnmapWindow(int x, WindowRef w) {
-  HideWindow(w);
-}
-
+/+=
 // This object contains all mac-specific stuff about a window:
 // WARNING: this object is highly subject to change!
+=+/
+class Fl_X {
 
-class Fl_X 
-{
 public:
-  WindowPtr xid;              // Mac WindowPtr
+  WindowRef xid;              // Mac WindowPtr
   GWorldPtr other_xid;     // pointer for offscreen bitmaps (doublebuffer)
   Fl_Window w;            // FLTK window for 
   Fl_Region region;
@@ -95,14 +85,9 @@ public:
   int wait_for_expose;
   CursHandle cursor;
   static Fl_X first;
-  static Fl_X i(Fl_Window w) {
-    return w.i;
-  }
+  static Fl_X i(Fl_Window w) {return w.i;}
 
-  /**
-   * \todo this is a leftover from OS9 times. Please check how much applies to Carbon!
-   */
-  static int fake_X_wm(Fl_Window w, inout int X, inout int Y, out int bt, out int bx, out int by) {
+  static int fake_X_wm(Fl_Window w, inout int X, inout int Y, inout int bt, inout int bx, inout int by) {
     int W, H, xoff, yoff, dx, dy;
     int ret = bx = by = bt = 0;
     if (w.border() && !w.parent()) {
@@ -199,7 +184,12 @@ public:
     return ret;
   }
 
-  static void make(Fl_Window w) {
+  /**
+   * go ahead, create that (sub)window
+   * \todo we should make menu windows slightly transparent for the new Mac look
+   */
+  static void make(Fl_Window w)
+  {
     static int xyPos = 100;
     if ( w.parent() ) // create a subwindow
     {
@@ -227,7 +217,7 @@ public:
         x.wait_for_expose = 0;
         x.next = Fl_X.first; // must be in the list for ::flush()
         Fl_X.first = x;
-        Fl_Event old_event = Fl.e_number;
+        int old_event = Fl.e_number;
         w.handle(Fl.e_number = FL_SHOW);
         Fl.e_number = old_event;
         w.redraw(); // force draw to happen
@@ -249,7 +239,7 @@ public:
           winattr |= kWindowFullZoomAttribute | kWindowResizableAttribute | kWindowLiveResizeAttribute;
       } else {
         if (w.resizable()) {
-          Fl_Widget o = w.resizable();
+          Fl_Widget  o = w.resizable();
           int minw = o.w(); if (minw > 100) minw = 100;
           int minh = o.h(); if (minh > 100) minh = 100;
           w.size_range(w.w() - o.w() + minw, w.h() - o.h() + minh, 0, 0);
@@ -262,7 +252,7 @@ public:
   
       if (!fake_X_wm(w, xwm, ywm, bt, bx, by)) {
         // menu windows and tooltips
-        if (w.modal()||w.overrides()) {
+        if (w.modal()||w.get_override()) {
           winclass = kHelpWindowClass;
           winattr  = 0;
         } else {
@@ -285,7 +275,7 @@ public:
       } else {
         if (!Fl.grab()) {
           xp = xwm; yp = ywm;
-          w.x(xp); w.y(yp);
+          w.x(xp);w.y(yp);
         }
         xp -= bx;
         yp -= by+bt;
@@ -293,8 +283,8 @@ public:
   
       if (w.non_modal() && Fl_X.first && !fl_disable_transient_for) {
         // find some other window to be "transient for":
-        Fl_Window w2 = Fl_X.first.w;
-        while (w2.parent()) w2 = w2.window(); // todo: this code does not make any sense! (w!=w??)
+        Fl_Window win = Fl_X.first.w;
+        while (win.parent()) win = win.window(); // todo: this code does not make any sense! (w!=w??)
       }
   
       Rect wRect;
@@ -302,7 +292,15 @@ public:
       wRect.left   = w.x();
       wRect.bottom = w.y() + w.h(); if (wRect.bottom<=wRect.top) wRect.bottom = wRect.top+1;
       wRect.right  = w.x() + w.w(); if (wRect.right<=wRect.left) wRect.right = wRect.left+1;
-
+ 
+      char *name = w.label();
+      char[256] pTitle; 
+      if (name) {
+        if (strlen(name) > 255) pTitle[0] = 255;
+        else pTitle[0] = strlen(name);
+        memcpy(pTitle.ptr+1, name, pTitle[0]);
+      } else pTitle[0] = 0;
+  
       Fl_X x = new Fl_X;
       x.other_xid = null; // room for doublebuffering image map. On OS X this is only used by overlay windows
       x.region = null;
@@ -314,20 +312,12 @@ public:
   
       winattr &= GetAvailableWindowAttributes( winclass );	// make sure that the window will open
       CreateNewWindow( winclass, winattr, &wRect, &(x.xid) );
-
-      char[] pTitle;
-      pTitle = "\000";
-      char[] name = w.label();
-      if (name) {
-        pTitle ~= name;
-        pTitle[0] = cast(char)name.length;
-      }
       SetWTitle(x.xid, pTitle);
-      
       MoveWindow(x.xid, wRect.left, wRect.top, 1);	// avoid Carbon Bug on old OS
       if (w.non_modal() && !w.modal()) {
         // Major kludge: this is to have the regular look, but stay above the document windows
         SetWindowClass(x.xid, kFloatingWindowClass);
+        SetWindowActivationScope(x.xid, kWindowActivationScopeAll);
       }
       if (!(w.flags() & Fl_Window.FL_FORCE_POSITION))
       {
@@ -346,26 +336,35 @@ public:
       Fl_X.first = x;
       { // Install Carbon Event handlers 
         OSStatus ret;
-        EventHandlerUPP mousewheelHandler = NewEventHandlerUPP( &carbonMousewheelHandler ); // will not be disposed by Carbon...
-        static EventTypeSpec mousewheelEvents[] = [
-          { kEventClassMouse, kEventMouseWheelMoved } ];
+/+===
+        // will not be disposed by Carbon...
+        EventHandlerUPP mousewheelHandler = NewEventHandlerUPP( carbonMousewheelHandler );
+        static EventTypeSpec mousewheelEvents[] = {
+          { kEventClassMouse, kEventMouseWheelMoved } };
         ret = InstallWindowEventHandler( x.xid, mousewheelHandler,
-	          mousewheelEvents.length, mousewheelEvents, w, null );
-        EventHandlerUPP mouseHandler = NewEventHandlerUPP( &carbonMouseHandler ); // will not be disposed by Carbon...
+  	        (int)(sizeof(mousewheelEvents)/sizeof(mousewheelEvents[0])),
+  		mousewheelEvents, w, 0L );
+===+/
+        // will not be disposed by Carbon...
+        EventHandlerUPP mouseHandler = NewEventHandlerUPP( &carbonMouseHandler );
         static EventTypeSpec mouseEvents[] = [
           { kEventClassMouse, kEventMouseDown },
           { kEventClassMouse, kEventMouseUp },
           { kEventClassMouse, kEventMouseMoved },
           { kEventClassMouse, kEventMouseDragged } ];
-        ret = InstallWindowEventHandler( x.xid, mouseHandler, mouseEvents.length, mouseEvents, w, null );
-        EventHandlerUPP keyboardHandler = NewEventHandlerUPP( &carbonKeyboardHandler ); // will not be disposed by Carbon...
-        static EventTypeSpec keyboardEvents[] = [
+        ret = InstallWindowEventHandler( x.xid, mouseHandler, 4, mouseEvents, w, null );
+/+==
+        // will not be disposed by Carbon...
+        EventHandlerUPP keyboardHandler = NewEventHandlerUPP( carbonKeyboardHandler );
+        static EventTypeSpec keyboardEvents[] = {
           { kEventClassKeyboard, kEventRawKeyDown },
           { kEventClassKeyboard, kEventRawKeyRepeat },
           { kEventClassKeyboard, kEventRawKeyUp },
-          { kEventClassKeyboard, kEventRawKeyModifiersChanged } ];
-        ret = InstallWindowEventHandler( x.xid, keyboardHandler, keyboardEvents.length, keyboardEvents, w, null );
-        EventHandlerUPP windowHandler = NewEventHandlerUPP( &carbonWindowHandler ); // will not be disposed by Carbon...
+          { kEventClassKeyboard, kEventRawKeyModifiersChanged } };
+        ret = InstallWindowEventHandler( x.xid, keyboardHandler, 4, keyboardEvents, w, 0L );
+===+/
+        // will not be disposed by Carbon...
+        EventHandlerUPP windowHandler = NewEventHandlerUPP( &carbonWindowHandler );
         static EventTypeSpec windowEvents[] = [
           { kEventClassWindow, kEventWindowDrawContent },
           { kEventClassWindow, kEventWindowShown },
@@ -378,42 +377,44 @@ public:
           { kEventClassWindow, kEventWindowBoundsChanging },
           { kEventClassWindow, kEventWindowBoundsChanged } ];
         ret = InstallWindowEventHandler( x.xid, windowHandler, windowEvents.length, windowEvents, w, null );
-        /+= ret = InstallTrackingHandler( dndTrackingHandler, x.xid, w ); =+/
-        /+= ret = InstallReceiveHandler( dndReceiveHandler, x.xid, w ); =+/
+/+===
+        ret = InstallTrackingHandler( dndTrackingHandler, x.xid, w );
+        ret = InstallReceiveHandler( dndReceiveHandler, x.xid, w );
+===+/
       }
-  
-      if ( ! Fl_X.first.next ) // if this is the first window, we need to bring the application to the front
+
+      if ( !Fl_X.first.next ) // if this is the first window, we need to bring the application to the front
       { 
         ProcessSerialNumber psn;
         OSErr err = GetCurrentProcess( &psn );
         if ( err==noErr ) SetFrontProcess( &psn );
       }
       
-      if (w.size_range_set) 
-        w.size_range_();
+      if (w.size_range_set) w.size_range_();
       
-      //if (winclass != kHelpWindowClass) {
+      if (winclass != kHelpWindowClass) {
         Fl_Tooltip.enter(null);
-        ShowWindow(x.xid);
-        if (fl_show_iconic) { 
-          fl_show_iconic = 0;
-          CollapseWindow( x.xid, true ); // \todo Mac ; untested
-        } else {
-          w.set_visible();
-        }
-      //}
+      }
+      if (w.size_range_set) w.size_range_();
+      ShowWindow(x.xid);
+      if (fl_show_iconic) { 
+        fl_show_iconic = 0;
+        CollapseWindow( x.xid, true ); // \todo Mac ; untested
+      } else {
+        w.set_visible();
+      }
   
       Rect rect;
       GetWindowBounds(x.xid, kWindowContentRgn, &rect);
       w.x(rect.left); w.y(rect.top);
       w.w(rect.right-rect.left); w.h(rect.bottom-rect.top);
   
-      Fl_Event old_event = Fl.e_number;
+      int old_event = Fl.e_number;
       w.handle(Fl.e_number = FL_SHOW);
       Fl.e_number = old_event;
       w.redraw(); // force draw to happen
       
-      if (Fl.modal()) { Fl.modal_ = w; fl_fix_focus(); }
+      if (w.modal()) { Fl.modal_ = w; fl_fix_focus(); }
     }
   }
 
@@ -423,18 +424,18 @@ public:
   void flush()
   {
     w.flush();
-    if (fl_gc) 
-      CGContextFlush(fl_gc);
+    version (__APPLE__) {
+      if (fl_gc) 
+        CGContextFlush(fl_gc);
+    }          
     SetOrigin( 0, 0 );
   }
-
   // Quartz additions:
   CGContextRef gc;                 // graphics context (NULL when using QD)
+/+=
   static ATSUTextLayout atsu_layout; // windows share a global font
   static ATSUStyle      atsu_style;
-
-  // FLTK has only one global graphics state. This function copies the FLTK state into the
-  // current Quartz context
+=+/
   static void q_fill_context() {    // fill a Quartz context with current FLTK state
     if (!fl_gc) return;
     int hgt = 0;
@@ -452,50 +453,57 @@ public:
     fl_quartz_restore_line_style_();
   }
 
-  // The only way to reset clipping to its original state is to pop the current graphics
-  // state and restore the global state.
-  static void q_clear_clipping() {
+  static void q_clear_clipping() {  // remove all clipping from a Quartz context
     if (!fl_gc) return;
     CGContextRestoreGState(fl_gc);
     CGContextSaveGState(fl_gc);
   }
 
-  static void q_release_context(Fl_X x=null) { // free all resources associated with fl_gc
-    if (x && x.gc!=fl_gc) return;
+  // Give the Quartz context back to the system
+  static void q_release_context(Fl_X x=null) {
+    if (x && !(x.gc is fl_gc)) return;
     if (!fl_gc) return;
     CGContextRestoreGState(fl_gc);
     if (fl_window) {
       OSStatus err = QDEndCGContext(GetWindowPort(fl_window), &fl_gc);
-      //if (err!=noErr)
-      //  fprintf(stderr, "Error %d in QDEndCGContext\n", cast(int)err);
+      if (err!=noErr)
+        writef("Error %d in QDEndCGContext\n", err);
     }
     fl_gc = null;
   }
-
-  static void q_begin_image(inout CGRect r, int x, int y, int w, int h);
+/+=
+  static void q_begin_image(CGRect&, int x, int y, int w, int h);
   static void q_end_image();
+=+/
 }
+
+/+=
+extern void MacDestroyWindow(Fl_Window ,WindowPtr);
+extern void MacMapWindow(Fl_Window ,WindowPtr);
+extern void MacUnmapWindow(Fl_Window ,WindowPtr);
+extern int MacUnlinkWindow(Fl_X ,Fl_X start=0L);
+=+/
 
 WindowRef fl_xid(Fl_Window w) 
 {
   return Fl_X.i(w).xid;
 }
 
-/+-
+/+=
 extern CursHandle fl_default_cursor;
 
 extern struct Fl_XMap {
   RGBColor rgb;
-  ulong pen;
+  uint pen;
 } *fl_current_xmap;
 
-extern FL_EXPORT void *fl_display;
-extern FL_EXPORT Window fl_window;
-extern FL_EXPORT CGContextRef fl_gc;
-extern FL_EXPORT Handle fl_system_menu;
-extern FL_EXPORT class Fl_Sys_Menu_Bar *fl_sys_menu_bar;
+extern void *fl_display;
+extern Window fl_window;
+extern CGContextRef fl_gc;
+extern Handle fl_system_menu;
+extern class Fl_Sys_Menu_Bar  fl_sys_menu_bar;
 
-typedef GWorldPtr Fl_Offscreen;
+alias GWorldPtr Fl_Offscreen;
 
 extern Fl_Offscreen fl_create_offscreen(int w, int h);
 extern void fl_copy_offscreen(int x,int y,int w,int h, Fl_Offscreen gWorld, int srcx,int srcy);
@@ -503,27 +511,27 @@ extern void fl_delete_offscreen(Fl_Offscreen gWorld);
 extern void fl_begin_offscreen(Fl_Offscreen gWorld);
 extern void fl_end_offscreen();
 
-typedef GWorldPtr Fl_Bitmask; // Carbon requires a 1-bit GWorld instead of a BitMap
+alias GWorldPtr Fl_Bitmask; // Carbon requires a 1-bit GWorld instead of a BitMap
 
-extern FL_EXPORT Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data);
-extern FL_EXPORT Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *data);
-extern FL_EXPORT void fl_delete_bitmask(Fl_Bitmask bm);
+extern Fl_Bitmask fl_create_bitmask(int w, int h, ubyte *data);
+extern Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, ubyte *data);
+extern void fl_delete_bitmask(Fl_Bitmask bm);
 
 extern void fl_open_display();
 
 // Register a function for opening files via the finder...
-extern void fl_open_callback(void (*cb)(const char *));
+extern void fl_open_callback(void (*cb)(char *));
 
-extern FL_EXPORT int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b);
--+/
+extern int fl_parse_color(char* p, ubyte& r, ubyte& g, ubyte& b);
 
 //
-// End of "$Id: mac.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: mac.H 5379 2006-08-29 11:03:05Z matt $".
 //
 
+    End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_mac.cxx 5258 2006-07-17 20:14:50Z matt $"
+// "$Id: mac.d 5379 2006-08-29 11:03:05Z matt $"
 //
 // MacOS specific code for the Fast Light Tool Kit (FLTK).
 //
@@ -570,7 +578,7 @@ extern FL_EXPORT int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b)
 // we don't need the following definition because we deliver only
 // true mouse moves.  On very slow systems however, this flag may
 // still be useful.
-#define CONSOLIDATE_MOTION 0
+const int CONSOLIDATE_MOTION = 0; 
 extern "C" {
 #include <pthread.h>
 }
@@ -578,70 +586,84 @@ extern "C" {
 #include <config.h>
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/Fl_Tooltip.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Tooltip.H>
-#include <FL/Fl_Sys_Menu_Bar.H>
+private import fl.tooltip;
+private import fl.window;
+private import fl.tooltip;
+private import fl.sys_menu_bar;
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 #include <unistd.h>
 
 // #define DEBUG_SELECT		// UNCOMMENT FOR SELECT()/THREAD DEBUGGING
-#ifdef DEBUG_SELECT
+version (DEBUG_SELECT) {
 #include <stdio.h>		// testing
 #define DEBUGMSG(msg)		if ( msg ) fprintf(stderr, msg);
 #define DEBUGPERRORMSG(msg)	if ( msg ) perror(msg)
 #define DEBUGTEXT(txt)		txt
-#else
+} else {
 #define DEBUGMSG(msg)
 #define DEBUGPERRORMSG(msg)
 #define DEBUGTEXT(txt)		NULL
-#endif /*DEBUG_SELECT*/
+} /*DEBUG_SELECT*/
 
 // external functions
-extern Fl_Window* fl_find(Window);
+extern Fl_Window  fl_find(Window);
 extern void fl_fix_focus();
 
 // forward definition of functions in this file
 static void handleUpdateEvent( WindowPtr xid );
-// + int fl_handle(const EventRecord &event);
+// + int fl_handle(EventRecord &event);
 static int FSSpec2UnixPath( FSSpec *fs, char *dst );
--+/
 
 // public variables
 int fl_screen;
+=+/
 CGContextRef fl_gc = null;
+/+=
 Handle fl_system_menu;
-/+-
-Fl_Sys_Menu_Bar *fl_sys_menu_bar = 0;
--+/
+Fl_Sys_Menu_Bar  fl_sys_menu_bar = 0;
+=+/
 CursHandle fl_default_cursor;
 WindowRef fl_capture = null;            // we need this to compensate for a missing(?) mouse capture
-ulong fl_event_time;                 // the last timestamp from an x event
-char fl_key_vector[32];              // used by Fl::get_key()
+/+=
+uint fl_event_time;                 // the last timestamp from an x event
+char fl_key_vector[32];              // used by Fl.get_key()
+=+/
 bool fl_show_iconic;                 // true if called from iconize() - shows the next created window in collapsed state
 int fl_disable_transient_for;        // secret method of removing TRANSIENT_FOR
-Fl_Window fl_modal_for;       // parent of modal() window
+/+=
+const Fl_Window  fl_modal_for;       // parent of modal() window
+=+/
 Fl_Region fl_window_region = null;
 WindowRef fl_window;
 EventRef fl_os_event;		// last (mouse) event
 
 // forward declarations of variables in this file
 static int got_events = 0;
-static Fl_Window resize_from_system;
+static Fl_Window  resize_from_system;
 static CursPtr default_cursor_ptr;
 static Cursor default_cursor;
-static WindowRef fl_os_capture = null; // the dispatch handler will redirect mose move and drag events to these windows
+
+// the dispatch handler will redirect mose move and drag events to these windows
+static WindowRef fl_os_capture = null; 
+
+/+=
+#if CONSOLIDATE_MOTION
+static Fl_Window  send_motion;
+extern Fl_Window  fl_xmousewin;
+}
+=+/
 
 enum { kEventClassFLTK = ('f'<<24)|('l'<<16)|('t'<<8)|'k' };
 enum { kEventFLTKBreakLoop = 1, kEventFLTKDataReady };
 
+/+=
 /**
  * Mac keyboard lookup table
  */
 static ushort macKeyLookUp[128] =
-[
+{
     'a', 's', 'd', 'f', 'h', 'g', 'z', 'x',
     'c', 'v', '^', 'b', 'q', 'w', 'e', 'r',
 
@@ -667,14 +689,14 @@ static ushort macKeyLookUp[128] =
 
     0, FL_Pause, FL_Help, FL_Home, FL_Page_Up, FL_Delete, FL_F+4, FL_End,
     FL_F+2, FL_Page_Down, FL_F+1, FL_Left, FL_Right, FL_Down, FL_Up, 0/*FL_Power*/,
-];
+};
 
 /**
  * convert the current mouse chord into the FLTK modifier state
  */
 static void mods_to_e_state( UInt32 mods )
 {
-  long state = 0;
+  int state = 0;
   if ( mods & kEventKeyModifierNumLockMask ) state |= FL_NUM_LOCK;
   if ( mods & cmdKey ) state |= FL_META;
   if ( mods & (optionKey|rightOptionKey) ) state |= FL_ALT;
@@ -682,8 +704,9 @@ static void mods_to_e_state( UInt32 mods )
   if ( mods & (shiftKey|rightShiftKey) ) state |= FL_SHIFT;
   if ( mods & alphaLock ) state |= FL_CAPS_LOCK;
   Fl.e_state = ( Fl.e_state & 0xff000000 ) | state;
-  //printf( "State 0x%08x (%04x)\n", Fl::e_state, mods );
+  //printf( "State 0x%08x (%04x)\n", Fl.e_state, mods );
 }
+
 
 /**
  * convert the current mouse chord into the FLTK keysym
@@ -700,26 +723,27 @@ static void mods_to_e_keysym( UInt32 mods )
   else if ( mods & rightShiftKey ) Fl.e_keysym = FL_Shift_R;
   else if ( mods & alphaLock ) Fl.e_keysym = FL_Caps_Lock;
   else Fl.e_keysym = 0;
-  //printf( "to sym 0x%08x (%04x)\n", Fl::e_keysym, mods );
+  //printf( "to sym 0x%08x (%04x)\n", Fl.e_keysym, mods );
 }
+=+/
 
-// these pointers are set by the Fl::lock() function:
+// these pointers are set by the Fl.lock() function:
 static void nothing() {}
 void function() fl_lock_function = &nothing;
 void function() fl_unlock_function = &nothing;
 
-/+-
+/+=
 //
 // Select interface -- how it's implemented:
 //     When the user app configures one or more file descriptors to monitor
-//     with Fl::add_fd(), we start a separate thread to select() the  data,
+//     with Fl.add_fd(), we start a separate thread to select() the  data,
 //     sending a custom OSX 'FLTK data ready event' to the parent  thread's
 //     RunApplicationLoop(), so that it triggers the data  ready  callbacks
 //     in the parent thread.                               -erco 04/04/04
 //     
-#define POLLIN  1
-#define POLLOUT 4
-#define POLLERR 8
+const int POLLIN = 1; 
+const int POLLOUT = 4; 
+const int POLLERR = 8; 
 
 // Class to handle select() 'data ready'
 class DataReady
@@ -785,12 +809,12 @@ public:
     void HandleData(fd_set& r, fd_set& w, fd_set& x);
     static void* DataReadyThread(void *self);
     void StartThread(void *userdata);
-    void CancelThread(const char *reason);
+    void CancelThread(char *reason);
 };
 
 static DataReady dataready;
 
-void DataReady::AddFD(int n, int events, void (*cb)(int, void*), void *v)
+void DataReady.AddFD(int n, int events, void (*cb)(int, void*), void *v)
 {
   RemoveFD(n, events);
   int i = nfds++;
@@ -816,7 +840,7 @@ void DataReady::AddFD(int n, int events, void (*cb)(int, void*), void *v)
 }
 
 // Remove an FD from the array
-void DataReady::RemoveFD(int n, int events)
+void DataReady.RemoveFD(int n, int events)
 {
   int i,j;
   for (i=j=0; i<nfds; i++)
@@ -842,7 +866,7 @@ void DataReady::RemoveFD(int n, int events)
 }
 
 // CHECK IF USER DATA READY, RETURNS r/w/x INDICATING WHICH IF ANY
-int DataReady::CheckData(fd_set& r, fd_set& w, fd_set& x)
+int DataReady.CheckData(fd_set& r, fd_set& w, fd_set& x)
 {
   int ret;
   DataLock();
@@ -856,7 +880,7 @@ int DataReady::CheckData(fd_set& r, fd_set& w, fd_set& x)
 }
 
 // HANDLE DATA READY CALLBACKS
-void DataReady::HandleData(fd_set& r, fd_set& w, fd_set& x)
+void DataReady.HandleData(fd_set& r, fd_set& w, fd_set& x)
 {
   for (int i=0; i<nfds; i++) 
   {
@@ -878,23 +902,23 @@ void DataReady::HandleData(fd_set& r, fd_set& w, fd_set& x)
 //    This thread watches for changes in user's file descriptors.
 //    Sends a 'data ready event' to the main thread if any change.
 //
-void* DataReady::DataReadyThread(void *o)
+void* DataReady.DataReadyThread(void *o)
 {
   DataReady *self = (DataReady*)o;
   while ( 1 )					// loop until thread cancel or error
   {
     // Thread safe local copies of data before each select()
-    self->DataLock();
-    /*LOCK*/  int maxfd = self->_maxfd;
-    /*LOCK*/  fd_set r = self->GetFdset(0);
-    /*LOCK*/  fd_set w = self->GetFdset(1);
-    /*LOCK*/  fd_set x = self->GetFdset(2);
-    /*LOCK*/  void *userdata = self->_userdata;
-    /*LOCK*/  int cancelpipe = self->GetCancelPipe(0);
+    self.DataLock();
+    /*LOCK*/  int maxfd = self._maxfd;
+    /*LOCK*/  fd_set r = self.GetFdset(0);
+    /*LOCK*/  fd_set w = self.GetFdset(1);
+    /*LOCK*/  fd_set x = self.GetFdset(2);
+    /*LOCK*/  void *userdata = self._userdata;
+    /*LOCK*/  int cancelpipe = self.GetCancelPipe(0);
     /*LOCK*/  if ( cancelpipe > maxfd ) maxfd = cancelpipe;
     /*LOCK*/  FD_SET(cancelpipe, &r);		// add cancelpipe to fd's to watch
     /*LOCK*/  FD_SET(cancelpipe, &x);
-    self->DataUnlock();
+    self.DataUnlock();
     // timeval t = { 1000, 0 };	// 1000 seconds;
     timeval t = { 2, 0 };	// HACK: 2 secs prevents 'hanging' problem
     int ret = ::select(maxfd+1, &r, &w, &x, &t);
@@ -926,7 +950,7 @@ void* DataReady::DataReadyThread(void *o)
 }
 
 // START 'DATA READY' THREAD RUNNING, CREATE INTER-THREAD PIPE
-void DataReady::StartThread(void *new_userdata)
+void DataReady.StartThread(void *new_userdata)
 {
   CancelThread(DEBUGTEXT("STARTING NEW THREAD\n"));
   DataLock();
@@ -938,7 +962,7 @@ void DataReady::StartThread(void *new_userdata)
 }
 
 // CANCEL 'DATA READY' THREAD, CLOSE PIPE
-void DataReady::CancelThread(const char *reason)
+void DataReady.CancelThread(char *reason)
 {
   if ( tid )
   {
@@ -960,7 +984,18 @@ void DataReady::CancelThread(const char *reason)
   /*LOCK*/  if ( _cancelpipe[1] ) { close(_cancelpipe[1]); _cancelpipe[1] = 0; }
   DataUnlock();
 }
--+/
+
+void Fl.add_fd( int n, int events, void (*cb)(int, void*), void *v )
+    { dataready.AddFD(n, events, cb, v); }
+
+void Fl.add_fd(int fd, void (*cb)(int, void*), void* v)
+    { dataready.AddFD(fd, POLLIN, cb, v); }
+
+void Fl.remove_fd(int n, int events)
+    { dataready.RemoveFD(n, events); }
+
+void Fl.remove_fd(int n)
+    { dataready.RemoveFD(n, -1); }
 
 /**
  * Check if there is actually a message pending!
@@ -968,55 +1003,57 @@ void DataReady::CancelThread(const char *reason)
 int fl_ready()
 {
   EventRef event;
-  return !ReceiveNextEvent(0, null, 0.0, false, &event);
+  return !ReceiveNextEvent(0, NULL, 0.0, false, &event);
 }
+=+/
 
 /**
  * handle Apple Menu items (can be created using the Fl_Sys_Menu_Bar
  * returns eventNotHandledErr if the menu item could not be handled
  */
-OSStatus HandleMenu( HICommand cmd )
+OSStatus HandleMenu( HICommand *cmd )
 {
+  return eventNotHandledErr;
+/+==
   OSStatus ret = eventNotHandledErr;
-  /+= later (Fl_Sys_Menu handler
   // attributes, commandIDm menu.menuRef, menu.menuItemIndex
   UInt32 ref;
-  OSErr rrc = GetMenuItemRefCon( cmd->menu.menuRef, cmd->menu.menuItemIndex, &ref );
-  //printf( "%d, %08x, %08x, %d, %d, %8x\n", rrc, cmd->attributes, cmd->commandID, cmd->menu.menuRef, cmd->menu.menuItemIndex, rrc );
+  OSErr rrc = GetMenuItemRefCon( cmd.menu.menuRef, cmd.menu.menuItemIndex, &ref );
+  //printf( "%d, %08x, %08x, %d, %d, %8x\n", rrc, cmd.attributes, cmd.commandID, cmd.menu.menuRef, cmd.menu.menuItemIndex, rrc );
   if ( rrc==noErr && ref )
   {
     Fl_Menu_Item *m = (Fl_Menu_Item*)ref;
-    //printf( "Menu: %s\n", m->label() );
-    fl_sys_menu_bar->picked( m );
-    if ( m->flags & FL_MENU_TOGGLE ) // update the menu toggle symbol
-      SetItemMark( cmd->menu.menuRef, cmd->menu.menuItemIndex, (m->flags & FL_MENU_VALUE ) ? 0x12 : 0 );
-    if ( m->flags & FL_MENU_RADIO ) // update all radio buttons in this menu
+    //printf( "Menu: %s\n", m.label() );
+    fl_sys_menu_bar.picked( m );
+    if ( m.flags & FL_MENU_TOGGLE ) // update the menu toggle symbol
+      SetItemMark( cmd.menu.menuRef, cmd.menu.menuItemIndex, (m.flags & FL_MENU_VALUE ) ? 0x12 : 0 );
+    if ( m.flags & FL_MENU_RADIO ) // update all radio buttons in this menu
     {
       Fl_Menu_Item *j = m;
-      int i = cmd->menu.menuItemIndex;
+      int i = cmd.menu.menuItemIndex;
       for (;;)
       {
-        if ( j->flags & FL_MENU_DIVIDER )
+        if ( j.flags & FL_MENU_DIVIDER )
           break;
         j++; i++;
-        if ( !j->text || !j->radio() )
+        if ( !j.text || !j.radio() )
           break;
-        SetItemMark( cmd->menu.menuRef, i, ( j->flags & FL_MENU_VALUE ) ? 0x13 : 0 );
+        SetItemMark( cmd.menu.menuRef, i, ( j.flags & FL_MENU_VALUE ) ? 0x13 : 0 );
       }
-      j = m-1; i = cmd->menu.menuItemIndex-1;
+      j = m-1; i = cmd.menu.menuItemIndex-1;
       for ( ; i>0; j--, i-- )
       {
-        if ( !j->text || j->flags&FL_MENU_DIVIDER || !j->radio() )
+        if ( !j.text || j.flags&FL_MENU_DIVIDER || !j.radio() )
           break;
-        SetItemMark( cmd->menu.menuRef, i, ( j->flags & FL_MENU_VALUE ) ? 0x13 : 0 );
+        SetItemMark( cmd.menu.menuRef, i, ( j.flags & FL_MENU_VALUE ) ? 0x13 : 0 );
       }
-      SetItemMark( cmd->menu.menuRef, cmd->menu.menuItemIndex, ( m->flags & FL_MENU_VALUE ) ? 0x13 : 0 );
+      SetItemMark( cmd.menu.menuRef, cmd.menu.menuItemIndex, ( m.flags & FL_MENU_VALUE ) ? 0x13 : 0 );
     }
     ret = noErr; // done handling this event
   }
   HiliteMenu(0);
-  =+/
   return ret;
+==+/
 }
 
 /**
@@ -1049,16 +1086,18 @@ static OSStatus carbonDispatchHandler( EventHandlerCallRef nextHandler, EventRef
 	fl_os_capture = null;
       }
       break;
-    default: break;
+    default:
     }
     break;
   case kEventClassCommand:
     switch (GetEventKind( event ) )
     {
       case kEventCommandProcess:
-        GetEventParameter( event, kEventParamDirectObject, typeHICommand, null, HICommand.sizeof, null, &cmd );
-        ret = HandleMenu( cmd );
+        GetEventParameter( event, kEventParamDirectObject, typeHICommand, null, 
+            HICommand.sizeof, null, &cmd );
+        ret = HandleMenu( &cmd );
         break;
+      default:
     }
     break;
   case kEventClassFLTK:
@@ -1067,7 +1106,7 @@ static OSStatus carbonDispatchHandler( EventHandlerCallRef nextHandler, EventRef
     case kEventFLTKBreakLoop:
       ret = noErr;
       break;
-/+= later
+    /+=
     case kEventFLTKDataReady:
       {
 	dataready.CancelThread(DEBUGTEXT("DATA READY EVENT\n"));
@@ -1089,20 +1128,21 @@ static OSStatus carbonDispatchHandler( EventHandlerCallRef nextHandler, EventRef
       }
       ret = noErr;
       break;
-=+/
-    default: 
-      break;
+    =+/
+    default:
     }
   default:
-    break;
   }
   if ( ret == eventNotHandledErr )
-    ret = CallNextEventHandler( nextHandler, event ); // let the OS handle the activation, but continue to get a click-through effect
+    ret = CallNextEventHandler( nextHandler, event ); 
+    // let the OS handle the activation, but continue to get a click-through effect
 
   fl_unlock_function();
+
   return ret;
 }
 
+/+=
 /**
  * break the current event loop
  */
@@ -1112,13 +1152,13 @@ static void breakMacEventLoop()
 
   fl_lock_function();
 
-  CreateEvent( null, kEventClassFLTK, kEventFLTKBreakLoop, 0, kEventAttributeUserEvent, &breakEvent );
+  CreateEvent( 0, kEventClassFLTK, kEventFLTKBreakLoop, 0, kEventAttributeUserEvent, &breakEvent );
   PostEventToQueue( GetCurrentEventQueue(), breakEvent, kEventPriorityStandard );
   ReleaseEvent( breakEvent );
 
   fl_unlock_function();
 }
-/+-
+
 //
 // MacOS X timers
 //
@@ -1140,12 +1180,13 @@ static void realloc_timers()
     if (mac_timer_alloc == 0) {
         mac_timer_alloc = 8;
     }
-    MacTimeout* new_timers = new MacTimeout[mac_timer_alloc * 2];
-    memmove(new_timers, mac_timers, sizeof(MacTimeout) * mac_timer_used);
+    mac_timer_alloc *= 2;
+    MacTimeout* new_timers = new MacTimeout[mac_timer_alloc];
+    memset(new_timers, 0, sizeof(MacTimeout)*mac_timer_alloc);
+    memcpy(new_timers, mac_timers, sizeof(MacTimeout) * mac_timer_used);
     MacTimeout* delete_me = mac_timers;
     mac_timers = new_timers;
     delete [] delete_me;
-    mac_timer_alloc *= 2;
 }
 
 static void delete_timer(MacTimeout& t)
@@ -1172,14 +1213,14 @@ static pascal void do_timer(EventLoopTimerRef timer, void* data)
     }
     breakMacEventLoop();
 }
--+/
+=+/
 
 /**
  * This function is the central event handler.
  * It reads events from the event queue using the given maximum time
  * Funny enough, it returns the same time that it got as the argument. 
  */
-static double do_queued_events( double time = 0.0 ) 
+double do_queued_events( double time = 0.0 ) 
 {
   static bool been_here = 0;
   static RgnHandle rgn;
@@ -1199,7 +1240,8 @@ static double do_queued_events( double time = 0.0 )
   {
     target = GetEventDispatcherTarget();
 
-    EventHandlerUPP dispatchHandler = NewEventHandlerUPP(&carbonDispatchHandler); // will not be disposed by Carbon...
+    EventHandlerUPP dispatchHandler = NewEventHandlerUPP( &carbonDispatchHandler ); 
+    // will not be disposed by Carbon...
     static EventTypeSpec dispatchEvents[] = [
         { kEventClassWindow, kEventWindowShown },
         { kEventClassWindow, kEventWindowHidden },
@@ -1218,15 +1260,17 @@ static double do_queued_events( double time = 0.0 )
         { kEventClassMouse, kEventMouseDragged },
         { kEventClassFLTK, kEventFLTKBreakLoop },
         { kEventClassFLTK, kEventFLTKDataReady } ];
-    ret = InstallEventHandler( target, dispatchHandler, dispatchEvents.length, dispatchEvents, null, null );
+    ret = InstallEventHandler( target, dispatchHandler, dispatchEvents.length, 
+        dispatchEvents, null, null );
     static EventTypeSpec appEvents[] = [
         { kEventClassCommand, kEventCommandProcess } ];
-    ret = InstallApplicationEventHandler( dispatchHandler, appEvents.length, appEvents, null, null );
+    ret = InstallApplicationEventHandler( dispatchHandler, appEvents.length, 
+        appEvents, null, null );
   }
 
   got_events = 0;
 
-  /+= pri 4: activate me
+  /+=
   // Check for re-entrant condition
   if ( dataready.IsThreadRunning() )
     { dataready.CancelThread(DEBUGTEXT("AVOID REENTRY\n")); }
@@ -1242,15 +1286,15 @@ static double do_queued_events( double time = 0.0 )
   EventTimeout timeout = time;
   if (!ReceiveNextEvent(0, null, timeout, true, &event)) {
     got_events = 1;
-    OSErr err = SendEventToEventTarget( event, target );
-    if (err!=noErr) {
+    OSErr result = SendEventToEventTarget( event, target );
+    if (result!=noErr) {
       EventRecord clevent;
       ConvertEventRefToEventRecord(event, &clevent);
       if (clevent.what==kHighLevelEvent) {
-        err = AEProcessAppleEvent(&clevent);
+        result = AEProcessAppleEvent(&clevent);
       }
     }
-    if (   err==eventNotHandledErr
+    if (   result==eventNotHandledErr
         && GetEventClass(event)==kEventClassMouse
         && GetEventKind(event)==kEventMouseDown ) {
       WindowRef win; Point pos;
@@ -1285,20 +1329,22 @@ int fl_wait( double time )
  * event handler for Apple-Q key combination
  * this is also called from the Carbon Window handler after all windows were closed
  */
-static OSErr QuitAppleEventHandler(AppleEventRef appleEvt, AppleEventRef reply, int refcon )
+//static OSErr QuitAppleEventHandler( AppleEvent *appleEvt, AppleEvent* reply, UInt32 refcon )
+static OSErr QuitAppleEventHandler(void* appleEvt, void* reply, UInt32 refcon )
 {
   fl_lock_function();
 
   while ( Fl_X.first ) {
     Fl_X x = Fl_X.first;
     Fl.handle( FL_CLOSE, x.w );
-    if ( Fl_X.first && Fl_X.first == x ) {
+    if ( Fl_X.first is x ) {
       fl_unlock_function();
       return noErr; // FLTK has not close all windows, so we return to the main program now
     }
   }
 
   fl_unlock_function();
+
   return noErr;
 }
 
@@ -1329,6 +1375,7 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
     ret = noErr;
     break;
   case kEventWindowBoundsChanged: {
+/+====
     GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, null, Rect.sizeof, null, &currentBounds );
     GetEventParameter( event, kEventParamOriginalBounds, typeQDRectangle, null, Rect.sizeof, null, &originalBounds );
     int X = currentBounds.left, W = currentBounds.right-X;
@@ -1341,7 +1388,9 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
       if ( window.shown() ) 
         handleUpdateEvent( fl_xid( window ) );
     } 
+====+/
     break; }
+/+====
   case kEventWindowShown:
     if ( !window.parent() )
     {
@@ -1355,8 +1404,7 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
     }
     break;
   case kEventWindowHidden:
-    if ( !window.parent() ) 
-      Fl.handle( FL_HIDE, window);
+    if ( !window.parent() ) Fl.handle( FL_HIDE, window);
     break;
   case kEventWindowActivated:
     if ( window!=activeWindow ) 
@@ -1372,23 +1420,25 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
     if ( window==activeWindow ) 
     {
       Fl.handle( FL_UNFOCUS, window);
-      activeWindow = null;
+      activeWindow = 0;
     }
     break;
+====+/
   case kEventWindowClose:
     Fl.handle( FL_CLOSE, window ); // this might or might not close the window
     // if there are no more windows, send a high-level quit event
     if (!Fl_X.first) QuitAppleEventHandler( null, null, 0 );
     ret = noErr; // returning noErr tells Carbon to stop following up on this event
     break;
+/+====
   case kEventWindowCollapsed:
     window.clear_visible();
     break;
   case kEventWindowExpanded:
     window.set_visible();
     break;
+====+/
   default:
-    break;
   }
 
   fl_unlock_function();
@@ -1396,11 +1446,12 @@ static OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, EventRef e
   return ret;
 }
 
+/+=
 /**
  * Carbon Mousewheel handler
  * This needs to be linked into all new window event handlers
  */
-static OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler, EventRef event, void *userData )
+static pascal OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler, EventRef event, void *userData )
 {
   // Handle the new "MightyMouse" mouse wheel events. Please, someone explain
   // to me why Apple changed the API on this even though the current API
@@ -1408,13 +1459,12 @@ static OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler, EventR
   fl_lock_function();
 
   fl_os_event = event;
-  Fl_Window window = cast(Fl_Window)userData;
+  Fl_Window  window = (Fl_Window )userData;
 
   EventMouseWheelAxis axis;
-  GetEventParameter( event, kEventParamMouseWheelAxis, typeMouseWheelAxis, null, 
-      EventMouseWheelAxis.sizeof, null, &axis );
+  GetEventParameter( event, kEventParamMouseWheelAxis, typeMouseWheelAxis, NULL, sizeof(EventMouseWheelAxis), NULL, &axis );
   int delta;
-  GetEventParameter( event, kEventParamMouseWheelDelta, typeLongInteger, null, delta.sizeof, null, &delta );
+  GetEventParameter( event, kEventParamMouseWheelDelta, typeLongInteger, NULL, sizeof(int), NULL, &delta );
 //  fprintf(stderr, "axis=%d, delta=%d\n", axis, delta);
   if ( axis == kEventMouseWheelAxisX ) {
     Fl.e_dx = -delta;
@@ -1426,25 +1476,31 @@ static OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler, EventR
     if ( Fl.e_dy) Fl.handle( FL_MOUSEWHEEL, window );
   } else {
     fl_unlock_function();
+
     return eventNotHandledErr;
   }
 
   fl_unlock_function();
+  
   return noErr;
 }
+=+/
 
 /**
  * convert the current mouse chord into the FLTK modifier state
  */
 static void chord_to_e_state( UInt32 chord )
 {
-  static ulong state[] = 
-  [ 
+  static uint state[] = [
     0, FL_BUTTON1, FL_BUTTON3, FL_BUTTON1|FL_BUTTON3, FL_BUTTON2,
     FL_BUTTON2|FL_BUTTON1, FL_BUTTON2|FL_BUTTON3, 
     FL_BUTTON2|FL_BUTTON1|FL_BUTTON3
   ];
   Fl.e_state = ( Fl.e_state & 0xff0000 ) | state[ chord & 0x07 ];
+}
+
+int abs(int i) {
+  return i<0 ? -i : i;
 }
 
 /**
@@ -1454,11 +1510,12 @@ static OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, EventRef ev
 {
   static int keysym[] = [ 0, FL_Button+1, FL_Button+3, FL_Button+2 ];
   static int px, py;
+  static char suppressed = 0;
 
   fl_lock_function();
   
   fl_os_event = event;
-  Fl_Window window = cast(Fl_Window)userData;
+  Fl_Window  window = cast(Fl_Window)userData;
   Point pos;
   GetEventParameter( event, kEventParamMouseLocation, typeQDPoint, null, Point.sizeof, null, &pos );
   EventMouseButton btn;
@@ -1468,16 +1525,17 @@ static OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, EventRef ev
   UInt32 chord;
   GetEventParameter( event, kEventParamMouseChord, typeUInt32, null, UInt32.sizeof, null, &chord );
   WindowRef xid = fl_xid(window), tempXid;
-  Fl_Event sendEvent = 0;
-  int  part;
+  int sendEvent = 0, part;
   switch ( GetEventKind( event ) )
   {
   case kEventMouseDown:
     part = FindWindow( pos, &tempXid );
     if ( part != inContent ) {
       fl_unlock_function();
+      suppressed = 1;
       return CallNextEventHandler( nextHandler, event ); // let the OS handle this for us
     }
+    suppressed = 0;
     if ( !IsWindowActive( xid ) )
       CallNextEventHandler( nextHandler, event ); // let the OS handle the activation, but continue to get a click-through effect
     // normal handling of mouse-down follows
@@ -1490,6 +1548,10 @@ static OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, EventRef ev
       Fl.e_clicks = 0;
     // fall through
   case kEventMouseUp:
+    if (suppressed) {
+      suppressed = 0;
+      break;
+    }
     if ( !window ) break;
     if ( !sendEvent ) {
       sendEvent = FL_RELEASE; 
@@ -1497,13 +1559,15 @@ static OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, EventRef ev
     Fl.e_keysym = keysym[ btn ];
     // fall through
   case kEventMouseMoved:
+    suppressed = 0;
     if ( !sendEvent ) { 
       sendEvent = FL_MOVE; chord = 0; 
     }
     // fall through
   case kEventMouseDragged:
+    if (suppressed) break;
     if ( !sendEvent ) {
-      sendEvent = FL_MOVE; // Fl::handle will convert into FL_DRAG
+      sendEvent = FL_MOVE; // Fl.handle will convert into FL_DRAG
       if (abs(pos.h-px)>5 || abs(pos.v-py)>5) 
         Fl.e_is_click = 0;
     }
@@ -1520,25 +1584,28 @@ static OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, EventRef ev
     SetPort( oldPort );
     Fl.handle( sendEvent, window );
     break;
+  default:
+    break;
   }
 
   fl_unlock_function();
-
+  
   return noErr;
 }
 
+/+=
 /**
  * convert the keyboard return code into the symbol on the keycaps
  */
 static ushort keycode_to_sym( UInt32 keyCode, UInt32 mods, ushort deflt )
 {
-  static Ptr map = null;
+  static Ptr map = 0;
   UInt32 state = 0;
   if (!map) {
-    map = cast(Ptr)GetScriptManagerVariable(smKCHRCache);
+    map = (Ptr)GetScriptManagerVariable(smKCHRCache);
     if (!map) {
-      long kbID = GetScriptManagerVariable(smKeyScript);
-      map = GetResource(('K'<<24)|('C'<<16)|('H'<<8)|'R', kbID);
+      int kbID = GetScriptManagerVariable(smKeyScript);
+      map = *GetResource('KCHR', kbID);
     }
   }
   if (map)
@@ -1549,12 +1616,12 @@ static ushort keycode_to_sym( UInt32 keyCode, UInt32 mods, ushort deflt )
 /**
  * handle carbon keyboard events
  */
-static OSStatus carbonKeyboardHandler( 
+pascal OSStatus carbonKeyboardHandler( 
   EventHandlerCallRef nextHandler, EventRef event, void *userData )
 {
   static char buffer[5];
-  Fl_Event sendEvent = 0;
-  Fl_Window window = cast(Fl_Window)userData;
+  int sendEvent = 0;
+  Fl_Window  window = (Fl_Window )userData;
   UInt32 mods;
   static UInt32 prevMods = 0xffffffff;
 
@@ -1564,21 +1631,21 @@ static OSStatus carbonKeyboardHandler(
   
   // get the modifiers for any of the events
   GetEventParameter( event, kEventParamKeyModifiers, typeUInt32, 
-                     null, UInt32.sizeof, null, &mods );
+                     NULL, sizeof(UInt32), NULL, &mods );
   if ( prevMods == 0xffffffff ) prevMods = mods;
   
   // get the key code only for key events
   UInt32 keyCode = 0;
-  char key = 0;
+  ubyte key = 0;
   ushort sym = 0;
   if (kind!=kEventRawKeyModifiersChanged) {
     GetEventParameter( event, kEventParamKeyCode, typeUInt32, 
-                       null, UInt32.sizeof, null, &keyCode );
+                       NULL, sizeof(UInt32), NULL, &keyCode );
     GetEventParameter( event, kEventParamKeyMacCharCodes, typeChar, 
-                       null, char.sizeof, null, &key );
+                       NULL, sizeof(char), NULL, &key );
   }
   /* output a human readbale event identifier for debugging
-  const char *ev = "";
+  char *ev = "";
   switch (kind) {
     case kEventRawKeyDown: ev = "kEventRawKeyDown"; break;
     case kEventRawKeyRepeat: ev = "kEventRawKeyRepeat"; break;
@@ -1599,7 +1666,7 @@ static OSStatus carbonKeyboardHandler(
       UInt32 ktState = 0;
       KeyboardLayoutRef klr;
       KLGetCurrentKeyboardLayout(&klr);
-      void *kchar = null; KLGetKeyboardLayoutProperty(klr, kKLKCHRData, &kchar);
+      void *kchar = 0; KLGetKeyboardLayoutProperty(klr, kKLKCHRData, &kchar);
       KeyTranslate(kchar, (mods&0xff00) | keyCode, &ktState); // send the dead key
       key = KeyTranslate(kchar, 0x31, &ktState); // fake a space key press
       Fl.e_state |= 0x40000000; // mark this as a dead key
@@ -1666,16 +1733,15 @@ static OSStatus carbonKeyboardHandler(
     // Matt: 'noErr'. System keyboard events still seem to work just fine.
     return noErr;
   }
-  return noErr;
 }
 
 
-/+-
+
 /**
  * Open callback function to call...
  */
 
-static void	(*open_cb)(const char *) = 0;
+static void	(*open_cb)(char *) = 0;
 
 
 /**
@@ -1683,12 +1749,12 @@ static void	(*open_cb)(const char *) = 0;
  * via the finder...
  */
 
-static OSErr OpenAppleEventHandler(const AppleEvent *appleEvt,
+static OSErr OpenAppleEventHandler(AppleEvent *appleEvt,
                                    AppleEvent *reply,
 				   UInt32 refcon) {
   OSErr err;
   AEDescList documents;
-  long i, n;
+  int i, n;
   FSSpec fileSpec;
   AEKeyword keyWd;
   DescType typeCd;
@@ -1740,7 +1806,7 @@ static OSErr OpenAppleEventHandler(const AppleEvent *appleEvt,
  * Install an open documents event handler...
  */
 
-void fl_open_callback(void (*cb)(const char *)) {
+void fl_open_callback(void (*cb)(char *)) {
   open_cb = cb;
   if (cb) {
     AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments,
@@ -1752,7 +1818,8 @@ void fl_open_callback(void (*cb)(const char *)) {
 			      OpenAppleEventHandler), false);
   }
 }
--+/
+
+=+/
 
 /**
  * initialize the Mac toolboxes and set the default menubar
@@ -1765,26 +1832,41 @@ void fl_open_display() {
     FlushEvents(everyEvent,0);
 
     MoreMasters(); // \todo Carbon suggests MoreMasterPointers()
-
-    AEEventHandlerUPP qh = NewAEEventHandlerUPP(&QuitAppleEventHandler);
-    OSErr err = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, qh, 0, false);
-
+    AEInstallEventHandler( kCoreEventClass, kAEQuitApplication, 
+        NewAEEventHandlerUPP(cast(AEEventHandlerProcPtr)&QuitAppleEventHandler), 0, false );
     // create the Mac Handle for the default cursor (a pointer to a pointer)
     GetQDGlobalsArrow(&default_cursor);
     default_cursor_ptr = &default_cursor;
     fl_default_cursor  = &default_cursor_ptr;
     
     ClearMenuBar();
-    AppendResMenu( GetMenuHandle( 1 ), ('D'<<24)|('R'<<16)|('V'<<8)|('R') );
+    AppendResMenu( GetMenuHandle( 1 ), ('D'<<24)|('R'<<16)|('V'<<8)|'R' );
     DrawMenuBar();
   }
 }
+/+=
+=+/
 
 /**
  * get rid of allocated resources
  */
 void fl_close_display()  {
 }
+
+/+=
+/**
+ * get the current mouse pointer world coordinates
+ */
+void Fl.get_mouse(int &x, int &y) 
+{
+  fl_open_display();
+  Point loc; 
+  GetMouse( &loc );
+  LocalToGlobal( &loc );
+  x = loc.h;
+  y = loc.v;
+}
+
 
 /**
  * convert Mac keystrokes to FLTK
@@ -1796,11 +1878,14 @@ ushort mac2fltk(uint macKey)
   return macKey&0xff;
 }
 
+
+=+/
+
 /**
  * Handle all clipping and redraw for the given port
  * There are two different callers for this event:
  * 1: the OS can request a redraw and provides all clipping itself
- * 2: Fl::flush() wants all redraws now
+ * 2: Fl.flush() wants all redraws now
  */    
 void handleUpdateEvent( WindowPtr xid ) 
 {
@@ -1822,18 +1907,20 @@ void handleUpdateEvent( WindowPtr xid )
   }
   for ( Fl_X cx = i.xidChildren; cx; cx = cx.xidNext )
   {
-    cx.w.clear_damage(cast(Fl_Damage)(window.damage()|FL_DAMAGE_EXPOSE));
+    cx.w.clear_damage(window.damage()|FL_DAMAGE_EXPOSE);
     cx.flush();
     cx.w.clear_damage();
   }
-  window.clear_damage(cast(Fl_Damage)(window.damage()|FL_DAMAGE_EXPOSE));
+  window.clear_damage(window.damage()|FL_DAMAGE_EXPOSE);
   i.flush();
   window.clear_damage();
   SetPort( oldPort );
-}
+}     
 
-/+-
-
+/+=
+/**
+ * \todo this is a leftover from OS9 times. Please check how much applies to Carbon!
+ */
 /**
  * convert a Mac FSSpec structure into a Unix filename 
  */
@@ -1849,8 +1936,8 @@ static DragReference currDragRef = 0;
 static char *currDragData = 0L;
 static int currDragSize = 0; 
 static OSErr currDragErr = noErr;
-Fl_Window *fl_dnd_target_window = 0;
-#include <FL/fl_draw.H>
+Fl_Window  fl_dnd_target_window = 0;
+private import fl.draw;
 
 /**
  * Fill the currDrag* variables with the current DnD ASCII text.
@@ -1936,25 +2023,25 @@ static OSErr fillCurrentDragData(DragReference dragRef)
  */
 static pascal OSErr dndTrackingHandler( DragTrackingMessage msg, WindowPtr w, void *userData, DragReference dragRef )
 {
-  Fl_Window *target = (Fl_Window*)userData;
+  Fl_Window  target = (Fl_Window )userData;
   Point mp;
   static int px, py;
   
   fillCurrentDragData(dragRef);
-  Fl::e_length = currDragSize;
-  Fl::e_text = currDragData;
+  Fl.e_length = currDragSize;
+  Fl.e_text = currDragData;
   
   switch ( msg )
   {
   case kDragTrackingEnterWindow:
     // check if 'TEXT' is available
     GetDragMouse( dragRef, &mp, 0 );
-    Fl::e_x_root = px = mp.h;
-    Fl::e_y_root = py = mp.v;
-    Fl::e_x = px - target->x();
-    Fl::e_y = py - target->y();
+    Fl.e_x_root = px = mp.h;
+    Fl.e_y_root = py = mp.v;
+    Fl.e_x = px - target.x();
+    Fl.e_y = py - target.y();
     fl_dnd_target_window = target;
-    if ( Fl::handle( FL_DND_ENTER, target ) )
+    if ( Fl.handle( FL_DND_ENTER, target ) )
       fl_cursor( FL_CURSOR_HAND ); //ShowDragHilite( ); // modify the mouse cursor?!
     else
       fl_cursor( FL_CURSOR_DEFAULT ); //HideDragHilite( dragRef );
@@ -1964,12 +2051,12 @@ static pascal OSErr dndTrackingHandler( DragTrackingMessage msg, WindowPtr w, vo
     GetDragMouse( dragRef, &mp, 0 );
     if ( mp.h==px && mp.v==py )
       break;	// + return previous condition for dnd hiliting
-    Fl::e_x_root = px = mp.h;
-    Fl::e_y_root = py = mp.v;
-    Fl::e_x = px - target->x();
-    Fl::e_y = py - target->y();
+    Fl.e_x_root = px = mp.h;
+    Fl.e_y_root = py = mp.v;
+    Fl.e_x = px - target.x();
+    Fl.e_y = py - target.y();
     fl_dnd_target_window = target;
-    if ( Fl::handle( FL_DND_DRAG, target ) )
+    if ( Fl.handle( FL_DND_DRAG, target ) )
       fl_cursor( FL_CURSOR_HAND ); //ShowDragHilite( ); // modify the mouse cursor?!
     else
       fl_cursor( FL_CURSOR_DEFAULT ); //HideDragHilite( dragRef );
@@ -1981,7 +2068,7 @@ static pascal OSErr dndTrackingHandler( DragTrackingMessage msg, WindowPtr w, vo
     fl_cursor( FL_CURSOR_DEFAULT ); //HideDragHilite( dragRef );
     if ( fl_dnd_target_window )
     {
-      Fl::handle( FL_DND_LEAVE, fl_dnd_target_window );
+      Fl.handle( FL_DND_LEAVE, fl_dnd_target_window );
       fl_dnd_target_window = 0;
     }
     breakMacEventLoop();
@@ -1999,45 +2086,59 @@ static pascal OSErr dndReceiveHandler( WindowPtr w, void *userData, DragReferenc
   Point mp;
   OSErr ret;
   
-  Fl_Window *target = fl_dnd_target_window = (Fl_Window*)userData;
+  Fl_Window  target = fl_dnd_target_window = (Fl_Window )userData;
   GetDragMouse( dragRef, &mp, 0 );
-  Fl::e_x_root = mp.h;
-  Fl::e_y_root = mp.v;
-  Fl::e_x = Fl::e_x_root - target->x();
-  Fl::e_y = Fl::e_y_root - target->y();
-  if ( !Fl::handle( FL_DND_RELEASE, target ) )
+  Fl.e_x_root = mp.h;
+  Fl.e_y_root = mp.v;
+  Fl.e_x = Fl.e_x_root - target.x();
+  Fl.e_y = Fl.e_y_root - target.y();
+  if ( !Fl.handle( FL_DND_RELEASE, target ) )
     return userCanceledErr;
 
   ret = fillCurrentDragData(dragRef);
   if (ret==userCanceledErr)
     return userCanceledErr;
   
-  Fl::e_length = currDragSize;
-  Fl::e_text = currDragData;
-//  printf("Sending following text to widget %p:\n%s\n", Fl::belowmouse(), Fl::e_text);
-  int old_event = Fl::e_number;
-  Fl::belowmouse()->handle(Fl::e_number = FL_PASTE);
-  Fl::e_number = old_event;
+  Fl.e_length = currDragSize;
+  Fl.e_text = currDragData;
+//  printf("Sending following text to widget %p:\n%s\n", Fl.belowmouse(), Fl.e_text);
+  int old_event = Fl.e_number;
+  Fl.belowmouse()->handle(Fl.e_number = FL_PASTE);
+  Fl.e_number = old_event;
   
   if (currDragData) {
     free(currDragData);
   }
   currDragData = 0L;
   currDragRef = 0;
-  Fl::e_text = 0L;
-  Fl::e_length = 0;
+  Fl.e_text = 0L;
+  Fl.e_length = 0;
   fl_dnd_target_window = 0L;
   
   breakMacEventLoop();
   return noErr;
 }
 
+
+
+/**
+ * Tell the OS what window sizes we want to allow
+ */
+void Fl_Window.size_range_() {
+  size_range_set = 1;
+  HISize minSize = { minw, minh };
+  HISize maxSize = { maxw?maxw:32000, maxh?maxh:32000 };
+  if (i && i.xid)
+    SetWindowResizeLimits(i.xid, &minSize, &maxSize);
+}
+
+
 /**
  * returns pointer to the filename, or null if name ends with ':'
  */
-const char *fl_filename_name( const char *name ) 
+const char *fl_filename_name( char *name ) 
 {
-  const char *p, *q;
+  char *p, *q;
   if (!name) return (0);
   for ( p = q = name ; *p ; ) 
   {
@@ -2054,16 +2155,76 @@ const char *fl_filename_name( const char *name )
 }
 
 
+/**
+ * set the window title bar
+ * \todo make the titlebar icon work!
+ */
+void Fl_Window.label(char *name,char */*iname*/) {
+  Fl_Widget.label(name);
+  Str255 pTitle;
+
+  if (name) { pTitle[0] = strlen(name); memcpy(pTitle+1, name, pTitle[0]); }
+  else pTitle[0] = 0;
+
+  if (shown() || i) SetWTitle(fl_xid(this), pTitle);
+}
+
+
+/**
+ * resize a window
+ */
+void Fl_Window.resize(int X,int Y,int W,int H) {
+  if (W<=0) W = 1; // OS X does not like zero width windows
+  if (H<=0) H = 1;
+  int is_a_resize = (W != w() || H != h());
+//  printf("Fl_Winodw.resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
+//         X, Y, W, H, is_a_resize, resize_from_system, this);
+  if (X != x() || Y != y()) set_flag(FL_FORCE_POSITION);
+  else if (!is_a_resize) return;
+  if ( (resize_from_system!=this) && (!parent()) && shown()) {
+    if (is_a_resize) {
+      if (resizable()) {
+        if (W<minw) minw = W; // user request for resize takes priority
+        if (W>maxw) maxw = W; // over a previously set size_range
+        if (H<minh) minh = H;
+        if (H>maxh) maxh = H;
+        size_range(minw, minh, maxw, maxh);
+      } else {
+        size_range(W, H, W, H);
+      }
+      Rect dim; dim.left=X; dim.top=Y; dim.right=X+W; dim.bottom=Y+H;
+      SetWindowBounds(i.xid, kWindowContentRgn, &dim);
+      Rect all; all.top=-32000; all.bottom=32000; all.left=-32000; all.right=32000;
+      InvalWindowRect( i.xid, &all );    
+    } else {
+      MoveWindow(i.xid, X, Y, 0);
+    }
+  }
+  resize_from_system = 0;
+  if (is_a_resize) {
+    Fl_Group.resize(X,Y,W,H);
+    if (shown()) { 
+      redraw(); 
+    }
+  } else {
+    x(X); y(Y); 
+  }
+}
+
 
 // helper function to manage the current CGContext fl_gc
-#ifdef __APPLE_QUARTZ__
+version (__APPLE_QUARTZ__) {
 extern Fl_Color fl_color_;
-extern class Fl_FontSize *fl_fontsize;
-extern void fl_font(class Fl_FontSize*);
+extern class Fl_FontSize  fl_fontsize;
+extern void fl_font(class Fl_FontSize );
 extern void fl_quartz_restore_line_style_();
 
+=+/
 
-void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
+/+=
+}
+
+void Fl_X.q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   CGContextSaveGState(fl_gc);
   CGAffineTransform mx = CGContextGetCTM(fl_gc);
   CGRect r2 = rect;
@@ -2078,10 +2239,223 @@ void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   rect.size.height = h;
 }
 
-void Fl_X::q_end_image() {
+void Fl_X.q_end_image() {
   CGContextRestoreGState(fl_gc);
 }
 
-#endif
--+/
+}
 
+////////////////////////////////////////////////////////////////
+// Cut & paste.
+=+/
+Fl_Widget fl_selection_requestor = null;
+/+=
+char *fl_selection_buffer[2];
+int fl_selection_length[2];
+int fl_selection_buffer_length[2];
+static ScrapRef myScrap = 0;
+
+/**
+ * create a selection
+ * owner: widget that created the selection
+ * stuff: pointer to selected data
+ * size of selected data
+ */
+void Fl.copy(char *stuff, int len, int clipboard) {
+  if (!stuff || len<0) return;
+  if (len+1 > fl_selection_buffer_length[clipboard]) {
+    delete[] fl_selection_buffer[clipboard];
+    fl_selection_buffer[clipboard] = new char[len+100];
+    fl_selection_buffer_length[clipboard] = len+100;
+  }
+  memcpy(fl_selection_buffer[clipboard], stuff, len);
+  fl_selection_buffer[clipboard][len] = 0; // needed for direct paste
+  fl_selection_length[clipboard] = len;
+  if (clipboard) {
+    ClearCurrentScrap();
+    OSStatus ret = GetCurrentScrap( &myScrap );
+    if ( ret != noErr ) {
+      myScrap = 0;
+      return;
+    }
+    // Previous version changed \n to \r before sending the text, but I would
+    // prefer to leave the local buffer alone, so a copied buffer may be
+    // needed. Check to see if this is necessary on OS/X.
+    PutScrapFlavor( myScrap, kScrapFlavorTypeText, 0,
+		    len, fl_selection_buffer[1] );
+  }
+}
+
+// Call this when a "paste" operation happens:
+void Fl.paste(Fl_Widget  receiver, int clipboard) {
+  if (clipboard) {
+    // see if we own the selection, if not go get it:
+    ScrapRef scrap = 0;
+    Size len = 0;
+    if (GetCurrentScrap(&scrap) == noErr && scrap != myScrap &&
+	GetScrapFlavorSize(scrap, kScrapFlavorTypeText, &len) == noErr) {
+      if ( len >= fl_selection_buffer_length[1] ) {
+	fl_selection_buffer_length[1] = len + 32;
+	delete[] fl_selection_buffer[1];
+	fl_selection_buffer[1] = new char[len + 32];
+      }
+      fl_selection_length[1] = len; len++;
+      GetScrapFlavorData( scrap, kScrapFlavorTypeText, &len,
+			  fl_selection_buffer[1] );
+      fl_selection_buffer[1][fl_selection_length[1]] = 0;
+      // turn all \r characters into \n:
+      for (int x = 0; x < len; x++) {
+	if (fl_selection_buffer[1][x] == '\r')
+	  fl_selection_buffer[1][x] = '\n';
+      }
+    }
+  }
+  Fl.e_text = fl_selection_buffer[clipboard];
+  Fl.e_length = fl_selection_length[clipboard];
+  if (!Fl.e_text) Fl.e_text = (char *)"";
+  receiver.handle(FL_PASTE);
+  return;
+}
+
+void Fl.add_timeout(double time, Fl_Timeout_Handler cb, void* data)
+{
+   // check, if this timer slot exists already
+   for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout& t = mac_timers[i];
+        // if so, simply change the fire interval
+        if (t.callback == cb  &&  t.data == data) {
+            SetEventLoopTimerNextFireTime(t.timer, (EventTimerInterval)time);
+            t.pending = 1;
+            return;
+        }
+    }
+    // no existing timer to use. Create a new one:
+    int timer_id = -1;
+    // find an empty slot in the timer array
+    for (int i = 0;  i < mac_timer_used;  ++i) {
+        if ( !mac_timers[i].timer ) {
+            timer_id = i;
+            break;
+        }
+    }
+    // if there was no empty slot, append a new timer
+    if (timer_id == -1) {
+        // make space if needed
+        if (mac_timer_used == mac_timer_alloc) {
+            realloc_timers();
+        }
+        timer_id = mac_timer_used++;
+    }
+    // now install a brand new timer
+    MacTimeout& t = mac_timers[timer_id];
+    EventTimerInterval fireDelay = (EventTimerInterval)time;
+    EventLoopTimerUPP  timerUPP = NewEventLoopTimerUPP(do_timer);
+    EventLoopTimerRef  timerRef = 0;
+    OSStatus err = InstallEventLoopTimer(GetMainEventLoop(), fireDelay, 0, timerUPP, data, &timerRef);
+    if (err == noErr) {
+        t.callback = cb;
+        t.data     = data;
+        t.timer    = timerRef;
+        t.upp      = timerUPP;
+        t.pending  = 1;
+    } else {
+        if (timerRef) 
+            RemoveEventLoopTimer(timerRef);
+        if (timerUPP)
+            DisposeEventLoopTimerUPP(timerUPP);
+    }
+}
+
+void Fl.repeat_timeout(double time, Fl_Timeout_Handler cb, void* data)
+{
+    // currently, repeat_timeout does not subtract the trigger time of the previous timer event as it should.
+    add_timeout(time, cb, data);
+}
+
+int Fl.has_timeout(Fl_Timeout_Handler cb, void* data)
+{
+   for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout& t = mac_timers[i];
+        if (t.callback == cb  &&  t.data == data && t.pending) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void Fl.remove_timeout(Fl_Timeout_Handler cb, void* data)
+{
+   for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout& t = mac_timers[i];
+        if (t.callback == cb  && ( t.data == data || data == NULL)) {
+            delete_timer(t);
+        }
+    }
+}
+=+/
+
+int MacUnlinkWindow(Fl_X ip, Fl_X start=null) {
+  if (!ip) return 0;
+  if (start) {
+    Fl_X pc = start;
+    while (pc) {
+      if (pc.xidNext is ip) {
+        pc.xidNext = ip.xidNext;
+        return 1;
+      }
+      if (pc.xidChildren) {
+        if (pc.xidChildren is ip) {
+          pc.xidChildren = ip.xidNext;
+          return 1;
+        }
+        if (MacUnlinkWindow(ip, pc.xidChildren))
+          return 1;
+      }
+      pc = pc.xidNext;
+    }
+  } else {
+    for ( Fl_X pc = Fl_X.first; pc; pc = pc.next ) {
+      if (MacUnlinkWindow(ip, pc))
+        return 1;
+    }
+  }  
+  return 0;
+}
+
+static void MacRelinkWindow(Fl_X x, Fl_X p) {
+  if (!x || !p) return;
+  // first, check if 'x' is already registered as a child of 'p'
+  for (Fl_X i = p.xidChildren; i; i=i.xidNext) {
+    if (i is x) return;
+  }
+  // now add 'x' as the first child of 'p'
+  x.xidNext = p.xidChildren;
+  p.xidChildren = x;
+}
+
+void MacDestroyWindow(Fl_Window w, WindowPtr p) {
+  MacUnmapWindow(w, p);
+  if (w && !w.parent() && p)
+    DisposeWindow(p);
+}
+
+void MacMapWindow(Fl_Window w, WindowPtr p) {
+  if (w && p)
+    ShowWindow(p);
+  // + link to window list
+  if (w && w.parent()) {
+    MacRelinkWindow(Fl_X.i(w), Fl_X.i(w.window()));
+    w.redraw();
+  }
+}
+
+void MacUnmapWindow(Fl_Window  w, WindowPtr p) {
+  if (w && !w.parent() && p) 
+    HideWindow(p);
+  if (w && Fl_X.i(w)) 
+    MacUnlinkWindow(Fl_X.i(w));
+}
+
+//
+// End of "$Id: mac.d 5379 2006-08-29 11:03:05Z matt $".
+//

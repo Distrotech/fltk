@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Output.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: output.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Output header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Output_H
-#define Fl_Output_H
+module fl.output;
 
-#include "Fl_Input.H"
 
-class Fl_Output : public Fl_Input {
+public import fl.input;
+
+class Fl_Output : Fl_Input {
 public:
-  Fl_Output(int X,int Y,int W,int H, const char *l = 0)
+  Fl_Output(int X,int Y,int W,int H, char *l = 0)
     : Fl_Input(X, Y, W, H, l) {type(FL_NORMAL_OUTPUT);}
 };
 
-#endif 
+} 
 
 //
-// End of "$Id: Fl_Output.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: output.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

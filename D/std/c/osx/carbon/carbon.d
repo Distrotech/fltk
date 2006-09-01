@@ -1,8 +1,8 @@
 
-import std.c.osx.carbon.types;
-import std.c.osx.carbon.windowmanager;
-import std.c.osx.carbon.cgcontext;
-import std.c.osx.carbon.cfstring;
+public import std.c.osx.carbon.types;
+public import std.c.osx.carbon.windowmanager;
+public import std.c.osx.carbon.cgcontext;
+public import std.c.osx.carbon.cfstring;
 
 // deprecated: don't use!
 

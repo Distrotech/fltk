@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_global.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: menu_global.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Global menu shortcut code for the Fast Light Tool Kit (FLTK).
 //
@@ -31,22 +31,22 @@
 // is this sufficient?
 
 #include <FL/Fl.H>
-#include <FL/Fl_Menu_.H>
+private import fl.menu_;
 
-static Fl_Menu_* the_widget;
+static Fl_Menu_  the_widget;
 
 static int handler(int e) {
-  if (e != FL_SHORTCUT || Fl::modal()) return 0;
-  Fl::first_window(the_widget->window());
-  return the_widget->handle(e);
+  if (e != FL_SHORTCUT || Fl.modal()) return 0;
+  Fl.first_window(the_widget.window());
+  return the_widget.handle(e);
 }
 
-void Fl_Menu_::global() {
-  if (!the_widget) Fl::add_handler(handler);
+void Fl_Menu_.global() {
+  if (!the_widget) Fl.add_handler(handler);
   the_widget = this;
 }
 
 //
-// End of "$Id: Fl_Menu_global.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: menu_global.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

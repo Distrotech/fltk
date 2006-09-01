@@ -50,7 +50,7 @@
 // By default fl_set_fonts() only does iso8859-1 encoded fonts.  You can
 // do all normal X fonts by passing "-*" or every possible font with "*".
 
-// Fl::set_font will take strings other than the ones this stores
+// Fl.set_font will take strings other than the ones this stores
 // and can identify any font on X that way.  You may want to write your
 // own system of font management and not use this code.
 
@@ -58,7 +58,7 @@
 // (right now 0, FL_BOLD, or FL_ITALIC), or into -1 indicating that
 // the word should be put into the name:
 
-static int attribute(int n, const char *p) {
+static int attribute(int n, char *p) {
   // don't put blank things into name:
   if (!*p || *p=='-' || *p=='*') return 0;
   if (n == 3) { // weight
@@ -77,8 +77,8 @@ static int attribute(int n, const char *p) {
 }
 
 // return non-zero if the registry-encoding should be used:
-extern const char* fl_encoding;
-static int use_registry(const char *p) {
+extern char* fl_encoding;
+static int use_registry(char *p) {
   return *p && *p!='*' && strcmp(p,fl_encoding);
 }
 
@@ -86,19 +86,19 @@ static int use_registry(const char *p) {
 // making the name, and then forgot about it. To avoid having to change
 // the header files I decided to store this value in the last character
 // of the font name array.
-#define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
+const int ENDOFBUFFER = 127;  // sizeof(Fl_Font.fontname)-1
 
 // turn a stored (with *'s) X font name into a pretty name:
-const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
-  Fl_Fontdesc *f = fl_fonts + fnum;
-  if (!f->fontname[0]) {
+const char* Fl.get_font_name(Fl_Font fnum, int* ap) {
+  Fl_Fontdesc  f = fl_fonts + fnum;
+  if (!f.fontname[0]) {
     int type = 0;
-    const char* p = f->name;
+    char* p = f.name;
     if (!p) {
       if (ap) *ap = 0;
       return "";
     }
-    char *o = f->fontname;
+    char *o = f.fontname;
 
     if (*p != '-') { // non-standard font, just replace * with spaces:
       if (strstr(p,"bold")) type = FL_BOLD;
@@ -107,28 +107,28 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
 	if (*p == '*' || *p == ' ' || *p == '-') {
 	  do p++; while (*p == '*' || *p == ' ' || *p == '-');
 	  if (!*p) break;
-	  if (o < (f->fontname + ENDOFBUFFER - 1)) *o++ = ' ';
+	  if (o < (f.fontname + ENDOFBUFFER - 1)) *o++ = ' ';
 	}
-	if (o < (f->fontname + ENDOFBUFFER - 1)) *o++ = *p;
+	if (o < (f.fontname + ENDOFBUFFER - 1)) *o++ = *p;
       }
       *o = 0;
 
     } else { // standard dash-seperated font:
 
       // get the family:
-      const char *x = fl_font_word(p,2); if (*x) x++; if (*x=='*') x++;
+      char *x = fl_font_word(p,2); if (*x) x++; if (*x=='*') x++;
       if (!*x) {
 	if (ap) *ap = 0;
 	return p;
       }
-      const char *e = fl_font_word(x,1);
+      char *e = fl_font_word(x,1);
       if ((e - x) < (int)(ENDOFBUFFER - 1)) {
 	// MRS: we want strncpy here, not strlcpy...
 	strncpy(o,x,e-x);
 	o += e-x;
       } else {
-	strlcpy(f->fontname, x, ENDOFBUFFER);
-	o = f->fontname+ENDOFBUFFER-1;
+	strlcpy(f.fontname, x, ENDOFBUFFER);
+	o = f.fontname+ENDOFBUFFER-1;
       }
 
       // collect all the attribute words:
@@ -137,14 +137,14 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
 	if (*e) e++; x = e; e = fl_font_word(x,1);
 	int t = attribute(n,x);
 	if (t < 0) {
-	  if (o < (f->fontname + ENDOFBUFFER - 1)) *o++ = ' ';
-	  if ((e - x) < (int)(ENDOFBUFFER - (o - f->fontname) - 1)) {
+	  if (o < (f.fontname + ENDOFBUFFER - 1)) *o++ = ' ';
+	  if ((e - x) < (int)(ENDOFBUFFER - (o - f.fontname) - 1)) {
 	    // MRS: we want strncpy here, not strlcpy...
 	    strncpy(o,x,e-x);
 	    o += e-x;
 	  } else {
-	    strlcpy(o,x, ENDOFBUFFER - (o - f->fontname) - 1);
-	    o = f->fontname+ENDOFBUFFER-1;
+	    strlcpy(o,x, ENDOFBUFFER - (o - f.fontname) - 1);
+	    o = f.fontname+ENDOFBUFFER-1;
 	  }
 	} else type |= t;
       }
@@ -154,21 +154,21 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
       if (*x) {x++; *o++ = '('; while (*x) *o++ = *x++; *o++ = ')';}
 
       *o = 0;
-      if (type & FL_BOLD) strlcat(f->fontname, " bold", ENDOFBUFFER);
-      if (type & FL_ITALIC) strlcat(f->fontname, " italic", ENDOFBUFFER);
+      if (type & FL_BOLD) strlcat(f.fontname, " bold", ENDOFBUFFER);
+      if (type & FL_ITALIC) strlcat(f.fontname, " italic", ENDOFBUFFER);
     }
-    f->fontname[ENDOFBUFFER] = (char)type;
+    f.fontname[ENDOFBUFFER] = (char)type;
   }
-  if (ap) *ap = f->fontname[ENDOFBUFFER];
-  return f->fontname;
+  if (ap) *ap = f.fontname[ENDOFBUFFER];
+  return f.fontname;
 }
 
 extern "C" {
 // sort raw (non-'*') X font names into perfect order:
 
-static int ultrasort(const void *aa, const void *bb) {
-  const char *a = *(char **)aa;
-  const char *b = *(char **)bb;
+static int ultrasort(void *aa, void *bb) {
+  char *a = *(char **)aa;
+  char *b = *(char **)bb;
 
   // sort all non x-fonts at the end:
   if (*a != '-') {
@@ -236,10 +236,10 @@ static int ultrasort(const void *aa, const void *bb) {
 }
 
 // converts a X font name to a standard starname, returns point size:
-static int to_canonical(char *to, const char *from, size_t tolen) {
+static int to_canonical(char *to, char *from, size_t tolen) {
   char* c = fl_find_fontsize((char*)from);
   if (!c) return -1; // no point size found...
-  const char* endptr;
+  char* endptr;
   int size = strtol(c,(char**)&endptr,10);
   if (from[0] == '-') {
     // replace the "foundry" with -*-:
@@ -260,7 +260,7 @@ static int to_canonical(char *to, const char *from, size_t tolen) {
 
 static int fl_free_font = FL_FREE_FONT;
 
-Fl_Font Fl::set_fonts(const char* xstarname) {
+Fl_Font Fl.set_fonts(char* xstarname) {
   if (fl_free_font > FL_FREE_FONT) // already been here
     return (Fl_Font)fl_free_font;
   fl_open_display();
@@ -276,13 +276,13 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
   int used_xlist = 0;
   for (int i=0; i<xlistsize;) {
     int first_xlist = i;
-    const char *p = xlist[i++];
+    char *p = xlist[i++];
     char canon[1024];
     int size = to_canonical(canon, p, sizeof(canon));
     if (size >= 0) {
       for (;;) { // find all matching fonts:
 	if (i >= xlistsize) break;
-	const char *q = xlist[i];
+	char *q = xlist[i];
 	char this_canon[1024];
 	if (to_canonical(this_canon, q, sizeof(this_canon)) < 0) break;
 	if (strcmp(canon, this_canon)) break;
@@ -299,7 +299,7 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
       } else {
 	j = fl_free_font++;
 	if (p == canon) p = strdup(p); else used_xlist = 1;
-	Fl::set_font((Fl_Font)j, p);
+	Fl.set_font((Fl_Font)j, p);
 	break;
       }
     }
@@ -313,19 +313,19 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
   return (Fl_Font)fl_free_font;
 }
 
-int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
-  Fl_Fontdesc *s = fl_fonts+fnum;
-  if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
-  if (!s->xlist) {
+int Fl.get_font_sizes(Fl_Font fnum, int*& sizep) {
+  Fl_Fontdesc  s = fl_fonts+fnum;
+  if (!s.name) s = fl_fonts; // empty slot in table, use entry 0
+  if (!s.xlist) {
     fl_open_display();
-    s->xlist = XListFonts(fl_display, s->name, 100, &(s->n));
-    if (!s->xlist) return 0;
+    s.xlist = XListFonts(fl_display, s.name, 100, &(s.n));
+    if (!s.xlist) return 0;
   }
-  int listsize = s->n; if (listsize<0) listsize = -listsize;
+  int listsize = s.n; if (listsize<0) listsize = -listsize;
   static int sizes[128];
   int numsizes = 0;
   for (int i = 0; i < listsize; i++) {
-    char *q = s->xlist[i];
+    char *q = s.xlist[i];
     char *d = fl_find_fontsize(q);
     if (!d) continue;
     int s = strtol(d,0,10);

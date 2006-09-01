@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Scrollbar.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: scrollbar.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Scroll bar header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,12 +26,12 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Scrollbar_H
-#define Fl_Scrollbar_H
+module fl.scrollbar;
 
-#include "Fl_Slider.H"
 
-class FL_EXPORT Fl_Scrollbar : public Fl_Slider {
+public import fl.slider;
+
+class Fl_Scrollbar : Fl_Slider {
 
   int linesize_;
   int pushed_;
@@ -42,27 +42,27 @@ protected:
 
 public:
 
-  Fl_Scrollbar(int x,int y,int w,int h, const char *l = 0);
+  Fl_Scrollbar(int x,int y,int w,int h, char *l = 0);
   int handle(int);
 
-  int value() {return int(Fl_Slider::value());}
+  int value() {return int(Fl_Slider.value());}
   int value(int p, int s, int top, int total) {
     return scrollvalue(p, s, top, total);
   }
-  int linesize() const {return linesize_;}
+  int linesize() {return linesize_;}
   void linesize(int i) {linesize_ = i;}
 
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Scrollbar.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: scrollbar.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Scrollbar.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: scrollbar.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Scroll bar widget for the Fast Light Tool Kit (FLTK).
 //
@@ -89,14 +89,14 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Scrollbar.H>
-#include <FL/fl_draw.H>
+private import fl.scrollbar;
+private import fl.draw;
 #include <math.h>
 
-#define INITIALREPEAT .5
-#define REPEAT .05
+const int INITIALREPEAT = .5; 
+const int REPEAT = .05; 
 
-void Fl_Scrollbar::increment_cb() {
+void Fl_Scrollbar.increment_cb() {
   int ls = maximum()>=minimum() ? linesize_ : -linesize_;
   int i;
   switch (pushed_) {
@@ -118,13 +118,13 @@ void Fl_Scrollbar::increment_cb() {
   handle_drag(clamp(value() + i));
 }
 
-void Fl_Scrollbar::timeout_cb(void* v) {
-  Fl_Scrollbar* s = (Fl_Scrollbar*)v;
-  s->increment_cb();
-  Fl::add_timeout(REPEAT, timeout_cb, s);
+void Fl_Scrollbar.timeout_cb(void* v) {
+  Fl_Scrollbar  s = (Fl_Scrollbar )v;
+  s.increment_cb();
+  Fl.add_timeout(REPEAT, timeout_cb, s);
 }
 
-int Fl_Scrollbar::handle(int event) {
+int Fl_Scrollbar.handle(int event) {
   // area of scrollbar:
   int area;
   int X=x(); int Y=y(); int W=w(); int H=h();
@@ -140,10 +140,10 @@ int Fl_Scrollbar::handle(int event) {
   int relx;
   int ww;
   if (horizontal()) {
-    relx = Fl::event_x()-X;
+    relx = Fl.event_x()-X;
     ww = W;
   } else {
-    relx = Fl::event_y()-Y;
+    relx = Fl.event_y()-Y;
     ww = H;
   }
   if (relx < 0) area = 1;
@@ -159,7 +159,7 @@ int Fl_Scrollbar::handle(int event) {
     if (val >= 1.0) sliderx = ww-S;
     else if (val <= 0.0) sliderx = 0;
     else sliderx = int(val*(ww-S)+.5);
-    if (Fl::event_button() == FL_MIDDLE_MOUSE) area = 8;
+    if (Fl.event_button() == FL_MIDDLE_MOUSE) area = 8;
     else if (relx < sliderx) area = 5;
     else if (relx >= sliderx+S) area = 6;
     else area = 8;
@@ -172,7 +172,7 @@ int Fl_Scrollbar::handle(int event) {
   case FL_RELEASE:
       damage(FL_DAMAGE_ALL);
     if (pushed_) {
-      Fl::remove_timeout(timeout_cb, this);
+      Fl.remove_timeout(timeout_cb, this);
       pushed_ = 0;
     }
     handle_release();
@@ -182,23 +182,23 @@ int Fl_Scrollbar::handle(int event) {
     if (area != 8) pushed_ = area;
     if (pushed_) {
       handle_push();
-      Fl::add_timeout(INITIALREPEAT, timeout_cb, this);
+      Fl.add_timeout(INITIALREPEAT, timeout_cb, this);
       increment_cb();
       damage(FL_DAMAGE_ALL);
       return 1;
     }
-    return Fl_Slider::handle(event, X,Y,W,H);
+    return Fl_Slider.handle(event, X,Y,W,H);
   case FL_DRAG:
     if (pushed_) return 1;
-    return Fl_Slider::handle(event, X,Y,W,H);
+    return Fl_Slider.handle(event, X,Y,W,H);
   case FL_MOUSEWHEEL :
     if (horizontal()) {
-      if (Fl::e_dx==0) return 0;
-      handle_drag(clamp(value() + linesize_ * Fl::e_dx));
+      if (Fl.e_dx==0) return 0;
+      handle_drag(clamp(value() + linesize_ * Fl.e_dx));
       return 1;
     } else {
-      if (Fl::e_dy==0) return 0;
-      handle_drag(clamp(value() + linesize_ * Fl::e_dy));
+      if (Fl.e_dy==0) return 0;
+      handle_drag(clamp(value() + linesize_ * Fl.e_dy));
       return 1;
     }
     break;
@@ -207,7 +207,7 @@ int Fl_Scrollbar::handle(int event) {
     int v = value();
     int ls = maximum()>=minimum() ? linesize_ : -linesize_;
     if (horizontal()) {
-      switch (Fl::event_key()) {
+      switch (Fl.event_key()) {
       case FL_Left:
 	v -= ls;
 	break;
@@ -218,7 +218,7 @@ int Fl_Scrollbar::handle(int event) {
 	return 0;
       }
     } else { // vertical
-      switch (Fl::event_key()) {
+      switch (Fl.event_key()) {
       case FL_Up:
 	v -= ls;
 	break;
@@ -247,7 +247,7 @@ int Fl_Scrollbar::handle(int event) {
     }
     v = int(clamp(v));
     if (v != value()) {
-      Fl_Slider::value(v);
+      Fl_Slider.value(v);
       value_damage();
       set_changed();
       do_callback();
@@ -257,15 +257,15 @@ int Fl_Scrollbar::handle(int event) {
   return 0;
 }
 
-void Fl_Scrollbar::draw() {
+void Fl_Scrollbar.draw() {
   if (damage()&FL_DAMAGE_ALL) draw_box();
-  int X = x()+Fl::box_dx(box());
-  int Y = y()+Fl::box_dy(box());
-  int W = w()-Fl::box_dw(box());
-  int H = h()-Fl::box_dh(box());
+  int X = x()+Fl.box_dx(box());
+  int Y = y()+Fl.box_dy(box());
+  int W = w()-Fl.box_dw(box());
+  int H = h()-Fl.box_dh(box());
   if (horizontal()) {
-    if (W < 3*H) {Fl_Slider::draw(X,Y,W,H); return;}
-    Fl_Slider::draw(X+H,Y,W-2*H,H);
+    if (W < 3*H) {Fl_Slider.draw(X,Y,W,H); return;}
+    Fl_Slider.draw(X+H,Y,W-2*H,H);
     if (damage()&FL_DAMAGE_ALL) {
       draw_box((pushed_==1) ? fl_down(slider()) : slider(),
 	       X, Y, H, H, selection_color());
@@ -283,8 +283,8 @@ void Fl_Scrollbar::draw() {
       fl_polygon(x1, yy1, x1, yy1+2*w1, x1+w1, yy1+w1);
     }
   } else { // vertical
-    if (H < 3*W) {Fl_Slider::draw(X,Y,W,H); return;}
-    Fl_Slider::draw(X,Y+W,W,H-2*W);
+    if (H < 3*W) {Fl_Slider.draw(X,Y,W,H); return;}
+    Fl_Slider.draw(X,Y+W,W,H-2*W);
     if (damage()&FL_DAMAGE_ALL) {
       draw_box((pushed_==1) ? fl_down(slider()) : slider(),
 	       X, Y, W, W, selection_color());
@@ -304,7 +304,7 @@ void Fl_Scrollbar::draw() {
   }
 }
 
-Fl_Scrollbar::Fl_Scrollbar(int X, int Y, int W, int H, const char* L)
+Fl_Scrollbar.Fl_Scrollbar(int X, int Y, int W, int H, char* L)
   : Fl_Slider(X, Y, W, H, L)
 {
   box(FL_FLAT_BOX);
@@ -316,6 +316,6 @@ Fl_Scrollbar::Fl_Scrollbar(int X, int Y, int W, int H, const char* L)
 }
 
 //
-// End of "$Id: Fl_Scrollbar.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: scrollbar.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

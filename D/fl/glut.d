@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: glut.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: glut.H 5327 2006-08-17 13:49:46Z matt $"
 //
 // GLUT emulation header file for the Fast Light Tool Kit (FLTK).
 //
@@ -44,7 +44,7 @@
 
 // Commented out lines indicate parts of GLUT that are not emulated.
 
-#ifndef __glut_h__
+version (!__glut_h__) {
 #  define __glut_h__
 
 #  include "gl.h"
@@ -54,262 +54,265 @@
 // GLUT is emulated using this window class and these static variables
 // (plus several more static variables hidden in glut.C):
 
-#  include "Fl.H"
-#  include "Fl_Gl_Window.H"
+public import fl.fl;
+public import fl.gl_window;
 
-class FL_EXPORT Fl_Glut_Window : public Fl_Gl_Window {
+class Fl_Glut_Window : Fl_Gl_Window {
   void _init();
   int mouse_down;
 protected:
   void draw();
   void draw_overlay();
   int handle(int);
-public: // so the inline functions work
+public: // so the functions work
   int number;
   int menu[3];
   void make_current();
   void (*display)();
   void (*overlaydisplay)();
   void (*reshape)(int w, int h);
-  void (*keyboard)(uchar, int x, int y);
+  void (*keyboard)(ubyte, int x, int y);
   void (*mouse)(int b, int state, int x, int y);
   void (*motion)(int x, int y);
   void (*passivemotion)(int x, int y);
   void (*entry)(int);
   void (*visibility)(int);
   void (*special)(int, int x, int y);
-  Fl_Glut_Window(int w, int h, const char *);
-  Fl_Glut_Window(int x, int y, int w, int h, const char *);
+  Fl_Glut_Window(int w, int h, char *);
+  Fl_Glut_Window(int x, int y, int w, int h, char *);
   ~Fl_Glut_Window();
 };
 
-extern FL_EXPORT Fl_Glut_Window *glut_window;	// the current window
-extern FL_EXPORT int glut_menu;			// the current menu
+extern Fl_Glut_Window  glut_window;	// the current window
+extern int glut_menu;			// the current menu
 
 // function pointers that are not per-window:
-extern FL_EXPORT void (*glut_idle_function)();
-extern FL_EXPORT void (*glut_menustate_function)(int);
-extern FL_EXPORT void (*glut_menustatus_function)(int,int,int);
+extern void (*glut_idle_function)();
+extern void (*glut_menustate_function)(int);
+extern void (*glut_menustatus_function)(int,int,int);
 
 ////////////////////////////////////////////////////////////////
 
 //#  define GLUT_API_VERSION This does not match any version of GLUT exactly...
 
-FL_EXPORT void glutInit(int *argcp, char **argv); // creates first window
+void glutInit(int *argcp, char **argv); // creates first window
 
-FL_EXPORT void glutInitDisplayMode(unsigned int mode);
+void glutInitDisplayMode(uint mode);
 // the FL_ symbols have the same value as the GLUT ones:
-#  define GLUT_RGB	FL_RGB
-#  define GLUT_RGBA	FL_RGB
-#  define GLUT_INDEX	FL_INDEX
-#  define GLUT_SINGLE	FL_SINGLE
-#  define GLUT_DOUBLE	FL_DOUBLE
-#  define GLUT_ACCUM	FL_ACCUM
-#  define GLUT_ALPHA	FL_ALPHA
-#  define GLUT_DEPTH	FL_DEPTH
-#  define GLUT_STENCIL	FL_STENCIL
-#  define GLUT_MULTISAMPLE FL_MULTISAMPLE
-#  define GLUT_STEREO	FL_STEREO
+const int GLUT_RGB = FL_RGB; 
+const int GLUT_RGBA = FL_RGB; 
+const int GLUT_INDEX = FL_INDEX; 
+const int GLUT_SINGLE = FL_SINGLE; 
+const int GLUT_DOUBLE = FL_DOUBLE; 
+const int GLUT_ACCUM = FL_ACCUM; 
+const int GLUT_ALPHA = FL_ALPHA; 
+const int GLUT_DEPTH = FL_DEPTH; 
+const int GLUT_STENCIL = FL_STENCIL; 
+const int GLUT_MULTISAMPLE = FL_MULTISAMPLE; 
+const int GLUT_STEREO = FL_STEREO; 
 // #  define GLUT_LUMINANCE		512
 
-FL_EXPORT void glutInitWindowPosition(int x, int y);
+void glutInitWindowPosition(int x, int y);
 
-FL_EXPORT void glutInitWindowSize(int w, int h);
+void glutInitWindowSize(int w, int h);
 
-FL_EXPORT void glutMainLoop();
+void glutMainLoop();
 
-FL_EXPORT int glutCreateWindow(char *title);
+int glutCreateWindow(char *title);
+int glutCreateWindow(char *title);
 
-FL_EXPORT int glutCreateSubWindow(int win, int x, int y, int width, int height);
+int glutCreateSubWindow(int win, int x, int y, int width, int height);
 
-FL_EXPORT void glutDestroyWindow(int win);
+void glutDestroyWindow(int win);
 
-inline void glutPostRedisplay() {glut_window->redraw();}
+void glutPostRedisplay() {glut_window.redraw();}
 
-FL_EXPORT void glutSwapBuffers();
+void glutPostWindowRedisplay(int win);
 
-inline int glutGetWindow() {return glut_window->number;}
+void glutSwapBuffers();
 
-FL_EXPORT void glutSetWindow(int win);
+int glutGetWindow() {return glut_window.number;}
 
-inline void glutSetWindowTitle(char *t) {glut_window->label(t);}
+void glutSetWindow(int win);
 
-inline void glutSetIconTitle(char *t) {glut_window->iconlabel(t);}
+void glutSetWindowTitle(char *t) {glut_window.label(t);}
 
-inline void glutPositionWindow(int x, int y) {glut_window->position(x,y);}
+void glutSetIconTitle(char *t) {glut_window.iconlabel(t);}
 
-inline void glutReshapeWindow(int w, int h) {glut_window->size(w,h);}
+void glutPositionWindow(int x, int y) {glut_window.position(x,y);}
 
-inline void glutPopWindow() {glut_window->show();}
+void glutReshapeWindow(int w, int h) {glut_window.size(w,h);}
 
-//inline void glutPushWindow();
+void glutPopWindow() {glut_window.show();}
 
-inline void glutIconifyWindow() {glut_window->iconize();}
+//void glutPushWindow();
 
-inline void glutShowWindow() {glut_window->show();}
+void glutIconifyWindow() {glut_window.iconize();}
 
-inline void glutHideWindow() {glut_window->hide();}
+void glutShowWindow() {glut_window.show();}
 
-inline void glutFullScreen() {glut_window->fullscreen();}
+void glutHideWindow() {glut_window.hide();}
 
-inline void glutSetCursor(Fl_Cursor cursor) {glut_window->cursor(cursor);}
+void glutFullScreen() {glut_window.fullscreen();}
+
+void glutSetCursor(Fl_Cursor cursor) {glut_window.cursor(cursor);}
 // notice that the numeric values are different than glut:
-#  define GLUT_CURSOR_RIGHT_ARROW		((Fl_Cursor)2)
-#  define GLUT_CURSOR_LEFT_ARROW		((Fl_Cursor)67)
-#  define GLUT_CURSOR_INFO			FL_CURSOR_HAND
-#  define GLUT_CURSOR_DESTROY			((Fl_Cursor)45)
-#  define GLUT_CURSOR_HELP			FL_CURSOR_HELP
-#  define GLUT_CURSOR_CYCLE			((Fl_Cursor)26)
-#  define GLUT_CURSOR_SPRAY			((Fl_Cursor)63)
-#  define GLUT_CURSOR_WAIT			FL_CURSOR_WAIT
-#  define GLUT_CURSOR_TEXT			FL_CURSOR_INSERT
-#  define GLUT_CURSOR_CROSSHAIR			FL_CURSOR_CROSS
-#  define GLUT_CURSOR_UP_DOWN			FL_CURSOR_NS
-#  define GLUT_CURSOR_LEFT_RIGHT		FL_CURSOR_WE
-#  define GLUT_CURSOR_TOP_SIDE			FL_CURSOR_N
-#  define GLUT_CURSOR_BOTTOM_SIDE		FL_CURSOR_S
-#  define GLUT_CURSOR_LEFT_SIDE			FL_CURSOR_W
-#  define GLUT_CURSOR_RIGHT_SIDE		FL_CURSOR_E
-#  define GLUT_CURSOR_TOP_LEFT_CORNER		FL_CURSOR_NW
-#  define GLUT_CURSOR_TOP_RIGHT_CORNER		FL_CURSOR_NE
-#  define GLUT_CURSOR_BOTTOM_RIGHT_CORNER	FL_CURSOR_SE
-#  define GLUT_CURSOR_BOTTOM_LEFT_CORNER	FL_CURSOR_SW
-#  define GLUT_CURSOR_INHERIT			FL_CURSOR_DEFAULT
-#  define GLUT_CURSOR_NONE			FL_CURSOR_NONE
-#  define GLUT_CURSOR_FULL_CROSSHAIR		FL_CURSOR_CROSS
+const int GLUT_CURSOR_RIGHT_ARROW = ((Fl_Cursor)2); 
+const int GLUT_CURSOR_LEFT_ARROW = ((Fl_Cursor)67); 
+const int GLUT_CURSOR_INFO = FL_CURSOR_HAND; 
+const int GLUT_CURSOR_DESTROY = ((Fl_Cursor)45); 
+const int GLUT_CURSOR_HELP = FL_CURSOR_HELP; 
+const int GLUT_CURSOR_CYCLE = ((Fl_Cursor)26); 
+const int GLUT_CURSOR_SPRAY = ((Fl_Cursor)63); 
+const int GLUT_CURSOR_WAIT = FL_CURSOR_WAIT; 
+const int GLUT_CURSOR_TEXT = FL_CURSOR_INSERT; 
+const int GLUT_CURSOR_CROSSHAIR = FL_CURSOR_CROSS; 
+const int GLUT_CURSOR_UP_DOWN = FL_CURSOR_NS; 
+const int GLUT_CURSOR_LEFT_RIGHT = FL_CURSOR_WE; 
+const int GLUT_CURSOR_TOP_SIDE = FL_CURSOR_N; 
+const int GLUT_CURSOR_BOTTOM_SIDE = FL_CURSOR_S; 
+const int GLUT_CURSOR_LEFT_SIDE = FL_CURSOR_W; 
+const int GLUT_CURSOR_RIGHT_SIDE = FL_CURSOR_E; 
+const int GLUT_CURSOR_TOP_LEFT_CORNER = FL_CURSOR_NW; 
+const int GLUT_CURSOR_TOP_RIGHT_CORNER = FL_CURSOR_NE; 
+const int GLUT_CURSOR_BOTTOM_RIGHT_CORNER = FL_CURSOR_SE; 
+const int GLUT_CURSOR_BOTTOM_LEFT_CORNER = FL_CURSOR_SW; 
+const int GLUT_CURSOR_INHERIT = FL_CURSOR_DEFAULT; 
+const int GLUT_CURSOR_NONE = FL_CURSOR_NONE; 
+const int GLUT_CURSOR_FULL_CROSSHAIR = FL_CURSOR_CROSS; 
 
-//inline void glutWarpPointer(int x, int y);
+//void glutWarpPointer(int x, int y);
 
-inline void glutEstablishOverlay() {glut_window->make_overlay_current();}
+void glutEstablishOverlay() {glut_window.make_overlay_current();}
 
-inline void glutRemoveOverlay() {glut_window->hide_overlay();}
+void glutRemoveOverlay() {glut_window.hide_overlay();}
 
-inline void glutUseLayer(GLenum layer) {
-  layer ? glut_window->make_overlay_current() : glut_window->make_current();}
+void glutUseLayer(GLenum layer) {
+  layer ? glut_window.make_overlay_current() : glut_window.make_current();}
 enum {GLUT_NORMAL, GLUT_OVERLAY};
 
-inline void glutPostOverlayRedisplay() {glut_window->redraw_overlay();}
+void glutPostOverlayRedisplay() {glut_window.redraw_overlay();}
 
-inline void glutShowOverlay() {glut_window->redraw_overlay();}
+void glutShowOverlay() {glut_window.redraw_overlay();}
 
-inline void glutHideOverlay() {glut_window->hide_overlay();}
+void glutHideOverlay() {glut_window.hide_overlay();}
 
-FL_EXPORT int glutCreateMenu(void (*)(int));
+int glutCreateMenu(void (*)(int));
 
-FL_EXPORT void glutDestroyMenu(int menu);
+void glutDestroyMenu(int menu);
 
-inline int glutGetMenu() {return glut_menu;}
+int glutGetMenu() {return glut_menu;}
 
-inline void glutSetMenu(int m) {glut_menu = m;}
+void glutSetMenu(int m) {glut_menu = m;}
 
-FL_EXPORT void glutAddMenuEntry(char *label, int value);
+void glutAddMenuEntry(char *label, int value);
 
-FL_EXPORT void glutAddSubMenu(char *label, int submenu);
+void glutAddSubMenu(char *label, int submenu);
 
-FL_EXPORT void glutChangeToMenuEntry(int item, char *label, int value);
+void glutChangeToMenuEntry(int item, char *label, int value);
 
-FL_EXPORT void glutChangeToSubMenu(int item, char *label, int submenu);
+void glutChangeToSubMenu(int item, char *label, int submenu);
 
-FL_EXPORT void glutRemoveMenuItem(int item);
+void glutRemoveMenuItem(int item);
 
-inline void glutAttachMenu(int b) {glut_window->menu[b] = glut_menu;}
+void glutAttachMenu(int b) {glut_window.menu[b] = glut_menu;}
 
-inline void glutDetachMenu(int b) {glut_window->menu[b] = 0;}
+void glutDetachMenu(int b) {glut_window.menu[b] = 0;}
 
-inline void glutDisplayFunc(void (*f)()) {glut_window->display = f;}
+void glutDisplayFunc(void (*f)()) {glut_window.display = f;}
 
-inline void glutReshapeFunc(void (*f)(int w, int h)) {glut_window->reshape=f;}
+void glutReshapeFunc(void (*f)(int w, int h)) {glut_window.reshape=f;}
 
-inline void glutKeyboardFunc(void (*f)(uchar key, int x, int y)) {
-  glut_window->keyboard = f;}
+void glutKeyboardFunc(void (*f)(ubyte key, int x, int y)) {
+  glut_window.keyboard = f;}
 
-inline void glutMouseFunc(void (*f)(int b, int state, int x, int y)) {
-  glut_window->mouse = f;}
-#  define GLUT_LEFT_BUTTON		0
-#  define GLUT_MIDDLE_BUTTON		1
-#  define GLUT_RIGHT_BUTTON		2
-#  define GLUT_DOWN			0
-#  define GLUT_UP			1
+void glutMouseFunc(void (*f)(int b, int state, int x, int y)) {
+  glut_window.mouse = f;}
+const int GLUT_LEFT_BUTTON = 0; 
+const int GLUT_MIDDLE_BUTTON = 1; 
+const int GLUT_RIGHT_BUTTON = 2; 
+const int GLUT_DOWN = 0; 
+const int GLUT_UP = 1; 
 
-inline void glutMotionFunc(void (*f)(int x, int y)) {glut_window->motion= f;}
+void glutMotionFunc(void (*f)(int x, int y)) {glut_window.motion= f;}
 
-inline void glutPassiveMotionFunc(void (*f)(int x, int y)) {
-  glut_window->passivemotion= f;}
+void glutPassiveMotionFunc(void (*f)(int x, int y)) {
+  glut_window.passivemotion= f;}
 
-inline void glutEntryFunc(void (*f)(int s)) {glut_window->entry = f;}
+void glutEntryFunc(void (*f)(int s)) {glut_window.entry = f;}
 enum {GLUT_LEFT, GLUT_ENTERED};
 
-inline void glutVisibilityFunc(void (*f)(int s)) {glut_window->visibility=f;}
+void glutVisibilityFunc(void (*f)(int s)) {glut_window.visibility=f;}
 enum {GLUT_NOT_VISIBLE, GLUT_VISIBLE};
 
-inline void glutIdleFunc(void (*f)()) {Fl::set_idle(f);}
+void glutIdleFunc(void (*f)()) {Fl.set_idle(f);}
 
 // Warning: this cast may not work on all machines:
-inline void glutTimerFunc(unsigned int msec, void (*f)(int), int value) {
-  Fl::add_timeout(msec*.001, (void (*)(void *))f, (void *)value);
+void glutTimerFunc(uint msec, void (*f)(int), int value) {
+  Fl.add_timeout(msec*.001, (void (*)(void *))f, (void *)value);
 }
 
-inline void glutMenuStateFunc(void (*f)(int state)) {
+void glutMenuStateFunc(void (*f)(int state)) {
   glut_menustate_function = f;}
 
-inline void glutMenuStatusFunc(void (*f)(int status, int x, int y)) {
+void glutMenuStatusFunc(void (*f)(int status, int x, int y)) {
   glut_menustatus_function = f;}
 enum {GLUT_MENU_NOT_IN_USE, GLUT_MENU_IN_USE};
 
-inline void glutSpecialFunc(void (*f)(int key, int x, int y)) {
-  glut_window->special = f;}
-#  define GLUT_KEY_F1			1
-#  define GLUT_KEY_F2			2
-#  define GLUT_KEY_F3			3
-#  define GLUT_KEY_F4			4
-#  define GLUT_KEY_F5			5
-#  define GLUT_KEY_F6			6
-#  define GLUT_KEY_F7			7
-#  define GLUT_KEY_F8			8
-#  define GLUT_KEY_F9			9
-#  define GLUT_KEY_F10			10
-#  define GLUT_KEY_F11			11
-#  define GLUT_KEY_F12			12
+void glutSpecialFunc(void (*f)(int key, int x, int y)) {
+  glut_window.special = f;}
+const int GLUT_KEY_F1 = 1; 
+const int GLUT_KEY_F2 = 2; 
+const int GLUT_KEY_F3 = 3; 
+const int GLUT_KEY_F4 = 4; 
+const int GLUT_KEY_F5 = 5; 
+const int GLUT_KEY_F6 = 6; 
+const int GLUT_KEY_F7 = 7; 
+const int GLUT_KEY_F8 = 8; 
+const int GLUT_KEY_F9 = 9; 
+const int GLUT_KEY_F10 = 10; 
+const int GLUT_KEY_F11 = 11; 
+const int GLUT_KEY_F12 = 12; 
 // WARNING: Different values than GLUT uses:
-#  define GLUT_KEY_LEFT			FL_Left
-#  define GLUT_KEY_UP			FL_Up
-#  define GLUT_KEY_RIGHT		FL_Right
-#  define GLUT_KEY_DOWN			FL_Down
-#  define GLUT_KEY_PAGE_UP		FL_Page_Up
-#  define GLUT_KEY_PAGE_DOWN		FL_Page_Down
-#  define GLUT_KEY_HOME			FL_Home
-#  define GLUT_KEY_END			FL_End
-#  define GLUT_KEY_INSERT		FL_Insert
+const int GLUT_KEY_LEFT = FL_Left; 
+const int GLUT_KEY_UP = FL_Up; 
+const int GLUT_KEY_RIGHT = FL_Right; 
+const int GLUT_KEY_DOWN = FL_Down; 
+const int GLUT_KEY_PAGE_UP = FL_Page_Up; 
+const int GLUT_KEY_PAGE_DOWN = FL_Page_Down; 
+const int GLUT_KEY_HOME = FL_Home; 
+const int GLUT_KEY_END = FL_End; 
+const int GLUT_KEY_INSERT = FL_Insert; 
 
-//inline void glutSpaceballMotionFunc(void (*)(int x, int y, int z));
+//void glutSpaceballMotionFunc(void (*)(int x, int y, int z));
 
-//inline void glutSpaceballRotateFunc(void (*)(int x, int y, int z));
+//void glutSpaceballRotateFunc(void (*)(int x, int y, int z));
 
-//inline void glutSpaceballButtonFunc(void (*)(int button, int state));
+//void glutSpaceballButtonFunc(void (*)(int button, int state));
 
-//inline void glutButtonBoxFunc(void (*)(int button, int state));
+//void glutButtonBoxFunc(void (*)(int button, int state));
 
-//inline void glutDialsFunc(void (*)(int dial, int value));
+//void glutDialsFunc(void (*)(int dial, int value));
 
-//inline void glutTabletMotionFunc(void (*)(int x, int y));
+//void glutTabletMotionFunc(void (*)(int x, int y));
 
-//inline void glutTabletButtonFunc(void (*)(int button, int state, int x, int y));
+//void glutTabletButtonFunc(void (*)(int button, int state, int x, int y));
 
-inline void glutOverlayDisplayFunc(void (*f)()) {
-  glut_window->overlaydisplay = f;}
+void glutOverlayDisplayFunc(void (*f)()) {
+  glut_window.overlaydisplay = f;}
 
-//inline void glutWindowStatusFunc(void (*)(int state));
+//void glutWindowStatusFunc(void (*)(int state));
 //enum {GLUT_HIDDEN, GLUT_FULLY_RETAINED, GLUT_PARTIALLY_RETAINED,
 //	GLUT_FULLY_COVERED};
 
-//inline void glutSetColor(int, GLfloat red, GLfloat green, GLfloat blue);
+//void glutSetColor(int, GLfloat red, GLfloat green, GLfloat blue);
 
-//inline GLfloat glutGetColor(int ndx, int component);
+//GLfloat glutGetColor(int ndx, int component);
 //#define GLUT_RED			0
 //#define GLUT_GREEN			1
 //#define GLUT_BLUE			2
 
-//inline void glutCopyColormap(int win);
+//void glutCopyColormap(int win);
 
 // Warning: values are changed from GLUT!
 // Also relies on the GL_ symbols having values greater than 100
@@ -338,25 +341,25 @@ enum {
   GLUT_WINDOW_BUFFER_SIZE
 };
 
-#  define GLUT_WINDOW_STENCIL_SIZE	GL_STENCIL_BITS
-#  define GLUT_WINDOW_DEPTH_SIZE	GL_DEPTH_BITS
-#  define GLUT_WINDOW_RED_SIZE		GL_RED_BITS
-#  define GLUT_WINDOW_GREEN_SIZE	GL_GREEN_BITS
-#  define GLUT_WINDOW_BLUE_SIZE		GL_BLUE_BITS
-#  define GLUT_WINDOW_ALPHA_SIZE	GL_ALPHA_BITS
-#  define GLUT_WINDOW_ACCUM_RED_SIZE	GL_ACCUM_RED_BITS
-#  define GLUT_WINDOW_ACCUM_GREEN_SIZE	GL_ACCUM_GREEN_BITS
-#  define GLUT_WINDOW_ACCUM_BLUE_SIZE	GL_ACCUM_BLUE_BITS
-#  define GLUT_WINDOW_ACCUM_ALPHA_SIZE	GL_ACCUM_ALPHA_BITS
-#  define GLUT_WINDOW_DOUBLEBUFFER	GL_DOUBLEBUFFER
-#  define GLUT_WINDOW_RGBA		GL_RGBA
-#  define GLUT_WINDOW_COLORMAP_SIZE	GL_INDEX_BITS
-#  ifdef GL_SAMPLES_SGIS
-#    define GLUT_WINDOW_NUM_SAMPLES	GL_SAMPLES_SGIS
-#  else
-#    define GLUT_WINDOW_NUM_SAMPLES	GLUT_RETURN_ZERO
-#  endif
-#  define GLUT_WINDOW_STEREO		GL_STEREO
+const int GLUT_WINDOW_STENCIL_SIZE = GL_STENCIL_BITS; 
+const int GLUT_WINDOW_DEPTH_SIZE = GL_DEPTH_BITS; 
+const int GLUT_WINDOW_RED_SIZE = GL_RED_BITS; 
+const int GLUT_WINDOW_GREEN_SIZE = GL_GREEN_BITS; 
+const int GLUT_WINDOW_BLUE_SIZE = GL_BLUE_BITS; 
+const int GLUT_WINDOW_ALPHA_SIZE = GL_ALPHA_BITS; 
+const int GLUT_WINDOW_ACCUM_RED_SIZE = GL_ACCUM_RED_BITS; 
+const int GLUT_WINDOW_ACCUM_GREEN_SIZE = GL_ACCUM_GREEN_BITS; 
+const int GLUT_WINDOW_ACCUM_BLUE_SIZE = GL_ACCUM_BLUE_BITS; 
+const int GLUT_WINDOW_ACCUM_ALPHA_SIZE = GL_ACCUM_ALPHA_BITS; 
+const int GLUT_WINDOW_DOUBLEBUFFER = GL_DOUBLEBUFFER; 
+const int GLUT_WINDOW_RGBA = GL_RGBA; 
+const int GLUT_WINDOW_COLORMAP_SIZE = GL_INDEX_BITS; 
+version (GL_SAMPLES_SGIS) {
+const int GLUT_WINDOW_NUM_SAMPLES = GL_SAMPLES_SGIS; 
+} else {
+const int GLUT_WINDOW_NUM_SAMPLES = GLUT_RETURN_ZERO; 
+}
+const int GLUT_WINDOW_STEREO = GL_STEREO; 
 
 //int glutDeviceGet(GLenum type);
 //#define GLUT_HAS_KEYBOARD		600
@@ -371,20 +374,20 @@ enum {
 //#define GLUT_NUM_TABLET_BUTTONS	609
 
 // WARNING: these values are different than GLUT uses:
-#  define GLUT_ACTIVE_SHIFT               FL_SHIFT
-#  define GLUT_ACTIVE_CTRL                FL_CTRL
-#  define GLUT_ACTIVE_ALT                 FL_ALT
-inline int glutGetModifiers() {return Fl::event_state() & (GLUT_ACTIVE_SHIFT | GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT);}
+const int GLUT_ACTIVE_SHIFT = FL_SHIFT; 
+const int GLUT_ACTIVE_CTRL = FL_CTRL; 
+const int GLUT_ACTIVE_ALT = FL_ALT; 
+int glutGetModifiers() {return Fl.event_state() & (GLUT_ACTIVE_SHIFT | GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT);}
 
 int glutLayerGet(GLenum);
-#  define GLUT_OVERLAY_POSSIBLE		800
+const int GLUT_OVERLAY_POSSIBLE = 800; 
 //#define GLUT_LAYER_IN_USE		801
 //#define GLUT_HAS_OVERLAY		802
-#  define GLUT_TRANSPARENT_INDEX		803
-#  define GLUT_NORMAL_DAMAGED		804
-#  define GLUT_OVERLAY_DAMAGED		805
+const int GLUT_TRANSPARENT_INDEX = 803; 
+const int GLUT_NORMAL_DAMAGED = 804; 
+const int GLUT_OVERLAY_DAMAGED = 805; 
 
-//inline int glutVideoResizeGet(GLenum param);
+//int glutVideoResizeGet(GLenum param);
 //#define GLUT_VIDEO_RESIZE_POSSIBLE	900
 //#define GLUT_VIDEO_RESIZE_IN_USE	901
 //#define GLUT_VIDEO_RESIZE_X_DELTA	902
@@ -396,32 +399,33 @@ int glutLayerGet(GLenum);
 //#define GLUT_VIDEO_RESIZE_WIDTH	908
 //#define GLUT_VIDEO_RESIZE_HEIGHT	909
 
-//inline void glutSetupVideoResizing();
+//void glutSetupVideoResizing();
 
-//inline void glutStopVideoResizing();
+//void glutStopVideoResizing();
 
-//inline void glutVideoResize(int x, int y, int width, int height);
+//void glutVideoResize(int x, int y, int width, int height);
 
-//inline void glutVideoPan(int x, int y, int width, int height);
+//void glutVideoPan(int x, int y, int width, int height);
 
 ////////////////////////////////////////////////////////////////
 // Emulated GLUT drawing functions:
 
 // Font argument must be a void* for compatability, so...
-extern FL_EXPORT struct Glut_Bitmap_Font {uchar font; int size;}
+extern struct Glut_Bitmap_Font {ubyte font; int size;}
   glutBitmap9By15, glutBitmap8By13, glutBitmapTimesRoman10,
   glutBitmapTimesRoman24, glutBitmapHelvetica10, glutBitmapHelvetica12,
   glutBitmapHelvetica18;
-#  define GLUT_BITMAP_9_BY_15             (&glutBitmap9By15)
-#  define GLUT_BITMAP_8_BY_13             (&glutBitmap8By13)
-#  define GLUT_BITMAP_TIMES_ROMAN_10      (&glutBitmapTimesRoman10)
-#  define GLUT_BITMAP_TIMES_ROMAN_24      (&glutBitmapTimesRoman24)
-#  define GLUT_BITMAP_HELVETICA_10        (&glutBitmapHelvetica10)
-#  define GLUT_BITMAP_HELVETICA_12        (&glutBitmapHelvetica12)
-#  define GLUT_BITMAP_HELVETICA_18        (&glutBitmapHelvetica18)
+const int GLUT_BITMAP_9_BY_15 = (&glutBitmap9By15); 
+const int GLUT_BITMAP_8_BY_13 = (&glutBitmap8By13); 
+const int GLUT_BITMAP_TIMES_ROMAN_10 = (&glutBitmapTimesRoman10); 
+const int GLUT_BITMAP_TIMES_ROMAN_24 = (&glutBitmapTimesRoman24); 
+const int GLUT_BITMAP_HELVETICA_10 = (&glutBitmapHelvetica10); 
+const int GLUT_BITMAP_HELVETICA_12 = (&glutBitmapHelvetica12); 
+const int GLUT_BITMAP_HELVETICA_18 = (&glutBitmapHelvetica18); 
 
-FL_EXPORT void glutBitmapCharacter(void *font, int character);
-FL_EXPORT int glutBitmapWidth(void *font, int character);
+void glutBitmapCharacter(void *font, int character);
+int glutBitmapWidth(void *font, int character);
+int glutBitmapLength(void *font, ubyte *string);
 
 ////////////////////////////////////////////////////////////////
 // GLUT drawing functions.  These are NOT emulated but you can
@@ -434,15 +438,15 @@ extern "C" {
 extern int APIENTRY glutExtensionSupported(char *name);
 
 /* Stroke font constants (use these in GLUT program). */
-#  ifdef WIN32
-#    define GLUT_STROKE_ROMAN		((void*)0)
-#    define GLUT_STROKE_MONO_ROMAN	((void*)1)
-#  else
+version (WIN32) {
+const int GLUT_STROKE_ROMAN = ((void*)0); 
+const int GLUT_STROKE_MONO_ROMAN = ((void*)1); 
+} else {
 extern void *glutStrokeRoman;
-#    define GLUT_STROKE_ROMAN		(&glutStrokeRoman)
+const int GLUT_STROKE_ROMAN = (&glutStrokeRoman); 
 extern void *glutStrokeMonoRoman;
-#    define GLUT_STROKE_MONO_ROMAN	(&glutStrokeMonoRoman)
-#  endif
+const int GLUT_STROKE_MONO_ROMAN = (&glutStrokeMonoRoman); 
+}
 
 /* GLUT font sub-API */
 extern void APIENTRY glutStrokeCharacter(void *font, int character);
@@ -470,9 +474,9 @@ extern void APIENTRY glutSolidIcosahedron();
 
 }
 
-#endif                  /* !__glut_h__ */
+}                  /* !__glut_h__ */
 
 //
-// End of "$Id: glut.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: glut.H 5327 2006-08-17 13:49:46Z matt $".
 //
     End of automatic import -+/

@@ -28,19 +28,19 @@
 
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include "Fl_Font.H"
-#include "flstring.h"
+private import fl.font;
+private import fl.flstring;
 #include <stdlib.h>
 
-#ifdef WIN32
+version (WIN32) {
 #  include "fl_set_fonts_win32.cxx"
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 #  include "fl_set_fonts_mac.cxx"
 #elif USE_XFT
 #  include "fl_set_fonts_xft.cxx"
-#else
+} else {
 #  include "fl_set_fonts_x.cxx"
-#endif // WIN32
+} // WIN32
 
 //
 // End of "$Id: fl_set_fonts.cxx 5190 2006-06-09 16:16:34Z mike $".

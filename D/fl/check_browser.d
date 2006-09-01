@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Check_Browser.H 5006 2006-04-20 03:53:41Z matt $"
+// "$Id: check_browser.d 5006 2006-04-20 03:53:41Z matt $"
 //
 // Fl_Check_Browser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,13 +25,13 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Check_Browser_H
-#define Fl_Check_Browser_H
+module fl.check_browser;
 
-#include "Fl.H"
-#include "Fl_Browser_.H"
+/+=
+public import fl.fl;
+public import fl.browser_;
 
-class FL_EXPORT Fl_Check_Browser : public Fl_Browser_ {
+class Fl_Check_Browser : Fl_Browser_ {
   /* required routines for Fl_Browser_ subclass: */
 
   void *item_first() const;
@@ -69,19 +68,19 @@ class FL_EXPORT Fl_Check_Browser : public Fl_Browser_ {
 
   public:
 
-  Fl_Check_Browser(int x, int y, int w, int h, const char *l = 0);
+  Fl_Check_Browser(int x, int y, int w, int h, char *l = 0);
   ~Fl_Check_Browser() { clear(); }
   int add(char *s);               // add an (unchecked) item
   int add(char *s, int b);        // add an item and set checked
 				  // both return the new nitems()
 
-  // inline const char * methods to avoid breaking binary compatibility...
-  int add(const char *s) { return add((char *)s); }
-  int add(const char *s, int b) { return add((char *)s, b); }
+  // char * methods to avoid breaking binary compatibility...
+  int add(char *s) { return add((char *)s); }
+  int add(char *s, int b) { return add((char *)s, b); }
 
   void clear();                   // delete all items
-  int nitems() const { return nitems_; }
-  int nchecked() const { return nchecked_; }
+  int nitems() { return nitems_; }
+  int nchecked() { return nchecked_; }
   int checked(int item) const;
   void checked(int item, int b);
   void set_checked(int item) { checked(item, 1); }
@@ -95,16 +94,16 @@ class FL_EXPORT Fl_Check_Browser : public Fl_Browser_ {
   int handle(int);
 };
 
-#endif // Fl_Check_Browser_H
+} // Fl_Check_Browser_H
 
 //
-// End of "$Id: Fl_Check_Browser.H 5006 2006-04-20 03:53:41Z matt $".
+// End of "$Id: check_browser.d 5006 2006-04-20 03:53:41Z matt $".
 //
 
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Check_Browser.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: check_browser.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_Check_Browser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -132,14 +131,14 @@ class FL_EXPORT Fl_Check_Browser : public Fl_Browser_ {
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
-#include <FL/fl_draw.H>
-#include <FL/Fl_Check_Browser.H>
+private import fl.flstring;
+private import fl.draw;
+private import fl.check_browser;
 
 /* This uses a cache for faster access when you're scanning the list
 either forwards or backwards. */
 
-Fl_Check_Browser::cb_item *Fl_Check_Browser::find_item(int n) const {
+Fl_Check_Browser.cb_item *Fl_Check_Browser.find_item(int n) {
 	int i = n;
 	cb_item *p = first;
 
@@ -151,26 +150,26 @@ Fl_Check_Browser::cb_item *Fl_Check_Browser::find_item(int n) const {
 		p = cache;
 		n = 1;
 	} else if (n == cached_item + 1) {
-		p = cache->next;
+		p = cache.next;
 		n = 1;
 	} else if (n == cached_item - 1) {
-		p = cache->prev;
+		p = cache.prev;
 		n = 1;
 	}
 
 	while (--n) {
-		p = p->next;
+		p = p.next;
 	}
 
-	/* Cast to not const and cache it. */
+	/* Cast to not and cache it. */
 
-	((Fl_Check_Browser *)this)->cache = p;
-	((Fl_Check_Browser *)this)->cached_item = i;
+	((Fl_Check_Browser  )this)->cache = p;
+	((Fl_Check_Browser  )this)->cached_item = i;
 
 	return p;
 }
 
-int Fl_Check_Browser::lineno(cb_item *p0) const {
+int Fl_Check_Browser.lineno(cb_item *p0) {
 	cb_item *p = first;
 
 	if (p == 0) {
@@ -183,13 +182,13 @@ int Fl_Check_Browser::lineno(cb_item *p0) const {
 			return i;
 		}
 		i++;
-		p = p->next;
+		p = p.next;
 	}
 
 	return 0;
 }
 
-Fl_Check_Browser::Fl_Check_Browser(int X, int Y, int W, int H, const char *l)
+Fl_Check_Browser.Fl_Check_Browser(int X, int Y, int W, int H, char *l)
 	: Fl_Browser_(X, Y, W, H, l) {
 	type(FL_SELECT_BROWSER);
 	when(FL_WHEN_NEVER);
@@ -198,32 +197,32 @@ Fl_Check_Browser::Fl_Check_Browser(int X, int Y, int W, int H, const char *l)
 	cached_item = -1;
 }
 
-void *Fl_Check_Browser::item_first() const {
+void *Fl_Check_Browser.item_first() {
 	return first;
 }
 
-void *Fl_Check_Browser::item_next(void *l) const {
+void *Fl_Check_Browser.item_next(void *l) {
 	return ((cb_item *)l)->next;
 }
 
-void *Fl_Check_Browser::item_prev(void *l) const {
+void *Fl_Check_Browser.item_prev(void *l) {
 	return ((cb_item *)l)->prev;
 }
 
-int Fl_Check_Browser::item_height(void *) const {
+int Fl_Check_Browser.item_height(void *) {
 	return textsize() + 2;
 }
 
-#define CHECK_SIZE (textsize()-2)
+const int CHECK_SIZE = (textsize()-2); 
 
-int Fl_Check_Browser::item_width(void *v) const {
+int Fl_Check_Browser.item_width(void *v) {
 	fl_font(textfont(), textsize());
 	return int(fl_width(((cb_item *)v)->text)) + CHECK_SIZE + 8;
 }
 
-void Fl_Check_Browser::item_draw(void *v, int X, int Y, int, int) const {
+void Fl_Check_Browser.item_draw(void *v, int X, int Y, int, int) {
 	cb_item *i = (cb_item *)v;
-	char *s = i->text;
+	char *s = i.text;
 	int tsize = textsize();
 	Fl_Color col = active_r() ? textcolor() : fl_inactive(textcolor());
 	int cy = Y + (tsize + 1 - CHECK_SIZE) / 2;
@@ -232,7 +231,7 @@ void Fl_Check_Browser::item_draw(void *v, int X, int Y, int, int) const {
 	fl_color(active_r() ? FL_FOREGROUND_COLOR : fl_inactive(FL_FOREGROUND_COLOR));
 	fl_loop(X, cy, X, cy + CHECK_SIZE,
 	        X + CHECK_SIZE, cy + CHECK_SIZE, X + CHECK_SIZE, cy);
-	if (i->checked) {
+	if (i.checked) {
 	  int tx = X + 3;
 	  int tw = CHECK_SIZE - 4;
 	  int d1 = tw/3;
@@ -244,43 +243,43 @@ void Fl_Check_Browser::item_draw(void *v, int X, int Y, int, int) const {
 	  }
 	}
 	fl_font(textfont(), tsize);
-	if (i->selected) {
+	if (i.selected) {
 		col = fl_contrast(col, selection_color());
 	}
 	fl_color(col);
 	fl_draw(s, X + CHECK_SIZE + 8, Y + tsize - 1);
 }
 
-void Fl_Check_Browser::item_select(void *v, int state) {
+void Fl_Check_Browser.item_select(void *v, int state) {
 	cb_item *i = (cb_item *)v;
 
 	if (state) {
-		if (i->checked) {
-			i->checked = 0;
+		if (i.checked) {
+			i.checked = 0;
 			nchecked_--;
 		} else {
-			i->checked = 1;
+			i.checked = 1;
 			nchecked_++;
 		}
 	}
 }
 
-int Fl_Check_Browser::item_selected(void *v) const {
+int Fl_Check_Browser.item_selected(void *v) {
 	cb_item *i = (cb_item *)v;
-	return i->selected;
+	return i.selected;
 }
 
-int Fl_Check_Browser::add(char *s) {
+int Fl_Check_Browser.add(char *s) {
 	return (add(s, 0));
 }
 
-int Fl_Check_Browser::add(char *s, int b) {
+int Fl_Check_Browser.add(char *s, int b) {
 	cb_item *p = (cb_item *)malloc(sizeof(cb_item));
-	p->next = 0;
-	p->prev = 0;
-	p->checked = b;
-	p->selected = 0;
-	p->text = strdup(s);
+	p.next = 0;
+	p.prev = 0;
+	p.checked = b;
+	p.selected = 0;
+	p.text = strdup(s);
 
 	if (b) {
 		nchecked_++;
@@ -289,8 +288,8 @@ int Fl_Check_Browser::add(char *s, int b) {
 	if (last == 0) {
 		first = last = p;
 	} else {
-		last->next = p;
-		p->prev = last;
+		last.next = p;
+		p.prev = last;
 		last = p;
 	}
 	nitems_++;
@@ -298,7 +297,7 @@ int Fl_Check_Browser::add(char *s, int b) {
 	return (nitems_);
 }
 
-void Fl_Check_Browser::clear() {
+void Fl_Check_Browser.clear() {
 	cb_item *p = first;
 	cb_item *next;
 
@@ -308,8 +307,8 @@ void Fl_Check_Browser::clear() {
 
 	new_list();
 	do {
-		next = p->next;
-		free(p->text);
+		next = p.next;
+		free(p.text);
 		free(p);
 		p = next;
 	} while (p);
@@ -319,18 +318,18 @@ void Fl_Check_Browser::clear() {
 	cached_item = -1;
 }
 
-int Fl_Check_Browser::checked(int i) const {
+int Fl_Check_Browser.checked(int i) {
 	cb_item *p = find_item(i);
 
-	if (p) return p->checked;
+	if (p) return p.checked;
 	return 0;
 }
 
-void Fl_Check_Browser::checked(int i, int b) {
+void Fl_Check_Browser.checked(int i, int b) {
 	cb_item *p = find_item(i);
 
-	if (p && (p->checked ^ b)) {
-		p->checked = b;
+	if (p && (p.checked ^ b)) {
+		p.checked = b;
 		if (b) {
 			nchecked_++;
 		} else {
@@ -340,44 +339,44 @@ void Fl_Check_Browser::checked(int i, int b) {
 	}
 }
 
-int Fl_Check_Browser::value() const {
+int Fl_Check_Browser.value() {
 	return lineno((cb_item *)selection());
 }
 
-char *Fl_Check_Browser::text(int i) const {
+char *Fl_Check_Browser.text(int i) {
 	cb_item *p = find_item(i);
 
-	if (p) return p->text;
+	if (p) return p.text;
 	return 0;
 }
 
-void Fl_Check_Browser::check_all() {
+void Fl_Check_Browser.check_all() {
 	cb_item *p;
 
 	nchecked_ = nitems_;
-	for (p = first; p; p = p->next) {
-		p->checked = 1;
+	for (p = first; p; p = p.next) {
+		p.checked = 1;
 	}
 	redraw();
 }
 
-void Fl_Check_Browser::check_none() {
+void Fl_Check_Browser.check_none() {
 	cb_item *p;
 
 	nchecked_ = 0;
-	for (p = first; p; p = p->next) {
-		p->checked = 0;
+	for (p = first; p; p = p.next) {
+		p.checked = 0;
 	}
 	redraw();
 }
 
-int Fl_Check_Browser::handle(int event) {
+int Fl_Check_Browser.handle(int event) {
   if (event==FL_PUSH)
     deselect();
-  return Fl_Browser_::handle(event);
+  return Fl_Browser_.handle(event);
 }
 
 //
-// End of "$Id: Fl_Check_Browser.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: check_browser.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

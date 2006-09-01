@@ -28,37 +28,31 @@
 module fl.box;
 
 public import fl.widget;
+private import fl.enumerations;
 
 
 class Fl_Box : Fl_Widget {
-
 protected:
-
   void draw() {
     draw_box();
     draw_label();
   }
 
 public:
-
-  this(int X, int Y, int W, int H, char[] l=null) {
-    super(X, Y, W, H, l);
+  this(int X, int Y, int W, int H, char *l=null) {
+    super(X,Y,W,H,l);
   }
 
-  this(Fl_Boxtype b, int X, int Y, int W, int H, char[] l) {
-    super(X, Y, W, H, l);
-    box( b );
-  };
-
-  int handle(Fl_Event event) {
-    if (event == FL_ENTER || event == FL_LEAVE) 
-      return 1;
-    else 
-      return 0;
+  this(Fl_Boxtype b, int X, int Y, int W, int H, char *l) {
+    super(X,Y,W,H,l);
+    box(b);
   }
 
+  int handle(int event) {
+    if (event == FL_ENTER || event == FL_LEAVE) return 1;
+    else return 0;
+  }
 }
-
 
 //
 // End of "$Id: box.d 4288 2005-04-16 00:13:17Z mike $".

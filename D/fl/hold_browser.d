@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Hold_Browser.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: hold_browser.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Hold browser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Hold_Browser_H
-#define Fl_Hold_Browser_H
+module fl.hold_browser;
 
-#include "Fl_Browser.H"
 
-class Fl_Hold_Browser : public Fl_Browser {
+public import fl.browser;
+
+class Fl_Hold_Browser : Fl_Browser {
 public:
-    Fl_Hold_Browser(int X,int Y,int W,int H,const char *l=0)
+    Fl_Hold_Browser(int X,int Y,int W,int H,char *l=0)
 	: Fl_Browser(X,Y,W,H,l) {type(FL_HOLD_BROWSER);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Hold_Browser.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: hold_browser.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

@@ -35,8 +35,8 @@
 // 'fl_read_image()' - Read an image from the current window.
 //
 
-uchar *				// O - Pixel buffer or NULL if failed
-fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
+ubyte *				// O - Pixel buffer or NULL if failed
+fl_read_image(ubyte *p,		// I - Pixel buffer or NULL to allocate
               int   x,		// I - Left position
 	      int   y,		// I - Top position
 	      int   w,		// I - Width of area to read
@@ -48,7 +48,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
   GrafPtr	srcPort;	// Source port
   RGBColor	rgb;		// RGB colors for copy mask...
   PixMapHandle	pm;		// Pixmap handle for off-screen buffer
-  uchar		*base,		// Base address of off-screen buffer
+  ubyte		*base,		// Base address of off-screen buffer
 		*psrc,		// Pointer into off-screen buffer
 		*pdst;		// Pointer into pixel buffer
   int           idx, idy;	// Current X & Y in image
@@ -93,7 +93,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
   // Allocate the image data array as needed...
   d = alpha ? 4 : 3;
 
-  if (!p) p = new uchar[w * h * d];
+  if (!p) p = new ubyte[w * h * d];
 
   // Initialize the default colors/alpha in the whole image...
   memset(p, alpha, w * h * d);
@@ -104,7 +104,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
   pm = GetGWorldPixMap(osbuffer);
   LockPixels(pm);
 
-  base     = (uchar *)GetPixBaseAddr(pm);
+  base     = (ubyte *)GetPixBaseAddr(pm);
   rowBytes = (*pm)->rowBytes & 0x3fff;
 
   // Copy the image from the off-screen buffer to the memory buffer.

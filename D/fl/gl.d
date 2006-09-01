@@ -33,55 +33,55 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef FL_gl_H
+version (!FL_gl_H) {
 #  define FL_gl_H
 
-#  include "Enumerations.H" // for color names
-#  ifdef WIN32
+public import fl.enumerations; // for color names
+version (WIN32) {
 #    include <windows.h>
-#  endif
-#  ifndef APIENTRY
-#    if defined(__CYGWIN__)
-#      define APIENTRY __attribute__ ((__stdcall__))
-#    else
+}
+version (!APIENTRY) {
+version (__CYGWIN__) {
+const int APIENTRY = __attribute__ ((__stdcall__)); 
+} else {
 #      define APIENTRY
-#    endif
-#  endif
+}
+}
 
-#  ifdef __APPLE__
+version (__APPLE__) {
 #    include <OpenGL/gl.h>
-#  else
+} else {
 #    include <GL/gl.h>
-#  endif
+}
 
-FL_EXPORT void gl_start();
-FL_EXPORT void gl_finish();
+void gl_start();
+void gl_finish();
 
-FL_EXPORT void gl_color(Fl_Color);
-inline void gl_color(int c) {gl_color((Fl_Color)c);} // back compatability
+void gl_color(Fl_Color);
+void gl_color(int c) {gl_color((Fl_Color)c);} // back compatability
 
-FL_EXPORT void gl_rect(int x,int y,int w,int h);
-inline void gl_rectf(int x,int y,int w,int h) {glRecti(x,y,x+w,y+h);}
+void gl_rect(int x,int y,int w,int h);
+void gl_rectf(int x,int y,int w,int h) {glRecti(x,y,x+w,y+h);}
 
-FL_EXPORT void gl_font(int fontid, int size);
-FL_EXPORT int  gl_height();
-FL_EXPORT int  gl_descent();
-FL_EXPORT double gl_width(const char *);
-FL_EXPORT double gl_width(const char *, int n);
-FL_EXPORT double gl_width(uchar);
+void gl_font(int fontid, int size);
+int  gl_height();
+int  gl_descent();
+double gl_width(char *);
+double gl_width(char *, int n);
+double gl_width(ubyte);
 
-FL_EXPORT void gl_draw(const char*);
-FL_EXPORT void gl_draw(const char*, int n);
-FL_EXPORT void gl_draw(const char*, int x, int y);
-FL_EXPORT void gl_draw(const char*, float x, float y);
-FL_EXPORT void gl_draw(const char*, int n, int x, int y);
-FL_EXPORT void gl_draw(const char*, int n, float x, float y);
-FL_EXPORT void gl_draw(const char*, int x, int y, int w, int h, Fl_Align);
-FL_EXPORT void gl_measure(const char*, int& x, int& y);
+void gl_draw(char*);
+void gl_draw(char*, int n);
+void gl_draw(char*, int x, int y);
+void gl_draw(char*, float x, float y);
+void gl_draw(char*, int n, int x, int y);
+void gl_draw(char*, int n, float x, float y);
+void gl_draw(char*, int x, int y, int w, int h, Fl_Align);
+void gl_measure(char*, int& x, int& y);
 
-FL_EXPORT void gl_draw_image(const uchar *, int x,int y,int w,int h, int d=3, int ld=0);
+void gl_draw_image(ubyte *, int x,int y,int w,int h, int d=3, int ld=0);
 
-#endif // !FL_gl_H
+} // !FL_gl_H
 
 //
 // End of "$Id: gl.h 4288 2005-04-16 00:13:17Z mike $".

@@ -1,5 +1,5 @@
 //
-// "$Id: color_mac.d 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: fl_color_mac.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
 // MacOS color functions for the Fast Light Tool Kit (FLTK).
 //
@@ -35,13 +35,32 @@
 
 module fl.color_mac;
 
-public import fl.fl;
-public import fl.x;
-public import fl.draw;
+public import fl.enumerations;
+public import fl.color;
 
-private import std.c.osx.carbon.carbon;
+private import fl.x;
+
+/+=
+#include <config.h>
+#include <FL/Fl.H>
+#include <FL/x.H>
+private import fl.draw;
+
+static uint fl_cmap[256] = {
+private import fl.cmap; // this is a file produced by "cmap.cxx":
+};
+
+// Translations to mac data structures:
+Fl_XMap fl_xmap[256];
+
+Fl_XMap  fl_current_xmap;
+=+/
 
 Fl_Color fl_color_;
+
+Fl_Color fl_color() {
+  return fl_color_;
+}
 
 void fl_color(Fl_Color i) {
   fl_color_ = i;
@@ -55,28 +74,48 @@ void fl_color(Fl_Color i) {
   } else {
     // translate index into rgb:
     index = i;
-    Fl_Color c = fl_cmap[i];
+    uint c = fl_cmap[i];
     r = c>>24;
     g = c>>16;
     b = c>> 8;
   }
-  if (!fl_gc) return; // no context yet? We will assign the color later.
-  float fr = r/255.0f;
-  float fg = g/255.0f;
-  float fb = b/255.0f;
-  CGContextSetRGBFillColor(fl_gc, fr, fg, fb, 1.0f);
-  CGContextSetRGBStrokeColor(fl_gc, fr, fg, fb, 1.0f);
+  version (__APPLE__) {
+    if (!fl_gc) return; // no context yet? We will assign the color later.
+    float fr = r/255.0f;
+    float fg = g/255.0f;
+    float fb = b/255.0f;
+    CGContextSetRGBFillColor(fl_gc, fr, fg, fb, 1.0f);
+    CGContextSetRGBStrokeColor(fl_gc, fr, fg, fb, 1.0f);
+  }
 }
 
+/+=
 void fl_color(ubyte r, ubyte g, ubyte b) {
   fl_color_ = fl_rgb_color(r, g, b);
+version (__APPLE_QD__) {
+  RGBColor rgb; 
+  rgb.red   = (r<<8)|r;
+  rgb.green = (g<<8)|g;
+  rgb.blue  = (b<<8)|b;
+  RGBForeColor(&rgb);
+} else version (__APPLE_QUARTZ__) {
   float fr = r/255.0f;
   float fg = g/255.0f;
   float fb = b/255.0f;
   CGContextSetRGBFillColor(fl_gc, fr, fg, fb, 1.0f);
   CGContextSetRGBStrokeColor(fl_gc, fr, fg, fb, 1.0f);
+} else {
+#  error : neither Quickdraw nor Quartz defined
+}
+}
+
+void Fl.set_color(Fl_Color i, uint c) {
+  if (fl_cmap[i] != c) {
+    fl_cmap[i] = c;
+  }
 }
 
 //
-// End of "$Id: color_mac.d 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: fl_color_mac.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
+    End of automatic import -+/

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Value_Output.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: value_output.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Value output header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,41 +26,41 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Value_Output_H
-#define Fl_Value_Output_H
+module fl.value_output;
 
-#ifndef Fl_Valuator_H
-#include "Fl_Valuator.H"
-#endif
 
-class FL_EXPORT Fl_Value_Output : public Fl_Valuator {
-  uchar textfont_, textsize_, soft_;
-  unsigned textcolor_;
+module fl.valuator;
+public import fl.valuator;
+}
+
+class Fl_Value_Output : Fl_Valuator {
+  ubyte textfont_, textsize_, soft_;
+  uint textcolor_;
 public:
   int handle(int);
   void draw();
-  Fl_Value_Output(int x,int y,int w,int h,const char *l=0);
+  Fl_Value_Output(int x,int y,int w,int h,char *l=0);
 
-  void soft(uchar s) {soft_ = s;}
-  uchar soft() const {return soft_;}
+  void soft(ubyte s) {soft_ = s;}
+  ubyte soft() {return soft_;}
 
-  Fl_Font textfont() const {return (Fl_Font)textfont_;}
-  void textfont(uchar s) {textfont_ = s;}
-  uchar textsize() const {return textsize_;}
-  void textsize(uchar s) {textsize_ = s;}
-  Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-  void textcolor(unsigned s) {textcolor_ = s;}
+  Fl_Font textfont() {return (Fl_Font)textfont_;}
+  void textfont(ubyte s) {textfont_ = s;}
+  ubyte textsize() {return textsize_;}
+  void textsize(ubyte s) {textsize_ = s;}
+  Fl_Color textcolor() {return (Fl_Color)textcolor_;}
+  void textcolor(uint s) {textcolor_ = s;}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Value_Output.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: value_output.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Value_Output.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: value_output.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Value output widget for the Fast Light Tool Kit (FLTK).
 //
@@ -91,15 +91,15 @@ public:
 // If step() is zero then it can be used to display a floating-point value
 
 #include <FL/Fl.H>
-#include <FL/Fl_Value_Output.H>
-#include <FL/fl_draw.H>
+private import fl.value_output;
+private import fl.draw;
 
-void Fl_Value_Output::draw() {
+void Fl_Value_Output.draw() {
   Fl_Boxtype b = box() ? box() : FL_DOWN_BOX;
-  int X = x()+Fl::box_dx(b);
-  int Y = y()+Fl::box_dy(b);
-  int W = w()-Fl::box_dw(b);
-  int H = h()-Fl::box_dh(b);
+  int X = x()+Fl.box_dx(b);
+  int Y = y()+Fl.box_dy(b);
+  int W = w()-Fl.box_dw(b);
+  int H = h()-Fl.box_dh(b);
   if (damage()&~FL_DAMAGE_CHILD)
     draw_box(b, color());
   else {
@@ -113,20 +113,20 @@ void Fl_Value_Output::draw() {
   fl_draw(buf,X,Y,W,H,FL_ALIGN_LEFT);
 }
 
-int Fl_Value_Output::handle(int event) {
+int Fl_Value_Output.handle(int event) {
   if (!step()) return 0;
   double v;
   int delta;
-  int mx = Fl::event_x();
+  int mx = Fl.event_x();
   static int ix, drag;
   switch (event) {
   case FL_PUSH:
     ix = mx;
-    drag = Fl::event_button();
+    drag = Fl.event_button();
     handle_push();
     return 1;
   case FL_DRAG:
-    delta = Fl::event_x()-ix;
+    delta = Fl.event_x()-ix;
     if (delta > 5) delta -= 5;
     else if (delta < -5) delta += 5;
     else delta = 0;
@@ -149,17 +149,17 @@ int Fl_Value_Output::handle(int event) {
   }
 }
 
-Fl_Value_Output::Fl_Value_Output(int X, int Y, int W, int H,const char *l)
+Fl_Value_Output.Fl_Value_Output(int X, int Y, int W, int H,char *l)
 : Fl_Valuator(X,Y,W,H,l) {
   box(FL_NO_BOX);
-  align(FL_ALIGN_LEFT);
+  alignment(FL_ALIGN_LEFT);
   textfont_ = FL_HELVETICA;
-  textsize_ = (uchar)FL_NORMAL_SIZE;
+  textsize_ = (ubyte)FL_NORMAL_SIZE;
   textcolor_ = FL_FOREGROUND_COLOR;
   soft_ = 0;
 }
 
 //
-// End of "$Id: Fl_Value_Output.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: value_output.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_get_key_win32.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: get_key_win32.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // WIN32 keyboard state routines for the Fast Light Tool Kit (FLTK).
 //
@@ -37,7 +37,7 @@
 // See also the inverse converter in Fl_win32.cxx
 // This table is in numeric order by Fltk symbol order for binary search:
 
-static const struct {unsigned short vk, fltk;} vktab[] = {
+static struct {ushort vk, fltk;} vktab[] = {
   {VK_SPACE,	' '},
   {'1',		'!'},
   {0xde,	'\"'},
@@ -124,17 +124,17 @@ static int fltk2ms(int fltk) {
   return 0;
 }
 
-int Fl::event_key(int k) {
+int Fl.event_key(int k) {
   return GetKeyState(fltk2ms(k))&~1;
 }
 
-int Fl::get_key(int k) {
-  uchar foo[256];
+int Fl.get_key(int k) {
+  ubyte foo[256];
   GetKeyboardState(foo);
   return foo[fltk2ms(k)]&~1;
 }
 
 //
-// End of "$Id: Fl_get_key_win32.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: get_key_win32.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

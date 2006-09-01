@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_draw_image_win32.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -28,7 +27,7 @@
 
 // I hope a simple and portable method of drawing color and monochrome
 // images.  To keep this simple, only a single storage type is
-// supported: 8 bit unsigned data, byte order RGB, and pixels are
+// supported: 8 bit uint data, byte order RGB, and pixels are
 // stored packed into rows with the origin at the top-left.  It is
 // possible to alter the size of pixels with the "delta" argument, to
 // add alpha or other information per pixel.  It is also possible to
@@ -45,17 +44,20 @@
 
 ////////////////////////////////////////////////////////////////
 
+module fl.draw_image_win32;
+
+/+=
 #include <config.h>
 #include <FL/Fl.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <FL/x.H>
 
-#define MAXBUFFER 0x40000 // 256k
+const int MAXBUFFER = 0x40000;  // 256k
 
 #if USE_COLORMAP
 
 // error-diffusion dither into the FLTK colormap
-static void dither(uchar* to, const uchar* from, int w, int delta) {
+static void dither(ubyte* to, ubyte* from, int w, int delta) {
   static int ri, gi, bi, dir;
   int r=ri, g=gi, b=bi;
   int d, td;
@@ -80,13 +82,13 @@ static void dither(uchar* to, const uchar* from, int w, int delta) {
     b += from[2]; if (b < 0) b = 0; else if (b>255) b = 255;
     int bb = b*FL_NUM_BLUE/256;
     b -= bb*255/(FL_NUM_BLUE-1);
-    *to = uchar(FL_COLOR_CUBE+(bb*FL_NUM_RED+rr)*FL_NUM_GREEN+gg);
+    *to = ubyte(FL_COLOR_CUBE+(bb*FL_NUM_RED+rr)*FL_NUM_GREEN+gg);
   }
   ri = r; gi = g; bi = b;
 }
 
 // error-diffusion dither into the FLTK colormap
-static void monodither(uchar* to, const uchar* from, int w, int delta) {
+static void monodither(ubyte* to, ubyte* from, int w, int delta) {
   static int ri,dir;
   int r=ri;
   int d, td;
@@ -105,20 +107,20 @@ static void monodither(uchar* to, const uchar* from, int w, int delta) {
     r += *from; if (r < 0) r = 0; else if (r>255) r = 255;
     int rr = r*FL_NUM_GRAY/256;
     r -= rr*255/(FL_NUM_GRAY-1);
-    *to = uchar(FL_GRAY_RAMP+rr);
+    *to = ubyte(FL_GRAY_RAMP+rr);
   }
   ri = r;
 }
 
-#endif // USE_COLORMAP
+} // USE_COLORMAP
 
-static void innards(const uchar *buf, int X, int Y, int W, int H,
+static void innards(ubyte *buf, int X, int Y, int W, int H,
 		    int delta, int linedelta, int mono,
 		    Fl_Draw_Image_Cb cb, void* userdata)
 {
 #if USE_COLORMAP
   char indexed = (fl_palette != 0);
-#endif
+}
 
   if (!linedelta) linedelta = W*delta;
 
@@ -144,23 +146,23 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
       *((short*)(bmi.bmiColors)+i) = i;
     }
   } else
-#endif
+}
   if (mono) {
     for (int i=0; i<256; i++) {
-      bmi.bmiColors[i].rgbBlue = (uchar)i;
-      bmi.bmiColors[i].rgbGreen = (uchar)i;
-      bmi.bmiColors[i].rgbRed = (uchar)i;
-      bmi.bmiColors[i].rgbReserved = (uchar)i;
+      bmi.bmiColors[i].rgbBlue = (ubyte)i;
+      bmi.bmiColors[i].rgbGreen = (ubyte)i;
+      bmi.bmiColors[i].rgbRed = (ubyte)i;
+      bmi.bmiColors[i].rgbReserved = (ubyte)i;
     }
   }
   bmi.bmiHeader.biWidth = w;
 #if USE_COLORMAP
   bmi.bmiHeader.biBitCount = mono|indexed ? 8 : 24;
   int pixelsize = mono|indexed ? 1 : 3;
-#else
+} else {
   bmi.bmiHeader.biBitCount = mono ? 8 : 24;
   int pixelsize = mono ? 1 : 3;
-#endif
+}
   int linesize = (pixelsize*w+3)&~3;
   
   static U32* buffer;
@@ -170,7 +172,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
     size = MAXBUFFER;
     blocking = MAXBUFFER/linesize;
   }
-  static long buffer_size;
+  static int buffer_size;
   if (size > buffer_size) {
     delete[] buffer;
     buffer_size = size;
@@ -190,15 +192,15 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   for (int j=0; j<h; ) {
     int k;
     for (k = 0; j<h && k<blocking; k++, j++) {
-      const uchar* from;
+      ubyte* from;
       if (!buf) { // run the converter:
-	cb(userdata, x-X, y-Y+j, w, (uchar*)line_buffer);
-	from = (uchar*)line_buffer;
+	cb(userdata, x-X, y-Y+j, w, (ubyte*)line_buffer);
+	from = (ubyte*)line_buffer;
       } else {
 	from = buf;
 	buf += linedelta;
       }
-      uchar *to = (uchar*)buffer+(blocking-k-1)*linesize;
+      ubyte *to = (ubyte*)buffer+(blocking-k-1)*linesize;
 #if USE_COLORMAP
       if (indexed) {
 	if (mono)
@@ -207,12 +209,12 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
 	  dither(to, from, w, delta);
 	to += w;
       } else
-#endif
+}
       if (mono) {
 	for (int i=w; i--; from += delta) *to++ = *from;
       } else {
 	for (int i=w; i--; from += delta, to += 3) {
-	  uchar r = from[0];
+	  ubyte r = from[0];
 	  to[0] = from[2];
 	  to[1] = from[1];
 	  to[2] = r;
@@ -220,25 +222,25 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
       }
     }
     SetDIBitsToDevice(fl_gc, x, y+j-k, w, k, 0, 0, 0, k,
-		      (LPSTR)((uchar*)buffer+(blocking-k)*linesize),
+		      (LPSTR)((ubyte*)buffer+(blocking-k)*linesize),
 		      &bmi,
 #if USE_COLORMAP
 		      indexed ? DIB_PAL_COLORS : DIB_RGB_COLORS
-#else
+} else {
 		      DIB_RGB_COLORS
-#endif
+}
 		      );
   }
 }
 
-void fl_draw_image(const uchar* buf, int x, int y, int w, int h, int d, int l){
+void fl_draw_image(ubyte* buf, int x, int y, int w, int h, int d, int l){
   innards(buf,x,y,w,h,d,l,(d<3&&d>-3),0,0);
 }
 void fl_draw_image(Fl_Draw_Image_Cb cb, void* data,
 		   int x, int y, int w, int h,int d) {
   innards(0,x,y,w,h,d,0,(d<3&&d>-3),cb,data);
 }
-void fl_draw_image_mono(const uchar* buf, int x, int y, int w, int h, int d, int l){
+void fl_draw_image_mono(ubyte* buf, int x, int y, int w, int h, int d, int l){
   innards(buf,x,y,w,h,d,l,1,0,0);
 }
 void fl_draw_image_mono(Fl_Draw_Image_Cb cb, void* data,
@@ -246,16 +248,16 @@ void fl_draw_image_mono(Fl_Draw_Image_Cb cb, void* data,
   innards(0,x,y,w,h,d,0,1,cb,data);
 }
 
-void fl_rectf(int x, int y, int w, int h, uchar r, uchar g, uchar b) {
+void fl_rectf(int x, int y, int w, int h, ubyte r, ubyte g, ubyte b) {
 #if USE_COLORMAP
   // use the error diffusion dithering code to produce a much nicer block:
   if (fl_palette) {
-    uchar c[3];
+    ubyte c[3];
     c[0] = r; c[1] = g; c[2] = b;
     innards(c,x,y,w,h,0,0,0,0,0);
     return;
   }
-#endif
+}
   fl_color(r,g,b);
   fl_rectf(x,y,w,h);
 }

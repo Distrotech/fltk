@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: menu_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Menu button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,31 +26,31 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Menu_Button_H
-#define Fl_Menu_Button_H
+module fl.menu_button;
 
-#include "Fl_Menu_.H"
 
-class FL_EXPORT Fl_Menu_Button : public Fl_Menu_ {
+public import fl.menu_;
+
+class Fl_Menu_Button : Fl_Menu_ {
 protected:
   void draw();
 public:
   // values for type:
   enum {POPUP1 = 1, POPUP2, POPUP12, POPUP3, POPUP13, POPUP23, POPUP123};
   int handle(int);
-  const Fl_Menu_Item* popup();
-  Fl_Menu_Button(int,int,int,int,const char * =0);
+  Fl_Menu_Item* popup();
+  Fl_Menu_Button(int,int,int,int,char * =0);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Menu_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: menu_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_Button.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: menu_button.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Menu button widget for the Fast Light Tool Kit (FLTK).
 //
@@ -77,17 +77,17 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Menu_Button.H>
-#include <FL/fl_draw.H>
+private import fl.menu_button;
+private import fl.draw;
 
 
-static Fl_Menu_Button	*pressed_menu_button_ = 0;
+static Fl_Menu_Button	 pressed_menu_button_ = 0;
 
-void Fl_Menu_Button::draw() {
+void Fl_Menu_Button.draw() {
   if (!box() || type()) return;
   draw_box(pressed_menu_button_ == this ? fl_down(box()) : box(), color());
   draw_label();
-  if (Fl::focus() == this) draw_focus();
+  if (Fl.focus() == this) draw_focus();
   if (box() == FL_FLAT_BOX) return; // for XForms compatability
   int H = (labelsize()-3)&-2;
   int X = x()+w()-H*2;
@@ -98,25 +98,25 @@ void Fl_Menu_Button::draw() {
   fl_line(X+H, Y, X+H/2, Y+H);
 }
 
-const Fl_Menu_Item* Fl_Menu_Button::popup() {
-  const Fl_Menu_Item* m;
+const Fl_Menu_Item* Fl_Menu_Button.popup() {
+  Fl_Menu_Item* m;
   pressed_menu_button_ = this;
   redraw();
-  Fl_Widget *mb = this;
-  Fl::watch_widget_pointer(mb);
+  Fl_Widget  mb = this;
+  Fl.watch_widget_pointer(mb);
   if (!box() || type()) {
-    m = menu()->popup(Fl::event_x(), Fl::event_y(), label(), mvalue(), this);
+    m = menu()->popup(Fl.event_x(), Fl.event_y(), label(), mvalue(), this);
   } else {
     m = menu()->pulldown(x(), y(), w(), h(), 0, this);
   }
   picked(m);
   pressed_menu_button_ = 0;
-  if (mb) mb->redraw();
-  Fl::release_widget_pointer(mb);
+  if (mb) mb.redraw();
+  Fl.release_widget_pointer(mb);
   return m;
 }
 
-int Fl_Menu_Button::handle(int e) {
+int Fl_Menu_Button.handle(int e) {
   if (!menu() || !menu()->text) return 0;
   switch (e) {
   case FL_ENTER:
@@ -124,26 +124,26 @@ int Fl_Menu_Button::handle(int e) {
     return (box() && !type()) ? 1 : 0;
   case FL_PUSH:
     if (!box()) {
-      if (Fl::event_button() != 3) return 0;
+      if (Fl.event_button() != 3) return 0;
     } else if (type()) {
-      if (!(type() & (1 << (Fl::event_button()-1)))) return 0;
+      if (!(type() & (1 << (Fl.event_button()-1)))) return 0;
     }
-    if (Fl::visible_focus()) Fl::focus(this);
+    if (Fl.visible_focus()) Fl.focus(this);
     popup();
     return 1;
   case FL_KEYBOARD:
     if (!box()) return 0;
-    if (Fl::event_key() == ' ' &&
-        !(Fl::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
+    if (Fl.event_key() == ' ' &&
+        !(Fl.event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
       popup();
       return 1;
     } else return 0;
   case FL_SHORTCUT:
-    if (Fl_Widget::test_shortcut()) {popup(); return 1;}
+    if (Fl_Widget.test_shortcut()) {popup(); return 1;}
     return test_shortcut() != 0;
   case FL_FOCUS:
   case FL_UNFOCUS:
-    if (box() && Fl::visible_focus()) {
+    if (box() && Fl.visible_focus()) {
       redraw();
       return 1;
     }
@@ -152,12 +152,12 @@ int Fl_Menu_Button::handle(int e) {
   }
 }
 
-Fl_Menu_Button::Fl_Menu_Button(int X,int Y,int W,int H,const char *l)
+Fl_Menu_Button.Fl_Menu_Button(int X,int Y,int W,int H,char *l)
 : Fl_Menu_(X,Y,W,H,l) {
   down_box(FL_NO_BOX);
 }
 
 //
-// End of "$Id: Fl_Menu_Button.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: menu_button.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

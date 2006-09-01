@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_dnd_win32.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -27,27 +26,30 @@
 // in.  Search other files for "WIN32" or filenames ending in _win32.cxx
 // for other system-specific code.
 
+module fl.dnd_win32;
+
+/+=
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/Fl_Window.H>
-#include "flstring.h"
+private import fl.window;
+private import fl.flstring;
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <time.h>
-#if defined(__CYGWIN__)
+version (__CYGWIN__) {
 #include <sys/time.h>
 #include <unistd.h>
-#else
+} else {
 #include <winsock.h>
-#endif
+}
 
 extern char *fl_selection_buffer[2];
 extern int fl_selection_length[2];
 extern int fl_selection_buffer_length[2];
 extern char fl_i_own_selection[2];
 
-Fl_Window *fl_dnd_target_window = 0;
+Fl_Window  fl_dnd_target_window = 0;
 
 // All of the following code requires GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
@@ -58,7 +60,7 @@ Fl_Window *fl_dnd_target_window = 0;
 /**
  * subclass the IDropTarget to receive data from DnD operations
  */
-class FLDropTarget : public IDropTarget
+class FLDropTarget : IDropTarget
 {
   DWORD m_cRefCount;
   DWORD lastEffect;
@@ -77,7 +79,7 @@ public:
   }
   ULONG STDMETHODCALLTYPE AddRef() { return ++m_cRefCount; }
   ULONG STDMETHODCALLTYPE Release() {
-    long nTemp;
+    int nTemp;
     nTemp = --m_cRefCount;
     if(nTemp==0)
       delete this;
@@ -88,19 +90,19 @@ public:
     // set e_modifiers here from grfKeyState, set e_x and e_root_x
     // check if FLTK handles this drag and return if it can't (i.e. BMP drag without filename)
     POINT ppt; 
-    Fl::e_x_root = ppt.x = pt.x; 
-    Fl::e_y_root = ppt.y = pt.y;
+    Fl.e_x_root = ppt.x = pt.x; 
+    Fl.e_y_root = ppt.y = pt.y;
     HWND hWnd = WindowFromPoint( ppt );
-    Fl_Window *target = fl_find( hWnd );
+    Fl_Window  target = fl_find( hWnd );
     if (target) {
-      Fl::e_x = Fl::e_x_root-target->x();
-      Fl::e_y = Fl::e_y_root-target->y();
+      Fl.e_x = Fl.e_x_root-target.x();
+      Fl.e_y = Fl.e_y_root-target.y();
     }
     fl_dnd_target_window = target;
     px = pt.x; py = pt.y;
     if (fillCurrentDragData(pDataObj)) {
       // FLTK has no mechanism yet for the different drop effects, so we allow move and copy
-      if ( target && Fl::handle( FL_DND_ENTER, target ) )
+      if ( target && Fl.handle( FL_DND_ENTER, target ) )
         *pdwEffect = DROPEFFECT_MOVE|DROPEFFECT_COPY; //|DROPEFFECT_LINK;
       else
         *pdwEffect = DROPEFFECT_NONE;
@@ -122,15 +124,15 @@ public:
       return S_OK;
     }
     // set e_modifiers here from grfKeyState, set e_x and e_root_x
-    Fl::e_x_root = pt.x; 
-    Fl::e_y_root = pt.y;
+    Fl.e_x_root = pt.x; 
+    Fl.e_y_root = pt.y;
     if (fl_dnd_target_window) {
-      Fl::e_x = Fl::e_x_root-fl_dnd_target_window->x();
-      Fl::e_y = Fl::e_y_root-fl_dnd_target_window->y();
+      Fl.e_x = Fl.e_x_root-fl_dnd_target_window.x();
+      Fl.e_y = Fl.e_y_root-fl_dnd_target_window.y();
     }
     if (fillCurrentDragData(0)) {
       // Fl_Group will change DND_DRAG into DND_ENTER and DND_LEAVE if needed
-      if ( Fl::handle( FL_DND_DRAG, fl_dnd_target_window ) )
+      if ( Fl.handle( FL_DND_DRAG, fl_dnd_target_window ) )
         *pdwEffect = DROPEFFECT_MOVE|DROPEFFECT_COPY; //|DROPEFFECT_LINK;
       else 
         *pdwEffect = DROPEFFECT_NONE;
@@ -144,7 +146,7 @@ public:
   HRESULT STDMETHODCALLTYPE DragLeave() {
     if ( fl_dnd_target_window && fillCurrentDragData(0))
     {
-      Fl::handle( FL_DND_LEAVE, fl_dnd_target_window );
+      Fl.handle( FL_DND_LEAVE, fl_dnd_target_window );
       fl_dnd_target_window = 0;
       clearCurrentDragData();
     }
@@ -153,25 +155,25 @@ public:
   HRESULT STDMETHODCALLTYPE Drop( IDataObject *data, DWORD /*grfKeyState*/, POINTL pt, DWORD* /*pdwEffect*/) {
     if ( !fl_dnd_target_window )
       return S_OK;
-    Fl_Window *target = fl_dnd_target_window;
+    Fl_Window  target = fl_dnd_target_window;
     fl_dnd_target_window = 0;
-    Fl::e_x_root = pt.x; 
-    Fl::e_y_root = pt.y;
+    Fl.e_x_root = pt.x; 
+    Fl.e_y_root = pt.y;
     if (target) {
-      Fl::e_x = Fl::e_x_root-target->x();
-      Fl::e_y = Fl::e_y_root-target->y();
+      Fl.e_x = Fl.e_x_root-target.x();
+      Fl.e_y = Fl.e_y_root-target.y();
     }
     // tell FLTK that the user released an object on this widget
-    if ( !Fl::handle( FL_DND_RELEASE, target ) )
+    if ( !Fl.handle( FL_DND_RELEASE, target ) )
       return S_OK;
     
-    Fl_Widget *w = target;
-    while (w->parent()) w = w->window();
-    HWND hwnd = fl_xid( (Fl_Window*)w );
+    Fl_Widget  w = target;
+    while (w.parent()) w = w.window();
+    HWND hwnd = fl_xid( (Fl_Window )w );
     if (fillCurrentDragData(data)) {
-      int old_event = Fl::e_number;
-      Fl::belowmouse()->handle(Fl::e_number = FL_PASTE); // e_text will be invalid after this call
-      Fl::e_number = old_event;
+      int old_event = Fl.e_number;
+      Fl.belowmouse()->handle(Fl.e_number = FL_PASTE); // e_text will be invalid after this call
+      Fl.e_number = old_event;
       SetForegroundWindow( hwnd );
       clearCurrentDragData();
       return S_OK;
@@ -212,11 +214,11 @@ private:
     fmt.lindex = -1;
     fmt.cfFormat = CF_TEXT;
     // if it is ASCII text, return a copy of it
-    if ( data->GetData( &fmt, &medium )==S_OK )
+    if ( data.GetData( &fmt, &medium )==S_OK )
     {
       void *stuff = GlobalLock( medium.hGlobal );
-      Fl::e_length = strlen((char*)stuff);
-      Fl::e_text = strdup((char*)stuff);
+      Fl.e_length = strlen((char*)stuff);
+      Fl.e_text = strdup((char*)stuff);
       GlobalUnlock( medium.hGlobal );
       ReleaseStgMedium( &medium );
       currDragResult = 1;
@@ -229,14 +231,14 @@ private:
     fmt.lindex = -1;
     fmt.cfFormat = CF_HDROP;
     // if it is a pathname list, send an FL_PASTE with a \n seperated list of filepaths
-    if ( data->GetData( &fmt, &medium )==S_OK )
+    if ( data.GetData( &fmt, &medium )==S_OK )
     {
       HDROP hdrop = (HDROP)medium.hGlobal;
       int i, n, nn = 0, nf = DragQueryFile( hdrop, (UINT)-1, 0, 0 );
       for ( i=0; i<nf; i++ ) nn += DragQueryFile( hdrop, i, 0, 0 );
       nn += nf;
-      Fl::e_length = nn-1;
-      char *dst = Fl::e_text = (char*)malloc(nn+1);
+      Fl.e_length = nn-1;
+      char *dst = Fl.e_text = (char*)malloc(nn+1);
       for ( i=0; i<nf; i++ ) {
 	n = DragQueryFile( hdrop, i, dst, nn );
 	dst += n;
@@ -254,15 +256,15 @@ private:
 
 IDropTarget *flIDropTarget = &flDropTarget;
 
-IDataObject *FLDropTarget::currDragRef = 0;
-char *FLDropTarget::currDragData = 0;
-int FLDropTarget::currDragSize = 0; 
-char FLDropTarget::currDragResult = 0;
+IDataObject *FLDropTarget.currDragRef = 0;
+char *FLDropTarget.currDragData = 0;
+int FLDropTarget.currDragSize = 0; 
+char FLDropTarget.currDragResult = 0;
 
 /**
  * this class is needed to allow FLTK apps to be a DnD source
  */
-class FLDropSource : public IDropSource
+class FLDropSource : IDropSource
 {
   DWORD m_cRefCount;
 public:
@@ -279,13 +281,13 @@ public:
   }
   ULONG STDMETHODCALLTYPE AddRef() { return ++m_cRefCount; }
   ULONG STDMETHODCALLTYPE Release() {
-    long nTemp;
+    int nTemp;
     nTemp = --m_cRefCount;
     if(nTemp==0)
       delete this;
     return nTemp;
   }
-  STDMETHODIMP GiveFeedback( ulong ) { return DRAGDROP_S_USEDEFAULTCURSORS; }
+  STDMETHODIMP GiveFeedback( uint ) { return DRAGDROP_S_USEDEFAULTCURSORS; }
   STDMETHODIMP QueryContinueDrag( BOOL esc, DWORD keyState ) { 
     if ( esc ) 
       return DRAGDROP_S_CANCEL;
@@ -299,7 +301,7 @@ public:
  * this is the actual object that FLTK can drop somewhere
  * - the implementation is minimal, but it should work with all decent Win32 drop targets
  */
-class FLDataObject : public IDataObject
+class FLDataObject : IDataObject
 {
   DWORD m_cRefCount;
 public:
@@ -316,7 +318,7 @@ public:
   }
   ULONG STDMETHODCALLTYPE AddRef() { return ++m_cRefCount; }
   ULONG STDMETHODCALLTYPE Release() {
-    long nTemp;
+    int nTemp;
     nTemp = --m_cRefCount;
     if(nTemp==0)
       delete this;
@@ -324,17 +326,17 @@ public:
   }
   // GetData currently allows ASCII text through Global Memory only
   HRESULT STDMETHODCALLTYPE GetData( FORMATETC *pformatetcIn, STGMEDIUM *pmedium ) {
-    if ((pformatetcIn->dwAspect & DVASPECT_CONTENT) &&
-        (pformatetcIn->tymed & TYMED_HGLOBAL) &&
-        (pformatetcIn->cfFormat == CF_TEXT))
+    if ((pformatetcIn.dwAspect & DVASPECT_CONTENT) &&
+        (pformatetcIn.tymed & TYMED_HGLOBAL) &&
+        (pformatetcIn.cfFormat == CF_TEXT))
     {
       HGLOBAL gh = GlobalAlloc( GHND, fl_selection_length[0]+1 );
       char *pMem = (char*)GlobalLock( gh );
       memmove( pMem, fl_selection_buffer[0], fl_selection_length[0] );
       pMem[ fl_selection_length[0] ] = 0;      
-      pmedium->tymed	      = TYMED_HGLOBAL;
-      pmedium->hGlobal	      = gh;
-      pmedium->pUnkForRelease = NULL;
+      pmedium.tymed	      = TYMED_HGLOBAL;
+      pmedium.hGlobal	      = gh;
+      pmedium.pUnkForRelease = NULL;
       GlobalUnlock( gh );
       return S_OK;
     }
@@ -342,9 +344,9 @@ public:
   }
   HRESULT STDMETHODCALLTYPE QueryGetData( FORMATETC *pformatetc )
   {
-    if ((pformatetc->dwAspect & DVASPECT_CONTENT) &&
-        (pformatetc->tymed & TYMED_HGLOBAL) &&
-        (pformatetc->cfFormat == CF_TEXT))
+    if ((pformatetc.dwAspect & DVASPECT_CONTENT) &&
+        (pformatetc.tymed & TYMED_HGLOBAL) &&
+        (pformatetc.cfFormat == CF_TEXT))
       return S_OK;
     return DV_E_FORMATETC;	
   }  
@@ -363,41 +365,41 @@ public:
 /**
  * drag and drop whatever is in the cut-copy-paste buffer
  * - create a selection first using: 
- *     Fl::copy(const char *stuff, int len, 0)
+ *     Fl.copy(char *stuff, int len, 0)
  */
-int Fl::dnd()
+int Fl.dnd()
 {
   DWORD dropEffect;
   ReleaseCapture();
 
   FLDataObject *fdo = new FLDataObject;
-  fdo->AddRef();
+  fdo.AddRef();
   FLDropSource *fds = new FLDropSource;
-  fds->AddRef();
+  fds.AddRef();
 
   HRESULT ret = DoDragDrop( fdo, fds, DROPEFFECT_MOVE|DROPEFFECT_LINK|DROPEFFECT_COPY, &dropEffect );
 
-  fdo->Release();
-  fds->Release();
+  fdo.Release();
+  fds.Release();
 
-  Fl_Widget *w = Fl::pushed();
+  Fl_Widget  w = Fl.pushed();
   if ( w )
   {
-    int old_event = Fl::e_number;
-    w->handle(Fl::e_number = FL_RELEASE);
-    Fl::e_number = old_event;
-    Fl::pushed( 0 );
+    int old_event = Fl.e_number;
+    w.handle(Fl.e_number = FL_RELEASE);
+    Fl.e_number = old_event;
+    Fl.pushed( 0 );
   }
   if ( ret==DRAGDROP_S_DROP ) return 1; // or DD_S_CANCEL
   return 0;
 }
-#else
-int Fl::dnd()
+} else {
+int Fl.dnd()
 {
   // Always indicate DnD failed when using GCC < 3...
   return 1;
 }
-#endif // !__GNUC__ || __GNUC__ >= 3
+} // !__GNUC__ || __GNUC__ >= 3
 
 
 //

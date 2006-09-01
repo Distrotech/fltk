@@ -42,10 +42,10 @@
 #if HAVE_GL
 
 #include <FL/Fl.H>
-#include <FL/Fl_Window.H>
+private import fl.window;
 #include <FL/x.H>
-#include <FL/fl_draw.H>
-#include "Fl_Gl_Choice.H"
+private import fl.draw;
+private import fl.gl_choice;
 
 extern int fl_clip_state_number; // in fl_rect.cxx
 
@@ -53,38 +53,38 @@ static GLContext context;
 static int clip_state_number=-1;
 static int pw, ph;
 
-#ifdef WIN32
-static Fl_Gl_Choice* gl_choice;
-#endif
+version (WIN32) {
+static Fl_Gl_Choice  gl_choice;
+}
 
-#ifdef __APPLE__
-static Fl_Gl_Choice* gl_choice;
-#endif
+version (__APPLE__) {
+static Fl_Gl_Choice  gl_choice;
+}
 
 Fl_Region XRectangleRegion(int x, int y, int w, int h); // in fl_rect.cxx
 
 void gl_start() {
   if (!context) {
-#ifdef WIN32
-    if (!gl_choice) Fl::gl_visual(0);
-    context = fl_create_gl_context(Fl_Window::current(), gl_choice);
-#elif defined(__APPLE_QD__)
+version (WIN32) {
+    if (!gl_choice) Fl.gl_visual(0);
+    context = fl_create_gl_context(Fl_Window.current(), gl_choice);
+} else version (__APPLE_QD__) {
     // \todo Mac : We need to check the code and verify it with Apple Sample code. The 'shiny'-test should at least work with the software OpenGL emulator
-    context = fl_create_gl_context(Fl_Window::current(), gl_choice);
-#elif defined(__APPLE_QUARTZ__)
+    context = fl_create_gl_context(Fl_Window.current(), gl_choice);
+} else version (__APPLE_QUARTZ__) {
     // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
-    context = fl_create_gl_context(Fl_Window::current(), gl_choice);
-#else
+    context = fl_create_gl_context(Fl_Window.current(), gl_choice);
+} else {
     context = fl_create_gl_context(fl_visual);
-#endif
+}
   }
-  fl_set_gl_context(Fl_Window::current(), context);
+  fl_set_gl_context(Fl_Window.current(), context);
 #if !defined(WIN32) && !defined(__APPLE__)
   glXWaitX();
-#endif
-  if (pw != Fl_Window::current()->w() || ph != Fl_Window::current()->h()) {
-    pw = Fl_Window::current()->w();
-    ph = Fl_Window::current()->h();
+}
+  if (pw != Fl_Window.current()->w() || ph != Fl_Window.current()->h()) {
+    pw = Fl_Window.current()->w();
+    ph = Fl_Window.current()->h();
     glLoadIdentity();
     glViewport(0, 0, pw, ph);
     glOrtho(0, pw, 0, ph, -1, 1);
@@ -93,10 +93,10 @@ void gl_start() {
   if (clip_state_number != fl_clip_state_number) {
     clip_state_number = fl_clip_state_number;
     int x, y, w, h;
-    if (fl_clip_box(0, 0, Fl_Window::current()->w(), Fl_Window::current()->h(),
+    if (fl_clip_box(0, 0, Fl_Window.current()->w(), Fl_Window.current()->h(),
 		    x, y, w, h)) {
       fl_clip_region(XRectangleRegion(x,y,w,h));
-      glScissor(x, Fl_Window::current()->h()-(y+h), w, h);
+      glScissor(x, Fl_Window.current()->h()-(y+h), w, h);
       glEnable(GL_SCISSOR_TEST);
     } else {
       glDisable(GL_SCISSOR_TEST);
@@ -108,27 +108,27 @@ void gl_finish() {
   glFlush();
 #if !defined(WIN32) && !defined(__APPLE__)
   glXWaitGL();
-#endif
+}
 }
 
-int Fl::gl_visual(int mode, int *alist) {
-  Fl_Gl_Choice *c = Fl_Gl_Choice::find(mode,alist);
+int Fl.gl_visual(int mode, int *alist) {
+  Fl_Gl_Choice  c = Fl_Gl_Choice.find(mode,alist);
   if (!c) return 0;
-#ifdef WIN32
+version (WIN32) {
   gl_choice = c;
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   gl_choice = c;
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
   gl_choice = c;
-#else
-  fl_visual = c->vis;
-  fl_colormap = c->colormap;
-#endif
+} else {
+  fl_visual = c.vis;
+  fl_colormap = c.colormap;
+}
   return 1;
 }
 
-#endif
+}
 
 //
 // End of "$Id: gl_start.cxx 5190 2006-06-09 16:16:34Z mike $".

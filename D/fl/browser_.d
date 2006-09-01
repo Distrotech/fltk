@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Browser_.H 4879 2006-03-28 23:27:20Z matt $"
+// "$Id: browser_.d 4879 2006-03-28 23:27:20Z matt $"
 //
 // Common browser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -27,35 +26,35 @@
 //
 
 // This is the base class for browsers.  To be useful it must
-// be subclassed and several virtual functions defined.  The
+// be subclassed and several functions defined.  The
 // Forms-compatable browser and the file chooser's browser are
 // subclassed off of this.
 
 // Yes, I know this should be a template...
 
-#ifndef Fl_Browser__H
-#define Fl_Browser__H
+module fl.browser_;
 
-#ifndef Fl_Group_H
-#include "Fl_Group.H"
-#endif
-#include "Fl_Scrollbar.H"
+/+=
+module fl.group;
+public import fl.group;
+}
+public import fl.scrollbar;
 
-#define FL_NORMAL_BROWSER	0
-#define FL_SELECT_BROWSER	1
-#define FL_HOLD_BROWSER		2
-#define FL_MULTI_BROWSER	3
+const int FL_NORMAL_BROWSER = 0; 
+const int FL_SELECT_BROWSER = 1; 
+const int FL_HOLD_BROWSER = 2; 
+const int FL_MULTI_BROWSER = 3; 
 
-class FL_EXPORT Fl_Browser_ : public Fl_Group {
+class Fl_Browser_ : Fl_Group {
   int position_;	// where user wants it scrolled to
   int real_position_;	// the current vertical scrolling position
   int hposition_;	// where user wants it panned to
   int real_hposition_;	// the current horizontal scrolling position
   int offset_;		// how far down top_ item the real_position is
   int max_width;	// widest object seen so far
-  uchar has_scrollbar_;	// which scrollbars are enabled
-  uchar textfont_, textsize_;
-  unsigned textcolor_;
+  ubyte has_scrollbar_;	// which scrollbars are enabled
+  ubyte textfont_, textsize_;
+  uint textcolor_;
   void* top_;		// which item scrolling position is in
   void* selection_;	// which is selected (except for FL_MULTI_BROWSER)
   void *redraw1,*redraw2; // minimal update pointers
@@ -68,30 +67,30 @@ class FL_EXPORT Fl_Browser_ : public Fl_Group {
 protected:
 
   // All of the following must be supplied by the subclass:
-  virtual void *item_first() const = 0;
-  virtual void *item_next(void *) const = 0;
-  virtual void *item_prev(void *) const = 0;
-  virtual int item_height(void *) const = 0;
-  virtual int item_width(void *) const = 0;
-  virtual int item_quick_height(void *) const ;
-  virtual void item_draw(void *,int,int,int,int) const = 0;
+  void *item_first() = 0;
+  void *item_next(void *) = 0;
+  void *item_prev(void *) = 0;
+  int item_height(void *) = 0;
+  int item_width(void *) = 0;
+  int item_quick_height(void *) ;
+  void item_draw(void *,int,int,int,int) = 0;
   // you don't have to provide these but it may help speed it up:
-  virtual int full_width() const ;	// current width of all items
-  virtual int full_height() const ;	// current height of all items
-  virtual int incr_height() const ;	// average height of an item
+  int full_width() ;	// current width of all items
+  int full_height() ;	// current height of all items
+  int incr_height() ;	// average height of an item
   // These only need to be done by subclass if you want a multi-browser:
-  virtual void item_select(void *,int=1);
-  virtual int item_selected(void *) const ;
+  void item_select(void *,int=1);
+  int item_selected(void *) ;
 
   // things the subclass may want to call:
-  void *top() const {return top_;}
-  void *selection() const {return selection_;}
+  void *top() {return top_;}
+  void *selection() {return selection_;}
   void new_list(); // completely clobber all data, as though list replaced
   void deleting(void *a); // get rid of any pointers to a
   void replacing(void *a,void *b); // change a pointers to b
   void swapping(void *a,void *b); // exchange pointers a and b
   void inserting(void *a,void *b); // insert b near a
-  int displayed(void *) const ; // true if this line is visible
+  int displayed(void *) ; // true if this line is visible
   void redraw_line(void *); // minimal update, no change in size
   void redraw_lines() {damage(FL_DAMAGE_SCROLL);} // redraw all of them
   void bbox(int&,int&,int&,int&) const;
@@ -101,7 +100,7 @@ protected:
   int handle(int,int,int,int,int);
 
   void draw();
-  Fl_Browser_(int,int,int,int,const char * = 0);
+  Fl_Browser_(int,int,int,int,char * = 0);
 
 public:
 
@@ -114,14 +113,14 @@ public:
   int select(void *,int=1,int docallbacks=0);
   int select_only(void *,int docallbacks=0);
   int deselect(int docallbacks=0);
-  int position() const {return position_;}
-  int hposition() const {return hposition_;}
+  int position() {return position_;}
+  int hposition() {return hposition_;}
   void position(int); // scroll to here
   void hposition(int); // pan to here
   void display(void*); // scroll so this item is shown
 
-  uchar has_scrollbar() const {return has_scrollbar_;}
-  void has_scrollbar(uchar i) {has_scrollbar_ = i;}
+  ubyte has_scrollbar() {return has_scrollbar_;}
+  void has_scrollbar(ubyte i) {has_scrollbar_ = i;}
   enum { // values for has_scrollbar()
     HORIZONTAL = 1,
     VERTICAL = 2,
@@ -132,31 +131,31 @@ public:
     BOTH_ALWAYS = 7
   };
 
-  Fl_Font textfont() const {return (Fl_Font)textfont_;}
-  void textfont(uchar s) {textfont_ = s;}
-  uchar textsize() const {return textsize_;}
-  void textsize(uchar s) {textsize_ = s;}
-  Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-  void textcolor(unsigned n) {textcolor_ = n;}
+  Fl_Font textfont() {return (Fl_Font)textfont_;}
+  void textfont(ubyte s) {textfont_ = s;}
+  ubyte textsize() {return textsize_;}
+  void textsize(ubyte s) {textsize_ = s;}
+  Fl_Color textcolor() {return (Fl_Color)textcolor_;}
+  void textcolor(uint n) {textcolor_ = n;}
 
   static void scrollbar_width(int b) {scrollbar_width_ = b;}
   static int scrollbar_width() {return scrollbar_width_;}
 
   // for back compatability:
-  void scrollbar_right() {scrollbar.align(FL_ALIGN_RIGHT);}
-  void scrollbar_left() {scrollbar.align(FL_ALIGN_LEFT);}
+  void scrollbar_right() {scrollbar.alignment(FL_ALIGN_RIGHT);}
+  void scrollbar_left() {scrollbar.alignment(FL_ALIGN_LEFT);}
 
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Browser_.H 4879 2006-03-28 23:27:20Z matt $".
+// End of "$Id: browser_.d 4879 2006-03-28 23:27:20Z matt $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Browser_.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: browser_.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Base Browser widget class for the Fast Light Tool Kit (FLTK).
 //
@@ -186,13 +185,13 @@ public:
 
 #include <stdio.h>
 #include <FL/Fl.H>
-#include <FL/Fl_Widget.H>
-#include <FL/Fl_Browser_.H>
-#include <FL/fl_draw.H>
+private import fl.widget;
+private import fl.browser_;
+private import fl.draw;
 
 
 // This is the base class for browsers.  To be useful it must be
-// subclassed and several virtual functions defined.  The
+// subclassed and several functions defined.  The
 // Forms-compatable browser and the file chooser's browser are
 // subclassed off of this.
 
@@ -216,64 +215,64 @@ public:
    4 = redraw all items
 */
 
-static void scrollbar_callback(Fl_Widget* s, void*) {
-  ((Fl_Browser_*)(s->parent()))->position(int(((Fl_Scrollbar*)s)->value()));
+static void scrollbar_callback(Fl_Widget  s, void*) {
+  ((Fl_Browser_ )(s.parent()))->position(int(((Fl_Scrollbar )s)->value()));
 }
 
-static void hscrollbar_callback(Fl_Widget* s, void*) {
-  ((Fl_Browser_*)(s->parent()))->hposition(int(((Fl_Scrollbar*)s)->value()));
+static void hscrollbar_callback(Fl_Widget  s, void*) {
+  ((Fl_Browser_ )(s.parent()))->hposition(int(((Fl_Scrollbar )s)->value()));
 }
 
-int Fl_Browser_::scrollbar_width_ = 16;
+int Fl_Browser_.scrollbar_width_ = 16;
 
 // return where to draw the actual box:
-void Fl_Browser_::bbox(int& X, int& Y, int& W, int& H) const {
+void Fl_Browser_.bbox(int& X, int& Y, int& W, int& H) {
   Fl_Boxtype b = box() ? box() : FL_DOWN_BOX;
-  X = x()+Fl::box_dx(b);
-  Y = y()+Fl::box_dy(b);
-  W = w()-Fl::box_dw(b);
-  H = h()-Fl::box_dh(b);
+  X = x()+Fl.box_dx(b);
+  Y = y()+Fl.box_dy(b);
+  W = w()-Fl.box_dw(b);
+  H = h()-Fl.box_dh(b);
   if (scrollbar.visible()) {
     W -= scrollbar_width_;
-    if (scrollbar.align() & FL_ALIGN_LEFT) X += scrollbar_width_;
+    if (scrollbar.alignment() & FL_ALIGN_LEFT) X += scrollbar_width_;
   }
   if (W < 0) W = 0;
   if (hscrollbar.visible()) {
     H -= scrollbar_width_;
-    if (scrollbar.align() & FL_ALIGN_TOP) Y += scrollbar_width_;
+    if (scrollbar.alignment() & FL_ALIGN_TOP) Y += scrollbar_width_;
   }
   if (H < 0) H = 0;
 }
 
-int Fl_Browser_::leftedge() const {
+int Fl_Browser_.leftedge() {
   int X, Y, W, H; bbox(X, Y, W, H);
   return X;
 }
 
 // The scrollbars may be moved again by draw(), since each one's size
 // depends on whether the other is visible or not.  This skips over
-// Fl_Group::resize since it moves the scrollbars uselessly.
-void Fl_Browser_::resize(int X, int Y, int W, int H) {
-  Fl_Widget::resize(X, Y, W, H);
+// Fl_Group.resize since it moves the scrollbars uselessly.
+void Fl_Browser_.resize(int X, int Y, int W, int H) {
+  Fl_Widget.resize(X, Y, W, H);
   // move the scrollbars so they can respond to events:
   bbox(X,Y,W,H);
   scrollbar.resize(
-	scrollbar.align()&FL_ALIGN_LEFT ? X-scrollbar_width_ : X+W,
+	scrollbar.alignment()&FL_ALIGN_LEFT ? X-scrollbar_width_ : X+W,
 	Y, scrollbar_width_, H);
   hscrollbar.resize(
-	X, scrollbar.align()&FL_ALIGN_TOP ? Y-scrollbar_width_ : Y+H,
+	X, scrollbar.alignment()&FL_ALIGN_TOP ? Y-scrollbar_width_ : Y+H,
 	W, scrollbar_width_);
 }
 
 // Cause minimal update to redraw the given item:
-void Fl_Browser_::redraw_line(void* l) {
+void Fl_Browser_.redraw_line(void* l) {
   if (!redraw1 || redraw1 == l) {redraw1 = l; damage(FL_DAMAGE_EXPOSE);}
   else if (!redraw2 || redraw2 == l) {redraw2 = l; damage(FL_DAMAGE_EXPOSE);}
   else damage(FL_DAMAGE_SCROLL);
 }
 
 // Figure out top() based on position():
-void Fl_Browser_::update_top() {
+void Fl_Browser_.update_top() {
   if (!top_) top_ = item_first();
   if (position_ != real_position_) {
     void* l;
@@ -328,14 +327,14 @@ void Fl_Browser_::update_top() {
 
 // Change position(), top() will update when update_top() is called
 // (probably by draw() or handle()):
-void Fl_Browser_::position(int yy) {
+void Fl_Browser_.position(int yy) {
   if (yy < 0) yy = 0;
   if (yy == position_) return;
   position_ = yy;
   if (yy != real_position_) redraw_lines();
 }
 
-void Fl_Browser_::hposition(int xx) {
+void Fl_Browser_.hposition(int xx) {
   if (xx < 0) xx = 0;
   if (xx == hposition_) return;
   hposition_ = xx;
@@ -343,7 +342,7 @@ void Fl_Browser_::hposition(int xx) {
 }
 
 // Tell whether item is currently displayed:
-int Fl_Browser_::displayed(void* p) const {
+int Fl_Browser_.displayed(void* p) {
   int X, Y, W, H; bbox(X, Y, W, H);
   int yy = H+offset_;
   for (void* l = top_; l && yy > 0; l = item_next(l)) {
@@ -355,7 +354,7 @@ int Fl_Browser_::displayed(void* p) const {
 
 // Ensure this item is displayed:
 // Messy because we have no idea if it is before top or after bottom:
-void Fl_Browser_::display(void* p) {
+void Fl_Browser_.display(void* p) {
 
   // First special case - want to display first item in the list?
   update_top();
@@ -373,7 +372,7 @@ void Fl_Browser_::display(void* p) {
   void* lp = item_prev(l);
   if (lp == p) {position(real_position_+Y-item_quick_height(lp)); return;}
 
-#ifdef DISPLAY_SEARCH_BOTH_WAYS_AT_ONCE
+version (DISPLAY_SEARCH_BOTH_WAYS_AT_ONCE) {
   // search for item.  We search both up and down the list at the same time,
   // this evens up the execution time for the two cases - the old way was
   // much slower for going up than for going down.
@@ -403,7 +402,7 @@ void Fl_Browser_::display(void* p) {
       lp = item_prev(lp);
     }
   }
-#else
+} else {
   // Old version went forwards and then backwards:
   // search forward for it:
   l = top_;
@@ -432,12 +431,12 @@ void Fl_Browser_::display(void* p) {
       return;
     }
   }
-#endif
+}
 }
 
 // redraw, has side effect of updating top and setting scrollbar:
 
-void Fl_Browser_::draw() {
+void Fl_Browser_.draw() {
   int drawsquare = 0;
   update_top();
   int full_width_ = full_width();
@@ -462,7 +461,7 @@ J1:
     top_ = item_first(); real_position_ = offset_ = 0;
     if (scrollbar.visible()) {
       scrollbar.clear_visible();
-      clear_damage((uchar)(damage()|FL_DAMAGE_SCROLL));
+      clear_damage((ubyte)(damage()|FL_DAMAGE_SCROLL));
     }
   }
 
@@ -477,7 +476,7 @@ J1:
     real_hposition_ = 0;
     if (hscrollbar.visible()) {
       hscrollbar.clear_visible();
-      clear_damage((uchar)(damage()|FL_DAMAGE_SCROLL));
+      clear_damage((ubyte)(damage()|FL_DAMAGE_SCROLL));
     }
   }
 
@@ -495,7 +494,7 @@ J1:
     top_ = item_first(); real_position_ = offset_ = 0;
     if (scrollbar.visible()) {
       scrollbar.clear_visible();
-      clear_damage((uchar)(damage()|FL_DAMAGE_SCROLL));
+      clear_damage((ubyte)(damage()|FL_DAMAGE_SCROLL));
     }
   }
 
@@ -519,7 +518,7 @@ J1:
 	fl_pop_clip();
       }
       item_draw(l, X-hposition_, yy+Y, W+hposition_, hh);
-      if (l == selection_ && Fl::focus() == this) {
+      if (l == selection_ && Fl.focus() == this) {
 	draw_box(FL_BORDER_FRAME, X, yy+Y, W, hh, color());
 	draw_focus(FL_NO_BOX, X, yy+Y, W+1, hh+1);
       }
@@ -561,7 +560,7 @@ J1:
   int dy = top_ ? item_quick_height(top_) : 0; if (dy < 10) dy = 10;
   if (scrollbar.visible()) {
     scrollbar.damage_resize(
-	scrollbar.align()&FL_ALIGN_LEFT ? X-scrollbar_width_ : X+W,
+	scrollbar.alignment()&FL_ALIGN_LEFT ? X-scrollbar_width_ : X+W,
 	Y, scrollbar_width_, H);
     scrollbar.value(position_, H, 0, full_height_);
     scrollbar.linesize(dy);
@@ -570,7 +569,7 @@ J1:
   }
   if (hscrollbar.visible()) {
     hscrollbar.damage_resize(
-	X, scrollbar.align()&FL_ALIGN_TOP ? Y-scrollbar_width_ : Y+H,
+	X, scrollbar.alignment()&FL_ALIGN_TOP ? Y-scrollbar_width_ : Y+H,
 	W, scrollbar_width_);
     hscrollbar.value(hposition_, W, 0, full_width_);
     hscrollbar.linesize(dy);
@@ -588,7 +587,7 @@ J1:
 }
 
 // Quick way to delete and reset everything:
-void Fl_Browser_::new_list() {
+void Fl_Browser_.new_list() {
   top_ = 0;
   position_ = real_position_ = 0;
   hposition_ = real_hposition_ = 0;
@@ -601,7 +600,7 @@ void Fl_Browser_::new_list() {
 
 // Tell it that this item is going away, and that this must remove
 // all pointers to it:
-void Fl_Browser_::deleting(void* l) {
+void Fl_Browser_.deleting(void* l) {
   if (displayed(l)) {
     redraw_lines();
     if (l == top_) {
@@ -620,14 +619,14 @@ void Fl_Browser_::deleting(void* l) {
   if (l == max_width_item) {max_width_item = 0; max_width = 0;}
 }
 
-void Fl_Browser_::replacing(void* a, void* b) {
+void Fl_Browser_.replacing(void* a, void* b) {
   redraw_line(a);
   if (a == selection_) selection_ = b;
   if (a == top_) top_ = b;
   if (a == max_width_item) {max_width_item = 0; max_width = 0;}
 }
 
-void Fl_Browser_::swapping(void* a, void* b) {
+void Fl_Browser_.swapping(void* a, void* b) {
   redraw_line(a);
   redraw_line(b);
   if (a == selection_) selection_ = b;
@@ -636,12 +635,12 @@ void Fl_Browser_::swapping(void* a, void* b) {
   else if (b == top_) top_ = a;
 }
 
-void Fl_Browser_::inserting(void* a, void* b) {
+void Fl_Browser_.inserting(void* a, void* b) {
   if (displayed(a)) redraw_lines();
   if (a == top_) top_ = b;
 }
 
-void* Fl_Browser_::find_item(int my) {
+void* Fl_Browser_.find_item(int my) {
   update_top();
   int X, Y, W, H; bbox(X, Y, W, H);
   void* l;
@@ -654,7 +653,7 @@ void* Fl_Browser_::find_item(int my) {
   return 0;
 }
 
-int Fl_Browser_::select(void* l, int i, int docallbacks) {
+int Fl_Browser_.select(void* l, int i, int docallbacks) {
   if (type() == FL_MULTI_BROWSER) {
     if (selection_ != l) {
       if (selection_) redraw_line(selection_);
@@ -686,7 +685,7 @@ int Fl_Browser_::select(void* l, int i, int docallbacks) {
   return 1;
 }
 
-int Fl_Browser_::deselect(int docallbacks) {
+int Fl_Browser_.deselect(int docallbacks) {
   if (type() == FL_MULTI_BROWSER) {
     int change = 0;
     for (void* p = item_first(); p; p = item_next(p))
@@ -701,7 +700,7 @@ int Fl_Browser_::deselect(int docallbacks) {
   }
 }
 
-int Fl_Browser_::select_only(void* l, int docallbacks) {
+int Fl_Browser_.select_only(void* l, int docallbacks) {
   if (!l) return deselect(docallbacks);
   int change = 0;
   if (type() == FL_MULTI_BROWSER) {
@@ -713,14 +712,14 @@ int Fl_Browser_::select_only(void* l, int docallbacks) {
   return change;
 }
 
-int Fl_Browser_::handle(int event) {
+int Fl_Browser_.handle(int event) {
   // must do shortcuts first or the scrollbar will get them...
   if (event == FL_ENTER || event == FL_LEAVE) return 1;
   if (event == FL_KEYBOARD && type() >= FL_HOLD_BROWSER) {
     void* l1 = selection_;
     void* l = l1; if (!l) l = top_; if (!l) l = item_first();
     if (l) {
-      if (type()==FL_HOLD_BROWSER) switch (Fl::event_key()) {
+      if (type()==FL_HOLD_BROWSER) switch (Fl.event_key()) {
       case FL_Down:
 	while ((l = item_next(l)))
 	  if (item_height(l)>0) {select_only(l, 1); break;}
@@ -729,7 +728,7 @@ int Fl_Browser_::handle(int event) {
 	while ((l = item_prev(l))) if (item_height(l)>0) {
 	  select_only(l, 1); break;}
 	return 1;
-      } else switch (Fl::event_key()) {
+      } else switch (Fl.event_key()) {
       case FL_Enter:
       case FL_KP_Enter:
 	select_only(l, 1);
@@ -740,14 +739,14 @@ int Fl_Browser_::handle(int event) {
 	return 1;
       case FL_Down:
 	while ((l = item_next(l))) {
-	  if (Fl::event_state(FL_SHIFT|FL_CTRL))
+	  if (Fl.event_state(FL_SHIFT|FL_CTRL))
 	    select(l, l1 ? item_selected(l1) : 1, 1);
 	  if (item_height(l)>0) goto J1;
 	}
 	return 1;
       case FL_Up:
 	while ((l = item_prev(l))) {
-	  if (Fl::event_state(FL_SHIFT|FL_CTRL))
+	  if (Fl.event_state(FL_SHIFT|FL_CTRL))
 	    select(l, l1 ? item_selected(l1) : 1, 1);
 	  if (item_height(l)>0) goto J1;
 	}
@@ -761,7 +760,7 @@ int Fl_Browser_::handle(int event) {
     }
   }
 
-  if (Fl_Group::handle(event)) return 1;
+  if (Fl_Group.handle(event)) return 1;
   int X, Y, W, H; bbox(X, Y, W, H);
   int my;
 // NOTE:
@@ -775,10 +774,10 @@ int Fl_Browser_::handle(int event) {
 //     }
 // See str #834
 // The first form calls the callback *before* setting change.
-// The callback may execute an Fl::wait(), resulting in another
-// call of Fl_Browser_::handle() for the same widget. The sequence
+// The callback may execute an Fl.wait(), resulting in another
+// call of Fl_Browser_.handle() for the same widget. The sequence
 // of events can be an FL_PUSH followed by an FL_RELEASE.
-// This second call of Fl_Browser_::handle() may result in a -
+// This second call of Fl_Browser_.handle() may result in a -
 // somewhat unexpected - second concurrent invocation of the callback.
 
   static char change;
@@ -786,12 +785,12 @@ int Fl_Browser_::handle(int event) {
   static int py;
   switch (event) {
   case FL_PUSH:
-    if (!Fl::event_inside(X, Y, W, H)) return 0;
-    if (Fl::visible_focus()) {
-      Fl::focus(this);
+    if (!Fl.event_inside(X, Y, W, H)) return 0;
+    if (Fl.visible_focus()) {
+      Fl.focus(this);
       redraw();
     }
-    my = py = Fl::event_y();
+    my = py = Fl.event_y();
     change = 0;
     if (type() == FL_NORMAL_BROWSER || !top_)
       ;
@@ -804,7 +803,7 @@ int Fl_Browser_::handle(int event) {
     } else {
       void* l = find_item(my);
       whichway = 1;
-      if (Fl::event_state(FL_CTRL)) { // toggle selection:
+      if (Fl.event_state(FL_CTRL)) { // toggle selection:
       TOGGLE:
 	if (l) {
 	  whichway = !item_selected(l);
@@ -814,7 +813,7 @@ int Fl_Browser_::handle(int event) {
 	    do_callback();
 	  }
 	}
-      } else if (Fl::event_state(FL_SHIFT)) { // extend selection:
+      } else if (Fl.event_state(FL_SHIFT)) { // extend selection:
 	if (l == selection_) goto TOGGLE;
 	// state of previous selection determines new value:
 	whichway = l ? !item_selected(l) : 1;
@@ -850,7 +849,7 @@ int Fl_Browser_::handle(int event) {
     return 1;
   case FL_DRAG:
     // do the scrolling first:
-    my = Fl::event_y();
+    my = Fl.event_y();
     if (my < Y && my < py) {
       int p = real_position_+my-Y;
       if (p<0) p = 0;
@@ -886,7 +885,7 @@ int Fl_Browser_::handle(int event) {
     } else {
       void* l1 = selection_;
       void* l =
-	(Fl::event_x()<x() || Fl::event_x()>x()+w()) ? selection_ :
+	(Fl.event_x()<x() || Fl.event_x()>x()+w()) ? selection_ :
 	find_item(my);
       change = (l != l1);
       select_only(l, when() & FL_WHEN_CHANGED);
@@ -906,7 +905,7 @@ int Fl_Browser_::handle(int event) {
     return 1;
   case FL_FOCUS:
   case FL_UNFOCUS:
-    if (type() >= FL_HOLD_BROWSER && Fl::visible_focus()) {
+    if (type() >= FL_HOLD_BROWSER && Fl.visible_focus()) {
       redraw();
       return 1;
     } else return 0;
@@ -915,13 +914,13 @@ int Fl_Browser_::handle(int event) {
   return 0;
 }
 
-Fl_Browser_::Fl_Browser_(int X, int Y, int W, int H, const char* l)
+Fl_Browser_.Fl_Browser_(int X, int Y, int W, int H, char* l)
   : Fl_Group(X, Y, W, H, l),
     scrollbar(0, 0, 0, 0, 0), // they will be resized by draw()
     hscrollbar(0, 0, 0, 0, 0)
 {
   box(FL_NO_BOX);
-  align(FL_ALIGN_BOTTOM);
+  alignment(FL_ALIGN_BOTTOM);
   position_ = real_position_ = 0;
   hposition_ = real_hposition_ = 0;
   offset_ = 0;
@@ -930,11 +929,11 @@ Fl_Browser_::Fl_Browser_(int X, int Y, int W, int H, const char* l)
   selection_ = 0;
   color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
   scrollbar.callback(scrollbar_callback);
-//scrollbar.align(FL_ALIGN_LEFT|FL_ALIGN_BOTTOM); // back compatability?
+//scrollbar.alignment(FL_ALIGN_LEFT|FL_ALIGN_BOTTOM); // back compatability?
   hscrollbar.callback(hscrollbar_callback);
   hscrollbar.type(FL_HORIZONTAL);
   textfont_ = FL_HELVETICA;
-  textsize_ = (uchar)FL_NORMAL_SIZE;
+  textsize_ = (ubyte)FL_NORMAL_SIZE;
   textcolor_ = FL_FOREGROUND_COLOR;
   has_scrollbar_ = BOTH;
   max_width = 0;
@@ -943,32 +942,32 @@ Fl_Browser_::Fl_Browser_(int X, int Y, int W, int H, const char* l)
   end();
 }
 
-// Default versions of some of the virtual functions:
+// Default versions of some of the functions:
 
-int Fl_Browser_::item_quick_height(void* l) const {
+int Fl_Browser_.item_quick_height(void* l) {
   return item_height(l);
 }
 
-int Fl_Browser_::incr_height() const {
+int Fl_Browser_.incr_height() {
   return item_quick_height(item_first());
 }
 
-int Fl_Browser_::full_height() const {
+int Fl_Browser_.full_height() {
   int t = 0;
   for (void* p = item_first(); p; p = item_next(p))
     t += item_quick_height(p);
   return t;
 }
 
-int Fl_Browser_::full_width() const {
+int Fl_Browser_.full_width() {
   return max_width;
 }
 
-void Fl_Browser_::item_select(void*, int) {}
+void Fl_Browser_.item_select(void*, int) {}
 
-int Fl_Browser_::item_selected(void* l) const {return l==selection_;}
+int Fl_Browser_.item_selected(void* l) {return l==selection_;}
 
 //
-// End of "$Id: Fl_Browser_.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: browser_.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

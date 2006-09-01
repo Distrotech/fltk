@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Select_Browser.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: select_browser.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Select browser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Select_Browser_H
-#define Fl_Select_Browser_H
+module fl.select_browser;
 
-#include "Fl_Browser.H"
 
-class Fl_Select_Browser : public Fl_Browser {
+public import fl.browser;
+
+class Fl_Select_Browser : Fl_Browser {
 public:
-    Fl_Select_Browser(int X,int Y,int W,int H,const char *l=0)
+    Fl_Select_Browser(int X,int Y,int W,int H,char *l=0)
 	: Fl_Browser(X,Y,W,H,l) {type(FL_SELECT_BROWSER);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Select_Browser.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: select_browser.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

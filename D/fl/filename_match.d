@@ -30,7 +30,7 @@
 #include <FL/filename.H>
 #include <ctype.h>
 
-int fl_filename_match(const char *s, const char *p) {
+int fl_filename_match(char *s, char *p) {
   int matched;
 
   for (;;) {

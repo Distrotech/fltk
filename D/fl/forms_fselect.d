@@ -29,25 +29,25 @@
 // Emulate the Forms file chooser using the fltk file chooser.
 
 #include <FL/forms.H>
-#include "flstring.h"
+private import fl.flstring;
 
 static char fl_directory[1024];
-static const char *fl_pattern;  // assummed passed value is static
+static char *fl_pattern;  // assummed passed value is static
 static char fl_filename[1024];
 
-char* fl_show_file_selector(const char *message,const char *dir,
-			    const char *pat,const char *fname) {
+char* fl_show_file_selector(char *message,char *dir,
+			    char *pat,char *fname) {
   if (dir && dir[0]) strlcpy(fl_directory,dir,sizeof(fl_directory));
   if (pat && pat[0]) fl_pattern = pat;
   if (fname && fname[0]) strlcpy(fl_filename,fname,sizeof(fl_filename));
   char *p = fl_directory+strlen(fl_directory);
   if (p > fl_directory && *(p-1)!='/'
-#ifdef WIN32
+version (WIN32) {
       && *(p-1)!='\\' && *(p-1)!=':'
-#endif
+}
       ) *p++ = '/';
   strlcpy(p,fl_filename,sizeof(fl_directory) - (p - fl_directory));
-  const char *q = fl_file_chooser(message,fl_pattern,fl_directory);
+  char *q = fl_file_chooser(message,fl_pattern,fl_directory);
   if (!q) return 0;
   strlcpy(fl_directory, q, sizeof(fl_directory));
   p = (char *)fl_filename_name(fl_directory);

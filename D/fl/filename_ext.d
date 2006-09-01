@@ -30,14 +30,14 @@
 
 #include <FL/filename.H>
 
-const char *fl_filename_ext(const char *buf) {
-  const char *q = 0;
-  const char *p = buf;
+const char *fl_filename_ext(char *buf) {
+  char *q = 0;
+  char *p = buf;
   for (p=buf; *p; p++) {
     if (*p == '/') q = 0;
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
     else if (*p == '\\') q = 0;
-#endif
+}
     else if (*p == '.') q = p;
   }
   return q ? q : p;

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Pixmap.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: pixmap.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Pixmap header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,22 +26,22 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Pixmap_H
-#define Fl_Pixmap_H
-#  include "Fl_Image.H"
+module fl.pixmap;
+
+public import fl.image;
 
 class Fl_Widget;
 struct Fl_Menu_Item;
 
 // Older C++ compilers don't support the explicit keyword... :(
-#  if defined(__sgi) && !defined(_COMPILER_VERSION)
+version (__sgi) && !defined(_COMPILER_VERSION) {
 #    define explicit
-#  endif // __sgi && !_COMPILER_VERSION
+} // __sgi && !_COMPILER_VERSION
 
-class FL_EXPORT Fl_Pixmap : public Fl_Image {
+class Fl_Pixmap : Fl_Image {
   void copy_data();
   void delete_data();
-  void set_data(const char * const *p);
+  void set_data(char * *p);
 
   protected:
 
@@ -50,39 +50,39 @@ class FL_EXPORT Fl_Pixmap : public Fl_Image {
   public:
 
   int alloc_data; // Non-zero if data was allocated
-#if defined(__APPLE__) || defined(WIN32)
+version (__APPLE__) || defined(WIN32) {
   void *id; // for internal use
   void *mask; // for internal use (mask bitmap)
-#else
-  unsigned id; // for internal use
-  unsigned mask; // for internal use (mask bitmap)
-#endif // __APPLE__ || WIN32
+} else {
+  uint id; // for internal use
+  uint mask; // for internal use (mask bitmap)
+} // __APPLE__ || WIN32
   
-  explicit Fl_Pixmap(char * const * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((const char*const*)D); measure();}
-  explicit Fl_Pixmap(uchar* const * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((const char*const*)D); measure();}
-  explicit Fl_Pixmap(const char * const * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((const char*const*)D); measure();}
-  explicit Fl_Pixmap(const uchar* const * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((const char*const*)D); measure();}
-  virtual ~Fl_Pixmap();
-  virtual Fl_Image *copy(int W, int H);
-  Fl_Image *copy() { return copy(w(), h()); }
-  virtual void color_average(Fl_Color c, float i);
-  virtual void desaturate();
-  virtual void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
+  explicit Fl_Pixmap(char * * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((char*const*)D); measure();}
+  explicit Fl_Pixmap(ubyte* * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((char*const*)D); measure();}
+  explicit Fl_Pixmap(char * * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((char*const*)D); measure();}
+  explicit Fl_Pixmap(ubyte* * D) : Fl_Image(-1,0,1), alloc_data(0), id(0), mask(0) {set_data((char*const*)D); measure();}
+  ~Fl_Pixmap();
+  Fl_Image  copy(int W, int H);
+  Fl_Image  copy() { return copy(w(), h()); }
+  void color_average(Fl_Color c, float i);
+  void desaturate();
+  void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
   void draw(int X, int Y) {draw(X, Y, w(), h(), 0, 0);}
-  virtual void label(Fl_Widget*w);
-  virtual void label(Fl_Menu_Item*m);
-  virtual void uncache();
+  void label(Fl_Widget w);
+  void label(Fl_Menu_Item*m);
+  void uncache();
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Pixmap.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: pixmap.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Pixmap.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: pixmap.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Pixmap drawing code for the Fast Light Tool Kit (FLTK).
 //
@@ -116,28 +116,28 @@ class FL_EXPORT Fl_Pixmap : public Fl_Image {
 // it interferes with the color cube used by fl_draw_image).
 
 #include <FL/Fl.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <FL/x.H>
-#include <FL/Fl_Widget.H>
-#include <FL/Fl_Menu_Item.H>
-#include <FL/Fl_Pixmap.H>
+private import fl.widget;
+private import fl.menu_item;
+private import fl.pixmap;
 
 #include <stdio.h>
-#include "flstring.h"
+private import fl.flstring;
 #include <ctype.h>
 
-#ifdef WIN32
+version (WIN32) {
 extern void fl_release_dc(HWND, HDC);      // located in Fl_win32.cxx
-#endif
+}
 
-#ifdef __APPLE_QUARTZ__
+version (__APPLE_QUARTZ__) {
 extern Fl_Offscreen fl_create_offscreen_with_alpha(int w, int h);
-#endif
+}
 
-extern uchar **fl_mask_bitmap; // used by fl_draw_pixmap.cxx to store mask
+extern ubyte **fl_mask_bitmap; // used by fl_draw_pixmap.cxx to store mask
 void fl_restore_clip(); // in fl_rect.cxx
 
-void Fl_Pixmap::measure() {
+void Fl_Pixmap.measure() {
   int W, H;
 
   // ignore empty or bad pixmap data:
@@ -147,7 +147,7 @@ void Fl_Pixmap::measure() {
   }
 }
 
-void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Pixmap.draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   // ignore empty or bad pixmap data:
   if (!data()) {
     draw_empty(XP, YP);
@@ -173,15 +173,15 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if (cy+H > h()) H = h()-cy;
   if (H <= 0) return;
   if (!id) {
-#ifdef __APPLE_QUARTZ__
+version (__APPLE_QUARTZ__) {
     id = fl_create_offscreen_with_alpha(w(), h());
     fl_begin_offscreen((Fl_Offscreen)id);
     fl_draw_pixmap(data(), 0, 0, FL_GREEN);
     fl_end_offscreen();
-#else
+} else {
     id = fl_create_offscreen(w(), h());
     fl_begin_offscreen((Fl_Offscreen)id);
-    uchar *bitmap = 0;
+    ubyte *bitmap = 0;
     fl_mask_bitmap = &bitmap;
     fl_draw_pixmap(data(), 0, 0, FL_BLACK);
     fl_mask_bitmap = 0;
@@ -190,9 +190,9 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
       delete[] bitmap;
     }
     fl_end_offscreen();
-#endif
+}
   }
-#ifdef WIN32
+version (WIN32) {
   if (mask) {
     HDC new_gc = CreateCompatibleDC(fl_gc);
     int save = SaveDC(new_gc);
@@ -205,7 +205,7 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   } else {
     fl_copy_offscreen(X, Y, W, H, (Fl_Offscreen)id, cx, cy);
   }
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   if (mask) {
     Rect src, dst;
     src.left = cx; src.right = cx+W;
@@ -228,9 +228,9 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   } else {
     fl_copy_offscreen(X, Y, W, H, (Fl_Offscreen)id, cx, cy);
   }
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   fl_copy_offscreen(X, Y, W, H, (Fl_Offscreen)id, cx, cy);
-#else
+} else {
   if (mask) {
     // I can't figure out how to combine a mask with existing region,
     // so cut the image down to a clipped rectangle:
@@ -249,7 +249,7 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
     XSetClipOrigin(fl_display, fl_gc, 0, 0);
     fl_restore_clip();
   }
-#endif
+}
 }
 
 Fl_Pixmap::~Fl_Pixmap() {
@@ -257,7 +257,7 @@ Fl_Pixmap::~Fl_Pixmap() {
   delete_data();
 }
 
-void Fl_Pixmap::uncache() {
+void Fl_Pixmap.uncache() {
   if (id) {
     fl_delete_offscreen((Fl_Offscreen)id);
     id = 0;
@@ -269,16 +269,16 @@ void Fl_Pixmap::uncache() {
   }
 }
 
-void Fl_Pixmap::label(Fl_Widget* widget) {
-  widget->image(this);
+void Fl_Pixmap.label(Fl_Widget  widget) {
+  widget.image(this);
 }
 
-void Fl_Pixmap::label(Fl_Menu_Item* m) {
-  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, Fl_Image::measure);
-  m->label(_FL_IMAGE_LABEL, (const char*)this);
+void Fl_Pixmap.label(Fl_Menu_Item* m) {
+  Fl.set_labeltype(_FL_IMAGE_LABEL, labeltype, Fl_Image.measure);
+  m.label(_FL_IMAGE_LABEL, (char*)this);
 }
 
-void Fl_Pixmap::copy_data() {
+void Fl_Pixmap.copy_data() {
   if (alloc_data) return;
 
   char		**new_data,	// New data array
@@ -323,18 +323,18 @@ void Fl_Pixmap::copy_data() {
   }
 
   // Update pointers...
-  data((const char **)new_data, h() + ncolors + 1);
+  data((char **)new_data, h() + ncolors + 1);
   alloc_data = 1;  
 }
 
-Fl_Image *Fl_Pixmap::copy(int W, int H) {
-  Fl_Pixmap	*new_image;	// New pixmap
+Fl_Image  Fl_Pixmap.copy(int W, int H) {
+  Fl_Pixmap	 new_image;	// New pixmap
 
   // Optimize the simple copy where the width and height are the same...
   if (W == w() && H == h()) {
     // Make an exact copy of the image and return it...
     new_image = new Fl_Pixmap(data());
-    new_image->copy_data();
+    new_image.copy_data();
     return new_image;
   }
   if (W <= 0 || H <= 0) return 0;
@@ -344,7 +344,7 @@ Fl_Image *Fl_Pixmap::copy(int W, int H) {
 		**new_row,	// Pointer to row in image data
 		*new_ptr,	// Pointer into new array
 		new_info[255];	// New information line
-  const char	*old_ptr;	// Pointer into old array
+  char	*old_ptr;	// Pointer into old array
   int		i,		// Looping var
 		c,		// Channel number
 		sy,		// Source coordinate
@@ -420,12 +420,12 @@ Fl_Image *Fl_Pixmap::copy(int W, int H) {
   }
 
   new_image = new Fl_Pixmap((char*const*)new_data);
-  new_image->alloc_data = 1;
+  new_image.alloc_data = 1;
 
   return new_image;
 }
 
-void Fl_Pixmap::color_average(Fl_Color c, float i) {
+void Fl_Pixmap.color_average(Fl_Color c, float i) {
   // Delete any existing pixmap/mask objects...
   uncache();
 
@@ -433,14 +433,14 @@ void Fl_Pixmap::color_average(Fl_Color c, float i) {
   copy_data();
 
   // Get the color to blend with...
-  uchar		r, g, b;
-  unsigned	ia, ir, ig, ib;
+  ubyte		r, g, b;
+  uint	ia, ir, ig, ib;
 
-  Fl::get_color(c, r, g, b);
+  Fl.get_color(c, r, g, b);
   if (i < 0.0f) i = 0.0f;
   else if (i > 1.0f) i = 1.0f;
 
-  ia = (unsigned)(256 * i);
+  ia = (uint)(256 * i);
   ir = r * (256 - ia);
   ig = g * (256 - ia);
   ib = b * (256 - ia);
@@ -457,7 +457,7 @@ void Fl_Pixmap::color_average(Fl_Color c, float i) {
   if (ncolors < 0) {
     // Update FLTK colormap...
     ncolors = -ncolors;
-    uchar *cmap = (uchar *)(data()[1]);
+    ubyte *cmap = (ubyte *)(data()[1]);
     for (color = 0; color < ncolors; color ++, cmap += 4) {
       cmap[1] = (ia * cmap[1] + ir) >> 8;
       cmap[2] = (ia * cmap[2] + ig) >> 8;
@@ -467,8 +467,8 @@ void Fl_Pixmap::color_average(Fl_Color c, float i) {
     // Update standard XPM colormap...
     for (color = 0; color < ncolors; color ++) {
       // look for "c word", or last word if none:
-      const char *p = data()[color + 1] + chars_per_pixel + 1;
-      const char *previous_word = p;
+      char *p = data()[color + 1] + chars_per_pixel + 1;
+      char *previous_word = p;
       for (;;) {
 	while (*p && isspace(*p)) p++;
 	char what = *p++;
@@ -498,14 +498,14 @@ void Fl_Pixmap::color_average(Fl_Color c, float i) {
   }
 }
 
-void Fl_Pixmap::delete_data() {
+void Fl_Pixmap.delete_data() {
   if (alloc_data) {
     for (int i = 0; i < count(); i ++) delete[] (char *)data()[i];
     delete[] (char **)data();
   }
 }
 
-void Fl_Pixmap::set_data(const char * const * p) {
+void Fl_Pixmap.set_data(char * * p) {
   int	height,		// Number of lines in image
 	ncolors;	// Number of colors in image
 
@@ -517,7 +517,7 @@ void Fl_Pixmap::set_data(const char * const * p) {
 }
 
 
-void Fl_Pixmap::desaturate() {
+void Fl_Pixmap.desaturate() {
   // Delete any existing pixmap/mask objects...
   uncache();
 
@@ -529,24 +529,24 @@ void Fl_Pixmap::desaturate() {
   int		i,		// Looping var
 		ncolors,	// Number of colors in image
 		chars_per_pixel;// Characters per color
-  uchar		r, g, b;
+  ubyte		r, g, b;
 
   sscanf(data()[0],"%*d%*d%d%d", &ncolors, &chars_per_pixel);
 
   if (ncolors < 0) {
     // Update FLTK colormap...
     ncolors = -ncolors;
-    uchar *cmap = (uchar *)(data()[1]);
+    ubyte *cmap = (ubyte *)(data()[1]);
     for (i = 0; i < ncolors; i ++, cmap += 4) {
-      g = (uchar)((cmap[1] * 31 + cmap[2] * 61 + cmap[3] * 8) / 100);
+      g = (ubyte)((cmap[1] * 31 + cmap[2] * 61 + cmap[3] * 8) / 100);
       cmap[1] = cmap[2] = cmap[3] = g;
     }
   } else {
     // Update standard XPM colormap...
     for (i = 0; i < ncolors; i ++) {
       // look for "c word", or last word if none:
-      const char *p = data()[i + 1] + chars_per_pixel + 1;
-      const char *previous_word = p;
+      char *p = data()[i + 1] + chars_per_pixel + 1;
+      char *previous_word = p;
       for (;;) {
 	while (*p && isspace(*p)) p++;
 	char what = *p++;
@@ -559,7 +559,7 @@ void Fl_Pixmap::desaturate() {
       }
 
       if (fl_parse_color(p, r, g, b)) {
-        g = (uchar)((r * 31 + g * 61 + b * 8) / 100);
+        g = (ubyte)((r * 31 + g * 61 + b * 8) / 100);
 
         if (chars_per_pixel > 1) sprintf(line, "%c%c c #%02X%02X%02X", data()[i + 1][0],
 	                                 data()[i + 1][1], g, g, g);
@@ -574,6 +574,6 @@ void Fl_Pixmap::desaturate() {
 }
 
 //
-// End of "$Id: Fl_Pixmap.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: pixmap.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Dial.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: dial.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Dial header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,19 +25,21 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Dial_H
-#define Fl_Dial_H
+module fl.dial;
 
-#ifndef Fl_Valuator_H
-#include "Fl_Valuator.H"
-#endif
+/+=
+
+
+module fl.valuator;
+public import fl.valuator;
+}
 
 // values for type():
-#define FL_NORMAL_DIAL	0
-#define FL_LINE_DIAL	1
-#define FL_FILL_DIAL	2
+const int FL_NORMAL_DIAL = 0; 
+const int FL_LINE_DIAL = 1; 
+const int FL_FILL_DIAL = 2; 
 
-class FL_EXPORT Fl_Dial : public Fl_Valuator {
+class Fl_Dial : Fl_Valuator {
 
   short a1,a2;
 
@@ -52,24 +53,24 @@ protected:
 public:
 
   int handle(int);
-  Fl_Dial(int x,int y,int w,int h, const char *l = 0);
-  short angle1() const {return a1;}
+  Fl_Dial(int x,int y,int w,int h, char *l = 0);
+  short angle1() {return a1;}
   void angle1(short a) {a1 = a;}
-  short angle2() const {return a2;}
+  short angle2() {return a2;}
   void angle2(short a) {a2 = a;}
   void angles(short a, short b) {a1 = a; a2 = b;}
 
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Dial.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: dial.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Dial.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: dial.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Circular dial widget for the Fast Light Tool Kit (FLTK).
 //
@@ -96,23 +97,23 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Dial.H>
-#include <FL/fl_draw.H>
+private import fl.dial;
+private import fl.draw;
 #include <stdlib.h>
 #include <FL/math.h>
 
 // All angles are measured with 0 to the right and counter-clockwise
 
-void Fl_Dial::draw(int X, int Y, int W, int H) {
+void Fl_Dial.draw(int X, int Y, int W, int H) {
   if (damage()&FL_DAMAGE_ALL) draw_box(box(), X, Y, W, H, color());
-  X += Fl::box_dx(box());
-  Y += Fl::box_dy(box());
-  W -= Fl::box_dw(box());
-  H -= Fl::box_dh(box());
+  X += Fl.box_dx(box());
+  Y += Fl.box_dy(box());
+  W -= Fl.box_dw(box());
+  H -= Fl.box_dh(box());
   double angle = (a2-a1)*(value()-minimum())/(maximum()-minimum()) + a1;
   if (type() == FL_FILL_DIAL) {
     // foo: draw this nicely in certain round box types
-    int foo = (box() > _FL_ROUND_UP_BOX && Fl::box_dx(box()));
+    int foo = (box() > _FL_ROUND_UP_BOX && Fl.box_dx(box()));
     if (foo) {X--; Y--; W+=2; H+=2;}
     fl_color(color());
     fl_pie(X, Y, W, H, 270-a1, angle > a1 ? 360+270-angle : 270-360-angle);
@@ -155,18 +156,18 @@ void Fl_Dial::draw(int X, int Y, int W, int H) {
   fl_pop_matrix();
 }
 
-void Fl_Dial::draw() {
+void Fl_Dial.draw() {
   draw(x(), y(), w(), h());
   draw_label();
 }
 
-int Fl_Dial::handle(int event, int X, int Y, int W, int H) {
+int Fl_Dial.handle(int event, int X, int Y, int W, int H) {
   switch (event) {
   case FL_PUSH:
     handle_push();
   case FL_DRAG: {
-    int mx = (Fl::event_x()-X-W/2)*H;
-    int my = (Fl::event_y()-Y-H/2)*W;
+    int mx = (Fl.event_x()-X-W/2)*H;
+    int my = (Fl.event_y()-Y-H/2)*W;
     if (!mx && !my) return 1;
     double angle = 270-atan2((float)-my, (float)mx)*180/M_PI;
     double oldangle = (a2-a1)*(value()-minimum())/(maximum()-minimum()) + a1;
@@ -193,11 +194,11 @@ int Fl_Dial::handle(int event, int X, int Y, int W, int H) {
   }
 }
 
-int Fl_Dial::handle(int e) {
+int Fl_Dial.handle(int e) {
   return handle(e, x(), y(), w(), h());
 }
 
-Fl_Dial::Fl_Dial(int X, int Y, int W, int H, const char* l)
+Fl_Dial.Fl_Dial(int X, int Y, int W, int H, char* l)
   : Fl_Valuator(X, Y, W, H, l) {
   box(FL_OVAL_BOX);
   selection_color(FL_INACTIVE_COLOR); // was 37
@@ -206,6 +207,6 @@ Fl_Dial::Fl_Dial(int X, int Y, int W, int H, const char* l)
 }
 
 //
-// End of "$Id: Fl_Dial.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: dial.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

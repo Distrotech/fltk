@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Bitmap.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: bitmap.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Bitmap header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,47 +25,48 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Bitmap_H
-#define Fl_Bitmap_H
-#  include "Fl_Image.H"
+module fl.bitmap;
+
+/+=
+public import fl.image;
 
 class Fl_Widget;
 struct Fl_Menu_Item;
 
-class FL_EXPORT Fl_Bitmap : public Fl_Image {
+class Fl_Bitmap : Fl_Image {
   public:
 
-  const uchar *array;
+  ubyte *array;
   int alloc_array; // Non-zero if data was allocated
-#if defined(__APPLE__) || defined(WIN32)
+version (__APPLE__) || defined(WIN32) {
   void *id; // for internal use
-#else
-  unsigned id; // for internal use
-#endif // __APPLE__ || WIN32
+} else {
+  uint id; // for internal use
+} // __APPLE__ || WIN32
   
-  Fl_Bitmap(const uchar *bits, int W, int H) :
-    Fl_Image(W,H,0), array(bits), alloc_array(0), id(0) {data((const char **)&array, 1);}
-  Fl_Bitmap(const char *bits, int W, int H) :
-    Fl_Image(W,H,0), array((const uchar *)bits), alloc_array(0), id(0) {data((const char **)&array, 1);}
-  virtual ~Fl_Bitmap();
-  virtual Fl_Image *copy(int W, int H);
-  Fl_Image *copy() { return copy(w(), h()); }
-  virtual void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
+  Fl_Bitmap(ubyte *bits, int W, int H) :
+    Fl_Image(W,H,0), array(bits), alloc_array(0), id(0) {data((char **)&array, 1);}
+  Fl_Bitmap(char *bits, int W, int H) :
+    Fl_Image(W,H,0), array((ubyte *)bits), alloc_array(0), id(0) {data((char **)&array, 1);}
+  ~Fl_Bitmap();
+  Fl_Image  copy(int W, int H);
+  Fl_Image  copy() { return copy(w(), h()); }
+  void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
   void draw(int X, int Y) {draw(X, Y, w(), h(), 0, 0);}
-  virtual void label(Fl_Widget*w);
-  virtual void label(Fl_Menu_Item*m);
-  virtual void uncache();
+  void label(Fl_Widget w);
+  void label(Fl_Menu_Item*m);
+  void uncache();
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Bitmap.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: bitmap.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Bitmap.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: bitmap.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Bitmap drawing routines for the Fast Light Tool Kit (FLTK).
 //
@@ -94,14 +94,14 @@ class FL_EXPORT Fl_Bitmap : public Fl_Image {
 
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/fl_draw.H>
-#include <FL/Fl_Widget.H>
-#include <FL/Fl_Menu_Item.H>
-#include <FL/Fl_Bitmap.H>
-#include "flstring.h"
+private import fl.draw;
+private import fl.widget;
+private import fl.menu_item;
+private import fl.bitmap;
+private import fl.flstring;
 
-#ifdef __APPLE_QD__ // MacOS bitmask functions
-Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
+version (__APPLE_QD__ // MacOS bitmask functions) {
+Fl_Bitmask fl_create_bitmask(int w, int h, ubyte *array) {
   Rect srcRect;
   srcRect.left = 0; srcRect.right = w;
   srcRect.top = 0; srcRect.bottom = h;
@@ -117,19 +117,19 @@ Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
     LockPixels( pm );
     if ( *pm ) 
     {
-      uchar *base = (uchar*)GetPixBaseAddr( pm );
+      ubyte *base = (ubyte*)GetPixBaseAddr( pm );
       if ( base ) 
       {
         PixMapPtr pmp = *pm;
         // verify the parameters for direct memory write
-        if ( pmp->pixelType == 0 || pmp->pixelSize == 1 || pmp->cmpCount == 1 || pmp->cmpSize == 1 ) 
+        if ( pmp.pixelType == 0 || pmp.pixelSize == 1 || pmp.cmpCount == 1 || pmp.cmpSize == 1 ) 
         {
-          static uchar reverse[16] =	/* Bit reversal lookup table */
+          static ubyte reverse[16] =	/* Bit reversal lookup table */
           { 0x00, 0x88, 0x44, 0xcc, 0x22, 0xaa, 0x66, 0xee, 0x11, 0x99, 0x55, 0xdd, 0x33, 0xbb, 0x77, 0xff };
-          uchar *dst = base;
-          const uchar *src = array;
+          ubyte *dst = base;
+          ubyte *src = array;
           int rowBytesSrc = (w+7)>>3 ;
-          int rowPatch = (pmp->rowBytes&0x3fff) - rowBytesSrc;
+          int rowPatch = (pmp.rowBytes&0x3fff) - rowBytesSrc;
           for ( int j=0; j<h; j++,dst+=rowPatch )
             for ( int i=0; i<rowBytesSrc; i++,src++ )
               *dst++ = (reverse[*src & 0x0f] & 0xf0) | (reverse[(*src >> 4) & 0x0f] & 0x0f);
@@ -146,14 +146,14 @@ Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
 void fl_delete_bitmask(Fl_Bitmask id) {
   if (id) DisposeGWorld(id);
 }
-#elif defined(__APPLE_QUARTZ__)
-Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
-  static uchar reverse[16] =    /* Bit reversal lookup table */
+} else version (__APPLE_QUARTZ__) {
+Fl_Bitmask fl_create_bitmask(int w, int h, ubyte *array) {
+  static ubyte reverse[16] =    /* Bit reversal lookup table */
     { 0x00, 0x88, 0x44, 0xcc, 0x22, 0xaa, 0x66, 0xee, 
       0x11, 0x99, 0x55, 0xdd, 0x33, 0xbb, 0x77, 0xff };
   int rowBytes = (w+7)>>3 ;
-  uchar *bmask = (uchar*)malloc(rowBytes*h), *dst = bmask;
-  const uchar *src = array;
+  ubyte *bmask = (ubyte*)malloc(rowBytes*h), *dst = bmask;
+  ubyte *src = array;
   for ( int i=rowBytes*h; i>0; i--,src++ ) {
     *dst++ = ((reverse[*src & 0x0f] & 0xf0) | (reverse[(*src >> 4) & 0x0f] & 0x0f))^0xff;
   }
@@ -165,24 +165,24 @@ Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
 void fl_delete_bitmask(Fl_Bitmask id) {
   if (id) CGImageRelease((CGImageRef)id);
 }
-#elif defined(WIN32) // Windows bitmask functions...
+} else version (WIN32) // Windows bitmask functions... {
 // 'fl_create_bitmap()' - Create a 1-bit bitmap for drawing...
-static Fl_Bitmask fl_create_bitmap(int w, int h, const uchar *data) {
+static Fl_Bitmask fl_create_bitmap(int w, int h, ubyte *data) {
   // we need to pad the lines out to words & swap the bits
   // in each byte.
   int w1 = (w+7)/8;
   int w2 = ((w+15)/16)*2;
-  uchar* newarray = new uchar[w2*h];
-  const uchar* src = data;
-  uchar* dest = newarray;
+  ubyte* newarray = new ubyte[w2*h];
+  ubyte* src = data;
+  ubyte* dest = newarray;
   Fl_Bitmask id;
-  static uchar reverse[16] =	/* Bit reversal lookup table */
+  static ubyte reverse[16] =	/* Bit reversal lookup table */
   	      { 0x00, 0x88, 0x44, 0xcc, 0x22, 0xaa, 0x66, 0xee,
 		0x11, 0x99, 0x55, 0xdd, 0x33, 0xbb, 0x77, 0xff };
 
   for (int y=0; y < h; y++) {
     for (int n = 0; n < w1; n++, src++)
-      *dest++ = (uchar)((reverse[*src & 0x0f] & 0xf0) |
+      *dest++ = (ubyte)((reverse[*src & 0x0f] & 0xf0) |
 	                (reverse[(*src >> 4) & 0x0f] & 0x0f));
     dest += w2-w1;
   }
@@ -195,14 +195,14 @@ static Fl_Bitmask fl_create_bitmap(int w, int h, const uchar *data) {
 }
 
 // 'fl_create_bitmask()' - Create an N-bit bitmap for masking...
-Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data) {
+Fl_Bitmask fl_create_bitmask(int w, int h, ubyte *data) {
   // this won't work when the user changes display mode during run or
   // has two screens with differnet depths
   Fl_Bitmask id;
-  static uchar hiNibble[16] =
+  static ubyte hiNibble[16] =
   { 0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0,
     0x10, 0x90, 0x50, 0xd0, 0x30, 0xb0, 0x70, 0xf0 };
-  static uchar loNibble[16] =
+  static ubyte loNibble[16] =
   { 0x00, 0x08, 0x04, 0x0c, 0x02, 0x0a, 0x06, 0x0e,
     0x01, 0x09, 0x05, 0x0d, 0x03, 0x0b, 0x07, 0x0f };
   int np  = GetDeviceCaps(fl_gc, PLANES);	//: was always one on sample machines
@@ -210,19 +210,19 @@ Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data) {
   int Bpr = (bpp*w+7)/8;			//: bytes per row
   int pad = Bpr&1, w1 = (w+7)/8, shr = ((w-1)&7)+1;
   if (bpp==4) shr = (shr+1)/2;
-  uchar *newarray = new uchar[(Bpr+pad)*h];
-  uchar *dst = newarray;
-  const uchar *src = data;
+  ubyte *newarray = new ubyte[(Bpr+pad)*h];
+  ubyte *dst = newarray;
+  ubyte *src = data;
 
   for (int i=0; i<h; i++) {
     // This is slooow, but we do it only once per pixmap
     for (int j=w1; j>0; j--) {
-      uchar b = *src++;
+      ubyte b = *src++;
       if (bpp==1) {
-        *dst++ = (uchar)( hiNibble[b&15] ) | ( loNibble[(b>>4)&15] );
+        *dst++ = (ubyte)( hiNibble[b&15] ) | ( loNibble[(b>>4)&15] );
       } else if (bpp==4) {
         for (int k=(j==1)?shr:4; k>0; k--) {
-          *dst++ = (uchar)("\377\360\017\000"[b&3]);
+          *dst++ = (ubyte)("\377\360\017\000"[b&3]);
           b = b >> 2;
         }
       } else {
@@ -254,16 +254,16 @@ Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data) {
 }
 
 #if 0 // This doesn't appear to be used anywhere...
-Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data, int for_mask) {
+Fl_Bitmask fl_create_bitmask(int w, int h, ubyte *data, int for_mask) {
   // we need to pad the lines out to words & swap the bits
   // in each byte.
   int w1 = (w+7)/8;
   int w2 = ((w+15)/16)*2;
-  uchar* newarray = new uchar[w2*h];
-  const uchar* src = data;
-  uchar* dest = newarray;
+  ubyte* newarray = new ubyte[w2*h];
+  ubyte* src = data;
+  ubyte* dest = newarray;
   Fl_Bitmask id;
-  static uchar reverse[16] =	/* Bit reversal lookup table */
+  static ubyte reverse[16] =	/* Bit reversal lookup table */
   	      { 0x00, 0x88, 0x44, 0xcc, 0x22, 0xaa, 0x66, 0xee,
 		0x11, 0x99, 0x55, 0xdd, 0x33, 0xbb, 0x77, 0xff };
 
@@ -280,21 +280,21 @@ Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data, int for_mask) {
 
   return (id);
 }
-#  endif // 0
+} // 0
 
 void fl_delete_bitmask(Fl_Bitmask bm) {
   DeleteObject((HGDIOBJ)bm);
 }
-#else // X11 bitmask functions
-Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data) {
-  return XCreateBitmapFromData(fl_display, fl_window, (const char *)data,
+} else { // X11 bitmask functions
+Fl_Bitmask fl_create_bitmask(int w, int h, ubyte *data) {
+  return XCreateBitmapFromData(fl_display, fl_window, (char *)data,
                                (w+7)&-8, h);
 }
 
 void fl_delete_bitmask(Fl_Bitmask bm) {
   fl_delete_offscreen((Fl_Offscreen)bm);
 }
-#endif // __APPLE__
+} // __APPLE__
 
 
 // MRS: Currently it appears that CopyDeepMask() does not work with an 8-bit alpha mask.
@@ -304,7 +304,7 @@ void fl_delete_bitmask(Fl_Bitmask bm) {
 //#ifdef __APPLE_QD__
 #if 0
 // Create an 8-bit mask used for alpha blending
-Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) {
+Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, ubyte *array) {
   Rect srcRect;
   srcRect.left = 0; srcRect.right = w;
   srcRect.top = 0; srcRect.bottom = h;
@@ -320,16 +320,16 @@ Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) 
     LockPixels( pm );
     if ( *pm ) 
     {
-      uchar *base = (uchar*)GetPixBaseAddr( pm );
+      ubyte *base = (ubyte*)GetPixBaseAddr( pm );
       if ( base ) 
       {
         PixMapPtr pmp = *pm;
         // verify the parameters for direct memory write
-        if ( pmp->pixelType == 0 || pmp->pixelSize == 8 || pmp->cmpCount == 1 || pmp->cmpSize == 8 ) 
+        if ( pmp.pixelType == 0 || pmp.pixelSize == 8 || pmp.cmpCount == 1 || pmp.cmpSize == 8 ) 
         {
 	  // Copy alpha values from the source array to the pixmap...
 	  array += d - 1;
-          int rowoffset = (pmp->rowBytes & 0x3fff) - w;
+          int rowoffset = (pmp.rowBytes & 0x3fff) - w;
 	  for (int y = h; y > 0; y --, array += ld, base += rowoffset) {
 	    for (int x = w; x > 0; x --, array += d) {
 	      *base++ = 255 /*255 - *array*/;
@@ -344,16 +344,16 @@ Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) 
   SetPort(savePort);
   return gw;               /* tell caller we succeeded! */
 }
-#else
+} else {
 // Create a 1-bit mask used for alpha blending
-Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) {
+Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, ubyte *array) {
   Fl_Bitmask mask;
   int bmw = (w + 7) / 8;
-  uchar *bitmap = new uchar[bmw * h];
-  uchar *bitptr, bit;
-  const uchar *dataptr;
+  ubyte *bitmap = new ubyte[bmw * h];
+  ubyte *bitptr, bit;
+  ubyte *dataptr;
   int x, y;
-  static uchar dither[16][16] = { // Simple 16x16 Floyd dither
+  static ubyte dither[16][16] = { // Simple 16x16 Floyd dither
     { 0,   128, 32,  160, 8,   136, 40,  168,
       2,   130, 34,  162, 10,  138, 42,  170 },
     { 192, 64,  224, 96,  200, 72,  232, 104,
@@ -417,9 +417,9 @@ Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) 
 
   return (mask);
 }
-#endif // __APPLE__
+} // __APPLE__
 
-void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Bitmap.draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if (!array) {
     draw_empty(XP, YP);
     return;
@@ -435,7 +435,7 @@ void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if (cy < 0) {H += cy; Y -= cy; cy = 0;}
   if ((cy+H) > h()) H = h()-cy;
   if (H <= 0) return;
-#ifdef WIN32
+version (WIN32) {
   if (!id) id = fl_create_bitmap(w(), h(), array);
 
   HDC tempdc = CreateCompatibleDC(fl_gc);
@@ -446,7 +446,7 @@ void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, 0xE20746L);
   RestoreDC(tempdc, save);
   DeleteDC(tempdc);
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   if (!id) id = fl_create_bitmask(w(), h(), array);
   GrafPtr dstPort;
   GetPort( &dstPort );
@@ -460,15 +460,15 @@ void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
 	   &dst, 				// dst bounds
 	   srcOr, 				// mode
 	   0L);					// mask region
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   if (!id) id = fl_create_bitmask(w(), h(), array);
   if (id && fl_gc) {
     CGRect rect = { { X, Y }, { W, H } };
-    Fl_X::q_begin_image(rect, cx, cy, w(), h());
+    Fl_X.q_begin_image(rect, cx, cy, w(), h());
     CGContextDrawImage(fl_gc, rect, (CGImageRef)id);
-    Fl_X::q_end_image();
+    Fl_X.q_end_image();
   }
-#else
+} else {
   if (!id) id = fl_create_bitmask(w(), h(), array);
 
   XSetStipple(fl_display, fl_gc, id);
@@ -478,51 +478,51 @@ void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   XSetFillStyle(fl_display, fl_gc, FillStippled);
   XFillRectangle(fl_display, fl_window, fl_gc, X, Y, W, H);
   XSetFillStyle(fl_display, fl_gc, FillSolid);
-#endif
+}
 }
 
 Fl_Bitmap::~Fl_Bitmap() {
   uncache();
-  if (alloc_array) delete[] (uchar *)array;
+  if (alloc_array) delete[] (ubyte *)array;
 }
 
-void Fl_Bitmap::uncache() {
+void Fl_Bitmap.uncache() {
   if (id) {
     fl_delete_bitmask((Fl_Offscreen)id);
     id = 0;
   }
 }
 
-void Fl_Bitmap::label(Fl_Widget* widget) {
-  widget->image(this);
+void Fl_Bitmap.label(Fl_Widget  widget) {
+  widget.image(this);
 }
 
-void Fl_Bitmap::label(Fl_Menu_Item* m) {
-  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
-  m->label(_FL_IMAGE_LABEL, (const char*)this);
+void Fl_Bitmap.label(Fl_Menu_Item* m) {
+  Fl.set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
+  m.label(_FL_IMAGE_LABEL, (char*)this);
 }
 
-Fl_Image *Fl_Bitmap::copy(int W, int H) {
-  Fl_Bitmap	*new_image;	// New RGB image
-  uchar		*new_array;	// New array for image data
+Fl_Image  Fl_Bitmap.copy(int W, int H) {
+  Fl_Bitmap	 new_image;	// New RGB image
+  ubyte		*new_array;	// New array for image data
 
   // Optimize the simple copy where the width and height are the same...
   if (W == w() && H == h()) {
-    new_array = new uchar [H * ((W + 7) / 8)];
+    new_array = new ubyte [H * ((W + 7) / 8)];
     memcpy(new_array, array, H * ((W + 7) / 8));
 
     new_image = new Fl_Bitmap(new_array, W, H);
-    new_image->alloc_array = 1;
+    new_image.alloc_array = 1;
 
     return new_image;
   }
   if (W <= 0 || H <= 0) return 0;
 
   // OK, need to resize the image data; allocate memory and 
-  uchar		*new_ptr,	// Pointer into new array
+  ubyte		*new_ptr,	// Pointer into new array
 		new_bit,	// Bit for new array
 		old_bit;	// Bit for old array
-  const uchar	*old_ptr;	// Pointer into old array
+  ubyte	*old_ptr;	// Pointer into old array
   int		sx, sy,		// Source coordinates
 		dx, dy,		// Destination coordinates
 		xerr, yerr,	// X & Y errors
@@ -537,9 +537,9 @@ Fl_Image *Fl_Bitmap::copy(int W, int H) {
   ystep  = h() / H;
 
   // Allocate memory for the new image...
-  new_array = new uchar [H * ((W + 7) / 8)];
+  new_array = new ubyte [H * ((W + 7) / 8)];
   new_image = new Fl_Bitmap(new_array, W, H);
-  new_image->alloc_array = 1;
+  new_image.alloc_array = 1;
 
   memset(new_array, 0, H * ((W + 7) / 8));
 
@@ -548,7 +548,7 @@ Fl_Image *Fl_Bitmap::copy(int W, int H) {
     for (dx = W, xerr = W, old_ptr = array + sy * ((w() + 7) / 8), sx = 0, new_bit = 1;
 	 dx > 0;
 	 dx --) {
-      old_bit = (uchar)(1 << (sx & 7));
+      old_bit = (ubyte)(1 << (sx & 7));
       if (old_ptr[sx / 8] & old_bit) *new_ptr |= new_bit;
 
       if (new_bit < 128) new_bit <<= 1;
@@ -581,6 +581,6 @@ Fl_Image *Fl_Bitmap::copy(int W, int H) {
 
 
 //
-// End of "$Id: Fl_Bitmap.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: bitmap.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

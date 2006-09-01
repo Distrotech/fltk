@@ -37,14 +37,14 @@
 // making the name, and then forgot about it. To avoid having to change
 // the header files I decided to store this value in the last character
 // of the font name array.
-#define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
+const int ENDOFBUFFER = 127;  // sizeof(Fl_Font.fontname)-1
 
 // turn a stored font name into a pretty name:
-const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
-#ifdef __APPLE_QD__
-  Fl_Fontdesc *f = fl_fonts + fnum;
-  if (!f->fontname[0]) {
-    const char* p = f->name;
+const char* Fl.get_font_name(Fl_Font fnum, int* ap) {
+version (__APPLE_QD__) {
+  Fl_Fontdesc  f = fl_fonts + fnum;
+  if (!f.fontname[0]) {
+    char* p = f.name;
     if (!p || !*p) {if (ap) *ap = 0; return "";}
     int type;
     switch (*p) {
@@ -53,34 +53,34 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
     case 'P': type = FL_BOLD | FL_ITALIC; break;
     default:  type = 0; break;
     }
-    strlcpy(f->fontname, p+1, ENDOFBUFFER);
-    if (type & FL_BOLD) strlcat(f->fontname, " bold", ENDOFBUFFER);
-    if (type & FL_ITALIC) strlcat(f->fontname, " italic", ENDOFBUFFER);
-    f->fontname[ENDOFBUFFER] = (char)type;
+    strlcpy(f.fontname, p+1, ENDOFBUFFER);
+    if (type & FL_BOLD) strlcat(f.fontname, " bold", ENDOFBUFFER);
+    if (type & FL_ITALIC) strlcat(f.fontname, " italic", ENDOFBUFFER);
+    f.fontname[ENDOFBUFFER] = (char)type;
   }
-  if (ap) *ap = f->fontname[ENDOFBUFFER];
-  return f->fontname;
-#elif defined(__APPLE_QUARTZ__)
-  Fl_Fontdesc *f = fl_fonts + fnum;
-  if (!f->fontname[0]) {
-    const char* p = f->name;
+  if (ap) *ap = f.fontname[ENDOFBUFFER];
+  return f.fontname;
+} else version (__APPLE_QUARTZ__) {
+  Fl_Fontdesc  f = fl_fonts + fnum;
+  if (!f.fontname[0]) {
+    char* p = f.name;
     if (!p || !*p) {if (ap) *ap = 0; return "";}
-    strlcpy(f->fontname, p, ENDOFBUFFER);
+    strlcpy(f.fontname, p, ENDOFBUFFER);
     int type = 0;
-    if (strstr(f->name, "Bold")) type |= FL_BOLD;
-    if (strstr(f->name, "Italic")) type |= FL_ITALIC;
-    f->fontname[ENDOFBUFFER] = (char)type;
+    if (strstr(f.name, "Bold")) type |= FL_BOLD;
+    if (strstr(f.name, "Italic")) type |= FL_ITALIC;
+    f.fontname[ENDOFBUFFER] = (char)type;
   }
-  if (ap) *ap = f->fontname[ENDOFBUFFER];
-  return f->fontname;
-#endif
+  if (ap) *ap = f.fontname[ENDOFBUFFER];
+  return f.fontname;
+}
 }
 
 static int fl_free_font = FL_FREE_FONT;
 
-Fl_Font Fl::set_fonts(const char* xstarname) {
+Fl_Font Fl.set_fonts(char* xstarname) {
 #pragma unused ( xstarname )
-#ifdef __APPLE_QD__
+version (__APPLE_QD__) {
   if (fl_free_font != FL_FREE_FONT) 
     return (Fl_Font)fl_free_font;
   static char styleLU[] = " BIP";
@@ -107,7 +107,7 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
     //printf( "Font Family: %s\n", buf+1 );
     int i;
     for (i=0; i<FL_FREE_FONT; i++) // skip if one of our built-in fonts
-      if (!strcmp(Fl::get_font_name((Fl_Font)i),(char*)buf+1)) break;
+      if (!strcmp(Fl.get_font_name((Fl_Font)i),(char*)buf+1)) break;
     if ( i < FL_FREE_FONT ) continue;
     FMCreateFontFamilyInstanceIterator( family, &ffiIterator );
     char pStyle = 0, nStyle;
@@ -120,7 +120,7 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
       if ( ( pStyle & ( 1<<(style&0x03) ) ) == 0 )
       {
         buf[0] = nStyle;
-        Fl::set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
+        Fl.set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
         pStyle |= ( 1<<(style&0x03) );
       }
     }
@@ -128,7 +128,7 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
   }
   FMDisposeFontFamilyIterator( &ffIterator );
   return (Fl_Font)fl_free_font;
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   ATSFontIterator it;
   ATSFontIteratorCreate(kATSFontContextGlobal, 0L, 0L, kATSOptionFlagsRestrictedScope, &it);  
   for (;;) {
@@ -141,25 +141,25 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
     CFStringGetCString(fname, buf, 1024, kCFStringEncodingASCII);
     int i;
     for (i=0; i<FL_FREE_FONT; i++) // skip if one of our built-in fonts
-      if (!strcmp(Fl::get_font_name((Fl_Font)i),buf)) break;
+      if (!strcmp(Fl.get_font_name((Fl_Font)i),buf)) break;
     if ( i < FL_FREE_FONT ) continue;
-    Fl::set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
+    Fl.set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
   }
   ATSFontIteratorRelease(&it);
   return (Fl_Font)fl_free_font;
-#endif
+}
 }
 
 static int array[128];
-int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
-  Fl_Fontdesc *s = fl_fonts+fnum;
-  if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
+int Fl.get_font_sizes(Fl_Font fnum, int*& sizep) {
+  Fl_Fontdesc  s = fl_fonts+fnum;
+  if (!s.name) s = fl_fonts; // empty slot in table, use entry 0
   int cnt = 0;
 
-#ifdef __APPLE_QD__
+version (__APPLE_QD__) {
   Str255 name;
-  int len = strlen( s->name );
-  memcpy(((char*)name)+1, s->name+1, len );
+  int len = strlen( s.name );
+  memcpy(((char*)name)+1, s.name+1, len );
   name[0] = len-1;
   FMFontFamily family = FMGetFontFamilyFromName( name );
   if ( family == kInvalidFontFamily ) return 0;
@@ -167,7 +167,7 @@ int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
   sizep = array;
   FMFont font;
   FMFontStyle style, fStyle;
-  switch ( s->name[0] ) {
+  switch ( s.name[0] ) {
     default :
       fStyle=0;
       break;
@@ -199,12 +199,12 @@ int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
     }
   }
   FMDisposeFontFamilyInstanceIterator( &ffiIterator );
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // ATS supports all font size 
   array[0] = 0;
   sizep = array;
   cnt = 1;
-#endif
+}
 
   return cnt;
 }

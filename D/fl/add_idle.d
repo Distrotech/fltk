@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_add_idle.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: add_idle.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Idle routine support for the Fast Light Tool Kit (FLTK).
 //
@@ -29,6 +28,9 @@
 // Allows you to manage an arbitrary set of idle() callbacks.
 // Replaces the older set_idle() call (which is used to implement this)
 
+module fl.add_idle;
+
+/+=
 #include <FL/Fl.H>
 
 struct idle_cb {
@@ -38,7 +40,7 @@ struct idle_cb {
 };
 
 // the callbacks are stored linked in a ring.  last points at the one
-// just called, first at the next to call.  last->next == first.
+// just called, first at the next to call.  last.next == first.
 
 static idle_cb* first;
 static idle_cb* last;
@@ -46,42 +48,42 @@ static idle_cb* freelist;
 
 static void call_idle() {
   idle_cb* p = first;
-  last = p; first = p->next;
-  p->cb(p->data); // this may call add_idle() or remove_idle()!
+  last = p; first = p.next;
+  p.cb(p.data); // this may call add_idle() or remove_idle()!
 }
 
-void Fl::add_idle(void (*cb)(void*), void* data) {
+void Fl.add_idle(void (*cb)(void*), void* data) {
   idle_cb* p = freelist;
-  if (p) freelist = p->next;
+  if (p) freelist = p.next;
   else p = new idle_cb;
-  p->cb = cb;
-  p->data = data;
+  p.cb = cb;
+  p.data = data;
   if (first) {
-    last->next = p;
+    last.next = p;
     last = p;
-    p->next = first;
+    p.next = first;
   } else {
     first = last = p;
-    p->next = p;
+    p.next = p;
     set_idle(call_idle);
   }
 }
 
-int Fl::has_idle(void (*cb)(void*), void* data) {
+int Fl.has_idle(void (*cb)(void*), void* data) {
   idle_cb* p = first;
   if (!p) return 0;
-  for (;; p = p->next) {
-    if (p->cb == cb && p->data == data) return 1;
+  for (;; p = p.next) {
+    if (p.cb == cb && p.data == data) return 1;
     if (p==last) return 0;
   }
 }
 
-void Fl::remove_idle(void (*cb)(void*), void* data) {
+void Fl.remove_idle(void (*cb)(void*), void* data) {
   idle_cb* p = first;
   if (!p) return;
   idle_cb* l = last;
-  for (;; p = p->next) {
-    if (p->cb == cb && p->data == data) break;
+  for (;; p = p.next) {
+    if (p.cb == cb && p.data == data) break;
     if (p==last) return; // not found
     l = p;
   }
@@ -90,13 +92,13 @@ void Fl::remove_idle(void (*cb)(void*), void* data) {
     set_idle(0);
   } else {
     last = l;
-    first = l->next = p->next;
+    first = l.next = p.next;
   }
-  p->next = freelist;
+  p.next = freelist;
   freelist = p;
 }
 
 //
-// End of "$Id: Fl_add_idle.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: add_idle.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

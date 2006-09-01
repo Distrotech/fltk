@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Tiled_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: tiled_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Tiled image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,42 +26,42 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Tiled_Image_H
-#  define Fl_Tiled_Image_H
+module fl.tiled_image;
 
-#  include "Fl_Image.H"
+
+public import fl.image;
 
 
 // Tiled image class. 
-class FL_EXPORT Fl_Tiled_Image : public Fl_Image {
+class Fl_Tiled_Image : Fl_Image {
   protected:
 
-  Fl_Image	*image_;		// The image that is shared
+  Fl_Image	 image_;		// The image that is shared
   int		alloc_image_;		// Did we allocate this image?
 
   public:
 
-  Fl_Tiled_Image(Fl_Image *i, int W = 0, int H = 0);
-  virtual ~Fl_Tiled_Image();
+  Fl_Tiled_Image(Fl_Image  i, int W = 0, int H = 0);
+  ~Fl_Tiled_Image();
 
-  virtual Fl_Image *copy(int W, int H);
-  Fl_Image *copy() { return copy(w(), h()); }
-  virtual void color_average(Fl_Color c, float i);
-  virtual void desaturate();
-  virtual void draw(int X, int Y, int W, int H, int cx, int cy);
+  Fl_Image  copy(int W, int H);
+  Fl_Image  copy() { return copy(w(), h()); }
+  void color_average(Fl_Color c, float i);
+  void desaturate();
+  void draw(int X, int Y, int W, int H, int cx, int cy);
   void draw(int X, int Y) { draw(X, Y, w(), h(), 0, 0); }
-  Fl_Image *image() { return image_; }
+  Fl_Image  image() { return image_; }
 };
 
-#endif // !Fl_Tiled_Image_H
+} // !Fl_Tiled_Image_H
 
 //
-// End of "$Id: Fl_Tiled_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// End of "$Id: tiled_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Tiled_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: tiled_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Tiled image code for the Fast Light Tool Kit (FLTK).
 //
@@ -88,25 +88,25 @@ class FL_EXPORT Fl_Tiled_Image : public Fl_Image {
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Tiled_Image.H>
-#include <FL/fl_draw.H>
+private import fl.tiled_image;
+private import fl.draw;
 
 
 //
-// 'Fl_Tiled_Image::Fl_Tiled_Image()' - Constructor.
+// 'Fl_Tiled_Image.Fl_Tiled_Image()' - Constructor.
 //
 // Use a width and height of 0 to tile the whole window/widget.
 //
 
-Fl_Tiled_Image::Fl_Tiled_Image(Fl_Image *i,	// I - Image to tile
+Fl_Tiled_Image.Fl_Tiled_Image(Fl_Image  i,	// I - Image to tile
                                int      W,	// I - Width of tiled area
 			       int      H) :	// I - Height of tiled area
   Fl_Image(W,H,0) {
   image_       = i;
   alloc_image_ = 0;
 
-  if (W == 0) w(Fl::w());
-  if (H == 0) h(Fl::h());
+  if (W == 0) w(Fl.w());
+  if (H == 0) h(Fl.h());
 }
 
 
@@ -120,11 +120,11 @@ Fl_Tiled_Image::~Fl_Tiled_Image() {
 
 
 //
-// 'Fl_Tiled_Image::copy()' - Copy and resize a tiled image...
+// 'Fl_Tiled_Image.copy()' - Copy and resize a tiled image...
 //
 
-Fl_Image *			// O - New image
-Fl_Tiled_Image::copy(int W,	// I - New width
+Fl_Image  			// O - New image
+Fl_Tiled_Image.copy(int W,	// I - New width
                      int H) {	// I - New height
   if (W == w() && H == h()) return this;
   else return new Fl_Tiled_Image(image_, W, H);
@@ -132,71 +132,71 @@ Fl_Tiled_Image::copy(int W,	// I - New width
 
 
 //
-// 'Fl_Tiled_Image::color_average()' - Blend colors...
+// 'Fl_Tiled_Image.color_average()' - Blend colors...
 //
 
 void
-Fl_Tiled_Image::color_average(Fl_Color c,	// I - Color to blend with
+Fl_Tiled_Image.color_average(Fl_Color c,	// I - Color to blend with
                               float    i) {	// I - Blend fraction
   if (!alloc_image_) {
-    image_       = image_->copy();
+    image_       = image_.copy();
     alloc_image_ = 1;
   }
 
-  image_->color_average(c, i);
+  image_.color_average(c, i);
 }
 
 
 //
-// 'Fl_Tiled_Image::desaturate()' - Convert the image to grayscale...
+// 'Fl_Tiled_Image.desaturate()' - Convert the image to grayscale...
 //
 
 void
-Fl_Tiled_Image::desaturate() {
+Fl_Tiled_Image.desaturate() {
   if (!alloc_image_) {
-    image_       = image_->copy();
+    image_       = image_.copy();
     alloc_image_ = 1;
   }
 
-  image_->desaturate();
+  image_.desaturate();
 }
 
 
 //
-// 'Fl_Tiled_Image::draw()' - Draw a shared image...
+// 'Fl_Tiled_Image.draw()' - Draw a shared image...
 //
 
 void
-Fl_Tiled_Image::draw(int X,	// I - Starting X position
+Fl_Tiled_Image.draw(int X,	// I - Starting X position
                      int Y,	// I - Starting Y position
 		     int W,	// I - Width of area to be filled
 		     int H,	// I - Height of area to be filled
 		     int cx,	// I - "Source" X position
 		     int cy) {	// I - "Source" Y position
-  if (!image_->w() || !image_->h()) return;
-  if (W == 0) W = Fl::w();
-  if (H == 0) H = Fl::h();
+  if (!image_.w() || !image_.h()) return;
+  if (W == 0) W = Fl.w();
+  if (H == 0) H = Fl.h();
 
   fl_clip(X, Y, W, H);
 
   X += cx;
   Y += cy;
 
-  X = X - (X % image_->w());
-  Y = Y - (Y % image_->h());
+  X = X - (X % image_.w());
+  Y = Y - (Y % image_.h());
 
   W += X;
   H += Y;
 
-  for (int yy = Y; yy < H; yy += image_->h())
-    for (int xx = X; xx < W; xx += image_->w())
-      image_->draw(xx, yy);
+  for (int yy = Y; yy < H; yy += image_.h())
+    for (int xx = X; xx < W; xx += image_.w())
+      image_.draw(xx, yy);
 
   fl_pop_clip();
 }
 
 
 //
-// End of "$Id: Fl_Tiled_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: tiled_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

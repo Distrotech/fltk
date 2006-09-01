@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Gl_Choice.H 4052 2005-02-24 21:55:12Z mike $"
+// "$Id: gl_choice.d 4052 2005-02-24 21:55:12Z mike $"
 //
 // OpenGL definitions for the Fast Light Tool Kit (FLTK).
 //
@@ -50,91 +50,91 @@
 //
 // This code is used by Fl_Gl_Window, gl_start(), and gl_visual()
 
-#ifndef Fl_Gl_Choice_H
-#define Fl_Gl_Choice_H
+module fl.gl_choice;
+
 
 // Warning: whatever GLContext is defined to must take exactly the same
 // space in a structure as a void*!!!
-#ifdef WIN32
+version (WIN32) {
 #  include <FL/gl.h>
-#  define GLContext HGLRC
-#elif defined(__APPLE_QD__)
+const int GLContext = HGLRC; 
+} else version (__APPLE_QD__) {
 #  include <OpenGL/gl.h>
 #  include <AGL/agl.h>
-#  define GLContext AGLContext
-#elif defined(__APPLE_QUARTZ__)
+const int GLContext = AGLContext; 
+} else version (__APPLE_QUARTZ__) {
 // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
 #  include <OpenGL/gl.h>
 #  include <AGL/agl.h>
-#  define GLContext AGLContext
-#else
+const int GLContext = AGLContext; 
+} else {
 #  include <GL/glx.h>
-#  define GLContext GLXContext
-#endif
+const int GLContext = GLXContext; 
+}
 
 // Describes crap needed to create a GLContext.
 class Fl_Gl_Choice {
   int mode;
-  const int *alist;
-  Fl_Gl_Choice *next;
+  int *alist;
+  Fl_Gl_Choice  next;
 public:
-#ifdef WIN32
+version (WIN32) {
   int pixelformat;	// the visual to use
   PIXELFORMATDESCRIPTOR pfd; // some wgl calls need this thing
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   AGLPixelFormat pixelformat;
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
   AGLPixelFormat pixelformat;
-#else
+} else {
   XVisualInfo *vis;	// the visual to use
   Colormap colormap;	// a colormap for that visual
-#endif
+}
   // Return one of these structures for a given gl mode.
   // The second argument is a glX attribute list, and is used if mode is
   // zero.  This is not supported on Win32:
-  static Fl_Gl_Choice *find(int mode, const int *);
+  static Fl_Gl_Choice  find(int mode, int *);
 };
 
 class Fl_Window;
 
-#ifdef WIN32
+version (WIN32) {
 
-GLContext fl_create_gl_context(Fl_Window*, const Fl_Gl_Choice*, int layer=0);
+GLContext fl_create_gl_context(Fl_Window , Fl_Gl_Choice , int layer=0);
 
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
 
-GLContext fl_create_gl_context(Fl_Window*, const Fl_Gl_Choice*, int layer=0);
+GLContext fl_create_gl_context(Fl_Window , Fl_Gl_Choice , int layer=0);
 
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
 // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
 
-GLContext fl_create_gl_context(Fl_Window*, const Fl_Gl_Choice*, int layer=0);
+GLContext fl_create_gl_context(Fl_Window , Fl_Gl_Choice , int layer=0);
 
-#else
+} else {
 
 GLContext fl_create_gl_context(XVisualInfo* vis);
 
-static inline
-GLContext fl_create_gl_context(Fl_Window*, const Fl_Gl_Choice* g) {
-  return fl_create_gl_context(g->vis);
+static 
+GLContext fl_create_gl_context(Fl_Window , Fl_Gl_Choice  g) {
+  return fl_create_gl_context(g.vis);
 }
 
-#endif
+}
 
-void fl_set_gl_context(Fl_Window*, GLContext);
+void fl_set_gl_context(Fl_Window , GLContext);
 void fl_no_gl_context();
 void fl_delete_gl_context(GLContext);
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Gl_Choice.H 4052 2005-02-24 21:55:12Z mike $".
+// End of "$Id: gl_choice.d 4052 2005-02-24 21:55:12Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Gl_Choice.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: gl_choice.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // OpenGL visual selection code for the Fast Light Tool Kit (FLTK).
 //
@@ -166,32 +166,32 @@ void fl_delete_gl_context(GLContext);
 #  include <FL/Fl.H>
 #  include <FL/x.H>
 #  include <stdlib.h>
-#  include "Fl_Gl_Choice.H"
+private import fl.gl_choice;
 #  include <FL/gl_draw.H>
-#  include "flstring.h"
+private import fl.flstring;
 
-#  ifdef __APPLE__
-#    include <FL/Fl_Window.H>
-#  endif
+version (__APPLE__) {
+private import fl.window;
+}
 
-#  ifdef WIN32
+version (WIN32) {
 void fl_save_dc(HWND, HDC);
-#  endif
+}
 
-static Fl_Gl_Choice *first;
+static Fl_Gl_Choice  first;
 
 // this assummes one of the two arguments is zero:
 // We keep the list system in Win32 to stay compatible and interpret
 // the list later...
-Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
-  Fl_Gl_Choice *g;
+Fl_Gl_Choice  Fl_Gl_Choice.find(int m, int *alistp) {
+  Fl_Gl_Choice  g;
   
-  for (g = first; g; g = g->next)
-    if (g->mode == m && g->alist == alistp) 
+  for (g = first; g; g = g.next)
+    if (g.mode == m && g.alist == alistp) 
       return g;
 
-#  ifdef __APPLE_QD__
-  const int *blist;
+version (__APPLE_QD__) {
+  int *blist;
   int list[32];
     
   if (alistp)
@@ -227,11 +227,11 @@ Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
     if (m & FL_STENCIL) {
       list[n++] = AGL_STENCIL_SIZE; list[n++] = 1;
     }
-#    ifdef AGL_STEREO
+version (AGL_STEREO) {
     if (m & FL_STEREO) {
       list[n++] = AGL_STEREO;
     }
-#    endif
+}
     list[n] = AGL_NONE;
     blist = list;
   }
@@ -239,9 +239,9 @@ Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
   AGLPixelFormat fmt = aglChoosePixelFormat(NULL, 0, (GLint*)blist);
   if (!fmt) return 0;
 
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
-  const int *blist;
+  int *blist;
   int list[32];
    
   if (alistp)
@@ -277,11 +277,11 @@ Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
     if (m & FL_STENCIL) {
       list[n++] = AGL_STENCIL_SIZE; list[n++] = 1;
     }
-#    ifdef AGL_STEREO
+version (AGL_STEREO) {
     if (m & FL_STEREO) {
       list[n++] = AGL_STEREO;
     }
-#    endif
+}
     list[n] = AGL_NONE;
     blist = list;
   }
@@ -291,7 +291,7 @@ Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
   
 #  elif !defined(WIN32)    
 
-  const int *blist;
+  int *blist;
   int list[32];
     
   if (alistp)
@@ -330,12 +330,12 @@ Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
     if (m & FL_STEREO) {
       list[n++] = GLX_STEREO;
     }
-#    if defined(GLX_VERSION_1_1) && defined(GLX_SGIS_multisample)
+version (GLX_VERSION_1_1) && defined(GLX_SGIS_multisample) {
     if (m & FL_MULTISAMPLE) {
       list[n++] = GLX_SAMPLES_SGIS;
       list[n++] = 4; // value Glut uses
     }
-#    endif
+}
     list[n] = 0;
     blist = list;
   }
@@ -343,13 +343,13 @@ Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
   fl_open_display();
   XVisualInfo *visp = glXChooseVisual(fl_display, fl_screen, (int *)blist);
   if (!visp) {
-#    if defined(GLX_VERSION_1_1) && defined(GLX_SGIS_multisample)
+version (GLX_VERSION_1_1) && defined(GLX_SGIS_multisample) {
     if (m&FL_MULTISAMPLE) return find(m&~FL_MULTISAMPLE,0);
-#    endif
+}
     return 0;
   }
 
-#  else
+} else {
 
   // Replacement for ChoosePixelFormat() that finds one with an overlay
   // if possible:
@@ -385,33 +385,33 @@ Fl_Gl_Choice *Fl_Gl_Choice::find(int m, const int *alistp) {
   //printf("Chosen pixel format is %d\n", pixelformat);
   if (!pixelformat) return 0;
 
-#  endif
+}
 
   g = new Fl_Gl_Choice;
-  g->mode = m;
-  g->alist = alistp;
-  g->next = first;
+  g.mode = m;
+  g.alist = alistp;
+  g.next = first;
   first = g;
 
-#  ifdef WIN32
-  g->pixelformat = pixelformat;
-  g->pfd = chosen_pfd;
-#  elif defined(__APPLE_QD__)
-  g->pixelformat = fmt;
-#  elif defined(__APPLE_QUARTZ__)
+version (WIN32) {
+  g.pixelformat = pixelformat;
+  g.pfd = chosen_pfd;
+} else version (__APPLE_QD__) {
+  g.pixelformat = fmt;
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
-  g->pixelformat = fmt;
-#  else
-  g->vis = visp;
+  g.pixelformat = fmt;
+} else {
+  g.vis = visp;
 
   if (/*MaxCmapsOfScreen(ScreenOfDisplay(fl_display,fl_screen))==1 && */
-      visp->visualid == fl_visual->visualid &&
+      visp.visualid == fl_visual.visualid &&
       !getenv("MESA_PRIVATE_CMAP"))
-    g->colormap = fl_colormap;
+    g.colormap = fl_colormap;
   else
-    g->colormap = XCreateColormap(fl_display, RootWindow(fl_display,fl_screen),
-				  visp->visual, AllocNone);
-#  endif
+    g.colormap = XCreateColormap(fl_display, RootWindow(fl_display,fl_screen),
+				  visp.visual, AllocNone);
+}
 
   return g;
 }
@@ -443,18 +443,18 @@ static void del_context(GLContext ctx) {
   if (!nContext) gl_remove_displaylist_fonts();
 }
 
-#  ifdef WIN32
+version (WIN32) {
 
-GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int layer) {
-  Fl_X* i = Fl_X::i(window);
-  HDC hdc = i->private_dc;
+GLContext fl_create_gl_context(Fl_Window  window, Fl_Gl_Choice  g, int layer) {
+  Fl_X  i = Fl_X.i(window);
+  HDC hdc = i.private_dc;
   if (!hdc) {
-    hdc = i->private_dc = GetDCEx(i->xid, 0, DCX_CACHE);
-    fl_save_dc(i->xid, hdc);
-    SetPixelFormat(hdc, g->pixelformat, (PIXELFORMATDESCRIPTOR*)(&g->pfd));
+    hdc = i.private_dc = GetDCEx(i.xid, 0, DCX_CACHE);
+    fl_save_dc(i.xid, hdc);
+    SetPixelFormat(hdc, g.pixelformat, (PIXELFORMATDESCRIPTOR*)(&g.pfd));
 #    if USE_COLORMAP
     if (fl_palette) SelectPalette(hdc, fl_palette, FALSE);
-#    endif
+}
   }
   GLContext context =
     layer ? wglCreateLayerContext(hdc, layer) : wglCreateContext(hdc);
@@ -466,38 +466,38 @@ GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int lay
   return context;
 }
 
-#  elif defined(__APPLE_QD__)
-GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int layer) {
+} else version (__APPLE_QD__) {
+GLContext fl_create_gl_context(Fl_Window  window, Fl_Gl_Choice  g, int layer) {
     GLContext context, shared_ctx = context_list ? context_list[0] : 0;
-    context = aglCreateContext( g->pixelformat, shared_ctx);
+    context = aglCreateContext( g.pixelformat, shared_ctx);
     if (!context) return 0;
     add_context((GLContext)context);
-    if ( window->parent() ) {
+    if ( window.parent() ) {
       Rect wrect; GetWindowPortBounds( fl_xid(window), &wrect );
-      GLint rect[] = { window->x(), wrect.bottom-window->h()-window->y(), window->w(), window->h() }; 
+      GLint rect[] = { window.x(), wrect.bottom-window.h()-window.y(), window.w(), window.h() }; 
       aglSetInteger( (GLContext)context, AGL_BUFFER_RECT, rect );
       aglEnable( (GLContext)context, AGL_BUFFER_RECT );
     }
     aglSetDrawable( context, GetWindowPort( fl_xid(window) ) );
     return (context);
 }
-#  elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
-  GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int layer) {
+  GLContext fl_create_gl_context(Fl_Window  window, Fl_Gl_Choice  g, int layer) {
     GLContext context, shared_ctx = context_list ? context_list[0] : 0;
-    context = aglCreateContext( g->pixelformat, shared_ctx);
+    context = aglCreateContext( g.pixelformat, shared_ctx);
     if (!context) return 0;
     add_context((GLContext)context);
-    if ( window->parent() ) {
+    if ( window.parent() ) {
       Rect wrect; GetWindowPortBounds( fl_xid(window), &wrect );
-      GLint rect[] = { window->x(), wrect.bottom-window->h()-window->y(), window->w(), window->h() };
+      GLint rect[] = { window.x(), wrect.bottom-window.h()-window.y(), window.w(), window.h() };
       aglSetInteger( (GLContext)context, AGL_BUFFER_RECT, rect );
       aglEnable( (GLContext)context, AGL_BUFFER_RECT );
     }
     aglSetDrawable( context, GetWindowPort( fl_xid(window) ) );
     return (context);
 }
-#  else
+} else {
 
 GLContext fl_create_gl_context(XVisualInfo* vis) {
   GLContext shared_ctx = context_list ? context_list[0] : 0;
@@ -507,80 +507,80 @@ GLContext fl_create_gl_context(XVisualInfo* vis) {
   return context;
 }
 
-#  endif
+}
 
 static GLContext cached_context;
-static Fl_Window* cached_window;
+static Fl_Window  cached_window;
 
-void fl_set_gl_context(Fl_Window* w, GLContext context) {
+void fl_set_gl_context(Fl_Window  w, GLContext context) {
   if (context != cached_context || w != cached_window) {
     cached_context = context;
     cached_window = w;
-#  ifdef WIN32
-    wglMakeCurrent(Fl_X::i(w)->private_dc, context);
-#  elif defined(__APPLE_QD__)
-    if ( w->parent() ) { //: resize our GL buffer rectangle
+version (WIN32) {
+    wglMakeCurrent(Fl_X.i(w)->private_dc, context);
+} else version (__APPLE_QD__) {
+    if ( w.parent() ) { //: resize our GL buffer rectangle
       Rect wrect; GetWindowPortBounds( fl_xid(w), &wrect );
-      GLint rect[] = { w->x(), wrect.bottom-w->h()-w->y(), w->w(), w->h() };
+      GLint rect[] = { w.x(), wrect.bottom-w.h()-w.y(), w.w(), w.h() };
       aglSetInteger( context, AGL_BUFFER_RECT, rect );
       aglEnable( context, AGL_BUFFER_RECT );
     }
     aglSetDrawable(context, GetWindowPort( fl_xid(w) ) ); 
     aglSetCurrentContext(context);
-#  elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
     // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
-    if ( w->parent() ) { //: resize our GL buffer rectangle
+    if ( w.parent() ) { //: resize our GL buffer rectangle
       Rect wrect; GetWindowPortBounds( fl_xid(w), &wrect );
-      GLint rect[] = { w->x(), wrect.bottom-w->h()-w->y(), w->w(), w->h() };
+      GLint rect[] = { w.x(), wrect.bottom-w.h()-w.y(), w.w(), w.h() };
       aglSetInteger( context, AGL_BUFFER_RECT, rect );
       aglEnable( context, AGL_BUFFER_RECT );
     }
     aglSetDrawable(context, GetWindowPort( fl_xid(w) ) );
     aglSetCurrentContext(context);
-#  else
+} else {
     glXMakeCurrent(fl_display, fl_xid(w), context);
-#  endif
+}
   }
 }
 
 void fl_no_gl_context() {
   cached_context = 0;
   cached_window = 0;
-#  ifdef WIN32
+version (WIN32) {
   wglMakeCurrent(0, 0);
-#  elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   aglSetCurrentContext(0);
-#  elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
   aglSetCurrentContext(0);
-#  else
+} else {
   glXMakeCurrent(fl_display, 0, 0);
-#  endif
+}
 }
 
 void fl_delete_gl_context(GLContext context) {
   if (cached_context == context) fl_no_gl_context();
-#  ifdef WIN32
+version (WIN32) {
   wglDeleteContext(context);
-#  elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   aglSetCurrentContext( NULL );
   aglSetDrawable( context, NULL );    
   aglDestroyContext( context );
-#  elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
   aglSetCurrentContext( NULL );
   aglSetDrawable( context, NULL );
   aglDestroyContext( context );
-#  else
+} else {
   glXDestroyContext(fl_display, context);
-#  endif
+}
   del_context(context);
 }
 
-#endif // HAVE_GL
+} // HAVE_GL
 
 
 //
-// End of "$Id: Fl_Gl_Choice.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: gl_choice.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

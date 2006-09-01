@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Toggle_Light_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: toggle_light_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Toggle light button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -28,12 +28,12 @@
 
 // provided for back-compatability only
 
-#ifndef Fl_Toggle_Light_Button
-#include "Fl_Light_Button.H"
-#define Fl_Toggle_Light_Button Fl_Light_Button
-#endif
+version (!Fl_Toggle_Light_Button) {
+public import fl.light_button;
+const int Fl_Toggle_Light_Button = Fl_Light_Button; 
+}
 
 //
-// End of "$Id: Fl_Toggle_Light_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: toggle_light_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

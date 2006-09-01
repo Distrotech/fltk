@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Scroll.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: scroll.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Scroll header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,19 +26,19 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Scroll_H
-#define Fl_Scroll_H
+module fl.scroll;
 
-#include "Fl_Group.H"
-#include "Fl_Scrollbar.H"
 
-class FL_EXPORT Fl_Scroll : public Fl_Group {
+public import fl.group;
+public import fl.scrollbar;
+
+class Fl_Scroll : Fl_Group {
 
   int xposition_, yposition_;
   int width_, height_;
   int oldx, oldy;
-  static void hscrollbar_cb(Fl_Widget*, void*);
-  static void scrollbar_cb(Fl_Widget*, void*);
+  static void hscrollbar_cb(Fl_Widget , void*);
+  static void scrollbar_cb(Fl_Widget , void*);
   void fix_scrollbar_order();
   static void draw_clip(void*,int,int,int,int);
   void bbox(int&,int&,int&,int&);
@@ -55,7 +55,7 @@ public:
   void resize(int,int,int,int);
   int handle(int);
 
-  Fl_Scroll(int X,int Y,int W,int H,const char*l=0);
+  Fl_Scroll(int X,int Y,int W,int H,char*l=0);
 
   enum { // values for type()
     HORIZONTAL = 1,
@@ -67,21 +67,21 @@ public:
     BOTH_ALWAYS = 7
   };
 
-  int xposition() const {return xposition_;}
-  int yposition() const {return yposition_;}
+  int xposition() {return xposition_;}
+  int yposition() {return yposition_;}
   void position(int, int);
   void clear();
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Scroll.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: scroll.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Scroll.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: scroll.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Scroll widget for the Fast Light Tool Kit (FLTK).
 //
@@ -108,14 +108,14 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Tiled_Image.H>
-#include <FL/Fl_Scroll.H>
-#include <FL/fl_draw.H>
+private import fl.tiled_image;
+private import fl.scroll;
+private import fl.draw;
 
 // Clear all but the scrollbars...
-void Fl_Scroll::clear() {
+void Fl_Scroll.clear() {
   for (int i=children() - 1; i >= 0; i --) {
-    Fl_Widget* o = child(i);
+    Fl_Widget  o = child(i);
     if (o != &hscrollbar && o != &scrollbar) {
       remove(o);
       delete o;
@@ -124,8 +124,8 @@ void Fl_Scroll::clear() {
 }
 
 // Insure the scrollbars are the last children:
-void Fl_Scroll::fix_scrollbar_order() {
-  Fl_Widget** a = (Fl_Widget**)array();
+void Fl_Scroll.fix_scrollbar_order() {
+  Fl_Widget * a = (Fl_Widget *)array();
   if (a[children()-1] != &scrollbar) {
     int i,j; for (i = j = 0; j < children(); j++)
       if (a[j] != &hscrollbar && a[j] != &scrollbar) a[i++] = a[j];
@@ -134,11 +134,11 @@ void Fl_Scroll::fix_scrollbar_order() {
   }
 }
 
-void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H) {
+void Fl_Scroll.draw_clip(void* v,int X, int Y, int W, int H) {
   fl_clip(X,Y,W,H);
-  Fl_Scroll* s = (Fl_Scroll*)v;
+  Fl_Scroll  s = (Fl_Scroll )v;
   // erase background as needed...
-  switch (s->box()) {
+  switch (s.box()) {
     case FL_NO_BOX :
     case FL_UP_FRAME :
     case FL_DOWN_FRAME :
@@ -152,48 +152,48 @@ void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H) {
     case _FL_OVAL_FRAME :
     case _FL_PLASTIC_UP_FRAME :
     case _FL_PLASTIC_DOWN_FRAME :
-        if (s->parent() == (Fl_Group *)s->window() && Fl::scheme_bg_) {
-	  Fl::scheme_bg_->draw(X-(X%((Fl_Tiled_Image *)Fl::scheme_bg_)->image()->w()),
-	                       Y-(Y%((Fl_Tiled_Image *)Fl::scheme_bg_)->image()->h()),
-	                       W+((Fl_Tiled_Image *)Fl::scheme_bg_)->image()->w(),
-			       H+((Fl_Tiled_Image *)Fl::scheme_bg_)->image()->h());
+        if (s.parent() == (Fl_Group  )s.window() && Fl.scheme_bg_) {
+	  Fl.scheme_bg_.draw(X-(X%((Fl_Tiled_Image  )Fl.scheme_bg_)->image()->w()),
+	                       Y-(Y%((Fl_Tiled_Image  )Fl.scheme_bg_)->image()->h()),
+	                       W+((Fl_Tiled_Image  )Fl.scheme_bg_)->image()->w(),
+			       H+((Fl_Tiled_Image  )Fl.scheme_bg_)->image()->h());
 	  break;
         }
 
     default :
-	fl_color(s->color());
+	fl_color(s.color());
 	fl_rectf(X,Y,W,H);
 	break;
   }
-  Fl_Widget*const* a = s->array();
-  for (int i=s->children()-2; i--;) {
-    Fl_Widget& o = **a++;
-    s->draw_child(o);
-    s->draw_outside_label(o);
+  Fl_Widget const* a = s.array();
+  for (int i=s.children()-2; i--;) {
+    Fl_Widget  o = **a++;
+    s.draw_child(o);
+    s.draw_outside_label(o);
   }
   fl_pop_clip();
 }
 
-void Fl_Scroll::bbox(int& X, int& Y, int& W, int& H) {
-  X = x()+Fl::box_dx(box());
-  Y = y()+Fl::box_dy(box());
-  W = w()-Fl::box_dw(box());
-  H = h()-Fl::box_dh(box());
+void Fl_Scroll.bbox(int& X, int& Y, int& W, int& H) {
+  X = x()+Fl.box_dx(box());
+  Y = y()+Fl.box_dy(box());
+  W = w()-Fl.box_dw(box());
+  H = h()-Fl.box_dh(box());
   if (scrollbar.visible()) {
     W -= scrollbar.w();
-    if (scrollbar.align() & FL_ALIGN_LEFT) X += scrollbar.w();
+    if (scrollbar.alignment() & FL_ALIGN_LEFT) X += scrollbar.w();
   }
   if (hscrollbar.visible()) {
     H -= hscrollbar.h();
-    if (scrollbar.align() & FL_ALIGN_TOP) Y += hscrollbar.h();
+    if (scrollbar.alignment() & FL_ALIGN_TOP) Y += hscrollbar.h();
   }
 }
 
-void Fl_Scroll::draw() {
+void Fl_Scroll.draw() {
   fix_scrollbar_order();
   int X,Y,W,H; bbox(X,Y,W,H);
 
-  uchar d = damage();
+  ubyte d = damage();
 
   if (d & FL_DAMAGE_ALL) { // full redraw
     draw_box(box(),x(),y(),w(),h(),color());
@@ -204,7 +204,7 @@ void Fl_Scroll::draw() {
       fl_scroll(X, Y, W, H, oldx-xposition_, oldy-yposition_, draw_clip, this);
 
       // Erase the background as needed...
-      Fl_Widget*const* a = array();
+      Fl_Widget const* a = array();
       int L, R, T, B;
       L = 999999;
       R = 0;
@@ -223,7 +223,7 @@ void Fl_Scroll::draw() {
     }
     if (d & FL_DAMAGE_CHILD) { // draw damaged children
       fl_clip(X, Y, W, H);
-      Fl_Widget*const* a = array();
+      Fl_Widget const* a = array();
       for (int i=children()-2; i--;) update_child(**a++);
       fl_pop_clip();
     }
@@ -231,41 +231,41 @@ void Fl_Scroll::draw() {
 
   // accumulate bounding box of children:
   int l = X; int r = X; int t = Y; int b = Y;
-  Fl_Widget*const* a = array();
+  Fl_Widget const* a = array();
   for (int i=children()-2; i--;) {
-    Fl_Object* o = *a++;
-    if (o->x() < l) l = o->x();
-    if (o->y() < t) t = o->y();
-    if (o->x()+o->w() > r) r = o->x()+o->w();
-    if (o->y()+o->h() > b) b = o->y()+o->h();
+    Fl_Object  o = *a++;
+    if (o.x() < l) l = o.x();
+    if (o.y() < t) t = o.y();
+    if (o.x()+o.w() > r) r = o.x()+o.w();
+    if (o.y()+o.h() > b) b = o.y()+o.h();
   }
 
   // turn the scrollbars on and off as necessary:
   // See if children would fit if we had no scrollbars...
-  X = x()+Fl::box_dx(box());
-  Y = y()+Fl::box_dy(box());
-  W = w()-Fl::box_dw(box());
-  H = h()-Fl::box_dh(box());
+  X = x()+Fl.box_dx(box());
+  Y = y()+Fl.box_dy(box());
+  W = w()-Fl.box_dw(box());
+  H = h()-Fl.box_dh(box());
   int vneeded = 0;
   int hneeded = 0;
   if (type() & VERTICAL) {
     if ((type() & ALWAYS_ON) || t < Y || b > Y+H) {
       vneeded = 1;
       W -= scrollbar.w();
-      if (scrollbar.align() & FL_ALIGN_LEFT) X += scrollbar.w();
+      if (scrollbar.alignment() & FL_ALIGN_LEFT) X += scrollbar.w();
     }
   }
   if (type() & HORIZONTAL) {
     if ((type() & ALWAYS_ON) || l < X || r > X+W) {
       hneeded = 1;
       H -= hscrollbar.h();
-      if (scrollbar.align() & FL_ALIGN_TOP) Y += hscrollbar.h();
+      if (scrollbar.alignment() & FL_ALIGN_TOP) Y += hscrollbar.h();
       // recheck vertical since we added a horizontal scrollbar
       if (!vneeded && (type() & VERTICAL)) {
 	if ((type() & ALWAYS_ON) || t < Y || b > Y+H) {
 	  vneeded = 1;
 	  W -= scrollbar.w();
-	  if (scrollbar.align() & FL_ALIGN_LEFT) X += scrollbar.w();
+	  if (scrollbar.alignment() & FL_ALIGN_LEFT) X += scrollbar.w();
 	}
       }
     }
@@ -278,7 +278,7 @@ void Fl_Scroll::draw() {
   else if (!vneeded && scrollbar.visible()) {
     scrollbar.clear_visible();
     draw_clip(this,
-	      scrollbar.align()&FL_ALIGN_LEFT ? X : X+W-scrollbar.w(),
+	      scrollbar.alignment()&FL_ALIGN_LEFT ? X : X+W-scrollbar.w(),
 	      Y, scrollbar.w(), H);
     d = FL_DAMAGE_ALL;
   }
@@ -289,17 +289,17 @@ void Fl_Scroll::draw() {
   else if (!hneeded && hscrollbar.visible()) {
     hscrollbar.clear_visible();
     draw_clip(this,
-	      X, scrollbar.align()&FL_ALIGN_TOP ? Y : Y+H-hscrollbar.h(),
+	      X, scrollbar.alignment()&FL_ALIGN_TOP ? Y : Y+H-hscrollbar.h(),
 	      W, hscrollbar.h());
     d = FL_DAMAGE_ALL;
   }
 
-  scrollbar.resize(scrollbar.align()&FL_ALIGN_LEFT ? X-scrollbar.w() : X+W,
+  scrollbar.resize(scrollbar.alignment()&FL_ALIGN_LEFT ? X-scrollbar.w() : X+W,
 		   Y, scrollbar.w(), H);
   scrollbar.value(oldy = yposition_ = (Y-t), H, 0, b-t);
 
   hscrollbar.resize(X,
-		    scrollbar.align()&FL_ALIGN_TOP ? Y-hscrollbar.h() : Y+H,
+		    scrollbar.alignment()&FL_ALIGN_TOP ? Y-hscrollbar.h() : Y+H,
 		    W, hscrollbar.h());
   hscrollbar.value(oldx = xposition_ = (X-l), W, 0, r-l);
 
@@ -318,46 +318,46 @@ void Fl_Scroll::draw() {
   }
 }
 
-void Fl_Scroll::resize(int X, int Y, int W, int H) {
+void Fl_Scroll.resize(int X, int Y, int W, int H) {
   fix_scrollbar_order();
   // move all the children:
-  Fl_Widget*const* a = array();
+  Fl_Widget const* a = array();
   for (int i=children()-2; i--;) {
-    Fl_Object* o = *a++;
-    o->position(o->x()+X-x(), o->y()+Y-y());
+    Fl_Object  o = *a++;
+    o.position(o.x()+X-x(), o.y()+Y-y());
   }
-  Fl_Widget::resize(X,Y,W,H);
+  Fl_Widget.resize(X,Y,W,H);
 }
 
-void Fl_Scroll::position(int X, int Y) {
+void Fl_Scroll.position(int X, int Y) {
   int dx = xposition_-X;
   int dy = yposition_-Y;
   if (!dx && !dy) return;
   xposition_ = X;
   yposition_ = Y;
-  Fl_Widget*const* a = array();
+  Fl_Widget const* a = array();
   for (int i=children(); i--;) {
-    Fl_Widget* o = *a++;
+    Fl_Widget  o = *a++;
     if (o == &hscrollbar || o == &scrollbar) continue;
-    o->position(o->x()+dx, o->y()+dy);
+    o.position(o.x()+dx, o.y()+dy);
   }
-  if (parent() == (Fl_Group *)window() && Fl::scheme_bg_) damage(FL_DAMAGE_ALL);
+  if (parent() == (Fl_Group  )window() && Fl.scheme_bg_) damage(FL_DAMAGE_ALL);
   else damage(FL_DAMAGE_SCROLL);
 }
 
-void Fl_Scroll::hscrollbar_cb(Fl_Widget* o, void*) {
-  Fl_Scroll* s = (Fl_Scroll*)(o->parent());
-  s->position(int(((Fl_Scrollbar*)o)->value()), s->yposition());
+void Fl_Scroll.hscrollbar_cb(Fl_Widget  o, void*) {
+  Fl_Scroll  s = (Fl_Scroll )(o.parent());
+  s.position(int(((Fl_Scrollbar )o)->value()), s.yposition());
 }
 
-void Fl_Scroll::scrollbar_cb(Fl_Widget* o, void*) {
-  Fl_Scroll* s = (Fl_Scroll*)(o->parent());
-  s->position(s->xposition(), int(((Fl_Scrollbar*)o)->value()));
+void Fl_Scroll.scrollbar_cb(Fl_Widget  o, void*) {
+  Fl_Scroll  s = (Fl_Scroll )(o.parent());
+  s.position(s.xposition(), int(((Fl_Scrollbar )o)->value()));
 }
 
-#define SLIDER_WIDTH 16
+const int SLIDER_WIDTH = 16; 
 
-Fl_Scroll::Fl_Scroll(int X,int Y,int W,int H,const char* L)
+Fl_Scroll.Fl_Scroll(int X,int Y,int W,int H,char* L)
   : Fl_Group(X,Y,W,H,L), 
     scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
     hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH) {
@@ -369,12 +369,12 @@ Fl_Scroll::Fl_Scroll(int X,int Y,int W,int H,const char* L)
   scrollbar.callback(scrollbar_cb);
 }
 
-int Fl_Scroll::handle(int event) {
+int Fl_Scroll.handle(int event) {
   fix_scrollbar_order();
-  return Fl_Group::handle(event);
+  return Fl_Group.handle(event);
 }
 
 //
-// End of "$Id: Fl_Scroll.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: scroll.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

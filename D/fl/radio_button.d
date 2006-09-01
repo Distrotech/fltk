@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Radio_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: radio_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Radio button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Radio_Button_H
-#define Fl_Radio_Button_H
+module fl.radio_button;
 
-#include "Fl_Button.H"
 
-class Fl_Radio_Button : public Fl_Button {
+public import fl.button;
+
+class Fl_Radio_Button : Fl_Button {
 public:
-    Fl_Radio_Button(int x,int y,int w,int h,const char *l=0)
+    Fl_Radio_Button(int x,int y,int w,int h,char *l=0)
 	: Fl_Button(x,y,w,h,l) {type(FL_RADIO_BUTTON);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Radio_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: radio_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

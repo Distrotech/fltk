@@ -26,24 +26,24 @@
  *     http://www.fltk.org/str.php
  */
 
-#ifndef Fl_Export_H
-#  define Fl_Export_H
+module fl.export;
+
 
 /*
  * The following is only used when building DLLs under WIN32...
  */
 
-#  if defined(FL_DLL) && (defined(_MSC_VER) || defined(__MWERKS__) || defined(__BORLANDC__) || __GNUC__ >= 3)
-#    ifdef FL_LIBRARY
-#      define FL_EXPORT	__declspec(dllexport)
-#    else
-#      define FL_EXPORT	__declspec(dllimport)
-#    endif /* FL_LIBRARY */
-#  else
-#    define FL_EXPORT
-#  endif /* FL_DLL */
+version (FL_DLL) && (defined(_MSC_VER) || defined(__MWERKS__) || defined(__BORLANDC__) || __GNUC__ >= 3) {
+version (FL_LIBRARY) {
+#      define __declspec(dllexport)
+} else {
+#      define __declspec(dllimport)
+} /* FL_LIBRARY */
+} else {
+#    define 
+} /* FL_DLL */
 
-#endif /* !Fl_Export_H */
+} /* !Fl_Export_H  /
 
 /*
  * End of "$Id: Fl_Export.H 4288 2005-04-16 00:13:17Z mike $".

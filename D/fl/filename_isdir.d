@@ -28,26 +28,26 @@
 
 // Used by fl_file_chooser
 
-#include "flstring.h"
+private import fl.flstring;
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <ctype.h>
 #include <FL/filename.H>
 
 
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
-static inline int isdirsep(char c) {return c=='/' || c=='\\';}
-#else
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
+static int isdirsep(char c) {return c=='/' || c=='\\';}
+} else {
 #define isdirsep(c) ((c)=='/')
-#endif
+}
 
-int fl_filename_isdir(const char* n) {
+int fl_filename_isdir(char* n) {
   struct stat	s;
 
   // Do a quick optimization for filenames with a trailing slash...
   if (*n && isdirsep(n[strlen(n) - 1])) return 1;
 
-#ifdef WIN32
+version (WIN32) {
   char		fn[1024];
   int		length;
   // This workaround brought to you by the fine folks at Microsoft!
@@ -68,7 +68,7 @@ int fl_filename_isdir(const char* n) {
       n = fn;
     }
   }
-#endif
+}
 
   return !stat(n, &s) && (s.st_mode&0170000)==0040000;
 }

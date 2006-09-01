@@ -27,17 +27,17 @@
  */
 
 #include <stdio.h>
-#include "flstring.h"
+private import fl.flstring;
 
-#ifdef HAVE_SYS_STDTYPES_H
+version (HAVE_SYS_STDTYPES_H) {
 #  include <sys/stdtypes.h>
-#endif /* HAVE_SYS_STDTYPES_H */
+} /* HAVE_SYS_STDTYPES_H */
 
-#ifdef __cplusplus
+version (__cplusplus) {
 extern "C" {
-#endif
+}
 
-int fl_vsnprintf(char* buffer, size_t bufsize, const char* format, va_list ap) {
+int fl_vsnprintf(char* buffer, size_t bufsize, char* format, va_list ap) {
   char		*bufptr,		/* Pointer to position in buffer */
 		*bufend,		/* Pointer to end of buffer */
 		sign,			/* Sign of format width */
@@ -253,7 +253,7 @@ int fl_vsnprintf(char* buffer, size_t bufsize, const char* format, va_list ap) {
   return (bytes);
 }
 
-int fl_snprintf(char* str, size_t size, const char* fmt, ...) {
+int fl_snprintf(char* str, size_t size, char* fmt, ...) {
   int ret;
   va_list ap;
   va_start(ap, fmt);
@@ -262,9 +262,9 @@ int fl_snprintf(char* str, size_t size, const char* fmt, ...) {
   return ret;
 }
 
-#ifdef __cplusplus
+version (__cplusplus) {
 }
-#endif
+}
 
 /*
  * End of "$Id: vsnprintf.c 4548 2005-08-29 20:16:36Z matt $".

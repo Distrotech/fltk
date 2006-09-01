@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Positioner.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: positioner.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Positioner header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,14 +26,14 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Positioner_H
-#define Fl_Positioner_H
+module fl.positioner;
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
 
-class FL_EXPORT Fl_Positioner : public Fl_Widget {
+module fl.widget;
+public import fl.widget;
+}
+
+class Fl_Positioner : Fl_Widget {
 
   double xmin, ymin;
   double xmax, ymax;
@@ -50,36 +50,36 @@ protected:
 public:
 
   int handle(int);
-  Fl_Positioner(int x,int y,int w,int h, const char *l=0);
-  double xvalue() const {return xvalue_;}
-  double yvalue() const {return yvalue_;}
+  Fl_Positioner(int x,int y,int w,int h, char *l=0);
+  double xvalue() {return xvalue_;}
+  double yvalue() {return yvalue_;}
   int xvalue(double);
   int yvalue(double);
   int value(double,double);
   void xbounds(double, double);
-  double xminimum() const {return xmin;}
+  double xminimum() {return xmin;}
   void xminimum(double a) {xbounds(a,xmax);}
-  double xmaximum() const {return xmax;}
+  double xmaximum() {return xmax;}
   void xmaximum(double a) {xbounds(xmin,a);}
   void ybounds(double, double);
-  double yminimum() const {return ymin;}
+  double yminimum() {return ymin;}
   void yminimum(double a) {ybounds(a,ymax);}
-  double ymaximum() const {return ymax;}
+  double ymaximum() {return ymax;}
   void ymaximum(double a) {ybounds(ymin,a);}
   void xstep(double a) {xstep_ = a;}
   void ystep(double a) {ystep_ = a;}
 
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Positioner.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: positioner.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Positioner.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: positioner.d 5347 2006-08-23 12:57:42Z matt $"
 //
 // Positioner widget for the Fast Light Tool Kit (FLTK).
 //
@@ -109,8 +109,8 @@ public:
 // Written by: Mark Overmars
 
 #include <FL/Fl.H>
-#include <FL/Fl_Positioner.H>
-#include <FL/fl_draw.H>
+private import fl.positioner;
+private import fl.draw;
 
 static double flinear(double val, double smin, double smax, double gmin, double gmax)
 {
@@ -118,7 +118,7 @@ static double flinear(double val, double smin, double smax, double gmin, double 
   else return gmin + (gmax - gmin) * (val - smin) / (smax - smin);
 }
 
-void Fl_Positioner::draw(int X, int Y, int W, int H) {
+void Fl_Positioner.draw(int X, int Y, int W, int H) {
   int x1 = X + 4;
   int y1 = Y + 4;
   int w1 = W - 2 * 4;
@@ -131,12 +131,12 @@ void Fl_Positioner::draw(int X, int Y, int W, int H) {
   fl_yxline(xx, y1, y1+h1);
 }
 
-void Fl_Positioner::draw() {
+void Fl_Positioner.draw() {
   draw(x(), y(), w(), h());
   draw_label();
 }
 
-int Fl_Positioner::value(double X, double Y) {
+int Fl_Positioner.value(double X, double Y) {
   clear_changed();
   if (X == xvalue_ && Y == yvalue_) return 0;
   xvalue_ = X; yvalue_ = Y;
@@ -144,15 +144,15 @@ int Fl_Positioner::value(double X, double Y) {
   return 1;
 }
 
-int Fl_Positioner::xvalue(double X) {
+int Fl_Positioner.xvalue(double X) {
   return(value(X, yvalue_));
 }
 
-int Fl_Positioner::yvalue(double Y) {
+int Fl_Positioner.yvalue(double Y) {
   return(value(xvalue_, Y));
 }
 
-int Fl_Positioner::handle(int event, int X, int Y, int W, int H) {
+int Fl_Positioner.handle(int event, int X, int Y, int W, int H) {
   switch (event) {
   case FL_PUSH:
   case FL_DRAG:
@@ -161,7 +161,7 @@ int Fl_Positioner::handle(int event, int X, int Y, int W, int H) {
     double y1 = Y + 4;
     double w1 = W - 2 * 4;
     double h1 = H - 2 * 4;
-    double xx = flinear(Fl::event_x(), x1, x1+w1-1.0, xmin, xmax);
+    double xx = flinear(Fl.event_x(), x1, x1+w1-1.0, xmin, xmax);
     if (xstep_) xx = int(xx/xstep_+0.5) * xstep_;
     if (xmin < xmax) {
       if (xx < xmin) xx = xmin;
@@ -170,7 +170,7 @@ int Fl_Positioner::handle(int event, int X, int Y, int W, int H) {
       if (xx > xmin) xx = xmin;
       if (xx < xmax) xx = xmax;
     }
-    double yy = flinear(Fl::event_y(), y1, y1+h1-1.0, ymin, ymax);
+    double yy = flinear(Fl.event_y(), y1, y1+h1-1.0, ymin, ymax);
     if (ystep_) yy = int(yy/ystep_+0.5) * ystep_;
     if (ymin < ymax) {
       if (yy < ymin) yy = ymin;
@@ -179,7 +179,11 @@ int Fl_Positioner::handle(int event, int X, int Y, int W, int H) {
       if (yy > ymin) yy = ymin;
       if (yy < ymax) yy = ymax;
     }
-    if (value(xx, yy)) set_changed();}
+    if (xx != xvalue_ || yy != yvalue_) {
+      xvalue_ = xx; yvalue_ = yy;
+      set_changed();
+      redraw();
+                   } }
     if (!(when() & FL_WHEN_CHANGED ||
 	  (when() & FL_WHEN_RELEASE && event == FL_RELEASE))) return 1;
     if (changed() || when()&FL_WHEN_NOT_CHANGED) {
@@ -192,15 +196,15 @@ int Fl_Positioner::handle(int event, int X, int Y, int W, int H) {
   }
 }
 
-int Fl_Positioner::handle(int e) {
+int Fl_Positioner.handle(int e) {
   return handle(e, x(), y(), w(), h());
 }
 
-Fl_Positioner::Fl_Positioner(int X, int Y, int W, int H, const char* l)
+Fl_Positioner.Fl_Positioner(int X, int Y, int W, int H, char* l)
 : Fl_Widget(X, Y, W, H, l) {
   box(FL_DOWN_BOX);
   selection_color(FL_RED);
-  align(FL_ALIGN_BOTTOM);
+  alignment(FL_ALIGN_BOTTOM);
   when(FL_WHEN_CHANGED);
   xmin = ymin = 0;
   xmax = ymax = 1;
@@ -208,14 +212,14 @@ Fl_Positioner::Fl_Positioner(int X, int Y, int W, int H, const char* l)
   xstep_ = ystep_ = 0;
 }
 
-void Fl_Positioner::xbounds(double a, double b) {
+void Fl_Positioner.xbounds(double a, double b) {
   if (a != xmin || b != xmax) {
     xmin = a; xmax = b;
     redraw();
   }
 }
 
-void Fl_Positioner::ybounds(double a, double b) {
+void Fl_Positioner.ybounds(double a, double b) {
   if (a != ymin || b != ymax) {
     ymin = a; ymax = b;
     redraw();
@@ -223,6 +227,6 @@ void Fl_Positioner::ybounds(double a, double b) {
 }
 
 //
-// End of "$Id: Fl_Positioner.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: positioner.d 5347 2006-08-23 12:57:42Z matt $".
 //
     End of automatic import -+/

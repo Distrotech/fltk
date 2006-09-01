@@ -35,16 +35,16 @@
 // Number of screens...
 static int num_screens = 0;
 
-#ifdef WIN32
+version (WIN32) {
 #  if !defined(HMONITOR_DECLARED) && (_WIN32_WINNT < 0x0500)
 #    define COMPILE_MULTIMON_STUBS
 #    include <multimon.h>
-#  endif // !HMONITOR_DECLARED && _WIN32_WINNT < 0x0500
+} // !HMONITOR_DECLARED && _WIN32_WINNT < 0x0500
 
 // BOOL EnumDisplayMonitors(HDC, LPCRECT, MONITORENUMPROC, LPARAM)
-typedef BOOL (WINAPI* fl_edm_func)(HDC, LPCRECT, MONITORENUMPROC, LPARAM);
+alias BOOL (WINAPI* fl_edm_func)(HDC, LPCRECT, MONITORENUMPROC, LPARAM);
 // BOOL GetMonitorInfo(HMONITOR, LPMONITORINFO)
-typedef BOOL (WINAPI* fl_gmi_func)(HMONITOR, LPMONITORINFO);
+alias BOOL (WINAPI* fl_gmi_func)(HMONITOR, LPMONITORINFO);
 
 static fl_gmi_func fl_gmi = NULL; // used to get a proc pointer for GetMonitorInfoA
 
@@ -95,7 +95,7 @@ static void screen_init() {
   // If we get here, assume we have 1 monitor...
   num_screens = 1;
 }
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 XRectangle screens[16];
 
 static void screen_init() {
@@ -103,10 +103,10 @@ static void screen_init() {
 
   for (gd = GetDeviceList(), num_screens = 0; gd; gd = GetNextDevice(gd)) {
     GDPtr gp = *gd;
-    screens[num_screens].x      = gp->gdRect.left;
-    screens[num_screens].y      = gp->gdRect.top;
-    screens[num_screens].width  = gp->gdRect.right - gp->gdRect.left;
-    screens[num_screens].height = gp->gdRect.bottom - gp->gdRect.top;
+    screens[num_screens].x      = gp.gdRect.left;
+    screens[num_screens].y      = gp.gdRect.top;
+    screens[num_screens].width  = gp.gdRect.right - gp.gdRect.left;
+    screens[num_screens].height = gp.gdRect.bottom - gp.gdRect.top;
 
     num_screens ++;
     if (num_screens >= 16) break;
@@ -125,25 +125,25 @@ static void screen_init() {
     screens = XineramaQueryScreens(fl_display, &num_screens);
   } else num_screens = 1;
 }
-#else
+} else {
 static void screen_init() {
   num_screens = 1;
 }
-#endif // WIN32
+} // WIN32
 
 
 // Return the number of screens...
-int Fl::screen_count() {
+int Fl.screen_count() {
   if (!num_screens) screen_init();
 
   return num_screens;
 }
 
 // Return the screen bounding rect for the given mouse position...
-void Fl::screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) {
+void Fl.screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) {
   if (!num_screens) screen_init();
 
-#ifdef WIN32
+version (WIN32) {
   if (num_screens > 1) {
     int i;
 
@@ -158,7 +158,7 @@ void Fl::screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) {
       }
     }
   }
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
   if (num_screens > 1) {
     int i;
 
@@ -192,19 +192,19 @@ void Fl::screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) {
       }
     }
   }
-#endif // WIN32
+} // WIN32
 
-  x = Fl::x();
-  y = Fl::y();
-  w = Fl::w();
-  h = Fl::h();
+  x = Fl.x();
+  y = Fl.y();
+  w = Fl.w();
+  h = Fl.h();
 }
 
 // Return the screen bounding rect for the given screen...
-void Fl::screen_xywh(int &x, int &y, int &w, int &h, int n) {
+void Fl.screen_xywh(int &x, int &y, int &w, int &h, int n) {
   if (!num_screens) screen_init();
 
-#ifdef WIN32
+version (WIN32) {
   if (num_screens > 1 && n >= 0 && n < num_screens) {
     x = screens[n].left;
     y = screens[n].top;
@@ -212,7 +212,7 @@ void Fl::screen_xywh(int &x, int &y, int &w, int &h, int n) {
     h = screens[n].bottom - screens[n].top;
     return;
   }
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
   if (num_screens > 1 && n >= 0 && n < num_screens) {
     x = screens[n].x;
     y = screens[n].y;
@@ -228,12 +228,12 @@ void Fl::screen_xywh(int &x, int &y, int &w, int &h, int n) {
     h = screens[n].height;
     return;
   }
-#endif // WIN32
+} // WIN32
 
-  x = Fl::x();
-  y = Fl::y();
-  w = Fl::w();
-  h = Fl::h();
+  x = Fl.x();
+  y = Fl.y();
+  w = Fl.w();
+  h = Fl.h();
 }
 
 

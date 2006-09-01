@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_color.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -28,58 +27,63 @@
 
 // Implementation of fl_color(i), fl_color(r,g,b).
 
-#ifdef WIN32
-#  include "fl_color_win32.cxx"
-#elif defined(__APPLE__)
-#  include "fl_color_mac.cxx"
-#else
+module fl.color;
 
+private import fl.enumerations;
+public import fl.cmap;
+
+version (WIN32) {
+  public import fl.color_win32;
+} else version (__APPLE__) {
+  public import fl.color_mac;
+} else {
+/+=
 // Also code to look at the X visual and figure out the best way to turn
 // a color into a pixel value.
 
-// SGI compiler seems to have problems with unsigned char arguments
+// SGI compiler seems to have problems with ubyte arguments
 // being used to index arrays.  So I always copy them to an integer
 // before use.
 
-#  include "Fl_XColor.H"
+private import fl.xcolor;
 #  include <FL/Fl.H>
 #  include <FL/x.H>
-#  include <FL/fl_draw.H>
+private import fl.draw;
 
 ////////////////////////////////////////////////////////////////
 // figure_out_visual() calculates masks & shifts for generating
 // pixels in true-color visuals:
 
-uchar fl_redmask, fl_greenmask, fl_bluemask;
+ubyte fl_redmask, fl_greenmask, fl_bluemask;
 int fl_redshift, fl_greenshift, fl_blueshift, fl_extrashift;
-static uchar beenhere;
+static ubyte beenhere;
 
 static void figure_out_visual() {
   beenhere = 1;
-  if (!fl_visual->red_mask || !fl_visual->green_mask || !fl_visual->blue_mask){
+  if (!fl_visual.red_mask || !fl_visual.green_mask || !fl_visual.blue_mask){
 #  if USE_COLORMAP
     fl_redmask = 0;
     return;
-#  else
-    Fl::fatal("Requires true color visual");
-#  endif
+} else {
+    Fl.fatal("Requires true color visual");
+}
   }
 
   // get the bit masks into a more useful form:
   int i,j,m;
 
-  for (i = 0, m = 1; m; i++, m<<=1) if (fl_visual->red_mask & m) break;
-  for (j = i; m; j++, m<<=1) if (!(fl_visual->red_mask & m)) break;
+  for (i = 0, m = 1; m; i++, m<<=1) if (fl_visual.red_mask & m) break;
+  for (j = i; m; j++, m<<=1) if (!(fl_visual.red_mask & m)) break;
   fl_redshift = j-8;
   fl_redmask = (j-i >= 8) ? 0xFF : 0xFF-(255>>(j-i));
 
-  for (i = 0, m = 1; m; i++, m<<=1) if (fl_visual->green_mask & m) break;
-  for (j = i; m; j++, m<<=1) if (!(fl_visual->green_mask & m)) break;
+  for (i = 0, m = 1; m; i++, m<<=1) if (fl_visual.green_mask & m) break;
+  for (j = i; m; j++, m<<=1) if (!(fl_visual.green_mask & m)) break;
   fl_greenshift = j-8;
   fl_greenmask = (j-i >= 8) ? 0xFF : 0xFF-(255>>(j-i));
 
-  for (i = 0, m = 1; m; i++, m<<=1) if (fl_visual->blue_mask & m) break;
-  for (j = i; m; j++, m<<=1) if (!(fl_visual->blue_mask & m)) break;
+  for (i = 0, m = 1; m; i++, m<<=1) if (fl_visual.blue_mask & m) break;
+  for (j = i; m; j++, m<<=1) if (!(fl_visual.blue_mask & m)) break;
   fl_blueshift = j-8;
   fl_bluemask = (j-i >= 8) ? 0xFF : 0xFF-(255>>(j-i));
 
@@ -94,20 +98,20 @@ static void figure_out_visual() {
 
 }
 
-static unsigned fl_cmap[256] = {
-#include "fl_cmap.h" // this is a file produced by "cmap.cxx":
+static uint fl_cmap[256] = {
+private import fl.cmap; // this is a file produced by "cmap.cxx":
 };
 
 #  if HAVE_OVERLAY
 Fl_XColor fl_xmap[2][256];
-uchar fl_overlay;
+ubyte fl_overlay;
 Colormap fl_overlay_colormap;
 XVisualInfo* fl_overlay_visual;
-ulong fl_transparent_pixel;
-#  else
+uint fl_transparent_pixel;
+} else {
 Fl_XColor fl_xmap[1][256];
-#    define fl_overlay 0
-#  endif
+const int fl_overlay = 0; 
+}
 
 ////////////////////////////////////////////////////////////////
 // Get an rgb color.  This is easy for a truecolor visual.  For
@@ -116,21 +120,21 @@ Fl_XColor fl_xmap[1][256];
 // requested before, you will get the earlier requested color, and
 // even this may be approximated if the X colormap was full.
 
-ulong fl_xpixel(uchar r,uchar g,uchar b) {
+uint fl_xpixel(ubyte r,ubyte g,ubyte b) {
   if (!beenhere) figure_out_visual();
 #  if USE_COLORMAP
   if (!fl_redmask) {
     // find closest entry in the colormap:
     Fl_Color i =
       fl_color_cube(r*FL_NUM_RED/256,g*FL_NUM_GREEN/256,b*FL_NUM_BLUE/256);
-    Fl_XColor &xmap = fl_xmap[fl_overlay][i];
+    Fl_XColor  xmap = fl_xmap[fl_overlay][i];
     if (xmap.mapped) return xmap.pixel;
     // if not black or white, change the entry to be an exact match:
     if (i != FL_COLOR_CUBE && i != 0xFF)
       fl_cmap[i] = (r<<24)|(g<<16)|(b<<8);
     return fl_xpixel(i); // allocate an X color
   }
-#  endif
+}
   return
     (((r&fl_redmask) << fl_redshift)+
      ((g&fl_greenmask)<<fl_greenshift)+
@@ -138,7 +142,7 @@ ulong fl_xpixel(uchar r,uchar g,uchar b) {
      ) >> fl_extrashift;
 }
 
-void fl_color(uchar r,uchar g,uchar b) {
+void fl_color(ubyte r,ubyte g,ubyte b) {
   fl_color_ = fl_rgb_color(r, g, b);
   XSetForeground(fl_display, fl_gc, fl_xpixel(r,g,b));
 }
@@ -150,12 +154,12 @@ void fl_color(uchar r,uchar g,uchar b) {
 // color if X cannot allocate that color.
 
 // calculate what color is actually on the screen for a mask:
-static inline uchar realcolor(uchar color, uchar mask) {
+static ubyte realcolor(ubyte color, ubyte mask) {
 #  if 0
   // accurate version if the display has linear gamma, but fl_draw_image
   // works better with the simpler version on most screens...
-  uchar m = mask;
-  uchar result = color&m;
+  ubyte m = mask;
+  ubyte result = color&m;
   for (;;) {
     while (m&mask) {m>>=1; color>>=1;}
     if (!m) break;
@@ -163,31 +167,31 @@ static inline uchar realcolor(uchar color, uchar mask) {
     result |= color&m;
   }
   return result;
-#  else
+} else {
   return (color&mask) | (~mask)&(mask>>1);
-#  endif
+}
 }
 
-ulong fl_xpixel(Fl_Color i) {
+uint fl_xpixel(Fl_Color i) {
   if (i & 0xffffff00) {
     return fl_xpixel((i >> 24) & 255, (i >> 16) & 255, (i >> 8) & 255);
   }
 
-  Fl_XColor &xmap = fl_xmap[fl_overlay][i];
+  Fl_XColor  xmap = fl_xmap[fl_overlay][i];
   if (xmap.mapped) return xmap.pixel;
 
   if (!beenhere) figure_out_visual();
 
-  uchar r,g,b;
-  {unsigned c = fl_cmap[i]; r=uchar(c>>24); g=uchar(c>>16); b=uchar(c>>8);}
+  ubyte r,g,b;
+  {uint c = fl_cmap[i]; r=ubyte(c>>24); g=ubyte(c>>16); b=ubyte(c>>8);}
 
 #  if USE_COLORMAP
   Colormap colormap = fl_colormap;
 #    if HAVE_OVERLAY
   if (fl_overlay) colormap = fl_overlay_colormap; else
-#    endif
+}
   if (fl_redmask) {
-#  endif
+}
     // return color for a truecolor visual:
     xmap.mapped = 2; // 2 prevents XFreeColor from being called
     xmap.r = realcolor(r, fl_redmask);
@@ -205,10 +209,10 @@ ulong fl_xpixel(Fl_Color i) {
   XColor*& allcolors = ac[fl_overlay];
   static int nc[2];
   int& numcolors = nc[fl_overlay];
-#    else
+} else {
   static XColor *allcolors;
   static int numcolors;
-#    endif
+}
 
   // I don't try to allocate colors with XAllocColor once it fails
   // with any color.  It is possible that it will work, since a color
@@ -229,9 +233,9 @@ ulong fl_xpixel(Fl_Color i) {
     // of round-trips to the X server, even though other programs may alter
     // the colormap after this and make decisions here wrong.
 #    if HAVE_OVERLAY
-    if (fl_overlay) numcolors = fl_overlay_visual->colormap_size; else
-#    endif
-      numcolors = fl_visual->colormap_size;
+    if (fl_overlay) numcolors = fl_overlay_visual.colormap_size; else
+}
+      numcolors = fl_visual.colormap_size;
     if (!allcolors) allcolors = new XColor[numcolors];
     for (int p = numcolors; p--;) allcolors[p].pixel = p;
     XQueryColors(fl_display, colormap, allcolors, numcolors);
@@ -239,11 +243,11 @@ ulong fl_xpixel(Fl_Color i) {
 
   // find least-squares match:
   int mindist = 0x7FFFFFFF;
-  unsigned int bestmatch = 0;
-  for (unsigned int n = numcolors; n--;) {
+  uint bestmatch = 0;
+  for (uint n = numcolors; n--;) {
 #    if HAVE_OVERLAY
     if (fl_overlay && n == fl_transparent_pixel) continue;
-#    endif
+}
     XColor &a = allcolors[n];
     int d, t;
     t = int(r)-int(a.red>>8); d = t*t;
@@ -273,77 +277,79 @@ ulong fl_xpixel(Fl_Color i) {
   xmap.g = p.green>>8;
   xmap.b = p.blue>>8;
   return xmap.pixel;
-#  endif
+}
 }
 
 Fl_Color fl_color_;
 
 void fl_color(Fl_Color i) {
   if (i & 0xffffff00) {
-    unsigned rgb = (unsigned)i;
-    fl_color((uchar)(rgb >> 24), (uchar)(rgb >> 16), (uchar)(rgb >> 8));
+    uint rgb = (uint)i;
+    fl_color((ubyte)(rgb >> 24), (ubyte)(rgb >> 16), (ubyte)(rgb >> 8));
   } else {
     fl_color_ = i;
     XSetForeground(fl_display, fl_gc, fl_xpixel(i));
   }
 }
 
-void Fl::free_color(Fl_Color i, int overlay) {
+void Fl.free_color(Fl_Color i, int overlay) {
 #  if HAVE_OVERLAY
-#  else
+} else {
   if (overlay) return;
-#  endif
+}
   if (fl_xmap[overlay][i].mapped) {
 #  if USE_COLORMAP
 #    if HAVE_OVERLAY
     Colormap colormap = overlay ? fl_overlay_colormap : fl_colormap;
-#    else
+} else {
     Colormap colormap = fl_colormap;
-#    endif
+}
     if (fl_xmap[overlay][i].mapped == 1)
       XFreeColors(fl_display, colormap, &(fl_xmap[overlay][i].pixel), 1, 0);
-#  endif
+}
     fl_xmap[overlay][i].mapped = 0;
   }
 }
 
-void Fl::set_color(Fl_Color i, unsigned c) {
+void Fl.set_color(Fl_Color i, uint c) {
   if (fl_cmap[i] != c) {
     free_color(i,0);
 #  if HAVE_OVERLAY
     free_color(i,1);
-#  endif
+}
     fl_cmap[i] = c;
   }
 }
+=+/
+} // end of X-specific code
 
-#endif // end of X-specific code
-
-unsigned Fl::get_color(Fl_Color i) {
+/+=
+uint Fl.get_color(Fl_Color i) {
   if (i & 0xffffff00) return (i);
   else return fl_cmap[i];
 }
 
-void Fl::set_color(Fl_Color i, uchar red, uchar green, uchar blue) {
-  Fl::set_color((Fl_Color)(i & 255),
-	((unsigned)red<<24)+((unsigned)green<<16)+((unsigned)blue<<8));
+void Fl.set_color(Fl_Color i, ubyte red, ubyte green, ubyte blue) {
+  Fl.set_color((Fl_Color)(i & 255),
+	((uint)red<<24)+((uint)green<<16)+((uint)blue<<8));
 }
 
-void Fl::get_color(Fl_Color i, uchar &red, uchar &green, uchar &blue) {
-  unsigned c;
+void Fl.get_color(Fl_Color i, ubyte &red, ubyte &green, ubyte &blue) {
+  uint c;
 
-  if (i & 0xffffff00) c = (unsigned)i;
+  if (i & 0xffffff00) c = (uint)i;
   else c = fl_cmap[i];
 
-  red   = uchar(c>>24);
-  green = uchar(c>>16);
-  blue  = uchar(c>>8);
+  red   = ubyte(c>>24);
+  green = ubyte(c>>16);
+  blue  = ubyte(c>>8);
 }
+=+/
 
 Fl_Color fl_color_average(Fl_Color color1, Fl_Color color2, float weight) {
-  unsigned rgb1;
-  unsigned rgb2;
-  uchar r, g, b;
+  uint rgb1;
+  uint rgb2;
+  ubyte r, g, b;
 
   if (color1 & 0xffffff00) rgb1 = color1;
   else rgb1 = fl_cmap[color1 & 255];
@@ -351,9 +357,9 @@ Fl_Color fl_color_average(Fl_Color color1, Fl_Color color2, float weight) {
   if (color2 & 0xffffff00) rgb2 = color2;
   else rgb2 = fl_cmap[color2 & 255];
 
-  r = (uchar)(((uchar)(rgb1>>24))*weight + ((uchar)(rgb2>>24))*(1-weight));
-  g = (uchar)(((uchar)(rgb1>>16))*weight + ((uchar)(rgb2>>16))*(1-weight));
-  b = (uchar)(((uchar)(rgb1>>8))*weight + ((uchar)(rgb2>>8))*(1-weight));
+  r = cast(ubyte)((cast(ubyte)(rgb1>>24))*weight + (cast(ubyte)(rgb2>>24))*(1-weight));
+  g = cast(ubyte)((cast(ubyte)(rgb1>>16))*weight + (cast(ubyte)(rgb2>>16))*(1-weight));
+  b = cast(ubyte)((cast(ubyte)(rgb1>>8))*weight  + (cast(ubyte)(rgb2>>8))*(1-weight));
 
   return fl_rgb_color(r, g, b);
 }
@@ -363,15 +369,14 @@ Fl_Color fl_inactive(Fl_Color c) {
 }
 
 Fl_Color fl_contrast(Fl_Color fg, Fl_Color bg) {
-  unsigned c1, c2;	// RGB colors
+  uint c1, c2;	// RGB colors
   int l1, l2;		// Luminosities
 
-
   // Get the RGB values for each color...
-  if (fg & 0xffffff00) c1 = (unsigned)fg;
+  if (fg & 0xffffff00) c1 = fg;
   else c1 = fl_cmap[fg];
 
-  if (bg & 0xffffff00) c2 = (unsigned)bg;
+  if (bg & 0xffffff00) c2 = bg;
   else c2 = fl_cmap[bg];
 
   // Compute the luminosity...
@@ -388,4 +393,3 @@ Fl_Color fl_contrast(Fl_Color fg, Fl_Color bg) {
 //
 // End of "$Id: fl_color.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

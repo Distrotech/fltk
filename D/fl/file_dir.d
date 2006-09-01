@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: fl_file_dir.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: fl_file_dir.cxx 5355 2006-08-24 14:23:24Z matt $"
 //
 // File chooser widget for the Fast Light Tool Kit (FLTK).
 //
@@ -26,32 +26,32 @@
 //     http://www.fltk.org/str.php
 //
 
-#include "flstring.h"
+private import fl.flstring;
 #include <FL/filename.H>
-#include <FL/Fl_File_Chooser.H>
-#include <FL/fl_ask.H>
+private import fl.file_chooser;
+private import fl.ask;
 
 
-static Fl_File_Chooser	*fc = (Fl_File_Chooser *)0;
-static void		(*current_callback)(const char*) = 0;
-static const char	*current_label = fl_ok;
+static Fl_File_Chooser	 fc = (Fl_File_Chooser  )0;
+static void		(*current_callback)(char*) = 0;
+static char	*current_label = fl_ok;
 
 
 // Do a file chooser callback...
-static void callback(Fl_File_Chooser *, void*) {
-  if (current_callback && fc->value())
-    (*current_callback)(fc->value());
+static void callback(Fl_File_Chooser  , void*) {
+  if (current_callback && fc.value())
+    (*current_callback)(fc.value());
 }
 
 
 // Set the file chooser callback
-void fl_file_chooser_callback(void (*cb)(const char*)) {
+void fl_file_chooser_callback(void (*cb)(char*)) {
   current_callback = cb;
 }
 
 
 // Set the "OK" button label
-void fl_file_chooser_ok_label(const char *l) {
+void fl_file_chooser_ok_label(char *l) {
   if (l) current_label = l;
   else current_label = fl_ok;
 }
@@ -62,27 +62,34 @@ void fl_file_chooser_ok_label(const char *l) {
 //
 
 char *					// O - Filename or NULL
-fl_file_chooser(const char *message,	// I - Message in titlebar
-                const char *pat,	// I - Filename pattern
-		const char *fname,	// I - Initial filename selection
+fl_file_chooser(char *message,	// I - Message in titlebar
+                char *pat,	// I - Filename pattern
+		char *fname,	// I - Initial filename selection
 		int        relative) {	// I - 0 for absolute path
   static char	retname[1024];		// Returned filename
 
   if (!fc) {
     if (!fname || !*fname) fname = ".";
 
-    fc = new Fl_File_Chooser(fname, pat, Fl_File_Chooser::CREATE, message);
-    fc->callback(callback, 0);
+    fc = new Fl_File_Chooser(fname, pat, Fl_File_Chooser.CREATE, message);
+    fc.callback(callback, 0);
   } else {
-    fc->type(Fl_File_Chooser::CREATE);
-    fc->filter(pat);
-    fc->label(message);
+    fc.type(Fl_File_Chooser.CREATE);
+    // see, if we use the same pattern between calls
+    char same_pattern = 0;
+    char *fcf = fc.filter();
+    if ( fcf && pat && strcmp(fcf, pat)==0)
+      same_pattern = 1;
+    else if ( (fcf==0L || *fcf==0) && (pat==0L || *pat==0) )
+      same_pattern = 1;
+    // now set the pattern to the new pattern (even if they are the same)
+    fc.filter(pat);
+    fc.label(message);
 
-    if (!fname || !*fname) {
-      if (fc->filter() != pat && (!pat || !fc->filter() ||
-          strcmp(pat, fc->filter())) && fc->value()) {
+    if (!fname) { // null pointer reuses same filename if pattern didn't change
+      if (!same_pattern && fc.value()) {
 	// if pattern is different, remove name but leave old directory:
-	strlcpy(retname, fc->value(), sizeof(retname));
+	strlcpy(retname, fc.value(), sizeof(retname));
 
 	char *p = strrchr(retname, '/');
 
@@ -94,26 +101,33 @@ fl_file_chooser(const char *message,	// I - Message in titlebar
 	  else
 	    *p = '\0';
 	}
-
 	// Set the directory...
-	fc->directory(retname);
+	fc.value(retname);
+      } else {
+        // re-use the previously selected name
       }
+    } else if (!*fname) { // empty filename reuses directory with empty name
+      strlcpy(retname, fc.value(), sizeof(retname));
+      char *n = fl_filename_name(retname);
+      if (n) *((char*)n) = 0;
+      fc.value("");
+      fc.directory(retname);
+    } else {
+       fc.value(fname);
     }
-    else
-      fc->value(fname);
   }
 
-  fc->ok_label(current_label);
-  fc->show();
+  fc.ok_label(current_label);
+  fc.show();
 
-  while (fc->shown())
-    Fl::wait();
+  while (fc.shown())
+    Fl.wait();
 
-  if (fc->value() && relative) {
-    fl_filename_relative(retname, sizeof(retname), fc->value());
+  if (fc.value() && relative) {
+    fl_filename_relative(retname, sizeof(retname), fc.value());
 
     return retname;
-  } else if (fc->value()) return (char *)fc->value();
+  } else if (fc.value()) return (char *)fc.value();
   else return 0;
 }
 
@@ -123,8 +137,8 @@ fl_file_chooser(const char *message,	// I - Message in titlebar
 //
 
 char *					// O - Directory or NULL
-fl_dir_chooser(const char *message,	// I - Message for titlebar
-               const char *fname,	// I - Initial directory name
+fl_dir_chooser(char *message,	// I - Message for titlebar
+               char *fname,	// I - Initial directory name
 	       int        relative)	// I - 0 for absolute
 {
   static char	retname[1024];		// Returned directory name
@@ -132,31 +146,31 @@ fl_dir_chooser(const char *message,	// I - Message for titlebar
   if (!fc) {
     if (!fname || !*fname) fname = ".";
 
-    fc = new Fl_File_Chooser(fname, "*", Fl_File_Chooser::CREATE |
-                                         Fl_File_Chooser::DIRECTORY, message);
-    fc->callback(callback, 0);
+    fc = new Fl_File_Chooser(fname, "*", Fl_File_Chooser.CREATE |
+                                         Fl_File_Chooser.DIRECTORY, message);
+    fc.callback(callback, 0);
   } else {
-    fc->type(Fl_File_Chooser::CREATE | Fl_File_Chooser::DIRECTORY);
-    fc->filter("*");
-    if (fname && *fname) fc->value(fname);
-    fc->label(message);
+    fc.type(Fl_File_Chooser.CREATE | Fl_File_Chooser.DIRECTORY);
+    fc.filter("*");
+    if (fname && *fname) fc.value(fname);
+    fc.label(message);
   }
 
-  fc->show();
+  fc.show();
 
-  while (fc->shown())
-    Fl::wait();
+  while (fc.shown())
+    Fl.wait();
 
-  if (fc->value() && relative) {
-    fl_filename_relative(retname, sizeof(retname), fc->value());
+  if (fc.value() && relative) {
+    fl_filename_relative(retname, sizeof(retname), fc.value());
 
     return retname;
-  } else if (fc->value()) return (char *)fc->value();
+  } else if (fc.value()) return (char *)fc.value();
   else return 0;
 }
 
 
 //
-// End of "$Id: fl_file_dir.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: fl_file_dir.cxx 5355 2006-08-24 14:23:24Z matt $".
 //
     End of automatic import -+/

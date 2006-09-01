@@ -37,13 +37,13 @@
 // making the name, and then forgot about it. To avoid having to change
 // the header files I decided to store this value in the last character
 // of the font name array.
-#define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
+const int ENDOFBUFFER = 127;  // sizeof(Fl_Font.fontname)-1
 
 // turn a stored font name into a pretty name:
-const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
-  Fl_Fontdesc *f = fl_fonts + fnum;
-  if (!f->fontname[0]) {
-    const char* p = f->name;
+const char* Fl.get_font_name(Fl_Font fnum, int* ap) {
+  Fl_Fontdesc  f = fl_fonts + fnum;
+  if (!f.fontname[0]) {
+    char* p = f.name;
     int type;
     switch (p[0]) {
     case 'B': type = FL_BOLD; break;
@@ -54,21 +54,21 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
   
   // NOTE: This can cause duplications in fonts that already have Bold or Italic in 
   // their "name". Maybe we need to find a cleverer way?
-    strlcpy(f->fontname, p+1, ENDOFBUFFER);
-    if (type & FL_BOLD) strlcat(f->fontname, " bold", ENDOFBUFFER);
-    if (type & FL_ITALIC) strlcat(f->fontname, " italic", ENDOFBUFFER);
-    f->fontname[ENDOFBUFFER] = (char)type;
+    strlcpy(f.fontname, p+1, ENDOFBUFFER);
+    if (type & FL_BOLD) strlcat(f.fontname, " bold", ENDOFBUFFER);
+    if (type & FL_ITALIC) strlcat(f.fontname, " italic", ENDOFBUFFER);
+    f.fontname[ENDOFBUFFER] = (char)type;
   }
-  if (ap) *ap = f->fontname[ENDOFBUFFER];
-  return f->fontname;
+  if (ap) *ap = f.fontname[ENDOFBUFFER];
+  return f.fontname;
 }
 
 ///////////////////////////////////////////////////////////
-#define LOCAL_RAW_NAME_MAX 256
+const int LOCAL_RAW_NAME_MAX = 256; 
 
 extern "C" {
 // sort returned fontconfig font names
-static int name_sort(const void *aa, const void *bb) {
+static int name_sort(void *aa, void *bb) {
   // What should we do here? Just do a string compare for now...
   // NOTE: This yeilds some oddities - in particular a Blah Bold font will be 
   // listed before Blah...
@@ -104,10 +104,10 @@ static void make_raw_name(char *raw, char *pretty)
   // At this point, the name is "marked" as regular...
   if (style)
   {
-#define PLAIN   0
-#define BOLD    1
-#define ITALIC  2
-#define BITALIC (BOLD | ITALIC)
+const int PLAIN = 0; 
+const int BOLD = 1; 
+const int ITALIC = 2; 
+const int BITALIC = (BOLD | ITALIC); 
     int mods = PLAIN;
     // Now try and parse the style string - look for the "=" sign
     style = strchr(style, '=');
@@ -189,7 +189,7 @@ static int fl_free_font = FL_FREE_FONT;
 // Also, for now I'm ignoring the "pattern_name" and just getting everything...
 // AND I don't try and skip the fonts we've already loaded in the defaults.
 // Blimey! What a hack!
-Fl_Font Fl::set_fonts(const char* pattern_name)
+Fl_Font Fl.set_fonts(char* pattern_name)
 {
   FcFontSet  *fnt_set;     // Will hold the list of fonts we find
   FcPattern   *fnt_pattern; // Holds the generic "match all names" pattern
@@ -231,7 +231,7 @@ Fl_Font Fl::set_fonts(const char* pattern_name)
     char *start;
     char *first;
     
-    font_count = fnt_set->nfont; // How many fonts?
+    font_count = fnt_set.nfont; // How many fonts?
     
     // Allocate array of char*'s to hold the name strings
     full_list = (char **)malloc(sizeof(char *) * font_count);
@@ -239,25 +239,25 @@ Fl_Font Fl::set_fonts(const char* pattern_name)
     // iterate through all the font patterns and get the names out...
       for (j = 0; j < font_count; j++)
       {
-      // NOTE: FcChar8 is a typedef of "unsigned char"...
+      // NOTE: FcChar8 is a alias of "ubyte"...
       FcChar8 *font; // String to hold the font's name
             
       // Convert from fontconfig internal pattern to human readable name
       // NOTE: This WILL malloc storage, so we need to free it later...
-      font = FcNameUnparse (fnt_set->fonts[j]);
+      font = FcNameUnparse (fnt_set.fonts[j]);
             
       // The returned strings look like this...
       // Century Schoolbook:style=Bold Italic,fed kursiv,Fett Kursiv,...
       // So the bit we want is up to the first comma - BUT some strings have
       // more than one name, separated by, guess what?, a comma...
       stop = start = first = 0;
-      stop = strchr((const char *)font, ',');
-      start = strchr((const char *)font, ':');
+      stop = strchr((char *)font, ',');
+      start = strchr((char *)font, ':');
       if ((stop) && (start) && (stop < start))
       {
         first = stop + 1; // discard first version of name
         // find first comma *after* the end of the name
-        stop = strchr((const char *)start, ',');
+        stop = strchr((char *)start, ',');
       }
       else
       {
@@ -305,7 +305,7 @@ Fl_Font Fl::set_fonts(const char* pattern_name)
         // NOTE: This just adds on AFTER the default fonts - no attempt is made
         // to identify already loaded fonts. Is this bad?
         stored_name = strdup(xft_name);
-        Fl::set_font((Fl_Font)(j + FL_FREE_FONT), stored_name);
+        Fl.set_font((Fl_Font)(j + FL_FREE_FONT), stored_name);
         fl_free_font ++;
         
         free(full_list[j]); // release that name from our internal array
@@ -320,7 +320,7 @@ Fl_Font Fl::set_fonts(const char* pattern_name)
 
 
 extern "C" {
-static int int_sort(const void *aa, const void *bb) {
+static int int_sort(void *aa, void *bb) {
   return (*(int*)aa)-(*(int*)bb);
 }
 }
@@ -330,24 +330,24 @@ static int int_sort(const void *aa, const void *bb) {
 // Return all the point sizes supported by this font:
 // Suprisingly enough Xft works exactly like fltk does and returns
 // the same list. Except there is no way to tell if the font is scalable.
-int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
-  Fl_Fontdesc *s = fl_fonts+fnum;
-  if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
+int Fl.get_font_sizes(Fl_Font fnum, int*& sizep) {
+  Fl_Fontdesc  s = fl_fonts+fnum;
+  if (!s.name) s = fl_fonts; // empty slot in table, use entry 0
 
   fl_open_display();
   XftFontSet* fs = XftListFonts(fl_display, fl_screen,
-        XFT_FAMILY, XftTypeString, s->name+1, 0,
+        XFT_FAMILY, XftTypeString, s.name+1, 0,
         XFT_PIXEL_SIZE, 0);
   static int* array = 0;
   static int array_size = 0;
-  if (fs->nfont >= array_size) {
+  if (fs.nfont >= array_size) {
     delete[] array;
-    array = new int[array_size = fs->nfont+1];
+    array = new int[array_size = fs.nfont+1];
   }
   array[0] = 0; int j = 1; // claim all fonts are scalable
-  for (int i = 0; i < fs->nfont; i++) {
+  for (int i = 0; i < fs.nfont; i++) {
     double v;
-    if (XftPatternGetDouble(fs->fonts[i], XFT_PIXEL_SIZE, 0, &v) == XftResultMatch) {
+    if (XftPatternGetDouble(fs.fonts[i], XFT_PIXEL_SIZE, 0, &v) == XftResultMatch) {
       array[j++] = int(v);
     }
   }

@@ -31,9 +31,9 @@
 // If new extension is null, act like it is ""
 
 #include <FL/filename.H>
-#include "flstring.h"
+private import fl.flstring;
 
-char *fl_filename_setext(char *buf, int buflen, const char *ext) {
+char *fl_filename_setext(char *buf, int buflen, char *ext) {
   char *q = (char *)fl_filename_ext(buf);
   if (ext) {
     strlcpy(q,ext,buflen - (q - buf));

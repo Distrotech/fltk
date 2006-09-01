@@ -1,7 +1,7 @@
 //
 // "$Id: image.d 4288 2005-04-16 00:13:17Z mike $"
 //
-// Image class file for the Fast Light Tool Kit (FLTK).
+// Image header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2005 by Bill Spitzak and others.
 //
@@ -27,113 +27,103 @@
 
 module fl.image;
 
+/+=
 public import fl.enumerations;
 
-private import fl.widget;
-private import fl.menu_item;
-
-/+-
 class Fl_Widget;
 struct Fl_Menu_Item;
 struct Fl_Label;
--+/
+=+/
 
 class Fl_Image {
   int w_, h_, d_, ld_, count_;
-/+-
-  const char * const *data_;
+/+=
+  char * *data_;
 
   // Forbid use of copy contructor and assign operator
-  Fl_Image & operator=(const Fl_Image &);
-  Fl_Image(const Fl_Image &);
+  Fl_Image   operator=(Fl_Image  );
+  Fl_Image(Fl_Image  );
 
-  protected:
--+/
+=+/
+protected:
   void w(int W) {w_ = W;}
   void h(int H) {h_ = H;}
   void d(int D) {d_ = D;}
-/+-
   void ld(int LD) {ld_ = LD;}
-  void data(const char * const *p, int c) {data_ = p; count_ = c;}
+/+=
+  void data(char * *p, int c) {data_ = p; count_ = c;}
   void draw_empty(int X, int Y);
 
-  static void labeltype(const Fl_Label *lo, int lx, int ly, int lw, int lh, Fl_Align la);
-  static void measure(const Fl_Label *lo, int &lw, int &lh);
+  static void labeltype(Fl_Label  lo, int lx, int ly, int lw, int lh, Fl_Align la);
+  static void measure(Fl_Label  lo, int &lw, int &lh);
+=+/
+public:
 
-  public:
--+/
   int w() {return w_;}
   int h() {return h_;}
   int d() {return d_;}
-/+-
-  int ld() const {return ld_;}
-  int count() const {return count_;}
-  const char * const *data() const {return data_;}
+  int ld() {return ld_;}
+  int count() {return count_;}
+/+=
+  char * *data() {return data_;}
   
   Fl_Image(int W, int H, int D) {w_ = W; h_ = H; d_ = D; ld_ = 0; count_ = 0; data_ = 0;}
-  virtual ~Fl_Image();
-  virtual Fl_Image *copy(int W, int H);
-  Fl_Image *copy() { return copy(w(), h()); }
-  virtual void color_average(Fl_Color c, float i);
+  ~Fl_Image();
+  Fl_Image  copy(int W, int H);
+  Fl_Image  copy() { return copy(w(), h()); }
+  void color_average(Fl_Color c, float i);
   void inactive() { color_average(FL_GRAY, .33f); }
-  virtual void desaturate();
+  void desaturate();
+  void label(Fl_Widget w);
+  void label(Fl_Menu_Item*m);
 =+/
-  void label(Fl_Widget w) {
-    /+= =+/
-  }
-  void label(Fl_Menu_Item* m) {
-    /+= =+/
-  }
   void draw(int X, int Y, int W, int H, int cx=0, int cy=0) {
-    /+= later =+/
+    /+=== ===+/
   }
-
-  void draw(int X, int Y) {
-    draw(X, Y, w(), h(), 0, 0);
-  }
-/+-
-  virtual void uncache();
--+/
+  void draw(int X, int Y) {draw(X, Y, w(), h(), 0, 0);}
+/+=
+  void uncache();
+=+/
 }
 
-/+-
-class FL_EXPORT Fl_RGB_Image : public Fl_Image {
+/+=
+class Fl_RGB_Image : Fl_Image {
   public:
 
-  const uchar *array;
+  ubyte *array;
   int alloc_array; // Non-zero if array was allocated
 
-#if defined(__APPLE__) || defined(WIN32)
+version (__APPLE__) || defined(WIN32) {
   void *id; // for internal use
   void *mask; // for internal use (mask bitmap)
-#else
-  unsigned id; // for internal use
-  unsigned mask; // for internal use (mask bitmap)
-#endif // __APPLE__ || WIN32
+} else {
+  uint id; // for internal use
+  uint mask; // for internal use (mask bitmap)
+} // __APPLE__ || WIN32
 
-  Fl_RGB_Image(const uchar *bits, int W, int H, int D=3, int LD=0) :
-    Fl_Image(W,H,D), array(bits), alloc_array(0), id(0), mask(0) {data((const char **)&array, 1); ld(LD);}
-  virtual ~Fl_RGB_Image();
-  virtual Fl_Image *copy(int W, int H);
-  Fl_Image *copy() { return copy(w(), h()); }
-  virtual void color_average(Fl_Color c, float i);
-  virtual void desaturate();
-  virtual void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
+  Fl_RGB_Image(ubyte *bits, int W, int H, int D=3, int LD=0) :
+    Fl_Image(W,H,D), array(bits), alloc_array(0), id(0), mask(0) {data((char **)&array, 1); ld(LD);}
+  ~Fl_RGB_Image();
+  Fl_Image  copy(int W, int H);
+  Fl_Image  copy() { return copy(w(), h()); }
+  void color_average(Fl_Color c, float i);
+  void desaturate();
+  void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
   void draw(int X, int Y) {draw(X, Y, w(), h(), 0, 0);}
-  virtual void label(Fl_Widget*w);
-  virtual void label(Fl_Menu_Item*m);
-  virtual void uncache();
+  void label(Fl_Widget w);
+  void label(Fl_Menu_Item*m);
+  void uncache();
 };
 
-#endif // !Fl_Image_H
+} // !Fl_Image_H
 
 //
-// End of "$Id: Fl_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Image drawing code for the Fast Light Tool Kit (FLTK).
 //
@@ -160,16 +150,16 @@ class FL_EXPORT Fl_RGB_Image : public Fl_Image {
 //
 
 #include <FL/Fl.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <FL/x.H>
-#include <FL/Fl_Widget.H>
-#include <FL/Fl_Menu_Item.H>
-#include <FL/Fl_Image.H>
-#include "flstring.h"
+private import fl.widget;
+private import fl.menu_item;
+private import fl.image;
+private import fl.flstring;
 
-#ifdef WIN32
+version (WIN32) {
 void fl_release_dc(HWND, HDC); // from Fl_win32.cxx
-#endif
+}
 
 void fl_restore_clip(); // from fl_rect.cxx
 
@@ -180,14 +170,14 @@ void fl_restore_clip(); // from fl_rect.cxx
 Fl_Image::~Fl_Image() {
 }
 
-void Fl_Image::uncache() {
+void Fl_Image.uncache() {
 }
 
-void Fl_Image::draw(int XP, int YP, int, int, int, int) {
+void Fl_Image.draw(int XP, int YP, int, int, int, int) {
   draw_empty(XP, YP);
 }
 
-void Fl_Image::draw_empty(int X, int Y) {
+void Fl_Image.draw_empty(int X, int Y) {
   if (w() > 0 && h() > 0) {
     fl_color(FL_FOREGROUND_COLOR);
     fl_rect(X, Y, w(), h());
@@ -196,60 +186,60 @@ void Fl_Image::draw_empty(int X, int Y) {
   }
 }
 
-Fl_Image *Fl_Image::copy(int W, int H) {
+Fl_Image  Fl_Image.copy(int W, int H) {
   return new Fl_Image(W, H, d());
 }
 
-void Fl_Image::color_average(Fl_Color, float) {
+void Fl_Image.color_average(Fl_Color, float) {
 }
 
-void Fl_Image::desaturate() {
+void Fl_Image.desaturate() {
 }
 
-void Fl_Image::label(Fl_Widget* widget) {
-  widget->image(this);
+void Fl_Image.label(Fl_Widget  widget) {
+  widget.image(this);
 }
 
-void Fl_Image::label(Fl_Menu_Item* m) {
-  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
-  m->label(_FL_IMAGE_LABEL, (const char*)this);
+void Fl_Image.label(Fl_Menu_Item* m) {
+  Fl.set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
+  m.label(_FL_IMAGE_LABEL, (char*)this);
 }
 
 void
-Fl_Image::labeltype(const Fl_Label *lo,		// I - Label
+Fl_Image.labeltype(Fl_Label  lo,		// I - Label
                     int            lx,		// I - X position
 		    int            ly,		// I - Y position
 		    int            lw,		// I - Width of label
 		    int            lh,		// I - Height of label
 		    Fl_Align       la) {	// I - Alignment
-  Fl_Image	*img;				// Image pointer
+  Fl_Image	 img;				// Image pointer
   int		cx, cy;				// Image position
 
-  img = (Fl_Image *)(lo->value);
+  img = (Fl_Image  )(lo.value);
 
   if (la & FL_ALIGN_LEFT) cx = 0;
-  else if (la & FL_ALIGN_RIGHT) cx = img->w() - lw;
-  else cx = (img->w() - lw) / 2;
+  else if (la & FL_ALIGN_RIGHT) cx = img.w() - lw;
+  else cx = (img.w() - lw) / 2;
 
   if (la & FL_ALIGN_TOP) cy = 0;
-  else if (la & FL_ALIGN_BOTTOM) cy = img->h() - lh;
-  else cy = (img->h() - lh) / 2;
+  else if (la & FL_ALIGN_BOTTOM) cy = img.h() - lh;
+  else cy = (img.h() - lh) / 2;
 
-  fl_color((Fl_Color)lo->color);
+  fl_color((Fl_Color)lo.color);
 
-  img->draw(lx, ly, lw, lh, cx, cy);
+  img.draw(lx, ly, lw, lh, cx, cy);
 }
 
 void
-Fl_Image::measure(const Fl_Label *lo,		// I - Label
+Fl_Image.measure(Fl_Label  lo,		// I - Label
                   int            &lw,		// O - Width of image
 		  int            &lh) {		// O - Height of image
-  Fl_Image *img;				// Image pointer
+  Fl_Image  img;				// Image pointer
 
-  img = (Fl_Image *)(lo->value);
+  img = (Fl_Image  )(lo.value);
 
-  lw = img->w();
-  lh = img->h();
+  lw = img.w();
+  lh = img.h();
 }
 
 
@@ -259,14 +249,14 @@ Fl_Image::measure(const Fl_Label *lo,		// I - Label
 
 Fl_RGB_Image::~Fl_RGB_Image() {
   uncache();
-  if (alloc_array) delete[] (uchar *)array;
+  if (alloc_array) delete[] (ubyte *)array;
 }
 
-void Fl_RGB_Image::uncache() {
-#ifdef __APPLE_QUARTZ__
+void Fl_RGB_Image.uncache() {
+version (__APPLE_QUARTZ__) {
   if (id)
     CGImageRelease((CGImageRef)id);
-#else
+} else {
   if (id) {
     fl_delete_offscreen((Fl_Offscreen)id);
     id = 0;
@@ -276,12 +266,12 @@ void Fl_RGB_Image::uncache() {
     fl_delete_bitmask((Fl_Bitmask)mask);
     mask = 0;
   }
-#endif
+}
 }
 
-Fl_Image *Fl_RGB_Image::copy(int W, int H) {
-  Fl_RGB_Image	*new_image;	// New RGB image
-  uchar		*new_array;	// New array for image data
+Fl_Image  Fl_RGB_Image.copy(int W, int H) {
+  Fl_RGB_Image	 new_image;	// New RGB image
+  ubyte		*new_array;	// New array for image data
 
   // Optimize the simple copy where the width and height are the same,
   // or when we are copying an empty image...
@@ -289,11 +279,11 @@ Fl_Image *Fl_RGB_Image::copy(int W, int H) {
       !w() || !h() || !d() || !array) {
     if (array) {
       // Make a copy of the image data and return a new Fl_RGB_Image...
-      new_array = new uchar[w() * h() * d()];
+      new_array = new ubyte[w() * h() * d()];
       memcpy(new_array, array, w() * h() * d());
 
       new_image = new Fl_RGB_Image(new_array, w(), h(), d(), ld());
-      new_image->alloc_array = 1;
+      new_image.alloc_array = 1;
 
       return new_image;
     } else return new Fl_RGB_Image(array, w(), h(), d(), ld());
@@ -301,8 +291,8 @@ Fl_Image *Fl_RGB_Image::copy(int W, int H) {
   if (W <= 0 || H <= 0) return 0;
 
   // OK, need to resize the image data; allocate memory and 
-  uchar		*new_ptr;	// Pointer into new array
-  const uchar	*old_ptr;	// Pointer into old array
+  ubyte		*new_ptr;	// Pointer into new array
+  ubyte	*old_ptr;	// Pointer into old array
   int		c,		// Channel number
 		sy,		// Source coordinate
 		dx, dy,		// Destination coordinates
@@ -318,9 +308,9 @@ Fl_Image *Fl_RGB_Image::copy(int W, int H) {
   ystep  = h() / H;
 
   // Allocate memory for the new image...
-  new_array = new uchar [W * H * d()];
+  new_array = new ubyte [W * H * d()];
   new_image = new Fl_RGB_Image(new_array, W, H, d());
-  new_image->alloc_array = 1;
+  new_image.alloc_array = 1;
 
   // Scale the image using a nearest-neighbor algorithm...
   for (dy = H, sy = 0, yerr = H, new_ptr = new_array; dy > 0; dy --) {
@@ -349,7 +339,7 @@ Fl_Image *Fl_RGB_Image::copy(int W, int H) {
   return new_image;
 }
 
-void Fl_RGB_Image::color_average(Fl_Color c, float i) {
+void Fl_RGB_Image.color_average(Fl_Color c, float i) {
   // Don't average an empty image...
   if (!w() || !h() || !d() || !array) return;
 
@@ -357,27 +347,27 @@ void Fl_RGB_Image::color_average(Fl_Color c, float i) {
   uncache();
 
   // Allocate memory as needed...
-  uchar		*new_array,
+  ubyte		*new_array,
 		*new_ptr;
 
-  if (!alloc_array) new_array = new uchar[h() * w() * d()];
-  else new_array = (uchar *)array;
+  if (!alloc_array) new_array = new ubyte[h() * w() * d()];
+  else new_array = (ubyte *)array;
 
   // Get the color to blend with...
-  uchar		r, g, b;
-  unsigned	ia, ir, ig, ib;
+  ubyte		r, g, b;
+  uint	ia, ir, ig, ib;
 
-  Fl::get_color(c, r, g, b);
+  Fl.get_color(c, r, g, b);
   if (i < 0.0f) i = 0.0f;
   else if (i > 1.0f) i = 1.0f;
 
-  ia = (unsigned)(256 * i);
+  ia = (uint)(256 * i);
   ir = r * (256 - ia);
   ig = g * (256 - ia);
   ib = b * (256 - ia);
 
   // Update the image data to do the blend...
-  const uchar	*old_ptr;
+  ubyte	*old_ptr;
   int		x, y;
 
   if (d() < 3) {
@@ -407,7 +397,7 @@ void Fl_RGB_Image::color_average(Fl_Color c, float i) {
   }
 }
 
-void Fl_RGB_Image::desaturate() {
+void Fl_RGB_Image.desaturate() {
   // Don't desaturate an empty image...
   if (!w() || !h() || !d() || !array) return;
 
@@ -418,25 +408,25 @@ void Fl_RGB_Image::desaturate() {
   uncache();
 
   // Allocate memory for a grayscale image...
-  uchar		*new_array,
+  ubyte		*new_array,
 		*new_ptr;
   int		new_d;
 
   new_d     = d() - 2;
-  new_array = new uchar[h() * w() * new_d];
+  new_array = new ubyte[h() * w() * new_d];
 
   // Copy the image data, converting to grayscale...
-  const uchar	*old_ptr;
+  ubyte	*old_ptr;
   int		x, y;
 
   for (new_ptr = new_array, old_ptr = array, y = 0; y < h(); y ++, old_ptr += ld())
     for (x = 0; x < w(); x ++, old_ptr += d()) {
-      *new_ptr++ = (uchar)((31 * old_ptr[0] + 61 * old_ptr[1] + 8 * old_ptr[2]) / 100);
+      *new_ptr++ = (ubyte)((31 * old_ptr[0] + 61 * old_ptr[1] + 8 * old_ptr[2]) / 100);
       if (d() > 3) *new_ptr++ = old_ptr[3];
     }
 
   // Free the old array as needed, and then set the new pointers/values...
-  if (alloc_array) delete[] (uchar *)array;
+  if (alloc_array) delete[] (ubyte *)array;
 
   array       = new_array;
   alloc_array = 1;
@@ -445,7 +435,7 @@ void Fl_RGB_Image::desaturate() {
   d(new_d);
 }
 
-void Fl_RGB_Image::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_RGB_Image.draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   // Don't draw an empty image...
   if (!d() || !array) {
     draw_empty(XP, YP);
@@ -463,7 +453,7 @@ void Fl_RGB_Image::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if (cy+H > h()) H = h()-cy;
   if (H <= 0) return;
   if (!id) {
-#ifdef __APPLE_QUARTZ__
+version (__APPLE_QUARTZ__) {
     CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
     CGDataProviderRef src = CGDataProviderCreateWithData( 0L, array, w()*h()*d(), 0L);
     id = CGImageCreate( w(), h(), 8, d()*8, ld()?ld():w()*d(),
@@ -471,7 +461,7 @@ void Fl_RGB_Image::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
         src, 0L, false, kCGRenderingIntentDefault);
     CGColorSpaceRelease(lut);
     CGDataProviderRelease(src);
-#else
+} else {
     id = fl_create_offscreen(w(), h());
     fl_begin_offscreen((Fl_Offscreen)id);
     fl_draw_image(array, 0, 0, w(), h(), d(), ld());
@@ -479,9 +469,9 @@ void Fl_RGB_Image::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
     if (d() == 2 || d() == 4) {
       mask = fl_create_alphamask(w(), h(), d(), ld(), array);
     }
-#endif
+}
   }
-#ifdef WIN32
+version (WIN32) {
   if (mask) {
     HDC new_gc = CreateCompatibleDC(fl_gc);
     int save = SaveDC(new_gc);
@@ -494,7 +484,7 @@ void Fl_RGB_Image::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   } else {
     fl_copy_offscreen(X, Y, W, H, (Fl_Offscreen)id, cx, cy);
   }
-#elif defined(__APPLE_QD__)
+} else version (__APPLE_QD__) {
   if (mask) {
     Rect src, dst;
     // MRS: STR #114 says we should be using cx, cy, W, and H...
@@ -520,23 +510,23 @@ void Fl_RGB_Image::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
 	         GetPortBitMapForCopyBits((GrafPtr)mask), 
 	         GetPortBitMapForCopyBits(GetWindowPort(fl_window)),
                  &src, &src, &dst, blend, NULL);
-#  else // Fallback to screen-door transparency...
+} else { // Fallback to screen-door transparency...
     CopyMask(GetPortBitMapForCopyBits((GrafPtr)id),
 	     GetPortBitMapForCopyBits((GrafPtr)mask), 
 	     GetPortBitMapForCopyBits(GetWindowPort(fl_window)),
              &src, &src, &dst);
-#  endif // 0
+} // 0
   } else {
     fl_copy_offscreen(X, Y, W, H, (Fl_Offscreen)id, cx, cy);
   }
-#elif defined(__APPLE_QUARTZ__)
+} else version (__APPLE_QUARTZ__) {
   if (id && fl_gc) {
     CGRect rect = { { X, Y }, { W, H } };
-    Fl_X::q_begin_image(rect, cx, cy, w(), h());
+    Fl_X.q_begin_image(rect, cx, cy, w(), h());
     CGContextDrawImage(fl_gc, rect, (CGImageRef)id);
-    Fl_X::q_end_image();
+    Fl_X.q_end_image();
   }
-#else
+} else {
   if (mask) {
     // I can't figure out how to combine a mask with existing region,
     // so cut the image down to a clipped rectangle:
@@ -555,20 +545,20 @@ void Fl_RGB_Image::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
     XSetClipOrigin(fl_display, fl_gc, 0, 0);
     fl_restore_clip();
   }
-#endif
+}
 }
 
-void Fl_RGB_Image::label(Fl_Widget* widget) {
-  widget->image(this);
+void Fl_RGB_Image.label(Fl_Widget  widget) {
+  widget.image(this);
 }
 
-void Fl_RGB_Image::label(Fl_Menu_Item* m) {
-  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
-  m->label(_FL_IMAGE_LABEL, (const char*)this);
+void Fl_RGB_Image.label(Fl_Menu_Item* m) {
+  Fl.set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
+  m.label(_FL_IMAGE_LABEL, (char*)this);
 }
 
 
 //
-// End of "$Id: Fl_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

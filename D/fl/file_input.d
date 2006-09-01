@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_File_Input.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: file_input.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // File_Input header file for the Fast Light Tool Kit (FLTK).
 //
@@ -27,17 +27,17 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_File_Input_H
-#  define Fl_File_Input_H
-
-#  include <FL/Fl_Input.H>
+module fl.file_input;
 
 
-class FL_EXPORT Fl_File_Input : public Fl_Input
+public import fl.input;
+
+
+class Fl_File_Input : Fl_Input
 {
   Fl_Color	errorcolor_;
   char		ok_entry_;
-  uchar		down_box_;
+  ubyte		down_box_;
   short		buttons_[200];
   short		pressed_;
 
@@ -47,30 +47,30 @@ class FL_EXPORT Fl_File_Input : public Fl_Input
 
 public:
 
-  Fl_File_Input(int,int,int,int,const char *t=0);
+  Fl_File_Input(int,int,int,int,char *t=0);
 
-  virtual int handle(int);
-  virtual void draw();
+  int handle(int);
+  void draw();
 
-  Fl_Boxtype	down_box() const { return (Fl_Boxtype)down_box_; }
+  Fl_Boxtype	down_box() { return (Fl_Boxtype)down_box_; }
   void		down_box(Fl_Boxtype b) { down_box_ = b; }
-  Fl_Color	errorcolor() const { return errorcolor_; }
+  Fl_Color	errorcolor() { return errorcolor_; }
   void		errorcolor(Fl_Color c) { errorcolor_ = c; }
-  int	value(const char*);
-  int	value(const char*, int);
-  const char	*value() { return Fl_Input_::value(); }
+  int	value(char*);
+  int	value(char*, int);
+  char	*value() { return Fl_Input_.value(); }
 };
 
-#endif // !Fl_File_Input_H
+} // !Fl_File_Input_H
 
 
 //
-// End of "$Id: Fl_File_Input.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: file_input.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_File_Input.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: file_input.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // File_Input header file for the Fast Light Tool Kit (FLTK).
 //
@@ -98,32 +98,32 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_File_Input.H>
-#include <FL/Fl_Window.H>
-#include <FL/fl_draw.H>
+private import fl.file_input;
+private import fl.window;
+private import fl.draw;
 #include <stdio.h>
-#include "flstring.h"
+private import fl.flstring;
 
 
 //
 // Height of directory buttons...
 //
 
-#define DIR_HEIGHT	10
+const int DIR_HEIGHT = 10; 
 
 
 //
 // Redraw bit for directory bar...
 //
 
-#define FL_DAMAGE_BAR	0x10
+const int FL_DAMAGE_BAR = 0x10; 
 
 
 //
-// 'Fl_File_Input::Fl_File_Input()' - Create a Fl_File_Input widget.
+// 'Fl_File_Input.Fl_File_Input()' - Create a Fl_File_Input widget.
 //
 
-Fl_File_Input::Fl_File_Input(int X, int Y, int W, int H, const char *l)
+Fl_File_Input.Fl_File_Input(int X, int Y, int W, int H, char *l)
   : Fl_Input(X, Y, W, H, l) {
   buttons_[0] = 0;
   errorcolor_ = FL_RED;
@@ -134,11 +134,11 @@ Fl_File_Input::Fl_File_Input(int X, int Y, int W, int H, const char *l)
 }
 
 //
-// 'Fl_File_Input::draw_buttons()' - Draw directory buttons.
+// 'Fl_File_Input.draw_buttons()' - Draw directory buttons.
 //
 
 void
-Fl_File_Input::draw_buttons() {
+Fl_File_Input.draw_buttons() {
   int	i,					// Looping var
 	X;					// Current X position
 
@@ -173,13 +173,13 @@ Fl_File_Input::draw_buttons() {
 }
 
 //
-// 'Fl_File_Input::update_buttons()' - Update the sizes of the directory buttons.
+// 'Fl_File_Input.update_buttons()' - Update the sizes of the directory buttons.
 //
 
 void
-Fl_File_Input::update_buttons() {
+Fl_File_Input.update_buttons() {
   int		i;				// Looping var
-  const char	*start,				// Start of path component
+  char	*start,				// Start of path component
 		*end;				// End of path component
 
 
@@ -194,15 +194,15 @@ Fl_File_Input::update_buttons() {
        start = end, i ++) {
 //    printf("    start = \"%s\"\n", start);
     if ((end = strchr(start, '/')) == NULL)
-#if defined(WIN32) || defined(__EMX__)
+version (WIN32) || defined(__EMX__) {
       if ((end = strchr(start, '\\')) == NULL)
-#endif // WIN32 || __EMX__
+} // WIN32 || __EMX__
       break;
 
     end ++;
 
     buttons_[i] = (short)fl_width(start, end - start);
-    if (!i) buttons_[i] += Fl::box_dx(box()) + 6;
+    if (!i) buttons_[i] += Fl.box_dx(box()) + 6;
   }
 
 //  printf("    found %d components/buttons...\n", i);
@@ -212,49 +212,49 @@ Fl_File_Input::update_buttons() {
 
 
 //
-// 'Fl_File_Input::value()' - Set the value of the widget...
+// 'Fl_File_Input.value()' - Set the value of the widget...
 //
 
 int						// O - TRUE on success
-Fl_File_Input::value(const char *str,		// I - New string value
+Fl_File_Input.value(char *str,		// I - New string value
                      int        len) {		// I - Length of value
   damage(FL_DAMAGE_BAR);
-  return Fl_Input::value(str,len);
+  return Fl_Input.value(str,len);
 }
 
 
 int						// O - TRUE on success
-Fl_File_Input::value(const char *str) {		// I - New string value
+Fl_File_Input.value(char *str) {		// I - New string value
   damage(FL_DAMAGE_BAR);
-  return Fl_Input::value(str);
+  return Fl_Input.value(str);
 }
 
 
 //
-// 'Fl_File_Input::draw()' - Draw the file input widget...
+// 'Fl_File_Input.draw()' - Draw the file input widget...
 //
 
 void
-Fl_File_Input::draw() {
+Fl_File_Input.draw() {
   Fl_Boxtype b = box();
   if (damage() & (FL_DAMAGE_BAR | FL_DAMAGE_ALL)) draw_buttons();
-  // this flag keeps Fl_Input_::drawtext from drawing a bogus box!
+  // this flag keeps Fl_Input_.drawtext from drawing a bogus box!
   char must_trick_fl_input_ = 
-    Fl::focus()!=this && !size() && !(damage()&FL_DAMAGE_ALL);
+    Fl.focus()!=this && !size() && !(damage()&FL_DAMAGE_ALL);
   if ((damage() & FL_DAMAGE_ALL) || must_trick_fl_input_) 
     draw_box(b,x(),y()+DIR_HEIGHT,w(),h()-DIR_HEIGHT,color());
   if (!must_trick_fl_input_) 
-    Fl_Input_::drawtext(x()+Fl::box_dx(b)+3, y()+Fl::box_dy(b)+DIR_HEIGHT,
-		        w()-Fl::box_dw(b)-6, h()-Fl::box_dh(b)-DIR_HEIGHT);
+    Fl_Input_.drawtext(x()+Fl.box_dx(b)+3, y()+Fl.box_dy(b)+DIR_HEIGHT,
+		        w()-Fl.box_dw(b)-6, h()-Fl.box_dh(b)-DIR_HEIGHT);
 }
 
 
 //
-// 'Fl_File_Input::handle()' - Handle events in the widget...
+// 'Fl_File_Input.handle()' - Handle events in the widget...
 //
 
 int						// O - TRUE if we handled event
-Fl_File_Input::handle(int event) 		// I - Event
+Fl_File_Input.handle(int event) 		// I - Event
 {
 //  printf("handle(event = %d)\n", event);
 
@@ -262,7 +262,7 @@ Fl_File_Input::handle(int event) 		// I - Event
     case FL_MOVE :
     case FL_ENTER :
       if (active_r()) {
-	if (Fl::event_y() < (y() + DIR_HEIGHT)) window()->cursor(FL_CURSOR_DEFAULT);
+	if (Fl.event_y() < (y() + DIR_HEIGHT)) window()->cursor(FL_CURSOR_DEFAULT);
 	else window()->cursor(FL_CURSOR_INSERT);
       }
 
@@ -271,12 +271,12 @@ Fl_File_Input::handle(int event) 		// I - Event
     case FL_PUSH :
     case FL_RELEASE :
     case FL_DRAG :
-      if (Fl::event_y() < (y() + DIR_HEIGHT) || pressed_ >= 0) return handle_button(event);
+      if (Fl.event_y() < (y() + DIR_HEIGHT) || pressed_ >= 0) return handle_button(event);
 
-      return Fl_Input::handle(event);
+      return Fl_Input.handle(event);
 
     default :
-      if (Fl_Input::handle(event)) {
+      if (Fl_Input.handle(event)) {
 	damage(FL_DAMAGE_BAR);
 	return 1;
       }
@@ -287,11 +287,11 @@ Fl_File_Input::handle(int event) 		// I - Event
 
 
 //
-// 'Fl_File_Input::handle_button()' - Handle button events in the widget...
+// 'Fl_File_Input.handle_button()' - Handle button events in the widget...
 //
 
 int						// O - TRUE if we handled event
-Fl_File_Input::handle_button(int event)		// I - Event
+Fl_File_Input.handle_button(int event)		// I - Event
 {
   int		i,				// Looping var
 		X;				// Current X position
@@ -305,7 +305,7 @@ Fl_File_Input::handle_button(int event)		// I - Event
   {
     X += buttons_[i];
 
-    if (X > xscroll() && Fl::event_x() < (x() + X - xscroll())) break;
+    if (X > xscroll() && Fl.event_x() < (x() + X - xscroll())) break;
   }
 
 //  printf("handle_button(event = %d), button = %d\n", event, i);
@@ -327,9 +327,9 @@ Fl_File_Input::handle_button(int event)		// I - Event
   for (start = newvalue, end = start; start && i >= 0; start = end, i --) {
 //    printf("    start = \"%s\"\n", start);
     if ((end = strchr(start, '/')) == NULL)
-#if defined(WIN32) || defined(__EMX__)
+version (WIN32) || defined(__EMX__) {
       if ((end = strchr(start, '\\')) == NULL)
-#endif // WIN32 || __EMX__
+} // WIN32 || __EMX__
       break;
 
     end ++;
@@ -350,6 +350,6 @@ Fl_File_Input::handle_button(int event)		// I - Event
 
 
 //
-// End of "$Id: Fl_File_Input.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: file_input.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

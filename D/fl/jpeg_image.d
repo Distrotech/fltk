@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_JPEG_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: jpeg_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // JPEG image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,26 +26,26 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_JPEG_Image_H
-#define Fl_JPEG_Image_H
-#  include "Fl_Image.H"
+module fl.jpeg_image;
 
-class FL_EXPORT Fl_JPEG_Image : public Fl_RGB_Image {
+public import fl.image;
+
+class Fl_JPEG_Image : Fl_RGB_Image {
 
   public:
 
-  Fl_JPEG_Image(const char* filename);
+  Fl_JPEG_Image(char* filename);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_JPEG_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: jpeg_image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_JPEG_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: jpeg_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_JPEG_Image routines.
 //
@@ -73,14 +73,14 @@ class FL_EXPORT Fl_JPEG_Image : public Fl_RGB_Image {
 //
 // Contents:
 //
-//   Fl_JPEG_Image::Fl_JPEG_Image() - Load a JPEG image file.
+//   Fl_JPEG_Image.Fl_JPEG_Image() - Load a JPEG image file.
 //
 
 //
 // Include necessary header files...
 //
 
-#include <FL/Fl_JPEG_Image.H>
+private import fl.jpeg_image;
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,16 +91,16 @@ class FL_EXPORT Fl_JPEG_Image : public Fl_RGB_Image {
 // updated header file for the INT32 data type; the following define
 // from Shane Hill seems to be a usable workaround...
 
-#if defined(WIN32) && defined(__CYGWIN__)
+version (WIN32) && defined(__CYGWIN__) {
 #  define XMD_H
-#endif // WIN32 && __CYGWIN__
+} // WIN32 && __CYGWIN__
 
 
 extern "C"
 {
-#ifdef HAVE_LIBJPEG
+version (HAVE_LIBJPEG) {
 #  include <jpeglib.h>
-#endif // HAVE_LIBJPEG
+} // HAVE_LIBJPEG
 }
 
 
@@ -108,23 +108,23 @@ extern "C"
 // Custom JPEG error handling structure...
 //
 
-#ifdef HAVE_LIBJPEG
+version (HAVE_LIBJPEG) {
 struct fl_jpeg_error_mgr {
   jpeg_error_mgr	pub_;		// Destination manager...
   jmp_buf		errhand_;	// Error handler
 };
-#endif // HAVE_LIBJPEG
+} // HAVE_LIBJPEG
 
 
 //
 // Error handler for JPEG files...
 //
 
-#ifdef HAVE_LIBJPEG
+version (HAVE_LIBJPEG) {
 extern "C" {
   static void
   fl_jpeg_error_handler(j_common_ptr dinfo) {	// I - Decompressor info
-    longjmp(((fl_jpeg_error_mgr *)(dinfo->err))->errhand_, 1);
+    longjmp(((fl_jpeg_error_mgr *)(dinfo.err))->errhand_, 1);
     return;
   }
 
@@ -133,16 +133,16 @@ extern "C" {
     return;
   }
 }
-#endif // HAVE_LIBJPEG
+} // HAVE_LIBJPEG
 
 
 //
-// 'Fl_JPEG_Image::Fl_JPEG_Image()' - Load a JPEG image file.
+// 'Fl_JPEG_Image.Fl_JPEG_Image()' - Load a JPEG image file.
 //
 
-Fl_JPEG_Image::Fl_JPEG_Image(const char *jpeg)	// I - File to load
+Fl_JPEG_Image.Fl_JPEG_Image(char *jpeg)	// I - File to load
   : Fl_RGB_Image(0,0,0) {
-#ifdef HAVE_LIBJPEG
+version (HAVE_LIBJPEG) {
   FILE				*fp;	// File pointer
   jpeg_decompress_struct	dinfo;	// Decompressor info
   fl_jpeg_error_mgr		jerr;	// Error handler info
@@ -155,7 +155,7 @@ Fl_JPEG_Image::Fl_JPEG_Image(const char *jpeg)	// I - File to load
 
   // Clear data...
   alloc_array = 0;
-  array = (uchar *)0;
+  array = (ubyte *)0;
 
   // Open the image file...
   if ((fp = fopen(jpeg, "rb")) == NULL) return;
@@ -188,7 +188,7 @@ Fl_JPEG_Image::Fl_JPEG_Image(const char *jpeg)	// I - File to load
     d(0);
 
     if (array) {
-      delete[] (uchar *)array;
+      delete[] (ubyte *)array;
       array = 0;
       alloc_array = 0;
     }
@@ -214,7 +214,7 @@ Fl_JPEG_Image::Fl_JPEG_Image(const char *jpeg)	// I - File to load
   h(dinfo.output_height);
   d(dinfo.output_components);
 
-  array = new uchar[w() * h() * d()];
+  array = new ubyte[w() * h() * d()];
   alloc_array = 1;
 
   jpeg_start_decompress(&dinfo);
@@ -233,10 +233,10 @@ Fl_JPEG_Image::Fl_JPEG_Image(const char *jpeg)	// I - File to load
   free(max_finish_decompress_err);
 
   fclose(fp);
-#endif // HAVE_LIBJPEG
+} // HAVE_LIBJPEG
 }
 
 //
-// End of "$Id: Fl_JPEG_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: jpeg_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

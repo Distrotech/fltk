@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_XPM_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: xpm_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // XPM image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,26 +26,26 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_XPM_Image_H
-#define Fl_XPM_Image_H
-#  include "Fl_Pixmap.H"
+module fl.xpm_image;
 
-class FL_EXPORT Fl_XPM_Image : public Fl_Pixmap {
+public import fl.pixmap;
+
+class Fl_XPM_Image : Fl_Pixmap {
 
   public:
 
-  Fl_XPM_Image(const char* filename);
+  Fl_XPM_Image(char* filename);
 };
 
-#endif // !Fl_XPM_Image
+} // !Fl_XPM_Image
 
 //
-// End of "$Id: Fl_XPM_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: xpm_image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_XPM_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: xpm_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_XPM_Image routines.
 //
@@ -79,10 +79,10 @@ class FL_EXPORT Fl_XPM_Image : public Fl_Pixmap {
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_XPM_Image.H>
+private import fl.xpm_image;
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
 
 //
@@ -96,10 +96,10 @@ static int hexdigit(int x) {	// I - Hex digit...
   return 20;
 }
 
-#define MAXSIZE 2048
-#define INITIALLINES 256
+const int MAXSIZE = 2048; 
+const int INITIALLINES = 256; 
 
-Fl_XPM_Image::Fl_XPM_Image(const char *name) : Fl_Pixmap((char *const*)0) {
+Fl_XPM_Image.Fl_XPM_Image(char *name) : Fl_Pixmap((char *const*)0) {
   FILE *f;
 
   if ((f = fopen(name, "rb")) == NULL) return;
@@ -165,7 +165,7 @@ Fl_XPM_Image::Fl_XPM_Image(const char *name) : Fl_Pixmap((char *const*)0) {
 
   fclose(f);
 
-  data((const char **)new_data, i);
+  data((char **)new_data, i);
   alloc_data = 1;
 
   measure();
@@ -173,6 +173,6 @@ Fl_XPM_Image::Fl_XPM_Image(const char *name) : Fl_Pixmap((char *const*)0) {
 
 
 //
-// End of "$Id: Fl_XPM_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: xpm_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_abort.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: abort.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Warning/error message code for the Fast Light Tool Kit (FLTK).
 //
@@ -30,20 +29,23 @@
 // do not need to be included in Fl.cxx:
 // You can also override this by redefining all of these.
 
+module fl.abort;
+
+/+=
 #include <FL/Fl.H>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "flstring.h"
+private import fl.flstring;
 
-#ifdef WIN32
+version (WIN32) {
 #  include <windows.h>
 
-static void warning(const char *, ...) {
+static void warning(char *, ...) {
   // Show nothing for warnings under WIN32...
 }
 
-static void error(const char *format, ...) {
+static void error(char *format, ...) {
   va_list args;
   char buf[1024];
   va_start(args, format);
@@ -52,7 +54,7 @@ static void error(const char *format, ...) {
   MessageBox(0,buf,"Error",MB_ICONEXCLAMATION|MB_SYSTEMMODAL);
 }
 
-static void fatal(const char *format, ...) {
+static void fatal(char *format, ...) {
   va_list args;
   char buf[1024];
   va_start(args, format);
@@ -62,9 +64,9 @@ static void fatal(const char *format, ...) {
   ::exit(1);
 }
 
-#else
+} else {
 
-static void warning(const char *format, ...) {
+static void warning(char *format, ...) {
   va_list args;
   va_start(args, format);
   vfprintf(stderr, format, args);
@@ -73,7 +75,7 @@ static void warning(const char *format, ...) {
   fflush(stderr);
 }
 
-static void error(const char *format, ...) {
+static void error(char *format, ...) {
   va_list args;
   va_start(args, format);
   vfprintf(stderr, format, args);
@@ -82,7 +84,7 @@ static void error(const char *format, ...) {
   fflush(stderr);
 }
 
-static void fatal(const char *format, ...) {
+static void fatal(char *format, ...) {
   va_list args;
   va_start(args, format);
   vfprintf(stderr, format, args);
@@ -92,13 +94,13 @@ static void fatal(const char *format, ...) {
   ::exit(1);
 }
 
-#endif
+}
 
-void (*Fl::warning)(const char* format, ...) = ::warning;
-void (*Fl::error)(const char* format, ...) = ::error;
-void (*Fl::fatal)(const char* format, ...) = ::fatal;
+void (*Fl.warning)(char* format, ...) = ::warning;
+void (*Fl.error)(char* format, ...) = ::error;
+void (*Fl.fatal)(char* format, ...) = ::fatal;
 
 //
-// End of "$Id: Fl_abort.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: abort.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

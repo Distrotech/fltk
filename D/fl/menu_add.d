@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_add.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: menu_add.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Menu utilities for the Fast Light Tool Kit (FLTK).
 //
@@ -36,8 +36,8 @@
 // Not at all guaranteed to be Forms compatable, especially with any
 // string with a % sign in it!
 
-#include <FL/Fl_Menu_.H>
-#include "flstring.h"
+private import fl.menu_;
+private import fl.flstring;
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -45,7 +45,7 @@
 static Fl_Menu_Item* local_array = 0;
 static int local_array_alloc = 0; // number allocated
 static int local_array_size = 0; // == size(local_array)
-extern Fl_Menu_* fl_menu_array_owner; // in Fl_Menu_.cxx
+extern Fl_Menu_  fl_menu_array_owner; // in Fl_Menu_.cxx
 
 // For historical reasons there are matching methods that work on a
 // user-allocated array of Fl_Menu_Item.  These methods are quite
@@ -58,7 +58,7 @@ extern Fl_Menu_* fl_menu_array_owner; // in Fl_Menu_.cxx
 static Fl_Menu_Item* insert(
   Fl_Menu_Item* array, int size,
   int n,
-  const char *text,
+  char *text,
   int flags
 ) {
   if (array == local_array && size >= local_array_alloc) {
@@ -72,17 +72,17 @@ static Fl_Menu_Item* insert(
   memmove(array+n+1, array+n, sizeof(Fl_Menu_Item)*(size-n));
   // create the new item:
   Fl_Menu_Item* m = array+n;
-  m->text = text ? strdup(text) : 0;
-  m->shortcut_ = 0;
-  m->callback_ = 0;
-  m->user_data_ = 0;
-  m->flags = flags;
-  m->labeltype_ = m->labelfont_ = m->labelsize_ = m->labelcolor_ = 0;
+  m.text = text ? strdup(text) : 0;
+  m.shortcut_ = 0;
+  m.callback_ = 0;
+  m.user_data_ = 0;
+  m.flags = flags;
+  m.labeltype_ = m.labelfont_ = m.labelsize_ = m.labelcolor_ = 0;
   return array;
 }
 
 // Comparison that does not care about deleted '&' signs:
-static int compare(const char* a, const char* b) {
+static int compare(char* a, char* b) {
   for (;;) {
     int n = *a-*b;
     if (n) {
@@ -100,22 +100,22 @@ static int compare(const char* a, const char* b) {
 // Add an item.  The text is split at '/' characters to automatically
 // produce submenus (actually a totally unnecessary feature as you can
 // now add submenu titles directly by setting SUBMENU in the flags):
-int Fl_Menu_Item::add(
-  const char *mytext,
+int Fl_Menu_Item.add(
+  char *mytext,
   int sc,
-  Fl_Callback *cb,	
+  Fl_Callback  cb,	
   void *data,
   int myflags
 ) {
   Fl_Menu_Item *array = this;
   Fl_Menu_Item *m = this;
-  const char *p;
+  char *p;
   char *q;
   char buf[1024];
 
-  int msize = array==local_array ? local_array_size : array->size();
+  int msize = array==local_array ? local_array_size : array.size();
   int flags1 = 0;
-  const char* item;
+  char* item;
 
   // split at slashes to make submenus:
   for (;;) {
@@ -136,10 +136,10 @@ int Fl_Menu_Item::add(
     mytext = p+1;	/* point at item title */
 
     /* find a matching menu title: */
-    for (; m->text; m = m->next())
-      if (m->flags&FL_SUBMENU && !compare(item, m->text)) break;
+    for (; m.text; m = m.next())
+      if (m.flags&FL_SUBMENU && !compare(item, m.text)) break;
 
-    if (!m->text) { /* create a new menu */
+    if (!m.text) { /* create a new menu */
       int n = m-array;
       array = insert(array, msize, n, item, FL_SUBMENU|flags1);
       msize++;
@@ -152,10 +152,10 @@ int Fl_Menu_Item::add(
   }
 
   /* find a matching menu item: */
-  for (; m->text; m = m->next())
-    if (!(m->flags&FL_SUBMENU) && !compare(m->text,item)) break;
+  for (; m.text; m = m.next())
+    if (!(m.flags&FL_SUBMENU) && !compare(m.text,item)) break;
 
-  if (!m->text) {	/* add a new menu item */
+  if (!m.text) {	/* add a new menu item */
     int n = m-array;
     array = insert(array, msize, n, item, myflags|flags1);
     msize++;
@@ -167,26 +167,26 @@ int Fl_Menu_Item::add(
   }
 
   /* fill it in */
-  m->shortcut_ = sc;
-  m->callback_ = cb;
-  m->user_data_ = data;
-  m->flags = myflags|flags1;
+  m.shortcut_ = sc;
+  m.callback_ = cb;
+  m.user_data_ = data;
+  m.flags = myflags|flags1;
 
   if (array == local_array) local_array_size = msize;
   return m-array;
 }
 
-int Fl_Menu_::add(const char *t, int s, Fl_Callback *c,void *v,int f) {
+int Fl_Menu_.add(char *t, int s, Fl_Callback  c,void *v,int f) {
   // make this widget own the local array:
   if (this != fl_menu_array_owner) {
     if (fl_menu_array_owner) {
-      Fl_Menu_* o = fl_menu_array_owner;
+      Fl_Menu_  o = fl_menu_array_owner;
       // the previous owner get's its own correctly-sized array:
-      int value_offset = o->value_-local_array;
+      int value_offset = o.value_-local_array;
       int n = local_array_size;
-      Fl_Menu_Item* newMenu = o->menu_ = new Fl_Menu_Item[n];
+      Fl_Menu_Item* newMenu = o.menu_ = new Fl_Menu_Item[n];
       memcpy(newMenu, local_array, n*sizeof(Fl_Menu_Item));
-      if (o->value_) o->value_ = newMenu+value_offset;
+      if (o.value_) o.value_ = newMenu+value_offset;
     }
     if (menu_) {
       // this already has a menu array, use it as the local one:
@@ -210,7 +210,7 @@ int Fl_Menu_::add(const char *t, int s, Fl_Callback *c,void *v,int f) {
     }
     fl_menu_array_owner = this;
   }
-  int r = menu_->add(t,s,c,v,f);
+  int r = menu_.add(t,s,c,v,f);
   // if it rellocated array we must fix the pointer:
   int value_offset = value_-menu_;
   menu_ = local_array; // in case it reallocated it
@@ -221,7 +221,7 @@ int Fl_Menu_::add(const char *t, int s, Fl_Callback *c,void *v,int f) {
 // This is a Forms (and SGI GL library) compatable add function, it
 // adds many menu items, with '|' seperating the menu items, and tab
 // seperating the menu item names from an optional shortcut string.
-int Fl_Menu_::add(const char *str) {
+int Fl_Menu_.add(char *str) {
   char buf[1024];
   int r = 0;
   while (*str) {
@@ -238,7 +238,7 @@ int Fl_Menu_::add(const char *str) {
   return r;
 }
 
-void Fl_Menu_::replace(int i, const char *str) {
+void Fl_Menu_.replace(int i, char *str) {
   if (i<0 || i>=size()) return;
   if (!alloc) copy(menu_);
   if (alloc > 1) {
@@ -248,23 +248,23 @@ void Fl_Menu_::replace(int i, const char *str) {
   menu_[i].text = str;
 }
 
-void Fl_Menu_::remove(int i) {
+void Fl_Menu_.remove(int i) {
   int n = size();
   if (i<0 || i>=n) return;
   if (!alloc) copy(menu_);
   // find the next item, skipping submenus:
   Fl_Menu_Item* item = menu_+i;
-  const Fl_Menu_Item* next_item = item->next();
+  Fl_Menu_Item* next_item = item.next();
   // delete the text only if all items were created with add():
   if (alloc > 1) {
     for (Fl_Menu_Item* m = item; m < next_item; m++)
-      if (m->text) free((void*)(m->text));
+      if (m.text) free((void*)(m.text));
   }
   // MRS: "n" is the menu size(), which includes the trailing NULL entry...
   memmove(item, next_item, (menu_+n-next_item)*sizeof(Fl_Menu_Item));
 }
 
 //
-// End of "$Id: Fl_Menu_add.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: menu_add.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

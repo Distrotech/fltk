@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_draw_image_mac.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -28,12 +27,15 @@
 
 ////////////////////////////////////////////////////////////////
 
+module fl.draw_image_mac;
+
+/+=
 #include <config.h>
 #include <FL/Fl.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <FL/x.H>
 
-#define MAXBUFFER 0x40000 // 256k
+const int MAXBUFFER = 0x40000;  // 256k
 
 /**
  * draw an image based on the input parameters
@@ -51,13 +53,13 @@
  *   dst:       destination buffer
  * userdata:  ?
  */
-static void innards(const uchar *buf, int X, int Y, int W, int H,
+static void innards(ubyte *buf, int X, int Y, int W, int H,
 		    int delta, int linedelta, int mono,
 		    Fl_Draw_Image_Cb cb, void* userdata)
 {
   if (!linedelta) linedelta = W*delta;
 
-#ifdef __APPLE_QD__
+version (__APPLE_QD__) {
   // theoretically, if the current GPort permits, we could write
   // directly into it, avoiding the temporary GWorld. For now I
   // will go the safe way... .
@@ -71,25 +73,25 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
     if ( pm ) {
       LockPixels( pm );
       if ( *pm ) {
-        uchar *base = (uchar*)GetPixBaseAddr( pm );
+        ubyte *base = (ubyte*)GetPixBaseAddr( pm );
         if ( base ) {
           PixMapPtr pmp = *pm;
           // make absolutely sure that we can use a direct memory write to
           // create the pixmap!
-          if ( pmp->pixelType == 16 || pmp->pixelSize == 32 || pmp->cmpCount == 3 || pmp->cmpSize == 8 ) {
-            int rowBytes = pmp->rowBytes & 0x3fff;
+          if ( pmp.pixelType == 16 || pmp.pixelSize == 32 || pmp.cmpCount == 3 || pmp.cmpSize == 8 ) {
+            int rowBytes = pmp.rowBytes & 0x3fff;
             if ( cb )
             {
-              uchar *tmpBuf = new uchar[ W*delta ];
+              ubyte *tmpBuf = new ubyte[ W*delta ];
               if ( mono ) delta -= 1; else delta -= 3; 
               for ( int i=0; i<H; i++ )
               {
-                uchar *src = tmpBuf;
-                uchar *dst = base + i*rowBytes;
+                ubyte *src = tmpBuf;
+                ubyte *dst = base + i*rowBytes;
                 cb( userdata, 0, i, W, tmpBuf );
                 if ( mono ) {
                   for ( int j=0; j<W; j++ )
-                    { uchar c = *src++; *dst++ = 0; *dst++ = c; *dst++ = c; *dst++ = c; src += delta; }
+                    { ubyte c = *src++; *dst++ = 0; *dst++ = c; *dst++ = c; *dst++ = c; src += delta; }
                 } else {
                   for ( int j=0; j<W; j++ )
                     { *dst++ = 0; *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; src += delta; }
@@ -102,11 +104,11 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
               if ( mono ) delta -= 1; else delta -= 3; 
               for ( int i=0; i<H; i++ )
               {
-                const uchar *src = buf+i*linedelta;
-                uchar *dst = base + i*rowBytes;
+                ubyte *src = buf+i*linedelta;
+                ubyte *dst = base + i*rowBytes;
                 if ( mono ) {
                   for ( int j=0; j<W; j++ )
-                    { uchar c = *src++; *dst++ = 0; *dst++ = c; *dst++ = c; *dst++ = c; src += delta; }
+                    { ubyte c = *src++; *dst++ = 0; *dst++ = c; *dst++ = c; *dst++ = c; src += delta; }
                 } else {
                   for ( int j=0; j<W; j++ )
                     { *dst++ = 0; *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; src += delta; }
@@ -133,10 +135,10 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   // following the very save (and very slow) way to write the image into the give port
   if ( cb )
   {
-    uchar *tmpBuf = new uchar[ W*3 ];
+    ubyte *tmpBuf = new ubyte[ W*3 ];
     for ( int i=0; i<H; i++ )
     {
-      uchar *src = tmpBuf;
+      ubyte *src = tmpBuf;
       cb( userdata, 0, i, W, tmpBuf );
       for ( int j=0; j<W; j++ )
       {
@@ -154,7 +156,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   {
     for ( int i=0; i<H; i++ )
     {
-      const uchar *src = buf+i*linedelta;
+      ubyte *src = buf+i*linedelta;
       for ( int j=0; j<W; j++ )
       {
         if ( mono )          
@@ -167,11 +169,11 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
       }
     }
   }
-#elif defined(__APPLE_QUARTZ__)
-  const void *array = buf;
-  uchar *tmpBuf = 0;
+} else version (__APPLE_QUARTZ__) {
+  void *array = buf;
+  ubyte *tmpBuf = 0;
   if (cb) {
-    tmpBuf = new uchar[ H*W*delta ];
+    tmpBuf = new ubyte[ H*W*delta ];
     for (int i=0; i<H; i++) {
       cb(userdata, 0, i, W, tmpBuf+i*W*delta);
     }
@@ -191,9 +193,9 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   // draw the image into the destination context
   if (img) {
     CGRect rect = { { X, Y }, { W, H } };
-    Fl_X::q_begin_image(rect, 0, 0, W, H);
+    Fl_X.q_begin_image(rect, 0, 0, W, H);
     CGContextDrawImage(fl_gc, rect, img);
-    Fl_X::q_end_image();
+    Fl_X.q_end_image();
     // release all allocated resources
     CGImageRelease(img);
   }
@@ -207,10 +209,10 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   CGContextSetShouldAntialias(fl_gc, false);
   if ( cb )
   {
-    uchar *tmpBuf = new uchar[ W*4 ];
+    ubyte *tmpBuf = new ubyte[ W*4 ];
     for ( int i=0; i<H; i++ )
     {
-      uchar *src = tmpBuf;
+      ubyte *src = tmpBuf;
       cb( userdata, 0, i, W, tmpBuf );
       for ( int j=0; j<W; j++ )
       {
@@ -230,7 +232,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   {
     for ( int i=0; i<H; i++ )
     {
-      const uchar *src = buf+i*linedelta;
+      ubyte *src = buf+i*linedelta;
       for ( int j=0; j<W; j++ )
       {
         if ( mono )
@@ -245,19 +247,19 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
     }
   }
   CGContextSetShouldAntialias(fl_gc, true);
-#else
+} else {
 # error : you must defined __APPLE_QD__ or __APPLE_QUARTZ__
-#endif
+}
 }
 
-void fl_draw_image(const uchar* buf, int x, int y, int w, int h, int d, int l){
+void fl_draw_image(ubyte* buf, int x, int y, int w, int h, int d, int l){
   innards(buf,x,y,w,h,d,l,(d<3&&d>-3),0,0);
 }
 void fl_draw_image(Fl_Draw_Image_Cb cb, void* data,
 		   int x, int y, int w, int h,int d) {
   innards(0,x,y,w,h,d,0,(d<3&&d>-3),cb,data);
 }
-void fl_draw_image_mono(const uchar* buf, int x, int y, int w, int h, int d, int l){
+void fl_draw_image_mono(ubyte* buf, int x, int y, int w, int h, int d, int l){
   innards(buf,x,y,w,h,d,l,1,0,0);
 }
 void fl_draw_image_mono(Fl_Draw_Image_Cb cb, void* data,
@@ -265,7 +267,7 @@ void fl_draw_image_mono(Fl_Draw_Image_Cb cb, void* data,
   innards(0,x,y,w,h,d,0,1,cb,data);
 }
 
-void fl_rectf(int x, int y, int w, int h, uchar r, uchar g, uchar b) {
+void fl_rectf(int x, int y, int w, int h, ubyte r, ubyte g, ubyte b) {
   fl_color(r,g,b);
   fl_rectf(x,y,w,h);
 }

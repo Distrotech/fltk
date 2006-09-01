@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Counter.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: counter.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Counter header file for the Fast Light Tool Kit (FLTK).
 //
@@ -28,23 +27,25 @@
 
 // A numerical value with up/down step buttons.  From Forms.
 
-#ifndef Fl_Counter_H
-#define Fl_Counter_H
+module fl.counter;
 
-#ifndef Fl_Valuator_H
-#include "Fl_Valuator.H"
-#endif
+/+=
+
+
+module fl.valuator;
+public import fl.valuator;
+}
 
 // values for type():
-#define FL_NORMAL_COUNTER	0
-#define FL_SIMPLE_COUNTER	1
+const int FL_NORMAL_COUNTER = 0; 
+const int FL_SIMPLE_COUNTER = 1; 
 
-class FL_EXPORT Fl_Counter : public Fl_Valuator {
+class Fl_Counter : Fl_Valuator {
 
-  uchar textfont_, textsize_;
-  unsigned textcolor_;
+  ubyte textfont_, textsize_;
+  uint textcolor_;
   double lstep_;
-  uchar mouseobj;
+  ubyte mouseobj;
   static void repeat_callback(void *);
   int calc_mouseobj();
   void increment_cb();
@@ -56,29 +57,29 @@ protected:
 public:
 
   int handle(int);
-  Fl_Counter(int,int,int,int,const char * = 0);
+  Fl_Counter(int,int,int,int,char * = 0);
   ~Fl_Counter();
   void lstep(double a) {lstep_ = a;}
-  void step(double a,double b) {Fl_Valuator::step(a); lstep_ = b;}
-  void step(double a) {Fl_Valuator::step(a);}
-  Fl_Font textfont() const {return (Fl_Font)textfont_;}
-  void textfont(uchar s) {textfont_ = s;}
-  uchar textsize() const {return textsize_;}
-  void textsize(uchar s) {textsize_ = s;}
-  Fl_Color textcolor() const {return (Fl_Color)textcolor_;}
-  void textcolor(unsigned s) {textcolor_ = s;}
+  void step(double a,double b) {Fl_Valuator.step(a); lstep_ = b;}
+  void step(double a) {Fl_Valuator.step(a);}
+  Fl_Font textfont() {return (Fl_Font)textfont_;}
+  void textfont(ubyte s) {textfont_ = s;}
+  ubyte textsize() {return textsize_;}
+  void textsize(ubyte s) {textsize_ = s;}
+  Fl_Color textcolor() {return (Fl_Color)textcolor_;}
+  void textcolor(uint s) {textcolor_ = s;}
 
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Counter.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: counter.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Counter.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: counter.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Counter widget for the Fast Light Tool Kit (FLTK).
 //
@@ -105,10 +106,10 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Counter.H>
-#include <FL/fl_draw.H>
+private import fl.counter;
+private import fl.draw;
 
-void Fl_Counter::draw() {
+void Fl_Counter.draw() {
   int i; Fl_Boxtype boxtype[5];
   Fl_Color selcolor;
 
@@ -143,7 +144,7 @@ void Fl_Counter::draw() {
   fl_color(active_r() ? textcolor() : fl_inactive(textcolor()));
   char str[128]; format(str);
   fl_draw(str, xx[0], y(), ww[0], h(), FL_ALIGN_CENTER);
-  if (Fl::focus() == this) draw_focus(boxtype[0], xx[0], y(), ww[0], h());
+  if (Fl.focus() == this) draw_focus(boxtype[0], xx[0], y(), ww[0], h());
   if (!(damage()&FL_DAMAGE_ALL)) return; // only need to redraw text
 
   if (active_r())
@@ -165,7 +166,7 @@ void Fl_Counter::draw() {
   }
 }
 
-void Fl_Counter::increment_cb() {
+void Fl_Counter.increment_cb() {
   if (!mouseobj) return;
   double v = value();
   switch (mouseobj) {
@@ -177,58 +178,58 @@ void Fl_Counter::increment_cb() {
   handle_drag(clamp(round(v)));
 }
 
-#define INITIALREPEAT .5
-#define REPEAT .1
+const int INITIALREPEAT = .5; 
+const int REPEAT = .1; 
 
-void Fl_Counter::repeat_callback(void* v) {
-  Fl_Counter* b = (Fl_Counter*)v;
-  if (b->mouseobj) {
-    Fl::add_timeout(REPEAT, repeat_callback, b);
-    b->increment_cb();
+void Fl_Counter.repeat_callback(void* v) {
+  Fl_Counter  b = (Fl_Counter )v;
+  if (b.mouseobj) {
+    Fl.add_timeout(REPEAT, repeat_callback, b);
+    b.increment_cb();
   }
 }
 
-int Fl_Counter::calc_mouseobj() {
+int Fl_Counter.calc_mouseobj() {
   if (type() == FL_NORMAL_COUNTER) {
     int W = w()*15/100;
-    if (Fl::event_inside(x(), y(), W, h())) return 1;
-    if (Fl::event_inside(x()+W, y(), W, h())) return 2;
-    if (Fl::event_inside(x()+w()-2*W, y(), W, h())) return 3;
-    if (Fl::event_inside(x()+w()-W, y(), W, h())) return 4;
+    if (Fl.event_inside(x(), y(), W, h())) return 1;
+    if (Fl.event_inside(x()+W, y(), W, h())) return 2;
+    if (Fl.event_inside(x()+w()-2*W, y(), W, h())) return 3;
+    if (Fl.event_inside(x()+w()-W, y(), W, h())) return 4;
   } else {
     int W = w()*20/100;
-    if (Fl::event_inside(x(), y(), W, h())) return 2;
-    if (Fl::event_inside(x()+w()-W, y(), W, h())) return 3;
+    if (Fl.event_inside(x(), y(), W, h())) return 2;
+    if (Fl.event_inside(x()+w()-W, y(), W, h())) return 3;
   }
   return -1;
 }
 
-int Fl_Counter::handle(int event) {
+int Fl_Counter.handle(int event) {
   int i;
   switch (event) {
   case FL_RELEASE:
     if (mouseobj) {
-      Fl::remove_timeout(repeat_callback, this);
+      Fl.remove_timeout(repeat_callback, this);
       mouseobj = 0;
       redraw();
     }
     handle_release();
     return 1;
   case FL_PUSH:
-    if (Fl::visible_focus()) Fl::focus(this);
+    if (Fl.visible_focus()) Fl.focus(this);
     handle_push();
   case FL_DRAG:
     i = calc_mouseobj();
     if (i != mouseobj) {
-      Fl::remove_timeout(repeat_callback, this);
-      mouseobj = (uchar)i;
-      if (i) Fl::add_timeout(INITIALREPEAT, repeat_callback, this);
+      Fl.remove_timeout(repeat_callback, this);
+      mouseobj = (ubyte)i;
+      if (i) Fl.add_timeout(INITIALREPEAT, repeat_callback, this);
       increment_cb();
       redraw();
     }
     return 1;
   case FL_KEYBOARD :
-    switch (Fl::event_key()) {
+    switch (Fl.event_key()) {
       case FL_Left:
 	handle_drag(clamp(increment(value(),-1)));
 	return 1;
@@ -241,7 +242,7 @@ int Fl_Counter::handle(int event) {
     // break not required because of switch...
   case FL_FOCUS :
   case FL_UNFOCUS :
-    if (Fl::visible_focus()) {
+    if (Fl.visible_focus()) {
       redraw();
       return 1;
     } else return 0;
@@ -254,24 +255,24 @@ int Fl_Counter::handle(int event) {
 }
 
 Fl_Counter::~Fl_Counter() {
-  Fl::remove_timeout(repeat_callback, this);
+  Fl.remove_timeout(repeat_callback, this);
 }
 
-Fl_Counter::Fl_Counter(int X, int Y, int W, int H, const char* l)
+Fl_Counter.Fl_Counter(int X, int Y, int W, int H, char* l)
   : Fl_Valuator(X, Y, W, H, l) {
   box(FL_UP_BOX);
   selection_color(FL_INACTIVE_COLOR); // was FL_BLUE
-  align(FL_ALIGN_BOTTOM);
+  alignment(FL_ALIGN_BOTTOM);
   bounds(-1000000.0, 1000000.0);
-  Fl_Valuator::step(1, 10);
+  Fl_Valuator.step(1, 10);
   lstep_ = 1.0;
   mouseobj = 0;
   textfont_ = FL_HELVETICA;
-  textsize_ = (uchar)FL_NORMAL_SIZE;
+  textsize_ = (ubyte)FL_NORMAL_SIZE;
   textcolor_ = FL_FOREGROUND_COLOR;
 }
 
 //
-// End of "$Id: Fl_Counter.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: counter.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

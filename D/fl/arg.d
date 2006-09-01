@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_arg.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: arg.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Optional argument initialization code for the Fast Light Tool Kit (FLTK).
 //
@@ -29,29 +28,32 @@
 // OPTIONAL initialization code for a program using fltk.
 // You do not need to call this!  Feel free to make up your own switches.
 
+module fl.arg;
+
+/+=
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Tooltip.H>
+private import fl.window;
+private import fl.tooltip;
 #include <FL/filename.H>
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <ctype.h>
-#include "flstring.h"
+private import fl.flstring;
 
-#if defined(WIN32) || defined(__APPLE__)
-int XParseGeometry(const char*, int*, int*, unsigned int*, unsigned int*);
-#  define NoValue	0x0000
-#  define XValue  	0x0001
-#  define YValue	0x0002
-#  define WidthValue  	0x0004
-#  define HeightValue  	0x0008
-#  define AllValues 	0x000F
-#  define XNegative 	0x0010
-#  define YNegative 	0x0020
-#endif
+version (WIN32) || defined(__APPLE__) {
+int XParseGeometry(char*, int*, int*, uint*, uint*);
+const int NoValue = 0x0000; 
+const int XValue = 0x0001; 
+const int YValue = 0x0002; 
+const int WidthValue = 0x0004; 
+const int HeightValue = 0x0008; 
+const int AllValues = 0x000F; 
+const int XNegative = 0x0010; 
+const int YNegative = 0x0020; 
+}
 
-static int fl_match(const char *a, const char *s, int atleast = 1) {
-  const char *b = s;
+static int fl_match(char *a, char *s, int atleast = 1) {
+  char *b = s;
   while (*a && (*a == *b || tolower(*a) == *b)) {a++; b++;}
   return !*a && b >= s+atleast;
 }
@@ -60,18 +62,18 @@ static int fl_match(const char *a, const char *s, int atleast = 1) {
 extern char fl_show_iconic; // in Fl_x.cxx
 static char arg_called;
 static char return_i;
-static const char *name;
-static const char *geometry;
-static const char *title;
+static char *name;
+static char *geometry;
+static char *title;
 // these are in Fl_get_system_colors and are set by the switches:
-extern const char *fl_fg;
-extern const char *fl_bg;
-extern const char *fl_bg2;
+extern char *fl_fg;
+extern char *fl_bg;
+extern char *fl_bg2;
 
 // consume a switch from argv.  Returns number of words eaten, 0 on error:
-int Fl::arg(int argc, char **argv, int &i) {
+int Fl.arg(int argc, char **argv, int &i) {
   arg_called = 1;
-  const char *s = argv[i];
+  char *s = argv[i];
 
   if (!s) {i++; return 1;}	// something removed by calling program?
 
@@ -88,54 +90,54 @@ int Fl::arg(int argc, char **argv, int &i) {
     i++;
     return 1;
   } else if (fl_match(s, "kbd")) {
-    Fl::visible_focus(1);
+    Fl.visible_focus(1);
     i++;
     return 1;
   } else if (fl_match(s, "nokbd", 3)) {
-    Fl::visible_focus(0);
+    Fl.visible_focus(0);
     i++;
     return 1;
   } else if (fl_match(s, "dnd", 2)) {
-    Fl::dnd_text_ops(1);
+    Fl.dnd_text_ops(1);
     i++;
     return 1;
   } else if (fl_match(s, "nodnd", 3)) {
-    Fl::dnd_text_ops(0);
+    Fl.dnd_text_ops(0);
     i++;
     return 1;
   } else if (fl_match(s, "tooltips", 2)) {
-    Fl_Tooltip::enable();
+    Fl_Tooltip.enable();
     i++;
     return 1;
   } else if (fl_match(s, "notooltips", 3)) {
-    Fl_Tooltip::disable();
+    Fl_Tooltip.disable();
     i++;
     return 1;
   }
-#ifdef __APPLE__
+version (__APPLE__) {
   // The Finder application in MacOS X passes the "-psn_N_NNNNN" option
   // to all apps...
   else if (strncmp(s, "psn_", 4) == 0) {
     i++;
     return 1;
   }
-#endif // __APPLE__
+} // __APPLE__
 
-  const char *v = argv[i+1];
+  char *v = argv[i+1];
   if (i >= argc-1 || !v)
     return 0;	// all the rest need an argument, so if missing it is an error
 
   if (fl_match(s, "geometry")) {
 
-    int flags, gx, gy; unsigned int gw, gh;
+    int flags, gx, gy; uint gw, gh;
     flags = XParseGeometry(v, &gx, &gy, &gw, &gh);
     if (!flags) return 0;
     geometry = v;
 
 #if !defined(WIN32) && !defined(__APPLE__)
   } else if (fl_match(s, "display", 2)) {
-    Fl::display(v);
-#endif
+    Fl.display(v);
+}
 
   } else if (fl_match(s, "title", 2)) {
     title = v;
@@ -153,7 +155,7 @@ int Fl::arg(int argc, char **argv, int &i) {
     fl_fg = v;
 
   } else if (fl_match(s, "scheme", 1)) {
-    Fl::scheme(v);
+    Fl.scheme(v);
 
   } else return 0; // unrecognized
 
@@ -167,7 +169,7 @@ int Fl::arg(int argc, char **argv, int &i) {
 // argc.  If your program does not take any word arguments you can
 // report an error if i < argc.
 
-int Fl::args(int argc, char** argv, int& i, int (*cb)(int,char**,int&)) {
+int Fl.args(int argc, char** argv, int& i, int (*cb)(int,char**,int&)) {
   arg_called = 1;
   i = 1; // skip argv[0]
   while (i < argc) {
@@ -178,46 +180,46 @@ int Fl::args(int argc, char** argv, int& i, int (*cb)(int,char**,int&)) {
 }
 
 // show a main window, use any parsed arguments
-void Fl_Window::show(int argc, char **argv) {
-  if (argc && !arg_called) Fl::args(argc,argv);
+void Fl_Window.show(int argc, char **argv) {
+  if (argc && !arg_called) Fl.args(argc,argv);
 
-  Fl::get_system_colors();
+  Fl.get_system_colors();
 
 #if !defined(WIN32) && !defined(__APPLE__)
   // Get defaults for drag-n-drop and focus...
-  const char *key = 0, *val;
+  char *key = 0, *val;
 
-  if (Fl::first_window()) key = Fl::first_window()->xclass();
+  if (Fl.first_window()) key = Fl.first_window()->xclass();
   if (!key) key = "fltk";
 
   val = XGetDefault(fl_display, key, "dndTextOps");
-  if (val) Fl::dnd_text_ops(strcasecmp(val, "true") == 0 ||
+  if (val) Fl.dnd_text_ops(strcasecmp(val, "true") == 0 ||
                             strcasecmp(val, "on") == 0 ||
                             strcasecmp(val, "yes") == 0);
 
   val = XGetDefault(fl_display, key, "tooltips");
-  if (val) Fl_Tooltip::enable(strcasecmp(val, "true") == 0 ||
+  if (val) Fl_Tooltip.enable(strcasecmp(val, "true") == 0 ||
                               strcasecmp(val, "on") == 0 ||
                               strcasecmp(val, "yes") == 0);
 
   val = XGetDefault(fl_display, key, "visibleFocus");
-  if (val) Fl::visible_focus(strcasecmp(val, "true") == 0 ||
+  if (val) Fl.visible_focus(strcasecmp(val, "true") == 0 ||
                              strcasecmp(val, "on") == 0 ||
                              strcasecmp(val, "yes") == 0);
-#endif // !WIN32 && !__APPLE__
+} // !WIN32 && !__APPLE__
 
   // set colors first, so background_pixel is correct:
   static char beenhere;
   if (!beenhere) {
     if (geometry) {
-      int fl = 0, gx = x(), gy = y(); unsigned int gw = w(), gh = h();
+      int fl = 0, gx = x(), gy = y(); uint gw = w(), gh = h();
       fl = XParseGeometry(geometry, &gx, &gy, &gw, &gh);
-      if (fl & XNegative) gx = Fl::w()-w()+gx;
-      if (fl & YNegative) gy = Fl::h()-h()+gy;
+      if (fl & XNegative) gx = Fl.w()-w()+gx;
+      if (fl & YNegative) gy = Fl.h()-h()+gy;
       //  int mw,mh; minsize(mw,mh);
       //  if (mw > gw) gw = mw;
       //  if (mh > gh) gh = mh;
-      Fl_Widget *r = resizable();
+      Fl_Widget  r = resizable();
       if (!r) resizable(this);
       // for WIN32 we assumme window is not mapped yet:
       if (fl & (XValue | YValue))
@@ -237,7 +239,7 @@ void Fl_Window::show(int argc, char **argv) {
 
   if (!beenhere) {
     beenhere = 1;
-    Fl::scheme(Fl::scheme()); // opens display!  May call Fl::fatal()
+    Fl.scheme(Fl.scheme()); // opens display!  May call Fl.fatal()
   }
 
   // Show the window AFTER we have set the colors and scheme.
@@ -249,16 +251,16 @@ void Fl_Window::show(int argc, char **argv) {
   int n=0; for (j=0; j<argc; j++) n += strlen(argv[j])+1;
   char *buffer = new char[n];
   char *p = buffer;
-  for (j=0; j<argc; j++) for (const char *q = argv[j]; (*p++ = *q++););
+  for (j=0; j<argc; j++) for (char *q = argv[j]; (*p++ = *q++););
   XChangeProperty(fl_display, fl_xid(this), XA_WM_COMMAND, XA_STRING, 8, 0,
-		  (unsigned char *)buffer, p-buffer-1);
+		  (ubyte *)buffer, p-buffer-1);
   delete[] buffer;
-#endif // !WIN32 && !__APPLE__
+} // !WIN32 && !__APPLE__
 }
 
 // Calls useful for simple demo programs, with automatic help message:
 
-static const char * const helpmsg =
+static char * helpmsg =
 "options are:\n"
 " -bg2 color\n"
 " -bg color\n"
@@ -276,13 +278,13 @@ static const char * const helpmsg =
 " -ti[tle] windowtitle\n"
 " -to[oltips]";
 
-const char * const Fl::help = helpmsg+13;
+const char * Fl.help = helpmsg+13;
 
-void Fl::args(int argc, char **argv) {
-  int i; if (Fl::args(argc,argv,i) < argc) Fl::error(helpmsg);
+void Fl.args(int argc, char **argv) {
+  int i; if (Fl.args(argc,argv,i) < argc) Fl.error(helpmsg);
 }
 
-#if defined(WIN32) || defined(__APPLE__)
+version (WIN32) || defined(__APPLE__) {
 
 /* the following function was stolen from the X sources as indicated. */
 
@@ -304,7 +306,7 @@ without express or implied warranty.
 /*
  *    XParseGeometry parses strings of the form
  *   "=<width>x<height>{+-}<xoffset>{+-}<yoffset>", where
- *   width, height, xoffset, and yoffset are unsigned integers.
+ *   width, height, xoffset, and yoffset are uint integers.
  *   Example:  "=80x24+300-49"
  *   The equal sign is optional.
  *   It returns a bitmask that indicates which of the four values
@@ -334,12 +336,12 @@ static int ReadInteger(char* string, char** NextString)
     return (-Result);
 }
 
-int XParseGeometry(const char* string, int* x, int* y,
-		   unsigned int* width, unsigned int* height)
+int XParseGeometry(char* string, int* x, int* y,
+		   uint* width, uint* height)
 {
   int mask = NoValue;
   register char *strind;
-  unsigned int tempWidth = 0, tempHeight = 0;
+  uint tempWidth = 0, tempHeight = 0;
   int tempX = 0, tempY = 0;
   char *nextCharacter;
 
@@ -418,9 +420,9 @@ int XParseGeometry(const char* string, int* x, int* y,
   return (mask);
 }
 
-#endif // ifdef WIN32
+} // ifdef WIN32
 
 //
-// End of "$Id: Fl_arg.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: arg.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

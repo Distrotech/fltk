@@ -85,43 +85,43 @@ static Fl_Fontdesc built_in_table[] = {
 {" dingbats"},
 };
 
-Fl_Fontdesc* fl_fonts = built_in_table;
+Fl_Fontdesc  fl_fonts = built_in_table;
 
-#define current_font (fl_fontsize->font)
+const int current_font = (fl_fontsize.font); 
 
 int fl_font_ = 0;
 int fl_size_ = 0;
 XFontStruct* fl_xfont = 0;
 void *fl_xftfont = 0;
 const char* fl_encoding_ = "iso8859-1";
-Fl_FontSize* fl_fontsize = 0;
+Fl_FontSize  fl_fontsize = 0;
 
 void fl_font(int fnum, int size) {
   if (fnum == fl_font_ && size == fl_size_
       && fl_fontsize
-      && !strcasecmp(fl_fontsize->encoding, fl_encoding_))
+      && !strcasecmp(fl_fontsize.encoding, fl_encoding_))
     return;
   fl_font_ = fnum; fl_size_ = size;
-  Fl_Fontdesc *font = fl_fonts + fnum;
-  Fl_FontSize* f;
+  Fl_Fontdesc  font = fl_fonts + fnum;
+  Fl_FontSize  f;
   // search the fontsizes we have generated already
-  for (f = font->first; f; f = f->next) {
-    if (f->size == size && !strcasecmp(f->encoding, fl_encoding_))
+  for (f = font.first; f; f = f.next) {
+    if (f.size == size && !strcasecmp(f.encoding, fl_encoding_))
       break;
   }
   if (!f) {
-    f = new Fl_FontSize(font->name);
-    f->next = font->first;
-    font->first = f;
+    f = new Fl_FontSize(font.name);
+    f.next = font.first;
+    font.first = f;
   }
   fl_fontsize = f;
 #if XFT_MAJOR < 2
-  fl_xfont    = f->font->u.core.font;
-#endif // XFT_MAJOR < 2
-  fl_xftfont = (void*)f->font;
+  fl_xfont    = f.font.u.core.font;
+} // XFT_MAJOR < 2
+  fl_xftfont = (void*)f.font;
 }
 
-static XftFont* fontopen(const char* name, bool core) {
+static XftFont* fontopen(char* name, bool core) {
   fl_open_display();
   int slant = XFT_SLANT_ROMAN;
   int weight = XFT_WEIGHT_MEDIUM;
@@ -145,12 +145,12 @@ static XftFont* fontopen(const char* name, bool core) {
 		     0);
 }
 
-Fl_FontSize::Fl_FontSize(const char* name) {
+Fl_FontSize.Fl_FontSize(char* name) {
   encoding = fl_encoding_;
   size = fl_size_;
 #if HAVE_GL
   listbase = 0;
-#endif // HAVE_GL
+} // HAVE_GL
   font = fontopen(name, false);
 }
 
@@ -160,24 +160,24 @@ Fl_FontSize::~Fl_FontSize() {
 }
 
 int fl_height() {
-  if (current_font) return current_font->ascent + current_font->descent;
+  if (current_font) return current_font.ascent + current_font.descent;
   else return -1;
 }
 
 int fl_descent() {
-  if (current_font) return current_font->descent;
+  if (current_font) return current_font.descent;
   else return -1;
 }
 
-double fl_width(const char *str, int n) {
+double fl_width(char *str, int n) {
   if (!current_font) return -1.0;
   XGlyphInfo i;
   XftTextExtents8(fl_display, current_font, (XftChar8 *)str, n, &i);
   return i.xOff;
 }
 
-double fl_width(uchar c) {
-  return fl_width((const char *)(&c), 1);
+double fl_width(ubyte c) {
+  return fl_width((char *)(&c), 1);
 }
 
 #if HAVE_GL
@@ -188,15 +188,15 @@ XFontStruct* fl_xxfont() {
   static XFontStruct* fixed = 0;
   if (!fixed) fixed = XLoadQueryFont(fl_display, "fixed");
   return fixed;
-#  else
-  if (current_font->core) return current_font->u.core.font;
+} else {
+  if (current_font.core) return current_font.u.core.font;
   static XftFont* xftfont;
   if (xftfont) XftFontClose (fl_display, xftfont);
   xftfont = fontopen(fl_fonts[fl_font_].name, true);
-  return xftfont->u.core.font;
-#  endif // XFT_MAJOR > 1
+  return xftfont.u.core.font;
+} // XFT_MAJOR > 1
 }
-#endif // HAVE_GL
+} // HAVE_GL
 
 #if USE_OVERLAY
 // Currently Xft does not work with colormapped visuals, so this probably
@@ -204,7 +204,7 @@ XFontStruct* fl_xxfont() {
 extern bool fl_overlay;
 extern Colormap fl_overlay_colormap;
 extern XVisualInfo* fl_overlay_visual;
-#endif
+}
 
 // For some reason Xft produces errors if you destroy a window whose id
 // still exists in an XftDraw structure. It would be nice if this is not
@@ -215,7 +215,7 @@ static Window draw_window;
 #if USE_OVERLAY
 static XftDraw* draw_overlay;
 static Window draw_overlay_window;
-#endif
+}
 
 void fl_destroy_xft_draw(Window id) {
   if (id == draw_window)
@@ -223,23 +223,23 @@ void fl_destroy_xft_draw(Window id) {
 #if USE_OVERLAY
   if (id == draw_overlay_window)
     XftDrawChange(draw_overlay, draw_overlay_window = fl_message_window);
-#endif
+}
 }
 
-void fl_draw(const char *str, int n, int x, int y) {
+void fl_draw(char *str, int n, int x, int y) {
 #if USE_OVERLAY
   XftDraw*& draw = fl_overlay ? draw_overlay : ::draw;
   if (fl_overlay) {
     if (!draw) 
       draw = XftDrawCreate(fl_display, draw_overlay_window = fl_window,
-			   fl_overlay_visual->visual, fl_overlay_colormap);
+			   fl_overlay_visual.visual, fl_overlay_colormap);
     else //if (draw_overlay_window != fl_window)
       XftDrawChange(draw, draw_overlay_window = fl_window);
   } else
-#endif
+}
   if (!draw)
     draw = XftDrawCreate(fl_display, draw_window = fl_window,
-			 fl_visual->visual, fl_colormap);
+			 fl_visual.visual, fl_colormap);
   else //if (draw_window != fl_window)
     XftDrawChange(draw, draw_window = fl_window);
 
@@ -251,7 +251,7 @@ void fl_draw(const char *str, int n, int x, int y) {
   // XftCollorAllocValue returns:
   XftColor color;
   color.pixel = fl_xpixel(fl_color_);
-  uchar r,g,b; Fl::get_color(fl_color_, r,g,b);
+  ubyte r,g,b; Fl.get_color(fl_color_, r,g,b);
   color.color.red   = ((int)r)*0x101;
   color.color.green = ((int)g)*0x101;
   color.color.blue  = ((int)b)*0x101;
@@ -260,7 +260,7 @@ void fl_draw(const char *str, int n, int x, int y) {
   XftDrawString8(draw, &color, current_font, x, y, (XftChar8 *)str, n);
 }
 
-void fl_draw(const char* str, int n, float x, float y) {
+void fl_draw(char* str, int n, float x, float y) {
   fl_draw(str, n, (int)x, (int)y);
 }
 

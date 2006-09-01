@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Round_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: round_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Round button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,25 +26,25 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Round_Button_H
-#define Fl_Round_Button_H
+module fl.round_button;
 
-#include "Fl_Light_Button.H"
 
-class FL_EXPORT Fl_Round_Button : public Fl_Light_Button {
+public import fl.light_button;
+
+class Fl_Round_Button : Fl_Light_Button {
 public:
-  Fl_Round_Button(int x,int y,int w,int h,const char *l = 0);
+  Fl_Round_Button(int x,int y,int w,int h,char *l = 0);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Round_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: round_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Round_Button.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: round_button.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Round button for the Fast Light Tool Kit (FLTK).
 //
@@ -75,9 +75,9 @@ public:
 // another box type, for compatability with Forms.
 
 #include <FL/Fl.H>
-#include <FL/Fl_Round_Button.H>
+private import fl.round_button;
 
-Fl_Round_Button::Fl_Round_Button(int X,int Y,int W,int H, const char *l)
+Fl_Round_Button.Fl_Round_Button(int X,int Y,int W,int H, char *l)
 : Fl_Light_Button(X,Y,W,H,l) {
   box(FL_NO_BOX);
   down_box(FL_ROUND_DOWN_BOX);
@@ -85,6 +85,6 @@ Fl_Round_Button::Fl_Round_Button(int X,int Y,int W,int H, const char *l)
 }
 
 //
-// End of "$Id: Fl_Round_Button.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: round_button.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

@@ -26,15 +26,15 @@
  *     http://www.fltk.org/str.php
  */
 
-#ifndef __CYGWIN__
+version (!__CYGWIN__) {
 /* Emulation of posix scandir() call */
 
 #include <FL/filename.H>
-#include "flstring.h"
+private import fl.flstring;
 #include <windows.h>
 #include <stdlib.h>
 
-int fl_scandir(const char *dirname, struct dirent ***namelist,
+int fl_scandir(char *dirname, struct dirent ***namelist,
 	       int (*select)(struct dirent *),
 	       int (*compar)(struct dirent **, struct dirent **)) {
   int len;
@@ -43,7 +43,7 @@ int fl_scandir(const char *dirname, struct dirent ***namelist,
   HANDLE h;
   int nDir = 0, NDir = 0;
   struct dirent **dir = 0, *selectDir;
-  unsigned long ret;
+  uint ret;
 
   len    = strlen(dirname);
   findIn = (char *)malloc((size_t)(len+5));
@@ -73,10 +73,10 @@ int fl_scandir(const char *dirname, struct dirent ***namelist,
   }
   do {
     selectDir=(struct dirent*)malloc(sizeof(struct dirent)+strlen(find.cFileName)+2);
-    strcpy(selectDir->d_name, find.cFileName);
+    strcpy(selectDir.d_name, find.cFileName);
     if (find.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
       /* Append a trailing slash to directory names... */
-      strcat(selectDir->d_name, "/");
+      strcat(selectDir.d_name, "/");
     }
     if (!select || (*select)(selectDir)) {
       if (nDir==NDir) {
@@ -103,13 +103,13 @@ int fl_scandir(const char *dirname, struct dirent ***namelist,
   free (findIn);
 
   if (compar) qsort(dir, (size_t)nDir, sizeof(*dir),
-		    (int(*)(const void*, const void*))compar);
+		    (int(*)(void*, void*))compar);
 
   *namelist = dir;
   return nDir;
 }
 
-#endif
+}
 
 /*
  * End of "$Id: scandir_win32.c 4548 2005-08-29 20:16:36Z matt $".

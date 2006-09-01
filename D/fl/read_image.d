@@ -27,33 +27,33 @@
 //
 
 #include <FL/x.H>
-#include <FL/fl_draw.H>
-#include "flstring.h"
+private import fl.draw;
+private import fl.flstring;
 
-#ifdef DEBUG
+version (DEBUG) {
 #  include <stdio.h>
-#endif // DEBUG
+} // DEBUG
 
-#ifdef WIN32
+version (WIN32) {
 #  include "fl_read_image_win32.cxx"
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 #  include "fl_read_image_mac.cxx"
-#else
+} else {
 #  include <X11/Xutil.h>
-#  ifdef __sgi
+version (__sgi) {
 #    include <X11/extensions/readdisplay.h>
-#  endif // __sgi
+} // __sgi
 
 // Defined in fl_color.cxx
-extern uchar fl_redmask, fl_greenmask, fl_bluemask;
+extern ubyte fl_redmask, fl_greenmask, fl_bluemask;
 extern int fl_redshift, fl_greenshift, fl_blueshift, fl_extrashift;
 
 //
 // 'fl_read_image()' - Read an image from the current window.
 //
 
-uchar *				// O - Pixel buffer or NULL if failed
-fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
+ubyte *				// O - Pixel buffer or NULL if failed
+fl_read_image(ubyte *p,		// I - Pixel buffer or NULL to allocate
               int   X,		// I - Left position
 	      int   Y,		// I - Top position
 	      int   w,		// I - Width of area to read
@@ -63,12 +63,12 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
   int		i, maxindex;	// Looping vars
   int           x, y;		// Current X & Y in image
   int		d;		// Depth of image
-  unsigned char *line,		// Array to hold image row
+  ubyte *line,		// Array to hold image row
 		*line_ptr;	// Pointer to current line image
-  unsigned char	*pixel;		// Current color value
+  ubyte	*pixel;		// Current color value
   XColor	colors[4096];	// Colors from the colormap...
-  unsigned char	cvals[4096][3];	// Color values from the colormap...
-  unsigned	index_mask,
+  ubyte	cvals[4096][3];	// Color values from the colormap...
+  uint	index_mask,
 		index_shift,
 		red_mask,
 		red_shift,
@@ -84,13 +84,13 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
   // us...
   //
 
-#  ifdef __sgi
+version (__sgi) {
   if (XReadDisplayQueryExtension(fl_display, &i, &i)) {
     image = XReadDisplay(fl_display, fl_window, X, Y, w, h, 0, NULL);
   } else
-#  else
+} else {
   image = 0;
-#  endif // __sgi
+} // __sgi
 
   if (!image) {
     image = XGetImage(fl_display, fl_window, X, Y, w, h, AllPlanes, ZPixmap);
@@ -98,41 +98,41 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
 
   if (!image) return 0;
 
-#ifdef DEBUG
-  printf("width            = %d\n", image->width);
-  printf("height           = %d\n", image->height);
-  printf("xoffset          = %d\n", image->xoffset);
-  printf("format           = %d\n", image->format);
-  printf("data             = %p\n", image->data);
-  printf("byte_order       = %d\n", image->byte_order);
-  printf("bitmap_unit      = %d\n", image->bitmap_unit);
-  printf("bitmap_bit_order = %d\n", image->bitmap_bit_order);
-  printf("bitmap_pad       = %d\n", image->bitmap_pad);
-  printf("depth            = %d\n", image->depth);
-  printf("bytes_per_line   = %d\n", image->bytes_per_line);
-  printf("bits_per_pixel   = %d\n", image->bits_per_pixel);
-  printf("red_mask         = %08x\n", image->red_mask);
-  printf("green_mask       = %08x\n", image->green_mask);
-  printf("blue_mask        = %08x\n", image->blue_mask);
-  printf("map_entries      = %d\n", fl_visual->visual->map_entries);
-#endif // DEBUG
+version (DEBUG) {
+  printf("width            = %d\n", image.width);
+  printf("height           = %d\n", image.height);
+  printf("xoffset          = %d\n", image.xoffset);
+  printf("format           = %d\n", image.format);
+  printf("data             = %p\n", image.data);
+  printf("byte_order       = %d\n", image.byte_order);
+  printf("bitmap_unit      = %d\n", image.bitmap_unit);
+  printf("bitmap_bit_order = %d\n", image.bitmap_bit_order);
+  printf("bitmap_pad       = %d\n", image.bitmap_pad);
+  printf("depth            = %d\n", image.depth);
+  printf("bytes_per_line   = %d\n", image.bytes_per_line);
+  printf("bits_per_pixel   = %d\n", image.bits_per_pixel);
+  printf("red_mask         = %08x\n", image.red_mask);
+  printf("green_mask       = %08x\n", image.green_mask);
+  printf("blue_mask        = %08x\n", image.blue_mask);
+  printf("map_entries      = %d\n", fl_visual.visual.map_entries);
+} // DEBUG
 
   d = alpha ? 4 : 3;
 
   // Allocate the image data array as needed...
-  if (!p) p = new uchar[w * h * d];
+  if (!p) p = new ubyte[w * h * d];
 
   // Initialize the default colors/alpha in the whole image...
   memset(p, alpha, w * h * d);
 
   // Check that we have valid mask/shift values...
-  if (!image->red_mask && image->bits_per_pixel > 12) {
+  if (!image.red_mask && image.bits_per_pixel > 12) {
     // Greater than 12 bits must be TrueColor...
-    image->red_mask   = fl_visual->visual->red_mask;
-    image->green_mask = fl_visual->visual->green_mask;
-    image->blue_mask  = fl_visual->visual->blue_mask;
+    image.red_mask   = fl_visual.visual.red_mask;
+    image.green_mask = fl_visual.visual.green_mask;
+    image.blue_mask  = fl_visual.visual.blue_mask;
 
-#ifdef DEBUG
+version (DEBUG) {
     puts("\n---- UPDATED ----");
     printf("fl_redmask       = %08x\n", fl_redmask);
     printf("fl_redshift      = %d\n", fl_redshift);
@@ -140,16 +140,16 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
     printf("fl_greenshift    = %d\n", fl_greenshift);
     printf("fl_bluemask      = %08x\n", fl_bluemask);
     printf("fl_blueshift     = %d\n", fl_blueshift);
-    printf("red_mask         = %08x\n", image->red_mask);
-    printf("green_mask       = %08x\n", image->green_mask);
-    printf("blue_mask        = %08x\n", image->blue_mask);
-#endif // DEBUG
+    printf("red_mask         = %08x\n", image.red_mask);
+    printf("green_mask       = %08x\n", image.green_mask);
+    printf("blue_mask        = %08x\n", image.blue_mask);
+} // DEBUG
   }
 
   // Check if we have colormap image...
-  if (!image->red_mask) {
+  if (!image.red_mask) {
     // Get the colormap entries for this window...
-    maxindex = fl_visual->visual->map_entries;
+    maxindex = fl_visual.visual.map_entries;
 
     for (i = 0; i < maxindex; i ++) colors[i].pixel = i;
 
@@ -162,13 +162,13 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
     }
 
     // Read the pixels and output an RGB image...
-    for (y = 0; y < image->height; y ++) {
-      pixel = (unsigned char *)(image->data + y * image->bytes_per_line);
+    for (y = 0; y < image.height; y ++) {
+      pixel = (ubyte *)(image.data + y * image.bytes_per_line);
       line  = p + y * w * d;
 
-      switch (image->bits_per_pixel) {
+      switch (image.bits_per_pixel) {
         case 1 :
-	  for (x = image->width, line_ptr = line, index_mask = 128;
+	  for (x = image.width, line_ptr = line, index_mask = 128;
 	       x > 0;
 	       x --, line_ptr += d) {
 	    if (*pixel & index_mask) {
@@ -191,7 +191,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 2 :
-	  for (x = image->width, line_ptr = line, index_shift = 6;
+	  for (x = image.width, line_ptr = line, index_shift = 6;
 	       x > 0;
 	       x --, line_ptr += d) {
 	    i = (*pixel >> index_shift) & 3;
@@ -212,7 +212,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 4 :
-	  for (x = image->width, line_ptr = line, index_shift = 4;
+	  for (x = image.width, line_ptr = line, index_shift = 4;
 	       x > 0;
 	       x --, line_ptr += d) {
 	    if (index_shift == 4) i = (*pixel >> 4) & 15;
@@ -232,7 +232,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 8 :
-	  for (x = image->width, line_ptr = line;
+	  for (x = image.width, line_ptr = line;
 	       x > 0;
 	       x --, line_ptr += d, pixel ++) {
 	    line_ptr[0] = cvals[*pixel][0];
@@ -242,7 +242,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 12 :
-	  for (x = image->width, line_ptr = line, index_shift = 0;
+	  for (x = image.width, line_ptr = line, index_shift = 0;
 	       x > 0;
 	       x --, line_ptr += d) {
 	    if (index_shift == 0) {
@@ -267,7 +267,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
     }
   } else {
     // RGB(A) image, so figure out the shifts & masks...
-    red_mask  = image->red_mask;
+    red_mask  = image.red_mask;
     red_shift = 0;
 
     while ((red_mask & 1) == 0) {
@@ -275,7 +275,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
       red_shift ++;
     }
 
-    green_mask  = image->green_mask;
+    green_mask  = image.green_mask;
     green_shift = 0;
 
     while ((green_mask & 1) == 0) {
@@ -283,7 +283,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
       green_shift ++;
     }
 
-    blue_mask  = image->blue_mask;
+    blue_mask  = image.blue_mask;
     blue_shift = 0;
 
     while ((blue_mask & 1) == 0) {
@@ -292,13 +292,13 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
     }
 
     // Read the pixels and output an RGB image...
-    for (y = 0; y < image->height; y ++) {
-      pixel = (unsigned char *)(image->data + y * image->bytes_per_line);
+    for (y = 0; y < image.height; y ++) {
+      pixel = (ubyte *)(image.data + y * image.bytes_per_line);
       line  = p + y * w * d;
 
-      switch (image->bits_per_pixel) {
+      switch (image.bits_per_pixel) {
         case 8 :
-	  for (x = image->width, line_ptr = line;
+	  for (x = image.width, line_ptr = line;
 	       x > 0;
 	       x --, line_ptr += d, pixel ++) {
 	    i = *pixel;
@@ -310,7 +310,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 12 :
-	  for (x = image->width, line_ptr = line, index_shift = 0;
+	  for (x = image.width, line_ptr = line, index_shift = 0;
 	       x > 0;
 	       x --, line_ptr += d) {
 	    if (index_shift == 0) {
@@ -333,9 +333,9 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 16 :
-          if (image->byte_order == LSBFirst) {
+          if (image.byte_order == LSBFirst) {
             // Little-endian...
-	    for (x = image->width, line_ptr = line;
+	    for (x = image.width, line_ptr = line;
 	         x > 0;
 	         x --, line_ptr += d, pixel += 2) {
 	      i = (pixel[1] << 8) | pixel[0];
@@ -346,7 +346,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
 	    }
 	  } else {
             // Big-endian...
-	    for (x = image->width, line_ptr = line;
+	    for (x = image.width, line_ptr = line;
 	         x > 0;
 	         x --, line_ptr += d, pixel += 2) {
 	      i = (pixel[0] << 8) | pixel[1];
@@ -359,9 +359,9 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 24 :
-          if (image->byte_order == LSBFirst) {
+          if (image.byte_order == LSBFirst) {
             // Little-endian...
-	    for (x = image->width, line_ptr = line;
+	    for (x = image.width, line_ptr = line;
 	         x > 0;
 	         x --, line_ptr += d, pixel += 3) {
 	      i = (((pixel[2] << 8) | pixel[1]) << 8) | pixel[0];
@@ -372,7 +372,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
 	    }
 	  } else {
             // Big-endian...
-	    for (x = image->width, line_ptr = line;
+	    for (x = image.width, line_ptr = line;
 	         x > 0;
 	         x --, line_ptr += d, pixel += 3) {
 	      i = (((pixel[0] << 8) | pixel[1]) << 8) | pixel[2];
@@ -385,9 +385,9 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
           break;
 
         case 32 :
-          if (image->byte_order == LSBFirst) {
+          if (image.byte_order == LSBFirst) {
             // Little-endian...
-	    for (x = image->width, line_ptr = line;
+	    for (x = image.width, line_ptr = line;
 	         x > 0;
 	         x --, line_ptr += d, pixel += 4) {
 	      i = (((((pixel[3] << 8) | pixel[2]) << 8) | pixel[1]) << 8) | pixel[0];
@@ -398,7 +398,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
 	    }
 	  } else {
             // Big-endian...
-	    for (x = image->width, line_ptr = line;
+	    for (x = image.width, line_ptr = line;
 	         x > 0;
 	         x --, line_ptr += d, pixel += 4) {
 	      i = (((((pixel[0] << 8) | pixel[1]) << 8) | pixel[2]) << 8) | pixel[3];
@@ -419,7 +419,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
   return p;
 }
 
-#endif
+}
 
 //
 // End of "$Id: fl_read_image.cxx 5190 2006-06-09 16:16:34Z mike $".

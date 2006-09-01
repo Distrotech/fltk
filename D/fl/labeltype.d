@@ -1,5 +1,5 @@
 //
-// "$Id: labeltype.d 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: fl_labeltype.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
 // Label drawing routines for the Fast Light Tool Kit (FLTK).
 //
@@ -31,34 +31,61 @@
 
 module fl.labeltype;
 
+private import fl.enumerations;
 private import fl.fl;
 private import fl.widget;
 private import fl.group;
 private import fl.draw;
 private import fl.image;
 
-void fl_no_label(Fl_Label l, int x, int y, int w, int h, Fl_Align a) {
+
+struct Fl_Label {
+  char* value;
+  Fl_Image image;
+  Fl_Image deimage;
+  ubyte type;
+  ubyte font;
+  ubyte size;
+  uint color;
+
+  // draw label with arbitrary alignment in arbitrary box:
+  void draw(int X, int Y, int W, int H, Fl_Align alignment) {
+    if (!value && !image) return;
+    table[type](this, X, Y, W, H, alignment);
+  }
+
+  void measure(inout int W, inout int H) {
+    if (!value && !image) {
+      W = H = 0;
+      return;
+    }
+    Fl_Label_Measure_F f = measure_lut[type]; 
+    if (!f) f = &fl_normal_measure;
+    f(this, W, H);
+  }
 }
 
-void fl_normal_label(Fl_Label o, int X, int Y, int W, int H, Fl_Align aln) {
+void fl_no_label(Fl_Label* o, int X, int Y, int W, int H, Fl_Align a) {
+}
+
+void fl_normal_label(Fl_Label* o, int X, int Y, int W, int H, Fl_Align alignment) {
   fl_font(o.font, o.size);
   fl_color(o.color);
-  fl_draw(o.value, X, Y, W, H, aln, o.image);
+  fl_draw(o.value, X, Y, W, H, alignment, o.image);
 }
 
-void fl_normal_measure(Fl_Label o, inout int W, inout int H) {
+void fl_normal_measure(Fl_Label* o, inout int W, inout int H) {
   fl_font(o.font, o.size);
   fl_measure(o.value, W, H);
   if (o.image) {
-    if (o.image.w() > W) 
-      W = o.image.w();
+    if (o.image.w() > W) W = o.image.w();
     H += o.image.h();
   }
 }
 
-const int MAX_LABELTYPE = 16;
+const int MAX_LABELTYPE = 16; 
 
-Fl_Label_Draw_F table[MAX_LABELTYPE] = [
+static Fl_Label_Draw_F table[MAX_LABELTYPE] = [
   &fl_normal_label,
   &fl_no_label,
   &fl_normal_label,	// _FL_SHADOW_LABEL,
@@ -72,20 +99,20 @@ Fl_Label_Draw_F table[MAX_LABELTYPE] = [
   &fl_no_label, &fl_no_label, &fl_no_label
 ];
 
-Fl_Label_Measure_F measure_lut[MAX_LABELTYPE];
+static Fl_Label_Measure_F measure_lut[MAX_LABELTYPE];
 
-/+-
-
-void Fl::set_labeltype(Fl_Labeltype t,Fl_Label_Draw_F* f,Fl_Label_Measure_F*m) 
+/+=
+void Fl.set_labeltype(Fl_Labeltype t,Fl_Label_Draw_F  f,Fl_Label_Measure_F m) 
 {
   table[t] = f; measure[t] = m;
 }
 
 ////////////////////////////////////////////////////////////////
 
+
 // include these vars here so they can be referenced without including
 // Fl_Input_ code:
-#include <FL/Fl_Input_.H>
+private import fl.input_;
 
 //
 // End of "$Id: fl_labeltype.cxx 5190 2006-06-09 16:16:34Z mike $".

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_Bar.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: menu_bar.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Menu bar header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,23 +26,23 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Menu_Bar_H
-#define Fl_Menu_Bar_H
+module fl.menu_bar;
 
-#include "Fl_Menu_.H"
 
-class FL_EXPORT Fl_Menu_Bar : public Fl_Menu_ {
+public import fl.menu_;
+
+class Fl_Menu_Bar : Fl_Menu_ {
 protected:
     void draw();
 public:
     int handle(int);
-    Fl_Menu_Bar(int X, int Y, int W, int H,const char *l=0)
+    Fl_Menu_Bar(int X, int Y, int W, int H,char *l=0)
       : Fl_Menu_(X,Y,W,H,l) {}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Menu_Bar.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: menu_bar.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

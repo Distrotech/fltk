@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Line_Dial.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: line_dial.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Line dial header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Line_Dial_H
-#define Fl_Line_Dial_H
+module fl.line_dial;
 
-#include "Fl_Dial.H"
 
-class Fl_Line_Dial : public Fl_Dial {
+public import fl.dial;
+
+class Fl_Line_Dial : Fl_Dial {
 public:
-    Fl_Line_Dial(int x,int y,int w,int h, const char *l = 0)
+    Fl_Line_Dial(int x,int y,int w,int h, char *l = 0)
 	: Fl_Dial(x,y,w,h,l) {type(FL_LINE_DIAL);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Line_Dial.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: line_dial.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

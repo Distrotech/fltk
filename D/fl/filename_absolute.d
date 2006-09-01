@@ -34,31 +34,31 @@
 
 #include <FL/filename.H>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 #include <ctype.h>
-#if defined(WIN32) && !defined(__CYGWIN__)
+version (WIN32) && !defined(__CYGWIN__) {
 # include <direct.h>
 // Visual C++ 2005 incorrectly displays a warning about the use of POSIX APIs
 // on Windows, which is supposed to be POSIX compliant...
-#  define getcwd _getcwd
-#else
+const int getcwd = _getcwd; 
+} else {
 #  include <unistd.h>
-#  ifdef __EMX__
-#    define getcwd _getcwd2
-#  endif
-#endif
+version (__EMX__) {
+const int getcwd = _getcwd2; 
+}
+}
 
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
-inline int isdirsep(char c) {return c=='/' || c=='\\';}
-#else
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
+int isdirsep(char c) {return c=='/' || c=='\\';}
+} else {
 #define isdirsep(c) ((c)=='/')
-#endif
+}
 
-int fl_filename_absolute(char *to, int tolen, const char *from) {
+int fl_filename_absolute(char *to, int tolen, char *from) {
   if (isdirsep(*from) || *from == '|'
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
       || from[1]==':'
-#endif
+}
       ) {
     strlcpy(to, from, tolen);
     return 0;
@@ -66,7 +66,7 @@ int fl_filename_absolute(char *to, int tolen, const char *from) {
 
   char *a;
   char *temp = new char[tolen];
-  const char *start = from;
+  char *start = from;
 
   a = getcwd(temp, tolen);
   if (!a) {
@@ -74,11 +74,11 @@ int fl_filename_absolute(char *to, int tolen, const char *from) {
     delete[] temp;
     return 0;
   }
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
   for (a = temp; *a; a++) if (*a=='\\') *a = '/'; // ha ha
-#else
+} else {
   a = temp+strlen(temp);
-#endif
+}
   if (isdirsep(*(a-1))) a--;
   /* remove intermediate . and .. names: */
   while (*start == '.') {
@@ -114,19 +114,19 @@ int fl_filename_absolute(char *to, int tolen, const char *from) {
 int					// O - 0 if no change, 1 if changed
 fl_filename_relative(char       *to,	// O - Relative filename
                      int        tolen,	// I - Size of "to" buffer
-                     const char *from) {// I - Absolute filename
+                     char *from) {// I - Absolute filename
   char		*newslash;		// Directory separator
-  const char	*slash;			// Directory separator
+  char	*slash;			// Directory separator
   char		cwd[1024];		// Current directory
 
 
-#if defined(WIN32) || defined(__EMX__)
+version (WIN32) || defined(__EMX__) {
   if (from[0] == '\0' ||
       (!isdirsep(*from) && !isalpha(*from) && from[1] != ':' &&
        !isdirsep(from[2]))) {
-#else
+} else {
   if (from[0] == '\0' || !isdirsep(*from)) {
-#endif // WIN32 || __EMX__
+} // WIN32 || __EMX__
     strlcpy(to, from, tolen);
     return 0;
   }
@@ -136,7 +136,7 @@ fl_filename_relative(char       *to,	// O - Relative filename
     return 0;
   }
 
-#if defined(WIN32) || defined(__EMX__)
+version (WIN32) || defined(__EMX__) {
   for (newslash = strchr(cwd, '\\'); newslash; newslash = strchr(newslash + 1, '\\'))
     *newslash = '/';
 
@@ -151,22 +151,22 @@ fl_filename_relative(char       *to,	// O - Relative filename
     return 0;
   }
   for (slash = from + 2, newslash = cwd + 2;
-#else
+} else {
   if (!strcmp(from, cwd)) {
     strlcpy(to, ".", tolen);
     return (1);
   }
 
   for (slash = from, newslash = cwd;
-#endif // WIN32 || __EMX__
+} // WIN32 || __EMX__
        *slash != '\0' && *newslash != '\0';
        slash ++, newslash ++)
     if (isdirsep(*slash) && isdirsep(*newslash)) continue;
-#if defined(WIN32) || defined(__EMX__) || defined(__APPLE__)
+version (WIN32) || defined(__EMX__) || defined(__APPLE__) {
     else if (tolower(*slash & 255) != tolower(*newslash & 255)) break;
-#else
+} else {
     else if (*slash != *newslash) break;
-#endif // WIN32 || __EMX__ || __APPLE__
+} // WIN32 || __EMX__ || __APPLE__
 
   if (*newslash == '\0' && *slash != '\0' && !isdirsep(*slash))
     newslash--;

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_FormsBitmap.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: formsbitmap.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Forms bitmap header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,25 +26,25 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_FormsBitmap_H
-#define Fl_FormsBitmap_H
+module fl.formsbitmap;
 
-#include "Fl_Bitmap.H"
 
-class FL_EXPORT Fl_FormsBitmap : public Fl_Widget {
-    Fl_Bitmap *b;
+public import fl.bitmap;
+
+class Fl_FormsBitmap : Fl_Widget {
+    Fl_Bitmap  b;
 protected:
     void draw();
 public:
-    Fl_FormsBitmap(Fl_Boxtype, int, int, int, int, const char * = 0);
-    void set(int W, int H, const uchar *bits);
-    void bitmap(Fl_Bitmap *B) {b = B;}
-    Fl_Bitmap *bitmap() const {return b;}
+    Fl_FormsBitmap(Fl_Boxtype, int, int, int, int, char * = 0);
+    void set(int W, int H, ubyte *bits);
+    void bitmap(Fl_Bitmap  B) {b = B;}
+    Fl_Bitmap  bitmap() {return b;}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_FormsBitmap.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: formsbitmap.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Sys_Menu_Bar.H 4546 2005-08-29 20:05:38Z matt $"
+// "$Id: sys_menu_bar.d 4546 2005-08-29 20:05:38Z matt $"
 //
 // MacOS system menu bar header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,39 +26,39 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Sys_Menu_Bar_H
-#define Fl_Sys_Menu_Bar_H
+module fl.sys_menu_bar;
 
-#include "Fl_Menu_Bar.H"
 
-#ifdef __APPLE__
+public import fl.menu_bar;
 
-class FL_EXPORT Fl_Sys_Menu_Bar : public Fl_Menu_Bar {
+version (__APPLE__) {
+
+class Fl_Sys_Menu_Bar : Fl_Menu_Bar {
 protected:
   void draw();
 public:
-  Fl_Sys_Menu_Bar(int x,int y,int w,int h,const char *l=0)
+  Fl_Sys_Menu_Bar(int x,int y,int w,int h,char *l=0)
       : Fl_Menu_Bar(x,y,w,h,l) {
 	   deactivate();			// don't let the old area take events
 	  }
-  void menu(const Fl_Menu_Item *m);
+  void menu(Fl_Menu_Item *m);
 };
 
-#else
+} else {
 
-typedef Fl_Menu_Bar Fl_Sys_Menu_Bar;
+alias Fl_Menu_Bar Fl_Sys_Menu_Bar;
 
-#endif
+}
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Sys_Menu_Bar.H 4546 2005-08-29 20:05:38Z matt $".
+// End of "$Id: sys_menu_bar.d 4546 2005-08-29 20:05:38Z matt $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Sys_Menu_Bar.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: sys_menu_bar.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // MacOS system menu bar widget for the Fast Light Tool Kit (FLTK).
 //
@@ -109,24 +109,24 @@ typedef Fl_Menu_Bar Fl_Sys_Menu_Bar;
  * Changing the menu items has no effect on the menu bar.
  */
 
-#if defined(__APPLE__)
+version (__APPLE__) {
 
 #include <FL/x.H>
 #include <FL/Fl.H>
-#include <FL/Fl_Sys_Menu_Bar.H>
+private import fl.sys_menu_bar;
 
-#include "flstring.h"
+private import fl.flstring;
 #include <stdio.h>
 #include <ctype.h>
 
-typedef const Fl_Menu_Item *pFl_Menu_Item;
+alias Fl_Menu_Item *pFl_Menu_Item;
 
 /**
  * copy the text of a menuitem into a buffer.
  * Skip all '&' which would mark the shortcut in FLTK
  * Skip all Mac control characters ('(', '<', ';', '^', '!' )
  */
-static void catMenuText( const char *src, char *dst )
+static void catMenuText( char *src, char *dst )
 {
   char c;
   while ( *dst ) 
@@ -145,27 +145,27 @@ static void catMenuText( const char *src, char *dst )
  * append a marker to identify the menu font style
  * <B, I, U, O, and S
  */
-static void catMenuFont( const Fl_Menu_Item *m, char *dst )
+static void catMenuFont( Fl_Menu_Item *m, char *dst )
 {
-  if ( !m->labeltype_ && !m->labelfont_ ) 
+  if ( !m.labeltype_ && !m.labelfont_ ) 
     return;
   while ( *dst ) 
     dst++;
     
-  if ( m->labelfont_ & FL_BOLD )
+  if ( m.labelfont_ & FL_BOLD )
     strcat( dst, "<B" );
-  if ( m->labelfont_ & FL_ITALIC )
+  if ( m.labelfont_ & FL_ITALIC )
     strcat( dst, "<I" );
-  //if ( m->labelfont_ & FL_UNDERLINE )
+  //if ( m.labelfont_ & FL_UNDERLINE )
   //  strcat( dst, "<U" );
   
-  if ( m->labeltype_ == FL_EMBOSSED_LABEL )
+  if ( m.labeltype_ == FL_EMBOSSED_LABEL )
       strcat( dst, "<U" );
-  else if ( m->labeltype_ == FL_ENGRAVED_LABEL )
+  else if ( m.labeltype_ == FL_ENGRAVED_LABEL )
       strcat( dst, "<O" );
-  else if ( m->labeltype_ == FL_SHADOW_LABEL )
+  else if ( m.labeltype_ == FL_SHADOW_LABEL )
       strcat( dst, "<S" );
-  //else if ( m->labeltype_ == FL_SYMBOL_LABEL )
+  //else if ( m.labeltype_ == FL_SYMBOL_LABEL )
       ; // not supported
 }
 
@@ -180,23 +180,23 @@ enum {
   kMenuNoCommandModifier = (1 << 3)
 }; 
  */
-static void setMenuShortcut( MenuHandle mh, int miCnt, const Fl_Menu_Item *m )
+static void setMenuShortcut( MenuHandle mh, int miCnt, Fl_Menu_Item *m )
 {
-  if ( !m->shortcut_ ) 
+  if ( !m.shortcut_ ) 
     return;
-  if ( m->flags & FL_SUBMENU )
+  if ( m.flags & FL_SUBMENU )
     return;
-  if ( m->flags & FL_SUBMENU_POINTER )
+  if ( m.flags & FL_SUBMENU_POINTER )
     return;
-  char key = m->shortcut_ & 0xff;
+  char key = m.shortcut_ & 0xff;
   if ( !isalnum( key ) )
     return;
   
-  long macMod = kMenuNoCommandModifier;
-  if ( m->shortcut_ & FL_META ) macMod = kMenuNoModifiers;
-  if ( m->shortcut_ & FL_SHIFT || isupper(key) ) macMod |= kMenuShiftModifier;
-  if ( m->shortcut_ & FL_ALT ) macMod |= kMenuOptionModifier;
-  if ( m->shortcut_ & FL_CTRL ) macMod |= kMenuControlModifier;
+  int macMod = kMenuNoCommandModifier;
+  if ( m.shortcut_ & FL_META ) macMod = kMenuNoModifiers;
+  if ( m.shortcut_ & FL_SHIFT || isupper(key) ) macMod |= kMenuShiftModifier;
+  if ( m.shortcut_ & FL_ALT ) macMod |= kMenuOptionModifier;
+  if ( m.shortcut_ & FL_CTRL ) macMod |= kMenuControlModifier;
   
   //SetMenuItemKeyGlyph( mh, miCnt, key );
   SetItemCmd( mh, miCnt, toupper(key) );
@@ -205,41 +205,41 @@ static void setMenuShortcut( MenuHandle mh, int miCnt, const Fl_Menu_Item *m )
 
 #if 0
 // this function needs to be verified before we compile it back in.
-static void catMenuShortcut( const Fl_Menu_Item *m, char *dst )
+static void catMenuShortcut( Fl_Menu_Item *m, char *dst )
 {
-  if ( !m->shortcut_ ) 
+  if ( !m.shortcut_ ) 
     return;
-  char c = m->shortcut_ & 0xff;
+  char c = m.shortcut_ & 0xff;
   if ( !isalnum( c & 0xff ) )
     return;
   while ( *dst ) 
     dst++;
-  if ( m->shortcut_ & FL_CTRL )
+  if ( m.shortcut_ & FL_CTRL )
   {
     sprintf( dst, "/%c", toupper( c ) );
   }
-  //if ( isalnum( mm->shortcut_ ) && !( mm->flags & FL_SUBMENU ) )
-  //sprintf( buf+strlen(buf), "/%c", mm->shortcut_ );
+  //if ( isalnum( mm.shortcut_ ) && !( mm.flags & FL_SUBMENU ) )
+  //sprintf( buf+strlen(buf), "/%c", mm.shortcut_ );
 }
-#endif
+}
 
-static void setMenuFlags( MenuHandle mh, int miCnt, const Fl_Menu_Item *m )
+static void setMenuFlags( MenuHandle mh, int miCnt, Fl_Menu_Item *m )
 {
-  if ( m->flags & FL_MENU_TOGGLE )
+  if ( m.flags & FL_MENU_TOGGLE )
   {
-    SetItemMark( mh, miCnt, ( m->flags & FL_MENU_VALUE ) ? 0x12 : 0 );
+    SetItemMark( mh, miCnt, ( m.flags & FL_MENU_VALUE ) ? 0x12 : 0 );
   }
-  else if ( m->flags & FL_MENU_RADIO )
-    SetItemMark( mh, miCnt, ( m->flags & FL_MENU_VALUE ) ? 0x13 : 0 );
+  else if ( m.flags & FL_MENU_RADIO )
+    SetItemMark( mh, miCnt, ( m.flags & FL_MENU_VALUE ) ? 0x13 : 0 );
 }
 
-static void catMenuFlags( const Fl_Menu_Item *m, char *dst )
+static void catMenuFlags( Fl_Menu_Item *m, char *dst )
 {
-  if ( !m->flags ) 
+  if ( !m.flags ) 
     return;
   while ( *dst ) 
     dst++;
-  if ( m->flags & FL_MENU_INACTIVE )
+  if ( m.flags & FL_MENU_INACTIVE )
     strcat( dst, "(" );
 }
 
@@ -250,38 +250,38 @@ static void createSubMenu( MenuHandle mh, int &cnt, pFl_Menu_Item &mm )
 {
   char buf[255];
   int miCnt = 1;
-  while ( mm->text )
+  while ( mm.text )
   {
     MenuHandle smh = 0;
     buf[1] = 0;
     catMenuFont( mm, buf+1 );
     //catMenuShortcut( mm, buf+1 );
-    catMenuText( mm->text, buf+1 );
+    catMenuText( mm.text, buf+1 );
     catMenuFlags( mm, buf+1 );
-    if ( mm->flags & (FL_SUBMENU | FL_SUBMENU_POINTER) )
+    if ( mm.flags & (FL_SUBMENU | FL_SUBMENU_POINTER) )
     {
       cnt++;
-      smh = NewMenu( cnt, (unsigned char*)"\001 " );
+      smh = NewMenu( cnt, (ubyte*)"\001 " );
       sprintf( buf+1+strlen(buf+1), "/\033!%c", cnt );
     }
-    if ( mm->flags & FL_MENU_DIVIDER )
+    if ( mm.flags & FL_MENU_DIVIDER )
       strcat( buf+1, ";-" );
     buf[0] = strlen( buf+1 );
-    AppendMenu( mh, (unsigned char*)buf );
+    AppendMenu( mh, (ubyte*)buf );
     // insert Appearanc manager functions here!
     setMenuFlags( mh, miCnt, mm );
     setMenuShortcut( mh, miCnt, mm );
     SetMenuItemRefCon( mh, miCnt, (UInt32)mm );
     miCnt++;
-    if ( mm->flags & FL_MENU_DIVIDER )
+    if ( mm.flags & FL_MENU_DIVIDER )
       miCnt++;
-    if ( mm->flags & FL_SUBMENU )
+    if ( mm.flags & FL_SUBMENU )
     {
       createSubMenu( smh, cnt, ++mm );
     }
-    else if ( mm->flags & FL_SUBMENU_POINTER )
+    else if ( mm.flags & FL_SUBMENU_POINTER )
     {
-      const Fl_Menu_Item *smm = (Fl_Menu_Item*)mm->user_data_;
+      Fl_Menu_Item *smm = (Fl_Menu_Item*)mm.user_data_;
       createSubMenu( mh, cnt, smm );
     }
     mm++;
@@ -297,69 +297,69 @@ static void createSubMenu( MenuHandle mh, int &cnt, pFl_Menu_Item &mm )
  *
  * @param m list of Fl_Menu_Item
  */
-void Fl_Sys_Menu_Bar::menu(const Fl_Menu_Item *m) 
+void Fl_Sys_Menu_Bar.menu(Fl_Menu_Item *m) 
 {
   fl_open_display();
-  Fl_Menu_Bar::menu( m );
+  Fl_Menu_Bar.menu( m );
   fl_sys_menu_bar = this;
 
   char buf[255];
   int cnt = 1; // first menu is no 2. no 1 is the Apple Menu
 
-  const Fl_Menu_Item *mm = m;
+  Fl_Menu_Item *mm = m;
   for (;;)
   {
-    if ( !mm->text )
+    if ( !mm.text )
       break;
     buf[1] = 0;
-    catMenuText( mm->text, buf+1 );
+    catMenuText( mm.text, buf+1 );
     buf[0] = strlen( buf+1 );
-    MenuHandle mh = NewMenu( ++cnt, (unsigned char*)buf );
-    if ( mm->flags & FL_SUBMENU )
+    MenuHandle mh = NewMenu( ++cnt, (ubyte*)buf );
+    if ( mm.flags & FL_SUBMENU )
       createSubMenu( mh, cnt, ++mm );
-    else if ( mm->flags & FL_SUBMENU_POINTER )
+    else if ( mm.flags & FL_SUBMENU_POINTER )
     {
-      const Fl_Menu_Item *smm = (Fl_Menu_Item*)mm->user_data_;
+      Fl_Menu_Item *smm = (Fl_Menu_Item*)mm.user_data_;
       createSubMenu( mh, cnt, smm );
     }
     
     InsertMenu( mh, 0 );
-    if ( mm->flags & FL_MENU_INACTIVE ) DisableMenuItem( mh, 0 );
+    if ( mm.flags & FL_MENU_INACTIVE ) DisableMenuItem( mh, 0 );
     mm++;
   }
   DrawMenuBar();
 }
 
 /*
-const Fl_Menu_Item* Fl_Sys_Menu_Bar::picked(const Fl_Menu_Item* v) {
-  Fl_menu_Item *ret = Fl_Menu_Bar::picked( v );
+const Fl_Menu_Item* Fl_Sys_Menu_Bar.picked(Fl_Menu_Item* v) {
+  Fl_menu_Item  ret = Fl_Menu_Bar.picked( v );
   
-  if ( m->flags & FL_MENU_TOGGLE )
+  if ( m.flags & FL_MENU_TOGGLE )
   {
-    SetItemMark( mh, miCnt, ( m->flags & FL_MENU_VALUE ) ? 0x12 : 0 );
+    SetItemMark( mh, miCnt, ( m.flags & FL_MENU_VALUE ) ? 0x12 : 0 );
   }
   
   return ret;
 }
 */
 
-void Fl_Sys_Menu_Bar::draw() {
+void Fl_Sys_Menu_Bar.draw() {
 /* -- nothing to do, system should take care of this
   draw_box();
   if (!menu() || !menu()->text) return;
-  const Fl_Menu_Item* m;
+  Fl_Menu_Item* m;
   int X = x()+6;
-  for (m=menu(); m->text; m = m->next()) {
-    int W = m->measure(0,this) + 16;
-    m->draw(X, y(), W, h(), this);
+  for (m=menu(); m.text; m = m.next()) {
+    int W = m.measure(0,this) + 16;
+    m.draw(X, y(), W, h(), this);
     X += W;
   }
   */
 }
 
 /*
-int Fl_Menu_Bar::handle(int event) {
-  const Fl_Menu_Item* v;
+int Fl_Menu_Bar.handle(int event) {
+  Fl_Menu_Item* v;
   if (menu() && menu()->text) switch (event) {
   case FL_ENTER:
   case FL_LEAVE:
@@ -373,7 +373,7 @@ int Fl_Menu_Bar::handle(int event) {
   case FL_SHORTCUT:
     if (visible_r()) {
       v = menu()->find_shortcut();
-      if (v && v->submenu()) goto J1;
+      if (v && v.submenu()) goto J1;
     }
     return test_shortcut() != 0;
   }
@@ -381,9 +381,9 @@ int Fl_Menu_Bar::handle(int event) {
 }
 */
 
-#endif /* __APPLE__ */
+} /* __APPLE__ */
 
 //
-// End of "$Id: Fl_Sys_Menu_Bar.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: sys_menu_bar.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

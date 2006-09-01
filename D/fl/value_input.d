@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Value_Input.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: value_input.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Value input header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,48 +26,48 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Value_Input_H
-#define Fl_Value_Input_H
+module fl.value_input;
 
-#include "Fl_Valuator.H"
-#include "Fl_Input.H"
 
-class FL_EXPORT Fl_Value_Input : public Fl_Valuator {
+public import fl.valuator;
+public import fl.input;
+
+class Fl_Value_Input : Fl_Valuator {
 public:
   Fl_Input input;
 private:
   char soft_;
-  static void input_cb(Fl_Widget*,void*);
-  virtual void value_damage(); // cause damage() due to value() changing
+  static void input_cb(Fl_Widget ,void*);
+  void value_damage(); // cause damage() due to value() changing
 public:
   int handle(int);
   void draw();
   void resize(int,int,int,int);
-  Fl_Value_Input(int x,int y,int w,int h,const char *l=0);
+  Fl_Value_Input(int x,int y,int w,int h,char *l=0);
 
   void soft(char s) {soft_ = s;}
-  char soft() const {return soft_;}
+  char soft() {return soft_;}
 
-  Fl_Font textfont() const {return input.textfont();}
-  void textfont(uchar s) {input.textfont(s);}
-  uchar textsize() const {return input.textsize();}
-  void textsize(uchar s) {input.textsize(s);}
-  Fl_Color textcolor() const {return input.textcolor();}
-  void textcolor(unsigned n) {input.textcolor(n);}
-  Fl_Color cursor_color() const {return input.cursor_color();}
-  void cursor_color(unsigned n) {input.cursor_color(n);}
+  Fl_Font textfont() {return input.textfont();}
+  void textfont(ubyte s) {input.textfont(s);}
+  ubyte textsize() {return input.textsize();}
+  void textsize(ubyte s) {input.textsize(s);}
+  Fl_Color textcolor() {return input.textcolor();}
+  void textcolor(uint n) {input.textcolor(n);}
+  Fl_Color cursor_color() {return input.cursor_color();}
+  void cursor_color(uint n) {input.cursor_color(n);}
 
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Value_Input.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: value_input.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Value_Input.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: value_input.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Value input widget for the Fast Light Tool Kit (FLTK).
 //
@@ -98,14 +98,14 @@ public:
 // though this object is *not* an Fl_Group.  May be a kludge?
 
 #include <FL/Fl.H>
-#include <FL/Fl_Value_Input.H>
-#include <FL/Fl_Group.H>
+private import fl.value_input;
+private import fl.group;
 #include <stdlib.h>
 #include <FL/math.h>
 
 
-void Fl_Value_Input::input_cb(Fl_Widget*, void* v) {
-  Fl_Value_Input& t = *(Fl_Value_Input*)v;
+void Fl_Value_Input.input_cb(Fl_Widget , void* v) {
+  Fl_Value_Input  t = *(Fl_Value_Input )v;
   double nv;
   if ((t.step() - floor(t.step()))>0.0 || t.step() == 0.0) nv = strtod(t.input.value(), 0);
   else nv = strtol(t.input.value(), 0, 0);
@@ -116,7 +116,7 @@ void Fl_Value_Input::input_cb(Fl_Widget*, void* v) {
   }
 }
 
-void Fl_Value_Input::draw() {
+void Fl_Value_Input.draw() {
   if (damage()&~FL_DAMAGE_CHILD) input.clear_damage(FL_DAMAGE_ALL);
   input.box(box());
   input.color(color(), selection_color());
@@ -124,29 +124,29 @@ void Fl_Value_Input::draw() {
   input.clear_damage();
 }
 
-void Fl_Value_Input::resize(int X, int Y, int W, int H) {
-  Fl_Valuator::resize(X, Y, W, H);
+void Fl_Value_Input.resize(int X, int Y, int W, int H) {
+  Fl_Valuator.resize(X, Y, W, H);
   input.resize(X, Y, W, H);
 }
 
-void Fl_Value_Input::value_damage() {
+void Fl_Value_Input.value_damage() {
   char buf[128];
   format(buf);
   input.value(buf);
   input.mark(input.position()); // turn off selection highlight
 }
 
-int Fl_Value_Input::handle(int event) {
+int Fl_Value_Input.handle(int event) {
   double v;
   int delta;
-  int mx = Fl::event_x_root();
+  int mx = Fl.event_x_root();
   static int ix, drag;
   input.when(when());
   switch (event) {
   case FL_PUSH:
     if (!step()) goto DEFAULT;
     ix = mx;
-    drag = Fl::event_button();
+    drag = Fl.event_button();
     handle_push();
     return 1;
   case FL_DRAG:
@@ -165,7 +165,7 @@ int Fl_Value_Input::handle(int event) {
     return 1;
   case FL_RELEASE:
     if (!step()) goto DEFAULT;
-    if (value() != previous_value() || !Fl::event_is_click())
+    if (value() != previous_value() || !Fl.event_is_click())
       handle_release();
     else {
       input.handle(FL_PUSH);
@@ -181,22 +181,22 @@ int Fl_Value_Input::handle(int event) {
   }
 }
 
-Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
+Fl_Value_Input.Fl_Value_Input(int X, int Y, int W, int H, char* l)
 : Fl_Valuator(X, Y, W, H, l), input(X, Y, W, H, 0) {
   soft_ = 0;
   if (input.parent())  // defeat automatic-add
-    ((Fl_Group*)input.parent())->remove(input);
-  input.parent((Fl_Group *)this); // kludge!
+    ((Fl_Group )input.parent())->remove(input);
+  input.parent((Fl_Group  )this); // kludge!
   input.callback(input_cb, this);
   input.when(FL_WHEN_CHANGED);
   box(input.box());
   color(input.color());
   selection_color(input.selection_color());
-  align(FL_ALIGN_LEFT);
+  alignment(FL_ALIGN_LEFT);
   value_damage();
 }
 
 //
-// End of "$Id: Fl_Value_Input.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: value_input.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

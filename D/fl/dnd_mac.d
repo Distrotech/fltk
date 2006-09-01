@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_dnd_mac.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -27,10 +26,13 @@
 // in.  Search other files for "WIN32" or filenames ending in _win32.cxx
 // for other system-specific code.
 
+module fl.dnd_mac;
+
+/+=
 #include <config.h>
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/Fl_Window.H>
+private import fl.window;
 
 // warning: this function is only implemented in Quickdraw. The function
 //          below may not work If FLTK is compiled with Quartz enabled
@@ -43,9 +45,9 @@ extern int fl_selection_length;
 /**
  * drag and drop whatever is in the cut-copy-paste buffer
  * - create a selection first using: 
- *     Fl::copy(const char *stuff, int len, 0)
+ *     Fl.copy(char *stuff, int len, 0)
  */
-int Fl::dnd()
+int Fl.dnd()
 {
   OSErr result;
   DragReference dragRef;
@@ -69,13 +71,13 @@ int Fl::dnd()
   ConvertEventRefToEventRecord( fl_os_event, &event );
   result = TrackDrag( dragRef, &event, region );
 
-  Fl_Widget *w = Fl::pushed();
+  Fl_Widget  w = Fl.pushed();
   if ( w )
   {
-    int old_event = Fl::e_number;
-    w->handle(Fl::e_number = FL_RELEASE);
-    Fl::e_number = old_event;
-    Fl::pushed( 0 );
+    int old_event = Fl.e_number;
+    w.handle(Fl.e_number = FL_RELEASE);
+    Fl.e_number = old_event;
+    Fl.pushed( 0 );
   }
 
   if ( result != noErr ) { DisposeRgn( region ); DisposeDrag( dragRef ); return false; }

@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_symbols.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -35,26 +34,31 @@
 // Version 2.1 a
 // Date: Oct  2, 1992
 
-#include <FL/Fl.H>
-#include <FL/fl_draw.H>
-#include <FL/math.h>
-#include "flstring.h"
+module fl.symbols;
 
-typedef struct {
-  const char *name;
+private import fl.enumerations;
+
+/+=
+#include <FL/Fl.H>
+private import fl.draw;
+#include <FL/math.h>
+private import fl.flstring;
+
+alias struct {
+  char *name;
   void (*drawit)(Fl_Color);
   char scalable;
   char notempty;
 } SYMBOL;
 
-#define MAXSYMBOL       211
+const int MAXSYMBOL = 211; 
    /* Maximal number of symbols in table. Only half of them are
       used. Should be prime. */
 
 static SYMBOL symbols[MAXSYMBOL];      /* The symbols */
 static int symbnumb = -1;              /* Their number */
 
-static int find(const char *name) {
+static int find(char *name) {
 // returns hash entry if it exists, or first empty slot:
   int pos = name[0] ? (
     name[1] ? (
@@ -78,7 +82,7 @@ static void fl_init_symbols(void);
 
 /**************** The routines seen by the user *************************/
 
-int fl_add_symbol(const char *name, void (*drawit)(Fl_Color), int scalable)
+int fl_add_symbol(char *name, void (*drawit)(Fl_Color), int scalable)
 /* Adds a symbol to the system. Returns whether correct. */
 {
   fl_init_symbols();
@@ -94,10 +98,11 @@ int fl_add_symbol(const char *name, void (*drawit)(Fl_Color), int scalable)
 }
 
 int fl_return_arrow(int x,int y,int w,int h);
-
+=+/
 // provided for back compatability:
-int fl_draw_symbol(const char *label,int x,int y,int w,int h,Fl_Color col) {  
-  const char *p = label;
+int fl_draw_symbol(char *label,int x,int y,int w,int h,Fl_Color col) {  
+/+===
+  char *p = label;
   if (*p++ != '@') return 0;
   fl_init_symbols();
   int equalscale = 0;
@@ -157,21 +162,22 @@ int fl_draw_symbol(const char *label,int x,int y,int w,int h,Fl_Color col) {
   }
   (symbols[pos].drawit)(col);
   fl_pop_matrix();
+===+/
   return 1;
 }
-
+/+=
 /******************** THE DEFAULT SYMBOLS ****************************/
 
 /* Some help stuff */
 
-#define BP fl_begin_polygon()
-#define EP fl_end_polygon()
-#define BCP fl_begin_complex_polygon()
-#define ECP fl_end_complex_polygon()
-#define BL fl_begin_line()
-#define EL fl_end_line()
-#define BC fl_begin_loop()
-#define EC fl_end_loop()
+const int BP = fl_begin_polygon(); 
+const int EP = fl_end_polygon(); 
+const int BCP = fl_begin_complex_polygon(); 
+const int ECP = fl_end_complex_polygon(); 
+const int BL = fl_begin_line(); 
+const int EL = fl_end_line(); 
+const int BC = fl_begin_loop(); 
+const int EC = fl_end_loop(); 
 #define vv(x,y) fl_vertex(x,y)
 
 //for the outline color

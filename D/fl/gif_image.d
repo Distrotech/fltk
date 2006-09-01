@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_GIF_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: gif_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // GIF image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,26 +26,26 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_GIF_Image_H
-#define Fl_GIF_Image_H
-#  include "Fl_Pixmap.H"
+module fl.gif_image;
 
-class FL_EXPORT Fl_GIF_Image : public Fl_Pixmap {
+public import fl.pixmap;
+
+class Fl_GIF_Image : Fl_Pixmap {
 
   public:
 
-  Fl_GIF_Image(const char* filename);
+  Fl_GIF_Image(char* filename);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_GIF_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: gif_image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_GIF_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: gif_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_GIF_Image routines.
 //
@@ -79,10 +79,10 @@ class FL_EXPORT Fl_GIF_Image : public Fl_Pixmap {
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_GIF_Image.H>
+private import fl.gif_image;
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
 // Read a .gif file and convert it to a "xpm" format (actually my
 // modified one with compressed colormaps).
@@ -119,17 +119,17 @@ class FL_EXPORT Fl_GIF_Image : public Fl_Pixmap {
  *                     (415) 336-1080
  */
 
-typedef unsigned char uchar;
+alias ubyte ubyte;
 
-#define NEXTBYTE (uchar)getc(GifFile)
+const int NEXTBYTE = (ubyte)getc(GifFile); 
 #define GETSHORT(var) var = NEXTBYTE; var += NEXTBYTE << 8
 
-Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
+Fl_GIF_Image.Fl_GIF_Image(char *infname) : Fl_Pixmap((char *const*)0) {
   FILE *GifFile;	// File to read
   char **new_data;	// Data array
 
   if ((GifFile = fopen(infname, "rb")) == NULL) {
-    Fl::error("Fl_GIF_Image: Unable to open %s!", infname);
+    Fl.error("Fl_GIF_Image: Unable to open %s!", infname);
     return;
   }
 
@@ -140,17 +140,17 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
   }
   if (b[0]!='G' || b[1]!='I' || b[2] != 'F') {
     fclose(GifFile);
-    Fl::error("Fl_GIF_Image: %s is not a GIF file.\n", infname);
+    Fl.error("Fl_GIF_Image: %s is not a GIF file.\n", infname);
     return;
   }
   if (b[3]!='8' || b[4]>'9' || b[5]!= 'a')
-    Fl::warning("%s is version %c%c%c.",infname,b[3],b[4],b[5]);
+    Fl.warning("%s is version %c%c%c.",infname,b[3],b[4],b[5]);
   }
 
   int Width; GETSHORT(Width);
   int Height; GETSHORT(Height);
 
-  uchar ch = NEXTBYTE;
+  ubyte ch = NEXTBYTE;
   char HasColormap = ((ch & 0x80) != 0);
   int BitsPerPixel = (ch & 7) + 1;
   int ColorMapSize = 1 << BitsPerPixel;
@@ -160,9 +160,9 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
   ch = NEXTBYTE; // Aspect ratio is N/64
 
   // Read in global colormap:
-  uchar transparent_pixel = 0;
+  ubyte transparent_pixel = 0;
   char has_transparent = 0;
-  uchar Red[256], Green[256], Blue[256]; /* color map */
+  ubyte Red[256], Green[256], Blue[256]; /* color map */
   if (HasColormap) {
     for (int i=0; i < ColorMapSize; i++) {	
       Red[i] = NEXTBYTE;
@@ -170,9 +170,9 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
       Blue[i] = NEXTBYTE;
     }
   } else {
-    Fl::warning("%s does not have a colormap.", infname);
+    Fl.warning("%s does not have a colormap.", infname);
     for (int i = 0; i < ColorMapSize; i++)
-      Red[i] = Green[i] = Blue[i] = (uchar)(255 * i / (ColorMapSize-1));
+      Red[i] = Green[i] = Blue[i] = (ubyte)(255 * i / (ColorMapSize-1));
   }
 
   int CodeSize;		/* Code size, init from GIF header, increases... */
@@ -183,7 +183,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
     int i = NEXTBYTE;
     if (i<0) {
       fclose(GifFile);
-      Fl::error("Fl_GIF_Image: %s - unexpected EOF",infname); 
+      Fl.error("Fl_GIF_Image: %s - unexpected EOF",infname); 
       return;
     }
     int blocklen;
@@ -208,7 +208,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
 	;
 
       } else if (ch != 0xFE) { //Gif Comment
-	Fl::warning("%s: unknown gif extension 0x%02x.", infname, ch);
+	Fl.warning("%s: unknown gif extension 0x%02x.", infname, ch);
       }
     } else if (i == 0x2c) {	// an image
 
@@ -230,7 +230,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
       CodeSize = NEXTBYTE+1;
       break; // okay, this is the image we want
     } else {
-      Fl::warning("%s: unknown gif code 0x%02x", infname, i);
+      Fl.warning("%s: unknown gif code 0x%02x", infname, i);
       blocklen = 0;
     }
 
@@ -245,11 +245,11 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
     ColorMapSize = 1 << BitsPerPixel;
   }
 
-  uchar *Image = new uchar[Width*Height];
+  ubyte *Image = new ubyte[Width*Height];
 
   int YC = 0, Pass = 0; /* Used to de-interlace the picture */
-  uchar *p = Image;
-  uchar *eol = p+Width;
+  ubyte *p = Image;
+  ubyte *eol = p+Width;
 
   int InitCodeSize = CodeSize;
   int ClearCode = (1 << (CodeSize-1));
@@ -262,10 +262,10 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
 
   // tables used by LZW decompresser:
   short int Prefix[4096];
-  uchar Suffix[4096];
+  ubyte Suffix[4096];
 
   int blocklen = NEXTBYTE;
-  uchar thisbyte = NEXTBYTE; blocklen--;
+  ubyte thisbyte = NEXTBYTE; blocklen--;
   int frombit = 0;
 
   for (;;) {
@@ -305,12 +305,12 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
 
     if (CurCode == EOFCode) break;
 
-    uchar OutCode[1025]; // temporary array for reversing codes
-    uchar *tp = OutCode;
+    ubyte OutCode[1025]; // temporary array for reversing codes
+    ubyte *tp = OutCode;
     int i;
     if (CurCode < FreeCode) i = CurCode;
-    else if (CurCode == FreeCode) {*tp++ = (uchar)FinChar; i = OldCode;}
-    else {Fl::error("Fl_GIF_Image: %s - LZW Barf!", infname); break;}
+    else if (CurCode == FreeCode) {*tp++ = (ubyte)FinChar; i = OldCode;}
+    else {Fl.error("Fl_GIF_Image: %s - LZW Barf!", infname); break;}
 
     while (i >= ColorMapSize) {*tp++ = Suffix[i]; i = Prefix[i];}
     *tp++ = FinChar = i;
@@ -361,7 +361,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
       if (*p==transparent_pixel) *p = 0;
       else if (!*p) *p = transparent_pixel;
     }
-    uchar t;
+    ubyte t;
     t                        = Red[0];
     Red[0]                   = Red[transparent_pixel];
     Red[transparent_pixel]   = t;
@@ -376,7 +376,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
   }
 
   // find out what colors are actually used:
-  uchar used[256]; uchar remap[256];
+  ubyte used[256]; ubyte remap[256];
   int i;
   for (i = 0; i < ColorMapSize; i++) used[i] = 0;
   p = Image+Width*Height;
@@ -386,7 +386,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
   int base = has_transparent && used[0] ? ' ' : ' '+1;
   int numcolors = 0;
   for (i = 0; i < ColorMapSize; i++) if (used[i]) {
-    remap[i] = (uchar)(base++);
+    remap[i] = (ubyte)(base++);
     numcolors++;
   }
 
@@ -397,7 +397,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
   strcpy(new_data[0], (char*)Suffix);
 
   // write the colormap
-  new_data[1] = (char*)(p = new uchar[4*numcolors]);
+  new_data[1] = (char*)(p = new ubyte[4*numcolors]);
   for (i = 0; i < ColorMapSize; i++) if (used[i]) {
     *p++ = remap[i];
     *p++ = Red[i];
@@ -416,7 +416,7 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
     new_data[i + 2][Width] = 0;
   }
 
-  data((const char **)new_data, Height + 2);
+  data((char **)new_data, Height + 2);
   alloc_data = 1;
 
   delete[] Image;
@@ -426,6 +426,6 @@ Fl_GIF_Image::Fl_GIF_Image(const char *infname) : Fl_Pixmap((char *const*)0) {
 
 
 //
-// End of "$Id: Fl_GIF_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: gif_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

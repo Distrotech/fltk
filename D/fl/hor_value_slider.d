@@ -1,3 +1,4 @@
+/+- This file was imported from C++ using a script
 //
 // "$Id: hor_value_slider.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -27,17 +28,18 @@
 
 module fl.hor_value_slider;
 
-public import fl.value_slider;
 
+public import fl.value_slider;
 
 class Fl_Hor_Value_Slider : Fl_Value_Slider {
 public:
-  this(int X,int Y,int W,int H,char[] l=null) {
-    super(X,Y,W,H,l);
-    type(FL_HOR_SLIDER);
-  }
+    Fl_Hor_Value_Slider(int X,int Y,int W,int H,char *l=0)
+	: Fl_Value_Slider(X,Y,W,H,l) {type(FL_HOR_SLIDER);}
+};
+
 }
 
 //
 // End of "$Id: hor_value_slider.d 4288 2005-04-16 00:13:17Z mike $".
 //
+    End of automatic import -+/

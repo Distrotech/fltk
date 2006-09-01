@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: glut_font.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: glut_font.cxx 5367 2006-08-25 10:33:30Z matt $"
 //
 // GLUT bitmap font routines for the Fast Light Tool Kit (FLTK).
 //
@@ -54,9 +54,15 @@ int glutBitmapWidth(void* font, int character) {
   return int(gl_width(character)+.5);
 }
 
-#endif
+int glutBitmapLength(void *font, ubyte *string) {
+  gl_font(((Glut_Bitmap_Font *)font)->font,((Glut_Bitmap_Font *)font)->size);
+  char *s = (char*)string;
+  return int(gl_width(s)+.5);
+}
+
+}
 
 //
-// End of "$Id: glut_font.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: glut_font.cxx 5367 2006-08-25 10:33:30Z matt $".
 //
     End of automatic import -+/

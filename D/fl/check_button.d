@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Check_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: check_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Check button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,25 +25,25 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Check_Button_H
-#define Fl_Check_Button_H
+module fl.check_button;
 
-#include "Fl_Light_Button.H"
+/+=
+public import fl.light_button;
 
-class FL_EXPORT Fl_Check_Button : public Fl_Light_Button {
+class Fl_Check_Button : Fl_Light_Button {
 public:
-  Fl_Check_Button(int x,int y,int w,int h,const char *l = 0);
+  Fl_Check_Button(int x,int y,int w,int h,char *l = 0);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Check_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: check_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Check_Button.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: check_button.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Check button widget for the Fast Light Tool Kit (FLTK).
 //
@@ -71,13 +70,13 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Check_Button.H>
+private import fl.check_button;
 
 // A subclass of Fl_Button that always draws as a diamond box.  This
 // diamond is smaller than the widget size and can be surchecked by
 // another box type, for compatability with Forms.
 
-Fl_Check_Button::Fl_Check_Button(int X, int Y, int W, int H, const char *l)
+Fl_Check_Button.Fl_Check_Button(int X, int Y, int W, int H, char *l)
 : Fl_Light_Button(X, Y, W, H, l) {
   box(FL_NO_BOX);
   down_box(FL_DOWN_BOX);

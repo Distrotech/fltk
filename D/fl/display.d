@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_display.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: display.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Display function for the Fast Light Tool Kit (FLTK).
 //
@@ -26,17 +25,20 @@
 //     http://www.fltk.org/str.php
 //
 
+module fl.display;
+
+/+=
 // Startup method to set what display to use.
 // Using setenv makes programs that are exec'd use the same display.
 
 #include <FL/Fl.H>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
-void Fl::display(const char *d) {
-#if defined(__APPLE__) || defined(WIN32)
+void Fl.display(char *d) {
+version (__APPLE__) || defined(WIN32) {
   (void)d;
-#else
+} else {
   static char e[1024];
   strcpy(e,"DISPLAY=");
   strlcat(e,d,sizeof(e));
@@ -47,10 +49,10 @@ void Fl::display(const char *d) {
     }
   }
   putenv(e);
-#endif // __APPLE__
+} // __APPLE__
 }
 
 //
-// End of "$Id: Fl_display.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: display.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

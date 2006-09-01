@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Free.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: free.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Forms free header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,43 +26,43 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Free_H
-#define Fl_Free_H
+module fl.free;
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
 
-#define FL_NORMAL_FREE		1
-#define FL_SLEEPING_FREE	2
-#define FL_INPUT_FREE		3
-#define FL_CONTINUOUS_FREE	4
-#define FL_ALL_FREE		5
+module fl.widget;
+public import fl.widget;
+}
 
-typedef int (*FL_HANDLEPTR)(Fl_Widget *, int , float, float, char);
+const int FL_NORMAL_FREE = 1; 
+const int FL_SLEEPING_FREE = 2; 
+const int FL_INPUT_FREE = 3; 
+const int FL_CONTINUOUS_FREE = 4; 
+const int FL_ALL_FREE = 5; 
 
-class FL_EXPORT Fl_Free : public Fl_Widget {
+alias int (*FL_HANDLEPTR)(Fl_Widget  , int , float, float, char);
+
+class Fl_Free : Fl_Widget {
     FL_HANDLEPTR hfunc;
     static void step(void *);
 protected:
     void draw();
 public:
     int handle(int);
-    Fl_Free(uchar t,int x,int y,int w,int h,const char *l,FL_HANDLEPTR hdl);
+    Fl_Free(ubyte t,int x,int y,int w,int h,char *l,FL_HANDLEPTR hdl);
     ~Fl_Free();
 };
 
 // old event names for compatability:
-#define FL_MOUSE		FL_DRAG
-#define FL_DRAW			100		// NOT USED
-#define FL_STEP			101
-#define FL_FREEMEM		102		// NOT USED
-#define FL_FREEZE		103		// NOT USED
-#define FL_THAW			104		// NOT USED
+const int FL_MOUSE = FL_DRAG; 
+const int FL_DRAW = 100; 		// NOT USED
+const int FL_STEP = 101; 
+const int FL_FREEMEM = 102; 		// NOT USED
+const int FL_FREEZE = 103; 		// NOT USED
+const int FL_THAW = 104; 		// NOT USED
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Free.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: free.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_dnd.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -26,13 +25,16 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifdef WIN32
+module fl.dnd;
+
+/+=
+version (WIN32) {
 #  include "fl_dnd_win32.cxx"
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 #  include "fl_dnd_mac.cxx"
-#else
+} else {
 #  include "fl_dnd_x.cxx"
-#endif
+}
 
 //
 // End of "$Id: fl_dnd.cxx 5190 2006-06-09 16:16:34Z mike $".

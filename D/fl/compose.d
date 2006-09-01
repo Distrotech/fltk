@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_compose.cxx 5211 2006-06-19 07:43:39Z matt $"
+// "$Id: compose.d 5211 2006-06-19 07:43:39Z matt $"
 //
 // Character compose processing for the Fast Light Tool Kit (FLTK).
 //
@@ -26,6 +25,9 @@
 //     http://www.fltk.org/str.php
 //
 
+module fl.compose;
+
+/+=
 #include <FL/Fl.H>
 
 //
@@ -37,9 +39,9 @@
 //#define OLD_DEAD_KEY_CODE
 
 
-#ifdef __APPLE__
+version (__APPLE__) {
 
-static const char* const compose_pairs =
+static char* compose_pairs =
 ":A*A,C'E~N:O:U'a`a^a:a~a*a,c'e`e"
 "^e:e'i`i^i:i~n'o`o^o:o~o'u`u^u:u"
 "+ o /c# SS* P|ssrOcOTM' : !=AE/O"
@@ -49,15 +51,15 @@ static const char* const compose_pairs =
 "++..,,_\"%%^A^E'A:E`E'I^I:I`I'O^O"
 "mc`O'U^U`U||^ ~^_ u . * , ~-; v ";
 
-#else
+} else {
 
-static const char* const compose_pairs =
+static char* compose_pairs =
 "=E  _'f _\"..+ ++^ %%^S< OE  ^Z    ^''^^\"\"^-*- --~ TM^s> oe  ^z:Y" 
 "  ! % # $ y=| & : c a <<~ - r _ * +-2 3 ' u p . , 1 o >>141234? "
 "`A'A^A~A:A*AAE,C`E'E^E:E`I'I^I:I-D~N`O'O^O~O:Ox O/`U'U^U:U'YTHss"
 "`a'a^a~a:a*aae,c`e'e^e:e`i'i^i:i-d~n`o'o^o~o:o-:o/`u'u^u:u'yth:y";
 
-#endif
+}
 
 #if !defined(WIN32) && defined(OLD_DEAD_KEY_CODE) // X only
 // X dead-key lookup table.  This turns a dead-key keysym into the
@@ -84,14 +86,14 @@ static char dead_keys[] = {
 //   0,	// XK_dead_semivoiced_sound
 //   0	// XK_dead_belowdot
 };
-#endif // !WIN32 && OLD_DEAD_KEY_CODE
+} // !WIN32 && OLD_DEAD_KEY_CODE
 
-int Fl::compose_state = 0;
+int Fl.compose_state = 0;
 
-int Fl::compose(int& del) {
+int Fl.compose(int& del) {
 
   del = 0;
-  unsigned char ascii = (unsigned)e_text[0];
+  ubyte ascii = (uint)e_text[0];
 
   // Alt+letters are reserved for shortcuts.  But alt+foreign letters
   // has to be allowed, because some key layouts require alt to be held
@@ -99,11 +101,11 @@ int Fl::compose(int& del) {
   //
   // OSX users sometimes need to hold down ALT for keys, so we only check
   // for META on OSX...
-#ifdef __APPLE__
+version (__APPLE__) {
   if ((e_state & FL_META) && !(ascii & 128)) return 0;
-#else
+} else {
   if ((e_state & (FL_ALT|FL_META)) && !(ascii & 128)) return 0;
-#endif // __APPLE__
+} // __APPLE__
 
   if (compose_state == 1) { // after the compose key
     if ( // do not get distracted by any modifier keys
@@ -119,11 +121,11 @@ int Fl::compose(int& del) {
       ) return 0;
 
     if (ascii == ' ') { // space turns into nbsp
-#ifdef __APPLE__
+version (__APPLE__) {
       e_text[0] = char(0xCA);
-#else
+} else {
       e_text[0] = char(0xA0);
-#endif
+}
       compose_state = 0;
       return 1;
     } else if (ascii < ' ' || ascii == 127) {
@@ -132,7 +134,7 @@ int Fl::compose(int& del) {
     }
 
     // see if it is either character of any pair:
-    for (const char *p = compose_pairs; *p; p += 2) 
+    for (char *p = compose_pairs; *p; p += 2) 
       if (p[0] == ascii || p[1] == ascii) {
 	if (p[1] == ' ') e_text[0] = (p-compose_pairs)/2+0x80;
 	compose_state = ascii;
@@ -147,7 +149,7 @@ int Fl::compose(int& del) {
   } else if (compose_state) { // second character of compose
 
     char c1 = char(compose_state); // retrieve first character
-#ifdef __APPLE__
+version (__APPLE__) {
     if ( (c1==0x60 && ascii==0xab) || (c1==0x27 && ascii==0x60)) {
       del = 1;
       compose_state = '^';
@@ -159,9 +161,9 @@ int Fl::compose(int& del) {
       compose_state = 0;
       return 0;
     }
-#endif
+}
     // now search for the pair in either order:
-    for (const char *p = compose_pairs; *p; p += 2) {
+    for (char *p = compose_pairs; *p; p += 2) {
       if (p[0] == ascii && p[1] == c1 || p[1] == ascii && p[0] == c1) {
 	e_text[0] = (p-compose_pairs)/2+0x80;
 	del = 1; // delete the old character and insert new one
@@ -180,7 +182,7 @@ int Fl::compose(int& del) {
     return 1;
   }
 
-#ifdef WIN32
+version (WIN32) {
 #elif (defined __APPLE__)
   if (e_state & 0x40000000) {
     if (ascii<0x80)
@@ -189,30 +191,30 @@ int Fl::compose(int& del) {
       compose_state = compose_pairs[(ascii-0x80)*2];
     return 1;
   }
-#else
+} else {
   // See if they typed a dead key.  This gets it into the same state as
   // typing prefix+accent:
   if (i >= 0xfe50 && i <= 0xfe5b) {
-#  ifdef OLD_DEAD_KEY_CODE
+version (OLD_DEAD_KEY_CODE) {
     ascii = dead_keys[i-0xfe50];
-    for (const char *p = compose_pairs; *p; p += 2)
+    for (char *p = compose_pairs; *p; p += 2)
       if (p[0] == ascii) {
 	compose_state = ascii;
 	return 1;
       }
-#  else
+} else {
     ascii = e_text[0];
-    for (const char *p = compose_pairs; *p; p += 2)
+    for (char *p = compose_pairs; *p; p += 2)
       if (p[0] == ascii ||
           (p[1] == ' ' && (p - compose_pairs) / 2 + 0x80 == ascii)) {
         compose_state = p[0];
         return 1;
       }
-#  endif // OLD_DEAD_KEY_CODE
+} // OLD_DEAD_KEY_CODE
     compose_state = 0;
     return 1;
   }
-#endif
+}
 
   // Only insert non-control characters:
   if (e_length && (ascii & ~31 && ascii!=127)) {compose_state = 0; return 1;}

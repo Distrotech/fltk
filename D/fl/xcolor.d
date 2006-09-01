@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_XColor.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: xcolor.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // X-specific color definitions for the Fast Light Tool Kit (FLTK).
 //
@@ -32,17 +32,17 @@
 // one of these for each color in fltk's "colormap":
 // if overlays are enabled, another one for the overlay
 struct Fl_XColor {
-  unsigned char r,g,b;	// actual color used by X
-  unsigned char mapped;	// true when XAllocColor done
-  unsigned long pixel;	// the X pixel to use
+  ubyte r,g,b;	// actual color used by X
+  ubyte mapped;	// true when XAllocColor done
+  uint pixel;	// the X pixel to use
 };
 extern Fl_XColor fl_xmap[/*overlay*/][256];
 
 // mask & shifts to produce xcolor for truecolor visuals:
-extern unsigned char fl_redmask, fl_greenmask, fl_bluemask;
+extern ubyte fl_redmask, fl_greenmask, fl_bluemask;
 extern int fl_redshift, fl_greenshift, fl_blueshift, fl_extrashift;
 
 //
-// End of "$Id: Fl_XColor.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: xcolor.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

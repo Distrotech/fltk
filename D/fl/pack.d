@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Pack.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: pack.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Pack header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,12 +26,12 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Pack_H
-#define Fl_Pack_H
+module fl.pack;
 
-#include <FL/Fl_Group.H>
 
-class FL_EXPORT Fl_Pack : public Fl_Group {
+public import fl.group;
+
+class Fl_Pack : Fl_Group {
   int spacing_;
 public:
   enum { // values for type(int)
@@ -39,21 +39,21 @@ public:
     HORIZONTAL = 1
   };
   void draw();
-  Fl_Pack(int x,int y,int w ,int h,const char *l = 0);
-  int spacing() const {return spacing_;}
+  Fl_Pack(int x,int y,int w ,int h,char *l = 0);
+  int spacing() {return spacing_;}
   void spacing(int i) {spacing_ = i;}
-  uchar horizontal() const {return type();}
+  ubyte horizontal() {return type();}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Pack.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: pack.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Pack.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: pack.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Packing widget for the Fast Light Tool Kit (FLTK).
 //
@@ -85,33 +85,33 @@ public:
 // Bugs: ?
 
 #include <FL/Fl.H>
-#include <FL/Fl_Pack.H>
-#include <FL/fl_draw.H>
+private import fl.pack;
+private import fl.draw;
 
-Fl_Pack::Fl_Pack(int X, int Y, int W, int H,const char *l)
+Fl_Pack.Fl_Pack(int X, int Y, int W, int H,char *l)
 : Fl_Group(X, Y, W, H, l) {
   resizable(0);
   spacing_ = 0;
   // type(VERTICAL); // already set like this
 }
 
-void Fl_Pack::draw() {
-  int tx = x()+Fl::box_dx(box());
-  int ty = y()+Fl::box_dy(box());
-  int tw = w()-Fl::box_dw(box());
-  int th = h()-Fl::box_dh(box());
+void Fl_Pack.draw() {
+  int tx = x()+Fl.box_dx(box());
+  int ty = y()+Fl.box_dy(box());
+  int tw = w()-Fl.box_dw(box());
+  int th = h()-Fl.box_dh(box());
   int rw, rh;
   int current_position = (horizontal() ? tx : ty) + spacing_ / 2;
   int maximum_position = current_position;
-  uchar d = damage();
-  Fl_Widget*const* a = array();
+  ubyte d = damage();
+  Fl_Widget const* a = array();
   if (horizontal()) {
     rw = -spacing_;
     rh = th;
 
     for (int i = children(); i--;)
       if (child(i)->visible()) {
-	if (child(i) != this->resizable()) rw += child(i)->w();
+	if (child(i) != this.resizable()) rw += child(i)->w();
 	rw += spacing_;
       }
   } else {
@@ -120,50 +120,50 @@ void Fl_Pack::draw() {
 
     for (int i = children(); i--;)
       if (child(i)->visible()) {
-	if (child(i) != this->resizable()) rh += child(i)->h();
+	if (child(i) != this.resizable()) rh += child(i)->h();
 	rh += spacing_;
       }
   }
   for (int i = children(); i--;) {
-    Fl_Widget* o = *a++;
-    if (o->visible()) {
+    Fl_Widget  o = *a++;
+    if (o.visible()) {
       int X,Y,W,H;
       if (horizontal()) {
         X = current_position;
-        W = o->w();
+        W = o.w();
         Y = ty;
         H = th;
       } else {
         X = tx;
         W = tw;
         Y = current_position;
-        H = o->h();
+        H = o.h();
       }
       // Last child, if resizable, takes all remaining room
-      if(i == 0 && o == this->resizable()) {
+      if(i == 0 && o == this.resizable()) {
        if(horizontal())
          W = tw - rw;
        else
          H = th - rh;
       }
       if (spacing_ && current_position>maximum_position && box() &&
-  	  (X != o->x() || Y != o->y() || d&FL_DAMAGE_ALL)) {
+  	  (X != o.x() || Y != o.y() || d&FL_DAMAGE_ALL)) {
         fl_color(color());
         if (horizontal())
 	  fl_rectf(maximum_position, ty, spacing_, th);
         else
 	  fl_rectf(tx, maximum_position, tw, spacing_);
       }
-      if (X != o->x() || Y != o->y() || W != o->w() || H != o->h()) {
-        o->resize(X,Y,W,H);
-        o->clear_damage(FL_DAMAGE_ALL);
+      if (X != o.x() || Y != o.y() || W != o.w() || H != o.h()) {
+        o.resize(X,Y,W,H);
+        o.clear_damage(FL_DAMAGE_ALL);
       }
       if (d&FL_DAMAGE_ALL) {
         draw_child(*o);
         draw_outside_label(*o);
       } else update_child(*o);
       // child's draw() can change it's size, so use new size:
-      current_position += (horizontal() ? o->w() : o->h());
+      current_position += (horizontal() ? o.w() : o.h());
       if (current_position > maximum_position)
         maximum_position = current_position;
       current_position += spacing_;
@@ -184,10 +184,10 @@ void Fl_Pack::draw() {
     th = maximum_position-ty;
   }
 
-  tw += Fl::box_dw(box()); if (tw <= 0) tw = 1;
-  th += Fl::box_dh(box()); if (th <= 0) th = 1;
+  tw += Fl.box_dw(box()); if (tw <= 0) tw = 1;
+  th += Fl.box_dh(box()); if (th <= 0) th = 1;
   if (tw != w() || th != h()) {
-    Fl_Widget::resize(x(),y(),tw,th);
+    Fl_Widget.resize(x(),y(),tw,th);
     d = FL_DAMAGE_ALL;
   }
   if (d&FL_DAMAGE_ALL) {
@@ -197,6 +197,6 @@ void Fl_Pack::draw() {
 }
 
 //
-// End of "$Id: Fl_Pack.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: pack.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

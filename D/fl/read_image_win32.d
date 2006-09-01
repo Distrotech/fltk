@@ -30,8 +30,8 @@
 // 'fl_read_image()' - Read an image from the current window.
 //
 
-uchar *				// O - Pixel buffer or NULL if failed
-fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
+ubyte *				// O - Pixel buffer or NULL if failed
+fl_read_image(ubyte *p,		// I - Pixel buffer or NULL to allocate
               int   X,		// I - Left position
 	      int   Y,		// I - Top position
 	      int   w,		// I - Width of area to read
@@ -39,13 +39,13 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
 	      int   alpha) {	// I - Alpha value for image (0 for none)
   int	x, y;			// Looping vars
   int	d;			// Depth of image
-  uchar	*ptr;			// Pointer in image data
+  ubyte	*ptr;			// Pointer in image data
 
 
   // Allocate the image data array as needed...
   d = alpha ? 4 : 3;
 
-  if (!p) p = new uchar[w * h * d];
+  if (!p) p = new ubyte[w * h * d];
 
   // Initialize the default colors/alpha in the whole image...
   memset(p, alpha, w * h * d);
@@ -56,11 +56,11 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
     for (x = 0; x < w; x ++, ptr += d) {
       COLORREF c = GetPixel(fl_gc, X + x, Y + y);
 
-      ptr[0] = (uchar)c;
+      ptr[0] = (ubyte)c;
       c >>= 8;
-      ptr[1] = (uchar)c;
+      ptr[1] = (ubyte)c;
       c >>= 8;
-      ptr[2] = (uchar)c;
+      ptr[2] = (ubyte)c;
     }
   }
 

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Wizard.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: wizard.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Fl_Wizard widget definitions.
 //
@@ -30,41 +30,41 @@
 // Include necessary header files...
 //
 
-#ifndef _Fl_Wizard_H_
+version (!_Fl_Wizard_H_) {
 #  define _Fl_Wizard_H_
 
-#  include <FL/Fl_Group.H>
+public import fl.group;
 
 
 //
 // Fl_Wizard class...
 //
 
-class FL_EXPORT Fl_Wizard : public Fl_Group
+class Fl_Wizard : Fl_Group
 {
-  Fl_Widget *value_;
+  Fl_Widget  value_;
 
   void draw();
 
   public:
 
-  Fl_Wizard(int, int, int, int, const char * = 0);
+  Fl_Wizard(int, int, int, int, char * = 0);
 
   void		next();
   void		prev();
-  Fl_Widget	*value();
-  void		value(Fl_Widget *);
+  Fl_Widget	 value();
+  void		value(Fl_Widget  );
 };
 
-#endif // !_Fl_Wizard_H_
+} // !_Fl_Wizard_H_
 
 //
-// End of "$Id: Fl_Wizard.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: wizard.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Wizard.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: wizard.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_Wizard widget routines.
 //
@@ -91,48 +91,48 @@ class FL_EXPORT Fl_Wizard : public Fl_Group
 //
 // Contents:
 //
-//   Fl_Wizard::Fl_Wizard() - Create an Fl_Wizard widget.
-//   Fl_Wizard::draw()      - Draw the wizard border and visible child.
-//   Fl_Wizard::next()      - Show the next child.
-//   Fl_Wizard::prev()      - Show the previous child.
-//   Fl_Wizard::value()     - Return the current visible child.
-//   Fl_Wizard::value()     - Set the visible child.
+//   Fl_Wizard.Fl_Wizard() - Create an Fl_Wizard widget.
+//   Fl_Wizard.draw()      - Draw the wizard border and visible child.
+//   Fl_Wizard.next()      - Show the next child.
+//   Fl_Wizard.prev()      - Show the previous child.
+//   Fl_Wizard.value()     - Return the current visible child.
+//   Fl_Wizard.value()     - Set the visible child.
 //
 
 //
 // Include necessary header files...
 //
 
-#include <FL/Fl_Wizard.H>
-#include <FL/Fl_Window.H>
-#include <FL/fl_draw.H>
+private import fl.wizard;
+private import fl.window;
+private import fl.draw;
 
 
 //
-// 'Fl_Wizard::Fl_Wizard()' - Create an Fl_Wizard widget.
+// 'Fl_Wizard.Fl_Wizard()' - Create an Fl_Wizard widget.
 //
 
-Fl_Wizard::Fl_Wizard(int        xx,	// I - Lefthand position
+Fl_Wizard.Fl_Wizard(int        xx,	// I - Lefthand position
                      int        yy,	// I - Upper position
 		     int        ww,	// I - Width
 		     int        hh,	// I - Height
-		     const char *l) :	// I - Label
+		     char *l) :	// I - Label
     Fl_Group(xx, yy, ww, hh, l)
 {
   box(FL_THIN_UP_BOX);
 
-  value_ = (Fl_Widget *)0;
+  value_ = (Fl_Widget  )0;
 }
 
 
 //
-// 'Fl_Wizard::draw()' - Draw the wizard border and visible child.
+// 'Fl_Wizard.draw()' - Draw the wizard border and visible child.
 //
 
 void
-Fl_Wizard::draw()
+Fl_Wizard.draw()
 {
-  Fl_Widget	*kid;	// Visible child
+  Fl_Widget	 kid;	// Visible child
 
 
   kid = value();
@@ -142,7 +142,7 @@ Fl_Wizard::draw()
     // Redraw everything...
     if (kid)
     {
-      draw_box(box(), x(), y(), w(), h(), kid->color());
+      draw_box(box(), x(), y(), w(), h(), kid.color());
       draw_child(*kid);
     }
     else
@@ -155,14 +155,14 @@ Fl_Wizard::draw()
 
 
 //
-// 'Fl_Wizard::next()' - Show the next child.
+// 'Fl_Wizard.next()' - Show the next child.
 //
 
 void
-Fl_Wizard::next()
+Fl_Wizard.next()
 {
   int			num_kids;
-  Fl_Widget	* const *kids;
+  Fl_Widget	  *kids;
 
 
   if ((num_kids = children()) == 0)
@@ -178,15 +178,15 @@ Fl_Wizard::next()
 
 
 //
-// 'Fl_Wizard::prev()' - Show the previous child.
+// 'Fl_Wizard.prev()' - Show the previous child.
 //
 
 
 void
-Fl_Wizard::prev()
+Fl_Wizard.prev()
 {
   int			num_kids;
-  Fl_Widget	* const *kids;
+  Fl_Widget	  *kids;
 
 
   if ((num_kids = children()) == 0)
@@ -202,21 +202,21 @@ Fl_Wizard::prev()
 
 
 //
-// 'Fl_Wizard::value()' - Return the current visible child.
+// 'Fl_Wizard.value()' - Return the current visible child.
 //
 
-Fl_Widget *
-Fl_Wizard::value()
+Fl_Widget  
+Fl_Wizard.value()
 {
   int			num_kids;
-  Fl_Widget	* const *kids;
-  Fl_Widget		*kid;
+  Fl_Widget	  *kids;
+  Fl_Widget		 kid;
 
 
   if ((num_kids = children()) == 0)
-    return ((Fl_Widget *)0);
+    return ((Fl_Widget  )0);
 
-  for (kids = array(), kid = (Fl_Widget *)0; num_kids > 0; kids ++, num_kids --)
+  for (kids = array(), kid = (Fl_Widget  )0; num_kids > 0; kids ++, num_kids --)
   {
     if ((*kids)->visible())
     {
@@ -231,7 +231,7 @@ Fl_Wizard::value()
   {
     kids --;
     kid = *kids;
-    kid->show();
+    kid.show();
   }
 
   return (kid);
@@ -239,14 +239,14 @@ Fl_Wizard::value()
 
 
 //
-// 'Fl_Wizard::value()' - Set the visible child.
+// 'Fl_Wizard.value()' - Set the visible child.
 //
 
 void
-Fl_Wizard::value(Fl_Widget *kid)
+Fl_Wizard.value(Fl_Widget  kid)
 {
   int			num_kids;
-  Fl_Widget	* const *kids;
+  Fl_Widget	  *kids;
 
 
   if ((num_kids = children()) == 0)
@@ -256,8 +256,8 @@ Fl_Wizard::value(Fl_Widget *kid)
   {
     if (*kids == kid)
     {
-      if (!kid->visible())
-        kid->show();
+      if (!kid.visible())
+        kid.show();
     }
     else
       (*kids)->hide();
@@ -271,6 +271,6 @@ Fl_Wizard::value(Fl_Widget *kid)
 
 
 //
-// End of "$Id: Fl_Wizard.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: wizard.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

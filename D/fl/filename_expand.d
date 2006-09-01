@@ -33,20 +33,20 @@
 
 #include <FL/filename.H>
 #include <stdlib.h>
-#include "flstring.h"
-#if defined(WIN32) && !defined(__CYGWIN__)
-#else
+private import fl.flstring;
+version (WIN32) && !defined(__CYGWIN__) {
+} else {
 # include <unistd.h>
 # include <pwd.h>
-#endif
+}
 
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
-static inline int isdirsep(char c) {return c=='/' || c=='\\';}
-#else
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
+static int isdirsep(char c) {return c=='/' || c=='\\';}
+} else {
 #define isdirsep(c) ((c)=='/')
-#endif
+}
 
-int fl_filename_expand(char *to,int tolen, const char *from) {
+int fl_filename_expand(char *to,int tolen, char *from) {
 
   char *temp = new char[tolen];
   strlcpy(temp,from, tolen);
@@ -57,19 +57,19 @@ int fl_filename_expand(char *to,int tolen, const char *from) {
 
   for (char *a=temp; a<end; ) {	// for each slash component
     char *e; for (e=a; e<end && !isdirsep(*e); e++); // find next slash
-    const char *value = 0; // this will point at substitute value
+    char *value = 0; // this will point at substitute value
     switch (*a) {
     case '~':	// a home directory name
       if (e <= a+1) {	// current user's directory
 	value = getenv("HOME");
-#ifndef WIN32
+version (!WIN32) {
       } else {	// another user's directory
 	struct passwd *pwd;
 	char t = *e; *(char *)e = 0; 
         pwd = getpwnam(a+1); 
         *(char *)e = t;
-	    if (pwd) value = pwd->pw_dir;
-#endif
+	    if (pwd) value = pwd.pw_dir;
+}
       }
       break;
     case '$':		/* an environment variable */
@@ -79,10 +79,10 @@ int fl_filename_expand(char *to,int tolen, const char *from) {
     if (value) {
       // substitutions that start with slash delete everything before them:
       if (isdirsep(value[0])) start = a;
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
       // also if it starts with "A:"
       if (value[0] && value[1]==':') start = a;
-#endif
+}
       int t = strlen(value); if (isdirsep(value[t-1])) t--;
       if ((end+1-e+t) >= tolen) end += tolen - (end+1-e+t);
       memmove(a+t, e, end+1-e);
@@ -92,9 +92,9 @@ int fl_filename_expand(char *to,int tolen, const char *from) {
       ret++;
     } else {
       a = e+1;
-#if defined(WIN32) || defined(__EMX__) && !defined(__CYGWIN__)
+version (WIN32) || defined(__EMX__) && !defined(__CYGWIN__) {
       if (*e == '\\') {*e = '/'; ret++;} // ha ha!
-#endif
+}
     }
   }
 

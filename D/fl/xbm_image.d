@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_XBM_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: xbm_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // XBM image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,26 +26,26 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_XBM_Image_H
-#define Fl_XBM_Image_H
-#  include "Fl_Bitmap.H"
+module fl.xbm_image;
 
-class FL_EXPORT Fl_XBM_Image : public Fl_Bitmap {
+public import fl.bitmap;
+
+class Fl_XBM_Image : Fl_Bitmap {
 
   public:
 
-  Fl_XBM_Image(const char* filename);
+  Fl_XBM_Image(char* filename);
 };
 
-#endif // !Fl_XBM_Image_H
+} // !Fl_XBM_Image_H
 
 //
-// End of "$Id: Fl_XBM_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: xbm_image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_XBM_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: xbm_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_XBM_Image routines.
 //
@@ -72,7 +72,7 @@ class FL_EXPORT Fl_XBM_Image : public Fl_Bitmap {
 //
 // Contents:
 //
-//   Fl_XBM_Image::Fl_XBM_Image() - Load an XBM file.
+//   Fl_XBM_Image.Fl_XBM_Image() - Load an XBM file.
 //
 
 //
@@ -80,18 +80,18 @@ class FL_EXPORT Fl_XBM_Image : public Fl_Bitmap {
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_XBM_Image.H>
+private import fl.xbm_image;
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
 //
-// 'Fl_XBM_Image::Fl_XBM_Image()' - Load an XBM file.
+// 'Fl_XBM_Image.Fl_XBM_Image()' - Load an XBM file.
 //
 
-Fl_XBM_Image::Fl_XBM_Image(const char *name) : Fl_Bitmap((const char *)0,0,0) {
+Fl_XBM_Image.Fl_XBM_Image(char *name) : Fl_Bitmap((char *)0,0,0) {
   FILE	*f;
-  uchar	*ptr;
+  ubyte	*ptr;
 
   if ((f = fopen(name, "rb")) == NULL) return;
 
@@ -124,19 +124,19 @@ Fl_XBM_Image::Fl_XBM_Image(const char *name) : Fl_Bitmap((const char *)0,0,0) {
   h(wh[1]);
 
   int n = ((wh[0]+7)/8)*wh[1];
-  array = new uchar[n];
+  array = new ubyte[n];
 
   // read the data:
-  for (i = 0, ptr = (uchar *)array; i < n;) {
+  for (i = 0, ptr = (ubyte *)array; i < n;) {
     if (!fgets(buffer,1024,f)) {
       fclose(f);
       return;
     }
-    const char *a = buffer;
+    char *a = buffer;
     while (*a && i<n) {
-      unsigned int t;
+      uint t;
       if (sscanf(a," 0x%x",&t)>0) {
-        *ptr++ = (uchar)t;
+        *ptr++ = (ubyte)t;
 	i ++;
       }
       while (*a && *a++ != ',');
@@ -148,6 +148,6 @@ Fl_XBM_Image::Fl_XBM_Image(const char *name) : Fl_Bitmap((const char *)0,0,0) {
 
 
 //
-// End of "$Id: Fl_XBM_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: xbm_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

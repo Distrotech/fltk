@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Clock.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: clock.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Clock header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,58 +25,58 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Clock_H
-#define Fl_Clock_H
+module fl.clock;
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
+/+=
+module fl.widget;
+public import fl.widget;
+}
 
 // values for type:
-#define FL_SQUARE_CLOCK		0
-#define FL_ROUND_CLOCK		1
-#define FL_ANALOG_CLOCK FL_SQUARE_CLOCK
-#define FL_DIGITAL_CLOCK FL_SQUARE_CLOCK // nyi
+const int FL_SQUARE_CLOCK = 0; 
+const int FL_ROUND_CLOCK = 1; 
+const int FL_ANALOG_CLOCK = FL_SQUARE_CLOCK; 
+const int FL_DIGITAL_CLOCK = FL_SQUARE_CLOCK;  // nyi
 
 // a Fl_Clock_Output can be used to display a program-supplied time:
 
-class FL_EXPORT Fl_Clock_Output : public Fl_Widget {
+class Fl_Clock_Output : Fl_Widget {
   int hour_, minute_, second_;
-  ulong value_;
+  uint value_;
   void drawhands(Fl_Color,Fl_Color); // part of draw
 protected:
   void draw(int, int, int, int);
   void draw();
 public:
-  Fl_Clock_Output(int x,int y,int w,int h, const char *l = 0);
-  void value(ulong v);	// set to this Unix time
+  Fl_Clock_Output(int x,int y,int w,int h, char *l = 0);
+  void value(uint v);	// set to this Unix time
   void value(int,int,int);	// set hour, minute, second
-  ulong value() const {return value_;}
-  int hour() const {return hour_;}
-  int minute() const {return minute_;}
-  int second() const {return second_;}
+  uint value() {return value_;}
+  int hour() {return hour_;}
+  int minute() {return minute_;}
+  int second() {return second_;}
 };
 
 // a Fl_Clock displays the current time always by using a timeout:
 
-class FL_EXPORT Fl_Clock : public Fl_Clock_Output {
+class Fl_Clock : Fl_Clock_Output {
 public:
   int handle(int);
   void update();
-  Fl_Clock(int x,int y,int w,int h, const char *l = 0);
-  Fl_Clock(uchar t,int x,int y,int w,int h, const char *l);
+  Fl_Clock(int x,int y,int w,int h, char *l = 0);
+  Fl_Clock(ubyte t,int x,int y,int w,int h, char *l);
   ~Fl_Clock();
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Clock.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: clock.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Clock.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: clock.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Clock widget for the Fast Light Tool Kit (FLTK).
 //
@@ -104,13 +103,13 @@ public:
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Clock.H>
-#include <FL/fl_draw.H>
+private import fl.clock;
+private import fl.draw;
 #include <math.h>
 #include <time.h>
-#ifndef WIN32
+version (!WIN32) {
 #  include <sys/time.h>
-#endif /* !WIN32 */
+} /* !WIN32 */
 
 // Original clock display written by Paul Haeberli at SGI.
 // Modifications by Mark Overmars for Forms
@@ -120,7 +119,7 @@ const float hourhand[4][2] = {{-0.5f, 0}, {0, 1.5f}, {0.5f, 0}, {0, -7.0f}};
 const float  minhand[4][2] = {{-0.5f, 0}, {0, 1.5f}, {0.5f, 0}, {0, -11.5f}};
 const float  sechand[4][2] = {{-0.1f, 0}, {0, 2.0f}, {0.1f, 0}, {0, -11.5f}};
 
-static void drawhand(double ang,const float v[][2],Fl_Color fill,Fl_Color line)
+static void drawhand(double ang,float v[][2],Fl_Color fill,Fl_Color line)
 {
   fl_push_matrix();
   fl_rotate(ang);
@@ -131,7 +130,7 @@ static void drawhand(double ang,const float v[][2],Fl_Color fill,Fl_Color line)
   fl_pop_matrix();
 }
 
-void Fl_Clock_Output::drawhands(Fl_Color fill, Fl_Color line) {
+void Fl_Clock_Output.drawhands(Fl_Color fill, Fl_Color line) {
   drawhand(-360*(hour()+minute()/60.0)/12, hourhand, fill, line);
   drawhand(-360*(minute()+second()/60.0)/60, minhand, fill, line);
   drawhand(-360*(second()/60.0), sechand, fill, line);
@@ -148,7 +147,7 @@ static void rect(double x, double y, double w, double h) {
   fl_end_polygon();
 }
 
-void Fl_Clock_Output::draw(int X, int Y, int W, int H) {
+void Fl_Clock_Output.draw(int X, int Y, int W, int H) {
   Fl_Color box_color = type()==FL_ROUND_CLOCK ? FL_GRAY : color();
   Fl_Color shadow_color = fl_color_average(box_color, FL_BLACK, 0.5);
   draw_box(box(), X, Y, W, H, box_color);
@@ -181,12 +180,12 @@ void Fl_Clock_Output::draw(int X, int Y, int W, int H) {
   fl_pop_matrix();
 }
 
-void Fl_Clock_Output::draw() {
+void Fl_Clock_Output.draw() {
   draw(x(), y(), w(), h());
   draw_label();
 }
 
-void Fl_Clock_Output::value(int H, int m, int s) {
+void Fl_Clock_Output.value(int H, int m, int s) {
   if (H!=hour_ || m!=minute_ || s!=second_) {
     hour_ = H; minute_ = m; second_ = s;
     value_ = (H * 60 + m) * 60 + s;
@@ -194,20 +193,20 @@ void Fl_Clock_Output::value(int H, int m, int s) {
   }
 }
 
-void Fl_Clock_Output::value(ulong v) {
+void Fl_Clock_Output.value(uint v) {
   value_ = v;
   struct tm *timeofday;
   // Some platforms, notably Windows, now use a 64-bit time_t value...
   time_t vv = (time_t)v;
   timeofday = localtime(&vv);
-  value(timeofday->tm_hour, timeofday->tm_min, timeofday->tm_sec);
+  value(timeofday.tm_hour, timeofday.tm_min, timeofday.tm_sec);
 }
 
-Fl_Clock_Output::Fl_Clock_Output(int X, int Y, int W, int H, const char *l)
+Fl_Clock_Output.Fl_Clock_Output(int X, int Y, int W, int H, char *l)
 : Fl_Widget(X, Y, W, H, l) {
   box(FL_UP_BOX);
   selection_color(fl_gray_ramp(5));
-  align(FL_ALIGN_BOTTOM);
+  alignment(FL_ALIGN_BOTTOM);
   hour_ = 0;
   minute_ = 0;
   second_ = 0;
@@ -216,37 +215,37 @@ Fl_Clock_Output::Fl_Clock_Output(int X, int Y, int W, int H, const char *l)
 
 ////////////////////////////////////////////////////////////////
 
-Fl_Clock::Fl_Clock(int X, int Y, int W, int H, const char *l)
+Fl_Clock.Fl_Clock(int X, int Y, int W, int H, char *l)
   : Fl_Clock_Output(X, Y, W, H, l) {}
 
-Fl_Clock::Fl_Clock(uchar t, int X, int Y, int W, int H, const char *l)
+Fl_Clock.Fl_Clock(ubyte t, int X, int Y, int W, int H, char *l)
   : Fl_Clock_Output(X, Y, W, H, l) {
   type(t);
   box(t==FL_ROUND_CLOCK ? FL_NO_BOX : FL_UP_BOX);
 }
 
 static void tick(void *v) {
-  ((Fl_Clock*)v)->value(time(0));
-  Fl::add_timeout(1.0, tick, v);
+  ((Fl_Clock )v)->value(time(0));
+  Fl.add_timeout(1.0, tick, v);
 }
 
-int Fl_Clock::handle(int event) {
+int Fl_Clock.handle(int event) {
   switch (event) {
   case FL_SHOW:
     tick(this);
     break;
   case FL_HIDE:
-    Fl::remove_timeout(tick, this);
+    Fl.remove_timeout(tick, this);
     break;
   }
-  return Fl_Clock_Output::handle(event);
+  return Fl_Clock_Output.handle(event);
 }
   
 Fl_Clock::~Fl_Clock() {
-  Fl::remove_timeout(tick, this);
+  Fl.remove_timeout(tick, this);
 }
 
 //
-// End of "$Id: Fl_Clock.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: clock.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

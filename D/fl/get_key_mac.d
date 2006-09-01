@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_get_key_mac.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: get_key_mac.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // MacOS keyboard state routines for the Fast Light Tool Kit (FLTK).
 //
@@ -38,7 +38,7 @@
 // See also the inverse converter in Fl_mac.cxx
 // This table is in numeric order by FLTK symbol order for binary search:
 
-static const struct {unsigned short vk, fltk;} vktab[] = {
+static struct {ushort vk, fltk;} vktab[] = {
   { 49, ' ' }, { 39, '\'' }, { 43, ',' }, { 27, '-' }, { 47, '.' }, { 44, '/' }, 
   { 29, '0' }, { 18, '1'  }, { 19, '2'  }, { 20, '3'  }, 
   { 21, '4' }, { 23, '5'  }, { 22, '6'  }, { 26, '7'  }, 
@@ -80,24 +80,24 @@ static int fltk2mac(int fltk) {
 }
 
 //: returns true, if that key was pressed during the last event
-int Fl::event_key(int k) {
+int Fl.event_key(int k) {
   return get_key(k);
 }
 
 #include <stdio.h>
 
 //: returns true, if that key is pressed right now
-int Fl::get_key(int k) {
+int Fl.get_key(int k) {
   KeyMap foo;
   GetKeys(foo);
-#ifdef MAC_TEST_FOR_KEYCODES
+version (MAC_TEST_FOR_KEYCODES) {
  static int cnt = 0;
  if (cnt++>1024) {
   cnt = 0;
-  printf("%08x %08x %08x %08x\n", (ulong*)(foo)[3], (ulong*)(foo)[2], (ulong*)(foo)[1], (ulong*)(foo)[0]);
+  printf("%08x %08x %08x %08x\n", (uint*)(foo)[3], (uint*)(foo)[2], (uint*)(foo)[1], (uint*)(foo)[0]);
  }
-#endif
-  unsigned char *b = (unsigned char*)foo;
+}
+  ubyte *b = (ubyte*)foo;
   // KP_Enter can be at different locations for Powerbooks vs. desktop Macs
   if (k==FL_KP_Enter) {
     return (((b[0x34>>3]>>(0x34&7))&1)||((b[0x4c>>3]>>(0x4c&7))&1));
@@ -107,6 +107,6 @@ int Fl::get_key(int k) {
 }
 
 //
-// End of "$Id: Fl_get_key_mac.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: get_key_mac.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

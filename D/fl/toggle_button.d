@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Toggle_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: toggle_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Toggle button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Toggle_Button_H
-#define Fl_Toggle_Button_H
+module fl.toggle_button;
 
-#include "Fl_Button.H"
 
-class Fl_Toggle_Button : public Fl_Button {
+public import fl.button;
+
+class Fl_Toggle_Button : Fl_Button {
 public:
-    Fl_Toggle_Button(int X,int Y,int W,int H,const char *l=0)
+    Fl_Toggle_Button(int X,int Y,int W,int H,char *l=0)
 	: Fl_Button(X,Y,W,H,l) {type(FL_TOGGLE_BUTTON);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Toggle_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: toggle_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

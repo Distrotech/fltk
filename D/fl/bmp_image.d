@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_BMP_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: bmp_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // BMP image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,26 +25,27 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_BMP_Image_H
-#define Fl_BMP_Image_H
-#  include "Fl_Image.H"
+module fl.bmp_image;
 
-class FL_EXPORT Fl_BMP_Image : public Fl_RGB_Image {
+/+=
+public import fl.image;
+
+class Fl_BMP_Image : Fl_RGB_Image {
 
   public:
 
-  Fl_BMP_Image(const char* filename);
+  Fl_BMP_Image(char* filename);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_BMP_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: bmp_image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_BMP_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: bmp_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_BMP_Image routines.
 //
@@ -73,14 +73,14 @@ class FL_EXPORT Fl_BMP_Image : public Fl_RGB_Image {
 //
 // Contents:
 //
-//   Fl_BMP_Image::Fl_BMP_Image() - Load a BMP image file.
+//   Fl_BMP_Image.Fl_BMP_Image() - Load a BMP image file.
 //
 
 //
 // Include necessary header files...
 //
 
-#include <FL/Fl_BMP_Image.H>
+private import fl.bmp_image;
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -90,12 +90,12 @@ class FL_EXPORT Fl_BMP_Image : public Fl_RGB_Image {
 // BMP definitions...
 //
 
-#ifndef BI_RGB
-#  define BI_RGB       0             // No compression - straight BGR data
-#  define BI_RLE8      1             // 8-bit run-length compression
-#  define BI_RLE4      2             // 4-bit run-length compression
-#  define BI_BITFIELDS 3             // RGB bitmap with RGB masks
-#endif // !BI_RGB
+version (!BI_RGB) {
+const int BI_RGB = 0;              // No compression - straight BGR data
+const int BI_RLE8 = 1;              // 8-bit run-length compression
+const int BI_RLE4 = 2;              // 4-bit run-length compression
+const int BI_BITFIELDS = 3;              // RGB bitmap with RGB masks
+} // !BI_RGB
 
 
 //
@@ -103,15 +103,15 @@ class FL_EXPORT Fl_BMP_Image : public Fl_RGB_Image {
 //
 
 static int		read_long(FILE *fp);
-static unsigned short	read_word(FILE *fp);
-static unsigned int	read_dword(FILE *fp);
+static ushort	read_word(FILE *fp);
+static uint	read_dword(FILE *fp);
 
 
 //
-// 'Fl_BMP_Image::Fl_BMP_Image()' - Load a BMP image file.
+// 'Fl_BMP_Image.Fl_BMP_Image()' - Load a BMP image file.
 //
 
-Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
+Fl_BMP_Image.Fl_BMP_Image(char *bmp) // I - File to read
   : Fl_RGB_Image(0,0,0) {
   FILE		*fp;		// File pointer
   int		info_size,	// Size of info header
@@ -123,17 +123,17 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 		color,		// Color of RLE pixel
 		repcount,	// Number of times to repeat
 		temp,		// Temporary color
-		align,		// Alignment bytes
+		alignment,		// Alignment bytes
 		dataSize,	// number of bytes in image data set
 		row_order,	// 1 = normal;  -1 = flipped row order
 		start_y,	// Beginning Y
 		end_y;		// Ending Y
-  long		offbits;	// Offset to image data
-  uchar		bit,		// Bit in image
+  int		offbits;	// Offset to image data
+  ubyte		bit,		// Bit in image
 		byte;		// Byte in image
-  uchar		*ptr;		// Pointer into pixels
-  uchar		colormap[256][3];// Colormap
-  uchar		havemask;	// Single bit mask follows image data
+  ubyte		*ptr;		// Pointer into pixels
+  ubyte		colormap[256][3];// Colormap
+  ubyte		havemask;	// Single bit mask follows image data
   int		use_5_6_5;	// Use 5:6:5 for R:G:B channels in 16 bit images
 
 
@@ -141,8 +141,8 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
   if ((fp = fopen(bmp, "rb")) == NULL) return;
 
   // Get the header...
-  byte = (uchar)getc(fp);	// Check "BM" sync chars
-  bit  = (uchar)getc(fp);
+  byte = (ubyte)getc(fp);	// Check "BM" sync chars
+  bit  = (ubyte)getc(fp);
   if (byte != 'B' || bit != 'M') {
     fclose(fp);
     return;
@@ -151,7 +151,7 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
   read_dword(fp);		// Skip size
   read_word(fp);		// Skip reserved stuff
   read_word(fp);
-  offbits = (long)read_dword(fp);// Read offset to image data
+  offbits = (int)read_dword(fp);// Read offset to image data
 
   // Then the bitmap information...
   info_size = read_dword(fp);
@@ -240,13 +240,13 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
   d(bDepth);
   if (offbits) fseek(fp, offbits, SEEK_SET);
 
-  array = new uchar[w() * h() * d()];
+  array = new ubyte[w() * h() * d()];
   alloc_array = 1;
 
   // Read the image data...
   color = 0;
   repcount = 0;
-  align = 0;
+  alignment = 0;
   byte  = 0;
   temp  = 0;
 
@@ -259,13 +259,13 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
   }
 
   for (y = start_y; y != end_y; y += row_order) {
-    ptr = (uchar *)array + y * w() * d();
+    ptr = (ubyte *)array + y * w() * d();
 
     switch (depth)
     {
       case 1 : // Bitmap
           for (x = w(), bit = 128; x > 0; x --) {
-	    if (bit == 128) byte = (uchar)getc(fp);
+	    if (bit == 128) byte = (ubyte)getc(fp);
 
 	    if (byte & bit) {
 	      *ptr++ = colormap[1][2];
@@ -283,7 +283,7 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 	      bit = 128;
 	  }
 
-          // Read remaining bytes to align to 32 bits...
+          // Read remaining bytes to alignment to 32 bits...
 	  for (temp = (w() + 7) / 8; temp & 3; temp ++) {
 	    getc(fp);
 	  }
@@ -297,8 +297,8 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 		repcount = 2;
 		color = -1;
               } else {
-		while (align > 0) {
-	          align --;
+		while (alignment > 0) {
+	          alignment --;
 		  getc(fp);
         	}
 
@@ -317,7 +317,7 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 		  } else {
 		    // Absolute...
 		    color = -1;
-		    align = ((4 - (repcount & 3)) / 2) & 1;
+		    alignment = ((4 - (repcount & 3)) / 2) & 1;
 		  }
 		} else {
 	          color = getc(fp);
@@ -352,7 +352,7 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 	  }
 
 	  if (!compression) {
-            // Read remaining bytes to align to 32 bits...
+            // Read remaining bytes to alignment to 32 bits...
 	    for (temp = (w() + 1) / 2; temp & 3; temp ++) {
 	      getc(fp);
 	    }
@@ -368,8 +368,8 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
             }
 
 	    if (repcount == 0) {
-	      while (align > 0) {
-	        align --;
+	      while (alignment > 0) {
+	        alignment --;
 		getc(fp);
               }
 
@@ -388,7 +388,7 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 		} else {
 		  // Absolute...
 		  color = -1;
-		  align = (2 - (repcount & 1)) & 1;
+		  alignment = (2 - (repcount & 1)) & 1;
 		}
 	      } else {
 	        color = getc(fp);
@@ -409,7 +409,7 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 	  }
 
 	  if (!compression) {
-            // Read remaining bytes to align to 32 bits...
+            // Read remaining bytes to alignment to 32 bits...
 	    for (temp = w(); temp & 3; temp ++) {
 	      getc(fp);
 	    }
@@ -418,19 +418,19 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 
       case 16 : // 16-bit 5:5:5 or 5:6:5 RGB
           for (x = w(); x > 0; x --, ptr += bDepth) {
-	    uchar b = getc(fp), a = getc(fp) ;
+	    ubyte b = getc(fp), a = getc(fp) ;
 	    if (use_5_6_5) {
-		ptr[2] = (uchar)(( b << 3 ) & 0xf8);
-		ptr[1] = (uchar)(((a << 5) & 0xe0) | ((b >> 3) & 0x1c));
-		ptr[0] = (uchar)(a & 0xf8);
+		ptr[2] = (ubyte)(( b << 3 ) & 0xf8);
+		ptr[1] = (ubyte)(((a << 5) & 0xe0) | ((b >> 3) & 0x1c));
+		ptr[0] = (ubyte)(a & 0xf8);
 	    } else {
-		ptr[2] = (uchar)((b << 3) & 0xf8);
-		ptr[1] = (uchar)(((a << 6) & 0xc0) | ((b >> 2) & 0x38));
-		ptr[0] = (uchar)((a<<1) & 0xf8);
+		ptr[2] = (ubyte)((b << 3) & 0xf8);
+		ptr[1] = (ubyte)(((a << 6) & 0xc0) | ((b >> 2) & 0x38));
+		ptr[0] = (ubyte)((a<<1) & 0xf8);
 	    }
 	  }
 
-          // Read remaining bytes to align to 32 bits...
+          // Read remaining bytes to alignment to 32 bits...
 	  for (temp = w() * 2; temp & 3; temp ++) {
 	    getc(fp);
 	  }
@@ -438,12 +438,12 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 
       case 24 : // 24-bit RGB
           for (x = w(); x > 0; x --, ptr += bDepth) {
-	    ptr[2] = (uchar)getc(fp);
-	    ptr[1] = (uchar)getc(fp);
-	    ptr[0] = (uchar)getc(fp);
+	    ptr[2] = (ubyte)getc(fp);
+	    ptr[1] = (ubyte)getc(fp);
+	    ptr[0] = (ubyte)getc(fp);
 	  }
 
-          // Read remaining bytes to align to 32 bits...
+          // Read remaining bytes to alignment to 32 bits...
 	  for (temp = w() * 3; temp & 3; temp ++) {
 	    getc(fp);
 	  }
@@ -451,10 +451,10 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 		  
       case 32 : // 32-bit RGBA
          for (x = w(); x > 0; x --, ptr += bDepth) {
-            ptr[2] = (uchar)getc(fp);
-            ptr[1] = (uchar)getc(fp);
-            ptr[0] = (uchar)getc(fp);
-            ptr[3] = (uchar)getc(fp);
+            ptr[2] = (ubyte)getc(fp);
+            ptr[1] = (ubyte)getc(fp);
+            ptr[0] = (ubyte)getc(fp);
+            ptr[3] = (ubyte)getc(fp);
           }
           break;
     }
@@ -462,9 +462,9 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
   
   if (havemask) {
     for (y = h() - 1; y >= 0; y --) {
-      ptr = (uchar *)array + y * w() * d() + 3;
+      ptr = (ubyte *)array + y * w() * d() + 3;
       for (x = w(), bit = 128; x > 0; x --, ptr+=bDepth) {
-	if (bit == 128) byte = (uchar)getc(fp);
+	if (bit == 128) byte = (ubyte)getc(fp);
 	if (byte & bit)
 	  *ptr = 0;
 	else
@@ -474,7 +474,7 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 	else
 	  bit = 128;
       }
-      // Read remaining bytes to align to 32 bits...
+      // Read remaining bytes to alignment to 32 bits...
       for (temp = (w() + 7) / 8; temp & 3; temp ++)
 	getc(fp);
     }
@@ -486,32 +486,32 @@ Fl_BMP_Image::Fl_BMP_Image(const char *bmp) // I - File to read
 
 
 //
-// 'read_word()' - Read a 16-bit unsigned integer.
+// 'read_word()' - Read a 16-bit uint integer.
 //
 
-static unsigned short	// O - 16-bit unsigned integer
+static ushort	// O - 16-bit uint integer
 read_word(FILE *fp) {	// I - File to read from
-  unsigned char b0, b1;	// Bytes from file
+  ubyte b0, b1;	// Bytes from file
 
-  b0 = (uchar)getc(fp);
-  b1 = (uchar)getc(fp);
+  b0 = (ubyte)getc(fp);
+  b1 = (ubyte)getc(fp);
 
   return ((b1 << 8) | b0);
 }
 
 
 //
-// 'read_dword()' - Read a 32-bit unsigned integer.
+// 'read_dword()' - Read a 32-bit uint integer.
 //
 
-static unsigned int		// O - 32-bit unsigned integer
+static uint		// O - 32-bit uint integer
 read_dword(FILE *fp) {		// I - File to read from
-  unsigned char b0, b1, b2, b3;	// Bytes from file
+  ubyte b0, b1, b2, b3;	// Bytes from file
 
-  b0 = (uchar)getc(fp);
-  b1 = (uchar)getc(fp);
-  b2 = (uchar)getc(fp);
-  b3 = (uchar)getc(fp);
+  b0 = (ubyte)getc(fp);
+  b1 = (ubyte)getc(fp);
+  b2 = (ubyte)getc(fp);
+  b3 = (ubyte)getc(fp);
 
   return ((((((b3 << 8) | b2) << 8) | b1) << 8) | b0);
 }
@@ -523,18 +523,18 @@ read_dword(FILE *fp) {		// I - File to read from
 
 static int			// O - 32-bit signed integer
 read_long(FILE *fp) {		// I - File to read from
-  unsigned char b0, b1, b2, b3;	// Bytes from file
+  ubyte b0, b1, b2, b3;	// Bytes from file
 
-  b0 = (uchar)getc(fp);
-  b1 = (uchar)getc(fp);
-  b2 = (uchar)getc(fp);
-  b3 = (uchar)getc(fp);
+  b0 = (ubyte)getc(fp);
+  b1 = (ubyte)getc(fp);
+  b2 = (ubyte)getc(fp);
+  b3 = (ubyte)getc(fp);
 
   return ((int)(((((b3 << 8) | b2) << 8) | b1) << 8) | b0);
 }
 
 
 //
-// End of "$Id: Fl_BMP_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: bmp_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

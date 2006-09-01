@@ -1,6 +1,5 @@
-/+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Browser_load.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: browser_load.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // File loading routines for the Fast Light Tool Kit (FLTK).
 //
@@ -26,12 +25,15 @@
 //     http://www.fltk.org/str.php
 //
 
+module fl.browser_load;
+
+/+=
 #include <FL/Fl.H>
-#include <FL/Fl_Browser.H>
+private import fl.browser;
 #include <stdio.h>
 
-int Fl_Browser::load(const char *filename) {
-#define MAXFL_BLINE 1024
+int Fl_Browser.load(char *filename) {
+const int MAXFL_BLINE = 1024; 
     char newtext[MAXFL_BLINE];
     int c;
     int i;
@@ -54,6 +56,6 @@ int Fl_Browser::load(const char *filename) {
 }
 
 //
-// End of "$Id: Fl_Browser_load.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: browser_load.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

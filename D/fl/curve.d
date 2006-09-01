@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_curve.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -32,7 +31,10 @@
 // I very much doubt this is optimal!  From Foley/vanDam page 511.
 // If anybody has a better algorithim, please send it!
 
-#include <FL/fl_draw.H>
+module fl.curve;
+
+/+=
+private import fl.draw;
 #include <math.h>
 
 void fl_curve(double X0, double Y0,

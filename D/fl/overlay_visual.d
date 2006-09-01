@@ -38,15 +38,15 @@
 
 // SERVER_OVERLAY_VISUALS property element:
 struct OverlayInfo {
-  long overlay_visual;
-  long transparent_type;
-  long value;
-  long layer;
+  int overlay_visual;
+  int transparent_type;
+  int value;
+  int layer;
 };
 
 extern Colormap fl_overlay_colormap;
 extern XVisualInfo* fl_overlay_visual;
-extern ulong fl_transparent_pixel;
+extern uint fl_transparent_pixel;
 
 XVisualInfo *fl_find_overlay_visual() {
   static char beenhere;
@@ -58,14 +58,14 @@ XVisualInfo *fl_find_overlay_visual() {
     XInternAtom(fl_display,"SERVER_OVERLAY_VISUALS",1);
   if (!overlayVisualsAtom) return 0;
   OverlayInfo *overlayInfo;
-  ulong sizeData, bytesLeft;
+  uint sizeData, bytesLeft;
   Atom actualType;
   int actualFormat;
   if (XGetWindowProperty(fl_display, RootWindow(fl_display, fl_screen),
 			 overlayVisualsAtom, 0L, 10000L, False,
 			 overlayVisualsAtom, &actualType, &actualFormat,
 			 &sizeData, &bytesLeft,
-			 (unsigned char **) &overlayInfo)) return 0;
+			 (ubyte **) &overlayInfo)) return 0;
 
   if (actualType == overlayVisualsAtom && actualFormat == 32) {
     int n = int(sizeData/4);
@@ -78,8 +78,8 @@ XVisualInfo *fl_find_overlay_visual() {
       templt.visualid = overlayInfo[i].overlay_visual;
       int num;
       XVisualInfo *v1=XGetVisualInfo(fl_display, VisualIDMask, &templt, &num);
-      if (v1->screen == fl_screen && v1->c_class == PseudoColor
-	  && (!v || v1->depth > v->depth && v1->depth <= 8)) {
+      if (v1.screen == fl_screen && v1.c_class == PseudoColor
+	  && (!v || v1.depth > v.depth && v1.depth <= 8)) {
 	if (v) XFree((char*)v);
 	v = v1;
 	fl_transparent_pixel = overlayInfo[i].value;
@@ -91,15 +91,15 @@ XVisualInfo *fl_find_overlay_visual() {
       fl_overlay_visual = v;
       fl_overlay_colormap = 
 	XCreateColormap(fl_display, RootWindow(fl_display, fl_screen),
-			v->visual, AllocNone);
+			v.visual, AllocNone);
     }
   }
   XFree((char*)overlayInfo);
-  //printf("overlay visual %ld selected\n", fl_overlay_visual->visualid);
+  //printf("overlay visual %ld selected\n", fl_overlay_visual.visualid);
   return fl_overlay_visual;
 }
 
-#endif
+}
 
 //
 // End of "$Id: fl_overlay_visual.cxx 5190 2006-06-09 16:16:34Z mike $".

@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_draw_image.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -28,7 +27,7 @@
 
 // I hope a simple and portable method of drawing color and monochrome
 // images.  To keep this simple, only a single storage type is
-// supported: 8 bit unsigned data, byte order RGB, and pixels are
+// supported: 8 bit uint data, byte order RGB, and pixels are
 // stored packed into rows with the origin at the top-left.  It is
 // possible to alter the size of pixels with the "delta" argument, to
 // add alpha or other information per pixel.  It is also possible to
@@ -36,11 +35,14 @@
 // the "delta" and "linedelta", making them negative, though this may
 // defeat some of the shortcuts in translating the image for X.
 
-#ifdef WIN32
+module fl.draw_image;
+
+/+=
+version (WIN32) {
 #  include "fl_draw_image_win32.cxx"
-#elif defined(__APPLE__)
+} else version (__APPLE__) {
 #  include "fl_draw_image_mac.cxx"
-#else
+} else {
 
 // A list of assumptions made about the X display:
 
@@ -61,18 +63,18 @@
 ////////////////////////////////////////////////////////////////
 
 #  include <FL/Fl.H>
-#  include <FL/fl_draw.H>
+private import fl.draw;
 #  include <FL/x.H>
-#  include "Fl_XColor.H"
-#  include "flstring.h"
+private import fl.xcolor;
+private import fl.flstring;
 
 static XImage xi;	// template used to pass info to X
 static int bytes_per_pixel;
 static int scanline_add;
 static int scanline_mask;
 
-static void (*converter)(const uchar *from, uchar *to, int w, int delta);
-static void (*mono_converter)(const uchar *from, uchar *to, int w, int delta);
+static void (*converter)(ubyte *from, ubyte *to, int w, int delta);
+static void (*mono_converter)(ubyte *from, ubyte *to, int w, int delta);
 
 static int dir;		// direction-alternator
 static int ri,gi,bi;	// saved error-diffusion value
@@ -81,7 +83,7 @@ static int ri,gi,bi;	// saved error-diffusion value
 ////////////////////////////////////////////////////////////////
 // 8-bit converter with error diffusion
 
-static void color8_converter(const uchar *from, uchar *to, int w, int delta) {
+static void color8_converter(ubyte *from, ubyte *to, int w, int delta) {
   int r=ri, g=gi, b=bi;
   int d, td;
   if (dir) {
@@ -100,17 +102,17 @@ static void color8_converter(const uchar *from, uchar *to, int w, int delta) {
     g += from[1]; if (g < 0) g = 0; else if (g>255) g = 255;
     b += from[2]; if (b < 0) b = 0; else if (b>255) b = 255;
     Fl_Color i = fl_color_cube(r*FL_NUM_RED/256,g*FL_NUM_GREEN/256,b*FL_NUM_BLUE/256);
-    Fl_XColor& xmap = fl_xmap[0][i];
+    Fl_XColor  xmap = fl_xmap[0][i];
     if (!xmap.mapped) {if (!fl_redmask) fl_xpixel(r,g,b); else fl_xpixel(i);}
     r -= xmap.r;
     g -= xmap.g;
     b -= xmap.b;
-    *to = uchar(xmap.pixel);
+    *to = ubyte(xmap.pixel);
   }
   ri = r; gi = g; bi = b;
 }
 
-static void mono8_converter(const uchar *from, uchar *to, int w, int delta) {
+static void mono8_converter(ubyte *from, ubyte *to, int w, int delta) {
   int r=ri, g=gi, b=bi;
   int d, td;
   if (dir) {
@@ -129,34 +131,34 @@ static void mono8_converter(const uchar *from, uchar *to, int w, int delta) {
     g += from[0]; if (g < 0) g = 0; else if (g>255) g = 255;
     b += from[0]; if (b < 0) b = 0; else if (b>255) b = 255;
     Fl_Color i = fl_color_cube(r*FL_NUM_RED/256,g*FL_NUM_GREEN/256,b*FL_NUM_BLUE/256);
-    Fl_XColor& xmap = fl_xmap[0][i];
+    Fl_XColor  xmap = fl_xmap[0][i];
     if (!xmap.mapped) {if (!fl_redmask) fl_xpixel(r,g,b); else fl_xpixel(i);}
     r -= xmap.r;
     g -= xmap.g;
     b -= xmap.b;
-    *to = uchar(xmap.pixel);
+    *to = ubyte(xmap.pixel);
   }
   ri = r; gi = g; bi = b;
 }
 
-#  endif
+}
 
 ////////////////////////////////////////////////////////////////
 // 16 bit TrueColor converters with error diffusion
 // Cray computers have no 16-bit type, so we use character pointers
 // (which may be slow)
 
-#  ifdef U16
-#    define OUTTYPE U16
-#    define OUTSIZE 1
+version (U16) {
+const int OUTTYPE = U16; 
+const int OUTSIZE = 1; 
 #    define OUTASSIGN(v) *t = v
-#  else
-#    define OUTTYPE uchar
-#    define OUTSIZE 2
-#    define OUTASSIGN(v) int tt=v; t[0] = uchar(tt>>8); t[1] = uchar(tt)
-#  endif
+} else {
+const int OUTTYPE = ubyte; 
+const int OUTSIZE = 2; 
+#    define OUTASSIGN(v) int tt=v; t[0] = ubyte(tt>>8); t[1] = ubyte(tt)
+}
 
-static void color16_converter(const uchar *from, uchar *to, int w, int delta) {
+static void color16_converter(ubyte *from, ubyte *to, int w, int delta) {
   OUTTYPE *t = (OUTTYPE *)to;
   int d, td;
   if (dir) {
@@ -184,7 +186,7 @@ static void color16_converter(const uchar *from, uchar *to, int w, int delta) {
   ri = r; gi = g; bi = b;
 }
 
-static void mono16_converter(const uchar *from,uchar *to,int w, int delta) {
+static void mono16_converter(ubyte *from,ubyte *to,int w, int delta) {
   OUTTYPE *t = (OUTTYPE *)to;
   int d, td;
   if (dir) {
@@ -198,11 +200,11 @@ static void mono16_converter(const uchar *from,uchar *to,int w, int delta) {
     d = delta;
     td = OUTSIZE;
   }
-  uchar mask = fl_redmask & fl_greenmask & fl_bluemask;
+  ubyte mask = fl_redmask & fl_greenmask & fl_bluemask;
   int r=ri;
   for (; w--; from += d, t += td) {
     r = (r&~mask) + *from; if (r > 255) r = 255;
-    uchar m = r&mask;
+    ubyte m = r&mask;
     OUTASSIGN((
       (m<<fl_redshift)+
       (m<<fl_greenshift)+
@@ -214,7 +216,7 @@ static void mono16_converter(const uchar *from,uchar *to,int w, int delta) {
 
 // special-case the 5r6g5b layout used by XFree86:
 
-static void c565_converter(const uchar *from, uchar *to, int w, int delta) {
+static void c565_converter(ubyte *from, ubyte *to, int w, int delta) {
   OUTTYPE *t = (OUTTYPE *)to;
   int d, td;
   if (dir) {
@@ -238,7 +240,7 @@ static void c565_converter(const uchar *from, uchar *to, int w, int delta) {
   ri = r; gi = g; bi = b;
 }
 
-static void m565_converter(const uchar *from,uchar *to,int w, int delta) {
+static void m565_converter(ubyte *from,ubyte *to,int w, int delta) {
   OUTTYPE *t = (OUTTYPE *)to;
   int d, td;
   if (dir) {
@@ -263,7 +265,7 @@ static void m565_converter(const uchar *from,uchar *to,int w, int delta) {
 ////////////////////////////////////////////////////////////////
 // 24bit TrueColor converters:
 
-static void rgb_converter(const uchar *from, uchar *to, int w, int delta) {
+static void rgb_converter(ubyte *from, ubyte *to, int w, int delta) {
   int d = delta-3;
   for (; w--; from += d) {
     *to++ = *from++;
@@ -272,17 +274,17 @@ static void rgb_converter(const uchar *from, uchar *to, int w, int delta) {
   }
 }
 
-static void bgr_converter(const uchar *from, uchar *to, int w, int delta) {
+static void bgr_converter(ubyte *from, ubyte *to, int w, int delta) {
   for (; w--; from += delta) {
-    uchar r = from[0];
-    uchar g = from[1];
+    ubyte r = from[0];
+    ubyte g = from[1];
     *to++ = from[2];
     *to++ = g;
     *to++ = r;
   }
 }
 
-static void rrr_converter(const uchar *from, uchar *to, int w, int delta) {
+static void rrr_converter(ubyte *from, ubyte *to, int w, int delta) {
   for (; w--; from += delta) {
     *to++ = *from;
     *to++ = *from;
@@ -293,57 +295,57 @@ static void rrr_converter(const uchar *from, uchar *to, int w, int delta) {
 ////////////////////////////////////////////////////////////////
 // 32bit TrueColor converters on a 32 or 64-bit machine:
 
-#  ifdef U64
-#    define STORETYPE U64
+version (U64) {
+const int STORETYPE = U64; 
 #    if WORDS_BIGENDIAN
 #      define INNARDS32(f) \
   U64 *t = (U64*)to; \
   int w1 = (w+1)/2; \
   for (; w1--; from += delta) {U64 i = f; from += delta; *t++ = (i<<32)|(f);}
-#    else
+} else {
 #      define INNARDS32(f) \
   U64 *t = (U64*)to; \
   int w1 = (w+1)/2; \
   for (; w1--; from += delta) {U64 i=f; from+= delta; *t++ = ((U64)(f)<<32)|i;}
-#    endif
-#  else
-#    define STORETYPE U32
+}
+} else {
+const int STORETYPE = U32; 
 #    define INNARDS32(f) \
   U32 *t = (U32*)to; for (; w--; from += delta) *t++ = f
-#  endif
-
-static void rgbx_converter(const uchar *from, uchar *to, int w, int delta) {
-  INNARDS32((unsigned(from[0])<<24)+(from[1]<<16)+(from[2]<<8));
 }
 
-static void xbgr_converter(const uchar *from, uchar *to, int w, int delta) {
+static void rgbx_converter(ubyte *from, ubyte *to, int w, int delta) {
+  INNARDS32((uint(from[0])<<24)+(from[1]<<16)+(from[2]<<8));
+}
+
+static void xbgr_converter(ubyte *from, ubyte *to, int w, int delta) {
   INNARDS32((from[0])+(from[1]<<8)+(from[2]<<16));
 }
 
-static void xrgb_converter(const uchar *from, uchar *to, int w, int delta) {
+static void xrgb_converter(ubyte *from, ubyte *to, int w, int delta) {
   INNARDS32((from[0]<<16)+(from[1]<<8)+(from[2]));
 }
 
-static void bgrx_converter(const uchar *from, uchar *to, int w, int delta) {
-  INNARDS32((from[0]<<8)+(from[1]<<16)+(unsigned(from[2])<<24));
+static void bgrx_converter(ubyte *from, ubyte *to, int w, int delta) {
+  INNARDS32((from[0]<<8)+(from[1]<<16)+(uint(from[2])<<24));
 }
 
-static void rrrx_converter(const uchar *from, uchar *to, int w, int delta) {
-  INNARDS32(unsigned(*from) * 0x1010100U);
+static void rrrx_converter(ubyte *from, ubyte *to, int w, int delta) {
+  INNARDS32(uint(*from) * 0x1010100U);
 }
 
-static void xrrr_converter(const uchar *from, uchar *to, int w, int delta) {
+static void xrrr_converter(ubyte *from, ubyte *to, int w, int delta) {
   INNARDS32(*from * 0x10101U);
 }
 
 static void
-color32_converter(const uchar *from, uchar *to, int w, int delta) {
+color32_converter(ubyte *from, ubyte *to, int w, int delta) {
   INNARDS32(
     (from[0]<<fl_redshift)+(from[1]<<fl_greenshift)+(from[2]<<fl_blueshift));
 }
 
 static void
-mono32_converter(const uchar *from,uchar *to,int w, int delta) {
+mono32_converter(ubyte *from,ubyte *to,int w, int delta) {
   INNARDS32(
     (*from << fl_redshift)+(*from << fl_greenshift)+(*from << fl_blueshift));
 }
@@ -360,21 +362,21 @@ static void figure_out_visual() {
   if (!pfvlist) pfvlist = XListPixmapFormats(fl_display,&FL_NUM_pfv);
   XPixmapFormatValues *pfv;
   for (pfv = pfvlist; pfv < pfvlist+FL_NUM_pfv; pfv++)
-    if (pfv->depth == fl_visual->depth) break;
+    if (pfv.depth == fl_visual.depth) break;
   xi.format = ZPixmap;
   xi.byte_order = ImageByteOrder(fl_display);
 //i.bitmap_unit = 8;
 //i.bitmap_bit_order = MSBFirst;
 //i.bitmap_pad = 8;
-  xi.depth = fl_visual->depth;
-  xi.bits_per_pixel = pfv->bits_per_pixel;
+  xi.depth = fl_visual.depth;
+  xi.bits_per_pixel = pfv.bits_per_pixel;
 
   if (xi.bits_per_pixel & 7) bytes_per_pixel = 0; // produce fatal error
   else bytes_per_pixel = xi.bits_per_pixel/8;
 
-  unsigned int n = pfv->scanline_pad/8;
-  if (pfv->scanline_pad & 7 || (n&(n-1)))
-    Fl::fatal("Can't do scanline_pad of %d",pfv->scanline_pad);
+  uint n = pfv.scanline_pad/8;
+  if (pfv.scanline_pad & 7 || (n&(n-1)))
+    Fl.fatal("Can't do scanline_pad of %d",pfv.scanline_pad);
   if (n < sizeof(STORETYPE)) n = sizeof(STORETYPE);
   scanline_add = n-1;
   scanline_mask = -n;
@@ -385,9 +387,9 @@ static void figure_out_visual() {
     mono_converter = mono8_converter;
     return;
   }
-  if (!fl_visual->red_mask)
-    Fl::fatal("Can't do %d bits_per_pixel colormap",xi.bits_per_pixel);
-#  endif
+  if (!fl_visual.red_mask)
+    Fl.fatal("Can't do %d bits_per_pixel colormap",xi.bits_per_pixel);
+}
 
   // otherwise it is a TrueColor visual:
 
@@ -400,11 +402,11 @@ static void figure_out_visual() {
   case 2:
     // All 16-bit TrueColor visuals are supported on any machine with
     // 24 or more bits per integer.
-#  ifdef U16
+version (U16) {
     xi.byte_order = WORDS_BIGENDIAN;
-#  else
+} else {
     xi.byte_order = 1;
-#  endif
+}
     if (rs == 11 && gs == 6 && bs == 0 && fl_extrashift == 3) {
       converter = c565_converter;
       mono_converter = m565_converter;
@@ -423,7 +425,7 @@ static void figure_out_visual() {
       converter = bgr_converter;
       mono_converter = rrr_converter;
     } else {
-      Fl::fatal("Can't do arbitrary 24bit color");
+      Fl.fatal("Can't do arbitrary 24bit color");
     }
     break;
 
@@ -450,14 +452,14 @@ static void figure_out_visual() {
     break;
 
   default:
-    Fl::fatal("Can't do %d bits_per_pixel",xi.bits_per_pixel);
+    Fl.fatal("Can't do %d bits_per_pixel",xi.bits_per_pixel);
   }
 
 }
 
-#  define MAXBUFFER 0x40000 // 256k
+const int MAXBUFFER = 0x40000;  // 256k
 
-static void innards(const uchar *buf, int X, int Y, int W, int H,
+static void innards(ubyte *buf, int X, int Y, int W, int H,
 		    int delta, int linedelta, int mono,
 		    Fl_Draw_Image_Cb cb, void* userdata)
 {
@@ -473,7 +475,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   xi.width = w;
   xi.height = h;
 
-  void (*conv)(const uchar *from, uchar *to, int w, int delta) = converter;
+  void (*conv)(ubyte *from, ubyte *to, int w, int delta) = converter;
   if (mono) conv = mono_converter;
 
   // See if the data is already in the right format.  Unfortunately
@@ -487,11 +489,11 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
       delta == 4 &&
 #    if WORDS_BIGENDIAN
       conv == rgbx_converter
-#    else
+} else {
       conv == xbgr_converter
-#    endif
+}
       ||
-#  endif
+}
       conv == rgb_converter && delta==3
       ) && !(linedelta&scanline_add)) {
     xi.data = (char *)(buf+delta*dx+linedelta*dy);
@@ -501,7 +503,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
     int linesize = ((w*bytes_per_pixel+scanline_add)&scanline_mask)/sizeof(STORETYPE);
     int blocking = h;
     static STORETYPE *buffer;	// our storage, always word aligned
-    static long buffer_size;
+    static int buffer_size;
     {int size = linesize*h;
     if (size > MAXBUFFER) {
       size = MAXBUFFER;
@@ -520,7 +522,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
 	STORETYPE *to = buffer;
 	int k;
 	for (k = 0; j<h && k<blocking; k++, j++) {
-	  conv(buf, (uchar*)to, w, delta);
+	  conv(buf, (ubyte*)to, w, delta);
 	  buf += linedelta;
 	  to += linesize;
 	}
@@ -532,8 +534,8 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
 	STORETYPE *to = buffer;
 	int k;
 	for (k = 0; j<h && k<blocking; k++, j++) {
-	  cb(userdata, dx, dy+j, w, (uchar*)linebuf);
-	  conv((uchar*)linebuf, (uchar*)to, w, delta);
+	  cb(userdata, dx, dy+j, w, (ubyte*)linebuf);
+	  conv((ubyte*)linebuf, (ubyte*)to, w, delta);
 	  to += linesize;
 	}
 	XPutImage(fl_display,fl_window,fl_gc, &xi, 0, 0, X+dx, Y+dy+j-k, w, k);
@@ -544,14 +546,14 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   }
 }
 
-void fl_draw_image(const uchar* buf, int x, int y, int w, int h, int d, int l){
+void fl_draw_image(ubyte* buf, int x, int y, int w, int h, int d, int l){
   innards(buf,x,y,w,h,d,l,(d<3&&d>-3),0,0);
 }
 void fl_draw_image(Fl_Draw_Image_Cb cb, void* data,
 		   int x, int y, int w, int h,int d) {
   innards(0,x,y,w,h,d,0,(d<3&&d>-3),cb,data);
 }
-void fl_draw_image_mono(const uchar* buf, int x, int y, int w, int h, int d, int l){
+void fl_draw_image_mono(ubyte* buf, int x, int y, int w, int h, int d, int l){
   innards(buf,x,y,w,h,d,l,1,0,0);
 }
 void fl_draw_image_mono(Fl_Draw_Image_Cb cb, void* data,
@@ -559,18 +561,18 @@ void fl_draw_image_mono(Fl_Draw_Image_Cb cb, void* data,
   innards(0,x,y,w,h,d,0,1,cb,data);
 }
 
-void fl_rectf(int x, int y, int w, int h, uchar r, uchar g, uchar b) {
-  if (fl_visual->depth > 16) {
+void fl_rectf(int x, int y, int w, int h, ubyte r, ubyte g, ubyte b) {
+  if (fl_visual.depth > 16) {
     fl_color(r,g,b);
     fl_rectf(x,y,w,h);
   } else {
-    uchar c[3];
+    ubyte c[3];
     c[0] = r; c[1] = g; c[2] = b;
     innards(c,x,y,w,h,0,0,0,0,0);
   }
 }
 
-#endif
+}
 
 //
 // End of "$Id: fl_draw_image.cxx 5190 2006-06-09 16:16:34Z mike $".

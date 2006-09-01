@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Multiline_Output.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: multiline_output.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Multi line output header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Multiline_Output_H
-#define Fl_Multiline_Output_H
+module fl.multiline_output;
 
-#include "Fl_Output.H"
 
-class Fl_Multiline_Output : public Fl_Output {
+public import fl.output;
+
+class Fl_Multiline_Output : Fl_Output {
 public:
-    Fl_Multiline_Output(int X,int Y,int W,int H,const char *l = 0)
+    Fl_Multiline_Output(int X,int Y,int W,int H,char *l = 0)
 	: Fl_Output(X,Y,W,H,l) {type(FL_MULTILINE_OUTPUT);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Multiline_Output.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: multiline_output.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

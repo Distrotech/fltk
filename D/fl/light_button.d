@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Light_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: light_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Lighted button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,28 +26,28 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Light_Button_H
-#define Fl_Light_Button_H
+module fl.light_button;
 
-#include "Fl_Button.H"
 
-class FL_EXPORT Fl_Light_Button : public Fl_Button {
+public import fl.button;
+
+class Fl_Light_Button : Fl_Button {
 protected:
-    virtual void draw();
+    void draw();
 public:
-    virtual int handle(int);
-    Fl_Light_Button(int x,int y,int w,int h,const char *l = 0);
+    int handle(int);
+    Fl_Light_Button(int x,int y,int w,int h,char *l = 0);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Light_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: light_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Light_Button.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: light_button.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Lighted button widget for the Fast Light Tool Kit (FLTK).
 //
@@ -81,18 +81,18 @@ public:
 // just like Flame's buttons.
 
 #include <FL/Fl.H>
-#include <FL/Fl_Light_Button.H>
-#include <FL/fl_draw.H>
+private import fl.light_button;
+private import fl.draw;
 
-void Fl_Light_Button::draw() {
-  if (box()) draw_box(this==Fl::pushed() ? fl_down(box()) : box(), color());
+void Fl_Light_Button.draw() {
+  if (box()) draw_box(this==Fl.pushed() ? fl_down(box()) : box(), color());
   Fl_Color col = value() ? (active_r() ? selection_color() :
                             fl_inactive(selection_color())) : color();
   int W;
   int dx, dy;
 
   W  = labelsize();
-  dx = Fl::box_dx(box()) + 2;
+  dx = Fl.box_dx(box()) + 2;
   dy = (h() - W) / 2;
   // if (dy < 0) dy = 0;         // neg. offset o.k. for vertical centering
 
@@ -124,7 +124,7 @@ void Fl_Light_Button::draw() {
         draw_box(down_box(), x()+dx, y()+dy, W, W, FL_BACKGROUND2_COLOR);
 	if (value()) {
 	  fl_color(col);
-	  int tW = (W - Fl::box_dw(down_box())) / 2 + 1;
+	  int tW = (W - Fl.box_dw(down_box())) / 2 + 1;
 	  if ((W - tW) & 1) tW++; // Make sure difference is even to center
 	  int tdx = dx + (W - tW) / 2;
 	  int tdy = dy + (W - tW) / 2;
@@ -166,7 +166,7 @@ void Fl_Light_Button::draw() {
     int ww = W/2+1;
     int xx = dx;
     if (w()<ww+2*xx) xx = (w()-ww)/2;
-    if (Fl::scheme()) {
+    if (Fl.scheme()) {
       col = active_r() ? selection_color() : fl_inactive(selection_color());
       fl_color(value() ? col : fl_color_average(col, FL_BLACK, 0.5f));
       fl_pie(x()+xx, y()+dy+1, ww, hh, 0, 360);
@@ -176,26 +176,26 @@ void Fl_Light_Button::draw() {
     dx = (ww + 2 * dx - W) / 2;
   }
   draw_label(x()+W+2*dx, y(), w()-W-2*dx, h());
-  if (Fl::focus() == this) draw_focus();
+  if (Fl.focus() == this) draw_focus();
 }
 
-int Fl_Light_Button::handle(int event) {
+int Fl_Light_Button.handle(int event) {
   switch (event) {
   case FL_RELEASE:
     if (box()) redraw();
   default:
-    return Fl_Button::handle(event);
+    return Fl_Button.handle(event);
   }
 }
 
-Fl_Light_Button::Fl_Light_Button(int X, int Y, int W, int H, const char* l)
+Fl_Light_Button.Fl_Light_Button(int X, int Y, int W, int H, char* l)
 : Fl_Button(X, Y, W, H, l) {
   type(FL_TOGGLE_BUTTON);
   selection_color(FL_YELLOW);
-  align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+  alignment(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
 }
 
 //
-// End of "$Id: Fl_Light_Button.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: light_button.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

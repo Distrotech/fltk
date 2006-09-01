@@ -1,7 +1,7 @@
 //
 // "$Id: group.d 4421 2005-07-15 09:34:53Z matt $"
 //
-// Fl_Group class file for the Fast Light Tool Kit (FLTK).
+// Group header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2005 by Bill Spitzak and others.
 //
@@ -28,72 +28,31 @@
 module fl.group;
 
 public import fl.widget;
-
+private import fl.enumerations;
 private import fl.fl;
-private import fl.window;
 private import fl.draw;
+private import std.c.stdlib;
 
-char fl_flip = 2;
 
 class Fl_Group : Fl_Widget {
-
 private:
 
-  Fl_Widget[] array_;
-  Fl_Widget savedfocus_;
+  Fl_Widget* array_;
+  Fl_Widget  savedfocus_;
   Fl_Widget resizable_;
   int children_;
-  short[] sizes_; // remembered initial sizes of children
-
-  int navigation(int key) {
-    if (children() <= 1) return 0;
-    int i;
-    for (i = 0; ; i++) {
-      if (i >= children_) return 0;
-      if (array_[i].contains(Fl.focus())) break;
-    }
-    Fl_Widget previous = array_[i];
-  
-    for (;;) {
-      switch (key) {
-      case FL_Right:
-      case FL_Down:
-        i++;
-        if (i >= children_) {
-	  if (parent()) return 0;
-	  i = 0;
-        }
-        break;
-      case FL_Left:
-      case FL_Up:
-        if (i) i--;
-        else {
-	  if (parent()) return 0;
-	  i = children_-1;
-        }
-        break;
-      default:
-        return 0;
-      }
-      Fl_Widget o = array_[i];
-      if (o == previous) return 0;
-      switch (key) {
-      case FL_Down:
-      case FL_Up:
-        // for up/down, the widgets have to overlap horizontally:
-        if (o.x() >= previous.x()+previous.w() ||
-	    o.x()+o.w() <= previous.x()) continue;
-      default: break;
-      }
-      if (o.take_focus()) return 1;
-    }
-  }
-
-  static Fl_Group current_;
-
+  short* sizes_; // remembered initial sizes of children
+/+=
+  int navigation(int);
+=+/
+  static Fl_Group current_ = null;
+/+=
+ 
+  // unimplemented copy ctor and assignment operator
+  Fl_Group(Fl_Group );
+  Fl_Group  operator=(Fl_Group );
+=+/
 protected:
-public: /+? "friend" ?+/
-
   void draw() {
     if (damage() & ~FL_DAMAGE_CHILD) { // redraw the entire thing:
       draw_box();
@@ -112,24 +71,25 @@ public: /+? "friend" ?+/
   }
 
   void draw_children() {
-    Fl_Widget[] a = array();
+    Fl_Widget* a = array();
     if (damage() & ~FL_DAMAGE_CHILD) { // redraw the entire thing:
       for (int i=children_; i--;) {
-        Fl_Widget o = a[i];
+        Fl_Widget o = *a++;
         draw_child(o);
         draw_outside_label(o);
       }
     } else {	// only redraw the children that need it:
-      for (int i=children_; i--;) 
-        update_child(a[i]);
+      for (int i=children_; i--;) update_child(*a++);
     }
   }
+
+  // Parents normally call this to draw outside labels:
   void draw_outside_label(Fl_Widget widget) {
     if (!widget.visible()) return;
     // skip any labels that are inside the widget:
     if (!(widget.alignment()&15) || (widget.alignment() & FL_ALIGN_INSIDE)) return;
     // invent a box that is outside the widget:
-    Fl_Align a = widget.alignment();
+    int a = widget.alignment();
     int X = widget.x();
     int Y = widget.y();
     int W = widget.w();
@@ -154,76 +114,36 @@ public: /+? "friend" ?+/
     widget.draw_label(X,Y,W,H,a);
   }
 
-  void update_child(Fl_Widget widget) {
+  // Draw a child only if it needs it:
+  void update_child(Fl_Widget  widget) {
     if (widget.damage() && widget.visible() && widget.type() < FL_WINDOW &&
         fl_not_clipped(widget.x(), widget.y(), widget.w(), widget.h())) {
       widget.draw();	
       widget.clear_damage();
     }
   }
-
-  // sizes array stores the initial positions of widgets as
-  // left,right,top,bottom quads.  The first quad is the group, the
-  // second is the resizable (clipped to the group), and the
-  // rest are the children.  This is a convienent order for the
-  // algorithim.  If you change this be sure to fix Fl_Tile which
-  // also uses this array!
-  
-  short[] sizes() {
-    if (!sizes_ || !sizes_.length) {
-      sizes_.length = 4*(children_+2);
-      short* p = &sizes_[0];
-      // first thing in sizes array is the group's size:
-      if (type() < FL_WINDOW) {p[0] = x(); p[2] = y();} else {p[0] = p[2] = 0;}
-      p[1] = p[0]+w(); p[3] = p[2]+h();
-      // next is the resizable's size:
-      p[4] = p[0]; // init to the group's size
-      p[5] = p[1];
-      p[6] = p[2];
-      p[7] = p[3];
-      Fl_Widget r = resizable();
-      if (r && r != this) { // then clip the resizable to it
-        int t;
-        t = r.x(); if (t > p[0]) p[4] = t;
-        t +=r.w(); if (t < p[1]) p[5] = t;
-        t = r.y(); if (t > p[2]) p[6] = t;
-        t +=r.h(); if (t < p[3]) p[7] = t;
-      }
-      // next is all the children's sizes:
-      p += 8;
-      Fl_Widget* a = array();
-      for (int i=children_; i--;) {
-        Fl_Widget o = *a++;
-        *p++ = o.x();
-        *p++ = o.x()+o.w();
-        *p++ = o.y();
-        *p++ = o.y()+o.h();
-      }
-    }
-    return sizes_;
-  }
-
+/+=
+  short* sizes();
+=+/
 public:
-
-  int handle(Fl_Event event) {
-
+  int handle(int event) {
     Fl_Widget* a = array();
     int i;
     Fl_Widget o;
   
     switch (event) {
-
+ /+==== 
     case FL_FOCUS:
       switch (navkey()) {
       default:
         if (savedfocus_ && savedfocus_.take_focus()) return 1;
       case FL_Right:
       case FL_Down:
-        for (i = children(); i--;) if ((*a++).take_focus()) return 1;
+        for (i = children(); i--;) if ((*a++)->take_focus()) return 1;
         break;
       case FL_Left:
       case FL_Up:
-        for (i = children(); i--;) if (a[i].take_focus()) return 1;
+        for (i = children(); i--;) if (a[i]->take_focus()) return 1;
         break;
       }
       return 0;
@@ -239,56 +159,56 @@ public:
       for (i = children(); i--;) {
         o = a[i];
         if (o.takesevents() && Fl.event_inside(o) && send(o,FL_SHORTCUT))
-	  return 1;
+  	return 1;
       }
       for (i = children(); i--;) {
         o = a[i];
         if (o.takesevents() && !Fl.event_inside(o) && send(o,FL_SHORTCUT))
-	  return 1;
+  	return 1;
       }
       if ((Fl.event_key() == FL_Enter || Fl.event_key() == FL_KP_Enter)) return navigation(FL_Down);
       return 0;
-  
+====+/  
     case FL_ENTER:
     case FL_MOVE:
       for (i = children(); i--;) {
         o = a[i];
         if (o.visible() && Fl.event_inside(o)) {
-	  if (o.contains(Fl.belowmouse())) {
-	    return send(o,FL_MOVE);
-	  } else {
-	    Fl.belowmouse(o);
-	    if (send(o,FL_ENTER)) return 1;
-	  }
+          if (o.contains(Fl.belowmouse())) {
+            return send(o,FL_MOVE);
+          } else {
+            Fl.belowmouse(o);
+            if (send(o,FL_ENTER)) return 1;
+          }
         }
       }
       Fl.belowmouse(this);
       return 1;
-
+/+====  
     case FL_DND_ENTER:
     case FL_DND_DRAG:
       for (i = children(); i--;) {
         o = a[i];
         if (o.takesevents() && Fl.event_inside(o)) {
-	  if (o.contains(Fl.belowmouse())) {
-	    return send(o,FL_DND_DRAG);
-	  } else if (send(o,FL_DND_ENTER)) {
-	    if (!o.contains(Fl.belowmouse())) Fl.belowmouse(o);
-	    return 1;
-	  }
+  	if (o.contains(Fl.belowmouse())) {
+  	  return send(o,FL_DND_DRAG);
+  	} else if (send(o,FL_DND_ENTER)) {
+  	  if (!o.contains(Fl.belowmouse())) Fl.belowmouse(o);
+  	  return 1;
+  	}
         }
       }
       Fl.belowmouse(this);
       return 0;
-  
+====+/  
     case FL_PUSH:
       for (i = children(); i--;) {
         o = a[i];
         if (o.takesevents() && Fl.event_inside(o)) {
-	  if (send(o, FL_PUSH)) {
-	    if (Fl.pushed() && !o.contains(Fl.pushed())) Fl.pushed(o);
-	    return 1;
-	  }
+          if (send(o,FL_PUSH)) {
+            if (Fl.pushed() && !o.contains(Fl.pushed())) Fl.pushed(o);
+            return 1;
+          }
         }
       }
       return 0;
@@ -296,28 +216,28 @@ public:
     case FL_RELEASE:
     case FL_DRAG:
       o = Fl.pushed();
-      if (o && o == this) return 0;
+      if (o == this) return 0;
       else if (o) send(o,event);
       else {
         for (i = children(); i--;) {
-	  o = a[i];
-	  if (o.takesevents() && Fl.event_inside(o)) {
-	    if (send(o,event)) return 1;
-	  }
+          o = a[i];
+          if (o.takesevents() && Fl.event_inside(o)) {
+            if (send(o,event)) return 1;
+          }
         }
       }
       return 0;
-
+/+====  
     case FL_MOUSEWHEEL:
       for (i = children(); i--;) {
         o = a[i];
         if (o.takesevents() && Fl.event_inside(o) && send(o,FL_MOUSEWHEEL))
-	  return 1;
+  	return 1;
       }
       for (i = children(); i--;) {
         o = a[i];
         if (o.takesevents() && !Fl.event_inside(o) && send(o,FL_MOUSEWHEEL))
-	  return 1;
+  	return 1;
       }
       return 0;
   
@@ -328,26 +248,26 @@ public:
         if (o.active()) o.handle(event);
       }
       return 1;
-  
+ ====+/ 
     case FL_SHOW:
     case FL_HIDE:
       for (i = children(); i--;) {
         o = *a++;
         if (event == FL_HIDE && o == Fl.focus()) {
           // Give up input focus...
-	  Fl_Event old_event = Fl.e_number;
+  	int old_event = Fl.e_number;
           o.handle(Fl.e_number = FL_UNFOCUS);
-	  Fl.e_number = old_event;
-	  Fl.focus(null);
+  	Fl.e_number = old_event;
+  	Fl.focus(null);
         }
         if (o.visible()) o.handle(event);
       }
       return 1;
-
+  
     default:
       // For all other events, try to give to each child, starting at focus:
       for (i = 0; i < children(); i ++)
-        if (Fl.focus_ && Fl.focus_ == a[i]) break;
+        if (Fl.focus_ == a[i]) break;
   
       if (i >= children()) i = 0;
   
@@ -355,7 +275,7 @@ public:
         for (int j = i;;) {
           if (a[j].takesevents() || event != FL_MOUSEWHEEL) {
             if (send(a[j], event)) return 1;
-	  }
+  	}
           j++;
           if (j >= children()) j = 0;
           if (j == i) break;
@@ -366,99 +286,31 @@ public:
     }
   }
   
-  void begin() {
-    current_ = this;
-  }
+  void begin() {current_ = this;}
+  void end() {current_ = parent();}
+  static Fl_Group current() {return current_;}
+  static void current(Fl_Group g) {current_ = g;}
 
-  void end() {
-    current_ = parent();
-  }
-
-  static Fl_Group current() {
-    return current_;
-  }
-
-  static void current(Fl_Group g) {
-    current_ = g;
-  }
-
-  int children() {
-    return children_;
-  }
-
-  Fl_Widget child(int n) {
-    return array()[n];
-  }
+  int children() {return children_;}
+  Fl_Widget  child(int n) {return array()[n];}
 
   int find(Fl_Widget o) {
     Fl_Widget* a = array();
-    int i; 
-    for (i=0; i < children_; i++) 
-      if (*a++ == o) break;
+    int i; for (i=0; i < children_; i++) if (*a++ is o) break;
     return i;
   }
 
-  Fl_Widget[] array() {
-    return array_;
+  // Hack: A single child is stored in the pointer to the array, while
+  // multiple children are stored in an allocated array:
+  Fl_Widget* array() {
+    return children_ <= 1 ? cast(Fl_Widget*)(&array_) : array_;
   }
 
-  void resize(int X, int Y, int W, int H) {
-  
-    if (!resizable() || W==w() && H==h() ) {
-  
-      if (type() < FL_WINDOW) {
-        int dx = X-x();
-        int dy = Y-y();
-        Fl_Widget* a = array();
-        for (int i=children_; i--;) {
-	  Fl_Widget o = *a++;
-	  o.resize(o.x()+dx, o.y()+dy, o.w(), o.h());
-        }
-      }
-  
-    } else if (children_) {
-  
-      short* p = sizes();
-  
-      // get changes in size/position from the initial size:
-      int dx = X - p[0];
-      int dw = W - (p[1]-p[0]);
-      int dy = Y - p[2];
-      int dh = H - (p[3]-p[2]);
-      if (type() >= FL_WINDOW) dx = dy = 0;
-      p += 4;
-  
-      // get initial size of resizable():
-      int IX = *p++;
-      int IR = *p++;
-      int IY = *p++;
-      int IB = *p++;
-  
-      Fl_Widget* a = array();
-      for (int i=children_; i--;) {
-        Fl_Widget o = *a++;
-        int XX = *p++;
-        if (XX >= IR) XX += dw;
-        else if (XX > IX) XX = IX+((XX-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
-        int R = *p++;
-        if (R >= IR) R += dw;
-        else if (R > IX) R = IX+((R-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
-  
-        int YY = *p++;
-        if (YY >= IB) YY += dh;
-        else if (YY > IY) YY = IY+((YY-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
-        int B = *p++;
-        if (B >= IB) B += dh;
-        else if (B > IY) B = IY+((B-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
-        o.resize(XX+dx, YY+dy, R-XX, B-YY);
-      }
-    }
-  
-    super.resize(X,Y,W,H);
-  }
-
-  this(int X, int Y, int W, int H, char[] l=null) {
-    super(X, Y, W, H, l);
+/+=
+  void resize(int,int,int,int);
+=+/
+  this(int X,int Y,int W,int H,char* l=null) {
+    super(X,Y,W,H,l);
     alignment(FL_ALIGN_TOP);
     children_ = 0;
     array_ = null;
@@ -478,63 +330,57 @@ public:
   void add(Fl_Widget o) {
     insert(o, children_);
   }
-
-  void insert(Fl_Widget o, int index) {
+  void insert(Fl_Widget  o, int index) {
     if (o.parent()) {
       Fl_Group g = o.parent();
       int n = g.find(o);
-      if (g == this) {
+      if (g is this) {
         if (index > n) index--;
         if (index == n) return;
       }
       g.remove(o);
     }
     o.parent_ = this;
-    if (children_ == 0) {
-      array_.length = 1;
-      array_[0] = o;
+    if (children_ == 0) { // use array pointer to point at single child
+      array_ = cast(Fl_Widget*)o;
     } else if (children_ == 1) { // go from 1 to 2 children
-      Fl_Widget t = array_[0];
-      array_.length = 2;
-      if (index) { 
-        array_[0] = t; array_[1] = o; 
-      } else {
-        array_[0] = o; array_[1] = t;
-      }
+      Fl_Widget t = cast(Fl_Widget)array_;
+      array_ = cast(Fl_Widget*)malloc(2*Fl_Widget.sizeof);
+      if (index) {array_[0] = t; array_[1] = o;}
+      else {array_[0] = o; array_[1] = t;}
     } else {
-      array_.length = children_ + 1;
-      int j; 
-      /+? how can I accelerate this with slicing ?+/
-      for (j = children_; j > index; j--) 
-        array_[j] = array_[j-1];
+      if (!(children_ & (children_-1))) // double number of children
+        array_ = cast(Fl_Widget*)realloc(array_,
+  				    2*children_*Fl_Widget.sizeof);
+      int j; for (j = children_; j > index; j--) array_[j] = array_[j-1];
       array_[j] = o;
     }
     children_++;
     init_sizes();
   }
 
-  void insert(Fl_Widget o, Fl_Widget before) {
-    insert(o, find(before));
-  }
-
-  void remove(Fl_Widget o) {
-    if (!children_) 
-      return;
+/+=
+  void insert(Fl_Widget o, Fl_Widget before) {insert(o,find(before));}
+=+/
+  void remove(Fl_Widget  o) {
+    if (!children_) return;
     int i = find(o);
-    if (i >= children_) 
-      return;
-    if (o == savedfocus_) 
-      savedfocus_ = null;
+    if (i >= children_) return;
+    if (o is savedfocus_) savedfocus_ = null;
     o.parent_ = null;
     children_--;
-    /+? how can I accelerate this with slicing ?+/
-    for (; i < children_; i++) 
-      array_[i] = array_[i+1];
+    if (children_ == 1) { // go from 2 to 1 child
+      Fl_Widget t = array_[!i];
+      free(array_);
+      array_ = cast(Fl_Widget*)t;
+    } else if (children_ > 1) { // delete from array
+      for (; i < children_; i++) array_[i] = array_[i+1];
+    }
     init_sizes();
   }
-
+  
   void clear() {
-    Fl_Widget[] old_array = array();
+    Fl_Widget* old_array = array();
     int old_children = children();
     // clear everything now, in case fl_fix_focus recursively calls us:
     children_ = 0;
@@ -543,86 +389,99 @@ public:
     resizable_ = this;
     init_sizes();
     // okay, now it is safe to destroy the children:
-    foreach(o; old_array) {
-      if (o.parent() == this) delete o;
-    }
-    array_ = null;
-  }
-
-  void resizable(Fl_Widget o) {
-    resizable_ = o;
-  }
-
-  Fl_Widget resizable() {
-    return resizable_;
-  }
-
-  void add_resizable(Fl_Widget o) {
-    resizable_ = o; 
-    add(o);
-  }
-
-  void init_sizes() {
-    sizes_ = null; /+? do we need to free anything here? Garbage collection? ?+/
-  }
-
-  // back compatability function:
-  void focus(Fl_Widget o) {
-    o.take_focus();
-  }
-
-  Fl_Widget _ddfdesign_kludge() {
-    return resizable_;
-  }
-
-  void forms_end() {
-    // set the dimensions of a group to surround contents
-    if (children() && !w()) {
-      Fl_Widget* a = array();
+    Fl_Widget* a = old_array;
+    for (int i=old_children; i--;) {
       Fl_Widget o = *a++;
-      int rx = o.x();
-      int ry = o.y();
-      int rw = rx+o.w();
-      int rh = ry+o.h();
-      for (int i=children_-1; i--;) {
-        o = *a++;
-        if (o.x() < rx) rx = o.x();
-        if (o.y() < ry) ry = o.y();
-        if (o.x()+o.w() > rw) rw = o.x()+o.w();
-        if (o.y()+o.h() > rh) rh = o.y()+o.h();
-      }
-      x(rx);
-      y(ry);
-      w(rw-rx);
-      h(rh-ry);
+      if (o.parent() is this) delete o;
     }
-    // flip all the children's coordinate systems:
-    if (fl_flip) {
-      Fl_Widget o = (type()>=FL_WINDOW) ? this : window();
-      int Y = o.h();
-      Fl_Widget* a = array();
-      for (int i=children(); i--;) {
-        Fl_Widget ow = *a++;
-        int newy = Y-ow.y()-ow.h();
-        ow.y(newy);
-      }
-    }
-    end();
+    if (old_children > 1) free(old_array);
   }
 
+  void resizable(Fl_Widget o) {resizable_ = o;}
+  Fl_Widget resizable() {return resizable_;}
+/+=
+  void add_resizable(Fl_Widget  o) {resizable_ = &o; add(o);}
+=+/
+  void init_sizes() {
+    delete sizes_; 
+    sizes_ = null;
+  }
+
+/+=
+  // back compatability function:
+  void focus(Fl_Widget  o) {o.take_focus();}
+  Fl_Widget    _ddfdesign_kludge() {return resizable_;}
+  void forms_end();
+=+/
 }
 
+/+=
 // dummy class used to end child groups in constructors for complex
 // subclasses of Fl_Group:
 class Fl_End {
 public:
-  this() { Fl_Group.current().end(); }
+  Fl_End() {Fl_Group.current()->end();}
+};
+
 }
+
+//
+// End of "$Id: group.d 4421 2005-07-15 09:34:53Z matt $".
+//
+    End of automatic import -+/
+/+- This file was imported from C++ using a script
+//
+// "$Id: group.d 5190 2006-06-09 16:16:34Z mike $"
+//
+// Group widget for the Fast Light Tool Kit (FLTK).
+//
+// Copyright 1998-2005 by Bill Spitzak and others.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA.
+//
+// Please report all bugs and problems on the following page:
+//
+//     http://www.fltk.org/str.php
+//
+
+// The Fl_Group is the only defined container type in FLTK.
+
+// Fl_Window itself is a subclass of this, and most of the event
+// handling is designed so windows themselves work correctly.
+
+#include <stdio.h>
+#include <FL/Fl.H>
+private import fl.group;
+private import fl.window;
+private import fl.draw;
+#include <stdlib.h>
+
+Fl_Group  Fl_Group.current_;
+
+
+
+// Metrowerks CodeWarrior and others can't export the static
+// class member: current_, so these methods can't be inlined...
+
+extern Fl_Widget  fl_oldfocus; // set by Fl.focus
 
 // For back-compatability, we must adjust all events sent to child
 // windows so they are relative to that window.
-
-static int send(Fl_Widget o, Fl_Event event) {
+=+/
+static int send(Fl_Widget  o, int event) {
   if (o.type() < FL_WINDOW) return o.handle(event);
   switch ( event )
   {
@@ -630,7 +489,6 @@ static int send(Fl_Widget o, Fl_Event event) {
   case FL_DND_DRAG:
     // figure out correct type of event:
     event = (o.contains(Fl.belowmouse())) ? FL_DND_DRAG : FL_DND_ENTER;
-  default: break;
   }
   int save_x = Fl.e_x; Fl.e_x -= o.x();
   int save_y = Fl.e_y; Fl.e_y -= o.y();
@@ -642,16 +500,16 @@ static int send(Fl_Widget o, Fl_Event event) {
   case FL_ENTER:
   case FL_DND_ENTER:
     // Successful completion of FL_ENTER means the widget is now the
-    // belowmouse widget, but only call Fl::belowmouse if the child
+    // belowmouse widget, but only call Fl.belowmouse if the child
     // widget did not do so:
     if (!o.contains(Fl.belowmouse())) Fl.belowmouse(o);
     break;
-  default: break;
   }
   return ret;
 }
-
+/+=
 // translate the current keystroke into up/down/left/right for navigation:
+#define ctrl(x) (x^0x40)
 static int navkey() {
   switch (Fl.event_key()) {
   case 0: // not an FL_KEYBOARD/FL_SHORTCUT event
@@ -668,12 +526,191 @@ static int navkey() {
     return FL_Up;
   case FL_Down:
     return FL_Down;
-  default:
-    break;
   }
   return 0;
 }
 
+//void Fl_Group.focus(Fl_Widget  o) {Fl.focus(o); o.handle(FL_FOCUS);}
+
+#if 0
+const char *nameof(Fl_Widget  o) {
+  if (!o) return "NULL";
+  if (!o.label()) return "<no label>";
+  return o.label();
+}
+}
+
+// try to move the focus in response to a keystroke:
+int Fl_Group.navigation(int key) {
+  if (children() <= 1) return 0;
+  int i;
+  for (i = 0; ; i++) {
+    if (i >= children_) return 0;
+    if (array_[i]->contains(Fl.focus())) break;
+  }
+  Fl_Widget  previous = array_[i];
+
+  for (;;) {
+    switch (key) {
+    case FL_Right:
+    case FL_Down:
+      i++;
+      if (i >= children_) {
+	if (parent()) return 0;
+	i = 0;
+      }
+      break;
+    case FL_Left:
+    case FL_Up:
+      if (i) i--;
+      else {
+	if (parent()) return 0;
+	i = children_-1;
+      }
+      break;
+    default:
+      return 0;
+    }
+    Fl_Widget  o = array_[i];
+    if (o == previous) return 0;
+    switch (key) {
+    case FL_Down:
+    case FL_Up:
+      // for up/down, the widgets have to overlap horizontally:
+      if (o.x() >= previous.x()+previous.w() ||
+	  o.x()+o.w() <= previous.x()) continue;
+    }
+    if (o.take_focus()) return 1;
+  }
+}
+
+////////////////////////////////////////////////////////////////
+
+
+
+
+////////////////////////////////////////////////////////////////
+
+// Rather lame kludge here, I need to detect windows and ignore the
+// changes to X,Y, since all children are relative to X,Y.  That
+// is why I check type():
+
+// sizes array stores the initial positions of widgets as
+// left,right,top,bottom quads.  The first quad is the group, the
+// second is the resizable (clipped to the group), and the
+// rest are the children.  This is a convienent order for the
+// algorithim.  If you change this be sure to fix Fl_Tile which
+// also uses this array!
+
+
+short* Fl_Group.sizes() {
+  if (!sizes_) {
+    short* p = sizes_ = new short[4*(children_+2)];
+    // first thing in sizes array is the group's size:
+    if (type() < FL_WINDOW) {p[0] = x(); p[2] = y();} else {p[0] = p[2] = 0;}
+    p[1] = p[0]+w(); p[3] = p[2]+h();
+    // next is the resizable's size:
+    p[4] = p[0]; // init to the group's size
+    p[5] = p[1];
+    p[6] = p[2];
+    p[7] = p[3];
+    Fl_Widget  r = resizable();
+    if (r && r != this) { // then clip the resizable to it
+      int t;
+      t = r.x(); if (t > p[0]) p[4] = t;
+      t +=r.w(); if (t < p[1]) p[5] = t;
+      t = r.y(); if (t > p[2]) p[6] = t;
+      t +=r.h(); if (t < p[3]) p[7] = t;
+    }
+    // next is all the children's sizes:
+    p += 8;
+    Fl_Widget const* a = array();
+    for (int i=children_; i--;) {
+      Fl_Widget  o = *a++;
+      *p++ = o.x();
+      *p++ = o.x()+o.w();
+      *p++ = o.y();
+      *p++ = o.y()+o.h();
+    }
+  }
+  return sizes_;
+}
+
+void Fl_Group.resize(int X, int Y, int W, int H) {
+
+  if (!resizable() || W==w() && H==h() ) {
+
+    if (type() < FL_WINDOW) {
+      int dx = X-x();
+      int dy = Y-y();
+      Fl_Widget const* a = array();
+      for (int i=children_; i--;) {
+	Fl_Widget  o = *a++;
+	o.resize(o.x()+dx, o.y()+dy, o.w(), o.h());
+      }
+    }
+
+  } else if (children_) {
+
+    short* p = sizes();
+
+    // get changes in size/position from the initial size:
+    int dx = X - p[0];
+    int dw = W - (p[1]-p[0]);
+    int dy = Y - p[2];
+    int dh = H - (p[3]-p[2]);
+    if (type() >= FL_WINDOW) dx = dy = 0;
+    p += 4;
+
+    // get initial size of resizable():
+    int IX = *p++;
+    int IR = *p++;
+    int IY = *p++;
+    int IB = *p++;
+
+    Fl_Widget const* a = array();
+    for (int i=children_; i--;) {
+      Fl_Widget  o = *a++;
+#if 1
+      int XX = *p++;
+      if (XX >= IR) XX += dw;
+      else if (XX > IX) XX = IX+((XX-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
+      int R = *p++;
+      if (R >= IR) R += dw;
+      else if (R > IX) R = IX+((R-IX)*(IR+dw-IX)+(IR-IX)/2)/(IR-IX);
+
+      int YY = *p++;
+      if (YY >= IB) YY += dh;
+      else if (YY > IY) YY = IY+((YY-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
+      int B = *p++;
+      if (B >= IB) B += dh;
+      else if (B > IY) B = IY+((B-IY)*(IB+dh-IY)+(IB-IY)/2)/(IB-IY);
+} else { // much simpler code from Francois Ostiguy:
+      int XX = *p++;
+      if (XX >= IR) XX += dw;
+      else if (XX > IX) XX += dw * (XX-IX)/(IR-IX);
+      int R = *p++;
+      if (R >= IR) R += dw;
+      else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
+
+      int YY = *p++;
+      if (YY >= IB) YY += dh;
+      else if (YY > IY) YY = YY + dh*(YY-IY)/(IB-IY);
+      int B = *p++;
+      if (B >= IB) B += dh;
+      else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
+}
+      o.resize(XX+dx, YY+dy, R-XX, B-YY);
+    }
+  }
+
+  Fl_Widget.resize(X,Y,W,H);
+}
+
+// Force a child to redraw:
+extern char fl_draw_shortcut;
+
 //
 // End of "$Id: group.d 5190 2006-06-09 16:16:34Z mike $".
 //
+    End of automatic import -+/

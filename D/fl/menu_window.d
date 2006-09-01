@@ -1,3 +1,4 @@
+/+- This file was imported from C++ using a script
 //
 // "$Id: menu_window.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -27,52 +28,35 @@
 
 module fl.menu_window;
 
+
 public import fl.single_window;
 
 class Fl_Menu_Window : Fl_Single_Window {
-
-private:
-
   enum {NO_OVERLAY = 128};
-
 public:
-/+=
   void show();
   void erase();
   void flush();
   void hide();
-=+/
-  int overlay() {
-    return !(flags()&NO_OVERLAY);
-  }
-
-  void set_overlay() {
-    clear_flag(NO_OVERLAY);
-  }
-
-  void clear_overlay() {
-    set_flag(NO_OVERLAY);
-  }
-/+=
+  int overlay() {return !(flags()&NO_OVERLAY);}
+  void set_overlay() {clear_flag(NO_OVERLAY);}
+  void clear_overlay() {set_flag(NO_OVERLAY);}
   ~Fl_Menu_Window();
-  Fl_Menu_Window(int W, int H, const char *l = 0)
+  Fl_Menu_Window(int W, int H, char *l = 0)
     : Fl_Single_Window(W,H,l) { image(0); }
-=+/
-  this(int X, int Y, int W, int H, char[] l=null) {
-    super(X,Y,W,H,l);
-    image(null); 
-  }
+  Fl_Menu_Window(int X, int Y, int W, int H, char *l = 0)
+    : Fl_Single_Window(X,Y,W,H,l) { image(0); }
+};
+
 }
-/+=
-#endif
 
 //
-// End of "$Id: Fl_Menu_Window.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: menu_window.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Menu_Window.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: menu_window.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Menu window code for the Fast Light Tool Kit (FLTK).
 //
@@ -108,63 +92,63 @@ public:
 #include <config.h>
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/fl_draw.H>
-#include <FL/Fl_Menu_Window.H>
+private import fl.draw;
+private import fl.menu_window;
 
 // WIN32 note: HAVE_OVERLAY is false
 #if HAVE_OVERLAY
 extern XVisualInfo *fl_find_overlay_visual();
 extern XVisualInfo *fl_overlay_visual;
 extern Colormap fl_overlay_colormap;
-extern unsigned long fl_transparent_pixel;
+extern uint fl_transparent_pixel;
 static GC gc;	// the GC used by all X windows
-extern uchar fl_overlay; // changes how fl_color(x) works
-#endif
+extern ubyte fl_overlay; // changes how fl_color(x) works
+}
 
 #include <stdio.h>
 
-void Fl_Menu_Window::show() {
+void Fl_Menu_Window.show() {
 #if HAVE_OVERLAY
   if (!shown() && overlay() && fl_find_overlay_visual()) {
     XInstallColormap(fl_display, fl_overlay_colormap);
     fl_background_pixel = int(fl_transparent_pixel);
-    Fl_X::make_xid(this, fl_overlay_visual, fl_overlay_colormap);
+    Fl_X.make_xid(this, fl_overlay_visual, fl_overlay_colormap);
     fl_background_pixel = -1;
   } else
-#endif
-    Fl_Single_Window::show();
+}
+    Fl_Single_Window.show();
 }
 
-void Fl_Menu_Window::flush() {
+void Fl_Menu_Window.flush() {
 #if HAVE_OVERLAY
-  if (!fl_overlay_visual || !overlay()) {Fl_Single_Window::flush(); return;}
-  Fl_X *myi = Fl_X::i(this);
-  fl_window = myi->xid;
-  if (!gc) gc = XCreateGC(fl_display, myi->xid, 0, 0);
+  if (!fl_overlay_visual || !overlay()) {Fl_Single_Window.flush(); return;}
+  Fl_X  myi = Fl_X.i(this);
+  fl_window = myi.xid;
+  if (!gc) gc = XCreateGC(fl_display, myi.xid, 0, 0);
   fl_gc = gc;
   fl_overlay = 1;
-  fl_clip_region(myi->region); myi->region = 0; current_ = this;
+  fl_clip_region(myi.region); myi.region = 0; current_ = this;
   draw();
   fl_overlay = 0;
-#else
-  Fl_Single_Window::flush();
-#endif
+} else {
+  Fl_Single_Window.flush();
+}
 }
 
-void Fl_Menu_Window::erase() {
+void Fl_Menu_Window.erase() {
 #if HAVE_OVERLAY
   if (!gc || !shown()) return;
 //XSetForeground(fl_display, gc, 0);
 //XFillRectangle(fl_display, fl_xid(this), gc, 0, 0, w(), h());
   XClearWindow(fl_display, fl_xid(this));
-#endif
+}
 }
 
 // Fix the colormap flashing on Maximum Impact Graphics by erasing the
 // menu before unmapping it:
-void Fl_Menu_Window::hide() {
+void Fl_Menu_Window.hide() {
   erase();
-  Fl_Single_Window::hide();
+  Fl_Single_Window.hide();
 }
 
 Fl_Menu_Window::~Fl_Menu_Window() {
@@ -172,6 +156,6 @@ Fl_Menu_Window::~Fl_Menu_Window() {
 }
 
 //
-// End of "$Id: Fl_Menu_Window.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: menu_window.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

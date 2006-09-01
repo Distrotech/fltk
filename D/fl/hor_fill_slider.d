@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Hor_Fill_Slider.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: hor_fill_slider.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Horizontal fill slider header file for the Fast Light Tool Kit (FLTK).
 //
@@ -25,20 +25,20 @@
 //
 //     http://www.fltk.org/str.php
 //
-#ifndef Fl_Hor_Fill_Slider_H
-#define Fl_Hor_Fill_Slider_H
+module fl.hor_fill_slider;
 
-#include "Fl_Slider.H"
 
-class Fl_Hor_Fill_Slider : public Fl_Slider {
+public import fl.slider;
+
+class Fl_Hor_Fill_Slider : Fl_Slider {
 public:
-    Fl_Hor_Fill_Slider(int x,int y,int w,int h,const char *l=0)
+    Fl_Hor_Fill_Slider(int x,int y,int w,int h,char *l=0)
 	: Fl_Slider(x,y,w,h,l) {type(FL_HOR_FILL_SLIDER);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Hor_Fill_Slider.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: hor_fill_slider.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

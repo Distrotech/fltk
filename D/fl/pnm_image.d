@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_PNM_Image.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: pnm_image.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // PNM image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,26 +26,26 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_PNM_Image_H
-#define Fl_PNM_Image_H
-#  include "Fl_Image.H"
+module fl.pnm_image;
 
-class FL_EXPORT Fl_PNM_Image : public Fl_RGB_Image {
+public import fl.image;
+
+class Fl_PNM_Image : Fl_RGB_Image {
 
   public:
 
-  Fl_PNM_Image(const char* filename);
+  Fl_PNM_Image(char* filename);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_PNM_Image.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: pnm_image.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_PNM_Image.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: pnm_image.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_PNM_Image routines.
 //
@@ -72,7 +72,7 @@ class FL_EXPORT Fl_PNM_Image : public Fl_RGB_Image {
 //
 // Contents:
 //
-//   Fl_PNM_Image::Fl_PNM_Image() - Load a PNM image...
+//   Fl_PNM_Image.Fl_PNM_Image() - Load a PNM image...
 //
 
 //
@@ -80,23 +80,23 @@ class FL_EXPORT Fl_PNM_Image : public Fl_RGB_Image {
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_PNM_Image.H>
+private import fl.pnm_image;
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
 
 //
-// 'Fl_PNM_Image::Fl_PNM_Image()' - Load a PNM image...
+// 'Fl_PNM_Image.Fl_PNM_Image()' - Load a PNM image...
 //
 
-Fl_PNM_Image::Fl_PNM_Image(const char *name)	// I - File to read
+Fl_PNM_Image.Fl_PNM_Image(char *name)	// I - File to read
   : Fl_RGB_Image(0,0,0) {
   FILE		*fp;		// File pointer
   int		x, y;		// Looping vars
   char		line[1024],	// Input line
 		*lineptr;	// Pointer in line
-  uchar		*ptr,		// Pointer to pixel values
+  ubyte		*ptr,		// Pointer to pixel values
 		byte,		// Byte from file
 		bit;		// Bit in pixel
   int		format,		// Format of PNM file
@@ -122,7 +122,7 @@ Fl_PNM_Image::Fl_PNM_Image(const char *name)	// I - File to read
   lineptr = fgets(line, sizeof(line), fp);
   if (!lineptr) {
     fclose(fp);
-    Fl::error("Early end-of-file in PNM file \"%s\"!", name);
+    Fl.error("Early end-of-file in PNM file \"%s\"!", name);
     return;
   }
 
@@ -167,37 +167,37 @@ Fl_PNM_Image::Fl_PNM_Image(const char *name)	// I - File to read
 
 //  printf("%s = %dx%dx%d\n", name, w(), h(), d());
 
-  array       = new uchar[w() * h() * d()];
+  array       = new ubyte[w() * h() * d()];
   alloc_array = 1;
 
   // Read the image file...
   for (y = 0; y < h(); y ++) {
-    ptr = (uchar *)array + y * w() * d();
+    ptr = (ubyte *)array + y * w() * d();
 
     switch (format) {
       case 1 :
       case 2 :
           for (x = w(); x > 0; x --)
-            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (uchar)(255 * val / maxval);
+            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (ubyte)(255 * val / maxval);
           break;
 
       case 3 :
           for (x = w(); x > 0; x --) {
-            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (uchar)(255 * val / maxval);
-            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (uchar)(255 * val / maxval);
-            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (uchar)(255 * val / maxval);
+            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (ubyte)(255 * val / maxval);
+            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (ubyte)(255 * val / maxval);
+            if (fscanf(fp, "%d", &val) == 1) *ptr++ = (ubyte)(255 * val / maxval);
           }
           break;
 
       case 4 :
-          for (x = w(), byte = (uchar)getc(fp), bit = 128; x > 0; x --) {
+          for (x = w(), byte = (ubyte)getc(fp), bit = 128; x > 0; x --) {
 	    if (byte & bit) *ptr++ = 255;
 	    else *ptr++ = 0;
 
             if (bit > 1) bit >>= 1;
             else {
               bit  = 128;
-              byte = (uchar)getc(fp);
+              byte = (ubyte)getc(fp);
             }
           }
           break;
@@ -209,11 +209,11 @@ Fl_PNM_Image::Fl_PNM_Image(const char *name)	// I - File to read
 
       case 7 : /* XV 3:3:2 thumbnail format */
           for (x = w(); x > 0; x --) {
-	    byte = (uchar)getc(fp);
+	    byte = (ubyte)getc(fp);
 
-	    *ptr++ = (uchar)(255 * ((byte >> 5) & 7) / 7);
-	    *ptr++ = (uchar)(255 * ((byte >> 2) & 7) / 7);
-	    *ptr++ = (uchar)(255 * (byte & 3) / 3);
+	    *ptr++ = (ubyte)(255 * ((byte >> 5) & 7) / 7);
+	    *ptr++ = (ubyte)(255 * ((byte >> 2) & 7) / 7);
+	    *ptr++ = (ubyte)(255 * (byte & 3) / 3);
 	  }
           break;
     }
@@ -224,6 +224,6 @@ Fl_PNM_Image::Fl_PNM_Image(const char *name)	// I - File to read
 
 
 //
-// End of "$Id: Fl_PNM_Image.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: pnm_image.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

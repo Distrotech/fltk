@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Radio_Round_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: radio_round_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Radio round button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Radio_Round_Button_H
-#define Fl_Radio_Round_Button_H
+module fl.radio_round_button;
 
-#include "Fl_Round_Button.H"
 
-class Fl_Radio_Round_Button : public Fl_Round_Button {
+public import fl.round_button;
+
+class Fl_Radio_Round_Button : Fl_Round_Button {
 public:
-    Fl_Radio_Round_Button(int x,int y,int w,int h,const char *l=0)
+    Fl_Radio_Round_Button(int x,int y,int w,int h,char *l=0)
 	: Fl_Round_Button(x,y,w,h,l) {type(FL_RADIO_BUTTON);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Radio_Round_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: radio_round_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Multi_Browser.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: multi_browser.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Multi browser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Multi_Browser_H
-#define Fl_Multi_Browser_H
+module fl.multi_browser;
 
-#include "Fl_Browser.H"
 
-class Fl_Multi_Browser : public Fl_Browser {
+public import fl.browser;
+
+class Fl_Multi_Browser : Fl_Browser {
 public:
-    Fl_Multi_Browser(int X,int Y,int W,int H,const char *L=0)
+    Fl_Multi_Browser(int X,int Y,int W,int H,char *L=0)
 	: Fl_Browser(X,Y,W,H,L) {type(FL_MULTI_BROWSER);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Multi_Browser.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: multi_browser.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

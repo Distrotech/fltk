@@ -35,13 +35,13 @@
 // making the name, and then forgot about it. To avoid having to change
 // the header files I decided to store this value in the last character
 // of the font name array.
-#define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
+const int ENDOFBUFFER = 127;  // sizeof(Fl_Font.fontname)-1
 
 // turn a stored font name into a pretty name:
-const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
-  Fl_Fontdesc *f = fl_fonts + fnum;
-  if (!f->fontname[0]) {
-    const char* p = f->name;
+const char* Fl.get_font_name(Fl_Font fnum, int* ap) {
+  Fl_Fontdesc  f = fl_fonts + fnum;
+  if (!f.fontname[0]) {
+    char* p = f.name;
     if (!p || !*p) {if (ap) *ap = 0; return "";}
     int type;
     switch (*p) {
@@ -50,13 +50,13 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
     case 'P': type = FL_BOLD | FL_ITALIC; break;
     default:  type = 0; break;
     }
-    strlcpy(f->fontname, p+1, ENDOFBUFFER);
-    if (type & FL_BOLD) strlcat(f->fontname, " bold", ENDOFBUFFER);
-    if (type & FL_ITALIC) strlcat(f->fontname, " italic", ENDOFBUFFER);
-    f->fontname[ENDOFBUFFER] = (char)type;
+    strlcpy(f.fontname, p+1, ENDOFBUFFER);
+    if (type & FL_BOLD) strlcat(f.fontname, " bold", ENDOFBUFFER);
+    if (type & FL_ITALIC) strlcat(f.fontname, " italic", ENDOFBUFFER);
+    f.fontname[ENDOFBUFFER] = (char)type;
   }
-  if (ap) *ap = f->fontname[ENDOFBUFFER];
-  return f->fontname;
+  if (ap) *ap = f.fontname[ENDOFBUFFER];
+  return f.fontname;
 }
 
 static int fl_free_font = FL_FREE_FONT;
@@ -66,22 +66,22 @@ enumcb(CONST LOGFONT    *lpelf,
        CONST TEXTMETRIC * /*lpntm*/,
        DWORD            /*FontType*/,
        LPARAM           p) {
-  if (!p && lpelf->lfCharSet != ANSI_CHARSET) return 1;
-  const char *n = lpelf->lfFaceName;
+  if (!p && lpelf.lfCharSet != ANSI_CHARSET) return 1;
+  char *n = lpelf.lfFaceName;
   for (int i=0; i<FL_FREE_FONT; i++) // skip if one of our built-in fonts
-    if (!strcmp(Fl::get_font_name((Fl_Font)i),n)) return 1;
+    if (!strcmp(Fl.get_font_name((Fl_Font)i),n)) return 1;
   char buffer[LF_FACESIZE + 1];
   strcpy(buffer+1, n);
-  buffer[0] = ' '; Fl::set_font((Fl_Font)(fl_free_font++), strdup(buffer));
-  if (lpelf->lfWeight <= 400)
-    buffer[0] = 'B', Fl::set_font((Fl_Font)(fl_free_font++), strdup(buffer));
-  buffer[0] = 'I'; Fl::set_font((Fl_Font)(fl_free_font++), strdup(buffer));
-  if (lpelf->lfWeight <= 400)
-    buffer[0] = 'P', Fl::set_font((Fl_Font)(fl_free_font++), strdup(buffer));
+  buffer[0] = ' '; Fl.set_font((Fl_Font)(fl_free_font++), strdup(buffer));
+  if (lpelf.lfWeight <= 400)
+    buffer[0] = 'B', Fl.set_font((Fl_Font)(fl_free_font++), strdup(buffer));
+  buffer[0] = 'I'; Fl.set_font((Fl_Font)(fl_free_font++), strdup(buffer));
+  if (lpelf.lfWeight <= 400)
+    buffer[0] = 'P', Fl.set_font((Fl_Font)(fl_free_font++), strdup(buffer));
   return 1;
 }
 
-Fl_Font Fl::set_fonts(const char* xstarname) {
+Fl_Font Fl.set_fonts(char* xstarname) {
   if (fl_free_font == FL_FREE_FONT) {// if not already been called
     if (!fl_gc) fl_GetDC(0);
     EnumFontFamilies(fl_gc, NULL, (FONTENUMPROC)enumcb, xstarname != 0);
@@ -107,7 +107,7 @@ EnumSizeCb(CONST LOGFONT    * /*lpelf*/,
     return 0;
   }
 
-  int add = lpntm->tmHeight - lpntm->tmInternalLeading;
+  int add = lpntm.tmHeight - lpntm.tmInternalLeading;
   add = MulDiv(add, 72, cyPerInch);
 
   int start = 0;
@@ -130,15 +130,15 @@ EnumSizeCb(CONST LOGFONT    * /*lpelf*/,
 
 
 int
-Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
+Fl.get_font_sizes(Fl_Font fnum, int*& sizep) {
   nbSize = 0;
-  Fl_Fontdesc *s = fl_fonts+fnum;
-  if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
+  Fl_Fontdesc  s = fl_fonts+fnum;
+  if (!s.name) s = fl_fonts; // empty slot in table, use entry 0
 
   if (!fl_gc) fl_GetDC(0);
   cyPerInch = GetDeviceCaps(fl_gc, LOGPIXELSY);
   if (cyPerInch < 1) cyPerInch = 1;
-  EnumFontFamilies(fl_gc, s->name+1, (FONTENUMPROC)EnumSizeCb, 0);
+  EnumFontFamilies(fl_gc, s.name+1, (FONTENUMPROC)EnumSizeCb, 0);
 
   sizep = sizes;
   return nbSize;

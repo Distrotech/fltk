@@ -1,5 +1,5 @@
 //
-// "$Id: font_mac.d 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: fl_font_mac.cxx 5384 2006-08-30 10:01:35Z matt $"
 //
 // MacOS font selection routines for the Fast Light Tool Kit (FLTK).
 //
@@ -27,20 +27,34 @@
 
 module fl.font_mac;
 
-private import std.c.osx.carbon.carbon;
-private import fl.x;
+private import fl.font;
 private import fl.fl;
+private import fl.x;
+private import fl.mac;
 private import fl.window;
+private import fl.flstring;
+private import std.c.stdlib;
 
-private import std.stdio;
+
+void fl_font(Fl_FontSize  s) {
+  fl_fontsize = s;
+  // we will use fl_fontsize later to access the required style and layout
+}
+
+int fl_font() {
+  return fl_font_;
+}
 
 class Fl_FontSize {
-public:
   Fl_FontSize next;    // linked list for this Fl_Fontdesc
-  this(char[] name, int Size) {
+  this(char* name, int Size) {
     next = null;
-    listbase = 0;
-    q_name = name.dup;
+    version (HAVE_GL) {
+      listbase = 0;
+    }
+    knowWidths = 0;
+      // OpenGL needs those for its font handling
+    q_name = strdup(name);
     size = Size;
     OSStatus err;
       // fill our structure with a few default values
@@ -88,70 +102,66 @@ public:
     err = ATSUSetLineControls (layout, kATSUFromTextBeginning, 1, aTag, aBytes, aAttr);
       // now we are finally ready to measure some letter to get the bounding box
     Fixed bBefore, bAfter, bAscent, bDescent;
-    err = ATSUGetUnjustifiedBounds(layout, kATSUFromTextBeginning, 1, &bBefore, &bAfter, &bAscent, &bDescent);
+    err = ATSUGetUnjustifiedBounds(layout, kATSUFromTextBeginning, 1, &bBefore, &bAfter, 
+          &bAscent, &bDescent);
       // Requesting a certain height font on Mac does not guarantee that ascent+descent
-      // equal the requested height. I consider requesting noew fonts until that is the
-      // case, but for now we simply make sure that our store ascent and descent add up 
-      // as expected.
+      // equal the requested height. fl_height will reflect the actual height that we got.
       // The font "Apple Chancery" is a pretty extreme example of overlapping letters.
     float fa = -FixedToFloat(bAscent), fd = -FixedToFloat(bDescent);
     if (fa>0.0f && fd>0.0f) {
-      float f = Size/(fa+fd);
-      ascent = cast(int)(fa*f+0.5f);
-      descent = Size - ascent;
+      //float f = Size/(fa+fd);
+      ascent = cast(short)fa; //int(fa*f+0.5f);
+      descent = cast(short)fd; //Size - ascent;
     }
     int w = FixedToInt(bAfter);
     if (w)  
       q_width = FixedToInt(bAfter);
   }
+
   ATSUTextLayout layout;
   ATSUStyle style;
   short ascent, descent, q_width;
-  char[] q_name;
+  short[256] width;
+  bool knowWidths;
+  char* q_name;
   int size;
   int minsize;          // smallest point size that should use this
   int maxsize;          // largest point size that should use this
-  uint listbase;	// base of display list, 0 = none
+  version(HAVE_GL) {
+    uint listbase;// base of display list, 0 = none
+  }
   ~this() {
-   // ++ todo: remove OpenGL font alocations
-    if (this == fl_fontsize) fl_fontsize = null;
+    if (this is fl_fontsize) fl_fontsize = null;
     ATSUDisposeTextLayout(layout);
     ATSUDisposeStyle(style);
   }
 }
 
-struct Fl_Fontdesc {
-  char[] name;
-  char[128] fontname;   // "Pretty" font name
-  Fl_FontSize first;   // linked list of sizes of this style
-  char** xlist;         // matched X font names
-  int n;                // size of xlist, negative = don't free xlist!
-};
 
 Fl_FontSize fl_fontsize = null;
 
 ////////////////////////////////////////////////////////////////
 
 static const Fl_Fontdesc built_in_table[] = [
-  {"Arial"},
-  {"Arial Bold"},
-  {"Arial Italic"},
-  {"Arial Bold Italic"},
-  {"Courier New"},
-  {"Courier New Bold"},
-  {"Courier New Italic"},
-  {"Courier New Bold Italic"},
-  {"Times New Roman"},
-  {"Times New Roman Bold"},
-  {"Times New Roman Italic"},
-  {"Times New Roman Bold Italic"},
-  {"Symbol"},
-  {"Monaco"},
-  {"Andale Mono"}, // there is no bold Monaco font on standard Mac
-  {"Webdings"},
+{"Arial"},
+{"Arial Bold"},
+{"Arial Italic"},
+{"Arial Bold Italic"},
+{"Courier New"},
+{"Courier New Bold"},
+{"Courier New Italic"},
+{"Courier New Bold Italic"},
+{"Times New Roman"},
+{"Times New Roman Bold"},
+{"Times New Roman Italic"},
+{"Times New Roman Bold Italic"},
+{"Symbol"},
+{"Monaco"},
+{"Andale Mono"}, // there is no bold Monaco font on standard Mac
+{"Webdings"},
 ];
 
-static const UniChar utf16lut[128] = [
+static UniChar utf16lut[128] = [
   0x00c4, 0x00c5, 0x00c7, 0x00c9, 0x00d1, 0x00d6, 0x00dc, 0x00e1, 
   0x00e0, 0x00e2, 0x00e4, 0x00e3, 0x00e5, 0x00e7, 0x00e9, 0x00e8, 
   0x00ea, 0x00eb, 0x00ed, 0x00ec, 0x00ee, 0x00ef, 0x00f1, 0x00f3, 
@@ -169,30 +179,32 @@ static const UniChar utf16lut[128] = [
   0xf8ff, 0x00d2, 0x00da, 0x00db, 0x00d9, 0x0131, 0x02c6, 0x02dc, 
   0x00af, 0x02d8, 0x02d9, 0x02da, 0x00b8, 0x02dd, 0x02db, 0x02c7, 
 ];
-static UniChar[] utf16buf;
-
-UniChar[] fl_macToUtf16(char[] txt)
+static UniChar *utf16buf = null;
+static int utf16len = 0;
+UniChar* fl_macToUtf16(char *txt, int len)
 {
-  uint i, len = txt.length;
-  utf16buf.length = len;
-  char *src = txt.ptr;
-  UniChar *dst = utf16buf;
-  foreach(c; txt) {
+  if ((len+1)>utf16len) {
+    utf16len = len+100;
+    free(utf16buf);
+    utf16buf = cast(UniChar*)malloc((utf16len+1)*UniChar.sizeof);
+  }
+  int i;
+  ubyte c;
+  ubyte* src = cast(ubyte*)txt;
+  UniChar* dst = utf16buf;
+  for (i=0; i<len; i++) {
+    c = *src++;
     *dst++ = (c<128) ? cast(UniChar)c : utf16lut[c-128];
   }
+  *dst = 0;
   return utf16buf;
 }
 
 Fl_Fontdesc[] fl_fonts = built_in_table;
 
-void fl_font(Fl_FontSize s) {
-  fl_fontsize = s;
-  // we will use fl_fontsize later to access the required style and layout
-}
-
 static Fl_FontSize find(int fnum, int size) {
-  Fl_Fontdesc s = fl_fonts[fnum];
-  if (!s.name) s = fl_fonts[0]; // use 0 if fnum undefined
+  Fl_Fontdesc* s = &fl_fonts[fnum];
+  if (!s.name) s = fl_fonts; // use 0 if fnum undefined
   Fl_FontSize f;
   for (f = s.first; f; f = f.next)
     if (f.minsize <= size && f.maxsize >= size) return f;
@@ -224,50 +236,83 @@ int fl_descent() {
   else return -1;
 }
 
-double fl_width(char[] txt) {
-  uint n = txt.length;
-  if (!fl_gc) {
-    Fl_Window w = Fl.first_window();
-    if (w) w.make_current();
-    if (!fl_gc) {
-      // We fall back to some internal QuickDraw port.
-      // The result should be the same.
-    }
-  }
+double fl_width(char* txt, int n) {
   if (!fl_fontsize) {
     fl_font(0, 12); // avoid a crash!
     if (!fl_fontsize)
-      return 0.0; // user must select a font first!
+      return 8*n; // user must select a font first!
   }
+  if (!fl_fontsize.knowWidths) {
+    if (!fl_gc) {
+      Fl_Window w = Fl.first_window();
+      if (w) w.make_current();
+      if (!fl_gc) {
+        if (fl_fontsize) return fl_fontsize.q_width*n;
+        return 8*n;
+        // We fall back to some internal QuickDraw port.
+        // The result should be the same.
+      }
+    }
+    char buf[2];
+    for (int i=0; i<256; i++) {
+      OSStatus err;
+      buf[0] = i;
+        // convert to UTF-16 first
+      UniChar *uniStr = fl_macToUtf16(buf, 1);
+        // now collect our ATSU resources
+      ATSUTextLayout layout = fl_fontsize.layout;
+      err = ATSUSetTextPointerLocation(layout, uniStr, kATSUFromTextBeginning, 1, 1);
+        // activate the current GC
+      ByteCount iSize = CGContextRef.sizeof;
+      ATSUAttributeTag iTag = kATSUCGContextTag;
+      ATSUAttributeValuePtr iValuePtr=&fl_gc;
+      ATSUSetLayoutControls(layout, 1, &iTag, &iSize, &iValuePtr);
+        // now measure the bounding box
+      Fixed bBefore, bAfter, bAscent, bDescent;
+      err = ATSUGetUnjustifiedBounds(layout, kATSUFromTextBeginning, 1, &bBefore, &bAfter, &bAscent, &bDescent);
+      fl_fontsize.width[i] = FixedToInt(bAfter);
+    }
+    fl_fontsize.knowWidths = 1;
+  }
+  int len = 0;
+  char *src = txt;
+  for (int j=0; j<n; j++) {
+    uint c = *src++;
+    len += fl_fontsize.width[c];
+  }
+  return len;
+}
+/+=
+double fl_width(ubyte c) {
+  return fl_width((char*)(&c), 1);
+}
+
+void fl_draw(char *str, int n, float x, float y);
+
+
+void fl_draw(char *str, int n, float x, float y) {
+version (__APPLE_QD__) {
+  fl_draw(str, n, (int)x, (int)y);
+} else version (__APPLE_QUARTZ__) {
   OSStatus err;
-    // convert to UTF-16 first
-  UniChar[] uniStr = fl_macToUtf16(txt);
+    // convert to UTF-16 first 
+  UniChar *uniStr = fl_macToUtf16(str, n);
     // now collect our ATSU resources
   ATSUTextLayout layout = fl_fontsize.layout;
-  err = ATSUSetTextPointerLocation(layout, uniStr.ptr, kATSUFromTextBeginning, n, n);
-    // activate the current GC
-  ByteCount iSize = CGContextRef.sizeof;
+
+  ByteCount iSize = sizeof(CGContextRef);
   ATSUAttributeTag iTag = kATSUCGContextTag;
-  ATSUAttributeValuePtr iValuePtr = &fl_gc;
+  ATSUAttributeValuePtr iValuePtr=&fl_gc;
   ATSUSetLayoutControls(layout, 1, &iTag, &iSize, &iValuePtr);
-    // now measure the bounding box
-  Fixed bBefore, bAfter, bAscent, bDescent;
-  err = ATSUGetUnjustifiedBounds(
-    layout, kATSUFromTextBeginning, n, 
-    &bBefore, &bAfter, &bAscent, &bDescent);
-  return FixedToInt(bAfter);
-}
 
-double fl_width(char c) {
-  char[1] txt = c;
-  return fl_width(txt);
+  err = ATSUSetTextPointerLocation(layout, uniStr, kATSUFromTextBeginning, n, n);
+  err = ATSUDrawText(layout, kATSUFromTextBeginning, n, FloatToFixed(x), FloatToFixed(y));
+} else {
+#  error : neither Quartz no Quickdraw chosen
 }
-
-double fl_width(char* str, int len) {
-  char[] dstr = str[0..len];
-  return fl_width(dstr);
 }
 
 //
-// End of "$Id: fl_font_mac.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: fl_font_mac.cxx 5384 2006-08-30 10:01:35Z matt $".
 //
+    End of automatic import -+/

@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Timer.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: timer.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Timer header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,42 +26,42 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Timer_H
-#define Fl_Timer_H
+module fl.timer;
 
-#ifndef Fl_Widget_H
-#include "Fl_Widget.H"
-#endif
+
+module fl.widget;
+public import fl.widget;
+}
 
 // values for type():
-#define FL_NORMAL_TIMER		0
-#define FL_VALUE_TIMER		1
-#define FL_HIDDEN_TIMER		2
+const int FL_NORMAL_TIMER = 0; 
+const int FL_VALUE_TIMER = 1; 
+const int FL_HIDDEN_TIMER = 2; 
 
-class FL_EXPORT Fl_Timer : public Fl_Widget {
+class Fl_Timer : Fl_Widget {
   static void stepcb(void *);
   void step();
   char on, direction_;
   double delay, total;
-  long lastsec,lastusec;
+  int lastsec,lastusec;
 protected:
   void draw();
 public:
   int handle(int);
-  Fl_Timer(uchar t,int x,int y,int w,int h, const char *l);
+  Fl_Timer(ubyte t,int x,int y,int w,int h, char *l);
   ~Fl_Timer();
   void value(double);
-  double value() const {return delay>0.0?delay:0.0;}
-  char direction() const {return direction_;}
+  double value() {return delay>0.0?delay:0.0;}
+  char direction() {return direction_;}
   void direction(char d) {direction_ = d;}
-  char suspended() const {return !on;}
+  char suspended() {return !on;}
   void suspended(char d);
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Timer.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: timer.d 4288 2005-04-16 00:13:17Z mike $".
 //
 
     End of automatic import -+/

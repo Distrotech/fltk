@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Float_Input.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: float_input.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Floating point input header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,20 +26,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Float_Input_H
-#define Fl_Float_Input_H
+module fl.float_input;
 
-#include "Fl_Input.H"
 
-class Fl_Float_Input : public Fl_Input {
+public import fl.input;
+
+class Fl_Float_Input : Fl_Input {
 public:
-    Fl_Float_Input(int X,int Y,int W,int H,const char *l = 0)
+    Fl_Float_Input(int X,int Y,int W,int H,char *l = 0)
 	: Fl_Input(X,Y,W,H,l) {type(FL_FLOAT_INPUT);}
 };
 
-#endif
+}
 
 //
-// End of "$Id: Fl_Float_Input.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: float_input.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

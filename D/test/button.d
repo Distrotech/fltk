@@ -35,7 +35,6 @@ public import fl.window;
 public import fl.button;
 
 void beepcb(Fl_Widget w, void* u) {
-//  printf("\007"); fflush(stdout);
   fl_beep();
 }
 

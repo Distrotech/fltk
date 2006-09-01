@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_File_Icon.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: file_icon.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Fl_File_Icon definitions.
 //
@@ -30,28 +30,28 @@
 // Include necessary header files...
 //
 
-#ifndef _Fl_Fl_File_Icon_H_
+version (!_Fl_Fl_File_Icon_H_) {
 #  define _Fl_Fl_File_Icon_H_
 
-#  include "Fl.H"
+public import fl.fl;
 
 
 //
 // Special color value for the icon color.
 //
 
-#  define FL_ICON_COLOR (Fl_Color)0xffffffff
+const int FL_ICON_COLOR = (Fl_Color)0xffffffff; 
 
 
 //
 // Fl_File_Icon class...
 //
 
-class FL_EXPORT Fl_File_Icon			//// Icon data
+class Fl_File_Icon			//// Icon data
 {
-  static Fl_File_Icon *first_;	// Pointer to first icon/filetype
-  Fl_File_Icon	*next_;		// Pointer to next icon/filetype
-  const char	*pattern_;	// Pattern string
+  static Fl_File_Icon  first_;	// Pointer to first icon/filetype
+  Fl_File_Icon	 next_;		// Pointer to next icon/filetype
+  char	*pattern_;	// Pattern string
   int		type_;		// Match only if directory or file?
   int		num_data_;	// Number of data elements
   int		alloc_data_;	// Number of allocated elements
@@ -80,7 +80,7 @@ class FL_EXPORT Fl_File_Icon			//// Icon data
     VERTEX			// Followed by scaled X,Y
   };
 
-  Fl_File_Icon(const char *p, int t, int nd = 0, short *d = 0);
+  Fl_File_Icon(char *p, int t, int nd = 0, short *d = 0);
   ~Fl_File_Icon();
 
   short		*add(short d);
@@ -93,31 +93,31 @@ class FL_EXPORT Fl_File_Icon			//// Icon data
 		  add((short)(y * 10000.0)); return (d); }
   void		clear() { num_data_ = 0; }
   void		draw(int x, int y, int w, int h, Fl_Color ic, int active = 1);
-  void		label(Fl_Widget *w);
-  static void	labeltype(const Fl_Label *o, int x, int y, int w, int h, Fl_Align a);
-  void		load(const char *f);
-  int		load_fti(const char *fti);
-  int		load_image(const char *i);
-  Fl_File_Icon	*next() { return (next_); }
-  const char	*pattern() { return (pattern_); }
+  void		label(Fl_Widget  w);
+  static void	labeltype(Fl_Label  o, int x, int y, int w, int h, Fl_Align a);
+  void		load(char *f);
+  int		load_fti(char *fti);
+  int		load_image(char *i);
+  Fl_File_Icon	 next() { return (next_); }
+  char	*pattern() { return (pattern_); }
   int		size() { return (num_data_); }
   int		type() { return (type_); }
   short		*value() { return (data_); }
 
-  static Fl_File_Icon *find(const char *filename, int filetype = ANY);
-  static Fl_File_Icon *first() { return (first_); }
+  static Fl_File_Icon  find(char *filename, int filetype = ANY);
+  static Fl_File_Icon  first() { return (first_); }
   static void	load_system_icons(void);
 };
 
-#endif // !_Fl_Fl_File_Icon_H_
+} // !_Fl_Fl_File_Icon_H_
 
 //
-// End of "$Id: Fl_File_Icon.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: file_icon.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_File_Icon.cxx 5190 2006-06-09 16:16:34Z mike $"
+// "$Id: file_icon.d 5190 2006-06-09 16:16:34Z mike $"
 //
 // Fl_File_Icon routines.
 //
@@ -146,13 +146,13 @@ class FL_EXPORT Fl_File_Icon			//// Icon data
 //
 // Contents:
 //
-//   Fl_File_Icon::Fl_File_Icon()       - Create a new file icon.
+//   Fl_File_Icon.Fl_File_Icon()       - Create a new file icon.
 //   Fl_File_Icon::~Fl_File_Icon()      - Remove a file icon.
-//   Fl_File_Icon::add()               - Add data to an icon.
-//   Fl_File_Icon::find()              - Find an icon based upon a given file.
-//   Fl_File_Icon::draw()              - Draw an icon.
-//   Fl_File_Icon::label()             - Set the widgets label to an icon.
-//   Fl_File_Icon::labeltype()         - Draw the icon label.
+//   Fl_File_Icon.add()               - Add data to an icon.
+//   Fl_File_Icon.find()              - Find an icon based upon a given file.
+//   Fl_File_Icon.draw()              - Draw an icon.
+//   Fl_File_Icon.label()             - Set the widgets label to an icon.
+//   Fl_File_Icon.labeltype()         - Draw the icon label.
 //
 
 //
@@ -161,20 +161,20 @@ class FL_EXPORT Fl_File_Icon			//// Icon data
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #if (defined(WIN32) && ! defined(__CYGWIN__)) || defined(__EMX__)
 #  include <io.h>
-#  define F_OK	0
-#else
+const int F_OK = 0; 
+} else {
 #  include <unistd.h>
-#endif /* WIN32 || __EMX__ */
+} /* WIN32 || __EMX__ */
 
-#include <FL/Fl_File_Icon.H>
-#include <FL/Fl_Widget.H>
-#include <FL/fl_draw.H>
+private import fl.file_icon;
+private import fl.widget;
+private import fl.draw;
 #include <FL/filename.H>
 
 
@@ -182,27 +182,27 @@ class FL_EXPORT Fl_File_Icon			//// Icon data
 // Define missing POSIX/XPG4 macros as needed...
 //
 
-#ifndef S_ISDIR
+version (!S_ISDIR) {
 #  define S_ISBLK(m) (((m) & S_IFMT) == S_IFBLK)
 #  define S_ISCHR(m) (((m) & S_IFMT) == S_IFCHR)
 #  define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
 #  define S_ISFIFO(m) (((m) & S_IFMT) == S_IFIFO)
 #  define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
-#endif /* !S_ISDIR */
+} /* !S_ISDIR */
 
 
 //
 // Icon cache...
 //
 
-Fl_File_Icon	*Fl_File_Icon::first_ = (Fl_File_Icon *)0;
+Fl_File_Icon	 Fl_File_Icon.first_ = (Fl_File_Icon  )0;
 
 
 //
-// 'Fl_File_Icon::Fl_File_Icon()' - Create a new file icon.
+// 'Fl_File_Icon.Fl_File_Icon()' - Create a new file icon.
 //
 
-Fl_File_Icon::Fl_File_Icon(const char *p,	/* I - Filename pattern */
+Fl_File_Icon.Fl_File_Icon(char *p,	/* I - Filename pattern */
                 	   int        t,	/* I - File type */
 			   int        nd,	/* I - Number of data values */
 			   short      *d)	/* I - Data values */
@@ -237,22 +237,22 @@ Fl_File_Icon::Fl_File_Icon(const char *p,	/* I - Filename pattern */
 
 Fl_File_Icon::~Fl_File_Icon()
 {
-  Fl_File_Icon	*current,	// Current icon in list
+  Fl_File_Icon	 current,	// Current icon in list
 		*prev;		// Previous icon in list
 
 
   // Find the icon in the list...
-  for (current = first_, prev = (Fl_File_Icon *)0;
-       current != this && current != (Fl_File_Icon *)0;
-       prev = current, current = current->next_);
+  for (current = first_, prev = (Fl_File_Icon  )0;
+       current != this && current != (Fl_File_Icon  )0;
+       prev = current, current = current.next_);
 
   // Remove the icon from the list as needed...
   if (current)
   {
     if (prev)
-      prev->next_ = current->next_;
+      prev.next_ = current.next_;
     else
-      first_ = current->next_;
+      first_ = current.next_;
   }
 
   // Free any memory used...
@@ -262,11 +262,11 @@ Fl_File_Icon::~Fl_File_Icon()
 
 
 //
-// 'Fl_File_Icon::add()' - Add data to an icon.
+// 'Fl_File_Icon.add()' - Add data to an icon.
 //
 
 short *				// O - Pointer to new data value
-Fl_File_Icon::add(short d)	// I - Data to add
+Fl_File_Icon.add(short d)	// I - Data to add
 {
   short	*dptr;			// Pointer to new data value
 
@@ -296,53 +296,53 @@ Fl_File_Icon::add(short d)	// I - Data to add
 
 
 //
-// 'Fl_File_Icon::find()' - Find an icon based upon a given file.
+// 'Fl_File_Icon.find()' - Find an icon based upon a given file.
 //
 
-Fl_File_Icon *				// O - Matching file icon or NULL
-Fl_File_Icon::find(const char *filename,// I - Name of file */
+Fl_File_Icon  				// O - Matching file icon or NULL
+Fl_File_Icon.find(char *filename,// I - Name of file */
                    int        filetype)	// I - Enumerated file type
 {
-  Fl_File_Icon	*current;		// Current file in list
-#ifndef WIN32
+  Fl_File_Icon	 current;		// Current file in list
+version (!WIN32) {
   struct stat	fileinfo;		// Information on file
-#endif // !WIN32
-  const char	*name;			// Base name of filename
+} // !WIN32
+  char	*name;			// Base name of filename
 
 
   // Get file information if needed...
   if (filetype == ANY)
   {
-#ifdef WIN32
+version (WIN32) {
     if (filename[strlen(filename) - 1] == '/')
       filetype = DIRECTORY;
     else if (fl_filename_isdir(filename))
       filetype = DIRECTORY;
     else
       filetype = PLAIN;
-#else
+} else {
     if (!stat(filename, &fileinfo))
     {
       if (S_ISDIR(fileinfo.st_mode))
         filetype = DIRECTORY;
-#  ifdef S_IFIFO
+version (S_IFIFO) {
       else if (S_ISFIFO(fileinfo.st_mode))
         filetype = FIFO;
-#  endif // S_IFIFO
-#  if defined(S_ICHR) && defined(S_IBLK)
+} // S_IFIFO
+version (S_ICHR) && defined(S_IBLK) {
       else if (S_ISCHR(fileinfo.st_mode) || S_ISBLK(fileinfo.st_mode))
         filetype = DEVICE;
-#  endif // S_ICHR && S_IBLK
-#  ifdef S_ILNK
+} // S_ICHR && S_IBLK
+version (S_ILNK) {
       else if (S_ISLNK(fileinfo.st_mode))
         filetype = LINK;
-#  endif // S_ILNK
+} // S_ILNK
       else
         filetype = PLAIN;
     }
     else
       filetype = PLAIN;
-#endif // WIN32
+} // WIN32
   }
 
   // Look at the base name in the filename
@@ -350,10 +350,10 @@ Fl_File_Icon::find(const char *filename,// I - Name of file */
 
   // Loop through the available file types and return any match that
   // is found...
-  for (current = first_; current != (Fl_File_Icon *)0; current = current->next_)
-    if ((current->type_ == filetype || current->type_ == ANY) &&
-        (fl_filename_match(filename, current->pattern_) ||
-	 fl_filename_match(name, current->pattern_)))
+  for (current = first_; current != (Fl_File_Icon  )0; current = current.next_)
+    if ((current.type_ == filetype || current.type_ == ANY) &&
+        (fl_filename_match(filename, current.pattern_) ||
+	 fl_filename_match(name, current.pattern_)))
       break;
 
   // Return the match (if any)...
@@ -362,11 +362,11 @@ Fl_File_Icon::find(const char *filename,// I - Name of file */
 
 
 //
-// 'Fl_File_Icon::draw()' - Draw an icon.
+// 'Fl_File_Icon.draw()' - Draw an icon.
 //
 
 void
-Fl_File_Icon::draw(int      x,		// I - Upper-lefthand X
+Fl_File_Icon.draw(int      x,		// I - Upper-lefthand X
         	   int      y,		// I - Upper-lefthand Y
 		   int      w,		// I - Width of bounding box
 		   int      h,		// I - Height of bounding box
@@ -426,8 +426,8 @@ Fl_File_Icon::draw(int      x,		// I - Upper-lefthand X
 	      case OUTLINEPOLYGON :
 		  fl_end_complex_polygon();
 
-        	  oc = (Fl_Color)((((unsigned short *)prim)[1] << 16) | 
-	                	  ((unsigned short *)prim)[2]);
+        	  oc = (Fl_Color)((((ushort *)prim)[1] << 16) | 
+	                	  ((ushort *)prim)[2]);
                   if (active)
 		  {
                     if (oc == FL_ICON_COLOR)
@@ -462,8 +462,8 @@ Fl_File_Icon::draw(int      x,		// I - Upper-lefthand X
 	  break;
 
       case COLOR :
-          c = (Fl_Color)((((unsigned short *)d)[1] << 16) | 
-	                   ((unsigned short *)d)[2]);
+          c = (Fl_Color)((((ushort *)d)[1] << 16) | 
+	                   ((ushort *)d)[2]);
 
           if (c == FL_ICON_COLOR)
 	    c = ic;
@@ -528,8 +528,8 @@ Fl_File_Icon::draw(int      x,		// I - Upper-lefthand X
       case OUTLINEPOLYGON :
 	  fl_end_polygon();
 
-          oc = (Fl_Color)((((unsigned short *)prim)[1] << 16) | 
-	                  ((unsigned short *)prim)[2]);
+          oc = (Fl_Color)((((ushort *)prim)[1] << 16) | 
+	                  ((ushort *)prim)[2]);
           if (active)
 	  {
             if (oc == FL_ICON_COLOR)
@@ -565,40 +565,40 @@ Fl_File_Icon::draw(int      x,		// I - Upper-lefthand X
 
 
 //
-// 'Fl_File_Icon::label()' - Set the widget's label to an icon.
+// 'Fl_File_Icon.label()' - Set the widget's label to an icon.
 //
 
 void
-Fl_File_Icon::label(Fl_Widget *w)	// I - Widget to label
+Fl_File_Icon.label(Fl_Widget  w)	// I - Widget to label
 {
-  Fl::set_labeltype(_FL_ICON_LABEL, labeltype, 0);
-  w->label(_FL_ICON_LABEL, (const char*)this);
+  Fl.set_labeltype(_FL_ICON_LABEL, labeltype, 0);
+  w.label(_FL_ICON_LABEL, (char*)this);
 }
 
 
 //
-// 'Fl_File_Icon::labeltype()' - Draw the icon label.
+// 'Fl_File_Icon.labeltype()' - Draw the icon label.
 //
 
 void
-Fl_File_Icon::labeltype(const Fl_Label *o,	// I - Label data
+Fl_File_Icon.labeltype(Fl_Label  o,	// I - Label data
                 	int            x,	// I - X position of label
 			int            y,	// I - Y position of label
 			int            w,	// I - Width of label
 			int            h,	// I - Height of label
 			Fl_Align       a)	// I - Label alignment (not used)
 {
-  Fl_File_Icon *icon;			// Pointer to icon data
+  Fl_File_Icon  icon;			// Pointer to icon data
 
 
   (void)a;
 
-  icon = (Fl_File_Icon *)(o->value);
-  if (icon) icon->draw(x, y, w, h, (Fl_Color)(o->color));
+  icon = (Fl_File_Icon  )(o.value);
+  if (icon) icon.draw(x, y, w, h, (Fl_Color)(o.color));
 }
 
 
 //
-// End of "$Id: Fl_File_Icon.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: file_icon.d 5190 2006-06-09 16:16:34Z mike $".
 //
     End of automatic import -+/

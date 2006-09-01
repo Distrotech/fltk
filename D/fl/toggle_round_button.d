@@ -1,6 +1,6 @@
 /+- This file was imported from C++ using a script
 //
-// "$Id: Fl_Toggle_Round_Button.H 4288 2005-04-16 00:13:17Z mike $"
+// "$Id: toggle_round_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
 // Toggle round button header file for the Fast Light Tool Kit (FLTK).
 //
@@ -28,12 +28,12 @@
 
 // provided for back-compatability only
 
-#ifndef Fl_Toggle_Round_Button
-#include "Fl_Round_Button.H"
-#define Fl_Toggle_Round_Button Fl_Round_Button
-#endif
+version (!Fl_Toggle_Round_Button) {
+public import fl.round_button;
+const int Fl_Toggle_Round_Button = Fl_Round_Button; 
+}
 
 //
-// End of "$Id: Fl_Toggle_Round_Button.H 4288 2005-04-16 00:13:17Z mike $".
+// End of "$Id: toggle_round_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
     End of automatic import -+/

@@ -26,16 +26,16 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef Fl_Spinner_H
-#  define Fl_Spinner_H
+module fl.spinner;
+
 
 //
 // Include necessary headers...
 //
 
-#  include <FL/Fl_Group.H>
-#  include <FL/Fl_Input.H>
-#  include <FL/Fl_Repeat_Button.H>
+public import fl.group;
+public import fl.input;
+public import fl.repeat_button;
 #  include <stdio.h>
 #  include <stdlib.h>
 
@@ -44,63 +44,77 @@
 // Fl_Spinner widget class...
 //
 
-class Fl_Spinner : public Fl_Group
+class Fl_Spinner : Fl_Group
 {
   double	value_;			// Current value
   double	minimum_;		// Minimum value
   double	maximum_;		// Maximum value
   double	step_;			// Amount to add/subtract for up/down
-  const char	*format_;		// Format string
+  char	*format_;		// Format string
 
   Fl_Input	input_;			// Input field for the value
   Fl_Repeat_Button
 		up_button_,		// Up button
 		down_button_;		// Down button
 
-  static void	sb_cb(Fl_Widget *w, Fl_Spinner *sb) {
+
+  static void	sb_cb(Fl_Widget  w, Fl_Spinner  sb) {
 		  double v;		// New value
 
-		  if (w == &(sb->input_)) {
+		  if (w == &(sb.input_)) {
 		    // Something changed in the input field...
-		    v = atof(sb->input_.value());
+		    v = atof(sb.input_.value());
 
-		    if (v < sb->minimum_) {
-		      sb->value_ = sb->minimum_;
-		      sb->update();
-		    } else if (v > sb->maximum_) {
-		      sb->value_ = sb->maximum_;
-		      sb->update();
-		    } else sb->value_ = v;
-		  } else if (w == &(sb->up_button_)) {
+		    if (v < sb.minimum_) {
+		      sb.value_ = sb.minimum_;
+		      sb.update();
+		    } else if (v > sb.maximum_) {
+		      sb.value_ = sb.maximum_;
+		      sb.update();
+		    } else sb.value_ = v;
+		  } else if (w == &(sb.up_button_)) {
 		    // Up button pressed...
-		    v = sb->value_ + sb->step_;
+		    v = sb.value_ + sb.step_;
 
-		    if (v > sb->maximum_) sb->value_ = sb->minimum_;
-		    else sb->value_ = v;
+		    if (v > sb.maximum_) sb.value_ = sb.minimum_;
+		    else sb.value_ = v;
 
-		    sb->update();
-		  } else if (w == &(sb->down_button_)) {
+		    sb.update();
+		  } else if (w == &(sb.down_button_)) {
 		    // Down button pressed...
-		    v = sb->value_ - sb->step_;
+		    v = sb.value_ - sb.step_;
 
-		    if (v < sb->minimum_) sb->value_ = sb->maximum_;
-		    else sb->value_ = v;
+		    if (v < sb.minimum_) sb.value_ = sb.maximum_;
+		    else sb.value_ = v;
 
-		    sb->update();
+		    sb.update();
 		  }
 
-		  sb->do_callback();
+		  sb.do_callback();
 		}
   void		update() {
 		  char s[255];		// Value string
 
-		  sprintf(s, format_, value_);
+                  if (format_[0]=='%'&&format_[1]=='.'&&format_[2]=='*') {  // precision argument
+                    // this code block is a simplified version of
+                    // Fl_Valuator.format() and works well (but looks ugly)
+                    int c = 0;
+                    char temp[64], *sp = temp;
+                    sprintf(temp, "%.12f", step_);
+                    while (*sp) sp++;
+                    sp--;
+                    while (sp>temp && *sp=='0') sp--;
+                    while (sp>temp && (*sp>='0' && *sp<='9')) { sp--; c++; }
+		    sprintf(s, format_, c, value_);
+                  } else {
+		    sprintf(s, format_, value_);
+                  }
 		  input_.value(s);
 		}
 
   public:
 
-		Fl_Spinner(int X, int Y, int W, int H, const char *L = 0)
+		Fl_Spinner(int X, int Y, int W, int H, char *L = 0)
 		  : Fl_Group(X, Y, W, H, L),
 		    input_(X, Y, W - H / 2 - 2, H),
 		    up_button_(X + W - H / 2 - 2, Y, H / 2 + 2, H / 2, "@-22<"),
@@ -114,70 +128,70 @@ class Fl_Spinner : public Fl_Group
 		  step_    = 1.0;
 		  format_  = "%.0f";
 
-		  align(FL_ALIGN_LEFT);
+		  alignment(FL_ALIGN_LEFT);
 
 		  input_.value("1");
 		  input_.type(FL_INT_INPUT);
 		  input_.when(FL_WHEN_CHANGED);
-		  input_.callback((Fl_Callback *)sb_cb, this);
+		  input_.callback((Fl_Callback  )sb_cb, this);
 
-		  up_button_.callback((Fl_Callback *)sb_cb, this);
+		  up_button_.callback((Fl_Callback  )sb_cb, this);
 
-		  down_button_.callback((Fl_Callback *)sb_cb, this);
+		  down_button_.callback((Fl_Callback  )sb_cb, this);
 		}
 
-  const char	*format() { return (format_); }
-  void		format(const char *f) { format_ = f; update(); }
+  char	*format() { return (format_); }
+  void		format(char *f) { format_ = f; update(); }
   // Speling mistaks retained for source compatibility...
-  double	maxinum() const { return (maximum_); }
-  double	maximum() const { return (maximum_); }
+  double	maxinum() { return (maximum_); }
+  double	maximum() { return (maximum_); }
   void		maximum(double m) { maximum_ = m; }
-  double	mininum() const { return (minimum_); }
-  double	minimum() const { return (minimum_); }
+  double	mininum() { return (minimum_); }
+  double	minimum() { return (minimum_); }
   void		minimum(double m) { minimum_ = m; }
   void		range(double a, double b) { minimum_ = a; maximum_ = b; }
   void		resize(int X, int Y, int W, int H) {
-		  Fl_Group::resize(X,Y,W,H);
+		  Fl_Group.resize(X,Y,W,H);
 
 		  input_.resize(X, Y, W - H / 2 - 2, H);
 		  up_button_.resize(X + W - H / 2 - 2, Y, H / 2 + 2, H / 2);
 		  down_button_.resize(X + W - H / 2 - 2, Y + H - H / 2,
 		                      H / 2 + 2, H / 2);
 		}
-  double	step() const { return (step_); }
-  void		step(double s) { step_ = s; }
-  Fl_Color	textcolor() const {
+  double	step() { return (step_); }
+  void		step(double s) { step_ = s; update(); }
+  Fl_Color	textcolor() {
 		  return (input_.textcolor());
 		}
   void		textcolor(Fl_Color c) {
 		  input_.textcolor(c);
 		}
-  uchar		textfont() const {
+  ubyte		textfont() {
 		  return (input_.textfont());
 		}
-  void		textfont(uchar f) {
+  void		textfont(ubyte f) {
 		  input_.textfont(f);
 		}
-  uchar		textsize() const {
+  ubyte		textsize() {
 		  return (input_.textsize());
 		}
-  void		textsize(uchar s) {
+  void		textsize(ubyte s) {
 		  input_.textsize(s);
 		}
-  uchar		type() const { return (input_.type()); }
-  void		type(uchar v) { 
-    if (v==FL_FLOAT_INPUT) {
-      format("%g");
-    } else {
-      format("%.0f");
-    }
-    input_.type(v); 
-  }
-  double	value() const { return (value_); }
+  ubyte		type() { return (input_.type()); }
+  void		type(ubyte v) { 
+                  if (v==FL_FLOAT_INPUT) {
+                    format("%.*f");
+                  } else {
+                    format("%.0f");
+                  }
+                  input_.type(v); 
+                }
+  double	value() { return (value_); }
   void		value(double v) { value_ = v; update(); }
 };
 
-#endif // !Fl_Spinner_H
+} // !Fl_Spinner_H
 
 //
 // End of "$Id$".

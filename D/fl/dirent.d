@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: dirent.h 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -26,10 +25,11 @@
 //     http://www.fltk.org/str.php
 //
 
+module fl.dirent;
+
 // this file is for back-compatability only
-#include "filename.H"
+public import fl.filename;
 
 //
 // End of "$Id: dirent.h 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/

@@ -26,12 +26,12 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/fl_draw.H>
+private import fl.draw;
 #include <FL/Enumerations.H>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
-#ifdef __APPLE__
+version (__APPLE__) {
  
 // These function assume a western code page. If you need to support 
 // scripts that are not part of this code page, you might want to
@@ -51,7 +51,7 @@
 // unknown characters with an upsidedown question mark.
 
 // This table converts MSWindows-1252/Latin 1 into MacRoman encoding
-static uchar latin2roman[256] = {
+static ubyte latin2roman[256] = {
 0xdb, 0xc0, 0xe2, 0xc4, 0xe3, 0xc9, 0xa0, 0xe0, 0xf6, 0xe4, 0xc0, 0xdc, 0xce, 0xc0, 0xc0, 0xc0, 
 0xc0, 0xd4, 0xd5, 0xd2, 0xd3, 0xa5, 0xd0, 0xd1, 0xf7, 0xaa, 0xc0, 0xdd, 0xcf, 0xc0, 0xc0, 0xd9, 
 0xca, 0xc1, 0xa2, 0xa3, 0xc0, 0xb4, 0xc0, 0xa4, 0xac, 0xa9, 0xbb, 0xc7, 0xc2, 0xc0, 0xa8, 0xf8, 
@@ -63,7 +63,7 @@ static uchar latin2roman[256] = {
 };
 
 // This table converts MacRoman into MSWindows-1252/Latin 1
-static uchar roman2latin[256] = {
+static ubyte roman2latin[256] = {
 0xc4, 0xc5, 0xc7, 0xc9, 0xd1, 0xd6, 0xdc, 0xe1, 0xe0, 0xe2, 0xe4, 0xe3, 0xe5, 0xe7, 0xe9, 0xe8, 
 0xea, 0xeb, 0xed, 0xec, 0xee, 0xef, 0xf1, 0xf3, 0xf2, 0xf4, 0xf6, 0xf5, 0xfa, 0xf9, 0xfb, 0xfc, 
 0x86, 0xb0, 0xa2, 0xa3, 0xa7, 0x95, 0xb6, 0xdf, 0xae, 0xa9, 0x99, 0xb4, 0xa8, 0xbf, 0xc6, 0xd8, 
@@ -77,7 +77,7 @@ static uchar roman2latin[256] = {
 static char *buf = 0;
 static int n_buf = 0;
 
-const char *fl_latin1_to_local(const char *t, int n)  
+const char *fl_latin1_to_local(char *t, int n)  
 {
   if (n==-1) n = strlen(t);
   if (n<=n_buf) {
@@ -85,10 +85,10 @@ const char *fl_latin1_to_local(const char *t, int n)
     if (buf) free(buf);
     buf = (char*)malloc(n_buf);
   }
-  const uchar *src = (const uchar*)t;
-  uchar *dst = (uchar*)buf;
+  ubyte *src = (ubyte*)t;
+  ubyte *dst = (ubyte*)buf;
   for ( ; n>0; n--) {
-    uchar c = *src;
+    ubyte c = *src;
     if (c>127) 
       *dst = latin2roman[c-128];
     else
@@ -98,7 +98,7 @@ const char *fl_latin1_to_local(const char *t, int n)
   return buf;
 }
 
-const char *fl_local_to_latin1(const char *t, int n)
+const char *fl_local_to_latin1(char *t, int n)
 {
   if (n==-1) n = strlen(t);
   if (n<=n_buf) {
@@ -106,10 +106,10 @@ const char *fl_local_to_latin1(const char *t, int n)
     if (buf) free(buf);
     buf = (char*)malloc(n_buf);
   }
-  const uchar *src = (const uchar*)t;
-  uchar *dst = (uchar*)buf;
+  ubyte *src = (ubyte*)t;
+  ubyte *dst = (ubyte*)buf;
   for ( ; n>0; n--) {
-    uchar c = *src++;
+    ubyte c = *src++;
     if (c>127)
       *dst++ = roman2latin[c-128];
     else
@@ -119,19 +119,19 @@ const char *fl_local_to_latin1(const char *t, int n)
   return buf;
 }
 
-#else 
+} else { 
 
-const char *fl_latin1_to_local(const char *t, int) 
+const char *fl_latin1_to_local(char *t, int) 
 {
   return t;
 }
 
-const char *fl_local_to_latin1(const char *t, int)
+const char *fl_local_to_latin1(char *t, int)
 {
   return t;
 }
 
-#endif
+}
 
 //
 // End of "$Id: fl_encoding_latin1.cxx 5190 2006-06-09 16:16:34Z mike $".

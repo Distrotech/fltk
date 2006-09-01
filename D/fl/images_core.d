@@ -35,15 +35,15 @@
 // Include necessary header files...
 //
 
-#include <FL/Fl_Shared_Image.H>
-#include <FL/Fl_BMP_Image.H>
-#include <FL/Fl_GIF_Image.H>
-#include <FL/Fl_JPEG_Image.H>
-#include <FL/Fl_PNG_Image.H>
-#include <FL/Fl_PNM_Image.H>
+private import fl.shared_image;
+private import fl.bmp_image;
+private import fl.gif_image;
+private import fl.jpeg_image;
+private import fl.png_image;
+private import fl.pnm_image;
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+private import fl.flstring;
 
 
 //
@@ -51,7 +51,7 @@
 // the extra image formats that aren't part of the core FLTK library.
 //
 
-static Fl_Image	*fl_check_images(const char *name, uchar *header, int headerlen);
+static Fl_Image	 fl_check_images(char *name, ubyte *header, int headerlen);
 
 
 //
@@ -59,7 +59,7 @@ static Fl_Image	*fl_check_images(const char *name, uchar *header, int headerlen)
 //
 
 void fl_register_images() {
-  Fl_Shared_Image::add_handler(fl_check_images);
+  Fl_Shared_Image.add_handler(fl_check_images);
 }
 
 
@@ -67,9 +67,9 @@ void fl_register_images() {
 // 'fl_check_images()' - Check for a supported image format.
 //
 
-Fl_Image *					// O - Image, if found
-fl_check_images(const char *name,		// I - Filename
-                uchar      *header,		// I - Header data from file
+Fl_Image  					// O - Image, if found
+fl_check_images(char *name,		// I - Filename
+                ubyte      *header,		// I - Header data from file
 		int        headerlen) {		// I - Amount of data
   if (memcmp(header, "GIF87a", 6) == 0 ||
       memcmp(header, "GIF89a", 6) == 0)	// GIF file
@@ -82,18 +82,18 @@ fl_check_images(const char *name,		// I - Filename
 					// Portable anymap
     return new Fl_PNM_Image(name);
 
-#ifdef HAVE_LIBPNG
+version (HAVE_LIBPNG) {
   if (memcmp(header, "\211PNG", 4) == 0)// PNG file
     return new Fl_PNG_Image(name);
-#endif // HAVE_LIBPNG
+} // HAVE_LIBPNG
 
-#ifdef HAVE_LIBJPEG
+version (HAVE_LIBJPEG) {
   if (memcmp(header, "\377\330\377", 3) == 0 &&
 					// Start-of-Image
       header[3] >= 0xc0 && header[3] <= 0xef)
 	   				// APPn for JPEG file
     return new Fl_JPEG_Image(name);
-#endif // HAVE_LIBJPEG
+} // HAVE_LIBJPEG
 
   return 0;
 }
