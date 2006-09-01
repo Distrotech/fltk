@@ -3,4 +3,7 @@ This is a list of files that have been ported to "D":
 
 fl/box.d
 fl/line_style.d
+fl/widget.d
+fl/button.d
+
 

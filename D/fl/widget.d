@@ -45,9 +45,7 @@ alias void function(Fl_Widget, int) Fl_Callback1;
 
 class Fl_Widget {
 private:
-/+=
-  friend class Fl_Group;
-=+/
+
   package Fl_Group parent_;
   Fl_Callback callback_;
   void* user_data_;
@@ -65,7 +63,11 @@ private:
   char *tooltip_;
 
 package:
-  this(int X, int Y, int W, int H, char* L=null) {
+  static const int QUEUE_SIZE = 20;
+  static Fl_Widget obj_queue[QUEUE_SIZE];
+  static int obj_head, obj_tail;
+
+ this(int X, int Y, int W, int H, char* L=null) {
     x_ = X; y_ = Y; w_ = W; h_ = H;
   
     label_.value  = L;
@@ -179,9 +181,14 @@ package:
   } 
 
 public:
-/+=
-  ~Fl_Widget();
-=+/
+
+  ~this() {
+    Fl.clear_widget_pointer(this);
+    if (flags() & COPIED_LABEL) free(label_.value);
+    parent_ = null; // Don't throw focus to a parent widget.
+    fl_throw_focus(this);
+  }
+
   void draw() {
     fl_color(color_);
     fl_rectf(x_, y_, w_, h_);
@@ -242,9 +249,19 @@ public:
     label_.value=a;
     redraw_label();
   }
-/+=
-  void copy_label(char* a);
-=+/
+
+  void copy_label(char *a) {
+    if (flags() & COPIED_LABEL) free(label_.value);
+    if (a) {
+      set_flag(COPIED_LABEL);
+      label_.value = strdup(a);
+    } else {
+      clear_flag(COPIED_LABEL);
+      label_.value = null;
+    }
+    redraw_label();
+  }
+
   void label(Fl_Labeltype a,char* b) {label_.type = a; label_.value = b;}
   Fl_Labeltype labeltype() {return label_.type;}
   void labeltype(Fl_Labeltype a) {label_.type = a;}
@@ -259,20 +276,18 @@ public:
   Fl_Image deimage() {return label_.deimage;}
   void deimage(Fl_Image a) {label_.deimage=a;}
   char* tooltip() {return tooltip_;}
-/+=
-  void tooltip(char *t);
-=+/
+  void tooltip(char *tt) { tooltip_ = tt; }
+
   Fl_Callback_p callback() {return callback_;}
   void callback(Fl_Callback c, void* p) {callback_=c; user_data_=p;}
   void callback(Fl_Callback c) {callback_=c;}
-/+=
-  void callback(Fl_Callback0 c) {callback_=(Fl_Callback )c;}
-  void callback(Fl_Callback1 c, int p=0) {callback_=(Fl_Callback )c; user_data_=(void*)p;}
+  void callback(Fl_Callback0 c) {callback_=cast(Fl_Callback)c;}
+  void callback(Fl_Callback1 c, int p=0) {callback_=cast(Fl_Callback)c; user_data_=cast(void*)p;}
   void* user_data() {return user_data_;}
   void user_data(void* v) {user_data_ = v;}
-  int argument() {return (int)user_data_;}
-  void argument(int v) {user_data_ = (void*)v;}
-=+/
+  int argument() {return cast(int)user_data_;}
+  void argument(int v) {user_data_ = cast(void*)v;}
+
   Fl_When when() {return when_;}
   void when(ubyte i) {when_ = i;}
 
@@ -316,10 +331,31 @@ public:
       if (!o.active()) return 0;
     return 1;
   }
-/+=
-  void activate();
-  void deactivate();
-=+/
+
+  void activate() {
+    if (!active()) {
+      clear_flag(INACTIVE);
+      if (active_r()) {
+        redraw();
+        redraw_label();
+        handle(FL_ACTIVATE);
+        if (inside(Fl.focus())) Fl.focus().take_focus();
+      }
+    }
+  }
+
+  void deactivate() {
+    if (active_r()) {
+      set_flag(INACTIVE);
+      redraw();
+      redraw_label();
+      handle(FL_DEACTIVATE);
+      fl_throw_focus(this);
+    } else {
+      set_flag(INACTIVE);
+    }
+  }
+
   int output() {return (flags_&OUTPUT);}
   void set_output() {flags_ |= OUTPUT;}
   void clear_output() {flags_ &= ~OUTPUT;}
@@ -355,12 +391,37 @@ public:
     if (!(callback_ is &default_callback)) 
       clear_changed();
   }
-/+=
-  void do_callback(Fl_Widget  o,void* arg=0) {callback_(o,arg); if (callback_ != default_callback) clear_changed();}
-  void do_callback(Fl_Widget  o,int arg) {callback_(o,(void*)arg); if (callback_ != default_callback) clear_changed();}
-  int test_shortcut();
-  static int test_shortcut(char*);
-=+/
+
+  void do_callback(Fl_Widget o, void* arg=null) {
+    callback_(o, arg); 
+    if (!(callback_ is &default_callback)) 
+      clear_changed();
+  }
+
+  void do_callback(Fl_Widget o, int arg) {
+    callback_(o, cast(void*)arg); 
+    if (!(callback_ is &default_callback))
+      clear_changed();
+  }
+
+  int test_shortcut(char *l) {
+    char c = Fl.event_text()[0];
+    if (!c || !l) return 0;
+    for (;;) {
+      if (!*l) return 0;
+      if (*l++ == '&' && *l) {
+        if (*l == '&') l++;
+        else if (*l == c) return 1;
+        else return 0;
+      }
+    }
+  }
+  
+  int test_shortcut() {
+    if (!(flags()&SHORTCUT_LABEL)) return 0;
+    return test_shortcut(label());
+  }
+
   // return true if widget is inside (or equal to) this:
   // Returns false for null widgets.
   int contains(Fl_Widget o) {
@@ -492,9 +553,9 @@ public:
     l1.draw(X,Y,W,H,a);
     fl_draw_shortcut = 0;
   }     
-/+=
-  void measure_label(int& xx, int& yy) {label_.measure(xx,yy);}
-=+/
+
+  void measure_label(inout int xx, inout int yy) {label_.measure(xx,yy);}
+
   Fl_Window window() {
     for (Fl_Widget o = parent(); o; o = o.parent())
       if (o.type() >= FL_WINDOW) return cast(Fl_Window)o;
@@ -506,140 +567,6 @@ public:
   void color2(uint a) {color2_ = a;}
 }
 
-/+=
-// reserved type numbers (necessary for my cheapo RTTI) start here.
-// grep the header files for "RESERVED_TYPE" to find the next available
-// number.
-const int FL_RESERVED_TYPE = 100; 
-
-}
-
 //
 // End of "$Id: widget.d 4421 2005-07-15 09:34:53Z matt $".
 //
-    End of automatic import -+/
-/+- This file was imported from C++ using a script
-//
-// "$Id: widget.d 5190 2006-06-09 16:16:34Z mike $"
-//
-// Base widget class for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
-#include <FL/Fl.H>
-private import fl.widget;
-private import fl.group;
-private import fl.tooltip;
-private import fl.draw;
-#include <stdlib.h>
-private import fl.flstring;
-
-
-////////////////////////////////////////////////////////////////
-// for compatability with Forms, all widgets without callbacks are
-// inserted into a "queue" when they are activated, and the forms
-// compatability interaction functions (fl_do_events, etc) will
-// read one widget at a time from this queue and return it:
-=+/
-
-static const int QUEUE_SIZE = 20;
-
-static Fl_Widget obj_queue[QUEUE_SIZE];
-static int obj_head, obj_tail;
-
-/+=
-Fl_Widget  Fl.readqueue() {
-  if (obj_tail==obj_head) return 0;
-  Fl_Widget  o = obj_queue[obj_tail++];
-  if (obj_tail >= QUEUE_SIZE) obj_tail = 0;
-  return o;
-}
-    
-////////////////////////////////////////////////////////////////
-
-
-
-extern void fl_throw_focus(Fl_Widget ); // in Fl_x.cxx
-
-// Destruction does not remove from any parent group!  And groups when
-// destroyed destroy all their children.  This is convienent and fast.
-// However, it is only legal to destroy a "root" such as an Fl_Window,
-// and automatic destructors may be called.
-Fl_Widget::~Fl_Widget() {
-  Fl.clear_widget_pointer(this);
-  if (flags() & COPIED_LABEL) free((void *)(label_.value));
-  parent_ = 0; // Don't throw focus to a parent widget.
-  fl_throw_focus(this);
-}
-
-// draw a focus box for the widget...
-
-void Fl_Widget.activate() {
-  if (!active()) {
-    clear_flag(INACTIVE);
-    if (active_r()) {
-      redraw();
-      redraw_label();
-      handle(FL_ACTIVATE);
-      if (inside(Fl.focus())) Fl.focus()->take_focus();
-    }
-  }
-}
-
-void Fl_Widget.deactivate() {
-  if (active_r()) {
-    set_flag(INACTIVE);
-    redraw();
-    redraw_label();
-    handle(FL_DEACTIVATE);
-    fl_throw_focus(this);
-  } else {
-    set_flag(INACTIVE);
-  }
-}
-
-
-
-
-
-}
-
-
-void
-Fl_Widget.copy_label(char *a) {
-  if (flags() & COPIED_LABEL) free((void *)(label_.value));
-  if (a) {
-    set_flag(COPIED_LABEL);
-    label_.value=strdup(a);
-  } else {
-    clear_flag(COPIED_LABEL);
-    label_.value=(char *)0;
-  }
-  redraw_label();
-}
-
-
-//
-// End of "$Id: widget.d 5190 2006-06-09 16:16:34Z mike $".
-//
-    End of automatic import -+/

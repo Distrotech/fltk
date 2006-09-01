@@ -332,16 +332,6 @@ version (DEBUG) {
 } // DEBUG
 }
 
-void Fl_Widget.tooltip(char *tt) {
-  static char beenhere = 0;
-  if (!beenhere) {
-    beenhere          = 1;
-    Fl_Tooltip.enter = Fl_Tooltip.enter_;
-    Fl_Tooltip.exit  = Fl_Tooltip.exit_;
-  }
-  tooltip_ = tt;
-}
-
 //
 // End of "$Id: tooltip.d 5378 2006-08-29 10:04:02Z matt $".
 //

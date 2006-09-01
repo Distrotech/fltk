@@ -89,7 +89,7 @@ public:
       }
       if (when() & FL_WHEN_RELEASE) do_callback();
       return 1;
-/+=== FL_SHORTCUT handling
+
     case FL_SHORTCUT:
       if (!(shortcut() ?
   	  Fl.test_shortcut(shortcut()) : test_shortcut())) return 0;
@@ -106,7 +106,7 @@ public:
         if (when() & FL_WHEN_CHANGED) do_callback();
       } else if (when() & FL_WHEN_RELEASE) do_callback();
       return 1;
-====+/
+
     case FL_FOCUS :
     case FL_UNFOCUS :
       if (Fl.visible_focus()) {
@@ -120,22 +120,22 @@ public:
         } else redraw();
         return 1;
       } else return 0;
-/+==== FL_KEYBOARD handling
+
     case FL_KEYBOARD :
-      if (Fl.focus() == this && Fl.event_key() == ' ' &&
+      if (Fl.focus() is this && Fl.event_key() == ' ' &&
           !(Fl.event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
         set_changed();
         if (type() == FL_RADIO_BUTTON && !value_) {
-  	setonly();
-  	if (when() & FL_WHEN_CHANGED) do_callback();
+          setonly();
+          if (when() & FL_WHEN_CHANGED) do_callback();
         } else if (type() == FL_TOGGLE_BUTTON) {
-  	value(!value());
-  	if (when() & FL_WHEN_CHANGED) do_callback();
+          value(!value());
+          if (when() & FL_WHEN_CHANGED) do_callback();
         }
         if (when() & FL_WHEN_RELEASE) do_callback();
         return 1;
       }
-===+/
+
     default:
       return 0;
     }

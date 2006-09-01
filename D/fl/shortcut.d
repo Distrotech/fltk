@@ -56,43 +56,6 @@ private import fl.flstring;
 #include <FL/x.H>
 }
 
-int Fl.test_shortcut(int shortcut) {
-  if (!shortcut) return 0;
-
-  int v = shortcut & 0xffff;
-version (__APPLE__) {
-  if (v > 32 && v < 0x7f || v >= 0x80 && v <= 0xff) {
-} else {
-  // most X11 use MSWindows Latin-1 if set to Western encoding, so 0x80 to 0xa0 are defined
-  if (v > 32 && v < 0x7f || v >= 0x80 && v <= 0xff) {
-}
-    if (isupper(v)) {
-      shortcut |= FL_SHIFT;
-    }
-  }
-
-  int shift = Fl.event_state();
-  // see if any required shift flags are off:
-  if ((shortcut&shift) != (shortcut&0x7fff0000)) return 0;
-  // record shift flags that are wrong:
-  int mismatch = (shortcut^shift)&0x7fff0000;
-  // these three must always be correct:
-  if (mismatch&(FL_META|FL_ALT|FL_CTRL)) return 0;
-
-  int key = shortcut & 0xffff;
-
-  // if shift is also correct, check for exactly equal keysyms:
-  if (!(mismatch&(FL_SHIFT)) && key == Fl.event_key()) return 1;
-
-  // try matching ascii, ignore shift:
-  if (key == event_text()[0]) return 1;
-
-  // kludge so that Ctrl+'_' works (as opposed to Ctrl+'^_'):
-  if ((shift&FL_CTRL) && key >= 0x3f && key <= 0x5F
-      && event_text()[0]==(key^0x40)) return 1;
-  return 0;
-}
-
 version (WIN32) || defined(__APPLE__) // if not X {
 // This table must be in numeric order by fltk (X) keysym number:
 struct Keyname {int key; char* name;};
@@ -212,28 +175,3 @@ int fl_old_shortcut(char* s) {
   return n | *s;
 }
 
-/+=
-// Tests for &x shortcuts in button labels:
-
-int Fl_Widget.test_shortcut(char *l) {
-  char c = Fl.event_text()[0];
-  if (!c || !l) return 0;
-  for (;;) {
-    if (!*l) return 0;
-    if (*l++ == '&' && *l) {
-      if (*l == '&') l++;
-      else if (*l == c) return 1;
-      else return 0;
-    }
-  }
-}
-
-int Fl_Widget.test_shortcut() {
-  if (!(flags()&SHORTCUT_LABEL)) return 0;
-  return test_shortcut(label());
-}
-
-//
-// End of "$Id: fl_shortcut.cxx 5190 2006-06-09 16:16:34Z mike $".
-//
-    End of automatic import -+/

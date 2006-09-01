@@ -35,6 +35,7 @@ private import fl.boxtype;
 private import fl.labeltype;
 private import fl.image;
 private import fl.tooltip;
+private import std.ctype;
 
 version (__APPLE__) {
   private import fl.mac;
@@ -53,9 +54,6 @@ class Fl {
 private:
   static char in_idle;
   const float FOREVER = 1e20; 
-/+=
-  Fl() {}; // no constructor!
-=+/
 
 public: // should be private!
 
@@ -190,8 +188,16 @@ public:
     while (Fl_X.first) wait(FOREVER);
     return 0;
   }
+
+  static Fl_Widget readqueue() {
+    if (Fl_Widget.obj_tail == Fl_Widget.obj_head) return null;
+    Fl_Widget o = Fl_Widget.obj_queue[Fl_Widget.obj_tail++];
+    if (Fl_Widget.obj_tail >= Fl_Widget.QUEUE_SIZE) 
+      Fl_Widget.obj_tail = 0;
+    return o;
+  }
 /+=
-  static Fl_Widget  readqueue();
+
   static void add_timeout(double t, Fl_Timeout_Handler,void* = 0);
   static void repeat_timeout(double t, Fl_Timeout_Handler,void* = 0);
   static int  has_timeout(Fl_Timeout_Handler, void* = 0);
@@ -292,9 +298,40 @@ public:
     int my = e_y - o.y();
     return (mx >= 0 && mx < o.w() && my >= 0 && my < o.h());
   }
-/+=
-  static int test_shortcut(int);
-=+/
+
+  static int test_shortcut(int shortcut) {
+    if (!shortcut) return 0;
+   
+    int v = shortcut & 0xffff;
+    // most X11 use MSWindows Latin-1 if set to Western encoding, so 0x80 to 0xa0 are defined
+    if (v > 32 && v < 0x7f || v >= 0x80 && v <= 0xff) {
+      if (isupper(v)) {
+        shortcut |= FL_SHIFT;
+      }
+    }
+   
+    int shift = Fl.event_state();
+    // see if any required shift flags are off:
+    if ((shortcut&shift) != (shortcut&0x7fff0000)) return 0;
+    // record shift flags that are wrong:
+    int mismatch = (shortcut^shift)&0x7fff0000;
+    // these three must always be correct:
+    if (mismatch&(FL_META|FL_ALT|FL_CTRL)) return 0;
+    
+    int key = shortcut & 0xffff;
+   
+    // if shift is also correct, check for exactly equal keysyms:
+    if (!(mismatch&(FL_SHIFT)) && key == Fl.event_key()) return 1;
+   
+    // try matching ascii, ignore shift:
+    if (key == event_text()[0]) return 1;
+   
+    // kludge so that Ctrl+'_' works (as opposed to Ctrl+'^_'):
+    if ((shift&FL_CTRL) && key >= 0x3f && key <= 0x5F
+        && event_text()[0]==(key^0x40)) return 1;
+    return 0;
+  }
+
   // event destinations:
   static int handle(int e, Fl_Window  window)
   {
@@ -633,11 +670,25 @@ public:
       delete dwidgets[i];
     num_dwidgets = 0;
   }
+
+  static Fl_Widget* widget_watch = null;
+  static int num_widget_watch = 0;
+  static int max_widget_watch = 0;
 /+=
   static void watch_widget_pointer(Fl_Widget   w);
   static void release_widget_pointer(Fl_Widget   w);
   static void clear_widget_pointer(Fl_Widget  w);
 =+/
+  /+= D translation does not work like this! =+/
+  static void clear_widget_pointer(Fl_Widget w) {
+    if (!w) return;
+    int i;
+    for (i=0; i<num_widget_watch; ++i) {
+      if (widget_watch[i] && widget_watch[i] is w) {
+        widget_watch[i] = null;
+      }
+    }
+  }
 }
 
 
@@ -1294,9 +1345,6 @@ Fl.delete_widget(Fl_Widget  wi) {
 
 }
 
-static Fl_Widget  **widget_watch = 0;
-static int num_widget_watch = 0;
-static int max_widget_watch = 0;
 
 void Fl.watch_widget_pointer(Fl_Widget   w) 
 {
@@ -1330,16 +1378,6 @@ void Fl.release_widget_pointer(Fl_Widget   w)
   }
 }
 
-void Fl.clear_widget_pointer(Fl_Widget  w) 
-{
-  if (w==0L) return;
-  int i;
-  for (i=0; i<num_widget_watch; ++i) {
-    if (widget_watch[i] && *widget_watch[i]==w) {
-      *widget_watch[i] = 0L;
-    }
-  }
-}
 
 
 //
