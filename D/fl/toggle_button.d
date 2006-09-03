@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: toggle_button.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,18 +27,17 @@
 
 module fl.toggle_button;
 
-
 public import fl.button;
+
 
 class Fl_Toggle_Button : Fl_Button {
 public:
-    Fl_Toggle_Button(int X,int Y,int W,int H,char *l=0)
-	: Fl_Button(X,Y,W,H,l) {type(FL_TOGGLE_BUTTON);}
-};
-
+  this(int X,int Y,int W,int H,char *l=null) {
+    super(X,Y,W,H,l);
+    type(FL_TOGGLE_BUTTON);
+  }
 }
 
 //
 // End of "$Id: toggle_button.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
