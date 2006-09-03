@@ -5,7 +5,7 @@ test:
 hello
 button
 boxtype
-buttons (no tooltips yet)
+buttons
 
 src:
 fl/box.d
@@ -26,6 +26,8 @@ fl/return_button.d
 fl/light_button.d
 fl/round_button.d
 fl/check_button.d
+fl/repeat_button.d
+fl/tooltip.d
 
 
 

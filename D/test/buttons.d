@@ -47,7 +47,8 @@ void repeat_cb(Fl_Widget w, void* d) {
 int main(char[][] args) {
   Fl_Widget w;
   Fl_Window  window = new Fl_Window(320,130);
-  (new Fl_Button(10, 10, 130, 30, "Fl_Button")).tooltip("This is a Tooltip.");
+  w = new Fl_Button(10, 10, 130, 30, "Fl_Button");
+  w.tooltip("This is a Tooltip.");
   w = new Fl_Return_Button(150, 10, 160, 30, "Fl_Return_Button");
   w.callback(&return_cb);
   w = new Fl_Repeat_Button(10,50,130,30,"Fl_Repeat_Button");

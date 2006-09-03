@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: menu_window.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,10 +27,10 @@
 
 module fl.menu_window;
 
-
 public import fl.single_window;
 
 class Fl_Menu_Window : Fl_Single_Window {
+/+=
   enum {NO_OVERLAY = 128};
 public:
   void show();
@@ -42,18 +41,21 @@ public:
   void set_overlay() {clear_flag(NO_OVERLAY);}
   void clear_overlay() {set_flag(NO_OVERLAY);}
   ~Fl_Menu_Window();
-  Fl_Menu_Window(int W, int H, char *l = 0)
-    : Fl_Single_Window(W,H,l) { image(0); }
+=+/
+  this(int W, int H, char *l=null) {
+    super(W,H,l);
+    image(null);
+  }
+/+=
   Fl_Menu_Window(int X, int Y, int W, int H, char *l = 0)
     : Fl_Single_Window(X,Y,W,H,l) { image(0); }
-};
-
+=+/
 }
 
 //
 // End of "$Id: menu_window.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: menu_window.d 5190 2006-06-09 16:16:34Z mike $"

@@ -761,15 +761,93 @@ public:
     static int w();
     static int h();
   } /* WIN32 || __APPLE__ */
-/+=
+
   // multi-head support:
+  private static int num_screens = 0;
+  version (__APPLE__) {
+    private static XRectangle screens[16];
+    private static void screen_init() {
+      GDHandle gd;
+    
+      for (gd = GetDeviceList(), num_screens = 0; gd; gd = GetNextDevice(gd)) {
+        GDPtr gp = *gd;
+        screens[num_screens].x      = gp.gdRect.left;
+        screens[num_screens].y      = gp.gdRect.top;
+        screens[num_screens].width  = gp.gdRect.right - gp.gdRect.left;
+        screens[num_screens].height = gp.gdRect.bottom - gp.gdRect.top;
+    
+        num_screens ++;
+        if (num_screens >= 16) break;
+      }
+    }
+  }
+
   static int screen_count();
-  static void screen_xywh(int &x, int &y, int &w, int &h) {
+  static void screen_xywh(out int x, out int y, out int w, out int h) {
     screen_xywh(x, y, w, h, e_x_root, e_y_root);
   }
-  static void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my);
-  static void screen_xywh(int &x, int &y, int &w, int &h, int n);
-=+/
+  static void screen_xywh(out int x, out int y, out int w, out int h, int mx, int my) {
+    if (!num_screens) screen_init();
+  
+    version (WIN32) {
+      if (num_screens > 1) {
+        int i;
+    
+        for (i = 0; i < num_screens; i ++) {
+          if (mx >= screens[i].left && mx < screens[i].right &&
+              my >= screens[i].top && my < screens[i].bottom) {
+            x = screens[i].left;
+            y = screens[i].top;
+            w = screens[i].right - screens[i].left;
+            h = screens[i].bottom - screens[i].top;
+            return;
+          }
+        }
+      }
+    } else version (__APPLE__) {
+      if (num_screens > 1) {
+        int i;
+    
+        for (i = 0; i < num_screens; i ++) {
+          if (mx >= screens[i].x &&
+              mx < (screens[i].x + screens[i].width) &&
+              my >= screens[i].y &&
+              my < (screens[i].y + screens[i].height)) {
+            x = screens[i].x;
+            y = screens[i].y;
+            w = screens[i].width;
+            h = screens[i].height;
+            return;
+          }
+        }
+      }
+    } else version (HAVE_XINERAMA) {
+      if (num_screens > 1) {
+        int i;
+    
+        for (i = 0; i < num_screens; i ++) {
+          if (mx >= screens[i].x_org &&
+              mx < (screens[i].x_org + screens[i].width) &&
+              my >= screens[i].y_org &&
+              my < (screens[i].y_org + screens[i].height)) {
+            x = screens[i].x_org;
+            y = screens[i].y_org;
+            w = screens[i].width;
+            h = screens[i].height;
+            return;
+          }
+        }
+      }
+    } // WIN32
+    
+    x = Fl.x();
+    y = Fl.y();
+    w = Fl.w();
+    h = Fl.h();
+  }
+
+  static void screen_xywh(out int x, out int y, out int w, out int h, int n);
+
   // color map:
   static void set_color(Fl_Color i, ubyte red, ubyte green, ubyte blue) {
     set_color((i & 255),
