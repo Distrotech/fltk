@@ -1,6 +1,13 @@
 
 This is a list of files that have been ported to "D":
 
+test:
+hello
+button
+boxtype
+buttons (no tooltips yet)
+
+src:
 fl/box.d
 fl/line_style.d
 fl/widget.d
@@ -15,6 +22,10 @@ fl/oval_box.d
 fl/diamond_box.d
 fl/plastic.d
 fl/boxtype.d
+fl/return_button.d
+fl/light_button.d
+fl/round_button.d
+fl/check_button.d
 
 
 

@@ -51,9 +51,7 @@ static char     fl_bg_set = 0;
 static char     fl_bg2_set = 0;
 static char     fl_fg_set = 0;
 
-/+=
-alias void (*Fl_Timeout_Handler)(void*);
-=+/
+alias void function(void*) Fl_Timeout_Handler;
 
 class Fl {
 
@@ -163,7 +161,9 @@ public:
 /+=
   // schemes:
   static int scheme(char*);
+=+/
   static char* scheme() {return scheme_;}
+/+=
   static int reload_scheme();
 
   // execution:
@@ -249,12 +249,129 @@ public:
       Fl_Widget.obj_tail = 0;
     return o;
   }
-/+=
+  
+  version (__APPLE__) {
+    struct MacTimeout {
+      Fl_Timeout_Handler callback;
+      void* data;
+      EventLoopTimerRef timer;
+      EventLoopTimerUPP upp;
+      char pending; 
+    };
+    static MacTimeout* mac_timers;
+    static int mac_timer_alloc;
+    static int mac_timer_used;
+    private static void realloc_timers() {
+      if (mac_timer_alloc == 0) {
+        mac_timer_alloc = 8;
+      }
+      mac_timer_alloc *= 2;
+      MacTimeout* new_timers = new MacTimeout[mac_timer_alloc];
+      memset(new_timers, 0, MacTimeout.sizeof*mac_timer_alloc);
+      memcpy(new_timers, mac_timers, MacTimeout.sizeof*mac_timer_used);
+      MacTimeout* delete_me = mac_timers;
+      mac_timers = new_timers;
+      delete delete_me;
+    }
+    private static void delete_timer(inout MacTimeout* t) {     
+      if (t.timer) {
+        RemoveEventLoopTimer(t.timer);
+        DisposeEventLoopTimerUPP(t.upp);
+        memset(t, 0, MacTimeout.sizeof);
+      }
+    }
+    private static void do_timer(EventLoopTimerRef timer, void* data)
+    {
+      for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout* t = mac_timers+i;
+        if (t.timer == timer  &&  t.data == data) {
+            t.pending = 0;
+            t.callback(data);
+            if (t.pending==0)
+              delete_timer(t);
+            break;
+        }
+      }
+      Fl_X.breakMacEventLoop();
+    }
+  }
 
-  static void add_timeout(double t, Fl_Timeout_Handler,void* = 0);
-  static void repeat_timeout(double t, Fl_Timeout_Handler,void* = 0);
-  static int  has_timeout(Fl_Timeout_Handler, void* = 0);
-  static void remove_timeout(Fl_Timeout_Handler, void* = 0);
+  static void add_timeout(double time, Fl_Timeout_Handler cb, void* data=null) {
+    version (__APPLE__) {
+      // check, if this timer slot exists already
+      for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout* t = mac_timers+i;
+        // if so, simply change the fire interval
+        if (t.callback is cb  &&  t.data is data) {
+          SetEventLoopTimerNextFireTime(t.timer, cast(EventTimerInterval)time);
+          t.pending = 1;
+          return;
+        }
+      } 
+      // no existing timer to use. Create a new one:
+      int timer_id = -1;
+      // find an empty slot in the timer array
+      for (int i = 0;  i < mac_timer_used;  ++i) {
+        if ( !mac_timers[i].timer ) {
+          timer_id = i;
+          break;
+        }
+      }
+      // if there was no empty slot, append a new timer
+      if (timer_id == -1) {
+        // make space if needed
+        if (mac_timer_used == mac_timer_alloc) {
+          realloc_timers();
+        }
+        timer_id = mac_timer_used++;
+      }
+      // now install a brand new timer
+      MacTimeout* t = mac_timers+timer_id;
+      EventTimerInterval fireDelay = cast(EventTimerInterval)time;
+      EventLoopTimerUPP  timerUPP = NewEventLoopTimerUPP(&do_timer);
+      EventLoopTimerRef  timerRef = null;
+      OSStatus err = InstallEventLoopTimer(GetMainEventLoop(), fireDelay, 0, timerUPP, data, &timerRef);
+      if (err == noErr) {
+        t.callback = cb;
+        t.data     = data;
+        t.timer    = timerRef;
+        t.upp      = timerUPP;
+        t.pending  = 1;
+      } else {
+        if (timerRef) 
+          RemoveEventLoopTimer(timerRef);
+        if (timerUPP)
+          DisposeEventLoopTimerUPP(timerUPP);
+      }
+    }
+  }
+  static void repeat_timeout(double time, Fl_Timeout_Handler cb, void* data=null) {
+    add_timeout(time, cb, data);
+  }
+
+  static int has_timeout(Fl_Timeout_Handler cb, void* data=null) {
+    version (__APPLE__) {
+      for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout* t = mac_timers+i;
+        if (t.callback is cb  &&  t.data is data && t.pending) {
+          return 1;
+        }
+      }
+    }
+    return 0;
+  }
+
+  static void remove_timeout(Fl_Timeout_Handler cb, void* data=null) {
+    version (__APPLE__) {
+      for (int i = 0;  i < mac_timer_used;  ++i) {
+        MacTimeout* t = mac_timers+i;
+        if (t.callback is cb  && ( t.data is data || !data)) {
+          delete_timer(t);
+        }
+      }
+    }
+  }
+/+=
   static void add_check(Fl_Timeout_Handler, void* = 0);
   static int  has_check(Fl_Timeout_Handler, void* = 0);
   static void remove_check(Fl_Timeout_Handler, void* = 0);

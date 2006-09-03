@@ -1,5 +1,5 @@
 
-ALL = boxtype
+ALL = buttons
 #ALL = arc menubar message boxtype hello button
 
 all: $(ALL) 
@@ -253,6 +253,11 @@ boxtype:  test/boxtype.o $(OBJECTS)
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 button:  test/button.o $(OBJECTS)
+	@ echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
+
+buttons:  test/buttons.o $(OBJECTS)
 	@ echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r

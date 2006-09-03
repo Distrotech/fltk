@@ -78,6 +78,7 @@ alias void* EventTargetRef;
 alias void* EventHandlerCallRef;
 alias void* EventHandlerRef;
 alias void* EventQueueRef;
+alias void* EventLoopRef;
 alias void* KeyboardLayoutRef;
 //alias void* GrafPtr;
 //alias void* GWorldPtr;
@@ -127,10 +128,15 @@ alias void* AppleEventRef;
 
 alias OSErr function(AppleEventRef, AppleEventRef, int) AEEventHandlerProcPtr;
 alias OSStatus function(EventHandlerCallRef, EventRef, void*) EventHandlerProcPtr;
+alias void function(EventLoopTimerRef, void*) EventLoopTimerProcPtr ;
 
 alias AEEventHandlerProcPtr AEEventHandlerUPP;
-
 alias EventHandlerProcPtr EventHandlerUPP;
+alias EventLoopTimerProcPtr EventLoopTimerUPP;
+
+alias void* EventLoopTimerRef;
+
+alias double EventTimerInterval;
 
 const int noErr = 0;
 const int eventNotHandledErr = -9874;
@@ -849,7 +855,13 @@ BitMap * GetQDGlobalsScreenBits ( BitMap * screenBits);
    Rect * globalBounds
 );+/
 UInt32 GetCurrentKeyModifiers ();
-
+OSStatus SetEventLoopTimerNextFireTime( EventLoopTimerRef, EventTimerInterval);
+EventLoopTimerUPP NewEventLoopTimerUPP(EventLoopTimerProcPtr);
+OSStatus InstallEventLoopTimer(EventLoopRef, EventTimerInterval,
+  EventTimerInterval, EventLoopTimerUPP, void*, EventLoopTimerRef*);
+EventLoopRef GetMainEventLoop();
+OSStatus RemoveEventLoopTimer(EventLoopTimerRef);
+void DisposeEventLoopTimerUPP(EventLoopTimerUPP);
 }
 
 

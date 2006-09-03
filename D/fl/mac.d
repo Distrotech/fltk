@@ -62,6 +62,20 @@ void XDestroyRegion(Fl_Region r) {
 // WARNING: this object is highly subject to change!
 class Fl_X {
 
+  static void breakMacEventLoop()
+  {
+    EventRef breakEvent;
+  
+    fl_lock_function();
+  
+    CreateEvent( null, kEventClassFLTK, kEventFLTKBreakLoop, 
+        0, kEventAttributeUserEvent, &breakEvent );
+    PostEventToQueue( GetCurrentEventQueue(), breakEvent, kEventPriorityStandard );
+    ReleaseEvent( breakEvent );
+  
+    fl_unlock_function();
+  }
+
 public:
   WindowRef xid;              // Mac WindowPtr
   GWorldPtr other_xid;     // pointer for offscreen bitmaps (doublebuffer)
@@ -1126,73 +1140,7 @@ static OSStatus carbonDispatchHandler( EventHandlerCallRef nextHandler, EventRef
 /**
  * break the current event loop
  */
-static void breakMacEventLoop()
-{
-  EventRef breakEvent;
 
-  fl_lock_function();
-
-  CreateEvent( 0, kEventClassFLTK, kEventFLTKBreakLoop, 0, kEventAttributeUserEvent, &breakEvent );
-  PostEventToQueue( GetCurrentEventQueue(), breakEvent, kEventPriorityStandard );
-  ReleaseEvent( breakEvent );
-
-  fl_unlock_function();
-}
-
-//
-// MacOS X timers
-//
-
-struct MacTimeout {
-    Fl_Timeout_Handler callback;
-    void* data;
-    EventLoopTimerRef timer;
-    EventLoopTimerUPP upp;
-    char pending; 
-};
-static MacTimeout* mac_timers;
-static int mac_timer_alloc;
-static int mac_timer_used;
-
-
-static void realloc_timers()
-{
-    if (mac_timer_alloc == 0) {
-        mac_timer_alloc = 8;
-    }
-    mac_timer_alloc *= 2;
-    MacTimeout* new_timers = new MacTimeout[mac_timer_alloc];
-    memset(new_timers, 0, sizeof(MacTimeout)*mac_timer_alloc);
-    memcpy(new_timers, mac_timers, sizeof(MacTimeout) * mac_timer_used);
-    MacTimeout* delete_me = mac_timers;
-    mac_timers = new_timers;
-    delete [] delete_me;
-}
-
-static void delete_timer(MacTimeout& t)
-{
-    if (t.timer) {
-        RemoveEventLoopTimer(t.timer);
-        DisposeEventLoopTimerUPP(t.upp);
-        memset(&t, 0, sizeof(MacTimeout));
-    }
-}
-
-
-static pascal void do_timer(EventLoopTimerRef timer, void* data)
-{
-   for (int i = 0;  i < mac_timer_used;  ++i) {
-        MacTimeout& t = mac_timers[i];
-        if (t.timer == timer  &&  t.data == data) {
-            t.pending = 0;
-            (*t.callback)(data);
-            if (t.pending==0)
-              delete_timer(t);
-            break;
-        }
-    }
-    breakMacEventLoop();
-}
 =+/
 
 /**
@@ -2292,81 +2240,6 @@ void Fl.paste(Fl_Widget  receiver, int clipboard) {
   return;
 }
 
-void Fl.add_timeout(double time, Fl_Timeout_Handler cb, void* data)
-{
-   // check, if this timer slot exists already
-   for (int i = 0;  i < mac_timer_used;  ++i) {
-        MacTimeout& t = mac_timers[i];
-        // if so, simply change the fire interval
-        if (t.callback == cb  &&  t.data == data) {
-            SetEventLoopTimerNextFireTime(t.timer, (EventTimerInterval)time);
-            t.pending = 1;
-            return;
-        }
-    }
-    // no existing timer to use. Create a new one:
-    int timer_id = -1;
-    // find an empty slot in the timer array
-    for (int i = 0;  i < mac_timer_used;  ++i) {
-        if ( !mac_timers[i].timer ) {
-            timer_id = i;
-            break;
-        }
-    }
-    // if there was no empty slot, append a new timer
-    if (timer_id == -1) {
-        // make space if needed
-        if (mac_timer_used == mac_timer_alloc) {
-            realloc_timers();
-        }
-        timer_id = mac_timer_used++;
-    }
-    // now install a brand new timer
-    MacTimeout& t = mac_timers[timer_id];
-    EventTimerInterval fireDelay = (EventTimerInterval)time;
-    EventLoopTimerUPP  timerUPP = NewEventLoopTimerUPP(do_timer);
-    EventLoopTimerRef  timerRef = 0;
-    OSStatus err = InstallEventLoopTimer(GetMainEventLoop(), fireDelay, 0, timerUPP, data, &timerRef);
-    if (err == noErr) {
-        t.callback = cb;
-        t.data     = data;
-        t.timer    = timerRef;
-        t.upp      = timerUPP;
-        t.pending  = 1;
-    } else {
-        if (timerRef) 
-            RemoveEventLoopTimer(timerRef);
-        if (timerUPP)
-            DisposeEventLoopTimerUPP(timerUPP);
-    }
-}
-
-void Fl.repeat_timeout(double time, Fl_Timeout_Handler cb, void* data)
-{
-    // currently, repeat_timeout does not subtract the trigger time of the previous timer event as it should.
-    add_timeout(time, cb, data);
-}
-
-int Fl.has_timeout(Fl_Timeout_Handler cb, void* data)
-{
-   for (int i = 0;  i < mac_timer_used;  ++i) {
-        MacTimeout& t = mac_timers[i];
-        if (t.callback == cb  &&  t.data == data && t.pending) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void Fl.remove_timeout(Fl_Timeout_Handler cb, void* data)
-{
-   for (int i = 0;  i < mac_timer_used;  ++i) {
-        MacTimeout& t = mac_timers[i];
-        if (t.callback == cb  && ( t.data == data || data == NULL)) {
-            delete_timer(t);
-        }
-    }
-}
 =+/
 
 int MacUnlinkWindow(Fl_X ip, Fl_X start=null) {
