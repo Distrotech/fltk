@@ -10,7 +10,6 @@ DFILES = \
 	fl/add_idle.d \
 	fl/adjuster.d \
 	fl/arc.d \
-	fl/arci.d \
 	fl/arg.d \
 	fl/ask.d \
 	fl/bitmap.d \

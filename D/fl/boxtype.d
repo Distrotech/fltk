@@ -38,6 +38,7 @@ private import fl.color;
 private import fl.widget;
 private import fl.shadow_box;
 private import fl.rounded_box;
+private import fl.round_box;
 
 ////////////////////////////////////////////////////////////////
 
@@ -221,8 +222,8 @@ Fl_Boxtable_Entry[256] fl_box_table= [
   {&fl_rshadow_box,	1,1,2,2,0}, // _FL_RSHADOW_BOX,
   {&fl_rounded_frame,	1,1,2,2,0}, // _FL_ROUNDED_FRAME
   {&fl_rflat_box,	0,0,0,0,0}, // _FL_RFLAT_BOX,
-  {&fl_up_box,		3,3,6,6,0}, // _FL_ROUND_UP_BOX
-  {&fl_down_box,	3,3,6,6,0}, // _FL_ROUND_DOWN_BOX,
+  {&fl_round_up_box,	3,3,6,6,0}, // _FL_ROUND_UP_BOX
+  {&fl_round_down_box,	3,3,6,6,0}, // _FL_ROUND_DOWN_BOX,
   {&fl_up_box,		0,0,0,0,0}, // _FL_DIAMOND_UP_BOX
   {&fl_down_box,	0,0,0,0,0}, // _FL_DIAMOND_DOWN_BOX
   {&fl_border_box,	1,1,2,2,0}, // _FL_OVAL_BOX,

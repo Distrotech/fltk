@@ -31,11 +31,10 @@
 
 module fl.arc;
 
-/+=
 
 private import fl.draw;
-#include <FL/math.h>
 
+/+=
 // avoid problems with some platforms that don't 
 // implement hypot.
 static double _fl_hypot(double x, double y) {
@@ -90,3 +89,115 @@ void fl_circle(double x,double y,double r) {
 // End of "$Id: fl_arc.cxx 5349 2006-08-23 14:43:07Z matt $".
 //
     End of automatic import -+/
+//
+// "$Id: fl_arci.cxx 5190 2006-06-09 16:16:34Z mike $"
+//
+// Arc (integer) drawing functions for the Fast Light Tool Kit (FLTK).
+//
+// Copyright 1998-2005 by Bill Spitzak and others.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA.
+//
+// Please report all bugs and problems on the following page:
+//
+//     http://www.fltk.org/str.php
+//
+
+// "integer" circle drawing functions.  These draw the limited
+// circle types provided by X and NT graphics.  The advantage of
+// these is that small ones draw quite nicely (probably due to stored
+// hand-drawn bitmaps of small circles!) and may be implemented by
+// hardware and thus are fast.
+
+// Probably should add fl_chord.
+
+// 3/10/98: created
+
+
+/+=
+private import fl.draw;
+#include <FL/x.H>
+version (WIN32) {
+#include <FL/math.h>
+}
+version (__APPLE__) {
+#include <config.h>
+}
+=+/
+
+void fl_arc(int x,int y,int w,int h,double a1,double a2) {
+  if (w <= 0 || h <= 0) return;
+  version (WIN32) {
+    int xa = x+w/2+cast(int)(w*cos(a1/180.0*M_PI));
+    int ya = y+h/2-cast(int)(h*sin(a1/180.0*M_PI));
+    int xb = x+w/2+cast(int)(w*cos(a2/180.0*M_PI));
+    int yb = y+h/2-cast(int)(h*sin(a2/180.0*M_PI));
+    Arc(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb); 
+  } else version (__APPLE__) {
+    a1 = (-a1)/180.0f*M_PI; a2 = (-a2)/180.0f*M_PI;
+    float cx = x + 0.5f*w - 0.5f, cy = y + 0.5f*h - 0.5f;
+    if (w!=h) {
+      CGContextSaveGState(fl_gc);
+      CGContextTranslateCTM(fl_gc, cx, cy);
+      CGContextScaleCTM(fl_gc, w-1.0f, h-1.0f);
+      CGContextAddArc(fl_gc, 0, 0, 0.5, a1, a2, 1);
+      CGContextRestoreGState(fl_gc);
+    } else {
+      float r = (w+h)*0.25f-0.5f;
+      CGContextAddArc(fl_gc, cx, cy, r, a1, a2, 1);
+    }
+    CGContextStrokePath(fl_gc);
+  } else {
+    XDrawArc(fl_display, fl_window, fl_gc, x,y,w-1,h-1, cast(int)(a1*64), cast(int)((a2-a1)*64));
+  }
+}
+
+void fl_pie(int x,int y,int w,int h,double a1,double a2) {
+  if (w <= 0 || h <= 0) return;
+  version (WIN32) {
+    if (a1 == a2) return;
+    int xa = x+w/2+cast(int)(w*cos(a1/180.0*M_PI));
+    int ya = y+h/2-cast(int)(h*sin(a1/180.0*M_PI));
+    int xb = x+w/2+cast(int)(w*cos(a2/180.0*M_PI));
+    int yb = y+h/2-cast(int)(h*sin(a2/180.0*M_PI));
+    SelectObject(fl_gc, fl_brush());
+    Pie(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb); 
+  } else version (__APPLE__) {
+    a1 = (-a1)/180.0f*M_PI; a2 = (-a2)/180.0f*M_PI;
+    float cx = x + 0.5f*w - 0.5f, cy = y + 0.5f*h - 0.5f;
+    if (w!=h) {
+      CGContextSaveGState(fl_gc);
+      CGContextTranslateCTM(fl_gc, cx, cy);
+      CGContextScaleCTM(fl_gc, w, h);
+      CGContextAddArc(fl_gc, 0, 0, 0.5, a1, a2, 1);
+      CGContextAddLineToPoint(fl_gc, 0, 0);
+      CGContextClosePath(fl_gc);
+      CGContextRestoreGState(fl_gc);
+    } else {
+      float r = (w+h)*0.25f;
+      CGContextAddArc(fl_gc, cx, cy, r, a1, a2, 1);
+      CGContextAddLineToPoint(fl_gc, cx, cy);
+      CGContextClosePath(fl_gc);
+    }
+    CGContextFillPath(fl_gc);
+  } else {
+    XFillArc(fl_display, fl_window, fl_gc, x,y,w-1,h-1, cast(int)(a1*64),cast(int)((a2-a1)*64));
+  }
+}
+
+//
+// End of "$Id: fl_arci.cxx 5190 2006-06-09 16:16:34Z mike $".
+//
