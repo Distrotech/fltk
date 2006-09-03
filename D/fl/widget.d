@@ -263,9 +263,6 @@ public:
     redraw_label();
   }
  
-  void label(char[] a) { copy_label(toStringz(a)); }
-  void label(void* a) { label(cast(char*)a); }
-
   void label(Fl_Labeltype a,char* b) {label_.type = a; label_.value = b;}
   Fl_Labeltype labeltype() {return label_.type;}
   void labeltype(Fl_Labeltype a) {label_.type = a;}

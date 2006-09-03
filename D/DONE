@@ -6,6 +6,7 @@ hello
 button
 boxtype
 buttons
+demo (partial)
 
 src:
 fl/box.d

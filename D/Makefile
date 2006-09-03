@@ -1,5 +1,5 @@
 
-ALL = buttons
+ALL = demo
 #ALL = arc menubar message boxtype hello button
 
 all: $(ALL) 
@@ -258,6 +258,11 @@ button:  test/button.o $(OBJECTS)
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
 
 buttons:  test/buttons.o $(OBJECTS)
+	@ echo Linking $@...
+	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
+	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
+
+demo:  test/demo.o $(OBJECTS)
 	@ echo Linking $@...
 	gdc $(DFLAGS) -framework Carbon $< $(OBJECTS) -o $@
 	/Developer/Tools/Rez -t APPL -o $@ fl/macrez.r
