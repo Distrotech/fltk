@@ -32,6 +32,7 @@
 module fl.oval_box;
 
 private import fl.draw;
+private import fl.enumerations;
 
 void fl_oval_flat_box(int x, int y, int w, int h, Fl_Color c) {
   fl_color(c);

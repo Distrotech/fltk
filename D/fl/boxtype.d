@@ -41,6 +41,7 @@ private import fl.rounded_box;
 private import fl.round_box;
 private import fl.oval_box;
 private import fl.diamond_box;
+private import fl.plastic;
 
 ////////////////////////////////////////////////////////////////
 
@@ -232,14 +233,14 @@ Fl_Boxtable_Entry[256] fl_box_table= [
   {&fl_oval_shadow_box,	1,1,2,2,0}, // _FL_OVAL_SHADOW_BOX,
   {&fl_oval_frame,	1,1,2,2,0}, // _FL_OVAL_FRAME
   {&fl_oval_flat_box,	0,0,0,0,0}, // _FL_OVAL_FLAT_BOX,
-  {&fl_up_box,		4,4,8,8,0}, // _FL_PLASTIC_UP_BOX,
-  {&fl_down_box,	2,2,4,4,0}, // _FL_PLASTIC_DOWN_BOX,
-  {&fl_up_frame,	2,2,4,4,0}, // _FL_PLASTIC_UP_FRAME,
-  {&fl_down_frame,	2,2,4,4,0}, // _FL_PLASTIC_DOWN_FRAME,
-  {&fl_up_box,		2,2,4,4,0}, // _FL_PLASTIC_THIN_UP_BOX,
-  {&fl_down_box,	2,2,4,4,0}, // _FL_PLASTIC_THIN_DOWN_BOX,
-  {&fl_up_box,		3,3,6,6,0}, // FL_FREE_BOX+0
-  {&fl_down_box,	3,3,6,6,0}, // FL_FREE_BOX+1
+  {&fl_plastic_up_box,		4,4,8,8,0}, // _FL_PLASTIC_UP_BOX,
+  {&fl_plastic_down_box,	2,2,4,4,0}, // _FL_PLASTIC_DOWN_BOX,
+  {&fl_plastic_up_frame,	2,2,4,4,0}, // _FL_PLASTIC_UP_FRAME,
+  {&fl_plastic_down_frame,	2,2,4,4,0}, // _FL_PLASTIC_DOWN_FRAME,
+  {&fl_plastic_thin_up_box,		2,2,4,4,0}, // _FL_PLASTIC_THIN_UP_BOX,
+  {&fl_plastic_down_box,	2,2,4,4,0}, // _FL_PLASTIC_THIN_DOWN_BOX,
+  {&fl_plastic_round_up_box,		3,3,6,6,0}, // FL_FREE_BOX+0
+  {&fl_plastic_round_down_box,	3,3,6,6,0}, // FL_FREE_BOX+1
   {&fl_up_box,		3,3,6,6,0}, // FL_FREE_BOX+2
   {&fl_down_box,	3,3,6,6,0}, // FL_FREE_BOX+3
   {&fl_up_box,		3,3,6,6,0}, // FL_FREE_BOX+4
