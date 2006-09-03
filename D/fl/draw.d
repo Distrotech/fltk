@@ -36,6 +36,7 @@ public import fl.flstring;
 public import fl.boxtype;
 public import fl.image;
 public import fl.symbols;
+public import fl.vertex;
 
 private import std.c.math;
 

@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_vertex.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -32,12 +31,15 @@
 // matt: the Quartz implementation purposly doesn't use the Quartz matrix
 //       operations for reasons of compatibility and maintainability
 
-#include <config.h>
+module fl.vertex;
+
 private import fl.draw;
-#include <FL/x.H>
-#include <FL/Fl.H>
-#include <FL/math.h>
-#include <stdlib.h>
+private import fl.x;
+private import fl.fl;
+private import fl.mac;
+private import std.c.math;
+
+const float M_PI = 3.1415926554;
 
 struct matrix {double a, b, c, d, x, y;};
 
@@ -91,24 +93,26 @@ void fl_rotate(double d) {
 
 // alias what the x,y fields in a point are:
 version (WIN32) {
-alias int COORD_T;
-const int XPOINT = XPoint; 
-} else version (__APPLE_QUARTZ__) {
-alias float COORD_T;
-alias struct { float x; float y; } QPoint;
-const int XPOINT = QPoint; 
-extern float fl_quartz_line_width_;
+  alias int COORD_T;
+  alias XPoint XPOINT; 
+} else version (__APPLE__) {
+  alias float COORD_T;
+  struct QPoint { float x; float y; };
+  alias  QPoint XPOINT; 
 } else {
-alias short COORD_T;
-const int XPOINT = XPoint; 
+  alias short COORD_T;
+  alias XPoint XPOINT; 
 }
 
-static XPOINT *p = (XPOINT *)0;
+static XPOINT *p = null;
 
 static int p_size;
 static int n;
 static int what;
-enum {LINE, LOOP, POLYGON, POINT_};
+static const int LINE = 0;
+static const int LOOP = 1;
+static const int POLYGON = 2;
+static const int POINT_ = 3;
 
 void fl_begin_points() {n = 0; what = POINT_;}
 
@@ -130,7 +134,7 @@ static void fl_transformed_vertex(COORD_T x, COORD_T y) {
   if (!n || x != p[n-1].x || y != p[n-1].y) {
     if (n >= p_size) {
       p_size = p ? 2*p_size : 16;
-      p = (XPOINT*)realloc((void*)p, p_size*sizeof(*p));
+      p = cast(XPOINT*)realloc(p, p_size*(*p).sizeof);
     }
     p[n].x = x;
     p[n].y = y;
@@ -139,11 +143,11 @@ static void fl_transformed_vertex(COORD_T x, COORD_T y) {
 }
 
 void fl_transformed_vertex(double xf, double yf) {
-version (__APPLE_QUARTZ__) {
-  fl_transformed_vertex(COORD_T(xf), COORD_T(yf));
-} else {
-  fl_transformed_vertex(COORD_T(rint(xf)), COORD_T(rint(yf)));
-}
+  version (__APPLE__) {
+    fl_transformed_vertex(cast(COORD_T)xf, cast(COORD_T)yf);
+  } else {
+    fl_transformed_vertex(COORD_T(rint(xf)), COORD_T(rint(yf)));
+  }
 }
 
 void fl_vertex(double x,double y) {
@@ -151,21 +155,19 @@ void fl_vertex(double x,double y) {
 }
 
 void fl_end_points() {
-version (WIN32) {
-  for (int i=0; i<n; i++) SetPixel(fl_gc, p[i].x, p[i].y, fl_RGB());
-} else version (__APPLE_QD__) {
-  for (int i=0; i<n; i++) { MoveTo(p[i].x, p[i].y); Line(0, 0); } 
-} else version (__APPLE_QUARTZ__) {
-  if (fl_quartz_line_width_==1.0f) CGContextSetShouldAntialias(fl_gc, false);
-  for (int i=0; i<n; i++) { 
-    CGContextMoveToPoint(fl_gc, p[i].x, p[i].y);
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-    CGContextStrokePath(fl_gc);
+  version (WIN32) {
+    for (int i=0; i<n; i++) SetPixel(fl_gc, p[i].x, p[i].y, fl_RGB());
+  } else version (__APPLE__) {
+    if (fl_quartz_line_width_==1.0f) CGContextSetShouldAntialias(fl_gc, false);
+    for (int i=0; i<n; i++) { 
+      CGContextMoveToPoint(fl_gc, p[i].x, p[i].y);
+      CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
+      CGContextStrokePath(fl_gc);
+    }
+    if (fl_quartz_line_width_==1.0f) CGContextSetShouldAntialias(fl_gc, false);
+  } else {
+    if (n>1) XDrawPoints(fl_display, fl_window, fl_gc, p, n, 0);
   }
-  if (fl_quartz_line_width_==1.0f) CGContextSetShouldAntialias(fl_gc, false);
-} else {
-  if (n>1) XDrawPoints(fl_display, fl_window, fl_gc, p, n, 0);
-}
 }
 
 void fl_end_line() {
@@ -173,21 +175,17 @@ void fl_end_line() {
     fl_end_points();
     return;
   }
-version (WIN32) {
-  if (n>1) Polyline(fl_gc, p, n);
-} else version (__APPLE_QD__) {
-  if (n<=1) return;
-  MoveTo(p[0].x, p[0].y);
-  for (int i=1; i<n; i++) LineTo(p[i].x, p[i].y);
-} else version (__APPLE_QUARTZ__) {
-  if (n<=1) return;
-  CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
-  for (int i=1; i<n; i++)
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-  CGContextStrokePath(fl_gc);
-} else {
-  if (n>1) XDrawLines(fl_display, fl_window, fl_gc, p, n, 0);
-}
+  version (WIN32) {
+    if (n>1) Polyline(fl_gc, p, n);
+  } else version (__APPLE__) {
+    if (n<=1) return;
+    CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
+    for (int i=1; i<n; i++)
+      CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
+    CGContextStrokePath(fl_gc);
+  } else {
+    if (n>1) XDrawLines(fl_display, fl_window, fl_gc, p, n, 0);
+  }
 }
 
 static void fixloop() {  // remove equal points from closed path
@@ -196,7 +194,7 @@ static void fixloop() {  // remove equal points from closed path
 
 void fl_end_loop() {
   fixloop();
-  if (n>2) fl_transformed_vertex((COORD_T)p[0].x, (COORD_T)p[0].y);
+  if (n>2) fl_transformed_vertex(cast(COORD_T)p[0].x, cast(COORD_T)p[0].y);
   fl_end_line();
 }
 
@@ -206,52 +204,44 @@ void fl_end_polygon() {
     fl_end_line();
     return;
   }
-version (WIN32) {
-  if (n>2) {
-    SelectObject(fl_gc, fl_brush());
-    Polygon(fl_gc, p, n);
+  version (WIN32) {
+    if (n>2) {
+      SelectObject(fl_gc, fl_brush());
+      Polygon(fl_gc, p, n);
+    }
+  } else version (__APPLE__) {
+    if (n<=1) return;
+    CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
+    for (int i=1; i<n; i++) 
+      CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
+    CGContextClosePath(fl_gc);
+    CGContextFillPath(fl_gc);
+  } else {
+    if (n>2) XFillPolygon(fl_display, fl_window, fl_gc, p, n, Convex, 0);
   }
-} else version (__APPLE_QD__) {
-  if (n<=1) return;
-  PolyHandle ph = OpenPoly();
-  MoveTo(p[0].x, p[0].y);
-  for (int i=1; i<n; i++) LineTo(p[i].x, p[i].y);
-  ClosePoly();
-  PaintPoly(ph);
-  KillPoly(ph);
-} else version (__APPLE_QUARTZ__) {
-  if (n<=1) return;
-  CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
-  for (int i=1; i<n; i++) 
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-  CGContextClosePath(fl_gc);
-  CGContextFillPath(fl_gc);
-} else {
-  if (n>2) XFillPolygon(fl_display, fl_window, fl_gc, p, n, Convex, 0);
-}
 }
 
 static int gap;
 version (WIN32) {
-static int counts[20];
-static int numcount;
+  static int counts[20];
+  static int numcount;
 }
 
 void fl_begin_complex_polygon() {
   fl_begin_polygon();
   gap = 0;
-version (WIN32) {
-  numcount = 0;
-}
+  version (WIN32) {
+    numcount = 0;
+  }
 }
 
 void fl_gap() {
   while (n>gap+2 && p[n-1].x == p[gap].x && p[n-1].y == p[gap].y) n--;
   if (n > gap+2) {
-    fl_transformed_vertex((COORD_T)p[gap].x, (COORD_T)p[gap].y);
-version (WIN32) {
-    counts[numcount++] = n-gap;
-}
+    fl_transformed_vertex(cast(COORD_T)p[gap].x, cast(COORD_T)p[gap].y);
+    version (WIN32) {
+      counts[numcount++] = n-gap;
+    }
     gap = n;
   } else {
     n = gap;
@@ -264,29 +254,21 @@ void fl_end_complex_polygon() {
     fl_end_line();
     return;
   }
-version (WIN32) {
-  if (n>2) {
-    SelectObject(fl_gc, fl_brush());
-    PolyPolygon(fl_gc, p, counts, numcount);
+  version (WIN32) {
+    if (n>2) {
+      SelectObject(fl_gc, fl_brush());
+      PolyPolygon(fl_gc, p, counts, numcount);
+    }
+  } else version (__APPLE__) {
+    if (n<=1) return;
+    CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
+    for (int i=1; i<n; i++)
+      CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
+    CGContextClosePath(fl_gc);
+    CGContextFillPath(fl_gc);
+  } else {
+    if (n>2) XFillPolygon(fl_display, fl_window, fl_gc, p, n, 0, 0);
   }
-} else version (__APPLE_QD__) {
-  if (n<=1) return;
-  PolyHandle ph = OpenPoly();
-  MoveTo(p[0].x, p[0].y);
-  for (int i=1; i<n; i++) LineTo(p[i].x, p[i].y);
-  ClosePoly();
-  PaintPoly(ph);
-  KillPoly(ph);
-} else version (__APPLE_QUARTZ__) {
-  if (n<=1) return;
-  CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
-  for (int i=1; i<n; i++)
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-  CGContextClosePath(fl_gc);
-  CGContextFillPath(fl_gc);
-} else {
-  if (n>2) XFillPolygon(fl_display, fl_window, fl_gc, p, n, 0, 0);
-}
 }
 
 // shortcut the closed circles so they use XDrawArc:
@@ -298,30 +280,29 @@ void fl_circle(double x, double y,double r) {
   double yt = fl_transform_y(x,y);
   double rx = r * (m.c ? sqrt(m.a*m.a+m.c*m.c) : fabs(m.a));
   double ry = r * (m.b ? sqrt(m.b*m.b+m.d*m.d) : fabs(m.d));
-  int llx = (int)rint(xt-rx);
-  int w = (int)rint(xt+rx)-llx;
-  int lly = (int)rint(yt-ry);
-  int h = (int)rint(yt+ry)-lly;
-version (WIN32) {
-  if (what==POLYGON) {
-    SelectObject(fl_gc, fl_brush());
-    Pie(fl_gc, llx, lly, llx+w, lly+h, 0,0, 0,0); 
-  } else
-    Arc(fl_gc, llx, lly, llx+w, lly+h, 0,0, 0,0); 
-} else version (__APPLE_QD__) {
-  Rect rt; rt.left=llx; rt.right=llx+w; rt.top=lly; rt.bottom=lly+h;
-  (what == POLYGON ? PaintOval : FrameOval)(&rt);
-} else version (__APPLE_QUARTZ__) {
-  // Quartz warning : circle won't scale to current matrix!
-  CGContextAddArc(fl_gc, xt, yt, (w+h)*0.25f, 0, 2.0f*M_PI, 1);
-  (what == POLYGON ? CGContextFillPath : CGContextStrokePath)(fl_gc);
-} else {
-  (what == POLYGON ? XFillArc : XDrawArc)
-    (fl_display, fl_window, fl_gc, llx, lly, w, h, 0, 360*64);
-}
+  int llx = cast(int)rint(xt-rx);
+  int w = cast(int)rint(xt+rx)-llx;
+  int lly = cast(int)rint(yt-ry);
+  int h = cast(int)rint(yt+ry)-lly;
+  version (WIN32) {
+    if (what==POLYGON) {
+      SelectObject(fl_gc, fl_brush());
+      Pie(fl_gc, llx, lly, llx+w, lly+h, 0,0, 0,0); 
+    } else
+      Arc(fl_gc, llx, lly, llx+w, lly+h, 0,0, 0,0); 
+  } else version (__APPLE__) {
+    // Quartz warning : circle won't scale to current matrix!
+    CGContextAddArc(fl_gc, xt, yt, (w+h)*0.25f, 0, 2.0f*M_PI, 1);
+    if (what == POLYGON)
+      CGContextFillPath(fl_gc);
+    else
+      CGContextStrokePath(fl_gc);
+  } else {
+    (what == POLYGON ? XFillArc : XDrawArc)
+      (fl_display, fl_window, fl_gc, llx, lly, w, h, 0, 360*64);
+  }
 }
 
 //
 // End of "$Id: fl_vertex.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

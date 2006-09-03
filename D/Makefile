@@ -1,6 +1,6 @@
 
-ALL = button
-#ALL = arc boxtype menubar message hello button
+ALL = boxtype
+#ALL = arc menubar message boxtype hello button
 
 all: $(ALL) 
 

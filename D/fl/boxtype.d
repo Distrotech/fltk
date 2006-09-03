@@ -36,6 +36,8 @@ private import fl.fl;
 private import fl.draw;
 private import fl.color;
 private import fl.widget;
+private import fl.shadow_box;
+private import fl.rounded_box;
 
 ////////////////////////////////////////////////////////////////
 
@@ -56,9 +58,7 @@ static ubyte inactive_ramp[24] = [
 
 int draw_it_active = 1;
 
-/+=
-int Fl.draw_box_active() { return draw_it_active; }
-=+/
+Fl_Color fl_gray_ramp(int i) {return i+FL_GRAY_RAMP;}
 
 ubyte* fl_gray_ramp() {
   if (draw_it_active)
@@ -214,13 +214,13 @@ Fl_Boxtable_Entry[256] fl_box_table= [
   {&fl_engraved_frame,	2,2,4,4,1},
   {&fl_embossed_frame,	2,2,4,4,1},
   {&fl_border_box,	1,1,2,2,1},
-  {&fl_border_box,	1,1,5,5,0}, // _FL_SHADOW_BOX,
+  {&fl_shadow_box,	1,1,5,5,0}, // _FL_SHADOW_BOX,
   {&fl_border_frame,	1,1,2,2,1},
-  {&fl_border_frame,	1,1,5,5,0}, // _FL_SHADOW_FRAME,
-  {&fl_border_box,	1,1,2,2,0}, // _FL_ROUNDED_BOX,
-  {&fl_border_box,	1,1,2,2,0}, // _FL_RSHADOW_BOX,
-  {&fl_border_frame,	1,1,2,2,0}, // _FL_ROUNDED_FRAME
-  {&fl_rectf,		0,0,0,0,0}, // _FL_RFLAT_BOX,
+  {&fl_shadow_frame,	1,1,5,5,0}, // _FL_SHADOW_FRAME,
+  {&fl_rounded_box,	1,1,2,2,0}, // _FL_ROUNDED_BOX,
+  {&fl_rshadow_box,	1,1,2,2,0}, // _FL_RSHADOW_BOX,
+  {&fl_rounded_frame,	1,1,2,2,0}, // _FL_ROUNDED_FRAME
+  {&fl_rflat_box,	0,0,0,0,0}, // _FL_RFLAT_BOX,
   {&fl_up_box,		3,3,6,6,0}, // _FL_ROUND_UP_BOX
   {&fl_down_box,	3,3,6,6,0}, // _FL_ROUND_DOWN_BOX,
   {&fl_up_box,		0,0,0,0,0}, // _FL_DIAMOND_UP_BOX
@@ -244,30 +244,12 @@ Fl_Boxtable_Entry[256] fl_box_table= [
   {&fl_up_box,		3,3,6,6,0}, // FL_FREE_BOX+6
   {&fl_down_box,	3,3,6,6,0}, // FL_FREE_BOX+7
 ];
-/+=
-void fl_internal_boxtype(Fl_Boxtype t, Fl_Box_Draw_F  f) {
+
+void fl_internal_boxtype(Fl_Boxtype t, Fl_Box_Draw_F f) {
   if (!fl_box_table[t].set) {
     fl_box_table[t].f   = f;
     fl_box_table[t].set = 1;
   }
-}
-
-Fl_Box_Draw_F  Fl.get_boxtype(Fl_Boxtype t) {
-  return fl_box_table[t].f;
-}
-
-void Fl.set_boxtype(Fl_Boxtype t, Fl_Box_Draw_F  f,
-		      ubyte a, ubyte b, ubyte c, ubyte d) {
-  fl_box_table[t].f   = f;
-  fl_box_table[t].set = 1;
-  fl_box_table[t].dx  = a;
-  fl_box_table[t].dy  = b;
-  fl_box_table[t].dw  = c;
-  fl_box_table[t].dh  = d;
-}
-
-void Fl.set_boxtype(Fl_Boxtype t, Fl_Boxtype f) {
-  fl_box_table[t] = fl_box_table[f];
 }
 
 void fl_draw_box(Fl_Boxtype t, int x, int y, int w, int h, Fl_Color c) {
@@ -277,4 +259,3 @@ void fl_draw_box(Fl_Boxtype t, int x, int y, int w, int h, Fl_Color c) {
 //
 // End of "$Id: fl_boxtype.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

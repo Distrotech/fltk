@@ -47,53 +47,6 @@ version (WIN32) && !defined(__CYGWIN__) {
 const int putenv = _putenv; 
 } // WIN32 && !__CYGWIN__
 
-static char	fl_bg_set = 0;
-static char	fl_bg2_set = 0;
-static char	fl_fg_set = 0;
-
-
-void Fl.background(ubyte r, ubyte g, ubyte b) {
-  fl_bg_set = 1;
-
-  // replace the gray ramp so that FL_GRAY is this color
-  if (!r) r = 1; else if (r==255) r = 254;
-  double powr = log(r/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
-  if (!g) g = 1; else if (g==255) g = 254;
-  double powg = log(g/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
-  if (!b) b = 1; else if (b==255) b = 254;
-  double powb = log(b/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
-  for (int i = 0; i < FL_NUM_GRAY; i++) {
-    double gray = i/(FL_NUM_GRAY-1.0);
-    Fl.set_color(fl_gray_ramp(i),
-		  ubyte(pow(gray,powr)*255+.5),
-		  ubyte(pow(gray,powg)*255+.5),
-		  ubyte(pow(gray,powb)*255+.5));
-  }
-}
-
-void Fl.foreground(ubyte r, ubyte g, ubyte b) {
-  fl_fg_set = 1;
-
-  Fl.set_color(FL_FOREGROUND_COLOR,r,g,b);
-}
-
-void Fl.background2(ubyte r, ubyte g, ubyte b) {
-  fl_bg2_set = 1;
-
-  Fl.set_color(FL_BACKGROUND2_COLOR,r,g,b);
-  Fl.set_color(FL_FOREGROUND_COLOR,
-                get_color(fl_contrast(FL_FOREGROUND_COLOR,FL_BACKGROUND2_COLOR)));
-}
-
-// these are set by Fl.args() and override any system colors:
-const char *fl_fg = NULL;
-const char *fl_bg = NULL;
-const char *fl_bg2 = NULL;
-
-static void set_selection_color(ubyte r, ubyte g, ubyte b) {
-  Fl.set_color(FL_SELECTION_COLOR,r,g,b);
-}
-
 version (WIN32) || defined(__APPLE__) {
 
 #  include <stdio.h>
@@ -157,34 +110,6 @@ void Fl.get_system_colors() {
 }
 
 } else version (__APPLE__) {
-// MacOS X currently supports two color schemes - Blue and Graphite.
-// Since we aren't emulating the Aqua interface (even if Apple would
-// let us), we use some defaults that are similar to both.  The
-// Fl.scheme("plastic") color/box scheme provides a usable Aqua-like
-// look-n-feel...
-void Fl.get_system_colors()
-{
-  fl_open_display();
-
-  if (!fl_bg2_set) background2(0xff, 0xff, 0xff);
-  if (!fl_fg_set) foreground(0, 0, 0);
-  if (!fl_bg_set) background(0xd8, 0xd8, 0xd8);
-  
-#if 0 
-  // this would be the correct code, but it does not run on all versions
-  // of OS X. Also, setting a bright selection color would require 
-  // some updates in Fl_Adjuster and Fl_Help_Browser
-  OSStatus err;
-  RGBColor c;
-  err = GetThemeBrushAsColor(kThemeBrushPrimaryHighlightColor, 24, true, &c);
-  if (err)
-    set_selection_color(0x00, 0x00, 0x80);
-  else
-    set_selection_color(c.red, c.green, c.blue);
-} else {
-  set_selection_color(0x00, 0x00, 0x80);
-}
-}
 } else {
 
 // Read colors that KDE writes to the xrdb database.

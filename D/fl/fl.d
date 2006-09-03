@@ -35,7 +35,9 @@ private import fl.boxtype;
 private import fl.labeltype;
 private import fl.image;
 private import fl.tooltip;
+private import fl.draw;
 private import std.ctype;
+private import std.c.math;
 
 version (__APPLE__) {
   private import fl.mac;
@@ -44,6 +46,10 @@ version (__APPLE__) {
 typedef void function(Fl_Label*, int,int,int,int, Fl_Align) Fl_Label_Draw_F;
 typedef void function(Fl_Label*, inout int, inout int) Fl_Label_Measure_F;
 typedef void function(int,int,int,int, Fl_Color) Fl_Box_Draw_F;
+
+static char     fl_bg_set = 0;
+static char     fl_bg2_set = 0;
+static char     fl_fg_set = 0;
 
 /+=
 alias void (*Fl_Timeout_Handler)(void*);
@@ -105,11 +111,56 @@ public:
   static int visual(int);
   static int gl_visual(int, int *alist=0);
   static void own_colormap();
-  static void get_system_colors();
-  static void foreground(ubyte, ubyte, ubyte);
-  static void background(ubyte, ubyte, ubyte);
-  static void background2(ubyte, ubyte, ubyte);
+=+/
+  private static void set_selection_color(ubyte r, ubyte g, ubyte b) {
+    set_color(FL_SELECTION_COLOR,r,g,b);
+  }
 
+  static void get_system_colors() {
+    version (__APPLE__) {
+      fl_open_display();
+    
+      if (!fl_bg2_set) background2(0xff, 0xff, 0xff);
+      if (!fl_fg_set) foreground(0, 0, 0);
+      if (!fl_bg_set) background(0xd8, 0xd8, 0xd8);
+      
+      set_selection_color(0x00, 0x00, 0x80);
+    }
+  }
+
+  static void foreground(ubyte r, ubyte g, ubyte b) {
+    fl_fg_set = 1;
+    set_color(FL_FOREGROUND_COLOR,r,g,b);
+  }
+
+  static void background(ubyte r, ubyte g, ubyte b) {
+    fl_bg_set = 1;
+  
+    // replace the gray ramp so that FL_GRAY is this color
+    if (!r) r = 1; else if (r==255) r = 254;
+    double powr = log(r/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
+    if (!g) g = 1; else if (g==255) g = 254;
+    double powg = log(g/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
+    if (!b) b = 1; else if (b==255) b = 254;
+    double powb = log(b/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
+    for (int i = 0; i < FL_NUM_GRAY; i++) {
+      double gray = i/(FL_NUM_GRAY-1.0);
+      set_color(fl_gray_ramp(i),
+                    cast(ubyte)(pow(gray,powr)*255+.5),
+                    cast(ubyte)(pow(gray,powg)*255+.5),
+                    cast(ubyte)(pow(gray,powb)*255+.5));
+    }
+  }
+
+  static void background2(ubyte r, ubyte g, ubyte b) {
+    fl_bg2_set = 1;
+  
+    set_color(FL_BACKGROUND2_COLOR,r,g,b);
+    set_color(FL_FOREGROUND_COLOR,
+                  get_color(fl_contrast(FL_FOREGROUND_COLOR,FL_BACKGROUND2_COLOR)));
+  }
+
+/+=
   // schemes:
   static int scheme(char*);
   static char* scheme() {return scheme_;}
@@ -601,11 +652,25 @@ public:
   }
   static void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my);
   static void screen_xywh(int &x, int &y, int &w, int &h, int n);
-
+=+/
   // color map:
-  static void	set_color(Fl_Color, ubyte, ubyte, ubyte);
-  static void	set_color(Fl_Color, uint);
-  static uint get_color(Fl_Color);
+  static void set_color(Fl_Color i, ubyte red, ubyte green, ubyte blue) {
+    set_color((i & 255),
+          (red<<24)+(green<<16)+(blue<<8));
+  }
+
+  static void set_color(Fl_Color i, uint c) {
+    if (fl_cmap[i] != c) {
+      fl_cmap[i] = c;
+    }
+  }
+
+  static uint get_color(Fl_Color i) {
+    if (i & 0xffffff00) return (i);
+    else return fl_cmap[i];
+  }
+/+=
+
   static void	get_color(Fl_Color, ubyte&, ubyte&, ubyte&);
   static void	free_color(Fl_Color, int overlay = 0);
 
@@ -620,19 +685,34 @@ public:
   // labeltypes:
   static void set_labeltype(Fl_Labeltype,Fl_Label_Draw_F ,Fl_Label_Measure_F );
   static void set_labeltype(Fl_Labeltype, Fl_Labeltype from);
+=+/
 
   // boxtypes:
-  static Fl_Box_Draw_F  get_boxtype(Fl_Boxtype);
-  static void set_boxtype(Fl_Boxtype, Fl_Box_Draw_F ,ubyte,ubyte,ubyte,ubyte);
-  static void set_boxtype(Fl_Boxtype, Fl_Boxtype from);
-=+/
+  static Fl_Box_Draw_F get_boxtype(Fl_Boxtype t) {
+    return fl_box_table[t].f;
+  }
+
+  static void set_boxtype(Fl_Boxtype t, Fl_Box_Draw_F f,
+                        ubyte a, ubyte b, ubyte c, ubyte d) {
+    fl_box_table[t].f   = f;
+    fl_box_table[t].set = 1;
+    fl_box_table[t].dx  = a;
+    fl_box_table[t].dy  = b;
+    fl_box_table[t].dw  = c;
+    fl_box_table[t].dh  = d;
+  }
+
+  static void set_boxtype(Fl_Boxtype t, Fl_Boxtype f) {
+    fl_box_table[t] = fl_box_table[f];
+  }
+
   static int box_dx(Fl_Boxtype t) {return fl_box_table[t].dx;}
   static int box_dy(Fl_Boxtype t) {return fl_box_table[t].dy;}
   static int box_dw(Fl_Boxtype t) {return fl_box_table[t].dw;}
   static int box_dh(Fl_Boxtype t) {return fl_box_table[t].dh;}
-/+=
-  static int draw_box_active();
+  static int draw_box_active() { return draw_it_active; }
 
+/+=
   // back compatability:
   static void set_abort(void (*f)(char*,...)) {fatal = f;}
 =+/

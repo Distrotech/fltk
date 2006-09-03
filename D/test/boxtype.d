@@ -25,8 +25,6 @@
 //     http://www.fltk.org/str.php
 //
 
-//#include <stdlib.h>
-//#include <stdio.h>
 public import fl.fl;
 public import fl.single_window;
 public import fl.box;

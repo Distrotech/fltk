@@ -75,7 +75,7 @@ private:
         return 0;
       }
       Fl_Widget o = array_[i];
-      if (o == previous) return 0;
+      if (o is previous) return 0;
       switch (key) {
       case FL_Down:
       case FL_Up:
@@ -285,7 +285,7 @@ public:
     case FL_RELEASE:
     case FL_DRAG:
       o = Fl.pushed();
-      if (o == this) return 0;
+      if (o is this) return 0;
       else if (o) send(o,event);
       else {
         for (i = children(); i--;) {
@@ -322,7 +322,7 @@ public:
     case FL_HIDE:
       for (i = children(); i--;) {
         o = *a++;
-        if (event == FL_HIDE && o == Fl.focus()) {
+        if (event == FL_HIDE && o is Fl.focus()) {
           // Give up input focus...
   	int old_event = Fl.e_number;
           o.handle(Fl.e_number = FL_UNFOCUS);
@@ -336,7 +336,7 @@ public:
     default:
       // For all other events, try to give to each child, starting at focus:
       for (i = 0; i < children(); i ++)
-        if (Fl.focus_ == a[i]) break;
+        if (Fl.focus_ is a[i]) break;
   
       if (i >= children()) i = 0;
   

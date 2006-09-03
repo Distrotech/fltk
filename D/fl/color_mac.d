@@ -109,12 +109,6 @@ version (__APPLE_QD__) {
 }
 }
 
-void Fl.set_color(Fl_Color i, uint c) {
-  if (fl_cmap[i] != c) {
-    fl_cmap[i] = c;
-  }
-}
-
 //
 // End of "$Id: fl_color_mac.cxx 5190 2006-06-09 16:16:34Z mike $".
 //

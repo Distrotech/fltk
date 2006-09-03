@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_shadow_box.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -26,10 +25,12 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
+module fl.shadow_box;
+
+private import fl.enumerations;
 private import fl.draw;
 
-const int BW = 3; 
+static const int BW = 3; 
 
 static void fl_shadow_frame(int x, int y, int w, int h, Fl_Color c) {
   fl_color(FL_DARK3);
@@ -45,14 +46,6 @@ static void fl_shadow_box(int x, int y, int w, int h, Fl_Color c) {
   fl_shadow_frame(x,y,w,h,FL_GRAY0);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F );
-Fl_Boxtype fl_define_FL_SHADOW_BOX() {
-  fl_internal_boxtype(_FL_SHADOW_FRAME, fl_shadow_frame);
-  fl_internal_boxtype(_FL_SHADOW_BOX, fl_shadow_box);
-  return _FL_SHADOW_BOX;
-}
-
 //
 // End of "$Id: fl_shadow_box.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

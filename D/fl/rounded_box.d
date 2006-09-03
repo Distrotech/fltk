@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: fl_rounded_box.cxx 5190 2006-06-09 16:16:34Z mike $"
 //
@@ -26,14 +25,16 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
+module fl.rounded_box;
+
+private import fl.enumerations;
 private import fl.draw;
 
-const int RN = 5; 
-const int RS = 15; 
-const int BW = 3; 
+static const int RN = 5; 
+static const int RS = 15; 
+static const int BW = 3; 
 
-static double offset[RN] = { 0.0, 0.07612, 0.29289, 0.61732, 1.0};
+static double offset[RN] = [ 0.0, 0.07612, 0.29289, 0.61732, 1.0 ];
 
 static void rbox(int fill, int x, int y, int w, int h) {
   int i;
@@ -55,20 +56,20 @@ static void rbox(int fill, int x, int y, int w, int h) {
   if (fill) fl_end_polygon(); else fl_end_loop();
 }
 
-static void fl_rflat_box(int x, int y, int w, int h, Fl_Color c) {
+void fl_rflat_box(int x, int y, int w, int h, Fl_Color c) {
   fl_color(c); rbox(1, x, y, w, h); rbox(0, x, y, w, h);
 }
 
-static void fl_rounded_frame(int x, int y, int w, int h, Fl_Color c) {
+void fl_rounded_frame(int x, int y, int w, int h, Fl_Color c) {
   fl_color(c); rbox(0, x, y, w, h);
 }
 
-static void fl_rounded_box(int x, int y, int w, int h, Fl_Color c) {
+void fl_rounded_box(int x, int y, int w, int h, Fl_Color c) {
   fl_color(c); rbox(1, x, y, w, h);
   fl_color(FL_BLACK); rbox(0, x, y, w, h);
 }
 
-static void fl_rshadow_box(int x, int y, int w, int h, Fl_Color c) {
+void fl_rshadow_box(int x, int y, int w, int h, Fl_Color c) {
   // draw shadow:
   fl_color(FL_DARK3);
   rbox(1, x+BW, y+BW, w, h);
@@ -77,25 +78,6 @@ static void fl_rshadow_box(int x, int y, int w, int h, Fl_Color c) {
   fl_rounded_box(x, y, w, h, c);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F );
-
-Fl_Boxtype fl_define_FL_ROUNDED_BOX() {
-  fl_internal_boxtype(_FL_ROUNDED_FRAME, fl_rounded_frame);
-  fl_internal_boxtype(_FL_ROUNDED_BOX, fl_rounded_box);
-  return _FL_ROUNDED_BOX;
-}
-
-Fl_Boxtype fl_define_FL_RFLAT_BOX() {
-  fl_internal_boxtype(_FL_RFLAT_BOX, fl_rflat_box);
-  return _FL_RFLAT_BOX;
-}
-
-Fl_Boxtype fl_define_FL_RSHADOW_BOX() {
-  fl_internal_boxtype(_FL_RSHADOW_BOX, fl_rshadow_box);
-  return _FL_RSHADOW_BOX;
-}
-
 //
 // End of "$Id: fl_rounded_box.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

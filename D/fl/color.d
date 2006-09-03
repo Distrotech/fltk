@@ -324,16 +324,6 @@ void Fl.set_color(Fl_Color i, uint c) {
 } // end of X-specific code
 
 /+=
-uint Fl.get_color(Fl_Color i) {
-  if (i & 0xffffff00) return (i);
-  else return fl_cmap[i];
-}
-
-void Fl.set_color(Fl_Color i, ubyte red, ubyte green, ubyte blue) {
-  Fl.set_color((Fl_Color)(i & 255),
-	((uint)red<<24)+((uint)green<<16)+((uint)blue<<8));
-}
-
 void Fl.get_color(Fl_Color i, ubyte &red, ubyte &green, ubyte &blue) {
   uint c;
 
