@@ -12,6 +12,7 @@ fl/vertex.d
 fl/arc.d
 fl/round_box.d
 fl/oval_box.d
+fl/diamon_box.d
 --
 fl/boxtype.d
 

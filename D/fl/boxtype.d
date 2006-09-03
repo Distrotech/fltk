@@ -40,6 +40,7 @@ private import fl.shadow_box;
 private import fl.rounded_box;
 private import fl.round_box;
 private import fl.oval_box;
+private import fl.diamond_box;
 
 ////////////////////////////////////////////////////////////////
 
@@ -225,8 +226,8 @@ Fl_Boxtable_Entry[256] fl_box_table= [
   {&fl_rflat_box,	0,0,0,0,0}, // _FL_RFLAT_BOX,
   {&fl_round_up_box,	3,3,6,6,0}, // _FL_ROUND_UP_BOX
   {&fl_round_down_box,	3,3,6,6,0}, // _FL_ROUND_DOWN_BOX,
-  {&fl_up_box,		0,0,0,0,0}, // _FL_DIAMOND_UP_BOX
-  {&fl_down_box,	0,0,0,0,0}, // _FL_DIAMOND_DOWN_BOX
+  {&fl_diamond_up_box,	0,0,0,0,0}, // _FL_DIAMOND_UP_BOX
+  {&fl_diamond_down_box,0,0,0,0,0}, // _FL_DIAMOND_DOWN_BOX
   {&fl_oval_box,	1,1,2,2,0}, // _FL_OVAL_BOX,
   {&fl_oval_shadow_box,	1,1,2,2,0}, // _FL_OVAL_SHADOW_BOX,
   {&fl_oval_frame,	1,1,2,2,0}, // _FL_OVAL_FRAME

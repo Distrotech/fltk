@@ -33,11 +33,8 @@
 
 module fl.diamond_box;
 
-/+=
-#include <FL/Fl.H>
+private import fl.enumerations;
 private import fl.draw;
-
-extern ubyte* fl_gray_ramp();
 
 static void fl_diamond_up_box(int x,int y,int w,int h,Fl_Color bgcolor) {
   w &= -2;
@@ -71,14 +68,6 @@ static void fl_diamond_down_box(int x,int y,int w,int h,Fl_Color bgcolor) {
   fl_color(g['A']); fl_loop(x+3, y1, x1, y+3, x+w-3, y1, x1, y+h-3);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F );
-Fl_Boxtype fl_define_FL_DIAMOND_BOX() {
-  fl_internal_boxtype(_FL_DIAMOND_DOWN_BOX, fl_diamond_down_box);
-  fl_internal_boxtype(_FL_DIAMOND_UP_BOX,fl_diamond_up_box);
-  return _FL_DIAMOND_UP_BOX;
-}
-
 //
 // End of "$Id: fl_diamond_box.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/
