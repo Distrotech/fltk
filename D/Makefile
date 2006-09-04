@@ -1,6 +1,6 @@
 
-ALL = symbols
-#ALL = arc demo menubar message boxtype hello button
+ALL = message
+#ALL = arc demo menubar message boxtype hello button symbols
 
 all: $(ALL) 
 

@@ -1,5 +1,5 @@
 //
-// "$Id: fl_arc.cxx 5349 2006-08-23 14:43:07Z matt $"
+// "$Id: arc.d 5349 2006-08-23 14:43:07Z matt $"
 //
 // Arc functions for the Fast Light Tool Kit (FLTK).
 //
@@ -33,8 +33,9 @@ module fl.arc;
 
 
 private import fl.draw;
+private import std.c.math;
 
-/+=
+
 // avoid problems with some platforms that don't 
 // implement hypot.
 static double _fl_hypot(double x, double y) {
@@ -65,7 +66,7 @@ void fl_arc(double x, double y, double r, double start, double end) {
     epsilon = 2*acos(1.0 - 0.125/r1);	// Maximum arc angle
   }
   A = end*(M_PI/180) - A;		// Displacement angle (radians)
-  int i = int(ceil(fabs(A)/epsilon));	// Segments in approximation
+  int i = cast(int)(ceil(fabs(A)/epsilon));	// Segments in approximation
   
   if (i) {
     epsilon = A/i;			// Arc length for equal-size steps
@@ -78,65 +79,6 @@ void fl_arc(double x, double y, double r, double start, double end) {
     } while (--i);
   }
 }
-
-#if 0 // portable version.  X-specific one in fl_vertex.cxx
-void fl_circle(double x,double y,double r) {
-  _fl_arc(x, y, r, r, 0, 360);
-}
-}
-
-//
-// End of "$Id: fl_arc.cxx 5349 2006-08-23 14:43:07Z matt $".
-//
-    End of automatic import -+/
-//
-// "$Id: fl_arci.cxx 5190 2006-06-09 16:16:34Z mike $"
-//
-// Arc (integer) drawing functions for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
-// "integer" circle drawing functions.  These draw the limited
-// circle types provided by X and NT graphics.  The advantage of
-// these is that small ones draw quite nicely (probably due to stored
-// hand-drawn bitmaps of small circles!) and may be implemented by
-// hardware and thus are fast.
-
-// Probably should add fl_chord.
-
-// 3/10/98: created
-
-
-/+=
-private import fl.draw;
-#include <FL/x.H>
-version (WIN32) {
-#include <FL/math.h>
-}
-version (__APPLE__) {
-#include <config.h>
-}
-=+/
 
 void fl_arc(int x,int y,int w,int h,double a1,double a2) {
   if (w <= 0 || h <= 0) return;
@@ -199,5 +141,5 @@ void fl_pie(int x,int y,int w,int h,double a1,double a2) {
 }
 
 //
-// End of "$Id: fl_arci.cxx 5190 2006-06-09 16:16:34Z mike $".
+// End of "$Id: arc.d 5349 2006-08-23 14:43:07Z matt $".
 //

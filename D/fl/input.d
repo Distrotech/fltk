@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: input.d 5300 2006-08-14 07:06:45Z matt $"
 //
@@ -31,22 +30,27 @@ module fl.input;
 
 public import fl.input_;
 
+
 class Fl_Input : Fl_Input_ {
+/+=
   int handle_key();
   int shift_position(int p);
   int shift_up_down_position(int p);
+=+/
 public:
+/+=
   void draw();
   int handle(int);
-  Fl_Input(int,int,int,int,char * = 0);
-};
-
+=+/
+  this(int X, int Y, int W, int H, char *l=null) {
+    super(X, Y, W, H, l);
+  }
 } 
 
 //
 // End of "$Id: input.d 5300 2006-08-14 07:06:45Z matt $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: input.d 5190 2006-06-09 16:16:34Z mike $"
@@ -508,9 +512,6 @@ int Fl_Input.handle(int event) {
 	w()-Fl.box_dw(b), h()-Fl.box_dh(b));
 }
 
-Fl_Input.Fl_Input(int X, int Y, int W, int H, char *l)
-: Fl_Input_(X, Y, W, H, l) {
-}
 
 //
 // End of "$Id: input.d 5190 2006-06-09 16:16:34Z mike $".

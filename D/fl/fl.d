@@ -103,6 +103,9 @@ public:
   static int args(int, char**, int&, int (*)(int,char**,int&) = 0);
   static char* help;
   static void args(int, char**);
+=+/
+  static void args(char[][] aa) { /+== ==+/ }
+/+=
 
   // things called by initialization:
   static void display(char*);
@@ -158,17 +161,22 @@ public:
                   get_color(fl_contrast(FL_FOREGROUND_COLOR,FL_BACKGROUND2_COLOR)));
   }
 
-/+=
   // schemes:
-  static int scheme(char*);
-=+/
+  static int scheme(char *s) {
+    /+== ==+/
+    return 0;
+  }
   static char* scheme() {return scheme_;}
 /+=
   static int reload_scheme();
-
-  // execution:
-  static int wait();
 =+/
+  // execution:
+  static int wait() {
+    if (!Fl_X.first) return 0;
+    wait(FOREVER);
+    return (!(Fl_X.first is null)); // return true if there is a window
+  }
+
   static double wait(double time_to_wait) {
     // delete all widgets that were listed during callbacks
     do_widget_deletion();
@@ -1263,11 +1271,6 @@ static Fl_Win32_At_Exit win32_at_exit;
 
 
 
-int Fl.wait() {
-  if (!Fl_X.first) return 0;
-  wait(FOREVER);
-  return Fl_X.first != 0; // return true if there is a window
-}
 
 int Fl.check() {
   wait(0.0);

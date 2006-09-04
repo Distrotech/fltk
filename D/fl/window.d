@@ -251,8 +251,11 @@ public:
   int non_modal() {return flags() & (FL_NON_MODAL|FL_MODAL);}
 /+=
   void hotspot(int x, int y, int offscreen = 0);
-  void hotspot(Fl_Widget , int offscreen = 0);
-  void hotspot(Fl_Widget  p, int offscreen = 0) {hotspot(&p,offscreen);}
+=+/
+  void hotspot(Fl_Widget p, int offscreen = 0) {
+    /+== ==+/
+  }
+/+=
   void free_position()	{clear_flag(FL_FORCE_POSITION);}
 =+/
   void size_range(int a, int b, int c=0, int d=0, int e=0, int f=0, int g=0) {

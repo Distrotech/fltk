@@ -397,6 +397,19 @@ const int FL_VERT_NICE_SLIDER = 4;
 const int FL_HOR_NICE_SLIDER = 5; 
 const int FL_VERTICAL = 0; 
 const int FL_HORIZONTAL = 1; 
+const int FL_NORMAL_INPUT = 0; 
+const int FL_FLOAT_INPUT = 1; 
+const int FL_INT_INPUT = 2; 
+const int FL_HIDDEN_INPUT = 3; 
+const int FL_MULTILINE_INPUT = 4; 
+const int FL_SECRET_INPUT = 5; 
+const int FL_INPUT_TYPE = 7; 
+const int FL_INPUT_READONLY = 8; 
+const int FL_NORMAL_OUTPUT = (FL_NORMAL_INPUT | FL_INPUT_READONLY); 
+const int FL_MULTILINE_OUTPUT = (FL_MULTILINE_INPUT | FL_INPUT_READONLY); 
+const int FL_INPUT_WRAP = 16; 
+const int FL_MULTILINE_INPUT_WRAP = (FL_MULTILINE_INPUT | FL_INPUT_WRAP); 
+const int FL_MULTILINE_OUTPUT_WRAP = (FL_MULTILINE_INPUT | FL_INPUT_READONLY | FL_INPUT_WRAP); 
 
 /+=
 // FLTK 1.0.x compatibility definitions...

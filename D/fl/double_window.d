@@ -27,32 +27,40 @@
 
 module fl.double_window;
 
-/+=
 public import fl.window;
 
 class Fl_Double_Window : Fl_Window {
 protected:
+/+=
   void flush(int eraseoverlay);
+=+/
   char force_doublebuffering_; // force db, even if the OS already buffers windows (overlays need that on MacOS and Windows2000)
 public:
+/+=
   void show();
   void show(int a, char **b) {Fl_Window.show(a,b);}
   void flush();
   void resize(int,int,int,int);
   void hide();
   ~Fl_Double_Window();
-  Fl_Double_Window(int W, int H, char *l = 0) 
-    : Fl_Window(W,H,l), force_doublebuffering_(0) { type(FL_DOUBLE_WINDOW); }
-  Fl_Double_Window(int X, int Y, int W, int H, char *l = 0)
-    : Fl_Window(X,Y,W,H,l), force_doublebuffering_(0) { type(FL_DOUBLE_WINDOW); }
-};
+=+/
+  this(int W, int H, char *l=null) {
+    super(W,H,l);
+    force_doublebuffering_ = 0;
+    type(FL_DOUBLE_WINDOW); 
+  }
 
+  this(int X, int Y, int W, int H, char *l=null) {
+    super(X,Y,W,H,l);
+    force_doublebuffering_ = 0;
+    type(FL_DOUBLE_WINDOW); 
+  }
 }
 
 //
 // End of "$Id: double_window.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: double_window.d 5190 2006-06-09 16:16:34Z mike $"

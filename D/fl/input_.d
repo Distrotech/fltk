@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: input_.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,27 +27,12 @@
 
 module fl.input_;
 
-
-module fl.widget;
 public import fl.widget;
-}
 
-const int FL_NORMAL_INPUT = 0; 
-const int FL_FLOAT_INPUT = 1; 
-const int FL_INT_INPUT = 2; 
-const int FL_HIDDEN_INPUT = 3; 
-const int FL_MULTILINE_INPUT = 4; 
-const int FL_SECRET_INPUT = 5; 
-const int FL_INPUT_TYPE = 7; 
-const int FL_INPUT_READONLY = 8; 
-const int FL_NORMAL_OUTPUT = (FL_NORMAL_INPUT | FL_INPUT_READONLY); 
-const int FL_MULTILINE_OUTPUT = (FL_MULTILINE_INPUT | FL_INPUT_READONLY); 
-const int FL_INPUT_WRAP = 16; 
-const int FL_MULTILINE_INPUT_WRAP = (FL_MULTILINE_INPUT | FL_INPUT_WRAP); 
-const int FL_MULTILINE_OUTPUT_WRAP = (FL_MULTILINE_INPUT | FL_INPUT_READONLY | FL_INPUT_WRAP); 
 
 class Fl_Input_ : Fl_Widget {
 
+private:
   char* value_;
   char* buffer;
 
@@ -65,7 +49,7 @@ class Fl_Input_ : Fl_Widget {
   ubyte textsize_;
   uint textcolor_;
   uint cursor_color_;
-
+/+=
   char* expand(char*, char*) const;
   double expandpos(char*, char*, char*, int*) const;
   void minimal_update(int, int);
@@ -87,19 +71,41 @@ protected:
   void maybe_do_callback();
   int xscroll() {return xscroll_;}
   int yscroll() {return yscroll_;}
-
+=+/
 public:
-
+/+=
   void resize(int, int, int, int);
-
-  Fl_Input_(int, int, int, int, char* = 0);
+=+/
+  this(int X, int Y, int W, int H, char* l=null) {
+    super(X, Y, W, H, l);
+    box(FL_DOWN_BOX);
+    color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
+    alignment(FL_ALIGN_LEFT);
+    textsize_ = FL_NORMAL_SIZE;
+    textfont_ = FL_HELVETICA;
+    textcolor_ = FL_FOREGROUND_COLOR;
+    cursor_color_ = FL_FOREGROUND_COLOR; // was FL_BLUE
+    mark_ = position_ = size_ = 0;
+    bufsize = 0;
+    buffer  = null;
+    value_ = "";
+    xscroll_ = yscroll_ = 0;
+    maximum_size_ = 32767;
+  }
+/+=
   ~Fl_Input_();
-
-  int value(char*);
+=+/
+  int value(char*v) {
+    return 0;
+    /+==== ====+/
+}
+/+=
   int value(char*, int);
   int static_value(char*);
   int static_value(char*, int);
+=+/
   char* value() {return value_;}
+/+=
   char index(int i) {return value_[i];}
   int size() {return size_;}
   void size(int W, int H) { Fl_Widget.size(W, H); }
@@ -137,14 +143,13 @@ public:
   int wrap() { return type() & FL_INPUT_WRAP; }
   void wrap(int b) { if (b) type((ubyte)(type() | FL_INPUT_WRAP));
                          else type((ubyte)(type() & ~FL_INPUT_WRAP)); }
-};
-
+=+/
 } 
 
 //
 // End of "$Id: input_.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: input_.d 5190 2006-06-09 16:16:34Z mike $"
@@ -938,22 +943,6 @@ int Fl_Input_.handletext(int event, int X, int Y, int W, int H) {
 
 /*------------------------------*/
 
-Fl_Input_.Fl_Input_(int X, int Y, int W, int H, char* l)
-: Fl_Widget(X, Y, W, H, l) {
-  box(FL_DOWN_BOX);
-  color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
-  alignment(FL_ALIGN_LEFT);
-  textsize_ = (ubyte)FL_NORMAL_SIZE;
-  textfont_ = FL_HELVETICA;
-  textcolor_ = FL_FOREGROUND_COLOR;
-  cursor_color_ = FL_FOREGROUND_COLOR; // was FL_BLUE
-  mark_ = position_ = size_ = 0;
-  bufsize = 0;
-  buffer  = 0;
-  value_ = "";
-  xscroll_ = yscroll_ = 0;
-  maximum_size_ = 32767;
-}
 
 void Fl_Input_.put_in_buffer(int len) {
   if (value_ == buffer && bufsize > len) {

@@ -30,6 +30,7 @@ public import fl.window;
 public import fl.ask;
 
 public import std.stdio;
+public import std.string;
 
 int main(char[][] args) {
   Fl.scheme(null);
@@ -47,14 +48,14 @@ int main(char[][] args) {
 
   writef("fl_choice returned %d\n",
     fl_choice("Choose one of the following:","choice0","choice1","choice2"));
-  char[] r;
+  char* r;
 
   r = fl_input("Please enter a string for '%.*s':", "this is the default value",
 	       "testing");
-  writef("fl_input returned \"%s\"\n", r ? r : "NULL");
+  writef("fl_input returned \"%s\"\n", r ? toString(r) : "NULL");
 
   r = fl_password("Enter %.*s's password:", null, "somebody");
-  writef("fl_password returned \"%s\"\n", r ? r : "NULL");
+  writef("fl_password returned \"%s\"\n", r ? toString(r) : "NULL");
 
   return 0;
 }
