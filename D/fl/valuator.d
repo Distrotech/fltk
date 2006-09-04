@@ -34,6 +34,9 @@ private import std.c.stdio;
 private import std.c.math;
 
 
+static const double epsilon = 4.66e-10;
+
+
 class Fl_Valuator : Fl_Widget {
 private:
 
@@ -57,13 +60,18 @@ protected:
     A = 0.0;
     B = 1;
   }
-/+=
+
   double previous_value() {return previous_value_;}
-=+/
   void handle_push() {previous_value_ = value_;}
-/+=
-  double softclamp(double);
-=+/
+
+  double softclamp(double v) {
+    int which = (min<=max);
+    double p = previous_value_;
+    if ((v<min)==which && p!=min && (p<min)!=which) return min;
+    else if ((v>max)==which && p!=max && (p>max)!=which) return max;
+    else return v;
+  }
+
   void handle_drag(double v) {
     if (v != value_) {
       value_ = v;
@@ -87,9 +95,8 @@ protected:
   }
 
   void value_damage() {damage(FL_DAMAGE_EXPOSE);}
-/+=
   void set_value(double v) {value_ = v;}
-=+/
+
 public:
 
   void bounds(double a, double b) {min=a; max=b;}
@@ -100,13 +107,21 @@ public:
   void range(double a, double b) {min = a; max = b;}
   void step(int a) {A = a; B = 1;}
   void step(double a, int b) {A = a; B = b;}
-/+=
-  void step(double s);
-=+/
+
+  void step(double s) {
+    if (s < 0) s = -s;
+    A = rint(s);
+    B = 1;
+    while (fabs(s-A/B) > epsilon && B<=(0x7fffffff/10)) {B *= 10; A = rint(s*B);}
+  }
+
   double step() {return A/B;}
-/+=
-  void precision(int);
-=+/
+
+  void precision(int p) {
+    A = 1.0;
+    for (B = 1; p--;) B *= 10;
+  }
+
   double value() {return value_;}
   int value(double v) {
     clear_changed();
@@ -141,9 +156,12 @@ public:
     // MRS: THIS IS A HACK - RECOMMEND ADDING BUFFER SIZE ARGUMENT
     return snprintf(buffer, 128, "%.*f", c, v);
   }
-/+=
-  double round(double); // round to nearest multiple of step
-=+/
+
+  double round(double v) {
+    if (A) return rint(v*B/A)*A/B;
+    else return v;
+  }
+
   double clamp(double v) {
     if ((v<min)==(min<=max)) return min;
     else if ((v>max)==(min<=max)) return max;
@@ -160,79 +178,3 @@ public:
 //
 // End of "$Id: valuator.d 4288 2005-04-16 00:13:17Z mike $".
 //
-
-/+- This file was imported from C++ using a script
-//
-// "$Id: valuator.d 5190 2006-06-09 16:16:34Z mike $"
-//
-// Valuator widget for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2005 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
-//
-
-// Base class for sliders and all other one-value "knobs"
-
-#include <FL/Fl.H>
-private import fl.valuator;
-#include <FL/math.h>
-#include <stdio.h>
-private import fl.flstring;
-
-const double epsilon = 4.66e-10;
-
-void Fl_Valuator.step(double s) {
-  if (s < 0) s = -s;
-  A = rint(s);
-  B = 1;
-  while (fabs(s-A/B) > epsilon && B<=(0x7fffffff/10)) {B *= 10; A = rint(s*B);}
-}
-
-void Fl_Valuator.precision(int p) {
-  A = 1.0;
-  for (B = 1; p--;) B *= 10;
-}
-
-
-double Fl_Valuator.softclamp(double v) {
-  int which = (min<=max);
-  double p = previous_value_;
-  if ((v<min)==which && p!=min && (p<min)!=which) return min;
-  else if ((v>max)==which && p!=max && (p>max)!=which) return max;
-  else return v;
-}
-
-// void Fl_Valuator.handle_push() {previous_value_ = value_;}
-
-
-
-double Fl_Valuator.round(double v) {
-  if (A) return rint(v*B/A)*A/B;
-  else return v;
-}
-
-
-
-
-//
-// End of "$Id: valuator.d 5190 2006-06-09 16:16:34Z mike $".
-//
-    End of automatic import -+/

@@ -33,6 +33,8 @@ fl/tooltip.d
 fl/toggle_button.d
 fl/symbols.d
 fl/value_slider.d
+fl/valuator.d
+fl/slider.d
 
 
 
