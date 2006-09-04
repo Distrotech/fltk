@@ -37,25 +37,25 @@ int main(char[][] args) {
   Fl.args(args);
   Fl.get_system_colors();
 
-  fl_message("Spelling check sucessful, %d errors found with %g%% confidence",
+  fl_message("Spelling check sucessful, %d errors found with %g%% confidence\0",
 	     1002, 100*(15/77.0));
 
   fl_alert("Quantum fluctuations in the space-time continuum detected, "
-	   "you have %g seconds to comply.", 10.0);
+	   "you have %g seconds to comply.\0", 10.0);
 
   writef("fl_choice returned %d\n",
-    fl_choice("Do you really want to %.*s?", "No", "Yes", null, "continue"));
+    fl_choice("Do you really want to %.*s?\0", "No\0", "Yes\0", null, "continue\0"));
 
-  writef("fl_choice returned %d\n",
-    fl_choice("Choose one of the following:","choice0","choice1","choice2"));
+  writef("fl_choice returned %d\n\0",
+    fl_choice("Choose one of the following:\0","choice0\0","choice1\0","choice2\0"));
 
   char* r;
 
-  r = fl_input("Please enter a string for '%.*s':", "this is the default value",
-	       "testing");
+  r = fl_input("Please enter a string for '%.*s':\0", "this is the default value\0",
+	       "testing\0");
   writef("fl_input returned \"%s\"\n", r ? toString(r) : "NULL");
 
-  r = fl_password("Enter %.*s's password:", null, "somebody");
+  r = fl_password("Enter %.*s's password:\0", null, "somebody\0");
   writef("fl_password returned \"%s\"\n", r ? toString(r) : "NULL");
 
   return 0;
