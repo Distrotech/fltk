@@ -81,7 +81,7 @@ public: // should be private!
   static Fl_Widget  selection_owner_;
   static Fl_Window  modal_;
   static Fl_Window  grab_;
-  static int compose_state;
+  static int compose_state = 0;
   static int visible_focus_ = 1;
   static int dnd_text_ops_ = 1;
 
@@ -469,9 +469,13 @@ public:
 =+/
   static char* event_text() {return e_text;}
   static int event_length() {return e_length;}
-/+=
-  static int compose(int &del);
-=+/
+  static int compose(inout int del) {
+    /+== ==+/
+    del = 0; 
+    ubyte ascii = e_text[0];
+    if (e_length && (ascii & ~31 && ascii!=127)) {compose_state = 0; return 1;}
+    return 0;
+  }
   static void compose_reset() {compose_state = 0;}
 
   static int event_inside(int xx,int yy,int ww,int hh) {
@@ -727,12 +731,20 @@ public:
 /+=
   static void add_handler(int (*h)(int));
   static void remove_handler(int (*h)(int));
-
-  // cut/paste:
-  static void copy(char* stuff, int len, int clipboard = 0);
-  static void paste(Fl_Widget  receiver, int clipboard /*=0*/);
-  static int dnd();
 =+/
+  // cut/paste:
+  static void copy(char* stuff, int len, int clipboard = 0) {
+    /+=== ===+/
+  }
+  static void paste(Fl_Widget  receiver, int clipboard /*=0*/) {
+    /+=== ===+/
+  }
+
+  static int dnd() {
+    /+=== ===+/
+    return 0;
+  }
+
   // These are for back-compatability only:
   static Fl_Widget selection_owner() {return selection_owner_;}
   static void selection_owner(Fl_Widget owner) {selection_owner_ = owner;}
@@ -945,11 +957,11 @@ public:
   // Visible focus methods...
   static void visible_focus(int v) { visible_focus_ = v; }
   static int  visible_focus() { return visible_focus_; }
-/+=
   // Drag-n-drop text operation methods...
   static void dnd_text_ops(int v) { dnd_text_ops_ = v; }
   static int  dnd_text_ops() { return dnd_text_ops_; }
 
+/+=
   // Multithreading support:
   static void lock();
   static void unlock();

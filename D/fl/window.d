@@ -457,11 +457,15 @@ public:
     SetPortClipRegion( GetWindowPort(i.xid), fl_window_region );
   } 
 
-/+=
   // for back-compatability only:
-  void cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
-  void default_cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
-=+/
+  void cursor(Fl_Cursor c, Fl_Color fg=cast(uint)FL_BLACK, Fl_Color bg=cast(uint)FL_WHITE) {
+    /+=== ===+/
+  }
+
+  void default_cursor(Fl_Cursor c, Fl_Color fg=cast(uint)FL_BLACK, Fl_Color bg=cast(uint)FL_WHITE) {
+    /+=== ===+/
+  }
+
   static void default_callback(Fl_Widget win, void* v) {
     Fl.atclose(cast(Fl_Window)win, v);
   }

@@ -48,6 +48,7 @@ int main(char[][] args) {
 
   writef("fl_choice returned %d\n",
     fl_choice("Choose one of the following:","choice0","choice1","choice2"));
+
   char* r;
 
   r = fl_input("Please enter a string for '%.*s':", "this is the default value",

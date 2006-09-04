@@ -10,6 +10,7 @@ buttons
 demo (partial)
 symbols
 arc
+message
 
 test todo:
 ----
@@ -52,7 +53,6 @@ line_style.cxx
 list_visuals.cxx
 mandelbrot.cxx
 menubar.cxx
-message.cxx
 minimum.cxx
 navigation.cxx
 output.cxx
@@ -104,7 +104,10 @@ fl/value_slider.d
 fl/valuator.d
 fl/slider.d
 fl/arc.d
+fl/arci.d
 fl/ask.d
+fl/input_.d
+fl/input.d
 
 src todo:
 ----
@@ -216,8 +219,6 @@ hor_slider.d
 hor_value_slider.d
 image.d
 images_core.d
-input.d
-input_.d
 input_choice.d
 int_input.d
 jpeg_image.d
@@ -313,5 +314,9 @@ xbm_image.d
 xcolor.d
 xpm_image.d
 
+
+Fl_Widget::align() is now called Fl_Widget.alignment()
+Fl::version() is now called Fl.get_version()
+Fl_Input_::position.. is now called Fl_Input_.caret...
 
 
