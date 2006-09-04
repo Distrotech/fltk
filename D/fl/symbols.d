@@ -37,19 +37,17 @@
 module fl.symbols;
 
 private import fl.enumerations;
-
-/+=
-#include <FL/Fl.H>
 private import fl.draw;
-#include <FL/math.h>
 private import fl.flstring;
+private import fl.return_button;
+private import std.c.math;
 
-alias struct {
-  char *name;
-  void (*drawit)(Fl_Color);
+struct SYMBOL {
+  char* name;
+  void function(Fl_Color) drawit;
   char scalable;
   char notempty;
-} SYMBOL;
+};
 
 const int MAXSYMBOL = 211; 
    /* Maximal number of symbols in table. Only half of them are
@@ -58,7 +56,7 @@ const int MAXSYMBOL = 211;
 static SYMBOL symbols[MAXSYMBOL];      /* The symbols */
 static int symbnumb = -1;              /* Their number */
 
-static int find(char *name) {
+static int find(char* name) {
 // returns hash entry if it exists, or first empty slot:
   int pos = name[0] ? (
     name[1] ? (
@@ -78,8 +76,6 @@ static int find(char *name) {
   }
 }
 
-static void fl_init_symbols(void);
-
 /**************** The routines seen by the user *************************/
 
 int fl_add_symbol(char *name, void (*drawit)(Fl_Color), int scalable)
@@ -97,11 +93,8 @@ int fl_add_symbol(char *name, void (*drawit)(Fl_Color), int scalable)
   return 1;
 }
 
-int fl_return_arrow(int x,int y,int w,int h);
-=+/
 // provided for back compatability:
 int fl_draw_symbol(char *label,int x,int y,int w,int h,Fl_Color col) {  
-/+=== symbols drawing
   char *p = label;
   if (*p++ != '@') return 0;
   fl_init_symbols();
@@ -160,25 +153,24 @@ int fl_draw_symbol(char *label,int x,int y,int w,int h,Fl_Color col) {
     if (flip_x) fl_scale(-1.0, 1.0);
     if (flip_y) fl_scale(1.0, -1.0);
   }
-  (symbols[pos].drawit)(col);
+  symbols[pos].drawit(col);
   fl_pop_matrix();
-===+/
   return 1;
 }
-/+=
+
 /******************** THE DEFAULT SYMBOLS ****************************/
 
 /* Some help stuff */
 
-const int BP = fl_begin_polygon(); 
-const int EP = fl_end_polygon(); 
-const int BCP = fl_begin_complex_polygon(); 
-const int ECP = fl_end_complex_polygon(); 
-const int BL = fl_begin_line(); 
-const int EL = fl_end_line(); 
-const int BC = fl_begin_loop(); 
-const int EC = fl_end_loop(); 
-#define vv(x,y) fl_vertex(x,y)
+static void BP() { fl_begin_polygon(); }
+static void EP() { fl_end_polygon(); }
+static void BCP() { fl_begin_complex_polygon(); }
+static void ECP() { fl_end_complex_polygon(); }
+static void BL() { fl_begin_line(); }
+static void EL() { fl_end_line(); }
+static void BC() { fl_begin_loop(); }
+static void EC() { fl_end_loop(); }
+static void vv(float x, float y) { fl_vertex(x,y); }
 
 //for the outline color
 static void set_outline_color(Fl_Color c) {
@@ -233,9 +225,9 @@ static void draw_search(Fl_Color col)
   fl_color(col);
   BP; vv(-.4, .13); vv(-1.0, .73); vv(-.73, 1.0); vv(-.13, .4); EP;
   set_outline_color(col);
-  fl_line_style(FL_SOLID, 3, 0);
+  fl_line_style(FL_SOLID, 3, null);
   BC; fl_circle(.2, -.2, .6); EC;
-  fl_line_style(FL_SOLID, 1, 0);
+  fl_line_style(FL_SOLID, 1, null);
   BC; vv(-.4, .13); vv(-1.0, .73); vv(-.73, 1.0); vv(-.13, .4); EC;
 }
 
@@ -373,14 +365,14 @@ static void draw_plus(Fl_Color col)
   EC;
 }
 
-static void draw_uparrow(Fl_Color) {
+static void draw_uparrow(Fl_Color c) {
   fl_color(FL_LIGHT3);
   BL; vv(-.8,.8); vv(-.8,-.8); vv(.8,0); EL;
   fl_color(FL_DARK3);
   BL; vv(-.8,.8); vv(.8, 0); EL;
 }
 
-static void draw_downarrow(Fl_Color) {
+static void draw_downarrow(Fl_Color c) {
   fl_color(FL_DARK3);
   BL; vv(-.8,.8); vv(-.8,-.8); vv(.8,0); EL;
   fl_color(FL_LIGHT3);
@@ -652,52 +644,56 @@ static void draw_redo(Fl_Color c) {
   fl_scale(-1.0, 1.0);
 }
 
-static void fl_init_symbols(void) {
-  static char beenhere;
+static void fl_init_symbols() {
+  static char beenhere = 0;
   if (beenhere) return;
   beenhere = 1;
   symbnumb = 0;
 
-  fl_add_symbol("",		draw_arrow1,		1);
-  fl_add_symbol("->",		draw_arrow1,		1);
-  fl_add_symbol(">",		draw_arrow2,		1);
-  fl_add_symbol(">>",		draw_arrow3,		1);
-  fl_add_symbol(">|",		draw_arrowbar,		1);
-  fl_add_symbol(">[]",		draw_arrowbox,		1);
-  fl_add_symbol("|>",		draw_bararrow,		1);
-  fl_add_symbol("<-",		draw_arrow01,		1);
-  fl_add_symbol("<",		draw_arrow02,		1);
-  fl_add_symbol("<<",		draw_arrow03,		1);
-  fl_add_symbol("|<",		draw_0arrowbar,		1);
-  fl_add_symbol("[]<",		draw_0arrowbox,		1);
-  fl_add_symbol("<|",		draw_0bararrow,		1);
-  fl_add_symbol("<->",		draw_doublearrow,	1);
-  fl_add_symbol("-->",		draw_arrow,		1);
-  fl_add_symbol("+",		draw_plus,		1);
-  fl_add_symbol("->|",		draw_arrow1bar,		1);
-  fl_add_symbol("arrow",	draw_arrow,		1);
-  fl_add_symbol("returnarrow",	0,			3);
-  fl_add_symbol("square",	draw_square,		1);
-  fl_add_symbol("circle",	draw_circle,		1);
-  fl_add_symbol("line",		draw_line,		1);
-  fl_add_symbol("plus",		draw_plus,		1);
-  fl_add_symbol("menu",		draw_menu,		1);
-  fl_add_symbol("UpArrow",	draw_uparrow,		1);
-  fl_add_symbol("DnArrow",	draw_downarrow,		1);
-  fl_add_symbol("||",		draw_doublebar,		1);
-  fl_add_symbol("search",       draw_search,            1);
-  fl_add_symbol("FLTK",         draw_fltk,              1);
+int i; for (i=0; i<MAXSYMBOL; i++) {
+  symbols[i].notempty = 0;
+}
 
-  fl_add_symbol("filenew",      draw_filenew,           1);
-  fl_add_symbol("fileopen",     draw_fileopen,          1);
-  fl_add_symbol("filesave",     draw_filesave,          1);
-  fl_add_symbol("filesaveas",   draw_filesaveas,        1);
-  fl_add_symbol("fileprint",    draw_fileprint,         1);
+  fl_add_symbol("\0",		&draw_arrow1,		1);
+  fl_add_symbol("->\0",		&draw_arrow1,		1);
+  fl_add_symbol(">",		&draw_arrow2,		1);
+  fl_add_symbol(">>",		&draw_arrow3,		1);
+  fl_add_symbol(">|",		&draw_arrowbar,		1);
+  fl_add_symbol(">[]",		&draw_arrowbox,		1);
+  fl_add_symbol("|>",		&draw_bararrow,		1);
+  fl_add_symbol("<-",		&draw_arrow01,		1);
+  fl_add_symbol("<",		&draw_arrow02,		1);
+  fl_add_symbol("<<",		&draw_arrow03,		1);
+  fl_add_symbol("|<",		&draw_0arrowbar,	1);
+  fl_add_symbol("[]<",		&draw_0arrowbox,	1);
+  fl_add_symbol("<|",		&draw_0bararrow,	1);
+  fl_add_symbol("<->",		&draw_doublearrow,	1);
+  fl_add_symbol("-->",		&draw_arrow,		1);
+  fl_add_symbol("+",		&draw_plus,		1);
+  fl_add_symbol("->|",		&draw_arrow1bar,	1);
+  fl_add_symbol("arrow",	&draw_arrow,		1);
+  fl_add_symbol("returnarrow",	null,			3);
+  fl_add_symbol("square",	&draw_square,		1);
+  fl_add_symbol("circle",	&draw_circle,		1);
+  fl_add_symbol("line",		&draw_line,		1);
+  fl_add_symbol("plus",		&draw_plus,		1);
+  fl_add_symbol("menu",		&draw_menu,		1);
+  fl_add_symbol("UpArrow",	&draw_uparrow,		1);
+  fl_add_symbol("DnArrow",	&draw_downarrow,	1);
+  fl_add_symbol("||",		&draw_doublebar,	1);
+  fl_add_symbol("search",       &draw_search,            1);
+  fl_add_symbol("FLTK",         &draw_fltk,              1);
 
-  fl_add_symbol("refresh",      draw_refresh,           1);
-  fl_add_symbol("reload",       draw_reload,            1);
-  fl_add_symbol("undo",         draw_undo,              1);
-  fl_add_symbol("redo",         draw_redo,              1);
+  fl_add_symbol("filenew",      &draw_filenew,           1);
+  fl_add_symbol("fileopen",     &draw_fileopen,          1);
+  fl_add_symbol("filesave",     &draw_filesave,          1);
+  fl_add_symbol("filesaveas",   &draw_filesaveas,        1);
+  fl_add_symbol("fileprint",    &draw_fileprint,         1);
+
+  fl_add_symbol("refresh",      &draw_refresh,           1);
+  fl_add_symbol("reload",       &draw_reload,            1);
+  fl_add_symbol("undo",         &draw_undo,              1);
+  fl_add_symbol("redo",         &draw_redo,              1);
 
 //  fl_add_symbol("file",      draw_file,           1);
 }
@@ -705,4 +701,3 @@ static void fl_init_symbols(void) {
 //
 // End of "$Id: fl_symbols.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

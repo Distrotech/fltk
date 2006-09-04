@@ -394,7 +394,7 @@ void fl_draw(
     if (str && str[0] == '@' && str[1] && str[1] != '@') {
       // Start with a symbol...
       for (symptr = symbol[0];
-           *str && !isspace(*str) && symptr < (symbol[0].ptr + symbol[0].sizeof - 1);
+           *str && !isspace(*str) && symptr < (symbol[0].ptr+255);
            *symptr++ = *str++) { }
       *symptr = '\0';
       if (isspace(*str)) str++;

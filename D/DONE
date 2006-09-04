@@ -30,6 +30,7 @@ fl/check_button.d
 fl/repeat_button.d
 fl/tooltip.d
 fl/toggle_button.d
+fl/symbols.d
 
 
 
