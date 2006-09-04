@@ -195,7 +195,7 @@ public:
     fl_rectf(x_, y_, w_, h_);
     fl_color(FL_RED);
     fl_rect(x_, y_, w_, h_);
-    fl_line(x_, y_, x_+w_, y_+h_);
+    fl_line(x_, y_, x_+w_-1, y_+h_-1);
   }
 
   int handle(int event) {

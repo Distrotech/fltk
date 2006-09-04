@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: valuator.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,16 +27,15 @@
 
 module fl.valuator;
 
-
-module fl.widget;
 public import fl.widget;
-}
+private import fl.enumerations;
+private import fl.flstring;
+private import std.c.stdio;
+private import std.c.math;
 
-// shared type() values for classes that work in both directions:
-const int FL_VERTICAL = 0; 
-const int FL_HORIZONTAL = 1; 
 
 class Fl_Valuator : Fl_Widget {
+private:
 
   double value_;
   double previous_value_;
@@ -47,16 +45,51 @@ class Fl_Valuator : Fl_Widget {
 protected:
 
   int horizontal() {return type()&1;}
-  Fl_Valuator(int X, int Y, int W, int H, char* L);
 
+  this(int X, int Y, int W, int H, char* L=null) {
+    super(X,Y,W,H,L);
+    alignment(FL_ALIGN_BOTTOM);
+    when(FL_WHEN_CHANGED);
+    value_ = 0;
+    previous_value_ = 1;
+    min = 0;
+    max = 1;
+    A = 0.0;
+    B = 1;
+  }
+/+=
   double previous_value() {return previous_value_;}
+=+/
   void handle_push() {previous_value_ = value_;}
+/+=
   double softclamp(double);
-  void handle_drag(double newvalue);
-  void handle_release(); // use drag() value
-  void value_damage(); // cause damage() due to value() changing
-  void set_value(double v) {value_ = v;}
+=+/
+  void handle_drag(double v) {
+    if (v != value_) {
+      value_ = v;
+      value_damage();
+      set_changed();
+      if (when() & FL_WHEN_CHANGED) do_callback();
+    }
+  }
 
+  void handle_release() {
+    if (when()&FL_WHEN_RELEASE) {
+      // insure changed() is off even if no callback is done.  It may have
+      // been turned on by the drag, and then the slider returned to it's
+      // initial position:
+      clear_changed();
+      // now do the callback only if slider in new position or always is on:
+      if (value_ != previous_value_ || when() & FL_WHEN_NOT_CHANGED) {
+        do_callback();
+      }
+    }
+  }
+
+  void value_damage() {damage(FL_DAMAGE_EXPOSE);}
+/+=
+  void set_value(double v) {value_ = v;}
+=+/
 public:
 
   void bounds(double a, double b) {min=a; max=b;}
@@ -67,25 +100,67 @@ public:
   void range(double a, double b) {min = a; max = b;}
   void step(int a) {A = a; B = 1;}
   void step(double a, int b) {A = a; B = b;}
+/+=
   void step(double s);
+=+/
   double step() {return A/B;}
+/+=
   void precision(int);
-
+=+/
   double value() {return value_;}
-  int value(double);
+  int value(double v) {
+    clear_changed();
+    if (v == value_) return 0;
+    value_ = v;
+    value_damage();
+    return 1;
+  }
 
-  int format(char*);
+  int format(char* buffer) {
+    double v = value();
+    // MRS: THIS IS A HACK - RECOMMEND ADDING BUFFER SIZE ARGUMENT
+    if (!A || !B) return snprintf(buffer, 128, "%g", v);
+  
+    // Figure out how many digits are required to correctly format the
+    // value.
+    int i, c = 0;
+    char temp[32];
+    // output a number with many digits after the decimal point. This
+    // seems to be needed to get high precission
+    snprintf(temp, 32, "%.12f", A/B);
+    // strip all trailing 0's
+    for (i=strlen(temp)-1; i>0; i--) {
+      if (temp[i]!='0') break;
+    }
+    // count digits until we find the decimal point (or comma or whatever
+    // letter is set in the current locale)
+    for (; i>0; i--, c++) {
+      if (!isdigit(temp[i])) break;
+    }
+  
+    // MRS: THIS IS A HACK - RECOMMEND ADDING BUFFER SIZE ARGUMENT
+    return snprintf(buffer, 128, "%.*f", c, v);
+  }
+/+=
   double round(double); // round to nearest multiple of step
-  double clamp(double); // keep in range
-  double increment(double, int); // add n*step to value
-};
+=+/
+  double clamp(double v) {
+    if ((v<min)==(min<=max)) return min;
+    else if ((v>max)==(min<=max)) return max;
+    else return v;
+  }
 
+  double increment(double v, int n) {
+    if (!A) return v+n*(max-min)/100;
+    if (min > max) n = -n;
+    return (rint(v*B/A)+n)*A/B;
+  }
 }
 
 //
 // End of "$Id: valuator.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: valuator.d 5190 2006-06-09 16:16:34Z mike $"
@@ -122,18 +197,6 @@ private import fl.valuator;
 #include <stdio.h>
 private import fl.flstring;
 
-Fl_Valuator.Fl_Valuator(int X, int Y, int W, int H, char* L)
-  : Fl_Widget(X,Y,W,H,L) {
-  alignment(FL_ALIGN_BOTTOM);
-  when(FL_WHEN_CHANGED);
-  value_ = 0;
-  previous_value_ = 1;
-  min = 0;
-  max = 1;
-  A = 0.0;
-  B = 1;
-}
-
 const double epsilon = 4.66e-10;
 
 void Fl_Valuator.step(double s) {
@@ -148,15 +211,6 @@ void Fl_Valuator.precision(int p) {
   for (B = 1; p--;) B *= 10;
 }
 
-void Fl_Valuator.value_damage() {damage(FL_DAMAGE_EXPOSE);} // by default do partial-redraw
-
-int Fl_Valuator.value(double v) {
-  clear_changed();
-  if (v == value_) return 0;
-  value_ = v;
-  value_damage();
-  return 1;
-}
 
 double Fl_Valuator.softclamp(double v) {
   int which = (min<=max);
@@ -168,70 +222,15 @@ double Fl_Valuator.softclamp(double v) {
 
 // void Fl_Valuator.handle_push() {previous_value_ = value_;}
 
-void Fl_Valuator.handle_drag(double v) {
-  if (v != value_) {
-    value_ = v;
-    value_damage();
-    set_changed();
-    if (when() & FL_WHEN_CHANGED) do_callback();
-  }
-}
 
-void Fl_Valuator.handle_release() {
-  if (when()&FL_WHEN_RELEASE) {
-    // insure changed() is off even if no callback is done.  It may have
-    // been turned on by the drag, and then the slider returned to it's
-    // initial position:
-    clear_changed();
-    // now do the callback only if slider in new position or always is on:
-    if (value_ != previous_value_ || when() & FL_WHEN_NOT_CHANGED) {
-      do_callback();
-    }
-  }
-}
 
 double Fl_Valuator.round(double v) {
   if (A) return rint(v*B/A)*A/B;
   else return v;
 }
 
-double Fl_Valuator.clamp(double v) {
-  if ((v<min)==(min<=max)) return min;
-  else if ((v>max)==(min<=max)) return max;
-  else return v;
-}
 
-double Fl_Valuator.increment(double v, int n) {
-  if (!A) return v+n*(max-min)/100;
-  if (min > max) n = -n;
-  return (rint(v*B/A)+n)*A/B;
-}
 
-int Fl_Valuator.format(char* buffer) {
-  double v = value();
-  // MRS: THIS IS A HACK - RECOMMEND ADDING BUFFER SIZE ARGUMENT
-  if (!A || !B) return snprintf(buffer, 128, "%g", v);
-
-  // Figure out how many digits are required to correctly format the
-  // value.
-  int i, c = 0;
-  char temp[32];
-  // output a number with many digits after the decimal point. This
-  // seems to be needed to get high precission
-  snprintf(temp, sizeof(temp), "%.12f", A/B);
-  // strip all trailing 0's
-  for (i=strlen(temp)-1; i>0; i--) {
-    if (temp[i]!='0') break;
-  }
-  // count digits until we find the decimal point (or comma or whatever
-  // letter is set in the current locale)
-  for (; i>0; i--, c++) {
-    if (!isdigit(temp[i])) break;
-  }
-
-  // MRS: THIS IS A HACK - RECOMMEND ADDING BUFFER SIZE ARGUMENT
-  return snprintf(buffer, 128, "%.*f", c, v);
-}
 
 //
 // End of "$Id: valuator.d 5190 2006-06-09 16:16:34Z mike $".

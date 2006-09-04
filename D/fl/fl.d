@@ -465,9 +465,13 @@ public:
   static int compose(int &del);
 =+/
   static void compose_reset() {compose_state = 0;}
-/+=
-  static int event_inside(int,int,int,int);
-=+/
+
+  static int event_inside(int xx,int yy,int ww,int hh) {
+    int mx = e_x - xx;
+    int my = e_y - yy;
+    return (mx >= 0 && mx < ww && my >= 0 && my < hh);
+  }
+
   static int event_inside(Fl_Widget o) {
     int mx = e_x - o.x();
     int my = e_y - o.y();
@@ -1064,22 +1068,6 @@ Fl_Window  fl_xmousewin;// which window X thinks has FL_ENTER
 Fl_Window  Fl.grab_;	// most recent Fl.grab()
 Fl_Window  Fl.modal_;	// topmost modal() window
 
-//
-// 'Fl.version()' - Return the API version number...
-//
-
-
-
-//
-// 'Fl:event_inside()' - Return whether or not the mouse event is inside
-//                       the given rectangle.
-//
-
-int Fl.event_inside(int xx,int yy,int ww,int hh) /*const*/ {
-  int mx = e_x - xx;
-  int my = e_y - yy;
-  return (mx >= 0 && mx < ww && my >= 0 && my < hh);
-}
 
 
 //

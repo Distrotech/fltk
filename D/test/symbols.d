@@ -28,9 +28,7 @@
 private import fl.fl;
 private import fl.single_window;
 private import fl.box;
-/+=
 private import fl.value_slider;
-=+/
 private import fl.draw;
 private import std.c.stdio;
 
@@ -41,19 +39,16 @@ const int ROWS = 6;
 const int COLS = 6; 
 
 Fl_Window window;
-/+=
 Fl_Value_Slider orientation;
 Fl_Value_Slider size;
-=+/
 
-/+=
-void slider_cb(Fl_Widget w, void *) {
+void slider_cb(Fl_Widget w, void* d) {
   static char buf[80];
-  int val = (int)orientation.value();
-  int sze = (int)size.value();
+  int val = cast(int)orientation.value();
+  int sze = cast(int)size.value();
   for (int i = window.children(); i--; ) {          // all window children
     Fl_Widget  wc = window.child(i);
-    char *l = (char *)(wc.user_data());
+    char *l = cast(char*)(wc.user_data());
     if ( l && *l == '@' ) {                       // all children with '@'
       l ++;
       if ( wc.box() == FL_NO_BOX ) {             // ascii legend?
@@ -72,7 +67,6 @@ void slider_cb(Fl_Widget w, void *) {
   }
   window.redraw();
 }
-=+/
 
 void bt(char* name) {
   int x = N%COLS;
@@ -134,25 +128,23 @@ bt("@reload");
 bt("@undo");
 bt("@redo");
 
-/+=
   orientation = new Fl_Value_Slider(
-    (int)(window.w()*.05+.5), window.h()-40,
-    (int)(window.w()*.42+.5), 16, "Orientation");
+    cast(int)(window.w()*.05+.5), window.h()-40,
+    cast(int)(window.w()*.42+.5), 16, "Orientation");
   orientation.type(FL_HORIZONTAL);
   orientation.range(0.0, 9.0);
   orientation.value(0.0);
   orientation.step(1);
-  orientation.callback(slider_cb, 0);
+  orientation.callback(&slider_cb, null);
 
   size = new Fl_Value_Slider(
-    (int)(window.w()*.53+.5), window.h()-40,
-    (int)(window.w()*.42+.5), 16, "Size");
+    cast(int)(window.w()*.53+.5), window.h()-40,
+    cast(int)(window.w()*.42+.5), 16, "Size");
   size.type(FL_HORIZONTAL);
   size.range(-3.0, 9.0);
   size.value(0.0);
   size.step(1);
-  size.callback(slider_cb, 0);
-=+/
+  size.callback(&slider_cb, null);
 
   window.resizable(window);
   window.show(args);

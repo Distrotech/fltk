@@ -389,6 +389,14 @@ const int FL_RADIO_BUTTON = (FL_RESERVED_TYPE+2);
 const int FL_HIDDEN_BUTTON = 3;  // for Forms compatability
 const ubyte FL_WINDOW = 0xF0;   // all subclasses have type() >= this
 const ubyte FL_DOUBLE_WINDOW = 0xF1; 
+const int FL_VERT_SLIDER = 0; 
+const int FL_HOR_SLIDER = 1; 
+const int FL_VERT_FILL_SLIDER = 2; 
+const int FL_HOR_FILL_SLIDER = 3; 
+const int FL_VERT_NICE_SLIDER = 4; 
+const int FL_HOR_NICE_SLIDER = 5; 
+const int FL_VERTICAL = 0; 
+const int FL_HORIZONTAL = 1; 
 
 /+=
 // FLTK 1.0.x compatibility definitions...

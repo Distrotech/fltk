@@ -7,6 +7,7 @@ button
 boxtype
 buttons
 demo (partial)
+symbols
 
 src:
 fl/box.d
@@ -31,6 +32,7 @@ fl/repeat_button.d
 fl/tooltip.d
 fl/toggle_button.d
 fl/symbols.d
+fl/value_slider.d
 
 
 
