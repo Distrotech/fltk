@@ -401,10 +401,20 @@ public:
   void fullscreen();
   void fullscreen_off(int,int,int,int);
   void iconize();
+=+/
+  int x_root() {
+    Fl_Window p = window();
+    if (p) return p.x_root() + x();
+    return x();
+  }
+  
+  int y_root() {
+    Fl_Window p = window();
+    if (p) return p.y_root() + y();
+    return y();
+  }
 
-  int x_root() ;
-  int y_root() ;
-
+/+=
   static Fl_Window  current();
 =+/
   /**
@@ -521,17 +531,6 @@ private import fl.draw;
 
 
 
-int Fl_Window.x_root() {
-  Fl_Window  p = window();
-  if (p) return p.x_root() + x();
-  return x();
-}
-
-int Fl_Window.y_root() {
-  Fl_Window  p = window();
-  if (p) return p.y_root() + y();
-  return y();
-}
 
 }
 

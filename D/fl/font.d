@@ -169,11 +169,6 @@ version (WIN32) {
 } // WIN32
 
 
-double fl_width(char* c) {
-  if (c) return fl_width(c, strlen(c));
-  else return 0.0f;
-}
-
 void fl_draw(char* str, int x, int y) {
   fl_draw(str, strlen(str), x, y);
 }

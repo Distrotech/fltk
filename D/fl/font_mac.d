@@ -236,6 +236,11 @@ int fl_descent() {
   else return -1;
 }
 
+double fl_width(char *c) {
+  if (c) return fl_width(c, strlen(c));
+  else return 0.0;
+}
+
 double fl_width(char* txt, int n) {
   if (!fl_fontsize) {
     fl_font(0, 12); // avoid a crash!

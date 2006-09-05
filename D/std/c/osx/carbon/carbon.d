@@ -8,6 +8,10 @@ public import std.c.osx.carbon.cfstring;
 
 extern (C) {
 
+const WindowRef kUserFocusAuto = cast(WindowRef)-1;
+
+OSStatus SetUserFocusWindow(WindowRef);
+
 void SysBeep(short duration);
 
 void SetWTitle(WindowRef, char*);

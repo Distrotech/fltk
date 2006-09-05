@@ -93,8 +93,11 @@ static Keyname table[] = {
   {FL_Delete,	"Delete"}
 };
 }
+=+/
 
-const char * fl_shortcut_label(int shortcut) {
+char* fl_shortcut_label(int shortcut) {
+  return "xx";
+/+===
   static char buf[20];
   char *p = buf;
   if (!shortcut) {*p = 0; return buf;}
@@ -159,8 +162,10 @@ version (WIN32) || defined(__APPLE__) // if not X {
   if (!q) {*p++ = ubyte(toupper(key & 255)); *p = 0; return buf;}
   if (p > buf) {strcpy(p,q); return buf;} else return q;
 }
+=+/
 }
 
+/+=
 // Emulation of XForms named shortcuts
 #include <stdlib.h>
 =+/

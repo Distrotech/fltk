@@ -78,165 +78,14 @@ version (__APPLE__) {
 }
 
 // appearance of current menus are pulled from this parent widget:
-static Fl_Menu_  button;
 
-////////////////////////////////////////////////////////////////
 
-// tiny window for title of menu:
-class menutitle : Fl_Menu_Window {
-  void draw();
-public:
-  Fl_Menu_Item* menu;
-  menutitle(int X, int Y, int W, int H, Fl_Menu_Item*);
-};
-
-// each vertical menu has one of these:
-class menuwindow : Fl_Menu_Window {
-  void draw();
-  void drawentry(Fl_Menu_Item*, int i, int erase);
-public:
-  menutitle* title;
-  int handle(int);
-  int itemheight;	// zero == menubar
-  int numitems;
-  int selected;
-  int drawn_selected;	// last redraw has this selected
-  Fl_Menu_Item* menu;
-  menuwindow(Fl_Menu_Item* m, int X, int Y, int W, int H,
-	     Fl_Menu_Item* picked, Fl_Menu_Item* title,
-	     int menubar = 0, int menubar_title = 0, int right_edge = 0);
-  ~menuwindow();
-  void set_selected(int);
-  int find_selected(int mx, int my);
-  int titlex(int);
-  void autoscroll(int);
-  void position(int x, int y);
-  int is_inside(int x, int y);
-};
 =+/
 
 const int LEADING = 4;  // extra vertical leading
 
 /+=
-extern char fl_draw_shortcut;
 
-menutitle.menutitle(int X, int Y, int W, int H, Fl_Menu_Item* L) :
-  Fl_Menu_Window(X, Y, W, H, 0) {
-  end();
-  set_modal();
-  clear_border();
-  menu = L;
-  if (L.labelcolor_ || Fl.scheme() || L.labeltype_ > FL_NO_LABEL) clear_overlay();
-}
-
-menuwindow.menuwindow(Fl_Menu_Item* m, int X, int Y, int Wp, int Hp,
-		       Fl_Menu_Item* picked, Fl_Menu_Item* t, 
-		       int menubar, int menubar_title, int right_edge)
-  : Fl_Menu_Window(X, Y, Wp, Hp, 0)
-{
-  int scr_x, scr_y, scr_w, scr_h;
-  int tx = X, ty = Y;
-
-  Fl.screen_xywh(scr_x, scr_y, scr_w, scr_h);
-  if (!right_edge || right_edge > scr_x+scr_w) right_edge = scr_x+scr_w;
-
-  end();
-  set_modal();
-  clear_border();
-  menu = m;
-  if (m) m = m.first(); // find the first item that needs to be rendered
-  drawn_selected = -1;
-  if (button) {
-    box(button.box());
-    if (box() == FL_NO_BOX || box() == FL_FLAT_BOX) box(FL_UP_BOX);
-  } else {
-    box(FL_UP_BOX);
-  }
-  color(button && !Fl.scheme() ? button.color() : FL_GRAY);
-  selected = -1;
-  {int j = 0;
-  if (m) for (Fl_Menu_Item* m1=m; ; m1 = m1.next(), j++) {
-    if (picked) {
-      if (m1 == picked) {selected = j; picked = 0;}
-      else if (m1 > picked) {selected = j-1; picked = 0; Wp = Hp = 0;}
-    }
-    if (!m1.text) break;
-  }
-  numitems = j;}
-
-  if (menubar) {
-    itemheight = 0;
-    title = 0;
-    return;
-  }
-
-  itemheight = 1;
-
-  int hotKeysw = 0;
-  int Wtitle = 0;
-  int Htitle = 0;
-  if (t) Wtitle = t.measure(&Htitle, button) + 12;
-  int W = 0;
-  if (m) for (; m.text; m = m.next()) {
-    int hh; int w1 = m.measure(&hh, button);
-    if (hh+LEADING>itemheight) itemheight = hh+LEADING;
-    if (m.flags&(FL_SUBMENU|FL_SUBMENU_POINTER)) w1 += 14;
-    if (w1 > W) W = w1;
-    if (m.shortcut_) {
-      w1 = int(fl_width(fl_shortcut_label(m.shortcut_))) + 8;
-      if (w1 > hotKeysw) hotKeysw = w1;
-    }
-    if (m.labelcolor_ || Fl.scheme() || m.labeltype_ > FL_NO_LABEL) clear_overlay();
-  }
-  if (selected >= 0 && !Wp) X -= W/2;
-  int BW = Fl.box_dx(box());
-  W += hotKeysw+2*BW+7;
-  if (Wp > W) W = Wp;
-  if (Wtitle > W) W = Wtitle;
-
-  if (X < scr_x) X = scr_x; if (X > scr_x+scr_w-W) X= scr_x+scr_w-W;
-  x(X); w(W);
-  h((numitems ? itemheight*numitems-LEADING : 0)+2*BW+3);
-  if (selected >= 0)
-    Y = Y+(Hp-itemheight)/2-selected*itemheight-BW;
-  else {
-    Y = Y+Hp;
-    // if the menu hits the bottom of the screen, we try to draw
-    // it above the menubar instead. We will not adjust any menu
-    // that has a selected item.
-    if (Y+h()>scr_y+scr_h && Y-h()>=scr_y) {
-      if (Hp>1) 
-        // if we know the height of the Fl_Menu_, use it
-        Y = Y-Hp-h();
-      else if (t)
-        // assume that the menubar item height relates to the first
-        // menuitem as well
-        Y = Y-itemheight-h()-Fl.box_dh(box());
-      else
-        // draw the menu to the right
-        Y = Y-h()+itemheight+Fl.box_dy(box());
-    }
-  }
-  if (m) y(Y); else {y(Y-2); w(1); h(1);}
-
-  if (t) {
-    if (menubar_title) {
-      int dy = Fl.box_dy(button.box())+1;
-      int ht = button.h()-dy*2;
-      title = new menutitle(tx, ty-ht-dy, Wtitle, ht, t);
-    } else {
-      int dy = 2;
-      int ht = Htitle+2*BW+3;
-      title = new menutitle(X, Y-ht-dy, Wtitle, ht, t);
-    }
-  } else
-    title = 0;
-}
-
-menuwindow::~menuwindow() {
-  hide();
-  delete title;
-}
 
 void menuwindow.position(int X, int Y) {
   if (title) {title.position(X, title.y()+Y-y());}
@@ -244,21 +93,6 @@ void menuwindow.position(int X, int Y) {
   // x(X); y(Y); // don't wait for response from X
 }
 
-// scroll so item i is visible on screen
-void menuwindow.autoscroll(int n) {
-  int scr_x, scr_y, scr_w, scr_h;
-  int Y = y()+Fl.box_dx(box())+2+n*itemheight;
-
-  Fl.screen_xywh(scr_x, scr_y, scr_w, scr_h);
-  if (Y <= scr_y) Y = scr_y-Y+10;
-  else {
-    Y = Y+itemheight-scr_h-scr_y;
-    if (Y < 0) return;
-    Y = -Y-10;
-  }
-  Fl_Menu_Window.position(x(), y()+Y);
-  // y(y()+Y); // don't wait for response from X
-}
 
 ////////////////////////////////////////////////////////////////
 
@@ -322,9 +156,6 @@ void menuwindow.draw() {
   drawn_selected = selected;
 }
 
-void menuwindow.set_selected(int n) {
-  if (n != selected) {selected = n; damage(FL_DAMAGE_CHILD);}
-}
 
 ////////////////////////////////////////////////////////////////
 
@@ -357,15 +188,6 @@ int menuwindow.titlex(int n) {
   return xx;
 }
 
-// return 1, if the given root coordinates are inside the window
-int menuwindow.is_inside(int mx, int my) {
-  if ( mx < x_root() || mx >= x_root() + w() ||
-       my < y_root() || my >= y_root() + h()) {
-    return 0;
-  }
-  return 1;
-}
-
 ////////////////////////////////////////////////////////////////
 // Fl_Menu_Item.popup(...)
 
@@ -382,60 +204,7 @@ int menuwindow.is_inside(int mx, int my) {
 // main loop does that.  This is because the X mapping and unmapping
 // of windows is slow, and we don't want to fall behind the events.
 
-// values for menustate.state:
-const int INITIAL_STATE = 0; 	// no mouse up or down since popup() called
-const int PUSH_STATE = 1; 	// mouse has been pushed on a normal item
-const int DONE_STATE = 2; 	// exit the popup, the current item was picked
-const int MENU_PUSH_STATE = 3;  // mouse has been pushed on a menu title
 
-struct menustate {
-  Fl_Menu_Item* current_item; // what mouse is pointing at
-  int menu_number; // which menu it is in
-  int item_number; // which item in that menu, -1 if none
-  menuwindow* p[20]; // pointers to menus
-  int nummenus;
-  int menubar; // if true p[0] is a menubar
-  int state;
-  int is_inside(int mx, int my);
-};
-static menustate* p;
-
-// return 1 if the coordinates are inside any of the menuwindows
-int menustate.is_inside(int mx, int my) {
-  int i;
-  for (i=nummenus-1; i>=0; i--) {
-    if (p[i]->is_inside(mx, my))
-      return 1;
-  }
-  return 0;
-}
-
-static void setitem(Fl_Menu_Item* i, int m, int n) {
-  p.current_item = i;
-  p.menu_number = m;
-  p.item_number = n;
-}
-
-static void setitem(int m, int n) {
-  menustate &pp = *p;
-  pp.current_item = (n >= 0) ? pp.p[m]->menu.next(n) : 0;
-  pp.menu_number = m;
-  pp.item_number = n;
-}
-
-static int forward(int menu) { // go to next item in menu menu if possible
-  menustate &pp = *p;
-  // Fl_Menu_Button can geberate menu=-1. This line fixes it and selectes the first item.
-  if (menu==-1) 
-    menu = 0;
-  menuwindow &m = *(pp.p[menu]);
-  int item = (menu == pp.menu_number) ? pp.item_number : m.selected;
-  while (++item < m.numitems) {
-    Fl_Menu_Item* m1 = m.menu.next(item);
-    if (m1.activevisible()) {setitem(m1, menu, item); return 1;}
-  }
-  return 0;
-}
 
 static int backward(int menu) { // previous item in menu menu if possible
   menustate &pp = *p;
@@ -567,155 +336,6 @@ version (__QNX__) {
   return Fl_Window.handle(e);
 }
 
-const Fl_Menu_Item* Fl_Menu_Item.pulldown(
-    int X, int Y, int W, int H,
-    Fl_Menu_Item* initial_item,
-    Fl_Menu_  pbutton,
-    Fl_Menu_Item* t,
-    int menubar) const
-{
-  Fl_Group.current(0); // fix possible user error...
-
-  button = pbutton;
-  if (pbutton) {
-    for (Fl_Window  w = pbutton.window(); w; w = w.window()) {
-      X += w.x();
-      Y += w.y();
-    }
-  } else {
-    X += Fl.event_x_root()-Fl.event_x();
-    Y += Fl.event_y_root()-Fl.event_y();
-  }
-  menuwindow mw(this, X, Y, W, H, initial_item, t, menubar);
-  Fl.grab(mw);
-  menustate pp; p = &pp;
-  pp.p[0] = &mw;
-  pp.nummenus = 1;
-  pp.menubar = menubar;
-  pp.state = INITIAL_STATE;
-
-  menuwindow* fakemenu = 0; // kludge for buttons in menubar
-
-  // preselected item, pop up submenus if necessary:
-  if (initial_item && mw.selected >= 0) {
-    setitem(0, mw.selected);
-    goto STARTUP;
-  }
-
-  pp.current_item = 0; pp.menu_number = 0; pp.item_number = -1;
-  if (menubar) {
-    // find the initial menu
-    if (!mw.handle(FL_DRAG)) {
-      Fl.release();
-      return 0;
-    }
-  }
-  initial_item = pp.current_item;
-  if (initial_item) goto STARTUP;
-
-  // the main loop, runs until p.state goes to DONE_STATE:
-  for (;;) {
-
-    // make sure all the menus are shown:
-    {for (int k = menubar; k < pp.nummenus; k++)
-      if (!pp.p[k]->shown()) {
-	if (pp.p[k]->title) pp.p[k]->title.show();
-	pp.p[k]->show();
-      }
-    }
-
-    // get events:
-    {Fl_Menu_Item* oldi = pp.current_item;
-    Fl.wait();
-    if (pp.state == DONE_STATE) break; // done.
-    if (pp.current_item == oldi) continue;}
-    // only do rest if item changes:
-
-    delete fakemenu; fakemenu = 0; // turn off "menubar button"
-
-    if (!pp.current_item) { // pointing at nothing
-      // turn off selection in deepest menu, but don't erase other menus:
-      pp.p[pp.nummenus-1]->set_selected(-1);
-      continue;
-    }
-
-    delete fakemenu; fakemenu = 0;
-    initial_item = 0; // stop the startup code
-    pp.p[pp.menu_number]->autoscroll(pp.item_number);
-
-  STARTUP:
-    menuwindow& cw = *pp.p[pp.menu_number];
-    Fl_Menu_Item* m = pp.current_item;
-    if (!m.activevisible()) { // pointing at inactive item
-      cw.set_selected(-1);
-      initial_item = 0; // turn off startup code
-      continue;
-    }
-    cw.set_selected(pp.item_number);
-
-    if (m==initial_item) initial_item=0; // stop the startup code if item found
-    if (m.submenu()) {
-      Fl_Menu_Item* title = m;
-      Fl_Menu_Item* menutable;
-      if (m.flags&FL_SUBMENU) menutable = m+1;
-      else menutable = (Fl_Menu_Item*)(m)->user_data_;
-      // figure out where new menu goes:
-      int nX, nY;
-      if (!pp.menu_number && pp.menubar) {	// menu off a menubar:
-	nX = cw.x() + cw.titlex(pp.item_number);
-	nY = cw.y() + cw.h();
-	initial_item = 0;
-      } else {
-	nX = cw.x() + cw.w();
-	nY = cw.y() + pp.item_number * cw.itemheight;
-	title = 0;
-      }
-      if (initial_item) { // bring up submenu containing initial item:
-	menuwindow* n = new menuwindow(menutable,X,Y,W,H,initial_item,title,0,0,cw.x());
-	pp.p[pp.nummenus++] = n;
-	// move all earlier menus to line up with this new one:
-	if (n.selected>=0) {
-	  int dy = n.y()-nY;
-	  int dx = n.x()-nX;
-	  for (int menu = 0; menu <= pp.menu_number; menu++) {
-	    menuwindow* tt = pp.p[menu];
-	    int nx = tt.x()+dx; if (nx < 0) {nx = 0; dx = -tt.x();}
-	    int ny = tt.y()+dy; if (ny < 0) {ny = 0; dy = -tt.y();}
-	    tt.position(nx, ny);
-	  }
-	  setitem(pp.nummenus-1, n.selected);
-	  goto STARTUP;
-	}
-      } else if (pp.nummenus > pp.menu_number+1 &&
-		 pp.p[pp.menu_number+1]->menu == menutable) {
-	// the menu is already up:
-	while (pp.nummenus > pp.menu_number+2) delete pp.p[--pp.nummenus];
-	pp.p[pp.nummenus-1]->set_selected(-1);
-      } else {
-	// delete all the old menus and create new one:
-	while (pp.nummenus > pp.menu_number+1) delete pp.p[--pp.nummenus];
-	pp.p[pp.nummenus++]= new menuwindow(menutable, nX, nY,
-					  title?1:0, 0, 0, title, 0, menubar, cw.x());
-      }
-    } else { // !m.submenu():
-      while (pp.nummenus > pp.menu_number+1) delete pp.p[--pp.nummenus];
-      if (!pp.menu_number && pp.menubar) {
-	// kludge so "menubar buttons" turn "on" by using menu title:
-	fakemenu = new menuwindow(0,
-				  cw.x()+cw.titlex(pp.item_number),
-				  cw.y()+cw.h(), 0, 0,
-				  0, m, 0, 1);
-	fakemenu.title.show();
-      }
-    }
-  }
-  Fl_Menu_Item* m = pp.current_item;
-  Fl.release();
-  delete fakemenu;
-  while (pp.nummenus>1) delete pp.p[--pp.nummenus];
-  mw.hide();
-  return m;
-}
 
 const Fl_Menu_Item*
 Fl_Menu_Item.popup(

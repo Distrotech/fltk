@@ -440,9 +440,56 @@ public:
 
   static Fl_Window  modal() {return modal_;}
   static Fl_Window  grab() {return grab_;}
-/+=
-  static void grab(Fl_Window );
-=+/
+  static void grab(Fl_Window  win) {
+    if (win) {
+      if (!grab_) {
+        version (WIN32) {
+          SetActiveWindow(fl_capture = fl_xid(first_window()));
+          SetCapture(fl_capture);
+        } else version (__APPLE__) {
+          fl_capture = fl_xid( first_window() );
+          SetUserFocusWindow( fl_capture );
+        } else {
+          XGrabPointer(fl_display,
+                       fl_xid(first_window()),
+                       1,
+                       ButtonPressMask|ButtonReleaseMask|
+                       ButtonMotionMask|PointerMotionMask,
+                       GrabModeAsync,
+                       GrabModeAsync, 
+                       None,
+                       0,
+                       fl_event_time);
+          XGrabKeyboard(fl_display,
+                        fl_xid(first_window()),
+                        1,
+                        GrabModeAsync,
+                        GrabModeAsync, 
+                        fl_event_time);
+        }
+      }
+      grab_ = win;
+    } else {
+      if (grab_) {
+        version (WIN32) {
+          fl_capture = null;
+          ReleaseCapture();
+        } else version (__APPLE__) {
+          fl_capture = null;
+          SetUserFocusWindow( cast(WindowRef)kUserFocusAuto );
+        } else {
+          XUngrabKeyboard(fl_display, fl_event_time);
+          XUngrabPointer(fl_display, fl_event_time);
+          // this flush is done in case the picked menu item goes into
+          // an infinite loop, so we don't leave the X server locked up:
+          XFlush(fl_display);
+        }
+        grab_ = null;
+        fl_fix_focus();
+      }
+    }
+  }
+
   // event information:
   static int event()		{return e_number;}
   static int event_x()	{return e_x;}
@@ -962,8 +1009,9 @@ public:
   static int event_button3() {return e_state&FL_BUTTON3;}
   static void set_idle(void (*cb)()) {idle = cb;}
   static void grab(Fl_Window win) {grab(&win);}
-  static void release() {grab(0);}
 =+/
+  static void release() {grab(null);}
+
   // Visible focus methods...
   static void visible_focus(int v) { visible_focus_ = v; }
   static int  visible_focus() { return visible_focus_; }

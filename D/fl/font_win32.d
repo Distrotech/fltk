@@ -127,6 +127,10 @@ int fl_size_ = 0;
 //static HDC font_gc;
 
 void fl_font(int fnum, int size) {
+  if (fnum==-1) {
+    fl_font_ = 0; fl_size_ = 0;
+    return;
+  }
   if (fnum == fl_font_ && size == fl_size_) return;
   fl_font_ = fnum; fl_size_ = size;
   fl_fontsize = find(fnum, size);

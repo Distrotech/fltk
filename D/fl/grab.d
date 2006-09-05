@@ -52,55 +52,6 @@ version (__APPLE__) {
 extern WindowRef fl_capture;
 }
 
-void Fl.grab(Fl_Window  win) {
-  if (win) {
-    if (!grab_) {
-version (WIN32) {
-      SetActiveWindow(fl_capture = fl_xid(first_window()));
-      SetCapture(fl_capture);
-} else version (__APPLE__) {
-      fl_capture = fl_xid( first_window() );
-      SetUserFocusWindow( fl_capture );
-} else {
-      XGrabPointer(fl_display,
-		   fl_xid(first_window()),
-		   1,
-		   ButtonPressMask|ButtonReleaseMask|
-		   ButtonMotionMask|PointerMotionMask,
-		   GrabModeAsync,
-		   GrabModeAsync, 
-		   None,
-		   0,
-		   fl_event_time);
-      XGrabKeyboard(fl_display,
-		    fl_xid(first_window()),
-		    1,
-		    GrabModeAsync,
-		    GrabModeAsync, 
-		    fl_event_time);
-}
-    }
-    grab_ = win;
-  } else {
-    if (grab_) {
-version (WIN32) {
-      fl_capture = 0;
-      ReleaseCapture();
-} else version (__APPLE__) {
-      fl_capture = 0;
-      SetUserFocusWindow( (WindowRef)kUserFocusAuto );
-} else {
-      XUngrabKeyboard(fl_display, fl_event_time);
-      XUngrabPointer(fl_display, fl_event_time);
-      // this flush is done in case the picked menu item goes into
-      // an infinite loop, so we don't leave the X server locked up:
-      XFlush(fl_display);
-}
-      grab_ = 0;
-      fl_fix_focus();
-    }
-  }
-}
 
 //
 // End of "$Id: grab.d 5190 2006-06-09 16:16:34Z mike $".

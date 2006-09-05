@@ -76,6 +76,7 @@ void Fl.set_font(Fl_Font fnum, char* name) {
   s.xlist = 0;
 }
   s.first = 0;
+  fl_font(-1, 0);
 }
 
 void Fl.set_font(Fl_Font fnum, Fl_Font from) {
