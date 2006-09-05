@@ -137,7 +137,6 @@ DFILES = \
 	fl/menu_button.d \
 	fl/menu_global.d \
 	fl/menu_item.d \
-	fl/menu_rar.d \
 	fl/menu_window.d \
 	fl/message.d \
 	fl/multi_browser.d \

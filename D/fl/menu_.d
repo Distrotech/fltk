@@ -29,15 +29,15 @@ module fl.menu_;
 
 public import fl.widget;
 public import fl.menu_item;
-
+private import std.c.stdlib;
 
 class Fl_Menu_ : Fl_Widget {
-/+=
+
 private:
 
-  Fl_Menu_Item *menu_;
-  Fl_Menu_Item *value_;
-=+/
+  Fl_Menu_Item* menu_;
+  Fl_Menu_Item* value_;
+
 protected:
 
   ubyte alloc;
@@ -52,9 +52,7 @@ public:
     set_flag(SHORTCUT_LABEL);
     box(FL_UP_BOX);
     when(FL_WHEN_RELEASE_ALWAYS);
-/+=
-    value_ = menu_ = 0;
-=+/
+    value_ = menu_ = null;
     alloc = 0;
 
     selection_color(FL_SELECTION_COLOR);
@@ -72,16 +70,40 @@ public:
 
   Fl_Menu_Item* test_shortcut() {return picked(menu()->test_shortcut());}
   void global();
+=+/
 
   Fl_Menu_Item *menu() {return menu_;}
-  void menu(Fl_Menu_Item *m);
+  void menu(Fl_Menu_Item* m) {
+    clear();
+    value_ = menu_ = m;
+  }
+/+=
   void copy(Fl_Menu_Item *m, void* user_data = 0);
   int  add(char*, int shortcut, Fl_Callback , void* = 0, int = 0);
   int  add(char* a, char* b, Fl_Callback  c,
 	  void* d = 0, int e = 0) {return add(a,fl_old_shortcut(b),c,d,e);}
-  int  size() ;
+=+/
+  int size() {
+    if (!menu_) return 0;
+    return menu_.size();
+  }
+/+=
   void size(int W, int H) { Fl_Widget.size(W, H); }
-  void clear();
+=+/
+  void clear() {
+    if (alloc) {
+      if (alloc>1) for (int i = size(); i--;)
+        if (menu_[i].text) free(menu_[i].text);
+      if (this is fl_menu_array_owner)
+        fl_menu_array_owner = null;
+      else
+        delete menu_;
+      menu_ = null;
+      value_ = null;
+      alloc = 0;
+    }
+  }
+/+=
   int  add(char *);
   void replace(int,char *);
   void remove(int);
@@ -286,15 +308,6 @@ void Fl_Menu_Item.setonly() {
 }
 
 
-int Fl_Menu_.size() {
-  if (!menu_) return 0;
-  return menu_.size();
-}
-
-void Fl_Menu_.menu(Fl_Menu_Item* m) {
-  clear();
-  value_ = menu_ = (Fl_Menu_Item*)m;
-}
 
 // this version is ok with new Fl_Menu_add code with fl_menu_array_owner:
 
@@ -317,22 +330,11 @@ Fl_Menu_::~Fl_Menu_() {
 
 // Fl_Menu.add() uses this to indicate the owner of the dynamically-
 // expanding array.  We must not free this array:
-Fl_Menu_  fl_menu_array_owner = 0;
+=+/
 
-void Fl_Menu_.clear() {
-  if (alloc) {
-    if (alloc>1) for (int i = size(); i--;)
-      if (menu_[i].text) free((void*)menu_[i].text);
-    if (this == fl_menu_array_owner)
-      fl_menu_array_owner = 0;
-    else
-      delete[] menu_;
-    menu_ = 0;
-    value_ = 0;
-    alloc = 0;
-  }
-}
+Fl_Menu_ fl_menu_array_owner = null;
 
+/+=
 //
 // End of "$Id: menu_.d 5190 2006-06-09 16:16:34Z mike $".
 //

@@ -77,20 +77,6 @@ version (__APPLE__) {
 #  include <Carbon/Carbon.h>
 }
 
-int Fl_Menu_Item.size() {
-  Fl_Menu_Item* m = this;
-  int nest = 0;
-  for (;;) {
-    if (!m.text) {
-      if (!nest) return (m-this+1);
-      nest--;
-    } else if (m.flags & FL_SUBMENU) {
-      nest++;
-    }
-    m++;
-  }
-}
-
 const Fl_Menu_Item* Fl_Menu_Item.next(int n) {
   if (n < 0) return 0; // this is so selected==-1 returns NULL
   Fl_Menu_Item* m = this;

@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: menu_item.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,41 +27,31 @@
 
 module fl.menu_item;
 
-
 public import fl.widget;
 public import fl.image;
 
-version (__APPLE__) && defined(check) {
-#    undef check
-}
+const int FL_MENU_INACTIVE = 1;
+const int FL_MENU_TOGGLE= 2;
+const int FL_MENU_VALUE = 4;
+const int FL_MENU_RADIO = 8;
+const int FL_MENU_INVISIBLE = 0x10;
+const int FL_SUBMENU_POINTER = 0x20;
+const int FL_SUBMENU = 0x40;
+const int FL_MENU_DIVIDER = 0x80;
+const int FL_MENU_HORIZONTAL = 0x100;
 
-enum { // values for flags:
-  FL_MENU_INACTIVE = 1,
-  FL_MENU_TOGGLE= 2,
-  FL_MENU_VALUE = 4,
-  FL_MENU_RADIO = 8,
-  FL_MENU_INVISIBLE = 0x10,
-  FL_SUBMENU_POINTER = 0x20,
-  FL_SUBMENU = 0x40,
-  FL_MENU_DIVIDER = 0x80,
-  FL_MENU_HORIZONTAL = 0x100
-};
-
-extern int fl_old_shortcut(char*);
-
-class Fl_Menu_;
 
 struct Fl_Menu_Item {
-  char *text;	// label()
+  char* text;	// label()
   int shortcut_;
-  Fl_Callback  callback_;
-  void *user_data_;
+  Fl_Callback callback_;
+  void* user_data_;
   int flags;
   ubyte labeltype_;
   ubyte labelfont_;
   ubyte labelsize_;
   uint labelcolor_;
-
+/+=
   // advance N items, skipping submenus:
   Fl_Menu_Item *next(int=1) const;
   Fl_Menu_Item *next(int i=1) {
@@ -143,27 +132,35 @@ struct Fl_Menu_Item {
   int add(char*a, char* b, Fl_Callback  c,
 	  void* d = 0, int e = 0) {
     return add(a,fl_old_shortcut(b),c,d,e);}
-  int size() ;
-};
+=+/
+  int size() {
+    Fl_Menu_Item* m = this;
+    int nest = 0;
+    for (;;) {
+      if (!m.text) {
+        if (!nest) return (m-this+1);
+        nest--;
+      } else if (m.flags & FL_SUBMENU) {
+        nest++;
+      }
+      m++;
+    }
+  }
+}
 
 alias Fl_Menu_Item Fl_Menu; // back compatability
 
-enum {	// back-compatability enum:
-  FL_PUP_NONE	= 0,
-  FL_PUP_GREY	= FL_MENU_INACTIVE,
-  FL_PUP_GRAY	= FL_MENU_INACTIVE,
-  FL_MENU_BOX	= FL_MENU_TOGGLE,
-  FL_PUP_BOX	= FL_MENU_TOGGLE,
-  FL_MENU_CHECK	= FL_MENU_VALUE,
-  FL_PUP_CHECK	= FL_MENU_VALUE,
-  FL_PUP_RADIO	= FL_MENU_RADIO,
-  FL_PUP_INVISIBLE = FL_MENU_INVISIBLE,
-  FL_PUP_SUBMENU = FL_SUBMENU_POINTER
-};
-
-}
+const int FL_PUP_NONE	= 0;
+const int FL_PUP_GREY	= FL_MENU_INACTIVE;
+const int FL_PUP_GRAY	= FL_MENU_INACTIVE;
+const int FL_MENU_BOX	= FL_MENU_TOGGLE;
+const int FL_PUP_BOX	= FL_MENU_TOGGLE;
+const int FL_MENU_CHECK	= FL_MENU_VALUE;
+const int FL_PUP_CHECK	= FL_MENU_VALUE;
+const int FL_PUP_RADIO	= FL_MENU_RADIO;
+const int FL_PUP_INVISIBLE = FL_MENU_INVISIBLE;
+const int FL_PUP_SUBMENU = FL_SUBMENU_POINTER;
 
 //
 // End of "$Id: menu_item.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/

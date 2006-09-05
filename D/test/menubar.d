@@ -25,6 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
+public import fl.enumerations;
 public import fl.fl;
 public import fl.box;
 public import fl.window;
