@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: secret_input.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,18 +27,17 @@
 
 module fl.secret_input;
 
-
 public import fl.input;
+
 
 class Fl_Secret_Input : Fl_Input {
 public:
-    Fl_Secret_Input(int X,int Y,int W,int H,char *l = 0)
-	: Fl_Input(X,Y,W,H,l) {type(FL_SECRET_INPUT);}
-};
-
+  this(int X,int Y,int W,int H,char *l=null) {
+    super(X,Y,W,H,l);
+    type(FL_SECRET_INPUT);
+  }
 }
 
 //
 // End of "$Id: secret_input.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/

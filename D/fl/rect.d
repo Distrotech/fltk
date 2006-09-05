@@ -65,7 +65,18 @@ void fl_rect(int x, int y, int w, int h) {
   }
 }
 
-void fl_rectf(int x, int y, int w, int h, Fl_Color c) {fl_color(c); fl_rectf(x,y,w,h);}
+void fl_rectf(int x, int y, int w, int h, Fl_Color c) {
+  fl_color(c); 
+  fl_rectf(x,y,w,h);
+}
+
+/* There is a better implementation in fl/draw_image.d which supports rastering
+ * on low color displays. For now, we stick with this.
+ */
+void fl_rectf(int x, int y, int w, int h, ubyte r, ubyte g, ubyte b) {
+  fl_color(r, g, b);
+  fl_rectf(x, y, w, h);
+}
 
 void fl_rectf(int x, int y, int w, int h) {
   if (w<=0 || h<=0) return;

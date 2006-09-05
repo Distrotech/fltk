@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: multiline_input.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,18 +27,17 @@
 
 module fl.multiline_input;
 
-
 public import fl.input;
+
 
 class Fl_Multiline_Input : Fl_Input {
 public:
-    Fl_Multiline_Input(int X,int Y,int W,int H,char *l = 0)
-	: Fl_Input(X,Y,W,H,l) {type(FL_MULTILINE_INPUT);}
-};
-
+  this(int X,int Y,int W,int H,char *l=null) {
+    super(X,Y,W,H,l);
+    type(FL_MULTILINE_INPUT);
+  }
 }
 
 //
 // End of "$Id: multiline_input.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/

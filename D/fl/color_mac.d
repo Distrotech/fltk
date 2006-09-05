@@ -40,21 +40,6 @@ public import fl.color;
 
 private import fl.x;
 
-/+=
-#include <config.h>
-#include <FL/Fl.H>
-#include <FL/x.H>
-private import fl.draw;
-
-static uint fl_cmap[256] = {
-private import fl.cmap; // this is a file produced by "cmap.cxx":
-};
-
-// Translations to mac data structures:
-Fl_XMap fl_xmap[256];
-
-Fl_XMap  fl_current_xmap;
-=+/
 
 Fl_Color fl_color_;
 
@@ -89,27 +74,15 @@ void fl_color(Fl_Color i) {
   }
 }
 
-/+=
 void fl_color(ubyte r, ubyte g, ubyte b) {
   fl_color_ = fl_rgb_color(r, g, b);
-version (__APPLE_QD__) {
-  RGBColor rgb; 
-  rgb.red   = (r<<8)|r;
-  rgb.green = (g<<8)|g;
-  rgb.blue  = (b<<8)|b;
-  RGBForeColor(&rgb);
-} else version (__APPLE_QUARTZ__) {
   float fr = r/255.0f;
   float fg = g/255.0f;
   float fb = b/255.0f;
   CGContextSetRGBFillColor(fl_gc, fr, fg, fb, 1.0f);
   CGContextSetRGBStrokeColor(fl_gc, fr, fg, fb, 1.0f);
-} else {
-#  error : neither Quickdraw nor Quartz defined
-}
 }
 
 //
 // End of "$Id: fl_color_mac.cxx 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

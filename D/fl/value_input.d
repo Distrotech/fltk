@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: value_input.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,11 +27,11 @@
 
 module fl.value_input;
 
-
 public import fl.valuator;
 public import fl.input;
 
 class Fl_Value_Input : Fl_Valuator {
+/+=
 public:
   Fl_Input input;
 private:
@@ -43,8 +42,26 @@ public:
   int handle(int);
   void draw();
   void resize(int,int,int,int);
-  Fl_Value_Input(int x,int y,int w,int h,char *l=0);
+=+/
+  this(int X, int Y, int W, int H, char* l=null) {
+    super(X, Y, W, H, l);
+/+=
+    input(X, Y, W, H, 0)
+    soft_ = 0;
+    if (input.parent())  // defeat automatic-add
+      ((Fl_Group )input.parent())->remove(input);
+    input.parent((Fl_Group  )this); // kludge!
+    input.callback(input_cb, this);
+    input.when(FL_WHEN_CHANGED);
+    box(input.box());
+    color(input.color());
+    selection_color(input.selection_color());
+    alignment(FL_ALIGN_LEFT);
+    value_damage();
+=+/
+  }
 
+/+=
   void soft(char s) {soft_ = s;}
   char soft() {return soft_;}
 
@@ -56,15 +73,12 @@ public:
   void textcolor(uint n) {input.textcolor(n);}
   Fl_Color cursor_color() {return input.cursor_color();}
   void cursor_color(uint n) {input.cursor_color(n);}
-
-};
-
+=+/
 }
 
 //
 // End of "$Id: value_input.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
 /+- This file was imported from C++ using a script
 //
 // "$Id: value_input.d 5190 2006-06-09 16:16:34Z mike $"
@@ -181,20 +195,6 @@ int Fl_Value_Input.handle(int event) {
   }
 }
 
-Fl_Value_Input.Fl_Value_Input(int X, int Y, int W, int H, char* l)
-: Fl_Valuator(X, Y, W, H, l), input(X, Y, W, H, 0) {
-  soft_ = 0;
-  if (input.parent())  // defeat automatic-add
-    ((Fl_Group )input.parent())->remove(input);
-  input.parent((Fl_Group  )this); // kludge!
-  input.callback(input_cb, this);
-  input.when(FL_WHEN_CHANGED);
-  box(input.box());
-  color(input.color());
-  selection_color(input.selection_color());
-  alignment(FL_ALIGN_LEFT);
-  value_damage();
-}
 
 //
 // End of "$Id: value_input.d 5190 2006-06-09 16:16:34Z mike $".

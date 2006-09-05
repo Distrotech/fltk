@@ -888,9 +888,19 @@ public:
     if (i & 0xffffff00) return (i);
     else return fl_cmap[i];
   }
+
+  static void get_color(Fl_Color i, out ubyte red, out ubyte green, out ubyte blue) {
+    uint c;
+  
+    if (i & 0xffffff00) c = i;
+    else c = fl_cmap[i];
+  
+    red   = cast(ubyte)(c>>24);
+    green = cast(ubyte)(c>>16);
+    blue  = cast(ubyte)(c>>8);
+  }
 /+=
 
-  static void	get_color(Fl_Color, ubyte&, ubyte&, ubyte&);
   static void	free_color(Fl_Color, int overlay = 0);
 
   // fonts:

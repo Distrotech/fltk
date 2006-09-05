@@ -26,26 +26,35 @@
 
 module fl.choice;
 
-/+=
 public import fl.menu_;
 
 class Fl_Choice : Fl_Menu_ {
+/+=
 protected:
   void draw();
 public:
   int handle(int);
-  Fl_Choice(int,int,int,int,char * = 0);
+=+/
+  this(int X, int Y, int W, int H, char *l=null) {
+    super(X,Y,W,H,l);
+    alignment(FL_ALIGN_LEFT);
+    when(FL_WHEN_RELEASE);
+    textfont(FL_HELVETICA);
+    box(FL_FLAT_BOX);
+    down_box(FL_BORDER_BOX);
+    color(FL_BACKGROUND2_COLOR);
+  }
+/+=
   int value(Fl_Menu_Item*);
   int value(int i);
   int value() {return Fl_Menu_.value();}
-};
-
+=+/
 }
 
 //
 // End of "$Id: choice.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: choice.d 5190 2006-06-09 16:16:34Z mike $"
@@ -143,16 +152,6 @@ void Fl_Choice.draw() {
   }
 
   draw_label();
-}
-
-Fl_Choice.Fl_Choice(int X, int Y, int W, int H, char *l)
-: Fl_Menu_(X,Y,W,H,l) {
-  alignment(FL_ALIGN_LEFT);
-  when(FL_WHEN_RELEASE);
-  textfont(FL_HELVETICA);
-  box(FL_FLAT_BOX);
-  down_box(FL_BORDER_BOX);
-  color(FL_BACKGROUND2_COLOR);
 }
 
 int Fl_Choice.value(Fl_Menu_Item *v) {

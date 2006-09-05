@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: menu_.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,17 +27,17 @@
 
 module fl.menu_;
 
-
-module fl.widget;
 public import fl.widget;
-}
 public import fl.menu_item;
 
+
 class Fl_Menu_ : Fl_Widget {
+/+=
+private:
 
   Fl_Menu_Item *menu_;
   Fl_Menu_Item *value_;
-
+=+/
 protected:
 
   ubyte alloc;
@@ -48,7 +47,23 @@ protected:
   uint textcolor_;
 
 public:
-  Fl_Menu_(int,int,int,int,char * =0);
+  this(int X,int Y,int W,int H,char* l=null) {
+    super(X,Y,W,H,l);
+    set_flag(SHORTCUT_LABEL);
+    box(FL_UP_BOX);
+    when(FL_WHEN_RELEASE_ALWAYS);
+/+=
+    value_ = menu_ = 0;
+=+/
+    alloc = 0;
+
+    selection_color(FL_SELECTION_COLOR);
+    textfont(FL_HELVETICA);
+    textsize(FL_NORMAL_SIZE);
+    textcolor(FL_FOREGROUND_COLOR);
+    down_box(FL_NO_BOX);
+  }
+/+=
   ~Fl_Menu_();
 
   int item_pathname(char *name, int namelen, Fl_Menu_Item *finditem=0) const;
@@ -80,28 +95,27 @@ public:
   int value(int i) {return value(menu_+i);}
   char *text() {return value_ ? value_.text : 0;}
   char *text(int i) {return menu_[i].text;}
-
-  Fl_Font textfont() {return (Fl_Font)textfont_;}
+=+/
+  Fl_Font textfont() {return textfont_;}
   void textfont(ubyte c) {textfont_=c;}
   ubyte textsize() {return textsize_;}
   void textsize(ubyte c) {textsize_=c;}
-  Fl_Color textcolor() {return (Fl_Color)textcolor_;}
+  Fl_Color textcolor() {return textcolor_;}
   void textcolor(uint c) {textcolor_=c;}
 
-  Fl_Boxtype down_box() {return (Fl_Boxtype)down_box_;}
+  Fl_Boxtype down_box() {return down_box_;}
   void down_box(Fl_Boxtype b) {down_box_ = b;}
-
+/+=
   // back compatability:
   Fl_Color down_color() {return selection_color();}
   void down_color(uint c) {selection_color(c);}
-};
-
+=+/
 }
 
 //
 // End of "$Id: menu_.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: menu_.d 5190 2006-06-09 16:16:34Z mike $"
@@ -271,19 +285,6 @@ void Fl_Menu_Item.setonly() {
   }
 }
 
-Fl_Menu_.Fl_Menu_(int X,int Y,int W,int H,char* l)
-: Fl_Widget(X,Y,W,H,l) {
-  set_flag(SHORTCUT_LABEL);
-  box(FL_UP_BOX);
-  when(FL_WHEN_RELEASE_ALWAYS);
-  value_ = menu_ = 0;
-  alloc = 0;
-  selection_color(FL_SELECTION_COLOR);
-  textfont(FL_HELVETICA);
-  textsize((ubyte)FL_NORMAL_SIZE);
-  textcolor(FL_FOREGROUND_COLOR);
-  down_box(FL_NO_BOX);
-}
 
 int Fl_Menu_.size() {
   if (!menu_) return 0;

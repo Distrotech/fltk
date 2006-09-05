@@ -31,40 +31,61 @@
 
 module fl.color_chooser;
 
-/+=
+public import fl.window;
 public import fl.group;
 public import fl.box;
 public import fl.return_button;
 public import fl.choice;
 public import fl.value_input;
+private import fl.draw;
+private import fl.ask;
+private import std.stdio;
 
 class Flcc_HueBox : Fl_Widget {
+private:
   int px, py;
+/+=
 protected:
   void draw();
   int handle_key(int);
+=+/
 public:
+/+=
   int handle(int);
-  Flcc_HueBox(int X, int Y, int W, int H) : Fl_Widget(X,Y,W,H) {
-  px = py = 0;}
-};
+=+/
+  this(int X, int Y, int W, int H) {
+    super(X,Y,W,H);
+    px = py = 0;
+  }
+}
 
 class Flcc_ValueBox : Fl_Widget {
+private:
   int py;
+/+=
 protected:
   void draw();
   int handle_key(int);
+=+/
 public:
+/+=
   int handle(int);
-  Flcc_ValueBox(int X, int Y, int W, int H) : Fl_Widget(X,Y,W,H) {
-  py = 0;}
-};
+=+/
+  this(int X, int Y, int W, int H) {
+    super(X,Y,W,H);
+    py = 0;
+  }
+}
 
 class Flcc_Value_Input : Fl_Value_Input {
 public:
+/+=
   int format(char*);
-  Flcc_Value_Input(int X, int Y, int W, int H) : Fl_Value_Input(X,Y,W,H) {}
-};
+=+/
+  this(int X, int Y, int W, int H) {
+    super(X,Y,W,H);
+  }
+}
 
 class Fl_Color_Chooser : Fl_Group {
   Flcc_HueBox huebox;
@@ -76,6 +97,7 @@ class Fl_Color_Chooser : Fl_Group {
   Fl_Box resize_box;
   double hue_, saturation_, value_;
   double r_, g_, b_;
+/+=
   void set_valuators();
   static void rgb_cb(Fl_Widget , void*);
   static void mode_cb(Fl_Widget , void*);
@@ -84,25 +106,76 @@ public:
   double hue() {return hue_;}
   double saturation() {return saturation_;}
   double value() {return value_;}
+=+/
   double r() {return r_;}
   double g() {return g_;}
   double b() {return b_;}
+/+=
   int hsv(double,double,double);
-  int rgb(double,double,double);
+=+/
+  int rgb(double R, double G, double B) {
+    if (R == r_ && G == g_ && B == b_) return 0;
+    r_ = R; g_ = G; b_ = B;
+/+==
+    double ph = hue_;
+    double ps = saturation_;
+    double pv = value_;
+    rgb2hsv(R,G,B,hue_,saturation_,value_);
+    set_valuators();
+    set_changed();
+    if (value_ != pv) {
+      version (UPDATE_HUE_BOX) {
+        huebox.damage(FL_DAMAGE_SCROLL);
+      }
+      valuebox.damage(FL_DAMAGE_EXPOSE);
+    }
+    if (hue_ != ph || saturation_ != ps) {
+      huebox.damage(FL_DAMAGE_EXPOSE); 
+      valuebox.damage(FL_DAMAGE_SCROLL);
+    }
+==+/
+    return 1;
+  }
+/+=
   static void hsv2rgb(double, double, double,double&,double&,double&);
   static void rgb2hsv(double, double, double,double&,double&,double&);
-  Fl_Color_Chooser(int,int,int,int,char* = 0);
-};
-
-int fl_color_chooser(char* name, double& r, double& g, double& b);
-int fl_color_chooser(char* name, ubyte& r, ubyte& g, ubyte& b);
-
+=+/
+  this(int X, int Y, int W, int H, char*L=null) {
+    super(0,0,195,115,L);
+    box(FL_DOWN_BOX); /+== ==+/
+    huebox = new Flcc_HueBox(0,0,115,115);
+    valuebox = new Flcc_ValueBox(115,0,20,115);
+    choice = new Fl_Choice(140,0,55,25),
+    rvalue = new Flcc_Value_Input(140,30,55,25);
+    gvalue = new Flcc_Value_Input(140,60,55,25);
+    bvalue = new Flcc_Value_Input(140,90,55,25);
+    resize_box = new Fl_Box(0,0,115,115);
+    end();
+    resizable(resize_box);
+    resize(X,Y,W,H);
+    r_ = g_ = b_ = 0;
+    hue_ = 0.0;
+    saturation_ = 0.0;
+    value_ = 0.0;
+/+=
+    huebox.box(FL_DOWN_FRAME);
+    valuebox.box(FL_DOWN_FRAME);
+    choice.menu(mode_menu);
+    set_valuators();
+    rvalue.callback(rgb_cb);
+    gvalue.callback(rgb_cb);
+    bvalue.callback(rgb_cb);
+    choice.callback(mode_cb);
+    choice.box(FL_THIN_UP_BOX);
+    choice.textfont(FL_HELVETICA_BOLD_ITALIC);
+=+/
+  }
 }
 
 //
 // End of "$Id: color_chooser.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
+
 /+- This file was imported from C++ using a script
 //
 // "$Id: color_chooser.d 5190 2006-06-09 16:16:34Z mike $"
@@ -225,26 +298,6 @@ void Fl_Color_Chooser.set_valuators() {
   }
 }
 
-int Fl_Color_Chooser.rgb(double R, double G, double B) {
-  if (R == r_ && G == g_ && B == b_) return 0;
-  r_ = R; g_ = G; b_ = B;
-  double ph = hue_;
-  double ps = saturation_;
-  double pv = value_;
-  rgb2hsv(R,G,B,hue_,saturation_,value_);
-  set_valuators();
-  set_changed();
-  if (value_ != pv) {
-version (UPDATE_HUE_BOX) {
-    huebox.damage(FL_DAMAGE_SCROLL);
-}
-    valuebox.damage(FL_DAMAGE_EXPOSE);}
-  if (hue_ != ph || saturation_ != ps) {
-    huebox.damage(FL_DAMAGE_EXPOSE); 
-    valuebox.damage(FL_DAMAGE_SCROLL);
-  }
-  return 1;
-}
 
 int Fl_Color_Chooser.hsv(double H, double S, double V) {
   H = fmod(H,6.0); if (H < 0.0) H += 6.0;
@@ -519,34 +572,6 @@ void Fl_Color_Chooser.mode_cb(Fl_Widget  o, void*) {
 
 ////////////////////////////////////////////////////////////////
 
-Fl_Color_Chooser.Fl_Color_Chooser(int X, int Y, int W, int H, char* L)
-  : Fl_Group(0,0,195,115,L),
-    huebox(0,0,115,115),
-    valuebox(115,0,20,115),
-    choice(140,0,55,25),
-    rvalue(140,30,55,25),
-    gvalue(140,60,55,25),
-    bvalue(140,90,55,25),
-    resize_box(0,0,115,115)
-{
-  end();
-  resizable(resize_box);
-  resize(X,Y,W,H);
-  r_ = g_ = b_ = 0;
-  hue_ = 0.0;
-  saturation_ = 0.0;
-  value_ = 0.0;
-  huebox.box(FL_DOWN_FRAME);
-  valuebox.box(FL_DOWN_FRAME);
-  choice.menu(mode_menu);
-  set_valuators();
-  rvalue.callback(rgb_cb);
-  gvalue.callback(rgb_cb);
-  bvalue.callback(rgb_cb);
-  choice.callback(mode_cb);
-  choice.box(FL_THIN_UP_BOX);
-  choice.textfont(FL_HELVETICA_BOLD_ITALIC);
-}
 
 ////////////////////////////////////////////////////////////////
 // fl_color_chooser():
@@ -554,48 +579,46 @@ Fl_Color_Chooser.Fl_Color_Chooser(int X, int Y, int W, int H, char* L)
 private import fl.window;
 private import fl.box;
 private import fl.return_button;
+=+/
 
-class ColorChip : Fl_Widget {
-  void draw();
+class Fl_Color_Chip : Fl_Widget {
+  void draw() {
+    if (damage()&FL_DAMAGE_ALL) draw_box();
+    fl_rectf(x()+Fl.box_dx(box()),
+  	   y()+Fl.box_dy(box()),
+  	   w()-Fl.box_dw(box()),
+  	   h()-Fl.box_dh(box()),r,g,b);
+  }
 public:
   ubyte r,g,b;
-  ColorChip(int X, int Y, int W, int H) : Fl_Widget(X,Y,W,H) {
-    box(FL_ENGRAVED_FRAME);}
-};
-
-void ColorChip.draw() {
-  if (damage()&FL_DAMAGE_ALL) draw_box();
-  fl_rectf(x()+Fl.box_dx(box()),
-	   y()+Fl.box_dy(box()),
-	   w()-Fl.box_dw(box()),
-	   h()-Fl.box_dh(box()),r,g,b);
+  this(int X, int Y, int W, int H) {
+    super(X,Y,W,H);
+    box(FL_ENGRAVED_FRAME);
+  }
 }
 
-static void chooser_cb(Fl_Object  o, void* vv) {
-  Fl_Color_Chooser  c = (Fl_Color_Chooser )o;
-  ColorChip* v = (ColorChip*)vv;
-  v.r = ubyte(255*c.r()+.5);
-  v.g = ubyte(255*c.g()+.5);
-  v.b = ubyte(255*c.b()+.5);
+static void chooser_cb(Fl_Widget o, void* vv) {
+  Fl_Color_Chooser c = cast(Fl_Color_Chooser)o;
+  Fl_Color_Chip v = cast(Fl_Color_Chip)vv;
+  v.r = cast(ubyte)(255*c.r()+.5);
+  v.g = cast(ubyte)(255*c.g()+.5);
+  v.b = cast(ubyte)(255*c.b()+.5);
   v.damage(FL_DAMAGE_EXPOSE);
 }
 
-extern char* fl_ok;
-extern char* fl_cancel;
-
-int fl_color_chooser(char* name, double& r, double& g, double& b) {
-  Fl_Window window(215,200,name);
-  Fl_Color_Chooser chooser(10, 10, 195, 115);
-  ColorChip ok_color(10, 130, 95, 25);
-  Fl_Return_Button ok_button(10, 165, 95, 25, fl_ok);
-  ColorChip cancel_color(110, 130, 95, 25);
-  cancel_color.r = ubyte(255*r+.5); ok_color.r = cancel_color.r;
-  ok_color.g = cancel_color.g = ubyte(255*g+.5);
-  ok_color.b = cancel_color.b = ubyte(255*b+.5);
-  Fl_Button cancel_button(110, 165, 95, 25, fl_cancel);
+int fl_color_chooser_d(char* name, inout double r, inout double g, inout double b) {
+  Fl_Window window = new Fl_Window(215,200,name);
+  Fl_Color_Chooser chooser = new Fl_Color_Chooser(10, 10, 195, 115);
+  Fl_Color_Chip ok_color = new Fl_Color_Chip(10, 130, 95, 25);
+  Fl_Return_Button ok_button = new Fl_Return_Button(10, 165, 95, 25, fl_ok);
+  Fl_Color_Chip cancel_color = new Fl_Color_Chip(110, 130, 95, 25);
+  ok_color.r = cancel_color.r = cast(ubyte)(255*r+.5);
+  ok_color.g = cancel_color.g = cast(ubyte)(255*g+.5);
+  ok_color.b = cancel_color.b = cast(ubyte)(255*b+.5);
+  Fl_Button cancel_button = new Fl_Button(110, 165, 95, 25, fl_cancel);
   window.resizable(chooser);
   chooser.rgb(r,g,b);
-  chooser.callback(chooser_cb, &ok_color);
+  chooser.callback(&chooser_cb, ok_color);
   window.end();
   window.set_modal();
   window.hotspot(window);
@@ -603,28 +626,33 @@ int fl_color_chooser(char* name, double& r, double& g, double& b) {
   while (window.shown()) {
     Fl.wait();
     for (;;) {
-      Fl_Widget  o = Fl.readqueue();
+      Fl_Widget o = Fl.readqueue();
       if (!o) break;
-      if (o == &ok_button) {
+      if (o is ok_button) {
 	r = chooser.r();
 	g = chooser.g();
 	b = chooser.b();
+        delete window;
 	return 1;
       }
-      if (o == &window || o == &cancel_button) return 0;
+      if (o is window || o is cancel_button) {
+        delete window;
+        return 0;
+      }
     }
   }
+  delete window;
   return 0;
 }
 
-int fl_color_chooser(char* name, ubyte& r, ubyte& g, ubyte& b) {
+int fl_color_chooser_ub(char* name, inout ubyte r, inout ubyte g, inout ubyte b) {
   double dr = r/255.0;
   double dg = g/255.0;
   double db = b/255.0;
-  if (fl_color_chooser(name,dr,dg,db)) {
-    r = ubyte(255*dr+.5);
-    g = ubyte(255*dg+.5);
-    b = ubyte(255*db+.5);
+  if (fl_color_chooser_d(name,dr,dg,db)) {
+    r = cast(ubyte)(255*dr+.5);
+    g = cast(ubyte)(255*dg+.5);
+    b = cast(ubyte)(255*db+.5);
     return 1;
   }
   return 0;
@@ -633,4 +661,3 @@ int fl_color_chooser(char* name, ubyte& r, ubyte& g, ubyte& b) {
 //
 // End of "$Id: color_chooser.d 5190 2006-06-09 16:16:34Z mike $".
 //
-    End of automatic import -+/

@@ -11,6 +11,7 @@ demo (partial)
 symbols
 arc
 message
+input
 
 test todo:
 ----
@@ -44,7 +45,6 @@ help.cxx
 iconize.cxx
 image.cxx
 inactive.cxx
-input.cxx
 input_choice.cxx
 keyboard.cxx
 keyboard_ui.cxx
@@ -108,6 +108,11 @@ fl/arci.d
 fl/ask.d
 fl/input_.d
 fl/input.d
+fl/float_input.d
+fl/int_input.d
+fl/secret_input.d
+multiline_input.d
+color_mac.d
 
 src todo:
 ----
@@ -131,7 +136,6 @@ clock.d
 cmap.d
 color.d
 color_chooser.d
-color_mac.d
 color_win32.d
 compose.d
 counter.d
@@ -176,7 +180,6 @@ filename_setext.d
 fill_dial.d
 fill_slider.d
 fl.d
-float_input.d
 flstring.d
 font.d
 font_mac.d
@@ -220,7 +223,6 @@ hor_value_slider.d
 image.d
 images_core.d
 input_choice.d
-int_input.d
 jpeg_image.d
 labeltype.d
 line_dial.d
@@ -240,7 +242,6 @@ menu_window.d
 message.d
 multi_browser.d
 multi_label.d
-multiline_input.d
 multiline_output.d
 nice_slider.d
 numericsort.d
@@ -272,7 +273,6 @@ screen_xywh.d
 scroll.d
 scroll_area.d
 scrollbar.d
-secret_input.d
 select_browser.d
 set_font.d
 set_fonts.d

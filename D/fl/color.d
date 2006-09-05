@@ -323,19 +323,6 @@ void Fl.set_color(Fl_Color i, uint c) {
 =+/
 } // end of X-specific code
 
-/+=
-void Fl.get_color(Fl_Color i, ubyte &red, ubyte &green, ubyte &blue) {
-  uint c;
-
-  if (i & 0xffffff00) c = (uint)i;
-  else c = fl_cmap[i];
-
-  red   = ubyte(c>>24);
-  green = ubyte(c>>16);
-  blue  = ubyte(c>>8);
-}
-=+/
-
 Fl_Color fl_color_average(Fl_Color color1, Fl_Color color2, float weight) {
   uint rgb1;
   uint rgb2;

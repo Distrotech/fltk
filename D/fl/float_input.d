@@ -1,4 +1,3 @@
-/+- This file was imported from C++ using a script
 //
 // "$Id: float_input.d 4288 2005-04-16 00:13:17Z mike $"
 //
@@ -28,18 +27,16 @@
 
 module fl.float_input;
 
-
 public import fl.input;
 
 class Fl_Float_Input : Fl_Input {
 public:
-    Fl_Float_Input(int X,int Y,int W,int H,char *l = 0)
-	: Fl_Input(X,Y,W,H,l) {type(FL_FLOAT_INPUT);}
-};
-
+  this(int X,int Y,int W,int H,char *l=null) {
+    super(X,Y,W,H,l);
+    type(FL_FLOAT_INPUT);
+  }
 }
 
 //
 // End of "$Id: float_input.d 4288 2005-04-16 00:13:17Z mike $".
 //
-    End of automatic import -+/
