@@ -1,6 +1,6 @@
 
-ALL = input
-#ALL = arc demo menubar message boxtype hello button symbols
+ALL = menubar
+#ALL = arc demo input menubar message boxtype hello button symbols
 
 all: $(ALL) 
 
