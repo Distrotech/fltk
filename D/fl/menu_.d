@@ -61,11 +61,38 @@ public:
     textcolor(FL_FOREGROUND_COLOR);
     down_box(FL_NO_BOX);
   }
+  ~this() {
+    clear();
+  }
 /+=
-  ~Fl_Menu_();
-
   int item_pathname(char *name, int namelen, Fl_Menu_Item *finditem=0) const;
-  Fl_Menu_Item* picked(Fl_Menu_Item*);
+=+/
+  Fl_Menu_Item* picked(Fl_Menu_Item* v) {
+    if (v) {
+      if (v.radio()) {
+        if (!v.value()) { // they are turning on a radio item
+          set_changed();
+          v.setonly();
+        }
+        redraw();
+      } else if (v.flags & FL_MENU_TOGGLE) {
+        set_changed();
+        v.flags ^= FL_MENU_VALUE;
+        redraw();
+      } else if (!(v is value_)) { // normal item
+        set_changed();
+      }
+      value_ = v;
+      if (when()&(FL_WHEN_CHANGED|FL_WHEN_RELEASE)) {
+        if (changed() || when()&FL_WHEN_NOT_CHANGED) {
+  	if (value_ && value_.callback_) value_.do_callback(this);
+  	else do_callback();
+        }
+      }
+    }
+    return v;
+  }
+/+=
   Fl_Menu_Item* find_item(char *name);
 
   Fl_Menu_Item* test_shortcut() {return picked(menu()->test_shortcut());}
@@ -265,47 +292,6 @@ int Fl_Menu_.value(Fl_Menu_Item* m) {
 // When user picks a menu item, call this.  It will do the callback.
 // Unfortunatly this also casts away for the checkboxes, but this
 // was necessary so non-checkbox menus can really be declared const...
-const Fl_Menu_Item* Fl_Menu_.picked(Fl_Menu_Item* v) {
-  if (v) {
-    if (v.radio()) {
-      if (!v.value()) { // they are turning on a radio item
-	set_changed();
-	((Fl_Menu_Item*)v)->setonly();
-      }
-      redraw();
-    } else if (v.flags & FL_MENU_TOGGLE) {
-      set_changed();
-      ((Fl_Menu_Item*)v)->flags ^= FL_MENU_VALUE;
-      redraw();
-    } else if (v != value_) { // normal item
-      set_changed();
-    }
-    value_ = v;
-    if (when()&(FL_WHEN_CHANGED|FL_WHEN_RELEASE)) {
-      if (changed() || when()&FL_WHEN_NOT_CHANGED) {
-	if (value_ && value_.callback_) value_.do_callback((Fl_Widget )this);
-	else do_callback();
-      }
-    }
-  }
-  return v;
-}
-
-// turn on one of a set of radio buttons
-void Fl_Menu_Item.setonly() {
-  flags |= FL_MENU_RADIO | FL_MENU_VALUE;
-  Fl_Menu_Item* j;
-  for (j = this; ; ) {	// go down
-    if (j.flags & FL_MENU_DIVIDER) break; // stop on divider lines
-    j++;
-    if (!j.text || !j.radio()) break; // stop after group
-    j.clear();
-  }
-  for (j = this-1; ; j--) { // go up
-    if (!j.text || (j.flags&FL_MENU_DIVIDER) || !j.radio()) break;
-    j.clear();
-  }
-}
 
 
 

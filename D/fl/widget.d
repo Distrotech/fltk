@@ -405,7 +405,7 @@ public:
       clear_changed();
   }
 
-  int test_shortcut(char *l) {
+  static int test_shortcut(char *l) {
     char c = Fl.event_text()[0];
     if (!c || !l) return 0;
     for (;;) {

@@ -77,24 +77,6 @@ version (__APPLE__) {
 #  include <Carbon/Carbon.h>
 }
 
-const Fl_Menu_Item* Fl_Menu_Item.next(int n) {
-  if (n < 0) return 0; // this is so selected==-1 returns NULL
-  Fl_Menu_Item* m = this;
-  int nest = 0;
-  if (!m.visible()) n++;
-  while (n>0) {
-    if (!m.text) {
-      if (!nest) return m;
-      nest--;
-    } else if (m.flags&FL_SUBMENU) {
-      nest++;
-    }
-    m++;
-    if (!nest && m.visible()) n--;
-  }
-  return m;
-}
-
 // appearance of current menus are pulled from this parent widget:
 static Fl_Menu_  button;
 
@@ -131,124 +113,12 @@ public:
   void position(int x, int y);
   int is_inside(int x, int y);
 };
+=+/
 
 const int LEADING = 4;  // extra vertical leading
 
+/+=
 extern char fl_draw_shortcut;
-
-// width of label, including effect of & characters:
-int Fl_Menu_Item.measure(int* hp, Fl_Menu_  m) {
-  Fl_Label l;
-  l.value   = text;
-  l.image   = 0;
-  l.deimage = 0;
-  l.type    = labeltype_;
-  l.font    = labelsize_ || labelfont_ ? labelfont_ : ubyte(m ? m.textfont() : FL_HELVETICA);
-  l.size    = labelsize_ ? labelsize_ : m ? m.textsize() : (ubyte)FL_NORMAL_SIZE;
-  l.color   = FL_FOREGROUND_COLOR; // this makes no difference?
-  fl_draw_shortcut = 1;
-  int w = 0; int h = 0;
-  l.measure(w, hp ? *hp : h);
-  fl_draw_shortcut = 0;
-  if (flags & (FL_MENU_TOGGLE|FL_MENU_RADIO)) w += 14;
-  return w;
-}
-
-void Fl_Menu_Item.draw(int x, int y, int w, int h, Fl_Menu_  m,
-			int selected) {
-  Fl_Label l;
-  l.value   = text;
-  l.image   = 0;
-  l.deimage = 0;
-  l.type    = labeltype_;
-  l.font    = labelsize_ || labelfont_ ? labelfont_ : ubyte(m ? m.textfont() : FL_HELVETICA);
-  l.size    = labelsize_ ? labelsize_ : m ? m.textsize() : (ubyte)FL_NORMAL_SIZE;
-  l.color   = labelcolor_ ? labelcolor_ : m ? m.textcolor() : int(FL_FOREGROUND_COLOR);
-  if (!active()) l.color = fl_inactive((Fl_Color)l.color);
-  Fl_Color color = m ? m.color() : FL_GRAY;
-  if (selected) {
-    Fl_Color r = m ? m.selection_color() : FL_SELECTION_COLOR;
-    Fl_Boxtype b = m && m.down_box() ? m.down_box() : FL_FLAT_BOX;
-    if (fl_contrast(r,color)!=r) { // back compatability boxtypes
-      if (selected == 2) { // menu title
-	r = color;
-	b = m ? m.box() : FL_UP_BOX;
-      } else {
-	r = (Fl_Color)(FL_COLOR_CUBE-1); // white
-	l.color = fl_contrast((Fl_Color)labelcolor_, r);
-      }
-    } else {
-      l.color = fl_contrast((Fl_Color)labelcolor_, r);
-    }
-    if (selected == 2) { // menu title
-      fl_draw_box(b, x, y, w, h, r);
-      x += 3;
-      w -= 8;
-    } else {
-      fl_draw_box(b, x+1, y-(LEADING-2)/2, w-2, h+(LEADING-2), r);
-    }
-  }
-
-  if (flags & (FL_MENU_TOGGLE|FL_MENU_RADIO)) {
-    int d = (h - FL_NORMAL_SIZE + 1) / 2;
-    int W = h - 2 * d;
-
-    if (flags & FL_MENU_RADIO) {
-      fl_draw_box(FL_ROUND_DOWN_BOX, x+2, y+d, W, W, FL_BACKGROUND2_COLOR);
-      if (value()) {
-	fl_color(labelcolor_);
-	int tW = (W - Fl.box_dw(FL_ROUND_DOWN_BOX)) / 2 + 1;
-	if ((W - tW) & 1) tW++;	// Make sure difference is even to center
-	int td = Fl.box_dx(FL_ROUND_DOWN_BOX) + 1;
-	switch (tW) {
-	  // Larger circles draw fine...
-	  default :
-            fl_pie(x + td + 2, y + d + td, tW, tW, 0.0, 360.0);
-	    break;
-
-          // Small circles don't draw well on many systems...
-	  case 6 :
-	    fl_rectf(x + td + 4, y + d + td, tW - 4, tW);
-	    fl_rectf(x + td + 3, y + d + td + 1, tW - 2, tW - 2);
-	    fl_rectf(x + td + 2, y + d + td + 2, tW, tW - 4);
-	    break;
-
-	  case 5 :
-	  case 4 :
-	  case 3 :
-	    fl_rectf(x + td + 3, y + d + td, tW - 2, tW);
-	    fl_rectf(x + td + 2, y + d + td + 1, tW, tW - 2);
-	    break;
-
-	  case 2 :
-	  case 1 :
-	    fl_rectf(x + td + 2, y + d + td, tW, tW);
-	    break;
-	}
-      }
-    } else {
-      fl_draw_box(FL_DOWN_BOX, x+2, y+d, W, W, FL_BACKGROUND2_COLOR);
-      if (value()) {
-	fl_color(labelcolor_);
-	int tx = x + 5;
-	int tw = W - 6;
-	int d1 = tw/3;
-	int d2 = tw-d1;
-	int ty = y + d + (W+d2)/2-d1-2;
-	for (int n = 0; n < 3; n++, ty++) {
-	  fl_line(tx, ty, tx+d1, ty+d1);
-	  fl_line(tx+d1, ty+d1, tx+tw-1, ty+d1-d2+1);
-	}
-      }
-    }
-    x += W + 3;
-    w -= W + 3;
-  }
-
-  if (!fl_draw_shortcut) fl_draw_shortcut = 1;
-  l.draw(x+3, y, w>6 ? w-6 : 0, h, FL_ALIGN_LEFT);
-  fl_draw_shortcut = 0;
-}
 
 menutitle.menutitle(int X, int Y, int W, int H, Fl_Menu_Item* L) :
   Fl_Menu_Window(X, Y, W, H, 0) {
@@ -858,22 +728,6 @@ Fl_Menu_Item.popup(
   static Fl_Menu_Item dummy; // static so it is all zeros
   dummy.text = title;
   return pulldown(X, Y, 0, 0, picked, but, title ? &dummy : 0);
-}
-
-// Search only the top level menu for a shortcut.  Either &x in the
-// label or the shortcut fields are used:
-const Fl_Menu_Item* Fl_Menu_Item.find_shortcut(int* ip) {
-  Fl_Menu_Item* m = first();
-  if (m) for (int ii = 0; m.text; m = m.next(), ii++) {
-    if (m.activevisible()) {
-      if (Fl.test_shortcut(m.shortcut_)
-	 || Fl_Widget.test_shortcut(m.text)) {
-	if (ip) *ip=ii;
-	return m;
-      }
-    }
-  }
-  return 0;
 }
 
 // Recursive search of all submenus for anything with this key as a
