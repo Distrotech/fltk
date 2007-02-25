@@ -25,6 +25,10 @@
 //     http://www.fltk.org/str.php
 //
 
+/** \file
+ * Preferences definitions for the Fast Light Tool Kit (FLTK).
+ */
+
 #ifndef Fl_Preferences_H
 #  define Fl_Preferences_H
 
@@ -37,7 +41,29 @@
 
 
 /**
- * Preferences are a data tree containing a root, branches and leafs
+ * <tt>Fl_Preferences </tt>provides methods to store user
+ * setting between application starts. It is similar to the
+ * Registry on WIN32 and Preferences on MacOS, and provides a
+ * simple configuration mechanism for UNIX.
+ * 
+ * <tt>Fl_Preferences </tt>uses a hierarchy to store data. It
+ * bundles similar data into groups and manages entries into those
+ * groups as name/value pairs.
+ * 
+ * Preferences are stored in text files that can be edited
+ * manually. The file format is easy to read and relatively
+ * forgiving. Preferences files are the same on all platforms. User
+ * comments in preference files are preserved. Filenames are unique
+ * for each application by using a vendor/application naming
+ * scheme. The user must provide default values for all entries to
+ * ensure proper operation should preferences be corrupted or not
+ * yet exist.
+ * 
+ * ntries can be of any length. However, the size of each
+ * preferences file should be kept under 100k for performance
+ * reasons. One application can have multiple preferences files.
+ * Extensive binary data however should be stored in seperate
+ * files; see getUserdataPath()
  */
 class FL_EXPORT Fl_Preferences 
 {
@@ -58,8 +84,23 @@ public:
   char groupExists( const char *group );
   char deleteGroup( const char *group );
 
+
+  /**
+   * Return the number of entries (name/value) pairs in a group.
+   *
+   * \return number of entries
+   */
   int entries();
-  const char *entry( int );
+
+  /**
+   * Returns the name of an entry. There is no guaranteed order of
+   * entry names. The index must be within the range given by
+   * <tt>entries()</tt>.
+   *
+   * \param[in] index number indexing the requested entry
+   * \return pointer to value cstring
+   */
+  const char *entry( int index );
   char entryExists( const char *entry );
   char deleteEntry( const char *entry );
 

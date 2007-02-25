@@ -24,31 +24,6 @@
 
 <h3>Description</h3>
 
-<P><tt>Fl_Preferences </tt>provides methods to store user
-setting between application starts. It is similar to the
-Registry on WIN32 and Preferences on MacOS, and provides a
-simple configuration mechanism for UNIX.
-
-<P><tt>Fl_Preferences </tt>uses a hierarchy to store data. It
-bundles similar data into groups and manages entries into those
-groups as name/value pairs.
-
-<P>Preferences are stored in text files that can be edited
-manually. The file format is easy to read and relatively
-forgiving. Preferences files are the same on all platforms. User
-comments in preference files are preserved. Filenames are unique
-for each application by using a vendor/application naming
-scheme. The user must provide default values for all entries to
-ensure proper operation should preferences be corrupted or not
-yet exist.
-
-<P>Entries can be of any length. However, the size of each
-preferences file should be kept under 100k for performance
-reasons. One application can have multiple preferences files.
-Extensive binary data however should be stored in seperate
-files; see the <A
-href="#Fl_Preferences.getUserdataPath"><tt>getUserdataPath()</tt></A>
-method.
 
 <h3>Methods</h3>
 
@@ -121,13 +96,9 @@ databases.
 
 <H4><a name="Fl_Preferences.entries">int Fl_Preferences::entries()</a></H4>
 
-<P>Returns the number of entries (name/value) pairs in a group.
 
 <H4><a name="Fl_Preferences.entry">const char *Fl_Preferences::entry(int ix)</a></H4>
 
-<P>Returns the name of an entry. There is no guaranteed order of
-entry names. The index must be within the range given by
-<tt>entries()</tt>.
 
 <H4><a name="Fl_Preferences.entryExists">int Fl_Preferences::entryExists(const char *entry)</a></H4>
 
