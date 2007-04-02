@@ -32,7 +32,7 @@ using namespace fltk;
 
 class AnsiWidget : public Widget {
     public:
-    AnsiWidget(int x, int y, int w, int h, int defsize);
+    AnsiWidget(int x, int y, int w, int h, float defsize);
     virtual ~AnsiWidget();
 
     // inherited methods
@@ -59,7 +59,7 @@ class AnsiWidget : public Widget {
     int textHeight(void);
     int getWidth()  {return w();}
     int getHeight() {return h();}
-    void setFontSize(int i) {labelsize(i);}
+    void setFontSize(float i) {labelsize(i);}
     int getFontSize() {return (int)labelsize();}
     void beep() const;
     static Color ansiToFltk(long color);

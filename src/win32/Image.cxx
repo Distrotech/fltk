@@ -252,7 +252,7 @@ void Image::setpixels(const uchar* buf, const fltk::Rectangle& r, int linedelta)
 void Image::fetch_if_needed() const {
   if (pixeltype_==MASK) {
     int fg = fltk::get_color_index(fltk::getcolor())&0xffffff00;
-    if ((flags & 0xffffff00) != fg)
+    if (int(flags & 0xffffff00) != fg)
       (const_cast<Image*>(this))->flags = (flags&0xff&~FETCHED)|fg;
   }
   if (!(flags&FETCHED)) {
