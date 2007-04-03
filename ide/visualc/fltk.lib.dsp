@@ -529,6 +529,10 @@ SOURCE=..\..\fltk\styleset.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\fltk\Surface.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\fltk\symbol.h
 # End Source File
 # Begin Source File
@@ -917,6 +921,10 @@ SOURCE=..\..\src\numericsort.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\Offscreen.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\Output.cxx
 # End Source File
 # Begin Source File
@@ -1054,6 +1062,10 @@ SOURCE=..\..\src\Style.cxx
 # Begin Source File
 
 SOURCE=..\..\src\StyleSet.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\Surface.cxx
 # End Source File
 # Begin Source File
 
@@ -1255,6 +1267,10 @@ SOURCE=..\..\README_fltk1_to_fltk2.txt
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\TODO
 # End Source File
 # End Group
 # End Target

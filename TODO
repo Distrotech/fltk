@@ -1,11 +1,9 @@
 FLTK 2.0 TODO
--------------
+------------- 	
+	- Check & fix features Broken All Platform 
+		(Surface,Image, Image  Manip, Fluid widget symbols handling, ...) 
+	- Check & fix features Broken Mac Platform Only
 	- Fix configure script and makefiles.
-	- fltk::FloatInput/IntInput doesn't return 1 from handle
-	  for non-number characters; this means that those
-	  characters go to other widgets instead.
-	  WAS: this is done on purpose. You can subclass and return
-	  1 if you want.
 	- fltk::ValueInput buttons don't draw inactive.
 	- Inactive widgets get engraved label type???
 	- Selection in fltk::Input/InputBrowser is not drawn
@@ -18,5 +16,4 @@ FLTK 2.0 TODO
 	  non-default values, but it may be broken.
 	- Need to fix labels/etc. of widget panel.
 	- Don't move checkers so slow.
-	- strlcat/strlcpy/etc.
 

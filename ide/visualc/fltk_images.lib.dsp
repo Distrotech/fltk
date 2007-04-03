@@ -174,10 +174,6 @@ SOURCE=..\..\images\pnmImage.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\TODO
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\images\xpmFileImage.cxx
 # End Source File
 # End Target

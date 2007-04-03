@@ -88,7 +88,7 @@ GSave::~GSave() {
   if (data[0]) draw_into((XWindow)(data[0]), fl_clip_w, fl_clip_h);
 #elif defined(_WIN32)
   dc = (HDC)(data[0]);
-  DeleteDC(fl_bitmap_dc);
+  if (fl_bitmap_dc) DeleteDC(fl_bitmap_dc);
   fl_bitmap_dc = (HDC)(data[1]);
 #elif defined(__APPLE__)
   quartz_window = (WindowPtr)data[0];
