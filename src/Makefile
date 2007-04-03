@@ -81,6 +81,7 @@ CPPFILES = \
 	MultiImage.cxx \
 	NumericInput.cxx \
 	numericsort.cxx \
+	Offscreen.cxx \
 	Output.cxx \
 	OvalBox.cxx \
 	PackedGroup.cxx \
@@ -104,6 +105,7 @@ CPPFILES = \
 	StringList.cxx \
 	Style.cxx \
 	StyleSet.cxx \
+	Surface.cxx \
 	Symbol.cxx \
 	SystemMenuBar.cxx \
 	TabGroup.cxx \

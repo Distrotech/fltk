@@ -18,6 +18,7 @@
  */
 
 #include <fltk/filename.h>
+#include <fltk/string.h>
 
 /*!
   Returns a pointer to the last period in filename_name(f), or a
@@ -35,6 +36,22 @@ const char *fltk::filename_ext(const char *buf) {
     else if (*p == '.') q = p;
   }
   return q ? q : p;
+}
+
+//! add or replace a new extension to a filename, you must provide a correct string size, ext must include '.'
+FL_API void filename_setext(char * fname, size_t size, const char * new_ext) {
+  if (!fname || !new_ext || size <=strlen(new_ext)) return; // no room to do the job
+  size_t l = strlen(fname) ;
+  char * ext = fname + (l>0 ? l-1 :0);
+  if (*ext=='\0' || *ext=='/' || *ext=='\\' || *ext==':') return; // dont do the job if there's no filename
+  for (char* p = ext; *p; p--) {
+    if (*p=='/' || *p=='\\' || *p==':') break; // no extension found
+    else if (*p=='.') {
+      ext=p;
+      break;
+    }
+  }
+  strlcat(ext,new_ext,size); // NUL termination strcat
 }
 
 //

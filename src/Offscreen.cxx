@@ -27,6 +27,7 @@
 
 #include <config.h>
 #include <FL/Fl.H>
+#include <fltk/Window.h>
 #include <FL/x.H>
 //#include <FL/fl_draw.H>
 #include <fltk/Offscreen.h>
@@ -165,9 +166,102 @@ bool Offscreen::copy_with_alpha(int x, int y, int w, int h, int srcx, int srcy) 
 	DeleteDC(new_gc);
 	return true;
 }
-// end if defined(WIN32)
-#elif defined(__APPLE_QD__)
+// end if defined(WIN32) =======================================================
+#elif defined(__APPLE__) 
+#if USE_QUARTZ
+bool Offscreen::can_do_alpha_blending() {return true;}
+// TODO: handle both copy / copy alpha here, should probably be factorized around a kCGImageXXXX parameter: 
+void Offscreen::create () {
+	int w = dim_.w(), h = dim_.h();
+	void *data = calloc(w*h,4);
+	CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
+	graphic_data_ = CGBitmapContextCreate(
+		data, w, h, 8, w*4, lut, kCGImageAlphaNoneSkipLast);
+	CGColorSpaceRelease(lut);
+	//return (GraphicData)graphic_data_;
+}
+// create (alpha)
+#if 0
+void Offscreen::create () {
+	int w = dim_.w(), h = dim_.h();
+	void *data = calloc(w*h,4);
+	CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
+	graphic_data_ = CGBitmapContextCreate(
+		data, w, h, 8, w*4, lut, kCGImageAlphaPremultipliedLast);
+	CGColorSpaceRelease(lut);
+	//return (GraphicData)graphic_data_;
+}
+#endif
 
+Offscreen::~Offscreen () {
+  CGContextRef ctx = (CGContextRef) graphic_data_;
+  if (!ctx) return;
+  void *data = CGBitmapContextGetData((CGContextRef)ctx);
+  CGContextRelease((CGContextRef)ctx);
+  if (data) free(data);
+}
+
+bool Offscreen::begin() {
+  if (!graphic_data_) return false;
+  CGContextRef src = (CGContextRef) graphic_data_;
+  context_save_ = new GSave(); // push matrix, clip, save context handles
+  int w = CGBitmapContextGetWidth(src);
+  int h = CGBitmapContextGetHeight(src);
+  draw_into(src, w, h);
+  return true;
+}
+
+bool Offscreen::end() {
+  if (!graphic_data_) return false;
+  stop_drawing(0);  
+  delete context_save_; context_save_=0; // restore context
+  return true;
+}
+
+// equivalent code may already exist in Image class: 
+static void q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
+  CGContextSaveGState(quartz_gc);
+  CGAffineTransform mx = CGContextGetCTM(quartz_gc);
+  CGRect r2 = rect;
+  r2.origin.x -= 0.5f;
+  r2.origin.y -= 0.5f;
+  CGContextClipToRect(quartz_gc, r2);
+  mx.d = -1.0; mx.tx = -mx.tx;
+  CGContextConcatCTM(quartz_gc, mx);
+  rect.origin.x = rect.origin.x - cx;
+  rect.origin.y = (mx.ty+0.5f) - rect.origin.y - h + cy;
+  rect.size.width = w;
+  rect.size.height = h;
+}
+static void q_end_image() {
+  CGContextRestoreGState(quartz_gc);
+}
+
+bool Offscreen::copy(int x,int y,int w,int h,int srcx,int srcy) {
+  CGContextRef src = (CGContextRef) graphic_data_;
+  void *data = CGBitmapContextGetData(src);
+  int sw = CGBitmapContextGetWidth(src);
+  int sh = CGBitmapContextGetHeight(src);
+  CGImageAlphaInfo alpha = CGBitmapContextGetAlphaInfo(src);
+  CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
+  CGDataProviderRef src_bytes = CGDataProviderCreateWithData( 0L, data, sw*sh*4, 0L);
+  CGImageRef img = CGImageCreate( sw, sh, 8, 4*8, 4*sw, lut, alpha,
+					src_bytes, 0L, false, kCGRenderingIntentDefault);
+  CGRect rect = { { x, y }, { w, h } };
+  // fl_push_clip();
+	
+  q_begin_image(rect, srcx, srcy, sw, sh);
+  CGContextDrawImage(quartz_gc, rect, img);
+  q_end_image();
+  
+  CGImageRelease(img);
+  CGColorSpaceRelease(lut);
+  CGDataProviderRelease(src_bytes);
+  return true;
+}
+
+#else // QD
+// TODO : finish the work for the optional QD impl.:
 bool Offscreen::can_do_alpha_blending() {return false;}
 
 void Offscreen::create() {
@@ -181,7 +275,7 @@ void Offscreen::create() {
 	if (err!=noErr || gw==0L) return 0L;
 }
 
-void Offscreen::copy(int x,int y,int w,int h, int srcx,int srcy) {
+bool Offscreen::copy(int x,int y,int w,int h, int srcx,int srcy) {
 	Rect src;
 	if ( !graphic_data_ ) return;
 	src.top = srcy; src.left = srcx; src.bottom = srcy+h; src.right = srcx+w;
@@ -198,6 +292,7 @@ void Offscreen::copy(int x,int y,int w,int h, int srcx,int srcy) {
 	CopyBits(GetPortBitMapForCopyBits(graphic_data_), GetPortBitMapForCopyBits(dstPort), &src, &dst, srcCopy, 0L);
 	RGBBackColor(&oldbg);
 	RGBForeColor(&oldfg);
+	return true;
 }
 
 static void fl_delete_offscreen(GraphicData graphic_data) {
@@ -240,90 +335,8 @@ bool Offscreen::end() {
 	delete this->context_save_;
 	return true;
 }
-
-// end if defined(__APPLE_QD__)
-#elif defined(__APPLE_QUARTZ__)
-bool Offscreen::can_do_alpha_blending() {return true;}
-
-/* no alpha version
-void Offscreen::create () {
-	int w = dim_->w(), h = dim_->h();
-	void *data = calloc(w*h,4);
-	CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
-	CGContextRef graphic_data_ = CGBitmapContextCreate(
-		data, w, h, 8, w*4, lut, kCGImageAlphaNoneSkipLast);
-	CGColorSpaceRelease(lut);
-	//return (GraphicData)graphic_data_;
-}
-*/
-
-void Offscreen::create () {
-	void *data = calloc(w*h,4);
-	CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
-	CGContextRef graphic_data_ = CGBitmapContextCreate(
-		data, w, h, 8, w*4, lut, kCGImageAlphaPremultipliedLast);
-	CGColorSpaceRelease(lut);
-	//return (GraphicData)graphic_data_;
-}
-
-void Offscreen::copy(int x,int y,int w,int h,int srcx,int srcy) {
-	CGContextRef src = (CGContextRef) graphic_data_;
-	void *data = CGBitmapContextGetData(src);
-	int sw = CGBitmapContextGetWidth(src);
-	int sh = CGBitmapContextGetHeight(src);
-	CGImageAlphaInfo alpha = CGBitmapContextGetAlphaInfo(src);
-	CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
-	CGDataProviderRef src_bytes = CGDataProviderCreateWithData( 0L, data, sw*sh*4, 0L);
-	CGImageRef img = CGImageCreate( sw, sh, 8, 4*8, 4*sw, lut, alpha,
-		src_bytes, 0L, false, kCGRenderingIntentDefault);
-	// fl_push_clip();
-	CGRect rect = { { x, y }, { w, h } };
-	Fl_X::q_begin_image(rect, srcx, srcy, sw, sh);
-	CGContextDrawImage(fltk::dc, rect, img);
-	Fl_X::q_end_image();
-	CGImageRelease(img);
-	CGColorSpaceRelease(lut);
-	CGDataProviderRelease(src_bytes);
-}
-
-static void fl_delete_offscreen(GraphicData ctx) {
-	if (!ctx) return;
-	void *data = CGBitmapContextGetData((CGContextRef)ctx);
-	CGContextRelease((CGContextRef)ctx);
-	if (!data) return;
-	free(data);
-}
-
-const int stack_max = 16;
-static int stack_ix = 0;
-static CGContextRef stack_gc[stack_max];
-static Window stack_window[stack_max];
-
-bool Offscreen::begin() {
-	if (stack_ix<stack_max) {
-		stack_gc[stack_ix] = fltk::dc;
-		stack_window[stack_ix] = fl_window;
-	} else 
-		fprintf(stderr, "FLTK CGContext Stack overflow error\n");
-	stack_ix++;
-	
-	fltk::dc = (CGContextRef)graphic_data_;
-	fl_window = 0;
-	//fl_push_no_clip();
-	CGContextSaveGState(fltk::dc);
-	Fl_X::q_fill_context();
-}
-
-void fl_end_offscreen() {
-	Fl_X::q_release_context();
-	//fl_pop_clip();
-	if (stack_ix>0) flow error\n");
-	if (stack_ix<stack_max) {
-		fltk::dc = stack_gc[stack_ix];
-		fl_window = stack_window[stack_ix];
-	}
-}
-// end if defined(__APPLE_QUARTZ__)
+#endif
+// end if defined(__APPLE__ && QD)  =======================================================
 #else // X11
 // maybe someone feels inclined to implement alpha blending on X11?
 #endif

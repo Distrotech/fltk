@@ -98,6 +98,7 @@ FL_API bool filename_exist(const char*);
 FL_API bool filename_isdir(const char*);
 FL_API double filename_size(const char *); // return size of file
 FL_API long int filename_mtime(const char *); // return modification time
+FL_API void filename_setext(char * fname, size_t maxsize, const char* ext); // add or replace a new extension to a file 
 
 typedef int (File_Sort_F)(const dirent*const*, const dirent*const*);
 FL_API int alphasort(const dirent*const*, const dirent*const*);

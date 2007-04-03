@@ -372,7 +372,7 @@ void save_template_cb(Widget *, void *) {
   }
 
 // FIXME : need offscreen capabilities
-#if 0
+#if 1
 //#if defined(HAVE_LIBPNG) && defined(HAVE_LIBZ)
   // Get the screenshot, if any...
   FluidType *t;
@@ -389,7 +389,7 @@ void save_template_cb(Widget *, void *) {
   if ((pixels = wt->read_image(w, h)) == NULL) return;
 
   // Save to a PNG file...
-  strcpy(ext, ".png");
+  filename_setext(filename, sizeof(filename), ".png");
 
   FILE *fp;
 

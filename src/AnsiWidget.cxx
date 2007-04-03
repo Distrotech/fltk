@@ -106,7 +106,7 @@ static Color colors[] = {
 
 /*! Standard constructor for a widget.
  */
-AnsiWidget::AnsiWidget(int x, int y, int w, int h, int defsize) : 
+AnsiWidget::AnsiWidget(int x, int y, int w, int h, float defsize) : 
   Widget(x, y, w, h, 0) {
   labelsize(defsize);
   init();
