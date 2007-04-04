@@ -37,9 +37,9 @@ const char *fltk::filename_ext(const char *buf) {
   }
   return q ? q : p;
 }
-
+ 
 //! add or replace a new extension to a filename, you must provide a correct string size, ext must include '.'
-FL_API void filename_setext(char * fname, size_t size, const char * new_ext) {
+FL_API void fltk::filename_setext(char * fname, size_t size, const char * new_ext) {
   if (!fname || !new_ext || size <=strlen(new_ext)) return; // no room to do the job
   size_t l = strlen(fname) ;
   char * ext = fname + (l>0 ? l-1 :0);
@@ -51,7 +51,8 @@ FL_API void filename_setext(char * fname, size_t size, const char * new_ext) {
       break;
     }
   }
-  strlcat(ext,new_ext,size); // NUL termination strcat
+  size_t maxsize = size - (ext-fname);
+  strlcpy(ext,new_ext,maxsize); // NUL termination strcat
 }
 
 //

@@ -32,7 +32,7 @@ operations will be implemented by default
 
 #include <fltk/Surface.h>
 
-class Window;
+// class Window;
 
 namespace fltk {
 

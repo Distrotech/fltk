@@ -30,12 +30,16 @@
 #include <fltk/events.h>
 #include <fltk/damage.h>
 #include <fltk/Window.h>
+#include <fltk/x.h>
 #include <fltk/ask.h>
 #include <fltk/draw.h>
 #include <fltk/Box.h>
 #include <fltk/layout.h>
 #include <fltk/Preferences.h>
 #include <fltk/MenuBuild.h>
+#include <fltk/Offscreen.h>
+#include <fltk/draw.h>
+#include <fltk/run.h>
 
 #include <math.h>
 #include <stdlib.h>
@@ -798,6 +802,39 @@ void WindowType::leave_live_mode() {
 void WindowType::copy_properties() {
   WidgetType::copy_properties();
   /// \todo copy resizing constraints over
+}
+extern Window *main_window;
+
+/**
+	reads the Window as an image
+*/
+uchar*  WindowType::read_image(int &ww, int &hh) {
+  Overlay_Window * ow = (Overlay_Window *)o;
+  if(!ow || !main_window) return 0;
+
+  // Create an off-screen buffer for the window...
+  main_window->make_current();
+
+  
+  ww = ow->w();
+  hh = ow->h();
+
+  Offscreen offscreen(ww, hh);
+
+  // Redraw the window into the offscreen buffer...
+  offscreen.begin();
+
+  if (!ow->visible()) 
+	  ow->image(new Image(ww,hh)); // Fl::scheme_bg_);
+
+  ow->redraw();
+  fltk::flush();
+  // Read the screen image...
+  uchar * pixels = fltk::readimage(0, RGB, fltk::Rectangle(ww, hh));
+
+  offscreen.end();
+
+  return pixels;
 }
 
 //

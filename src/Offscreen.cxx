@@ -26,7 +26,7 @@
 //
 
 #include <config.h>
-#include <FL/Fl.H>
+//#include <FL/Fl.H>
 #include <fltk/Window.h>
 #include <FL/x.H>
 //#include <FL/fl_draw.H>

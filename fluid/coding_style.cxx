@@ -227,14 +227,14 @@ void load_codingstyle_window() {
   pStyle1->value(gbrace_style == 1);
   pStyle2->value(gbrace_style == 2);
   pStyle3->value(gbrace_style == 3);
-  pNoSpaceParens->value(gno_space_parens);
-  pBraceFuncs->value(gbrace_functions);
-  pIndentTabs->value(gindent_tabs);
+  pNoSpaceParens->value(gno_space_parens ? true : false);
+  pBraceFuncs->value(gbrace_functions ? true : false);
+  pIndentTabs->value(gindent_tabs ? true : false);
   pTabSize->value(gtab_size);
-  pReturnParens->value(galways_return_parens);
+  pReturnParens->value(galways_return_parens ? true : false);
   if(gindent_tabs)
      pTabSize->hide();
   else
      pTabSize->show();
-  pIndentCode->value(gindent_code);
+  pIndentCode->value(gindent_code ? true : false);
 }

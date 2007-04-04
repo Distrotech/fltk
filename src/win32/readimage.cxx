@@ -13,7 +13,9 @@ fltk::readimage(uchar *p,	// I - Pixel buffer or NULL to allocate
   int delta = depth(type);
 
   int	x, y;			// Looping vars
-
+  // fabien: if p is null then it should auto allocate as specified:
+  if(!p) p = new uchar[r.w()* r.h() * delta * sizeof(uchar)];
+  // 
   // None of these read alpha yet, so set the alpha to 1 everywhere.
   if (type > 3) {
     for (int y = 0; y < h; y++) {

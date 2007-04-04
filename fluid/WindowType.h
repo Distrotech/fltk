@@ -31,6 +31,8 @@ public:
   void moveallchildren();
   void move_children(FluidType*, int);
   WidgetType* clicked_widget();
+  uchar *read_image(int &ww, int &hh);	// Read an image of the window
+
 
 protected:
   void make_fltk_window();
