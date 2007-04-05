@@ -376,9 +376,9 @@ void FileChooser::show() {
   window->hotspot(fileList);
   window->show();
   fltk::flush();
-  fltk::cursor(fltk::CURSOR_WAIT);
+  window->cursor(fltk::CURSOR_WAIT);
   rescan();
-  fltk::cursor(fltk::CURSOR_DEFAULT);
+  window->cursor(fltk::CURSOR_DEFAULT);
   fileName->take_focus();
 }
 
@@ -386,9 +386,9 @@ void FileChooser::show(int x, int y) {
   window->resize(x, y,window->w(),window->h());
   window->show();
   fltk::flush();
-  fltk::cursor(fltk::CURSOR_WAIT);
+  window->cursor(fltk::CURSOR_WAIT);
   rescan();
-  fltk::cursor(fltk::CURSOR_DEFAULT);
+  window->cursor(fltk::CURSOR_DEFAULT);
   fileName->take_focus();
 }
 

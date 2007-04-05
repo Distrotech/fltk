@@ -402,6 +402,7 @@ void Widget::cursor(fltk::Cursor* c) const {
 // 16-bit shorts but apparently the system api wants the bytes the same,
 // probably because they expect it to be resource data.
 FL_API fltk::Cursor *fltk::cursor(void *raw) {
+  if (!raw) return 0;
   fltk::Cursor *c = new fltk::Cursor;
   c->resource=0;
   // This overwrites the data, mask, and hotspot:
@@ -411,7 +412,7 @@ FL_API fltk::Cursor *fltk::cursor(void *raw) {
 
 #endif
 
-fltk::Cursor* const fltk::CURSOR_DEFAULT= 0;
+fltk::Cursor* const fltk::CURSOR_DEFAULT= ((fltk::Cursor*)0);
 fltk::Cursor* const fltk::CURSOR_ARROW	= &arrow;
 fltk::Cursor* const fltk::CURSOR_CROSS	= &cross;
 fltk::Cursor* const fltk::CURSOR_WAIT	= &wait_c;

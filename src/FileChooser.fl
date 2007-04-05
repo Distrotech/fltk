@@ -322,9 +322,9 @@ okButton->parent()->init_sizes();} {}
       code {window->hotspot(fileList);
 window->show();
 fltk::flush();
-fltk::cursor(fltk::CURSOR_WAIT);
+window->cursor(fltk::CURSOR_WAIT);
 rescan();
-fltk::cursor(fltk::CURSOR_DEFAULT);
+window->cursor(fltk::CURSOR_DEFAULT);
 fileName->take_focus();} {}
     }
     Function {show(int x, int y)} {open return_type void
@@ -332,9 +332,9 @@ fileName->take_focus();} {}
       code {window->show();
 window->resize(x, y,window->w(),window->h());
 fltk::flush();
-fltk::cursor(fltk::CURSOR_WAIT);
+window->cursor(fltk::CURSOR_WAIT);
 rescan();
-fltk::cursor(fltk::CURSOR_DEFAULT);
+window->cursorcursor(fltk::CURSOR_DEFAULT);
 fileName->take_focus();} {}
     }
     Function {shown()} {open return_type int
