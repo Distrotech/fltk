@@ -710,10 +710,10 @@ int MWindow::handle(int event) {
       }
       return 1;
     case UpKey:
-      if (p.hmenubar && p.level == 0)  
-		if (forward(p, p.level+1) && //enter the submenu first
-			p.hmenubar) 
-		  backward(p,p.level);
+		if (p.hmenubar && p.level == 0) 
+			if (!forward(p, p.level+1) && // try enter the submenu first
+				p.hmenubar) return 1;
+		backward(p,p.level);
       return 1;
     case DownKey:
       if (p.level || !p.hmenubar) 
