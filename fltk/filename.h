@@ -96,6 +96,7 @@ inline char* filename_ext(char* a) {return (char*)(filename_ext((const char*)a))
 FL_API bool filename_match(const char *, const char *pattern); // glob match
 FL_API bool filename_exist(const char*);
 FL_API bool filename_isdir(const char*);
+FL_API bool filename_isabsolute(const char *fname);
 FL_API double filename_size(const char *); // return size of file
 FL_API long int filename_mtime(const char *); // return modification time
 FL_API void filename_setext(char * fname, size_t maxsize, const char* ext); // add or replace a new extension to a file 
@@ -107,7 +108,6 @@ FL_API int casenumericsort(const dirent*const*, const dirent*const*);
 FL_API int numericsort(const dirent*const*, const dirent*const*);
 FL_API int filename_list(const char *d, dirent ***list, File_Sort_F *sort);
 FL_API int filename_list(const char *d, dirent ***list); // uses numericsort
-
 }
 
 #endif

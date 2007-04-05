@@ -92,7 +92,16 @@ long int fltk::filename_mtime(const char *name) {
   if (last_stat.st_atime) return (long) last_stat.st_atime;
   return (long) last_stat.st_ctime;
 }
+/**
+	filename_isabsolute return true if the path starts with / or x: or \\
+*/
+FL_API bool fltk::filename_isabsolute(const char *fname) {
+	if (!fname || *fname=='\0') return false;
+	if (fname[0]=='/' || fname[1]==':' || (fname[0]=='\\' && fname[1]=='\\') )
+		return true; // if / on Unixes, or x: or unc on win32
+	return false;
 
+}
 //
 // End of "$Id$".
 //

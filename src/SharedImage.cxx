@@ -30,6 +30,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fltk/filename.h>
 
 using namespace fltk;
 
@@ -124,16 +125,20 @@ const char* SharedImage::get_filename() const {
   would return for a SharedImage with this name. */
 const char* SharedImage::get_filename(const char* name)
 {
-  if (name[0] == '/' || !shared_image_root || !*shared_image_root)
-    return name;
+	if (fltk::filename_isabsolute(name) || !shared_image_root || !*shared_image_root)
+		return name; // please dont use '/' to test if a file path  is absolute !!! 
   int m = strlen(shared_image_root);
   int n = strlen(name) + m + 2;
-  static char *s;
+  static char *t=0;
+  char *  s=t;
   delete[] s;
   s = new char[n+1];
-  strcpy(s, shared_image_root);
-  if (s[m-1] != '/') s[m++] = '/';
-  strcpy(s+m, name);
+  strlcpy(s, shared_image_root,m+1);
+  if (s[m-1] != '/') { 
+	  s[m++] = '/';
+	  s[m] = '\0'; // don't forget to terminate the str under windows
+  }
+  strlcat(s, name,n+1); // don't concatenate with an absolute filename !
   return s;
 }
 
