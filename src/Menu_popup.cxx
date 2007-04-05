@@ -666,25 +666,30 @@ static bool setitem(MenuState& p, int level, int index) {
   return true;
 }
 
-static bool forward(MenuState& p, int menu) {
+static bool forward0(MenuState& p, int menu) {
   // go to next item in menu menu if possible
   MWindow &m = *(p.menus[menu]);
-  for (int item = p.indexes[menu]+1; item < m.children; item++) {
+  if (!m.children) return false; // empty submenu
+  for (int item = (p.indexes[menu]+1) % m.children; item < m.children; item++) {
     Widget* widget = m.get_widget(item);
     if (widget->takesevents()) return setitem(p, menu, item);
   }
   return false;
 }
 
-static bool backward(MenuState& p, int menu) {
-  // previous item in menu menu if possible
+static bool move(MenuState& p, int menu,int delta) {
   MWindow &m = *(p.menus[menu]);
-  for (int item = p.indexes[menu]-1; item >= 0; item--) {
+  if (!m.children) return false; // empty submenu
+  int  nc = m.children;
+  // previous item in menu menu if possible
+  for (int item = (p.indexes[menu]+nc+delta) % nc; item !=p.indexes[menu]; item=(item+nc+delta)%nc) {
     Widget* widget = m.get_widget(item);
-    if (widget->takesevents()) return setitem(p, menu, item);
+    if (widget->takesevents() ) return setitem(p, menu, item);
   }
   return false;
 }
+static bool backward(MenuState& p, int menu) {return move(p, menu, -1);}
+static bool forward(MenuState& p, int menu) { return move(p, menu, +1);}
 
 static bool track_mouse;
 
@@ -705,13 +710,16 @@ int MWindow::handle(int event) {
       }
       return 1;
     case UpKey:
-      if (p.hmenubar && p.level == 0) ;
-      else if (backward(p, p.level));
-      else if (p.hmenubar) setitem(p, 0, p.indexes[0]);
+      if (p.hmenubar && p.level == 0)  
+		if (forward(p, p.level+1) && //enter the submenu first
+			p.hmenubar) 
+		  backward(p,p.level);
       return 1;
     case DownKey:
-      if (p.level || !p.hmenubar) forward(p, p.level);
-      else if (p.level+1 < p.nummenus) forward(p, p.level+1);
+      if (p.level || !p.hmenubar) 
+		  forward(p, p.level);
+      else if (p.level+1 < p.nummenus) 
+		  forward(p, p.level+1);
       return 1;
     case RightKey:
       if (p.hmenubar && (p.level<=0 || p.level==1 && p.nummenus==2))

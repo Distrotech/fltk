@@ -279,7 +279,7 @@ void template_browser_cb(Browser* b,void*) {
 	
     img = fltk::SharedImage::get(pngfile);
 	if (img) {
-		img->fetch_if_needed(); // fetch in memory 
+		img->fetch_if_needed(); // fetch in memory, will also initialize w,h 
 		template_preview->image(img);
 		template_preview->redraw();
 	}
