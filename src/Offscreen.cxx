@@ -259,6 +259,10 @@ bool Offscreen::copy(int x,int y,int w,int h,int srcx,int srcy) {
   CGDataProviderRelease(src_bytes);
   return true;
 }
+// temporary for testing the lib, will be re-implemented:
+bool Offscreen::copy_with_alpha(int x, int y, int w, int h, int srcx, int srcy) {
+  return copy(x, y, w, h, srcx, srcy);
+}
 
 #else // QD
 // TODO : finish the work for the optional QD impl.:

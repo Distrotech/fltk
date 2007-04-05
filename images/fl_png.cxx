@@ -38,7 +38,9 @@
 # include <libpng/png.h>
 #endif
 
+#include <fltk/ask.h>
 # include <stdlib.h>
+#include <errno.h>
 
 static png_bytep cur_datas;
 
@@ -56,6 +58,41 @@ static void declare_now(void*) { }
 #include <fltk/SharedImage.h>
 
 using namespace fltk;
+
+//! writes a buffer to a file ...
+bool pngImage::write(const char * filename, const uchar* pixels, int w, int h) {
+  FILE *fp;
+  
+  if ((fp = fopen(filename, "wb")) == NULL) {
+    delete[] pixels;
+    fltk::alert("Error writing png image %s: %s", filename, strerror(errno));
+    return false;
+  }
+  // debug put smtg green that we can see: for (int tb=1;tb< w*h*3*sizeof(uchar);tb+=3)	pixels[tb]=0xC0;
+  
+  // TODO png write code
+  png_structp pptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+  png_infop iptr = png_create_info_struct(pptr);
+  png_bytep ptr = (png_bytep)pixels;
+  
+  png_init_io(pptr, fp);
+  png_set_IHDR(pptr, iptr, w, h, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+	       PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+  png_set_sRGB(pptr, iptr, PNG_sRGB_INTENT_PERCEPTUAL);
+  
+  png_write_info(pptr, iptr);
+  
+  for (int i = h; i > 0; i --, ptr += w * 3) png_write_row(pptr, ptr);
+  
+  png_write_end(pptr, iptr);
+  png_destroy_write_struct(&pptr, &iptr);
+  
+  fclose(fp);
+#if 1
+    fltk::alert("Writes successfully png image %s\n", filename);
+#endif
+  return true;
+}
 
 bool pngImage::test(const uchar* datas, unsigned size)
 {

@@ -60,7 +60,6 @@ const char *copyright =
 #include <fltk/ask.h>
 #include <fltk/draw.h>
 #include <fltk/file_chooser.h>
-#include <fltk/ask.h>
 #include <fltk/filename.h>
 #include <fltk/FileIcon.h>
 #include <fltk/Preferences.h>
@@ -102,17 +101,6 @@ const char *copyright =
 using namespace fltk;
 
 DECL_MENUCBV2(toggle_sourceview_cb,DoubleBufferWindow);
-
-#if HAVE_LIBPNG
-
-# ifdef HAVE_LOCAL_PNG_H
-# include "libpng/png.h"
-#elif defined(HAVE_PNG_H)
-# include <png.h>
-#elif defined(HAVE_LIBPNG_PNG_H)
-# include <libpng/png.h>
-#endif
-#endif
 
 /////////////////////////////////////////
 // Read preferences file 
@@ -399,37 +387,9 @@ void save_template_cb(Widget *, void *) {
 		
 		// Save to a PNG file...
 		filename_setext(filename, sizeof(filename), ".png");
-		
-		FILE *fp;
-		
-		if ((fp = fopen(filename, "wb")) == NULL) {
-			delete[] pixels;
-			fltk::alert("Error writing %s: %s", filename, strerror(errno));
-			return;
-		}
-		// debug put smtg green in the buffer we can see:  for (int tb=1;tb< w*h*3*sizeof(uchar);tb+=3) 	pixels[tb]=0xC0;
-		
-		// TODO png write code
-		png_structp pptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
-		png_infop iptr = png_create_info_struct(pptr);
-		png_bytep ptr = (png_bytep)pixels;
-		
-		png_init_io(pptr, fp);
-		png_set_IHDR(pptr, iptr, w, h, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
-			PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-		png_set_sRGB(pptr, iptr, PNG_sRGB_INTENT_PERCEPTUAL);
-		
-		png_write_info(pptr, iptr);
-		
-		for (int i = h; i > 0; i --, ptr += w * 3) {
-			png_write_row(pptr, ptr);
-		}
-		
-		png_write_end(pptr, iptr);
-		png_destroy_write_struct(&pptr, &iptr);
-		
-		fclose(fp);
-		
+		printf("***** png filename %s ******\n",filename);
+		pngImage::write(filename, pixels, w, h);
+
 #if 0 // The original PPM output code...
 		strcpy(ext, ".ppm");
 		fp = fopen(filename, "wb");

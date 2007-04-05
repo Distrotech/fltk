@@ -224,6 +224,7 @@ public:
   static SharedImage* get(const char* name, const uchar* datas = 0) {
     return SharedImage::get(create, name, datas);
   }
+    static bool write(const char * filename, const uchar* datas, int w, int h); // writes a buffer to a file ...
   bool fetch();
 };
 
