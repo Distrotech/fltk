@@ -755,6 +755,16 @@ void cut_cb(Widget *, void *) {
     if (p) select_only(p);
 }
 
+void delete_cb(Widget *, void *) {
+    if (!FluidType::current) return;
+    Undo::checkpoint();
+    ipasteoffset = 0;
+    FluidType *p = FluidType::current->parent;
+    while (p && p->selected()) p = p->parent;
+    delete_all(1);
+    if (p) select_only(p);
+}
+
 extern int force_parent;
 
 void paste_cb(Widget*, void*) {

@@ -42,6 +42,7 @@ DECL_MENUCBV(revert_cb);
 DECL_MENUCBV(write_cb);
 DECL_MENUCBV(exit_cb);
 DECL_MENUCBV(cut_cb);
+DECL_MENUCBV(delete_cb);
 DECL_MENUCBV(copy_cb);
 DECL_MENUCBV(paste_cb);
 DECL_MENUCBV(exit_cb);
@@ -180,6 +181,7 @@ MenuBar* build_hierarchy(MenuBar* menubar) {
 	new Item("&Paste", COMMAND+'v', paste_cb);
 	new Item("Select &All", COMMAND+'a', select_all_cb);
 	new Item("Select &None", SHIFT+COMMAND+'a', select_none_cb);
+	new Item("&Delete", DeleteKey, delete_cb);
 	new Divider();
 	new Item("Ed&it this widget", ReturnKey, openwidget_cb);
 	new Item("&Sort these widgets", 0, sort_cb);
