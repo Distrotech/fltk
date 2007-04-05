@@ -1236,6 +1236,10 @@ SOURCE=..\..\README
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\README.STR
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\README.windows
 
 !IF  "$(CFG)" == "fltk - Win32 Release"
