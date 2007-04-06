@@ -64,7 +64,6 @@ bool pngImage::write(const char * filename, const uchar* pixels, int w, int h) {
   FILE *fp;
   
   if ((fp = fopen(filename, "wb")) == NULL) {
-    delete[] pixels;
     fltk::alert("Error writing png image %s: %s", filename, strerror(errno));
     return false;
   }

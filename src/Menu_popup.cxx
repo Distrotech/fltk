@@ -666,6 +666,7 @@ static bool setitem(MenuState& p, int level, int index) {
   return true;
 }
 
+#if 0
 static bool forward0(MenuState& p, int menu) {
   // go to next item in menu menu if possible
   MWindow &m = *(p.menus[menu]);
@@ -676,6 +677,7 @@ static bool forward0(MenuState& p, int menu) {
   }
   return false;
 }
+#endif
 
 static bool move(MenuState& p, int menu,int delta) {
   MWindow &m = *(p.menus[menu]);
