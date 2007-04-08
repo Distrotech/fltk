@@ -828,7 +828,9 @@ uchar*  WindowType::read_image(int &ww, int &hh) {
 	  ow->image(new Image(ww,hh)); // Fl::scheme_bg_);
 
   ow->redraw();
-  fltk::flush();
+#if defined (WIN32)
+  fltk::flush(); // seems a bit harsh, should be a smoother way to force an immediate  draw
+#endif
   // Read the screen image...
   uchar * pixels = fltk::readimage(0, RGB, fltk::Rectangle(ww, hh));
 

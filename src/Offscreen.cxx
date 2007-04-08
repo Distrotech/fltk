@@ -194,20 +194,18 @@ void Offscreen::create () {
 #endif
 
 Offscreen::~Offscreen () {
-  CGContextRef ctx = (CGContextRef) graphic_data_;
-  if (!ctx) return;
-  void *data = CGBitmapContextGetData((CGContextRef)ctx);
-  CGContextRelease((CGContextRef)ctx);
+  if (!graphic_data_) return;
+  void *data = CGBitmapContextGetData(graphic_data_);
+  CGContextRelease(graphic_data_);
   if (data) free(data);
 }
 
 bool Offscreen::begin() {
   if (!graphic_data_) return false;
-  CGContextRef src = (CGContextRef) graphic_data_;
   context_save_ = new GSave(); // push matrix, clip, save context handles
-  int w = CGBitmapContextGetWidth(src);
-  int h = CGBitmapContextGetHeight(src);
-  draw_into(src, w, h);
+  int w = CGBitmapContextGetWidth(graphic_data_);
+  int h = CGBitmapContextGetHeight(graphic_data_);
+  draw_into(graphic_data_, w, h);
   return true;
 }
 

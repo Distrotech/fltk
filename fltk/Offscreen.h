@@ -44,9 +44,10 @@ public:
 private:
 	int num_saved_dc_;	  // for cleaning up our offscreen created dc
 
-#elif defined(__APPLE_QUARTZ__) || defined(__APPLE_QD__)
+#elif defined(__APPLE__) && USE_QUARTZ
+ typedef CGContextRef GraphicData;
+#elif defined(__APPLE__) && !USE_QUARTZ
  typedef GWorldPtr GraphicData;
-
 #else
  typedef void * GraphicData;
 #endif

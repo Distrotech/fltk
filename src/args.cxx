@@ -129,8 +129,13 @@ int fltk::arg(int argc, char **argv, int &i) {
     fl_bg_switch = color(v);
     if (!fl_bg_switch) error("Unknown color \"%s\"", v);
 
-  } else return 0; // unrecognized
-
+  } else if (strncmp(s, "psn",3)==0) {
+    // skipthe process serial number passed from Mac Os XDesktop
+  } else {
+    fprintf(stderr, "Unrecognized parameter <%s> \n",s);
+    return 0; // unrecognized
+    
+  }
   i += 2;
   return 2;
 }
@@ -181,6 +186,10 @@ int fltk::args(int argc, char** argv, int& i, int (*cb)(int,char**,int&)) {
   arg_called = true;
   i = 1; // skip argv[0]
   while (i < argc) {
+    if (strncmp(argv[i], "-psn",4)==0) {
+	// skip the process serial number passed from Mac Os XDesktop
+	i++; continue;
+    }
     if (cb && cb(argc,argv,i)) continue;
     if (!arg(argc,argv,i)) {if (!return_i) i = 0; break;}
   }
@@ -274,7 +283,9 @@ const char * const fltk::help = helpmsg+13;
   and if any are not recognized it calls fltk::fatal(fltk::help).
 */
 void fltk::args(int argc, char **argv) {
-  int i; if (args(argc,argv,i) < argc) error(helpmsg);
+  int i; 
+  if (args(argc,argv,i) < argc) 
+    error(helpmsg);
 }
 
 #if !USE_X11

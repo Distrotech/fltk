@@ -1342,17 +1342,23 @@ extern "C" {
     }
 }
 #endif
+static int usage(int argc, char **argv) {
+  fprintf(stderr,"usage: %s <switches> name.fl\n"
+	  " -c : write .cxx and .h and exit\n"
+	  " -o <name> : .cxx output filename, or extension if <name> starts with '.'\n"
+	  " -h <name> : .h output filename, or extension if <name> starts with '.'\n"
+	  "%s\n", argv[0], help);
+  // indicate the arguments to the user (i.e launched from a GUI or Desktop with args)
+  fprintf(stderr, "Bad invocation : %s ",argv[0]);
+  while (--argc>0)    fprintf(stderr,"%s ",argv[argc]);
+  fprintf(stderr, ".\n");
+  return 1;
+}
 
 int main(int argc,char **argv) {
 	int i = 1;
-	if (!args(argc,argv,i,::arg) || i < argc-1) {
-		fprintf(stderr,"usage: %s <switches> name.fl\n"
-			" -c : write .cxx and .h and exit\n"
-			" -o <name> : .cxx output filename, or extension if <name> starts with '.'\n"
-			" -h <name> : .h output filename, or extension if <name> starts with '.'\n"
-			"%s\n", argv[0], help);
-		return 1;
-	}
+	if (!args(argc,argv,i,::arg) || i < argc-1) return usage(argc, argv);
+
 	const char *c = argv[i];
 	
 	register_images();
