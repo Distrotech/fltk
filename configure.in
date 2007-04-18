@@ -281,23 +281,46 @@ AC_C_BIGENDIAN
 AC_CHECK_SIZEOF(short, 2)
 AC_CHECK_SIZEOF(int, 4)
 AC_CHECK_SIZEOF(long, 4)
+
+#remove any disturbing character so that poor cygwin autoconf can evaluate this:
+ac_cv_sizeof_short=$(echo $ac_cv_sizeof_short | sed -e 's/[\t\r\a]//g')
+ac_cv_sizeof_int=$(echo $ac_cv_sizeof_int | sed -e 's/[\t\r\a]//g')
+ac_cv_sizeof_long=$(echo $ac_cv_sizeof_long | sed -e 's/[\t\r\a]//g')
+
 if test $ac_cv_sizeof_short -eq 2; then
     AC_DEFINE(U16,unsigned short)
+else
+    AC_MSG_WARN("cannot determine U16 size !")
 fi
 if test $ac_cv_sizeof_int -eq 4; then
     AC_DEFINE(U32,unsigned)
 else
     if test $ac_cv_sizeof_long -eq 4; then
         AC_DEFINE(U32,unsigned long)
+    else
+	AC_MSG_ERROR("cannot determine U32 size !")
     fi
 fi
+
+#if HAVE_LONGLONG
+#else
 if test $ac_cv_sizeof_int -eq 8; then
     AC_DEFINE(U64,unsigned)
 else
     if test $ac_cv_sizeof_long -eq 8; then
         AC_DEFINE(U64,unsigned long)
+    else 
+        # check  long long if no other u64 type detected: 
+	AC_CHECK_SIZEOF(long long, 8)
+        ac_cv_sizeof_long_long=$(echo $ac_cv_sizeof_long_long | sed -e 's/[\t\r\a]//g')
+        if  test $ac_cv_sizeof_long_long -eq 8; then
+	        AC_DEFINE(U64,unsigned long long)
+	else
+		AC_MSG_WARN("cannot determine U64 size !")
+	fi
     fi
 fi
+#endif
 
 dnl Does the C++ compiler support the bool type?
 AC_CACHE_CHECK(whether the compiler recognizes bool as a built-in type,
