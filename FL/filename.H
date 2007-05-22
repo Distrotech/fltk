@@ -28,10 +28,6 @@
 #ifndef FL_FILENAME_H
 #  define FL_FILENAME_H
 
-/** \file filename.h
- * \brief A collection of functions for filename extraction and manipulation.
- */
-
 /**
  * \defgroup filename file name and file path manipulations
  *
@@ -64,6 +60,7 @@ FL_EXPORT int fl_filename_expand(char *to, int tolen, const char *from);
  *
  * \retval non-zero, if any changes were made
  *
+ * \remark \code #include <FL/filename.H> \endcode
  * \see fl_filename_relative
  */
 FL_EXPORT int fl_filename_absolute(char *to, int tolen, const char *from);
