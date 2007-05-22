@@ -28,6 +28,16 @@
 #ifndef FL_FILENAME_H
 #  define FL_FILENAME_H
 
+/** \file filename.h
+ * \brief A collection of functions for filename extraction and manipulation.
+ */
+
+/**
+ * \defgroup filename file name and file path manipulations
+ *
+ * Filename and path related functions.
+ */
+
 #  include "Fl_Export.H"
 
 #  define FL_PATH_MAX 256 /* all buffers are this length */
@@ -36,6 +46,26 @@ FL_EXPORT const char *fl_filename_name(const char *);
 FL_EXPORT const char *fl_filename_ext(const char *);
 FL_EXPORT char *fl_filename_setext(char *to, int tolen, const char *ext);
 FL_EXPORT int fl_filename_expand(char *to, int tolen, const char *from);
+
+/** 
+ * \ingroup filename
+ *
+ * Converts a relative pathname to an absolute pathname. 
+ * 
+ * If <tt>from</tt> does not start with a slash, the current working
+ * directory is prepended to <tt>from</tt> with any occurances of
+ * <tt>.</tt> and <tt>x/..</TT> deleted from the result. The
+ * absolute pathname is copied to <tt>to</tt>; <tt>from</tt> and
+ * <tt>to</tt> may point to the  same buffer.
+ * 
+ * \param[out] to     caller must provide a buffer of at least \a tolen bytes
+ * \param[in]  tolen  minimum length of \a to buffer
+ * \param[in]  from   original filepath and name
+ *
+ * \retval non-zero, if any changes were made
+ *
+ * \see fl_filename_relative
+ */
 FL_EXPORT int fl_filename_absolute(char *to, int tolen, const char *from);
 FL_EXPORT int fl_filename_relative(char *to, int tolen, const char *from);
 FL_EXPORT int fl_filename_match(const char *name, const char *pattern);

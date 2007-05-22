@@ -70,7 +70,13 @@ class FL_EXPORT Fl_Preferences
 
 public:
 
-  enum Root { SYSTEM=0, USER };
+  /**
+   * Define the scope of the preferences.
+   */
+  enum Root { 
+    SYSTEM=0,   ///< Preferences are uses system-wide
+    USER        ///< Preferences apply only to the current user
+  };
   // enum Type { win32, macos, fltk };
 
   /**
@@ -403,7 +409,7 @@ public:
    * Fl_Preferences.
    *
    * \param[out] path buffer for user data path
-   * \param[i] pathlen size of path buffer
+   * \param[in] pathlen size of path buffer
    * \return 0 if path was not created or pathname can't fit into buffer
    */
   char getUserdataPath( char *path, int pathlen );
@@ -446,6 +452,10 @@ public:
      */
     Name( const char *format, ... );
 
+    /**
+     * Return the Name as a c-string.
+     * \internal
+     */
     operator const char *() { return data_; }
     ~Name();
   };

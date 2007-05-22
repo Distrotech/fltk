@@ -65,10 +65,10 @@
 	<B><A HREF="advanced.html#advanced">10 - Advanced FLTK</A></B>
 	<BR>
 	<BR>
-	<B><A HREF="widgets.html#widgets">A - Class Reference</A></B>
+	<B><A HREF="classes.html">A - Class Reference</A></B>
 	<BR>
 	<BR>
-	<B><A HREF="functions.html#functions">B - Function Reference</A></B>
+	<B><A HREF="globals_func.html">B - Function Reference</A></B>
 	<BR>
 	<BR>
 	<B><A HREF="enumerations.html#Enumerations">C - FLTK Enumerations.H</A>
