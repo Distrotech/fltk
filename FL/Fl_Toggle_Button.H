@@ -25,14 +25,38 @@
 //     http://www.fltk.org/str.php
 //
 
+/** \file
+ * Fl_Toggle_Button widget definitions for the Fast Light Tool Kit (FLTK).
+ */
+
 #ifndef Fl_Toggle_Button_H
 #define Fl_Toggle_Button_H
 
 #include "Fl_Button.H"
 
+/**
+ * The toggle button is a push button that needs to be clicked once
+ * to toggle on, and one more time to toggle off.
+ * 
+ * The <TT>Fl_Toggle_Button</TT> subclass displays the &quot;on&quot; state by
+ * drawing a pushed-in button.
+ *
+ * Buttons generate callbacks when they are clicked by the user.  You
+ * control exactly when and how by changing the values for <TT>type()</TT>
+ * and <TT>when()</TT>.
+ */
 class Fl_Toggle_Button : public Fl_Button {
 public:
-    Fl_Toggle_Button(int X,int Y,int W,int H,const char *l=0)
+  /**
+   * Creates a new <TT>Fl_Toggle_Button</TT> widget.
+   * 
+   * The constructor creates a new widget using the given position,
+   * size, and label string. The default boxtype is <TT>FL_UP_BOX</TT>.
+   *
+   * \param[in] x, y, w, h position and size of the Widget
+   * \param[in] label widget label, default is no label
+   */
+  Fl_Toggle_Button(int X,int Y,int W,int H,const char *l=0)
 	: Fl_Button(X,Y,W,H,l) {type(FL_TOGGLE_BUTTON);}
 };
 
