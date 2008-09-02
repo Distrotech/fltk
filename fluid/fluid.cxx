@@ -1850,11 +1850,11 @@ void update_history(const char *flname) {
 
 // ********** portable process class definition **********
 
-class fl_process {
+class Fl_Process {
 public:
   // construction / destruction
-  fl_process() {_fpt= NULL;}
-  ~fl_process() {if (_fpt) close();}
+  Fl_Process() {_fpt= NULL;}
+  ~Fl_Process() {if (_fpt) close();}
   
   FILE * popen	(const char *cmd, const char *mode="r");
   //not necessary here: FILE * fopen	(const char *file, const char *mode="r");
@@ -1887,7 +1887,7 @@ protected:
 };
 
 #if defined(WIN32)  && !defined(__CYGWIN__)
-bool fl_process::createPipe(HANDLE * h, BOOL bInheritHnd) {
+bool Fl_Process::createPipe(HANDLE * h, BOOL bInheritHnd) {
   SECURITY_ATTRIBUTES sa;
   sa.nLength = sizeof(sa);
   sa.lpSecurityDescriptor = NULL;
@@ -1896,7 +1896,7 @@ bool fl_process::createPipe(HANDLE * h, BOOL bInheritHnd) {
 }
 #endif 
 // portable open process:
-FILE * fl_process::popen(const char *cmd, const char *mode) {
+FILE * Fl_Process::popen(const char *cmd, const char *mode) {
 #if defined(WIN32)  && !defined(__CYGWIN__) 
   // PRECONDITIONS
   if (!mode || !*mode || (*mode!='r' && *mode!='w') ) return NULL;
@@ -1937,7 +1937,7 @@ FILE * fl_process::popen(const char *cmd, const char *mode) {
 #endif 
 }
 
-int fl_process::close() {
+int Fl_Process::close() {
 #if defined(WIN32)  && !defined(__CYGWIN__)
   if (_fpt) {
     fclose(_fpt);
@@ -1956,14 +1956,14 @@ int fl_process::close() {
 }
 
 #if defined(WIN32)  && !defined(__CYGWIN__)
-void fl_process::clean_close(HANDLE& h) {
+void Fl_Process::clean_close(HANDLE& h) {
   if (h!= INVALID_HANDLE_VALUE) CloseHandle(h);
   h = INVALID_HANDLE_VALUE;
 }
 #endif
-// ********** fl_process class end **********
+// ********** Fl_Process class end **********
 
-static fl_process s_proc;
+static Fl_Process s_proc;
 
 // Shell command support...
 
