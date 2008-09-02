@@ -57,6 +57,7 @@
 #  include <direct.h>
 #  include <windows.h>
 #  include <io.h>
+#  include <FCNTL.H>
 #  include <commdlg.h>
 #  include <FL/x.H>
 #  ifndef __WATCOMC__
@@ -1848,8 +1849,6 @@ void update_history(const char *flname) {
 }
 
 // ********** portable process class definition **********
-#include <io.h>
-#include <FCNTL.H>
 
 class fl_process {
 public:
@@ -1864,7 +1863,7 @@ public:
   FILE * desc() const { return _fpt;} // non null if file is open
   char * get_line(char * line, size_t s) const {return _fpt ? fgets(line, s, _fpt) : NULL;}
 
-#ifdef WIN32
+#if defined(WIN32)  && !defined(__CYGWIN__)
 protected:
   HANDLE pin[2], pout[2], perr[2];
   char ptmode;
@@ -1887,7 +1886,7 @@ protected:
   FILE * _fpt;
 };
 
-#ifdef WIN32
+#if defined(WIN32)  && !defined(__CYGWIN__)
 bool fl_process::createPipe(HANDLE * h, BOOL bInheritHnd) {
   SECURITY_ATTRIBUTES sa;
   sa.nLength = sizeof(sa);
@@ -1898,7 +1897,7 @@ bool fl_process::createPipe(HANDLE * h, BOOL bInheritHnd) {
 #endif 
 // portable open process:
 FILE * fl_process::popen(const char *cmd, const char *mode) {
-#if defined(WIN32) 
+#if defined(WIN32)  && !defined(__CYGWIN__) 
   // PRECONDITIONS
   if (!mode || !*mode || (*mode!='r' && *mode!='w') ) return NULL;
   if (_fpt) close(); // close first before reuse
@@ -1939,7 +1938,7 @@ FILE * fl_process::popen(const char *cmd, const char *mode) {
 }
 
 int fl_process::close() {
-#if defined(WIN32)
+#if defined(WIN32)  && !defined(__CYGWIN__)
   if (_fpt) {
     fclose(_fpt);
     clean_close(perr[0]);
@@ -1956,10 +1955,12 @@ int fl_process::close() {
 #endif 
 }
 
+#if defined(WIN32)  && !defined(__CYGWIN__)
 void fl_process::clean_close(HANDLE& h) {
   if (h!= INVALID_HANDLE_VALUE) CloseHandle(h);
   h = INVALID_HANDLE_VALUE;
 }
+#endif
 // ********** fl_process class end **********
 
 static fl_process s_proc;
@@ -1992,7 +1993,7 @@ static bool prepare_shell_command(const char * &command)  { // common pre-shell 
   return true;
 }
 
-#if (defined(WIN32) || defined(__CYGWIN__)) && !defined(__MWERKS__)
+#if !defined(__MWERKS__)
 // Support the full piped shell command...
 void
 shell_pipe_cb(int, void*) {
@@ -2058,7 +2059,7 @@ do_shell_command(Fl_Return_Button*, void*) {
     fl_message("Shell command completed successfully!");
   }
 }
-#endif // (WIN32 || __CYGWIN__) && !__MWERKS__
+#endif // !__MWERKS__
 
 void
 show_shell_window() {
