@@ -225,7 +225,7 @@ if test x$enable_shared = xyes; then
 	    ;;
     esac
 
-    LINKSHARED="-L../src -lfltk_images$SHAREDSUFFIX -lfltk_forms$SHAREDSUFFIX -lfltk$SHAREDSUFFIX"
+    LINKSHARED="-L../src -L../xutf8 -lfltk_images$SHAREDSUFFIX -lfltk_forms$SHAREDSUFFIX -lfltk$SHAREDSUFFIX"
 else
     DSOCOMMAND="echo"
     DSOLINK=""
@@ -236,7 +236,7 @@ else
     PICFLAG=0
     SHAREDSUFFIX=""
     FLUID="fluid"
-    LINKSHARED="../lib/libfltk_images.a ../lib/libfltk_forms.a ../lib/libfltk.a"
+    LINKSHARED="../lib/libfltk_images.a ../lib/libfltk_forms.a ../lib/libfltk.a ../lib/libfltk-xutf8.a"
 fi
 
 AC_SUBST(DSOCOMMAND)
