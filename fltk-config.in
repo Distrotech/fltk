@@ -219,8 +219,8 @@ else
 fi
 
 # Calculate needed libraries
-LDSTATIC="$libdir/libfltk.a $LDLIBS"
-LDLIBS="-lfltk$SHAREDSUFFIX $LDLIBS"
+LDSTATIC="$libdir/libfltk.a $libdir/libfltk_xutf8.a $LDLIBS"
+LDLIBS="-lfltk$SHAREDSUFFIX -lfltk_xutf8$SHAREDSUFFIX $LDLIBS"
 
 if test x$use_forms = xyes; then
     LDLIBS="-lfltk_forms$SHAREDSUFFIX $LDLIBS"

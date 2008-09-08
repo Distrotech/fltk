@@ -153,7 +153,8 @@ CPPFILES = \
 	fl_show_colormap.cxx \
 	fl_symbols.cxx \
 	fl_vertex.cxx \
-	screen_xywh.cxx
+	screen_xywh.cxx \
+	fl_utf8.cxx
 
 FLCPPFILES = \
 	forms_compatability.cxx \
@@ -186,7 +187,7 @@ IMGCPPFILES = \
 	Fl_PNG_Image.cxx \
 	Fl_PNM_Image.cxx
 
-CFILES = fl_call_main.c flstring.c scandir.c numericsort.c vsnprintf.c
+CFILES = fl_call_main.c flstring.c scandir.c numericsort.c vsnprintf.c fl_utf.c
 
 ################################################################
 
