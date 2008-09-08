@@ -68,6 +68,11 @@ extern "C" {
   unsigned short XUtf8IsNonSpacing(unsigned int ucs);
 };
 
+int XUtf8Tolower(int ucs) {
+  if (ucs<128) return tolower(ucs);
+  return ucs;
+}
+
 #else // X-windows platform
 
 # include <FL/Xutf8.h>
@@ -361,7 +366,11 @@ int fl_latin12utf(const unsigned char *str, int len, char *buf)
 
 unsigned int fl_nonspacing(unsigned int ucs)
 {
-	return (unsigned int) XUtf8IsNonSpacing(ucs);
+#ifdef __APPLE__
+  return (ucs==0x20); // FIXME: what does this really do?
+#else
+  return (unsigned int) XUtf8IsNonSpacing(ucs);
+#endif
 }
 
 #if defined(WIN32)

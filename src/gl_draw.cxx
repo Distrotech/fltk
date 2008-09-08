@@ -53,7 +53,7 @@ double gl_width(const char* s) {return fl_width(s);}
 double gl_width(const char* s, int n) {return fl_width(s,n);}
 double gl_width(uchar c) {return fl_width(c);}
 
-static Fl_FontSize *gl_fontsize;
+static Fl_Font_Descriptor *gl_fontsize;
 
 #ifndef __APPLE__
 #  define USE_OksiD_style_GL_font_selection 1  // Most hosts except OSX
