@@ -140,13 +140,15 @@
 		C918E1D30DDA132A00167E99 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
 		C918E1DB0DDA133400167E99 /* valuators.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C918E1DA0DDA133400167E99 /* valuators.cxx */; };
 		C93F25300DDA257B0017EE72 /* fluid.icns in Resources */ = {isa = PBXBuildFile; fileRef = C93F252F0DDA257B0017EE72 /* fluid.icns */; };
+		C94A763B0E76CF6700AAA38E /* fl_utf.c in Sources */ = {isa = PBXBuildFile; fileRef = C94A76390E76CF5B00AAA38E /* fl_utf.c */; };
+		C94A763C0E76CF6700AAA38E /* fl_utf8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C94A763A0E76CF6200AAA38E /* fl_utf8.cxx */; };
+		C94A76BD0E76D52C00AAA38E /* demo.menu in CopyFiles */ = {isa = PBXBuildFile; fileRef = C977420D0DD9D36C0047C1BF /* demo.menu */; };
 		C969E9A00DDAE446003BCABC /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
 		C97741930DD9D1BD0047C1BF /* cursor.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C97741920DD9D1BD0047C1BF /* cursor.cxx */; };
 		C977419A0DD9D1C90047C1BF /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
 		C97741E80DD9D2ED0047C1BF /* curve.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C97741E70DD9D2ED0047C1BF /* curve.cxx */; };
 		C97741F00DD9D3240047C1BF /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
 		C977420B0DD9D3570047C1BF /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
-		C977420F0DD9D36C0047C1BF /* demo.menu in Resources */ = {isa = PBXBuildFile; fileRef = C977420D0DD9D36C0047C1BF /* demo.menu */; };
 		C97742100DD9D36C0047C1BF /* demo.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C977420E0DD9D36C0047C1BF /* demo.cxx */; };
 		C97742680DD9D8280047C1BF /* doublebuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C97742670DD9D8280047C1BF /* doublebuffer.cxx */; };
 		C97742720DD9DD3E0047C1BF /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
@@ -1823,6 +1825,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		C94A76BC0E76D4A800AAA38E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				C94A76BD0E76D52C00AAA38E /* demo.menu in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9E8C6490DDAE3E200F5B0CF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2003,6 +2015,8 @@
 		C918E1CB0DDA132100167E99 /* valuators.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = valuators.fl; path = ../../test/valuators.fl; sourceTree = SOURCE_ROOT; };
 		C918E1DA0DDA133400167E99 /* valuators.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = valuators.cxx; path = ../../test/valuators.cxx; sourceTree = SOURCE_ROOT; };
 		C93F252F0DDA257B0017EE72 /* fluid.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = fluid.icns; path = icons/fluid.icns; sourceTree = "<group>"; };
+		C94A76390E76CF5B00AAA38E /* fl_utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fl_utf.c; path = ../../src/fl_utf.c; sourceTree = SOURCE_ROOT; };
+		C94A763A0E76CF6200AAA38E /* fl_utf8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_utf8.cxx; path = ../../src/fl_utf8.cxx; sourceTree = SOURCE_ROOT; };
 		C97741850DD9D1910047C1BF /* cursor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cursor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C97741870DD9D1910047C1BF /* cursor-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "cursor-Info.plist"; path = "plists/cursor-Info.plist"; sourceTree = "<group>"; };
 		C97741920DD9D1BD0047C1BF /* cursor.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cursor.cxx; path = ../../test/cursor.cxx; sourceTree = SOURCE_ROOT; };
@@ -3332,6 +3346,8 @@
 				C9A3EB890DD634CC00486E4F /* fl_color_win32.cxx */,
 				C9A3EB8A0DD634CC00486E4F /* Fl_BMP_Image.cxx */,
 				C9A3EB8B0DD634CC00486E4F /* fl_shadow_box.cxx */,
+				C94A76390E76CF5B00AAA38E /* fl_utf.c */,
+				C94A763A0E76CF6200AAA38E /* fl_utf8.cxx */,
 			);
 			name = "Library Sources";
 			sourceTree = "<group>";
@@ -4443,10 +4459,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C97742040DD9D33C0047C1BF /* Build configuration list for PBXNativeTarget "Demo" */;
 			buildPhases = (
-				C97741FB0DD9D33B0047C1BF /* Resources */,
 				C97741FC0DD9D33B0047C1BF /* Sources */,
 				C97741FD0DD9D33B0047C1BF /* Frameworks */,
 				C9FB9A980DE34AB200026BB1 /* CopyFiles */,
+				C94A76BC0E76D4A800AAA38E /* CopyFiles */,
 			);
 			buildRules = (
 				01AA1C120E630B7700E0A684 /* PBXBuildRule */,
@@ -5388,14 +5404,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C97741FB0DD9D33B0047C1BF /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C977420F0DD9D36C0047C1BF /* demo.menu in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C97742590DD9D8110047C1BF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -6096,6 +6104,8 @@
 				C9A3EC3D0DD634CC00486E4F /* fl_gtk.cxx in Sources */,
 				C9A3EC3E0DD634CC00486E4F /* Fl_compose.cxx in Sources */,
 				C9A3EC410DD634CC00486E4F /* fl_shadow_box.cxx in Sources */,
+				C94A763B0E76CF6700AAA38E /* fl_utf.c in Sources */,
+				C94A763C0E76CF6700AAA38E /* fl_utf8.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
