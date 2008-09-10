@@ -2026,7 +2026,7 @@
 		C93F252F0DDA257B0017EE72 /* fluid.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = fluid.icns; path = icons/fluid.icns; sourceTree = "<group>"; };
 		C94A76390E76CF5B00AAA38E /* fl_utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fl_utf.c; path = ../../src/fl_utf.c; sourceTree = SOURCE_ROOT; };
 		C94A763A0E76CF6200AAA38E /* fl_utf8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_utf8.cxx; path = ../../src/fl_utf8.cxx; sourceTree = SOURCE_ROOT; };
-		C94A76DA0E77F59F00AAA38E /* symbols.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = symbols.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C94A76DA0E77F59F00AAA38E /* utf8.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = utf8.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C94A76DD0E77F5A800AAA38E /* symbols-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "symbols-Info copy.plist"; path = "plists/symbols-Info copy.plist"; sourceTree = "<group>"; };
 		C94A76E40E77F66200AAA38E /* utf8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utf8.cxx; path = ../../test/utf8.cxx; sourceTree = SOURCE_ROOT; };
 		C97741850DD9D1910047C1BF /* cursor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cursor.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3100,7 +3100,7 @@
 				C918E1720DDA122D00167E99 /* tile.app */,
 				C918E1920DDA126E00167E99 /* tiled_image.app */,
 				C918E1BE0DDA12CF00167E99 /* valuators.app */,
-				C94A76DA0E77F59F00AAA38E /* symbols.app */,
+				C94A76DA0E77F59F00AAA38E /* utf8.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4457,7 +4457,7 @@
 			);
 			name = utf8;
 			productName = symbols;
-			productReference = C94A76DA0E77F59F00AAA38E /* symbols.app */;
+			productReference = C94A76DA0E77F59F00AAA38E /* utf8.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C97741840DD9D1910047C1BF /* cursor */ = {
@@ -9355,14 +9355,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				HEADER_SEARCH_PATHS = ../../;
-				INFOPLIST_FILE = "/Users/matt/dev/fltk-1.3-utf8/ide/Xcode3.0/plists/symbols-Info copy.plist";
+				INFOPLIST_FILE = "plists/utf8-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Carbon,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = symbols;
+				PRODUCT_NAME = utf8;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
