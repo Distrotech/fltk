@@ -143,6 +143,8 @@
 		C94A763B0E76CF6700AAA38E /* fl_utf.c in Sources */ = {isa = PBXBuildFile; fileRef = C94A76390E76CF5B00AAA38E /* fl_utf.c */; };
 		C94A763C0E76CF6700AAA38E /* fl_utf8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C94A763A0E76CF6200AAA38E /* fl_utf8.cxx */; };
 		C94A76BD0E76D52C00AAA38E /* demo.menu in CopyFiles */ = {isa = PBXBuildFile; fileRef = C977420D0DD9D36C0047C1BF /* demo.menu */; };
+		C94A76D60E77F59E00AAA38E /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
+		C94A76E50E77F66D00AAA38E /* utf8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C94A76E40E77F66200AAA38E /* utf8.cxx */; };
 		C969E9A00DDAE446003BCABC /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
 		C97741930DD9D1BD0047C1BF /* cursor.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C97741920DD9D1BD0047C1BF /* cursor.cxx */; };
 		C977419A0DD9D1C90047C1BF /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
@@ -1430,6 +1432,13 @@
 			remoteGlobalIDString = C918E1BD0DDA12CF00167E99;
 			remoteInfo = valuators;
 		};
+		C94A76D10E77F59E00AAA38E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9A3E93C0DD6332D00486E4F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9A3E9500DD6336500486E4F;
+			remoteInfo = fltk;
+		};
 		C97742130DD9D38A0047C1BF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C9A3E93C0DD6332D00486E4F /* Project object */;
@@ -2017,6 +2026,9 @@
 		C93F252F0DDA257B0017EE72 /* fluid.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = fluid.icns; path = icons/fluid.icns; sourceTree = "<group>"; };
 		C94A76390E76CF5B00AAA38E /* fl_utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fl_utf.c; path = ../../src/fl_utf.c; sourceTree = SOURCE_ROOT; };
 		C94A763A0E76CF6200AAA38E /* fl_utf8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_utf8.cxx; path = ../../src/fl_utf8.cxx; sourceTree = SOURCE_ROOT; };
+		C94A76DA0E77F59F00AAA38E /* symbols.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = symbols.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C94A76DD0E77F5A800AAA38E /* symbols-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "symbols-Info copy.plist"; path = "plists/symbols-Info copy.plist"; sourceTree = "<group>"; };
+		C94A76E40E77F66200AAA38E /* utf8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utf8.cxx; path = ../../test/utf8.cxx; sourceTree = SOURCE_ROOT; };
 		C97741850DD9D1910047C1BF /* cursor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cursor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C97741870DD9D1910047C1BF /* cursor-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "cursor-Info.plist"; path = "plists/cursor-Info.plist"; sourceTree = "<group>"; };
 		C97741920DD9D1BD0047C1BF /* cursor.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cursor.cxx; path = ../../test/cursor.cxx; sourceTree = SOURCE_ROOT; };
@@ -2745,6 +2757,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C94A76D50E77F59E00AAA38E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C94A76D60E77F59E00AAA38E /* fltk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C97741830DD9D1910047C1BF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -3080,6 +3100,7 @@
 				C918E1720DDA122D00167E99 /* tile.app */,
 				C918E1920DDA126E00167E99 /* tiled_image.app */,
 				C918E1BE0DDA12CF00167E99 /* valuators.app */,
+				C94A76DA0E77F59F00AAA38E /* symbols.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3157,6 +3178,7 @@
 				C9A3ECA60DD63A5200486E4F /* adjuster-Info.plist */,
 				C9A3E9610DD633C300486E4F /* hello-Info.plist */,
 				C9A3E9530DD6336500486E4F /* fltk-Info.plist */,
+				C94A76DD0E77F5A800AAA38E /* symbols-Info copy.plist */,
 			);
 			name = plists;
 			sourceTree = "<group>";
@@ -3355,6 +3377,7 @@
 		C9A3E95A0DD6339500486E4F /* Test Sources */ = {
 			isa = PBXGroup;
 			children = (
+				C94A76E40E77F66200AAA38E /* utf8.cxx */,
 				C9A3EDB60DD6459800486E4F /* button.cxx */,
 				C9A3ECAA0DD63A9E00486E4F /* adjuster.cxx */,
 				C9A3ED090DD63CC900486E4F /* arc.cxx */,
@@ -4419,6 +4442,24 @@
 			productReference = C918E1BE0DDA12CF00167E99 /* valuators.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C94A76CF0E77F59E00AAA38E /* utf8 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C94A76D70E77F59E00AAA38E /* Build configuration list for PBXNativeTarget "utf8" */;
+			buildPhases = (
+				C94A76D20E77F59E00AAA38E /* Resources */,
+				C94A76D30E77F59E00AAA38E /* Sources */,
+				C94A76D50E77F59E00AAA38E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C94A76D00E77F59E00AAA38E /* PBXTargetDependency */,
+			);
+			name = utf8;
+			productName = symbols;
+			productReference = C94A76DA0E77F59F00AAA38E /* symbols.app */;
+			productType = "com.apple.product-type.application";
+		};
 		C97741840DD9D1910047C1BF /* cursor */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C977418A0DD9D1910047C1BF /* Build configuration list for PBXNativeTarget "cursor" */;
@@ -5074,6 +5115,7 @@
 				C918E1510DDA11E400167E99 /* threads */,
 				C918E1710DDA122D00167E99 /* tile */,
 				C918E1910DDA126E00167E99 /* tiled_image */,
+				C94A76CF0E77F59E00AAA38E /* utf8 */,
 				C918E1BD0DDA12CF00167E99 /* valuators */,
 			);
 		};
@@ -5387,6 +5429,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C918E1CC0DDA132100167E99 /* valuators.fl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C94A76D20E77F59E00AAA38E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5921,6 +5970,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C918E1DB0DDA133400167E99 /* valuators.cxx in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C94A76D30E77F59E00AAA38E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C94A76E50E77F66D00AAA38E /* utf8.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6977,6 +7034,11 @@
 			isa = PBXTargetDependency;
 			target = C918E1BD0DDA12CF00167E99 /* valuators */;
 			targetProxy = C918E23D0DDA13BC00167E99 /* PBXContainerItemProxy */;
+		};
+		C94A76D00E77F59E00AAA38E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9A3E9500DD6336500486E4F /* fltk */;
+			targetProxy = C94A76D10E77F59E00AAA38E /* PBXContainerItemProxy */;
 		};
 		C97742140DD9D38A0047C1BF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -9282,6 +9344,53 @@
 			};
 			name = Release;
 		};
+		C94A76D80E77F59E00AAA38E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = ../../;
+				INFOPLIST_FILE = "/Users/matt/dev/fltk-1.3-utf8/ide/Xcode3.0/plists/symbols-Info copy.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = symbols;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		C94A76D90E77F59E00AAA38E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = ../../;
+				INFOPLIST_FILE = "/Users/matt/dev/fltk-1.3-utf8/ide/Xcode3.0/plists/symbols-Info copy.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = symbols;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		C97741880DD9D1910047C1BF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -11033,6 +11142,15 @@
 			buildConfigurations = (
 				C918E1C10DDA12D000167E99 /* Debug */,
 				C918E1C20DDA12D000167E99 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C94A76D70E77F59E00AAA38E /* Build configuration list for PBXNativeTarget "utf8" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C94A76D80E77F59E00AAA38E /* Debug */,
+				C94A76D90E77F59E00AAA38E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
