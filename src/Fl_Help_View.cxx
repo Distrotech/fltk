@@ -1484,7 +1484,7 @@ Fl_Help_View::format()
 
           popfont(font, fsize);
 
-#warning FIXME this isspace & 255 test will probably not work on a utf8 stream... And we use it everywhere!
+          //#warning FIXME this isspace & 255 test will probably not work on a utf8 stream... And we use it everywhere!
           while (isspace((*ptr)&255))
 	    ptr ++;
 
