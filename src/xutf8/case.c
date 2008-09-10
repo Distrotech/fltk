@@ -36,6 +36,10 @@
 
 ******************************************************************************/
 
+/*
+ * This file is required on all platforms for utf8 support
+ */
+
 #include "headers/case.h"
 #include <stdlib.h>
 

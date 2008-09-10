@@ -38,7 +38,9 @@
  *  Author: Jean-Marc Lienher ( http://oksid.ch )
  */
 
-#include <FL/Xutf8.h>
+#if !defined(WIN32) && !defined(__APPLE__)
+
+#include "../../FL/Xutf8.h"
 
 /*** NOTE : all functions are LIMITED to 24 bits Unicode values !!! ***/
 
@@ -248,6 +250,8 @@ XFastConvertUtf8ToUcs(
       *ucs = (unsigned int) '?'; /* bad utf-8 string */
       return -1;
 }
+
+#endif // X11 only
 
 /*
  * End of "$Id: $".

@@ -24,6 +24,10 @@ OR PERFORMANCE OF THIS SOFTWARE.
 
 ******************************************************************************/
 
+/*
+ * This file is required on all platforms for utf8 support
+ */
+
 #include "headers/spacing.h"
 
 

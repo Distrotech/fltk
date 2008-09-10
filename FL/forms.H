@@ -211,7 +211,7 @@ inline void fl_set_object_lsize(Fl_Widget* o,int s) {o->labelsize(s);}
 
 /* forms lib font indexes must be byte sized - extract correct byte from style word */
 inline void fl_set_object_lstyle(Fl_Widget* o,int a) {
-  o->labelfont((Fl_Font)a); o->labeltype((Fl_Labeltype)(a>>8));}
+  o->labelfont((Fl_Font)(a&0xff)); o->labeltype((Fl_Labeltype)(a>>8));}
 inline void fl_set_object_lcol(Fl_Widget* o, unsigned a) {o->labelcolor(a);}
 #define fl_set_object_lcolor  fl_set_object_lcol
 inline void fl_set_object_lalign(Fl_Widget* o, Fl_Align a) {o->align(a);}

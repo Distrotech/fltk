@@ -38,8 +38,9 @@
  *  Author: Jean-Marc Lienher ( http://oksid.ch )
  */
 
+#if !defined(WIN32) && !defined(__APPLE__)
 
-#include <FL/Xutf8.h>
+#include "../../FL/Xutf8.h"
 #include <X11/Xlib.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -925,6 +926,8 @@ XFreeUtf8FontStruct(
 	free(font_set->encodings);
 	free(font_set);
 }
+
+#endif // X11 only 
 
 /*
  *  End of "$Id: $".

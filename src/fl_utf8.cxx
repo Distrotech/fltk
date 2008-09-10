@@ -68,11 +68,6 @@ extern "C" {
   unsigned short XUtf8IsNonSpacing(unsigned int ucs);
 };
 
-int XUtf8Tolower(int ucs) {
-  if (ucs<128) return tolower(ucs);
-  return ucs;
-}
-
 #else // X-windows platform
 
 # include <FL/Xutf8.h>

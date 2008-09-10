@@ -33,8 +33,10 @@
 
 ******************************************************************************/
 
-#include "../config.h"
-#include <FL/Xutf8.h>
+#if !defined(WIN32) && !defined(__APPLE__)
+
+#include "config.h"
+#include "../../FL/Xutf8.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -440,4 +442,5 @@ XUtf8LookupString(
         return len;
 }
 
+#endif // X11 only
 
