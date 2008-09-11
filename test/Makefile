@@ -92,7 +92,8 @@ CPPFILES =\
 	threads.cxx \
 	tile.cxx \
 	tiled_image.cxx \
-	valuators.cxx
+	valuators.cxx \
+	utf8.cxx
 
 ALL =	\
 	unittests$(EXEEXT) \
@@ -151,7 +152,9 @@ ALL =	\
 	$(THREADS) \
 	tile$(EXEEXT) \
 	tiled_image$(EXEEXT) \
-	valuators$(EXEEXT)
+	valuators$(EXEEXT) \
+	utf8$(EXEEXT) 
+
 
 GLALL = \
 	cube$(EXEEXT) \

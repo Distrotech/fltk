@@ -428,9 +428,9 @@ void Fl_Group::init_sizes() {
   delete[] sizes_; sizes_ = 0;
 }
 
-int *Fl_Group::sizes() {
+int* Fl_Group::sizes() {
   if (!sizes_) {
-    int *p = sizes_ = new int[4*(children_+2)];
+    int* p = sizes_ = new int[4*(children_+2)];
     // first thing in sizes array is the group's size:
     if (type() < FL_WINDOW) {p[0] = x(); p[2] = y();} else {p[0] = p[2] = 0;}
     p[1] = p[0]+w(); p[3] = p[2]+h();
@@ -463,11 +463,18 @@ int *Fl_Group::sizes() {
 
 void Fl_Group::resize(int X, int Y, int W, int H) {
 
-  if (!resizable() || W==w() && H==h() ) {
+  int dx = X-x();
+  int dy = Y-y();
+  int dw = W-w();
+  int dh = H-h();
+  
+  int *p = sizes(); // save initial sizes and positions
+
+  Fl_Widget::resize(X,Y,W,H); // make new xywh values visible for children
+
+  if (!resizable() || dw==0 && dh==0 ) {
 
     if (type() < FL_WINDOW) {
-      int dx = X-x();
-      int dy = Y-y();
       Fl_Widget*const* a = array();
       for (int i=children_; i--;) {
 	Fl_Widget* o = *a++;
@@ -477,13 +484,11 @@ void Fl_Group::resize(int X, int Y, int W, int H) {
 
   } else if (children_) {
 
-    int *p = sizes();
-
     // get changes in size/position from the initial size:
-    int dx = X - p[0];
-    int dw = W - (p[1]-p[0]);
-    int dy = Y - p[2];
-    int dh = H - (p[3]-p[2]);
+    dx = X - p[0];
+    dw = W - (p[1]-p[0]);
+    dy = Y - p[2];
+    dh = H - (p[3]-p[2]);
     if (type() >= FL_WINDOW) dx = dy = 0;
     p += 4;
 
@@ -528,8 +533,6 @@ void Fl_Group::resize(int X, int Y, int W, int H) {
       o->resize(XX+dx, YY+dy, R-XX, B-YY);
     }
   }
-
-  Fl_Widget::resize(X,Y,W,H);
 }
 
 void Fl_Group::draw_children() {

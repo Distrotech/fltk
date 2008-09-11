@@ -65,7 +65,9 @@
 @main:Other\nTests:@o
 	@o:Color Choosers:color_chooser r
 	@o:File Chooser:file_chooser
-	@o:Fonts:fonts
+	@o:Font Tests:@of
+		@of:Fonts:fonts
+		@of:UTF-8:utf8
 	@o:HelpDialog:help
 	@o:Input Choice:input_choice
 	@o:Preferences:preferences
