@@ -126,7 +126,12 @@ public:
   static int scheme(const char*);
   /** See void scheme(const char *name) */
   static const char* scheme() {return scheme_;}
-  static int reload_scheme();
+  /** 
+    Called by scheme according to scheme name. 
+    Loads or reloads the current scheme selection. 
+    See void scheme(const char *name) 
+  */
+  static int reload_scheme(); // platform dependent
   static int scrollbar_size();
   static void scrollbar_size(int W);
 
@@ -416,7 +421,12 @@ public:
   static int event_original_key(){return e_original_keysym;}
   /** See int event_key() */
   static int event_key(int);
-  static int get_key(int);
+  /** 
+    Returns true if the given key is held down <I>now</I>.  
+    Under X this requires a round-trip to the server and is <I>
+    much</I> slower than Fl::event_key(int). See event_key().
+  */
+  static int get_key(int); // platform dependent
   /** Returns the text associated with the current FL_PASTE or FL_DND_RELEASE event. */
   static const char* event_text() {return e_text;}
   /**
@@ -461,7 +471,13 @@ public:
     operations.
   */
   static void copy(const char* stuff, int len, int clipboard = 0); // platform dependent
-  static void paste(Fl_Widget &receiver, int clipboard /*=0*/);
+  /**
+    Pastes the data from the selection (0) or primary (1) clipboard into receiver.  
+    The selection clipboard is used for middle-mouse pastes and for 
+    drag-and-drop selections. The primary clipboard is used for 
+    traditional copy/cut/paste  operations.
+  */
+  static void paste(Fl_Widget &receiver, int clipboard /*=0*/); // platform dependent
   /**
     Initiate a Drag And Drop operation. The clipboard should be
     filled with relevant data before calling this method. FLTK will
@@ -577,9 +593,11 @@ public:
   static int draw_box_active();
 
   // back compatability:
+  /** for back compatibility. sets the (*fatal)() callback. */
   static void set_abort(void (*f)(const char*,...)) {fatal = f;}
   static void (*atclose)(Fl_Window*,void*);
   static void default_atclose(Fl_Window*,void*);
+  /** for back compatibility. sets the (*atclose)() callback. */
   static void set_atclose(void (*f)(Fl_Window*,void*)) {atclose = f;}
   /** Returns non-zero if the Shift key is pressed. */
   static int event_shift() {return e_state&FL_SHIFT;}
@@ -618,6 +636,7 @@ public:
   static void set_idle(void (*cb)()) {idle = cb;}
   /** See Fl_Window* grab() */
   static void grab(Fl_Window&win) {grab(&win);}
+  /** Releases the current grabbed window, equals grab(0). See Fl_Window* grab() */
   static void release() {grab(0);}
 
   // Visible focus methods...
@@ -654,6 +673,7 @@ public:
   static void lock();
   static void unlock();
   static void awake(void* message = 0);
+  /** See void awake(void* message=0). */
   static int awake(Fl_Awake_Handler cb, void* message = 0);
   /**
     The thread_message() method returns the last message

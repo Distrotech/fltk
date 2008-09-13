@@ -143,7 +143,18 @@ int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b) {
   } else return 0;
 }
 #endif // WIN32 || __APPLE__
-
+/** \fn Fl::get_system_colors()
+    Read the user preference colors from the system and use them to call
+    Fl::foreground(), Fl::background(), and 
+    Fl::background2().  This is done by
+    Fl_Window::show(argc,argv) before applying the -fg and -bg
+    switches.
+    
+    <P>On X this reads some common values from the Xdefaults database.
+    KDE users can set these values by running the "krdb" program, and
+    newer versions of KDE set this automatically if you check the "apply
+    style to other X programs" switch in their control panel.
+*/
 #if defined(WIN32)
 static void
 getsyscolor(int what, const char* arg, void (*func)(uchar,uchar,uchar))
@@ -160,18 +171,6 @@ getsyscolor(int what, const char* arg, void (*func)(uchar,uchar,uchar))
   }
 }
 
-/**
-    Read the user preference colors from the system and use them to call
-    Fl::foreground(), Fl::background(), and 
-    Fl::background2().  This is done by
-    Fl_Window::show(argc,argv) before applying the -fg and -bg
-    switches.
-    
-    <P>On X this reads some common values from the Xdefaults database.
-    KDE users can set these values by running the "krdb" program, and
-    newer versions of KDE set this automatically if you check the "apply
-    style to other X programs" switch in their control panel.
-*/
 void Fl::get_system_colors() {
   if (!fl_bg2_set) getsyscolor(COLOR_WINDOW,	fl_bg2,Fl::background2);
   if (!fl_fg_set) getsyscolor(COLOR_WINDOWTEXT,	fl_fg, Fl::foreground);

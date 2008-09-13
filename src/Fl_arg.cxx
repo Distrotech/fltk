@@ -394,7 +394,7 @@ static const char * const helpmsg =
 " -to[oltips]";
 
 const char * const Fl::help = helpmsg+13;
-
+/** See Fl::args(int argc, char **argv, int& i, int (*cb)(int,char**,int&)) */
 void Fl::args(int argc, char **argv) {
   int i; if (Fl::args(argc,argv,i) < argc) Fl::error(helpmsg);
 }
