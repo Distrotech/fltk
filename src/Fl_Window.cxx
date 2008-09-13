@@ -159,6 +159,7 @@ void Fl_Window::iconlabel(const char *iname) {
 // the Fl::atclose pointer is provided for back compatability.  You
 // can now just change the callback for the window instead.
 
+/** Default callback for window widgets. It hides the window and then calls the default widget callback. */
 void Fl::default_atclose(Fl_Window* window, void* v) {
   window->hide();
   Fl_Widget::default_callback(window, v); // put on Fl::read_queue()
@@ -170,6 +171,9 @@ void Fl_Window::default_callback(Fl_Window* win, void* v) {
   Fl::atclose(win, v);
 }
 
+/**
+  Returns the last window that was made current.
+*/
 Fl_Window *Fl_Window::current() {
   return current_;
 }

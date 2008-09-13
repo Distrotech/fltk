@@ -174,10 +174,24 @@ static void lock_function() {
   EnterCriticalSection(&cs);
 }
 
-//
-// 'Fl::lock()' - Lock access to FLTK data structures...
-//
-
+/**
+    The lock() method blocks the current thread until it
+    can safely access FLTK widgets and data. Child threads should
+    call this method prior to updating any widgets or accessing
+    data. The main thread must call lock() to initialize
+    the threading support in FLTK.
+    
+    <P>Child threads must call unlock() when they are done
+    accessing FLTK.
+    
+    <P>When the wait() method is waiting
+    for input or timeouts, child threads are given access to FLTK.
+    Similarly, when the main thread needs to do processing, it will
+    wait until all child threads have called unlock() before processing
+    additional data.
+    
+    <P>See also: multithreading
+*/
 void Fl::lock() {
   if (!main_thread) InitializeCriticalSection(&cs);
 
@@ -190,21 +204,39 @@ void Fl::lock() {
   }
 }
 
-//
-// 'Fl::unlock()' - Unlock access to FLTK data structures...
-//
-
+/**
+    The unlock() method releases the lock that was set
+    using the lock() method. Child
+    threads should call this method as soon as they are finished
+    accessing FLTK.
+    
+    <P>See also: multithreading
+*/
 void Fl::unlock() {
   unlock_function();
 }
 
 
-//
-// 'Fl::awake()' - Let the main thread know an update is pending.
-//
-// When called from a thread, it causes FLTK to awake from Fl::wait()...
-//
-
+/**
+    The awake() method sends a message pointer to the main thread, 
+    causing any pending Fl::wait() call to 
+    terminate so that the main thread can retrieve the message and any pending 
+    redraws can be processed.
+    
+    <P>Multiple calls to Fl::awake() will queue multiple pointers 
+    for the main thread to process, up to a system-defined (typically several 
+    thousand) depth. The default message handler saves the last message which 
+    can be accessed using the 
+    Fl::thread_message() function.
+    
+    <P>The second form of awake() registers a function that will be 
+    called by the main thread during the next message handling cycle. 
+    awake() will return 0 if the callback function was registered, 
+    and -1 if registration failed. Over a thousand awake callbacks can be
+    registered simultaneously.
+    
+    <P>See also: multithreading.
+*/
 void Fl::awake(void* msg) {
   PostThreadMessage( main_thread, fl_wake_msg, (WPARAM)msg, 0);
 }
