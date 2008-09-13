@@ -84,6 +84,7 @@ protected:
 
   static Fl_Window *current_;
   virtual void draw();
+  /** Forces the window to be drawn, this window is also made current and calls draw(). */
   virtual void flush();
 
 public:
@@ -165,7 +166,9 @@ public:
     See int Fl_Window::border(int) 
   */
   int border() const	{return !(flags() & FL_NOBORDER);}
+  /** Activate the flags FL_NOBORDER|FL_OVERRIDE */
   void set_override()	{set_flag(FL_NOBORDER|FL_OVERRIDE);}
+  /** Returns non zero if FL_OVERRIDE flag is set, 0 otherwise. */
   int override() const  { return flags()&FL_OVERRIDE; }
   /**
     A &quot;modal&quot; window, when shown(), will prevent any events from
@@ -288,7 +291,9 @@ public:
     is not copied.
   */
   void xclass(const char* c)	{xclass_ = c;}
+  /** Gets the current icon window target dependent data */
   const void* icon() const	{return icon_;}
+  /** Sets the current icon window target dependent data */
   void icon(const void * ic)	{icon_ = ic;}
 
   /**

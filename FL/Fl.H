@@ -589,6 +589,7 @@ public:
   static void set_boxtype(Fl_Boxtype, Fl_Boxtype from);
   static int box_dx(Fl_Boxtype);
   static int box_dy(Fl_Boxtype);
+  static int box_dw(Fl_Boxtype);
   static int box_dh(Fl_Boxtype);
   static int draw_box_active();
 

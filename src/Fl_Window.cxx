@@ -85,13 +85,13 @@ Fl_Window *Fl_Widget::window() const {
     if (o->type() >= FL_WINDOW) return (Fl_Window*)o;
   return 0;
 }
-
+/** Gets the x position of the window on the screen */
 int Fl_Window::x_root() const {
   Fl_Window *p = window();
   if (p) return p->x_root() + x();
   return x();
 }
-
+/** Gets the y position of the window on the screen */
 int Fl_Window::y_root() const {
   Fl_Window *p = window();
   if (p) return p->y_root() + y();
