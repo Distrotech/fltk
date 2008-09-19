@@ -56,6 +56,13 @@ char *fl_eventnames[] =
   "FL_DND_DRAG",
   "FL_DND_LEAVE",
   "FL_DND_RELEASE",
+  "FL_TOOLTIP",
+  "<unkown event #25>",
+  "<unkown event #26>",
+  "<unkown event #27>",
+  "<unkown event #28>",
+  "<unkown event #29>",
+  "<unkown event #30>"
 };
 
 char *fl_fontnames[] =

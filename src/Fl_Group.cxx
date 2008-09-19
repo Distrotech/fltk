@@ -278,6 +278,10 @@ int Fl_Group::handle(int event) {
     }
     return 1;
 
+  case FL_TOOLTIP:
+    if (tooltip()) return 1;
+    return 0;
+
   default:
     // For all other events, try to give to each child, starting at focus:
     for (i = 0; i < children(); i ++)

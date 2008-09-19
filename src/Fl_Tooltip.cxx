@@ -159,6 +159,11 @@ void Fl_Tooltip::enter_(Fl_Widget* w) {
   for (;;) {
     if (!tw) {exit_(0); return;}
     if (tw == widget_) return;
+
+    // Send the FL_TOOLTIP event to tw. The return value technically does not matter.
+	// The action to take will depend on the state of its tooltip.
+	tw->handle(FL_TOOLTIP);
+
     if (tw->tooltip()) break;
     tw = tw->parent();
   }

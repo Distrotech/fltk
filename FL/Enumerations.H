@@ -317,7 +317,17 @@ enum Fl_Event {	// events
    *  If the widget returns 1, it will receive the data in the immediately 
    *  following FL_PASTE event.
    */
-  FL_DND_RELEASE	= 23
+  FL_DND_RELEASE	= 23,
+
+
+  /** The widget under the cursor has a chance to display a tooltip. 
+   *  When a widget receives this event, it can modify its tooltip. The
+   *  modified tooltip will be drawn. If the widget removes its tooltip,
+   *  the parent with a tooltip will be drawn.
+   *
+   *  \sa Fl_Widget::tooltip(const char *t)
+   */
+  FL_TOOLTIP        = 24
 };
 
 /** \name When Conditions */
