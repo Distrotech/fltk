@@ -982,6 +982,9 @@ void print_menu_cb(Fl_Widget *, void *) {
 
   fl_gc = dialog.hDC;
   fl_window = (HWND)dialog.hDC;
+ #ifdef HAVE_CAIRO
+  if (Fl::autolink_cairo_context()) Fl::cairo_make_current(fl_gc);
+ #endif
   fl_push_no_clip();
 
   // Get the time and date...
@@ -1104,6 +1107,9 @@ void print_menu_cb(Fl_Widget *, void *) {
   fl_gc = save_dc;
   fl_window = save_win;
   fl_pop_clip();
+ #ifdef HAVE_CAIRO
+  if (Fl::autolink_cairo_context()) Fl::cairo_make_current(fl_gc);
+ #endif
 
   // Free the print DC and return...
   DeleteDC(dialog.hDC);

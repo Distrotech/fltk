@@ -301,6 +301,9 @@ void fl_begin_offscreen(Fl_Offscreen ctx) {
   //fl_push_no_clip();
   CGContextSaveGState(fl_gc);
   Fl_X::q_fill_context();
+#if defined(HAVE_CAIRO) && defined (__APPLE_QUARTZ__)
+  Fl::cairo_make_current(fl_gc); // capture gc changes automatically to update the cairo context adequately
+#endif
 }
 
 void fl_end_offscreen() {
@@ -313,6 +316,10 @@ void fl_end_offscreen() {
   if (stack_ix<stack_max) {
     fl_gc = stack_gc[stack_ix];
     fl_window = stack_window[stack_ix];
+
+#if defined(HAVE_CAIRO) && defined (__APPLE_QUARTZ__)
+    Fl::cairo_make_current(fl_gc); // capture gc changes automatically to update the cairo context adequately
+#endif
   }
 }
 
@@ -391,11 +398,17 @@ void Fl_Double_Window::flush(int eraseoverlay) {
     HDC _sgc = fl_gc;
     fl_gc = fl_makeDC(myi->other_xid);
     int save = SaveDC(fl_gc);
+# if defined(HAVE_CAIRO)
+    Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
+# endif
     fl_restore_clip(); // duplicate region into new gc
     draw();
     RestoreDC(fl_gc, save);
     DeleteDC(fl_gc);
     fl_gc = _sgc;
+# if defined(HAVE_CAIRO)
+    Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
+# endif
 #elif defined(__APPLE__)
     if ( myi->other_xid ) {
       fl_begin_offscreen( myi->other_xid );

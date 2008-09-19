@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="minimum"
-	ProjectGUID="{F658ABE4-7FE1-4404-9B7C-55E0D660F1B3}"
+	Name="cairo_test"
+	ProjectGUID="{CF98E92E-C789-47E6-A2DA-398EB7991A2B}"
 	>
 	<Platforms>
 		<Platform
@@ -18,7 +18,7 @@
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -40,7 +40,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/minimum.tlb"
+				TypeLibraryName=".\Release/cairo_test.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -48,16 +48,14 @@
 				Optimization="4"
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="2"
-				AdditionalIncludeDirectories="..\vc2005;..\zlib;..\png;..\jpeg;.."
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;VC_EXTRA_LEAN;WIN32_EXTRA_LEAN"
+				AdditionalIncludeDirectories=".,.."
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;VC_EXTRA_LEAN;WIN32_EXTRA_LEAN"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/minimum.pch"
+				PrecompiledHeaderFile=".\Release/cairo_test.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				SuppressStartupBanner="true"
-				CompileAs="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -72,13 +70,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fltk.lib comctl32.lib"
-				OutputFile="../test/minimum.exe"
+				AdditionalDependencies="cairo.lib fltkd.lib comctl32.lib"
+				OutputFile="../test/cairo_test.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
 				IgnoreDefaultLibraryNames="libcd"
-				ProgramDatabaseFile=".\Release/minimum.pdb"
+				ProgramDatabaseFile=".\Release/cairo_test.pdb"
 				SubSystem="2"
 				TargetMachine="1"
 			/>
@@ -93,6 +91,8 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\Release/cairo_test.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -109,10 +109,10 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\minimum_"
-			IntermediateDirectory=".\minimum_"
+			OutputDirectory=".\cairo_test_"
+			IntermediateDirectory=".\cairo_test_"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -134,23 +134,22 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\minimum_/minimum.tlb"
+				TypeLibraryName=".\cairo_test_/cairo_test.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\vc2005;..\zlib;..\png;..\jpeg;.."
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;WIN32;_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;VC_EXTRA_LEAN;WIN32_EXTRA_LEAN"
+				AdditionalIncludeDirectories=".,.."
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;VC_EXTRA_LEAN;WIN32_EXTRA_LEAN"
+				MinimalRebuild="true"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\minimum_/minimum.pch"
-				AssemblerListingLocation=".\minimum_/"
-				ObjectFile=".\minimum_/"
-				ProgramDataBaseFileName=".\minimum_/"
+				PrecompiledHeaderFile=".\cairo_test_/cairo_test.pch"
+				AssemblerListingLocation=".\cairo_test_/"
+				ObjectFile=".\cairo_test_/"
+				ProgramDataBaseFileName=".\cairo_test_/"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CompileAs="0"
+				DebugInformationFormat="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -165,14 +164,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fltkd.lib comctl32.lib"
-				OutputFile="../test/minimumd.exe"
-				LinkIncremental="1"
+				AdditionalDependencies="cairo.lib fltkd.lib comctl32.lib"
+				OutputFile="../test/cairo_testd.exe"
+				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
 				IgnoreDefaultLibraryNames="libcd"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\minimum_/minimumd.pdb"
+				ProgramDatabaseFile=".\cairo_test_/cairo_testd.pdb"
 				SubSystem="2"
 				TargetMachine="1"
 			/>
@@ -187,6 +186,8 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\cairo_test_/cairo_test.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -206,7 +207,7 @@
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -228,23 +229,22 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\minimum_/minimum.tlb"
+				TypeLibraryName=".\cairo_test_/cairo_test.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\vc2005;..\zlib;..\png;..\jpeg;.."
-				PreprocessorDefinitions="HAVE_CAIRO=1;_CRT_SECURE_NO_DEPRECATE;WIN32;_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;VC_EXTRA_LEAN;WIN32_EXTRA_LEAN"
+				AdditionalIncludeDirectories=".,.."
+				PreprocessorDefinitions="HAVE_CAIRO=1;WIN32;_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;VC_EXTRA_LEAN;WIN32_EXTRA_LEAN"
+				MinimalRebuild="true"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\minimum_/minimum.pch"
-				AssemblerListingLocation=".\minimum_/"
-				ObjectFile=".\minimum_/"
-				ProgramDataBaseFileName=".\minimum_/"
+				PrecompiledHeaderFile=".\cairo_test_/cairo_test.pch"
+				AssemblerListingLocation=".\cairo_test_/"
+				ObjectFile=".\cairo_test_/"
+				ProgramDataBaseFileName=".\cairo_test_/"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CompileAs="0"
+				DebugInformationFormat="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -260,13 +260,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="cairo.lib fltkd.lib comctl32.lib"
-				OutputFile="../test/minimumd.exe"
-				LinkIncremental="1"
+				OutputFile="../test/cairo_testd.exe"
+				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
 				IgnoreDefaultLibraryNames="libcd"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\minimum_/minimumd.pdb"
+				ProgramDatabaseFile=".\cairo_test_/cairo_testd.pdb"
 				SubSystem="2"
 				TargetMachine="1"
 			/>
@@ -281,6 +281,8 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\cairo_test_/cairo_test.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -300,7 +302,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\test\minimum.cxx"
+			RelativePath="..\test\cairo_test.cxx"
 			>
 			<FileConfiguration
 				Name="Release|Win32"
@@ -316,7 +318,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					Optimization="0"
 					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions=""
 				/>
@@ -326,7 +327,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					Optimization="0"
 					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions=""
 				/>
