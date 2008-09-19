@@ -2370,7 +2370,7 @@ void Fl_X::q_release_context(Fl_X *x) {
   }
   fl_gc = 0;
 #if defined(HAVE_CAIRO) && defined (__APPLE_QUARTZ__)
-  Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
+  Fl::cairo_make_current((Fl_Window*) 0); // capture gc changes automatically to update the cairo context adequately
 #endif
 }
 

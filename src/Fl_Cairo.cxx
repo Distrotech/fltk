@@ -55,7 +55,7 @@ cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
 /** Creates a cairo context from a gc only, get its window size  or offscreen size if fl_window is null */
 cairo_t * Fl::cairo_make_current(void *gc) {
     int W=0,H=0;
-#ifdef __APPLE__QUARTZ__ 
+#if defined(__APPLE_QUARTZ__) 
     if (fl_window) {
       Rect portRect; 
       GetPortBounds(GetWindowPort( fl_window ), &portRect);
@@ -68,12 +68,12 @@ cairo_t * Fl::cairo_make_current(void *gc) {
     }
 #elif defined(WIN32)
     // we don't need any W,H for WIN32
-#elif (X11)
+#elif defined(X11)
     //FIXME X11 get W,H
     // gc will be the window handle here
-#warning FIXME get W,H for cairo_make_current(void*)
+# warning FIXME get W,H for cairo_make_current(void*)
 #else
-#error Cairo is not supported under this platform.
+# error Cairo is not supported under this platform.
 #endif
     if (!gc) {
 	Fl::cairo_cc(0);
@@ -102,12 +102,10 @@ cairo_t * Fl::cairo_make_current(void *gc, int W, int H) {
     gc is an HDC context in  WIN32, a CGContext* in Quartz, a display on X11
  */
 cairo_surface_t * Fl::cairo_create_surface(void * gc, int W, int H) {
-# if defined(WIN32)
+# if   defined(WIN32)
     return cairo_win32_surface_create((HDC) gc);
 # elif defined(__APPLE_QUARTZ__)
     return cairo_quartz_surface_create_for_cg_context((CGContext*) gc, W, H);
-# else
-    /* Get a Cairo surface for the current display */
 # elif defined(__APPLE_QD__)
 #  error Cairo is not supported under Apple Quickdraw, please use Apple Quartz.
 # elif defined(X11) // X11

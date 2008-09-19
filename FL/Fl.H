@@ -37,7 +37,7 @@
 # include <FL/Fl_Cairo.H>
 #endif
 
-#  include "fl_utf8.H"
+#  include "fl_utf8.h"
 #  include "Enumerations.H"
 #  ifndef Fl_Object
 #    define Fl_Object Fl_Widget
