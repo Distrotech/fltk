@@ -94,9 +94,10 @@ class FL_EXPORT Fl_Scroll : public Fl_Group {
   int xposition_, yposition_;
   int width_, height_;
   int oldx, oldy;
+  Fl_Scrollbar* pushed_;	// active (pushed) scrollbar
+
   static void hscrollbar_cb(Fl_Widget*, void*);
   static void scrollbar_cb(Fl_Widget*, void*);
-  void fix_scrollbar_order();
   static void draw_clip(void*,int,int,int,int);
 
 protected:

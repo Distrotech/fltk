@@ -2770,7 +2770,7 @@ void Fl_Widget_Type::copy_properties() {
   if (!o->active()) 
     w->deactivate();
   if (resizable() && w->parent()) 
-    w->parent()->resizable(o);
+    ((Fl_Group *)w->parent())->resizable(o);
 }
 
 void Fl_Pack_Type::copy_properties()

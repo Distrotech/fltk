@@ -132,13 +132,84 @@ int Fl_Widget::take_focus() {
 
 extern void fl_throw_focus(Fl_Widget*); // in Fl_x.cxx
 
+
+  /** Registers a widget as the parent() of another widget.
+  
+  	\since	Since FLTK 1.3.0, a composite widget can register
+		itself as the parent widget of a subwidget.
+
+	\note	This is needed, because otherwise some essential
+		internal functions like window(), active_r(),
+		visible_r() wouldn't work, if a widget is not
+		a child of another Fl_Group (or derived) widget.
+
+  	Example: Fl_Scroll calls for its scrollbars:
+	\code
+		scrollbar.parent(this);
+		hscrollbar.parent(this);
+	\endcode
+	
+	\code
+		w->parent(0);
+	
+		is equivalent to
+		
+		if (w->parent_)
+		  w->parent_->remove(w);
+		w->parent_ = 0;
+	\endcode
+
+	\todo	void parent(Fl_Widget *w)
+  */
+  void Fl_Widget::parent(Fl_Widget* p)
+  {
+  	if (parent_) parent_->remove(this);
+	parent_ = p;
+  }
+
+  /** Removes a widget from its parent group or composite widget.
+
+      This is a virtual method. The implementation for Fl_Widget
+      sets the (child) widget's parent_ member to 0, only if the
+      parent_ really points to the widget.
+      
+      All parent widgets can handle the child's or subwidget's
+      removal differently, if they implement this method.
+      
+      Fl_Group, e.g. has an array() of children() and removes
+      the widget from this array.
+
+      \param[in] o the widget that is to be removed
+      \sa Fl_Group::remove()
+  */
+  void Fl_Widget::remove(Fl_Widget& o)
+  {
+    if (o.parent_==this) o.parent_ = 0;
+  }
+
+
 // Destruction does not remove from any parent group!  And groups when
 // destroyed destroy all their children.  This is convienent and fast.
 // However, it is only legal to destroy a "root" such as an Fl_Window,
 // and automatic destructors may be called.
+/** 
+  \since Since FLTK 1.3 this also removes the widget from its parent, if
+ 	it is a member of the parent group.
+ 
+  \todo The new widget removal must be commented correctly.
+ 
+  \todo [A.S.] It is planned, that "composite" widgets can have a
+ 	parent widget that is \em not a \ref Fl_Group. When this is done,
+ 	this must be taken into account here, too.
+*/
 Fl_Widget::~Fl_Widget() {
   Fl::clear_widget_pointer(this);
   if (flags() & COPIED_LABEL) free((void *)(label_.value));
+  // remove from parent group
+  if (parent_) parent_->remove(this);
+  if (parent_) {
+    printf("*** Fl_Widget: parent_->remove(this) failed [%p,%p]\n",parent_,this);
+  }
   parent_ = 0; // Don't throw focus to a parent widget.
   fl_throw_focus(this);
 }

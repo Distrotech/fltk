@@ -375,22 +375,32 @@ Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
   <p>This method differs from the remove() method in that it
   affects all child widgets and deletes them from memory.
 */
+
 void Fl_Group::clear() {
-  Fl_Widget*const* old_array = array();
-  int old_children = children();
-  // clear everything now, in case fl_fix_focus recursively calls us:
-  children_ = 0;
-  //array_ = 0; //dont do this, it will clobber old_array if only one child
   savedfocus_ = 0;
   resizable_ = this;
   init_sizes();
   // okay, now it is safe to destroy the children:
-  Fl_Widget*const* a = old_array;
-  for (int i=old_children; i--;) {
-    Fl_Widget* o = *a++;
-    if (o->parent() == this) delete o;
+  while (children_) {
+    Fl_Widget* o = child(0);		// *not* child(children_-1);
+
+    if (o->parent() == this) {		// should always be true
+
+      remove(o);			// remove widget from group
+      delete o;				// delete the widget
+    }
+    else { // this should never happen !
+
+	printf ("*** Fl_Group::clear() [%p] child %p \"%s\" has different parent()\n",
+		this,o,o->label());
+	printf ("    o->parent() : %p != this: %p\n",o->parent(),this);
+	printf ("    o->(x,y,w,h): (%d,%d,%d,%d)\n",o->x(),o->y(),o->w(),o->h());
+	fflush(stdout);
+
+      remove(o);	// force remove (otherwise endless loop)
+
+    } // (this should never happen !)
   }
-  if (old_children > 1) free((void*)old_array);
 }
 
 /**
@@ -413,13 +423,13 @@ Fl_Group::~Fl_Group() {
 */
 void Fl_Group::insert(Fl_Widget &o, int index) {
   if (o.parent()) {
-    Fl_Group* g = (Fl_Group*)(o.parent());
-    int n = g->find(o);
-    if (g == this) {
+    Fl_Widget* p = o.parent();
+    if (p == this) {
+      int n = ((Fl_Group *)p)->find(o);
       if (index > n) index--;
       if (index == n) return;
     }
-    g->remove(o);
+    ((Fl_Group*)p)->remove(o);
   }
   o.parent_ = this;
   if (children_ == 0) { // use array pointer to point at single child
@@ -456,11 +466,28 @@ void Fl_Group::add(Fl_Widget &o) {insert(o, children_);}
   memory.
 */
 void Fl_Group::remove(Fl_Widget &o) {
+  printf ("Fl_Group::remove(): this=%p, children=%d, child=%p, i=%d\n",
+    this, children(), &o, find(o)); fflush(stdout);
   if (!children_) return;
   int i = find(o);
   if (i >= children_) return;
   if (&o == savedfocus_) savedfocus_ = 0;
-  o.parent_ = 0;
+
+  // test, if the child-parent relationship is correct
+  // note: this test may perhaps be removed later
+
+  printf ("Fl_Group::remove(): this=%p, child.parent_=%p, i=%d\n",
+    this, o.parent_, find(o)); fflush(stdout);
+
+  if (o.parent_ == this) {	// should always be true
+    o.parent_ = 0;
+  } else {			// should never happen !
+    printf ("Fl_Group::remove(): widget %p, parent_ (%p) != this (%p)\n",
+      &o, o.parent_, this);
+  }
+
+  // now really remove the child from the group
+
   children_--;
   if (children_ == 1) { // go from 2 to 1 child
     Fl_Widget *t = array_[!i];
@@ -469,7 +496,9 @@ void Fl_Group::remove(Fl_Widget &o) {
   } else if (children_ > 1) { // delete from array
     for (; i < children_; i++) array_[i] = array_[i+1];
   }
+  printf ("Fl_Group::remove(): before init_sizes()\n"); fflush(stdout);
   init_sizes();
+  printf ("Fl_Group::remove(): after  init_sizes()\n"); fflush(stdout);
 }
 
 ////////////////////////////////////////////////////////////////

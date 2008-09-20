@@ -91,7 +91,7 @@ struct FL_EXPORT Fl_Label {
 class FL_EXPORT Fl_Widget {
   friend class Fl_Group;
 
-  Fl_Group* parent_;
+  Fl_Widget* parent_;
   Fl_Callback* callback_;
   void* user_data_;
   int x_,y_,w_,h_;
@@ -187,13 +187,24 @@ public:
 
   /** Returns a pointer to the parent widget.  
    *  Usually this is a Fl_Group or Fl_Window. 
+      \since	Since FLTK 1.3 this can also be a simple widget
+      		(not derived from Fl_Group)
    *  \retval NULL if the widget has no parent
    *  \see Fl_Group::add(Fl_Widget*)
    */
-  Fl_Group* parent() const {return parent_;}
+  Fl_Widget* parent() const {return parent_;}
 
-  /** Internal use only. Use Fl_Group::add(Fl_Widget*) instead. */
-  void parent(Fl_Group* p) {parent_ = p;} // for hacks only, Fl_Group::add()
+  void parent(Fl_Widget* p);
+
+  virtual void remove(Fl_Widget& o);
+
+  /** Removes a widget from its parent group or composite widget.
+
+	see virtual void remove(Fl_Widget& o)
+	
+      \sa Fl_Group::remove()
+  */
+  virtual void remove(Fl_Widget* o) {remove(*o);}
 
   /** Gets the widget type.
    *  Returns the widget type value, which is used for Forms

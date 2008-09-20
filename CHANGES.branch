@@ -1,0 +1,62 @@
+CHANGES IN FLTK 1.3.0-branch-1.3-composite:
+
+	This is a preliminary version of the changes that will be added
+	to the official CHANGES file, when committed to FLTK 1.3.
+	and all the documentation has been changed.
+	This text is a very long and will be shortened, when all the
+	documentation has been updated.
+
+	*** This is work in progress, there may be test statements
+	*** in the committed code!
+	
+	Note: this code needs further testing, but it works, as far
+	as it has been tested.
+
+	- Fl_Group::remove(Fl_Widget *) is now a virtual method:
+	  Fl_Widget::remove(Fl_Widget *). The Fl_Widget:: base method
+	  behaves similar to the Fl_Group method by resetting the
+	  parent_ member, but does nothing else.
+	  Fl_Group's implementation does also remove the widget from
+	  its list of children, as before.
+	- STR #----: Fl_Value_Input used a "kludge" to set its Fl_Input
+	  subwidget's parent() pointer to itself (the Fl_Value_Input).
+	  This kludge has been "legalizes" by the previous change.
+	- void Fl_Widget::parent(Fl_Group* p) {parent_ = p;} has been
+	  documented "for hacks only" and has been used in Fl_Value_Input.
+	  This method is now perfectly legal and offically usable, but has
+	  been changed to void parent(Fl_Widget* p).
+	  It behaves similar to Fl_Group::add(), in that it removes the
+	  widget from its old parent widget or group before changing its
+	  parent_ member variable.
+	- STR #----: Fl_Widget::parent() now returns an Fl_Widget* instead
+	  of Fl_Group*, as it did before. This was done to be able to
+	  handle private children (subwidgets) of normal (non-Fl_Group)
+	  widgets in a consistent way.
+	  (+) This FEATURE enables widget designers to create composite
+	      widgets that are not based on Fl_Group, but have private
+	      children (subwidgets) that are invisible from outside of the
+	      widget.
+	  (+) This can also be done with widgets derived from Fl_Group,
+	      i.e. they can have official children and private children
+	      (called "subwidgets").
+	  (-) FLTK core requires some casts, as may user code.
+	      Possible solution: add another method:
+	        Fl_Widget* Fl_Widget::parent_widget()
+	      instead of redefining the parent() method, but this has
+	      some other drawbacks.
+	- STR #----: discussed in fltk.development with the title
+	  "RFD: Redesign of Fl_Scroll (FLTK 1.3)":
+	  Fl_Scroll does not add its scrollbars to the Fl_Group widget
+	  it's based on.
+	  (+) This FEATURE is designed so that the scrollbars are hidden from
+	      a programmer's point of view, as it should be in an object
+	      oriented design.
+	  (-) Possible Problem: User code that subtracts 2 from the number
+	      of children() of the Fl_Scroll widget must be adjusted.
+	- STR #1894: Fl_Widget now removes itself from any parent group
+	  in its destructor. A widget can now remove any related widgets
+	  from the same parent group in its destructor - even if it is
+	  destroyed because the parent group's destructor calls
+	  Fl_Group::clear() to destroy its children. This feature prevents
+	  embedded "subwidgets" from being deleted twice, if they are also
+	  members of the widget's parent group.

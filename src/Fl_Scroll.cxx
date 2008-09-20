@@ -30,7 +30,20 @@
 #include <FL/Fl_Scroll.H>
 #include <FL/fl_draw.H>
 
-/** Clear all but the scrollbars... */
+// #define FL_SCROLL_DEBUG
+
+#ifdef FL_SCROLL_DEBUG
+  #include <stdio.h>
+  #include <FL/names.h>
+#endif
+
+/** Clear all but the scrollbars...
+
+  \todo Fl_Scroll::clear() is obsolete, because the
+    scrollbars are no longer children of Fl_Scroll.
+    It should be removed, and Fl_Group::clear() would
+    then be used, automagically :-)
+*/
 void Fl_Scroll::clear() {
   for (int i=children() - 1; i >= 0; i --) {
     Fl_Widget* o = child(i);
@@ -38,17 +51,6 @@ void Fl_Scroll::clear() {
       remove(o);
       delete o;
     }
-  }
-}
-
-/** Insure the scrollbars are the last children */
-void Fl_Scroll::fix_scrollbar_order() {
-  Fl_Widget** a = (Fl_Widget**)array();
-  if (a[children()-1] != &scrollbar) {
-    int i,j; for (i = j = 0; j < children(); j++)
-      if (a[j] != &hscrollbar && a[j] != &scrollbar) a[i++] = a[j];
-    a[i++] = &hscrollbar;
-    a[i++] = &scrollbar;
   }
 }
 
@@ -84,7 +86,7 @@ void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H) {
 	break;
   }
   Fl_Widget*const* a = s->array();
-  for (int i=s->children()-2; i--;) {
+  for (int i=s->children(); i--;) {
     Fl_Widget& o = **a++;
     s->draw_child(o);
     s->draw_outside_label(o);
@@ -108,7 +110,6 @@ void Fl_Scroll::bbox(int& X, int& Y, int& W, int& H) {
 }
 
 void Fl_Scroll::draw() {
-  fix_scrollbar_order();
   int X,Y,W,H; bbox(X,Y,W,H);
 
   uchar d = damage();
@@ -128,7 +129,7 @@ void Fl_Scroll::draw() {
       R = 0;
       T = 999999;
       B = 0;
-      for (int i=children()-2; i--; a++) {
+      for (int i=children(); i--; a++) {
         if ((*a)->x() < L) L = (*a)->x();
 	if (((*a)->x() + (*a)->w()) > R) R = (*a)->x() + (*a)->w();
         if ((*a)->y() < T) T = (*a)->y();
@@ -142,7 +143,7 @@ void Fl_Scroll::draw() {
     if (d & FL_DAMAGE_CHILD) { // draw damaged children
       fl_clip(X, Y, W, H);
       Fl_Widget*const* a = array();
-      for (int i=children()-2; i--;) update_child(**a++);
+      for (int i=children(); i--;) update_child(**a++);
       fl_pop_clip();
     }
   }
@@ -150,7 +151,7 @@ void Fl_Scroll::draw() {
   // accumulate bounding box of children:
   int l = X; int r = X; int t = Y; int b = Y;
   Fl_Widget*const* a = array();
-  for (int i=children()-2; i--;) {
+  for (int i=children(); i--;) {
     Fl_Object* o = *a++;
     if (o->x() < l) l = o->x();
     if (o->y() < t) t = o->y();
@@ -240,10 +241,9 @@ void Fl_Scroll::resize(int X, int Y, int W, int H) {
   int dx = X-x(), dy = Y-y();
   int dw = W-w(), dh = H-h();
   Fl_Widget::resize(X,Y,W,H); // resize _before_ moving children around
-  fix_scrollbar_order();
   // move all the children:
   Fl_Widget*const* a = array();
-  for (int i=children()-2; i--;) {
+  for (int i=children(); i--;) {
     Fl_Object* o = *a++;
     o->position(o->x()+dx, o->y()+dy);
   }
@@ -276,13 +276,13 @@ void Fl_Scroll::scroll_to(int X, int Y) {
   else damage(FL_DAMAGE_SCROLL);
 }
 
-void Fl_Scroll::hscrollbar_cb(Fl_Widget* o, void*) {
-  Fl_Scroll* s = (Fl_Scroll*)(o->parent());
+void Fl_Scroll::hscrollbar_cb(Fl_Widget* o, void* p) {
+  Fl_Scroll* s = (Fl_Scroll*)p;
   s->scroll_to(int(((Fl_Scrollbar*)o)->value()), s->yposition());
 }
 
-void Fl_Scroll::scrollbar_cb(Fl_Widget* o, void*) {
-  Fl_Scroll* s = (Fl_Scroll*)(o->parent());
+void Fl_Scroll::scrollbar_cb(Fl_Widget* o, void* p) {
+  Fl_Scroll* s = (Fl_Scroll*)p;
   s->scroll_to(s->xposition(), int(((Fl_Scrollbar*)o)->value()));
 }
 /**
@@ -301,17 +301,120 @@ Fl_Scroll::Fl_Scroll(int X,int Y,int W,int H,const char* L)
               Fl::scrollbar_size(),H-Fl::scrollbar_size()),
     hscrollbar(X,Y+H-Fl::scrollbar_size(),
                W-Fl::scrollbar_size(),Fl::scrollbar_size()) {
+
+  remove(scrollbar);	// removed because of auto-add feature
+  remove(hscrollbar);	// removed because of auto-add feature
+  pushed_ = 0;		// no active scrollbar
+
   type(BOTH);
   xposition_ = 0;
   yposition_ = 0;
   hscrollbar.type(FL_HORIZONTAL);
-  hscrollbar.callback(hscrollbar_cb);
-  scrollbar.callback(scrollbar_cb);
+  hscrollbar.callback(hscrollbar_cb,this);
+  scrollbar.callback(scrollbar_cb,this);
 }
 
 int Fl_Scroll::handle(int event) {
-  fix_scrollbar_order();
-  return Fl_Group::handle(event);
+
+#ifdef FL_SCROLL_DEBUG
+  printf("HANDLE: %-10s (sb,hsb)=(%p,%p), pushed_=%p\n",
+    fl_eventnames[event], &scrollbar, &hscrollbar, pushed_);
+  printf("HANDLE:            Fl::pushed()=%p, this=%p, parent()=%p, contains (%d,%d)\n",
+    Fl::pushed(), this, parent(),
+    ((Fl_Widget *)&scrollbar)->contains(Fl::pushed()),
+    ((Fl_Widget *)&hscrollbar)->contains(Fl::pushed()));
+  fflush(stdout);
+#endif
+
+  // filter events that need to be handled by the scrollbars
+  //
+  // this is done so that dragging one scrollbar can be done,
+  // even if the scrollbar area is left with the mouse, and
+  // also if the other scrollbar area is being traversed
+
+  int ret = 0;		// assume event not handled by scrollbars
+
+  switch (event) {
+
+  case FL_PUSH:
+    if (Fl::event_inside(&scrollbar)) {
+      pushed_ = &scrollbar;
+    } else if (Fl::event_inside(&hscrollbar)) {
+      pushed_ = &hscrollbar;
+    }
+    if (pushed_) {
+      ret = pushed_->handle(event);	// handle event
+      if (ret) Fl::pushed(pushed_);	// set Fl::pushed()	***
+      if (ret) Fl::focus(pushed_);	// set Fl::focus()	***
+#ifdef FL_SCROLL_DEBUG
+      printf ("      - ret=%d\n",ret);
+#endif	/* FL_SCROLL_DEBUG */
+    }
+    break;
+
+  case FL_DRAG:
+  case FL_MOUSEWHEEL:
+    if (pushed_) {
+      ret = pushed_->handle(event);	// handle event
+#ifdef FL_SCROLL_DEBUG
+      printf ("      - ret=%d\n",ret);
+#endif	/* FL_SCROLL_DEBUG */
+    }
+    break;
+
+  case FL_RELEASE:
+    if (pushed_) {
+      ret = pushed_->handle(event);	// handle event
+#ifdef FL_SCROLL_DEBUG
+      printf ("    - ret=%d\n",ret);
+#endif	/* FL_SCROLL_DEBUG */
+      pushed_ = 0;
+    }
+    break;
+
+  case FL_KEYDOWN:			// ***
+    if (pushed_) {
+      ret = pushed_->handle(event);	// handle event
+#ifdef FL_SCROLL_DEBUG
+      printf ("    - ret=%d\n",ret);
+#endif	/* FL_SCROLL_DEBUG */
+    }
+    break;
+
+  case FL_FOCUS:			// ***
+    if (pushed_) {
+      return 1;
+    }
+    break;
+
+  case FL_ACTIVATE:			// ***
+    scrollbar.activate();
+    hscrollbar.activate();
+    break;
+
+  case FL_DEACTIVATE:			// ***
+    scrollbar.deactivate();
+    hscrollbar.deactivate();
+    break;
+
+  default:
+    break;
+  }
+
+  if (ret) return 1;	// a scrollbar handled the event
+
+#ifdef FL_SCROLL_DEBUG
+  printf ("\n");
+#endif	/* FL_SCROLL_DEBUG */
+
+  // the scrollbars didn't handle the event, go on ...
+
+  ret = Fl_Group::handle(event);
+  if (ret) return 1;
+  
+  if (event == FL_KEYDOWN)
+    return scrollbar.handle(event);
+  return 0;
 }
 
 //

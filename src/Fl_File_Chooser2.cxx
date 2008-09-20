@@ -1069,7 +1069,7 @@ void Fl_File_Chooser::preview(int e)
   prefs_.set("preview", e);
   prefs_.flush();
 
-  Fl_Group *p = previewBox->parent();
+  Fl_Group *p = (Fl_Group *)previewBox->parent();
   if (e) {
     int w = p->w() * 2 / 3;
     fileList->resize(fileList->x(), fileList->y(),
