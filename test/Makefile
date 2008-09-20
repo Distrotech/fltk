@@ -461,7 +461,7 @@ gl_overlay$(EXEEXT): gl_overlay.o
 
 shape$(EXEEXT): shape.o
 	echo Linking $@...
-	$(CXX) $(ARCHFLAGS) $(LDFLAGS) -o $@ shape.o $(LINKFLTKGL) $(LINKFLTK) $(GLDLIBS
+	$(CXX) $(ARCHFLAGS) $(LDFLAGS) -o $@ shape.o $(LINKFLTKGL) $(LINKFLTK) $(GLDLIBS)
 
 cairo_test$(EXEEXT): cairo_test.o
 

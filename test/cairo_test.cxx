@@ -165,9 +165,10 @@ int main(int argc, char** argv) {
     return Fl::run();
 }
 #else
-#include <fltk/ask.h>
+#include <FL/fl_ask.H>
+
 int main(int argc, char** argv) {
-  fltk::message("please configure fltk with CAIRO enabled (--enable-cairo)"); 
+  fl_message("please configure fltk with CAIRO enabled (--enable-cairo)"); 
   return 0;
 }
 #endif
