@@ -568,8 +568,9 @@ if test x$enable_cairo = xyes; then
 	  AC_DEFINE(HAVE_CAIRO)
 	  dnl FIXME This part should be fixed so configure do not depend on
 	  dnl we do not rely on pkg-config .
-          CXXFLAGS = "`pkg-config --CXXFLAGS` $CXXFLAGS" 
-	  LIBS="-lcairo -lpixman-1 $LIBS"
+          CXXFLAGS = "`pkg-config --CXXFLAGS` $CXXFLAGS"
+          CAIROLIBS="-lcairo -lpixman-1" 
+	  LIBS="$CAIROLIBS $LIBS"
 fi
 
 dnl Check for pthreads for multi-threaded apps...
@@ -719,6 +720,7 @@ case $uname in
 	CXXFLAGS="$CXXFLAGS $X_CFLAGS"
 	LDFLAGS="$X_LIBS $LDFLAGS"
 	DSOFLAGS="$X_LIBS $DSOFLAGS"
+	AC_DEFINE(UNIX_X11)
 
 	if test "x$x_includes" != x; then
 	    ac_cpp="$ac_cpp -I$x_includes"

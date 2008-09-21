@@ -26,8 +26,9 @@
 //
 
 /** \file
-    FlCairo include file hanling transparently platform dependent cairo include files
- */
+    FlCairo Hanling transparently platform dependent cairo include files 
+*/
+
 #ifndef FL_CAIRO_H
 # define FL_CAIRO_H
 # ifdef HAVE_CAIRO
@@ -38,15 +39,15 @@
 # include <FL/Fl_Export.H>
 
 # if defined(WIN32)
-#  include <cairo/cairo-win32.h>
+#  include <cairo-win32.h>
 # elif defined(__APPLE_QUARTZ__)
-#  include <cairo/cairo-quartz.h>
+#  include <cairo-quartz.h>
 # elif defined(__APPLE_QD__)
 #  error Apple Quartz is necessary for Cairo upport.
-# elif defined(X11) // X11
-#  include <cairo/cairo-xlib.h>
+# elif defined(UNIX_X11) // X11
+#  include <cairo-xlib.h>
 # else
-# error Cairo is not supported on that platform.
+#  error Cairo is not supported on that platform.
 # endif
 
 # endif // HAVE_CAIRO

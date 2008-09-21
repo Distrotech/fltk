@@ -46,7 +46,7 @@ cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
     }
     //wi->make_current();
 
-#if defined(X11)
+#if defined(UNIX_X11)
     return Fl::cairo_make_current(w->xid(), wi->w(), wi->h());
 #else
     return Fl::cairo_make_current(fl_gc, wi->w(), wi->h());
@@ -68,7 +68,7 @@ cairo_t * Fl::cairo_make_current(void *gc) {
     }
 #elif defined(WIN32)
     // we don't need any W,H for WIN32
-#elif defined(X11)
+#elif defined(UNIX_X11)
     //FIXME X11 get W,H
     // gc will be the window handle here
 # warning FIXME get W,H for cairo_make_current(void*)
@@ -108,7 +108,7 @@ cairo_surface_t * Fl::cairo_create_surface(void * gc, int W, int H) {
     return cairo_quartz_surface_create_for_cg_context((CGContext*) gc, W, H);
 # elif defined(__APPLE_QD__)
 #  error Cairo is not supported under Apple Quickdraw, please use Apple Quartz.
-# elif defined(X11) // X11
+# elif defined(UNIX_X11) // X11
     return cairo_xlib_surface_create(display, (Window) gc,fl_visual->visual, W, H);
 # else
 #  error Cairo is not supported under this platform.
