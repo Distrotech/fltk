@@ -25,7 +25,7 @@
 
 #include <config.h>
 
-#if HAVE_CAIRO
+#ifdef HAVE_CAIRO
 
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Box.H>

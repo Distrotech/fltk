@@ -37,7 +37,7 @@
 ////////////////////////////////////////////////////////////////
 // for compatibility with Forms, all widgets without callbacks are
 // inserted into a "queue" when they are activated, and the forms
-// compatibility interaction functions (fl_do_events, etc) will
+// compatibility interaction functions (fl_do_events, etc.) will
 // read one widget at a time from this queue and return it:
 
 const int QUEUE_SIZE = 20;
@@ -132,10 +132,13 @@ int Fl_Widget::take_focus() {
 
 extern void fl_throw_focus(Fl_Widget*); // in Fl_x.cxx
 
-// Destruction does not remove from any parent group!  And groups when
-// destroyed destroy all their children.  This is convienent and fast.
-// However, it is only legal to destroy a "root" such as an Fl_Window,
-// and automatic destructors may be called.
+/**
+   Destroys the widget, taking care of throwing focus before if any.
+   Destruction does not remove from any parent group!  And groups when
+   destroyed destroy all their children.  This is convenient and fast.
+   However, it is only legal to destroy a "root" such as an Fl_Window,
+   and automatic destructors may be called.
+*/
 Fl_Widget::~Fl_Widget() {
   Fl::clear_widget_pointer(this);
   if (flags() & COPIED_LABEL) free((void *)(label_.value));

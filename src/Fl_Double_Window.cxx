@@ -398,9 +398,6 @@ void Fl_Double_Window::flush(int eraseoverlay) {
     HDC _sgc = fl_gc;
     fl_gc = fl_makeDC(myi->other_xid);
     int save = SaveDC(fl_gc);
-# if defined(HAVE_CAIRO)
-    Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
-# endif
     fl_restore_clip(); // duplicate region into new gc
     draw();
     RestoreDC(fl_gc, save);
