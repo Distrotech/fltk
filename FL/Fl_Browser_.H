@@ -151,7 +151,6 @@ protected:
     \todo Find the implementation, if any, and document it there!
   */
   void draw(int,int,int,int);
-
   /*
     Handles the specified event, plus 4 extra parameters!
     \todo Find the implementation, if any, and document it there!
