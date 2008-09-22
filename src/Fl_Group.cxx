@@ -466,8 +466,10 @@ void Fl_Group::add(Fl_Widget &o) {insert(o, children_);}
   memory.
 */
 void Fl_Group::remove(Fl_Widget &o) {
+#ifdef DEBUG_FL_GROUP
   printf ("Fl_Group::remove(): this=%p, children=%d, child=%p, i=%d\n",
     this, children(), &o, find(o)); fflush(stdout);
+#endif
   if (!children_) return;
   int i = find(o);
   if (i >= children_) return;
@@ -476,9 +478,10 @@ void Fl_Group::remove(Fl_Widget &o) {
   // test, if the child-parent relationship is correct
   // note: this test may perhaps be removed later
 
+#ifdef DEBUG_FL_GROUP
   printf ("Fl_Group::remove(): this=%p, child.parent_=%p, i=%d\n",
     this, o.parent_, find(o)); fflush(stdout);
-
+#endif
   if (o.parent_ == this) {	// should always be true
     o.parent_ = 0;
   } else {			// should never happen !
@@ -496,9 +499,7 @@ void Fl_Group::remove(Fl_Widget &o) {
   } else if (children_ > 1) { // delete from array
     for (; i < children_; i++) array_[i] = array_[i+1];
   }
-  printf ("Fl_Group::remove(): before init_sizes()\n"); fflush(stdout);
   init_sizes();
-  printf ("Fl_Group::remove(): after  init_sizes()\n"); fflush(stdout);
 }
 
 ////////////////////////////////////////////////////////////////

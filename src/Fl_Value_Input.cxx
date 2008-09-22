@@ -125,28 +125,8 @@ Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
 : Fl_Valuator(X, Y, W, H, l), input(X, Y, W, H, 0) {
   soft_ = 0;
 
-  Fl_Widget *p = input.parent();
-  printf ("Fl_Value_Input::Fl_Value_Input, this=%p, input.parent()=%p\n",this,p);
-  fflush(stdout);
+  input.parent(this);	// this also removes the widget from any group
 
-  printf ("Fl_Group::current()=%p, this->parent()=%p\n",
-    Fl_Group::current(),this->parent());
-  fflush(stdout);
-
-  if (input.parent()) {
-    printf ("parent()'s children=%d\n",((Fl_Group*)input.parent())->children());
-    fflush(stdout);
-    // ** ((Fl_Group*)input.parent())->remove(input);
-    // ** input.parent()->remove(input);
-    printf ("parent()'s children=%d\n",((Fl_Group*)p)->children());
-    fflush(stdout);
-  }
-  printf ("before reparent: group's children=%d\n",p?((Fl_Group*)p)->children():0);
-  fflush(stdout);
-  // ** input.parent((Fl_Group *)this); // kludge!
-  input.parent(this);			// this is okay now :-)
-  printf ("after  reparent: group's children=%d\n",p?((Fl_Group*)p)->children():0);
-  fflush(stdout);
   input.callback(input_cb, this);
   input.when(FL_WHEN_CHANGED);
   box(input.box());
@@ -155,17 +135,12 @@ Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
   align(FL_ALIGN_LEFT);
   value_damage();
   set_flag(SHORTCUT_LABEL);
-  fflush(stdout);
 }
 
 Fl_Value_Input::~Fl_Value_Input()
 {
-  printf ("~Fl_Value_Input -A- this=%p, input.parent=%p, =%d\n",
-    this, input.parent(), input.parent()==this); fflush(stdout);
-  // if (input.parent() == (Fl_Group *)this)
-    input.parent(0);   // *revert* ctor kludge!
-  printf ("~Fl_Value_Input -B- this=%p, input.parent=%p, =%d\n",
-    this, input.parent(), input.parent()==this); fflush(stdout);
+  // this is not necessary any more, this d'tor may be deleted again.
+  //  input.parent(0);   // *revert* ctor kludge!
 }
 
 //
