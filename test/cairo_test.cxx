@@ -40,11 +40,16 @@ public:
     CairoWindow(int w, int h) : Fl_Double_Window(w,h),draw_cb_(0) {}
 
     void draw() {
-	Fl_Window::draw();
-	if (draw_cb_) draw_cb_(*this, Fl::cairo_cc()); // enjoy cairo features here !
+      cairo_t* c;
+      Fl_Double_Window::draw();
+      // manual method
+      // c = Fl::cairo_make_current(this); 
+      // autolink method
+      c=Fl::cairo_cc();
+      if (draw_cb_) draw_cb_(this, c); // enjoy cairo features here !
     }
     
-    typedef void (*draw_cb) (CairoWindow& self, cairo_t* def);
+    typedef void (*draw_cb) (CairoWindow* self, cairo_t* def);
     void set_draw_cb(draw_cb  cb){draw_cb_=cb;}
 private:
     draw_cb draw_cb_;
@@ -141,9 +146,9 @@ static void round_button(cairo_t* cr, double x0, double y0,
 
 }
 // The cairo rendering cb called during CairoWindow::draw() :
-static void my_cairo_draw_cb(CairoWindow& window, cairo_t* cr) {
+static void my_cairo_draw_cb(CairoWindow* window, cairo_t* cr) {
 	
-    int w= window.w(), h = window.h(); 
+  int w= window->w(), h = window->h(); 
   
     cairo_set_line_width (cr, DEF_WIDTH);
     cairo_scale (cr, w,h);

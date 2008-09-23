@@ -56,7 +56,7 @@
 /** Contains all the necessary info on the current cairo context */
 class FL_EXPORT Fl_Cairo_State {
 public:
-    Fl_Cairo_State() : cc_(0), own_cc_(false), autolink_(true) {}
+  Fl_Cairo_State() : cc_(0), own_cc_(false), autolink_(true), window_(0), gc_(0) {}
 
     // access attributes
     cairo_t* cc() const {return cc_;}		 ///< Gets the current cairo context
@@ -67,15 +67,17 @@ public:
 	if (!cc_) window_=0;
 	own_cc_=own;
     }
-    void autolink(bool b)  {autolink_ = b;}	///< Gets the autolink option
-    void window(void* w)  {window_=w;}		///< Sets the window to keep track on
-    void* window()  {return window_;}		///< Gets the last window attached to a cc
+    void  autolink(bool b)  {autolink_ = b;}	///< Gets the autolink option
+    void  window(void* w)  {window_=w;}		///< Sets the window to keep track on
+    void* window() const {return window_;}	///< Gets the last window attached to a cc
+    void  gc(void* c)  {gc_=c;}		        ///< Sets the gc to keep track on
+    void* gc() const {return gc_;}		///< Gets the last gc attached to a cc
 
 private:
-    cairo_t * cc_;	///< contains the unique autoupdated cairo context
-    bool own_cc_;	///< indicates whether we must delete the cc, useful for internal cleanup
-    bool autolink_;	///< true by default, permits to prevent the automatic cairo mapping on fltk windows for custom cairo implementations
-    void* window_;
+    cairo_t * cc_;	 // contains the unique autoupdated cairo context
+    bool own_cc_;	 // indicates whether we must delete the cc, useful for internal cleanup
+    bool autolink_;	 // true by default, permits to prevent the automatic cairo mapping on fltk windows for custom cairo implementations
+    void* window_, *gc_; // for keeping track internally of last win+gc treated
 };
 
 //

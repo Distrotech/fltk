@@ -33,7 +33,7 @@
 #include <FL/Fl_Window.H>
 
 // static Fl module initialization :
-Fl_Cairo_State Fl::cairo_state;	///< contains all necesary info for current cairo context mapping
+Fl_Cairo_State Fl::cairo_state_;	///< contains all necesary info for current cairo context mapping
 // Fl cairo features implementation
 
 /** Makes the window w current, and return a valid cairo context. */
@@ -42,16 +42,40 @@ cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
     
     if (fl_gc==0) { // means remove current cc
 	Fl::cairo_cc(0); // destroy any previous cc
+	cairo_state_.window(0);
 	return 0;
     }
-    //wi->make_current();
+
+    // don't re-create a context if it's the same gc/window couple
+    if (fl_gc==Fl::cairo_state_.gc() && fl_xid(wi) == (Window) Fl::cairo_state_.window())
+	return Fl::cairo_cc();
 
 #if defined(UNIX_X11)
-    return Fl::cairo_make_current(fl_gc, wi->w(), wi->h());
+    return Fl::cairo_make_current(0, fl_window, wi->w(), wi->h());
 #else
-    return Fl::cairo_make_current(fl_gc, wi->w(), wi->h());
+    return Fl::cairo_make_current(fl_gc, 0, wi->w(), wi->h());
 #endif
+    cairo_state_.window(wi);
 }
+
+/* 
+    Creates transparently a cairo_surface_t object.
+    gc is an HDC context in  WIN32, a CGContext* in Quartz, a display on X11
+ */
+static cairo_surface_t * cairo_create_surface(void * gc, Window id, int W, int H) {
+# if   defined(WIN32)
+    return cairo_win32_surface_create((HDC) gc);
+# elif defined(__APPLE_QUARTZ__)
+    return cairo_quartz_surface_create_for_cg_context((CGContext*) gc, W, H);
+# elif defined(__APPLE_QD__)
+#  error Cairo is not supported under Apple Quickdraw, please use Apple Quartz.
+# elif defined(UNIX_X11) // X11
+    return cairo_xlib_surface_create(fl_display, id, fl_visual->visual, W, H);
+# else
+#  error Cairo is not supported under this platform.
+# endif
+}
+
 /** Creates a cairo context from a gc only, get its window size  or offscreen size if fl_window is null */
 cairo_t * Fl::cairo_make_current(void *gc) {
     int W=0,H=0;
@@ -77,12 +101,13 @@ cairo_t * Fl::cairo_make_current(void *gc) {
 #endif
     if (!gc) {
 	Fl::cairo_cc(0);
+	cairo_state_.gc(0); // keep track for next time
 	return 0;
     }
-    if (gc==Fl::cairo_cc() && fl_window== (Window) Fl::cairo_window())
+    if (gc==Fl::cairo_state_.gc() && fl_window== (Window) Fl::cairo_state_.window())
 	return Fl::cairo_cc();
-    Fl::cairo_window(fl_gc); // keep track for next time
-    cairo_surface_t * s = Fl::cairo_create_surface(gc, W, H);
+    cairo_state_.gc(fl_gc); // keep track for next time
+    cairo_surface_t * s = cairo_create_surface(gc, fl_window, W, H);
     cairo_t * c = cairo_create(s);
     cairo_surface_destroy(s);
     Fl::cairo_cc(c);
@@ -90,30 +115,14 @@ cairo_t * Fl::cairo_make_current(void *gc) {
 }
 
 /** Creates a cairo context from a gc and its size */
-cairo_t * Fl::cairo_make_current(void *gc, int W, int H) {
-    cairo_surface_t * s = Fl::cairo_create_surface(gc, W, H);
+cairo_t * Fl::cairo_make_current(void *gc, Window id, int W, int H) {
+  cairo_surface_t * s = cairo_create_surface(gc, id, W, H);
     cairo_t * c = cairo_create(s);
     cairo_surface_destroy(s);
     Fl::cairo_cc(c);
     return c;
 }
-/** 
-    Creates transparently a cairo_surface_t object.
-    gc is an HDC context in  WIN32, a CGContext* in Quartz, a display on X11
- */
-cairo_surface_t * Fl::cairo_create_surface(void * gc, int W, int H) {
-# if   defined(WIN32)
-    return cairo_win32_surface_create((HDC) gc);
-# elif defined(__APPLE_QUARTZ__)
-    return cairo_quartz_surface_create_for_cg_context((CGContext*) gc, W, H);
-# elif defined(__APPLE_QD__)
-#  error Cairo is not supported under Apple Quickdraw, please use Apple Quartz.
-# elif defined(UNIX_X11) // X11
-    return cairo_xlib_surface_create(fl_display, fl_window,fl_visual->visual, W, H);
-# else
-#  error Cairo is not supported under this platform.
-# endif
-}
+
 #endif // HAVE_CAIRO
 
 //

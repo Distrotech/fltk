@@ -325,29 +325,24 @@ public:
 public:
   // Cairo support API
   static cairo_t * cairo_make_current(Fl_Window* w);
-  static cairo_t * cairo_make_current(void* gc);
-  static cairo_t * cairo_make_current(void* gc, int W, int H);
-  // Creates a Cairo surface from an opaque gc
-  static cairo_surface_t * cairo_create_surface(void *gc, int W, int H);
-  /** when HAVE_CAIRO is defined, any current window dc is linked to a current context.
+  /** when HAVE_CAIRO and cairo_autolink_context() is true, 
+      any current window dc is linked to a current context.
       this is the default and most of the time, you'll want that. 
       Still in custom cairo application it is possible to handle 
       completely this process by custom 3rd party cairo windows 
       by calling this function with alink to false.  */
-  static void autolink_cairo_context(bool alink) {cairo_state.autolink(alink);}
-  static bool autolink_cairo_context() {return cairo_state.autolink();}
+  static void autolink_cairo_context(bool alink) {cairo_state_.autolink(alink);}
+  static bool autolink_cairo_context() {return cairo_state_.autolink();}
   // Gets the current cairo context
-  static cairo_t * cairo_cc() { return cairo_state.cc(); }
+  static cairo_t * cairo_cc() { return cairo_state_.cc(); }
   /** Sets the cairo current context, 
       set own to true if you want fltk to handle this cc deletion.*/
-  static void cairo_cc(cairo_t * c, bool own=false){ cairo_state.cc(c, own); } 
-  /** Sets the window we must keep track on*/
-  static void cairo_window(void* win){ cairo_state.window(win); } 
-  /** Gets the last window to get cc */
-  static void* cairo_window(){ return cairo_state.window(); } 
+  static void cairo_cc(cairo_t * c, bool own=false){ cairo_state_.cc(c, own); } 
 
 private:
-  static Fl_Cairo_State cairo_state;
+  static cairo_t * cairo_make_current(void* gc);
+  static cairo_t * cairo_make_current(void* gc, Window id, int W, int H);
+  static Fl_Cairo_State cairo_state_;
 public:
 
 #endif // HAVE_CAIRO
