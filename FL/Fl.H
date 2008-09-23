@@ -341,7 +341,7 @@ public:
 
 private:
   static cairo_t * cairo_make_current(void* gc);
-  static cairo_t * cairo_make_current(void* gc, Window id, int W, int H);
+  static cairo_t * cairo_make_current(void* gc, int W, int H);
   static Fl_Cairo_State cairo_state_;
 public:
 

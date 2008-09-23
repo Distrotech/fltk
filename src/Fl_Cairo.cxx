@@ -50,19 +50,20 @@ cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
     if (fl_gc==Fl::cairo_state_.gc() && fl_xid(wi) == (Window) Fl::cairo_state_.window())
 	return Fl::cairo_cc();
 
-#if defined(UNIX_X11)
-    return Fl::cairo_make_current(0, fl_window, wi->w(), wi->h());
-#else
-    return Fl::cairo_make_current(fl_gc, 0, wi->w(), wi->h());
-#endif
     cairo_state_.window(wi);
+
+#if defined(UNIX_X11)
+    return Fl::cairo_make_current(0, wi->w(), wi->h());
+#else
+    return Fl::cairo_make_current(fl_gc, wi->w(), wi->h());
+#endif
 }
 
 /* 
     Creates transparently a cairo_surface_t object.
     gc is an HDC context in  WIN32, a CGContext* in Quartz, a display on X11
  */
-static cairo_surface_t * cairo_create_surface(void * gc, Window id, int W, int H) {
+static cairo_surface_t * cairo_create_surface(void * gc, int W, int H) {
 # if   defined(WIN32)
     return cairo_win32_surface_create((HDC) gc);
 # elif defined(__APPLE_QUARTZ__)
@@ -70,7 +71,7 @@ static cairo_surface_t * cairo_create_surface(void * gc, Window id, int W, int H
 # elif defined(__APPLE_QD__)
 #  error Cairo is not supported under Apple Quickdraw, please use Apple Quartz.
 # elif defined(UNIX_X11) // X11
-    return cairo_xlib_surface_create(fl_display, id, fl_visual->visual, W, H);
+    return cairo_xlib_surface_create(fl_display, fl_window, fl_visual->visual, W, H);
 # else
 #  error Cairo is not supported under this platform.
 # endif
@@ -107,7 +108,7 @@ cairo_t * Fl::cairo_make_current(void *gc) {
     if (gc==Fl::cairo_state_.gc() && fl_window== (Window) Fl::cairo_state_.window())
 	return Fl::cairo_cc();
     cairo_state_.gc(fl_gc); // keep track for next time
-    cairo_surface_t * s = cairo_create_surface(gc, fl_window, W, H);
+    cairo_surface_t * s = cairo_create_surface(gc, W, H);
     cairo_t * c = cairo_create(s);
     cairo_surface_destroy(s);
     Fl::cairo_cc(c);
@@ -115,8 +116,8 @@ cairo_t * Fl::cairo_make_current(void *gc) {
 }
 
 /** Creates a cairo context from a gc and its size */
-cairo_t * Fl::cairo_make_current(void *gc, Window id, int W, int H) {
-  cairo_surface_t * s = cairo_create_surface(gc, id, W, H);
+cairo_t * Fl::cairo_make_current(void *gc, int W, int H) {
+  cairo_surface_t * s = cairo_create_surface(gc, W, H);
     cairo_t * c = cairo_create(s);
     cairo_surface_destroy(s);
     Fl::cairo_cc(c);
