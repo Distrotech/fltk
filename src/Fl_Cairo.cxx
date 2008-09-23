@@ -47,7 +47,7 @@ cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
     //wi->make_current();
 
 #if defined(UNIX_X11)
-    return Fl::cairo_make_current(w->xid(), wi->w(), wi->h());
+    return Fl::cairo_make_current(fl_gc, wi->w(), wi->h());
 #else
     return Fl::cairo_make_current(fl_gc, wi->w(), wi->h());
 #endif
@@ -81,7 +81,7 @@ cairo_t * Fl::cairo_make_current(void *gc) {
     }
     if (gc==Fl::cairo_cc() && fl_window== (Window) Fl::cairo_window())
 	return Fl::cairo_cc();
-    Fl::cairo_window(fl_window); // keep track for next time
+    Fl::cairo_window(fl_gc); // keep track for next time
     cairo_surface_t * s = Fl::cairo_create_surface(gc, W, H);
     cairo_t * c = cairo_create(s);
     cairo_surface_destroy(s);
@@ -109,7 +109,7 @@ cairo_surface_t * Fl::cairo_create_surface(void * gc, int W, int H) {
 # elif defined(__APPLE_QD__)
 #  error Cairo is not supported under Apple Quickdraw, please use Apple Quartz.
 # elif defined(UNIX_X11) // X11
-    return cairo_xlib_surface_create(display, (Window) gc,fl_visual->visual, W, H);
+    return cairo_xlib_surface_create(fl_display, fl_window,fl_visual->visual, W, H);
 # else
 #  error Cairo is not supported under this platform.
 # endif

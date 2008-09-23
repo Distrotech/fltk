@@ -554,7 +554,6 @@ AC_SUBST(PNG)
 AC_SUBST(PNGINC)
 AC_SUBST(ZLIB)
 AC_SUBST(ZLIBINC)
-AC_SUBST(CAIROLIB)
 
 dnl Restore original LIBS settings...
 LIBS="$SAVELIBS"
@@ -568,9 +567,9 @@ if test x$enable_cairo = xyes; then
 	  AC_DEFINE(HAVE_CAIRO)
 	  dnl FIXME This part should be fixed so configure do not depend on
 	  dnl we do not rely on pkg-config .
-          CXXFLAGS = "`pkg-config --CXXFLAGS` $CXXFLAGS"
+          CXXFLAGS="`pkg-config --cflags cairo` $CXXFLAGS"
           CAIROLIBS="-lcairo -lpixman-1" 
-	  LIBS="$CAIROLIBS $LIBS"
+	  LIBS="-lcairo -lpixman-1 $LIBS"
 fi
 
 dnl Check for pthreads for multi-threaded apps...
