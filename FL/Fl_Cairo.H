@@ -1,5 +1,5 @@
 //
-// "$Id"
+// "$Id:"
 //
 // Main header file for the Fast Light Tool Kit (FLTK).
 //
@@ -81,5 +81,5 @@ private:
 };
 
 //
-// End of "$Id"
+// End of "$Id:"
 //

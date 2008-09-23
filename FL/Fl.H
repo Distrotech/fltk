@@ -331,8 +331,8 @@ public:
       Still in custom cairo application it is possible to handle 
       completely this process by custom 3rd party cairo windows 
       by calling this function with alink to false.  */
-  static void autolink_cairo_context(bool alink) {cairo_state_.autolink(alink);}
-  static bool autolink_cairo_context() {return cairo_state_.autolink();}
+  static void cairo_autolink_context(bool alink) {cairo_state_.autolink(alink);}
+  static bool cairo_autolink_context() {return cairo_state_.autolink();}
   // Gets the current cairo context
   static cairo_t * cairo_cc() { return cairo_state_.cc(); }
   /** Sets the cairo current context, 

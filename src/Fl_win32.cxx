@@ -1733,9 +1733,6 @@ HDC fl_GetDC(HWND w) {
   fl_gc = GetDC(w);
   fl_save_dc(w, fl_gc);
   fl_window = w;
-#if defined(HAVE_CAIRO)
-  if (Fl::autolink_cairo_context()) Fl::cairo_make_current(fl_gc); // WIN32 does not need w,h size
-#endif
   // calling GetDC seems to always reset these: (?)
   SetTextAlign(fl_gc, TA_BASELINE|TA_LEFT);
   SetBkMode(fl_gc, TRANSPARENT);

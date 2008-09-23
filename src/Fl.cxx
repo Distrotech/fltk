@@ -1184,7 +1184,7 @@ void Fl_Window::hide() {
       fl_window = (HWND)-1;
       fl_gc = 0;
 # ifdef HAVE_CAIRO
-      if (Fl::autolink_cairo_context()) Fl::cairo_make_current((Fl_Window*) 0);
+      if (Fl::cairo_autolink_context()) Fl::cairo_make_current((Fl_Window*) 0);
 # endif
     }
 #elif defined(__APPLE_QD__)

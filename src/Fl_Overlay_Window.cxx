@@ -136,7 +136,7 @@ void _Fl_Overlay::flush() {
   }
   fl_gc = gc;
 #if defined(HAVE_CAIRO)
-      if (Fl::autolink_cairo_context()) Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
+      if (Fl::cairo_autolink_context()) Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
 #endif
   fl_overlay = 1;
   Fl_Overlay_Window *w = (Fl_Overlay_Window *)parent();

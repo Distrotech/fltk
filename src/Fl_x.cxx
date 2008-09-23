@@ -1729,7 +1729,7 @@ void Fl_Window::make_current() {
 
 #ifdef HAVE_CAIRO
   // update the cairo_t context
-  if (Fl::autolink_cairo_context()) Fl::cairo_make_current(this);
+  if (Fl::cairo_autolink_context()) Fl::cairo_make_current(this);
 #endif
 
 }
