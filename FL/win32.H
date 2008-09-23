@@ -124,22 +124,12 @@ typedef HBITMAP Fl_Offscreen;
 
 extern FL_EXPORT HDC fl_makeDC(HBITMAP);
 
-#ifdef HAVE_CAIRO
-# define fl_begin_offscreen(b) \
-   HDC _sgc=fl_gc; Window _sw=fl_window; \
-   fl_gc=fl_makeDC(b); int _savedc = SaveDC(fl_gc); fl_window=(HWND)b; fl_push_no_clip(); \
-    Fl::cairo_make_current(fl_gc);
-# define fl_end_offscreen() \
-   fl_pop_clip(); RestoreDC(fl_gc, _savedc); DeleteDC(fl_gc); fl_window=_sw; fl_gc = _sgc; \
-    Fl::cairo_make_current(fl_gc);
-#else
 # define fl_begin_offscreen(b) \
    HDC _sgc=fl_gc; Window _sw=fl_window; \
    fl_gc=fl_makeDC(b); int _savedc = SaveDC(fl_gc); fl_window=(HWND)b; fl_push_no_clip()
 
 # define fl_end_offscreen() \
    fl_pop_clip(); RestoreDC(fl_gc, _savedc); DeleteDC(fl_gc); fl_window=_sw; fl_gc = _sgc
-#endif
 
 FL_EXPORT void fl_copy_offscreen(int x,int y,int w,int h,HBITMAP pixmap,int srcx,int srcy);
 FL_EXPORT void fl_copy_offscreen_with_alpha(int x,int y,int w,int h,HBITMAP pixmap,int srcx,int srcy);
