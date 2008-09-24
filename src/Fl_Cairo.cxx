@@ -24,10 +24,9 @@
 //
 //     http://www.fltk.org/str.php
 //
-#include "config.h"
 
 #ifdef HAVE_CAIRO
-
+#include "config.h"
 #include <FL/Fl.H>
 #include <FL/x.H>
 #include <FL/Fl_Window.H>
@@ -37,18 +36,20 @@ Fl_Cairo_State Fl::cairo_state_;	///< contains all necesary info for current cai
 // Fl cairo features implementation
 
 /** 
-    Provides to Window \a w, a valid cairo context.
-    This is needed in a draw() override if cairo_autolink_context() is false,
-    which is the default.
+    Provides a corresponding cairo context for Window \a w.
+    This is needed in a draw() override if Fl::cairo_autolink_context() 
+    returns false, which is the default.
     The cairo_context() does not need to be freed as it is freed every time 
-    a new cairo context is created.
-    \note A a new cairo context is not always recreated when this method
-    is used, in particular, if the current graphical context and the current 
-    window didn't change between two calls, the previous gc is internally kept.
+    a new cairo context is created. When the program terminates,
+    a call to Fl::cairo_make_current(0) will destroy any residual context.
+    \note A new cairo context is not always re-created when this method
+    is used. In particular, if the current graphical context and the current 
+    window didn't change between two calls, the previous gc is internally kept,
+    thus optimizing the drawing performances.
     Also, after this call, Fl::cairo_gc() is adequately updated with this 
     cairo  context.
     \note Only available when configure has the --enable-cairo option
-    \return the valid cairo context associated to this window.
+    \return the valid cairo_t* cairo context associated to this window.
 */
 cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
     if (!wi) return NULL; // Precondition
@@ -142,9 +143,8 @@ cairo_t * Fl::cairo_make_current(void *gc, int W, int H) {
     Fl::cairo_cc(c);
     return c;
 }
-
 #endif // HAVE_CAIRO
 
 //
-// End of "$Id$"
+// End of "$Id$" .
 //

@@ -26,10 +26,11 @@ Note that it should be possible to compile so HAVE_CAIRO works even if
 USE_CAIRO does not, and so that turning on USE_CAIRO does not break any
 programs written for HAVE_CAIRO.
 
-From Fabien
+From Fabien:
 We will provide some service for users to use cairo with fltk 1.3 :
 A HAVE_CAIRO configuration option will be created.
-A simple Fl_Cairo_Window will be implemented and will provide basic 
-cairo surface transparent handling (hiding non portable cairo context creation and so on).
+A simple set of cairo api all prefixed Fl::cairo_xxxx()  will be implemented 
+and will provide basic cairo surface transparent handling. 
+(hiding non portable cairo context creation and so on).
 A demo program called cairo_test will be added in demo,  providing a new test case.
 This program will raise an alert dialog box in case HAVE_CAIRO is not set, indicating that cairo lib is not available.

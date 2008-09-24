@@ -50,9 +50,16 @@
 #  error Cairo is not supported on that platform.
 # endif
 
+/** 
+   \addtogroup group_cairo
+   @{
+*/
 
 /** 
-   Contains all the necessary info on the current cairo context 
+   Contains all the necessary info on the current cairo context.
+   A private internal & unique corresponding object is created to
+   permit cairo context state handling while keeping it opaque.
+   For internal use only.
    \note Only available when configure has the --enable-cairo option
 */
 class FL_EXPORT Fl_Cairo_State {
@@ -61,17 +68,17 @@ public:
 
     // access attributes
     cairo_t* cc() const {return cc_;}		 ///< Gets the current cairo context
-    bool autolink() const {return autolink_;}	 ///< Gets the autolink option
-    void cc(cairo_t* c, bool own=true)  {	 ///< Sets the current cairo context, own indicates cc deletion is made by us
+    bool autolink() const {return autolink_;}	 ///< Sets the autolink option \see Fl:cairo_autolink_context(bool)
+    void cc(cairo_t* c, bool own=true)  {	 ///< Sets the current cairo context, \a own indicates cc deletion is made by us
 	if (cc_ && own_cc_) cairo_destroy(cc_); 
 	cc_=c;
 	if (!cc_) window_=0;
 	own_cc_=own;
     }
     void  autolink(bool b)  {autolink_ = b;}	///< Gets the autolink option
-    void  window(void* w)  {window_=w;}		///< Sets the window to keep track on
+    void  window(void* w)  {window_=w;}		///< Sets the window \w to keep track on
     void* window() const {return window_;}	///< Gets the last window attached to a cc
-    void  gc(void* c)  {gc_=c;}		        ///< Sets the gc to keep track on
+    void  gc(void* c)  {gc_=c;}		        ///< Sets the gc \c to keep track on
     void* gc() const {return gc_;}		///< Gets the last gc attached to a cc
 
 private:
@@ -80,6 +87,8 @@ private:
     bool autolink_;	 // true by default, permits to prevent the automatic cairo mapping on fltk windows for custom cairo implementations
     void* window_, *gc_; // for keeping track internally of last win+gc treated
 };
+
+/** @} */
 
 # endif // HAVE_CAIRO
 #endif // FL_CAIRO_H

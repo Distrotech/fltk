@@ -25,9 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
-/** \file
-  
- * Fl static class .
+/** \file  
+    Fl static class .
  */
 
 #ifndef Fl_H
@@ -67,7 +66,7 @@ class FL_EXPORT Fl {
   Fl() {}; // no constructor!
 
 public: // should be private!
-
+#ifndef FL_DOXYGEN
   static int e_number;
   static int e_x;
   static int e_y;
@@ -110,6 +109,7 @@ public: // should be private!
   static Fl_Image* scheme_bg_;
 
   static int e_original_keysym; // late addition
+#endif
 
 public:
 
@@ -251,6 +251,9 @@ public:
   static int damage() {return damage_;}
   static void redraw();
   static void flush();
+ /** \defgroup  fl_windows fltk windows handling functions
+      Windows and standard dialogs handling
+    @{ */
   /** \fn void (*warning)(const char*, ...)
   FLTK calls this to print a warning message. You can
   override the behavior by setting the function pointer to your
@@ -320,54 +323,12 @@ public:
   static Fl_Window* grab() {return grab_;}
   /** Selects the window to grab. See Fl_Window* Fl::grab() */
   static void grab(Fl_Window*); // platform dependent
+  /** @} */
 
-#ifdef HAVE_CAIRO
-  /** \defgroup group_cairo Cairo functions support 
-      @{ 
+ /** \defgroup fl_events fltk global events handling functions
+	Fl class events handling API
+	@{
   */
-public:
-  // Cairo support API
-  static cairo_t * cairo_make_current(Fl_Window* w);
-   /** when HAVE_CAIRO is defined and cairo_autolink_context() is true, 
-       any current window dc is linked to a current context.
-      this is not the default because, it may not be necessary
-      to add cairo support to all fltk supported windows.
-      When you wish to associate a cairo context in this mode,
-      you need to call explicitly in your draw() overriden method,
-      FL::cairo_make_current(Fl_Window*). This will create a cairo context
-      but only for this Window. 
-      Still in custom cairo application it is possible to handle 
-      completely this process automatically by setting \a alink to true.
-      In this last case, you don't need anymore to call Fl::cairo_make_current()
-      you can use Fl::cairo_cc() to get the current cairo context anytime.
-     \note Only available when configure has the --enable-cairo option
-  */
-  static void cairo_autolink_context(bool alink) {cairo_state_.autolink(alink);}
-  /** 
-    Gets the current autolink mode for cairo support, 
-    \retval false if no cairo context autolink is made for each window. 
-    \retval true if any fltk window is attached a cairo context when it 
-    is current. \see void cairo_autolink_context(bool alink) 
-    \note Only available when configure has the --enable-cairo option
- */
-  static bool cairo_autolink_context() {return cairo_state_.autolink();}
-  /** Gets the current cairo context linked with a fltk window. */
-  static cairo_t * cairo_cc() { return cairo_state_.cc(); }
-  /** Sets the cairo current context to \a c, 
-      set \a own to true if you want fltk to handle this cc deletion.
-     \note Only available when configure has the --enable-cairo option
-*/
-  static void cairo_cc(cairo_t * c, bool own=false){ cairo_state_.cc(c, own); } 
-
-private:
-  static cairo_t * cairo_make_current(void* gc);
-  static cairo_t * cairo_make_current(void* gc, int W, int H);
-  static Fl_Cairo_State cairo_state_;
-public:
-  /** @} */ 
-
-#endif // HAVE_CAIRO
-
   // event information:
   /**
     Returns the last event that was processed. This can be used
@@ -577,7 +538,11 @@ public:
   static void focus(Fl_Widget*);
   static void add_handler(int (*h)(int));
   static void remove_handler(int (*h)(int));
+  /** @} */
 
+  /** \defgroup  fl_clipboard  fltk selection/clipboard functions
+	fl global copy/cut/paste functions
+   @{ */
   // cut/paste:
   /**
     Copies the data pointed to by stuff to the selection
@@ -607,7 +572,10 @@ public:
   static void selection_owner(Fl_Widget*);
   static void selection(Fl_Widget &owner, const char*, int len);
   static void paste(Fl_Widget &receiver);
-
+/** @} */
+/** \defgroup  fl_screen  fltk screen functions
+	fl global screen functions
+     @{ */
   // screen size:
   /** Returns the origin of the current screen, where 0 indicates the left side of the screen. */
   static int x(); // platform dependent
@@ -626,6 +594,12 @@ public:
   }
   static void screen_xywh(int &X, int &Y, int &W, int &H, int mx, int my);
   static void screen_xywh(int &X, int &Y, int &W, int &H, int n);
+
+  /**   @} */
+
+  /** \defgroup  fl_attributes  fltk color,font functions
+	fl global color, font functions
+     @{ */
 
   // color map:
   static void	set_color(Fl_Color, uchar, uchar, uchar);
@@ -694,6 +668,8 @@ public:
   */
   static Fl_Font set_fonts(const char* = 0); // platform dependent
 
+  /**   @} */
+
   // labeltypes:
   static void set_labeltype(Fl_Labeltype,Fl_Label_Draw_F*,Fl_Label_Measure_F*);
   /** Sets the functions to call to draw and measure a specific labeltype. */
@@ -711,11 +687,17 @@ public:
 
   // back compatibility:
   /** for back compatibility. sets the (*fatal)() callback. */
+  /** \addtogroup fl_windows 
+    @{ */
   static void set_abort(void (*f)(const char*,...)) {fatal = f;}
   static void (*atclose)(Fl_Window*,void*);
   static void default_atclose(Fl_Window*,void*);
   /** for back compatibility. sets the (*atclose)() callback. */
   static void set_atclose(void (*f)(Fl_Window*,void*)) {atclose = f;}
+  /**   @} */
+
+  /** \addtogroup fl_events 
+    @{ */
   /** Returns non-zero if the Shift key is pressed. */
   static int event_shift() {return e_state&FL_SHIFT;}
   /** Returns non-zero if the Control key is pressed. */
@@ -746,6 +728,8 @@ public:
     For more details, see Fl::event_buttons().
   */
   static int event_button3() {return e_state&FL_BUTTON3;}
+  /**   @} */
+
   /**
     Sets an idle callback.
     <P>This method is obsolete - use the add_idle() method instead.
@@ -785,6 +769,9 @@ public:
     cut/paste shortcut.
   */
   static int  dnd_text_ops() { return dnd_text_ops_; }
+  /** \defgroup fl_multithread fltk multithreading support functions
+	fl multithreading support functions
+   @{ */
 
   // Multithreading support:
   static void lock();
@@ -799,13 +786,66 @@ public:
     <P>See also: multithreading
   */
   static void* thread_message(); // platform dependent
+  /** @} */
 
+  /** \defgroup fl_del_widget fltk safe widget deletion support functions
+	fl multithreading support functions
+   @{ */
   // Widget deletion:
   static void delete_widget(Fl_Widget *w);
   static void do_widget_deletion();
   static void watch_widget_pointer(Fl_Widget *&w);
   static void release_widget_pointer(Fl_Widget *&w);
   static void clear_widget_pointer(Fl_Widget const *w);
+  /** @} */
+
+#ifdef HAVE_CAIRO
+  /** \defgroup group_cairo Cairo functions support 
+      @{ 
+  */
+public:
+  // Cairo support API
+  static cairo_t * cairo_make_current(Fl_Window* w);
+   /** when HAVE_CAIRO is defined and cairo_autolink_context() is true, 
+       any current window dc is linked to a current context.
+      this is not the default because, it may not be necessary
+      to add cairo support to all fltk supported windows.
+      When you wish to associate a cairo context in this mode,
+      you need to call explicitly in your draw() overriden method,
+      FL::cairo_make_current(Fl_Window*). This will create a cairo context
+      but only for this Window. 
+      Still in custom cairo application it is possible to handle 
+      completely this process automatically by setting \a alink to true.
+      In this last case, you don't need anymore to call Fl::cairo_make_current()
+      you can use Fl::cairo_cc() to get the current cairo context anytime.
+     \note Only available when configure has the --enable-cairo option
+  */
+  static void cairo_autolink_context(bool alink) {cairo_state_.autolink(alink);}
+  /** 
+    Gets the current autolink mode for cairo support, 
+    \retval false if no cairo context autolink is made for each window. 
+    \retval true if any fltk window is attached a cairo context when it 
+    is current. \see void cairo_autolink_context(bool alink) 
+    \note Only available when configure has the --enable-cairo option
+ */
+  static bool cairo_autolink_context() {return cairo_state_.autolink();}
+  /** Gets the current cairo context linked with a fltk window. */
+  static cairo_t * cairo_cc() { return cairo_state_.cc(); }
+  /** Sets the cairo current context to \a c, 
+      set \a own to true if you want fltk to handle this cc deletion.
+     \note Only available when configure has the --enable-cairo option
+*/
+  static void cairo_cc(cairo_t * c, bool own=false){ cairo_state_.cc(c, own); } 
+
+private:
+  static cairo_t * cairo_make_current(void* gc);
+  static cairo_t * cairo_make_current(void* gc, int W, int H);
+  static Fl_Cairo_State cairo_state_;
+public:
+  /** @} */ 
+
+#endif // HAVE_CAIRO
+
 };
 
 #endif // !Fl_H
