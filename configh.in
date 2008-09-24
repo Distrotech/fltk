@@ -132,13 +132,13 @@
 
 
 /*
- * UNIX_X11
+ * USE_X11
  *
- * Is a Unix platform with X11. 
+ * Should we use X11 for the current platform
  *
  */
 
-#undef UNIX_X11
+#undef USE_X11
 
 /*
  * HAVE_OVERLAY:

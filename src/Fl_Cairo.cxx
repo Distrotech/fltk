@@ -52,7 +52,7 @@ cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
 
     cairo_state_.window(wi);
 
-#if defined(UNIX_X11)
+#if defined(USE_X11)
     return Fl::cairo_make_current(0, wi->w(), wi->h());
 #else
     return Fl::cairo_make_current(fl_gc, wi->w(), wi->h());
@@ -64,14 +64,14 @@ cairo_t * Fl::cairo_make_current(Fl_Window* wi) {
     gc is an HDC context in  WIN32, a CGContext* in Quartz, a display on X11
  */
 static cairo_surface_t * cairo_create_surface(void * gc, int W, int H) {
-# if   defined(WIN32)
+# if defined(USE_X11) // X11
+    return cairo_xlib_surface_create(fl_display, fl_window, fl_visual->visual, W, H);
+# elif   defined(WIN32)
     return cairo_win32_surface_create((HDC) gc);
 # elif defined(__APPLE_QUARTZ__)
     return cairo_quartz_surface_create_for_cg_context((CGContext*) gc, W, H);
 # elif defined(__APPLE_QD__)
 #  error Cairo is not supported under Apple Quickdraw, please use Apple Quartz.
-# elif defined(UNIX_X11) // X11
-    return cairo_xlib_surface_create(fl_display, fl_window, fl_visual->visual, W, H);
 # else
 #  error Cairo is not supported under this platform.
 # endif
@@ -80,7 +80,11 @@ static cairo_surface_t * cairo_create_surface(void * gc, int W, int H) {
 /** Creates a cairo context from a gc only, get its window size  or offscreen size if fl_window is null */
 cairo_t * Fl::cairo_make_current(void *gc) {
     int W=0,H=0;
-#if defined(__APPLE_QUARTZ__) 
+#if defined(USE_X11)
+    //FIXME X11 get W,H
+    // gc will be the window handle here
+# warning FIXME get W,H for cairo_make_current(void*)
+#elif defined(__APPLE_QUARTZ__) 
     if (fl_window) {
       Rect portRect; 
       GetPortBounds(GetWindowPort( fl_window ), &portRect);
@@ -93,10 +97,6 @@ cairo_t * Fl::cairo_make_current(void *gc) {
     }
 #elif defined(WIN32)
     // we don't need any W,H for WIN32
-#elif defined(UNIX_X11)
-    //FIXME X11 get W,H
-    // gc will be the window handle here
-# warning FIXME get W,H for cairo_make_current(void*)
 #else
 # error Cairo is not supported under this platform.
 #endif
