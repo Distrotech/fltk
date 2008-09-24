@@ -208,10 +208,14 @@ This will appear in the document:
 
   \li	\b \\page	creates a named page
   \li	\b \\section	creates a named section within that page
-  \li	\b \\subsection	creates a named subsection within that page
+  \li	\b \\subsection	creates a named subsection within the current section
+  \li	\b \\subsubsection creates a named subsubsection within the current subsection
+
+All these statements take a "name" as their first argument, and a title
+as their second argument. The title can contain spaces.
 
 The page, section, and subsection titles are formatted in blue color and
-a size like \b "<H1>", \b "<H2>", and \b "<H3>", respectively.
+a size like \b "<H1>", \b "<H2>", and \b "<H3>", and \b "<H4>", respectively.
 
 By <b>FLTK documentation convention</b>, a file like this one with a doxygen
 documentation chapter has the name <b>"<chapter>.dox".</b>
@@ -219,14 +223,13 @@ The \b \\page statement at the top of the page is
 <b>"\page <chapter> This is the title"</b>.
 Sections within a documentation page must be called \b "<chapter>_<section>",
 where \b "<chapter>" is the name part of the file, and \b "<section>" is a
-unique section name within the page that can be referenced in links.
+unique section name within the page that can be referenced in links. The
+same for subsections and subsubsections.
 
 These doxygen page and section commands work only in special documentation
 chapters, not within normal source or header documentation blocks. However,
-links to documentation sections \b should work.
-
-\todo	Verify, that links in (from) source documentation to documentation
-	pages and sections or subsections work.
+links \b from normal (e.g. class) documentation \b to documentation sections
+\b do \b work.
 
 This page has
   \code
@@ -286,7 +289,111 @@ appears as:
     
     see section \ref development_non-ascii
 
-  \subsection development_subsection_01 Subsection Number 1
+\section development_old-links Changing Old Links
 
-    Text in Subsection Number 1.
+Old HTML links and anchors in text documentation pages should be changed
+as follows:
+
+\code
+<H2><A name="event_xxx">Fl::event_*() methods</A></H2>
+
+becomes:
+
+<A NAME="event_xxx"></A> <!-- For old HTML links only ! -->
+\section events_event_xxx Fl::event_*() methods
+\endcode
+
+The additional HTML "<A NAME=...>" statement is temporary needed, until
+all links (references) are modified, then:
+
+\code
+<H2><A name="event_xxx">Fl::event_*() methods</A></H2>
+
+becomes:
+
+\section events_event_xxx Fl::event_*() methods
+\endcode
+
+The "\section" statement can also be a "\subsection" or "\subsubsection"
+statement.
+
+The references (in this example from index.dox) are changed as follows:
+
+\code
+
+ \subpage events
+
+    <B>
+      <UL>
+	<LI><A HREF="events.html#event_xxx">Fl::event_*() methods</A></LI>
+	<LI><A HREF="events.html#propagation">Event Propagation</A></LI>
+      </UL>
+    </B>
+
+becomes:
+
+ \subpage events
+
+    <b>
+	\li \ref events_event_xxx
+	\li \ref events_propagation
+    </b>
+
+\endcode
+
+\section development_html_footer Hack for missing "tiny.gif" file
+
+  \todo
+	*HACK* : include image file for footer. Doxygen does not include
+  	the file "tiny.gif" from "html_footer" in its output html dir.
+	Find out, how this can be done, or avoid using an image in
+	the HTML footer.
+
+  \image html tiny.gif
+
+
+\section development_navigation_test 5 Navigation Proposals
+
+<hr>
+\link migration_1_3 [ Previous ] \endlink
+<b>    [ <a href="index.html">Index</a> ]    </b>
+<b> Next: </b> \ref license
+
+<hr>
+<b>[ <a href="index.html">Index</a> ]    </b>
+<b>   Previous: </b> \ref migration_1_3
+<b>   Next: </b> \ref license
+
+<hr>
+<b>[ <a href="index.html">Index</a> ]    </b><br>
+<b>   Previous: </b> \ref migration_1_3 <br>
+<b>   Next: </b> \ref license
+
+<hr>
+<b>[ <a href="index.html">Index</a> ]    </b>
+   Previous:  \ref migration_1_3
+   Next:  \ref license
+
+<hr>
+\link migration_1_3 [ Previous ] \endlink
+<b>    [ <a href="index.html">Top</a> ]    </b>
+\link license [ Next ] \endlink
+
+<hr>
+<br>
+<br>
+
+\section development_proposed_nav Proposed (semi-final) Navigation Elements
+
+See below.
+
+<hr>
+<a class="el" href="index.html">[Index]</a>
+	&nbsp;&nbsp;
+<a class="el" href="migration_1_3.html">[Previous]</a>&nbsp;
+     \ref migration_1_3
+	&nbsp;&nbsp;
+<a class="el" href="license.html">[Next]</a>&nbsp;
+     \ref license
+
 */

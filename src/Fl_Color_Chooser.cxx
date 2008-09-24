@@ -93,7 +93,13 @@ void Fl_Color_Chooser::rgb2hsv(
   }
 }
 
-enum {M_RGB, M_BYTE, M_HEX, M_HSV}; // modes
+/** Fl_Color_Chooser modes */
+enum {
+  M_RGB,	/**< mode() of Fl_Color_Chooser showing RGB values */
+  M_BYTE,	/**< mode() of Fl_Color_Chooser showing byte values */
+  M_HEX,	/**< mode() of Fl_Color_Chooser showing hex values */
+  M_HSV		/**< mode() of Fl_Color_Chooser showing HSV values */
+};
 static Fl_Menu_Item mode_menu[] = {
   {"rgb"},
   {"byte"},
@@ -102,11 +108,13 @@ static Fl_Menu_Item mode_menu[] = {
   {0}
 };
 
+#ifndef FL_DOXYGEN
 int Flcc_Value_Input::format(char* buf) {
   Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
   if (c->mode() == M_HEX) return sprintf(buf,"0x%02X", int(value()));
   else return Fl_Valuator::format(buf);
 }
+#endif // !FL_DOXYGEN
 
 void Fl_Color_Chooser::set_valuators() {
   switch (mode()) {
@@ -201,6 +209,7 @@ static void tohs(double x, double y, double& h, double& s) {
 #endif
 }
 
+#ifndef FL_DOXYGEN
 int Flcc_HueBox::handle(int e) {
   static double ih, is;
   Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
@@ -235,6 +244,7 @@ int Flcc_HueBox::handle(int e) {
     return 0;
   }
 }
+#endif // !FL_DOXYGEN
 
 static void generate_image(void* vv, int X, int Y, int W, uchar* buf) {
   Flcc_HueBox* v = (Flcc_HueBox*)vv;
@@ -256,6 +266,7 @@ static void generate_image(void* vv, int X, int Y, int W, uchar* buf) {
   }
 }
 
+#ifndef FL_DOXYGEN
 int Flcc_HueBox::handle_key(int key) {
   int w1 = w()-Fl::box_dw(box())-6;
   int h1 = h()-Fl::box_dh(box())-6;
@@ -294,7 +305,9 @@ int Flcc_HueBox::handle_key(int key) {
 
   return 1;
 }
+#endif // !FL_DOXYGEN
 
+#ifndef FL_DOXYGEN
 void Flcc_HueBox::draw() {
   if (damage()&FL_DAMAGE_ALL) draw_box();
   int x1 = x()+Fl::box_dx(box());
@@ -318,9 +331,11 @@ void Flcc_HueBox::draw() {
   draw_box(FL_UP_BOX,x1+X,yy1+Y,6,6,Fl::focus() == this ? FL_FOREGROUND_COLOR : FL_GRAY);
   px = X; py = Y;
 }
+#endif // !FL_DOXYGEN
 
 ////////////////////////////////////////////////////////////////
 
+#ifndef FL_DOXYGEN
 int Flcc_ValueBox::handle(int e) {
   static double iv;
   Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
@@ -350,6 +365,7 @@ int Flcc_ValueBox::handle(int e) {
     return 0;
   }
 }
+#endif // !FL_DOXYGEN
 
 static double tr, tg, tb;
 static void generate_vimage(void* vv, int X, int Y, int W, uchar* buf) {
@@ -363,6 +379,7 @@ static void generate_vimage(void* vv, int X, int Y, int W, uchar* buf) {
   }
 }
 
+#ifndef FL_DOXYGEN
 void Flcc_ValueBox::draw() {
   if (damage()&FL_DAMAGE_ALL) draw_box();
   Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
@@ -379,7 +396,9 @@ void Flcc_ValueBox::draw() {
   draw_box(FL_UP_BOX,x1,yy1+Y,w1,6,Fl::focus() == this ? FL_FOREGROUND_COLOR : FL_GRAY);
   py = Y;
 }
+#endif // !FL_DOXYGEN
 
+#ifndef FL_DOXYGEN
 int Flcc_ValueBox::handle_key(int key) {
   int h1 = h()-Fl::box_dh(box())-6;
   Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
@@ -404,6 +423,7 @@ int Flcc_ValueBox::handle_key(int key) {
 
   return 1;
 }
+#endif // !FL_DOXYGEN
 
 ////////////////////////////////////////////////////////////////
 
