@@ -1127,6 +1127,7 @@ INCLUDE_FILE_PATTERNS  =
 # instead of the = operator.
 
 PREDEFINED             = FL_DOXYGEN \
+		         HAVE_CAIRO \
                          FL_EXPORT:=
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then 

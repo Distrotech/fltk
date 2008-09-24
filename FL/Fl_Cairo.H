@@ -1,5 +1,5 @@
 //
-// "$Id:"
+// "$Id$"
 //
 // Main header file for the Fast Light Tool Kit (FLTK).
 //
@@ -50,13 +50,14 @@
 #  error Cairo is not supported on that platform.
 # endif
 
-# endif // HAVE_CAIRO
-#endif // FL_CAIRO_H
 
-/** Contains all the necessary info on the current cairo context */
+/** 
+   Contains all the necessary info on the current cairo context 
+   \note Only available when configure has the --enable-cairo option
+*/
 class FL_EXPORT Fl_Cairo_State {
 public:
-  Fl_Cairo_State() : cc_(0), own_cc_(false), autolink_(true), window_(0), gc_(0) {}
+  Fl_Cairo_State() : cc_(0), own_cc_(false), autolink_(false), window_(0), gc_(0) {}
 
     // access attributes
     cairo_t* cc() const {return cc_;}		 ///< Gets the current cairo context
@@ -80,6 +81,9 @@ private:
     void* window_, *gc_; // for keeping track internally of last win+gc treated
 };
 
+# endif // HAVE_CAIRO
+#endif // FL_CAIRO_H
+
 //
-// End of "$Id:"
+// End of "$Id$" .
 //

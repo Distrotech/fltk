@@ -35,18 +35,23 @@
 #include <FL/math.h>
 #define DEF_WIDTH 0.03
 
+// uncomment the following line to enable cairo context autolink feature:
+// #define AUTOLINK
+
 class CairoWindow : public Fl_Double_Window {
 public:
     CairoWindow(int w, int h) : Fl_Double_Window(w,h),draw_cb_(0) {}
 
     void draw() {
-      cairo_t* c;
       Fl_Double_Window::draw();
+#ifndef AUTOLINK
       // manual method
-      // c = Fl::cairo_make_current(this); 
+      cairo_t* c  = Fl::cairo_make_current(this); 
+      if (draw_cb_) draw_cb_(this, Fl::cairo_cc()); // enjoy cairo features here !
+#else
       // autolink method
-      c=Fl::cairo_cc();
-      if (draw_cb_) draw_cb_(this, c); // enjoy cairo features here !
+      if (draw_cb_) draw_cb_(this, Fl::cairo_cc()); // enjoy cairo features here 
+#endif
     }
     
     typedef void (*draw_cb) (CairoWindow* self, cairo_t* def);
@@ -160,6 +165,9 @@ static void my_cairo_draw_cb(CairoWindow* window, cairo_t* cr) {
 }
 
 int main(int argc, char** argv) {
+#ifdef AUTOLINK
+  Fl::cairo_autolink_context(true);
+#endif
     CairoWindow window(300,300);
     
     window.resizable(&window);

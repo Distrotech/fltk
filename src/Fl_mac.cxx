@@ -2311,7 +2311,7 @@ void Fl_Window::make_current()
   CGContextSaveGState(fl_gc);
   Fl_X::q_fill_context();
 #if defined(HAVE_CAIRO) && defined (__APPLE_QUARTZ__)
-  Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
+   if (Fl::cairo_autolink_context()) Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
 #endif
 
 #endif
