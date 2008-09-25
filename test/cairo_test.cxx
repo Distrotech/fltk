@@ -27,38 +27,15 @@
 
 #ifdef HAVE_CAIRO
 
-#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Cairo_Window.H>
 #include <FL/Fl_Box.H>
 #include <FL/x.H>
 #include <FL/fl_draw.H>
-#include <FL/Fl.H>
 #include <FL/math.h>
 #define DEF_WIDTH 0.03
 
 // uncomment the following line to enable cairo context autolink feature:
 // #define AUTOLINK
-
-class CairoWindow : public Fl_Double_Window {
-public:
-    CairoWindow(int w, int h) : Fl_Double_Window(w,h),draw_cb_(0) {}
-
-    void draw() {
-      Fl_Double_Window::draw();
-#ifndef AUTOLINK
-      // manual method
-      cairo_t* c  = Fl::cairo_make_current(this); 
-      if (draw_cb_) draw_cb_(this, Fl::cairo_cc()); // enjoy cairo features here !
-#else
-      // autolink method
-      if (draw_cb_) draw_cb_(this, Fl::cairo_cc()); // enjoy cairo features here 
-#endif
-    }
-    
-    typedef void (*draw_cb) (CairoWindow* self, cairo_t* def);
-    void set_draw_cb(draw_cb  cb){draw_cb_=cb;}
-private:
-    draw_cb draw_cb_;
-};
 
 // put your drawing stuff here
 float drawargs[7] = {90, 90, 100, 100, 0, 360, 0};
@@ -150,8 +127,8 @@ static void round_button(cairo_t* cr, double x0, double y0,
     centered_text(cr,x0,y0,rect_width, rect_height, "FLTK loves Cairo!");
 
 }
-// The cairo rendering cb called during CairoWindow::draw() :
-static void my_cairo_draw_cb(CairoWindow* window, cairo_t* cr) {
+// The cairo rendering cb called during Fl_Cairo_Window::draw() :
+static void my_cairo_draw_cb(Fl_Cairo_Window* window, cairo_t* cr) {
 	
   int w= window->w(), h = window->h(); 
   
@@ -168,7 +145,7 @@ int main(int argc, char** argv) {
 #ifdef AUTOLINK
   Fl::cairo_autolink_context(true);
 #endif
-    CairoWindow window(300,300);
+    Fl_Cairo_Window window(300,300);
     
     window.resizable(&window);
     window.color(FL_WHITE);

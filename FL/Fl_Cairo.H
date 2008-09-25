@@ -26,7 +26,7 @@
 //
 
 /** \file
-    FlCairo Hanling transparently platform dependent cairo include files 
+    Hanling transparently platform dependent cairo include files 
 */
 
 #ifndef FL_CAIRO_H

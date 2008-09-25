@@ -25,8 +25,9 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
+
 #ifdef HAVE_CAIRO
-#include "config.h"
 #include <FL/Fl.H>
 #include <FL/x.H>
 #include <FL/Fl_Window.H>
