@@ -77,7 +77,8 @@ glutCreateWindow()</TT>! </LI>
 loop calling <TT>Fl::wait()</TT> to run  the program. </LI>
 </UL>
 <HR break>
-<H2><A name=Fl_Glut_Window>class Fl_Glut_Window</A></H2>
+   <A NAME="Fl_Glut_Window"></A> <!-- For old HTML links only ! -->
+   \section glut_Fl_Glut_Window class Fl_Glut_Window
 <HR>
 <H3>Class Hierarchy</H3>
 \code
@@ -188,5 +189,12 @@ Fl_Glut_Window::~Fl_Glut_Window()</A></H4>
  Destroys the GLUT window.
 <H4><A name="Fl_Glut_Window.make_current">void Fl_Glut_Window::make_current()</A></H4>
 Switches all drawing functions to the GLUT window.
+
+<hr>
+<a class="el" href="index.html">[Index]</a> &nbsp;&nbsp;
+<a class="el" href="enumerations.html">[Previous]</a>&nbsp;
+     \ref enumerations &nbsp;&nbsp;
+<a class="el" href="forms.html">[Next]</a>&nbsp;
+     \ref forms
 
 */

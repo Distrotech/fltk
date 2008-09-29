@@ -29,7 +29,12 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Menu_Window.H>
 
-#include <stdio.h>
+#define DEBUG
+#define DEBUG_FL_TOOLTIP
+
+#if defined DEBUG || defined DEBUG_FL_TOOLTIP
+#  include <stdio.h>
+#endif
 
 float		Fl_Tooltip::delay_ = 1.0f;
 float		Fl_Tooltip::hoverdelay_ = 0.2f;
@@ -152,6 +157,7 @@ void Fl_Tooltip::enter_(Fl_Widget* w) {
 #ifdef DEBUG
   printf("Fl_Tooltip::enter_(w=%p)\n", w);
   printf("    window=%p\n", window);
+  fflush(stdout);
 #endif // DEBUG
 
   // find the enclosing group with a tooltip:
@@ -161,8 +167,9 @@ void Fl_Tooltip::enter_(Fl_Widget* w) {
     if (tw == widget_) return;
 
     // Send the FL_TOOLTIP event to tw. The return value technically does not matter.
-	// The action to take will depend on the state of its tooltip.
-	tw->handle(FL_TOOLTIP);
+    // The action to take will depend on the state of its tooltip.
+
+    tw->handle(FL_TOOLTIP);
 
     if (tw->tooltip()) break;
     tw = tw->parent();
@@ -178,7 +185,7 @@ void Fl_Tooltip::enter_(Fl_Widget* w) {
 */
 void Fl_Tooltip::current(Fl_Widget* w) {
 #ifdef DEBUG
-  printf("Fl_Tooltip::current(w=%p)\n", w);
+  printf("Fl_Tooltip::current(w=%p)\n", w); fflush(stdout);
 #endif // DEBUG
 
   exit_(0);
@@ -199,6 +206,7 @@ void Fl_Tooltip::exit_(Fl_Widget *w) {
 #ifdef DEBUG
   printf("Fl_Tooltip::exit_(w=%p)\n", w);
   printf("    widget=%p, window=%p\n", widget_, window);
+  fflush(stdout);
 #endif // DEBUG
 
   if (!widget_ || w == window) return;
@@ -236,6 +244,7 @@ void Fl_Tooltip::enter_area(Fl_Widget* wid, int x,int y,int w,int h, const char*
   printf("Fl_Tooltip::enter_area(wid=%p, x=%d, y=%d, w=%d, h=%d, t=\"%s\")\n",
          wid, x, y, w, h, t ? t : "(null)");
   printf("    recursion=%d, window=%p\n", recursion, window);
+  fflush(stdout);
 #endif // DEBUG
 
   if (recursion) return;
@@ -268,6 +277,7 @@ void Fl_Tooltip::enter_area(Fl_Widget* wid, int x,int y,int w,int h, const char*
 #ifdef DEBUG
   printf("    tip=\"%s\", window->shown()=%d\n", tip ? tip : "(null)",
          window ? window->shown() : 0);
+  fflush(stdout);
 #endif // DEBUG
 }
 

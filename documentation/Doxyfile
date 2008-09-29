@@ -548,7 +548,7 @@ RECURSIVE              = YES
 # excluded from the INPUT source files. This way you can easily exclude a 
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                =  ../src/fl_font_win32.cxx ../src/fl_font_mac.cxx \
+EXCLUDE                =  ../src/fl_font_win32.cxx ../src/fl_font_mac.cxx
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 
@@ -737,7 +737,7 @@ HTML_HEADER            =
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard footer.
 
-HTML_FOOTER            = 
+HTML_FOOTER            = html_footer
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading 
 # style sheet that is used by each HTML page. It can be used to 
@@ -1127,6 +1127,7 @@ INCLUDE_FILE_PATTERNS  =
 # instead of the = operator.
 
 PREDEFINED             = FL_DOXYGEN \
+		         HAVE_CAIRO \
 		       	 HAVE_GL \
 			 HAVE_GL_OVERLAY \
                          FL_EXPORT:=

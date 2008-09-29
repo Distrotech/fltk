@@ -39,7 +39,7 @@
 #  include <FL/Fl.H>
 #  include <FL/x.H>
 #  include <FL/Fl_Window.H>
-#  include <FL/fl_utf8.H>
+#  include <FL/fl_utf8.h>
 #  include <FL/Fl_Tooltip.H>
 #  include <stdio.h>
 #  include <stdlib.h>
@@ -1726,6 +1726,12 @@ void Fl_Window::make_current() {
   fl_gc = gc;
   current_ = this;
   fl_clip_region(0);
+
+#ifdef HAVE_CAIRO
+  // update the cairo_t context
+  if (Fl::cairo_autolink_context()) Fl::cairo_make_current(this);
+#endif
+
 }
 
 #endif
