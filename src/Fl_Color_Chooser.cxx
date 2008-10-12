@@ -142,6 +142,7 @@ void Fl_Color_Chooser::set_valuators() {
   Does not do the callback. Does not clamp (but out of range values will
   produce psychedelic effects in the hue selector).
   \param[in] R, G, B color components.
+  \return 1 if a new rgb value was set, 0 if the rgb value was the previous one.
  */
 int Fl_Color_Chooser::rgb(double R, double G, double B) {
   if (R == r_ && G == g_ && B == b_) return 0;
@@ -169,7 +170,8 @@ int Fl_Color_Chooser::rgb(double R, double G, double B) {
   The passed values are clamped (or for hue, modulus 6 is used) to get
   legal values. Does not do the callback.
   \param[in] H, S, V color components.
- */
+  \return 1 if a new hsv value was set, 0 if the hsv value was the previous one.
+*/
 int Fl_Color_Chooser::hsv(double H, double S, double V) {
   H = fmod(H,6.0); if (H < 0.0) H += 6.0;
   if (S < 0.0) S = 0.0; else if (S > 1.0) S = 1.0;
@@ -526,12 +528,16 @@ static void chooser_cb(Fl_Object* o, void* vv) {
 extern const char* fl_ok;
 extern const char* fl_cancel;
 
+/** \addtogroup  group_comdlg 
+    @{ */
 /**
-  \relatesalso Fl_Color_Chooser
-  \fn int fl_color_chooser(const char* name, double& r, double& g, double& b)
   \brief Pops up a window to let the user pick an arbitrary RGB color.
+  \image html fl_color_chooser.jpg
   \param[in] name title label for the window
-  \param[in] r, g, b color components in the range 0.0 to 1.0.
+  \param[in,out] r, g, b color components in the range 0.0 to 1.0.
+  \retval 1 if user confirms the selection 
+  \retval 0 if user cancels the dialog
+  \relates Fl_Color_Chooser
  */
 int fl_color_chooser(const char* name, double& r, double& g, double& b) {
   Fl_Window window(215,200,name);
@@ -568,11 +574,13 @@ int fl_color_chooser(const char* name, double& r, double& g, double& b) {
 }
 
 /**
-  \relatesalso Fl_Color_Chooser
-  \fn int fl_color_chooser(const char* name, uchar& r, uchar& g, uchar& b)
   \brief Pops up a window to let the user pick an arbitrary RGB color.
+  \image html fl_color_chooser.jpg
   \param[in] name title label for the window
-  \param[in] r, g, b color components in the range 0 to 255.
+  \param[in,out] r, g, b color components in the range 0 to 255.
+  \retval 1 if user confirms the selection 
+  \retval 0 if user cancels the dialog
+  \relates Fl_Color_Chooser
  */
 int fl_color_chooser(const char* name, uchar& r, uchar& g, uchar& b) {
   double dr = r/255.0;
@@ -586,7 +594,7 @@ int fl_color_chooser(const char* name, uchar& r, uchar& g, uchar& b) {
   }
   return 0;
 }
-
+/** @} */
 //
 // End of "$Id$".
 //

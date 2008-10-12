@@ -39,7 +39,7 @@
 #  include "fl_utf8.h"
 #  include "Enumerations.H"
 #  ifndef Fl_Object
-#    define Fl_Object Fl_Widget
+#    define Fl_Object Fl_Widget	/**< for back compatibility - use Fl_Widget! */
 #  endif
 
 #  ifdef check
@@ -51,11 +51,20 @@ class Fl_Widget;
 class Fl_Window;
 class Fl_Image;
 struct Fl_Label;
+
+/** signature of some label drawing functions passed as parameters */
 typedef void (Fl_Label_Draw_F)(const Fl_Label*, int,int,int,int, Fl_Align);
+
+/** signature of some label measurement functions passed as parameters */
 typedef void (Fl_Label_Measure_F)(const Fl_Label*, int&, int&);
+
+/** signature of some box drawing functions passed as parameters */
 typedef void (Fl_Box_Draw_F)(int,int,int,int, Fl_Color);
 
+/** signature of some timeout callback functions passed as parameters */
 typedef void (*Fl_Timeout_Handler)(void*);
+
+/** signature of some wakeup callback functions passed as parameters */
 typedef void (*Fl_Awake_Handler)(void*);
 
 /**
@@ -96,6 +105,13 @@ public: // should be private!
   */
   static void damage(int d) {damage_ = d;}
 
+  /**
+    The currently executing idle callback function: DO NOT USE THIS DIRECTLY!
+    
+    This is now used as part of a higher level system allowing multiple
+    idle callback functions to be called.
+    \see add_idle(), remove_idle()
+  */
   static void (*idle)();
 
 #ifndef FL_DOXYGEN
@@ -123,6 +139,10 @@ public:
   static int arg(int, char**, int&);
   static int args(int, char**, int&, int (*)(int,char**,int&) = 0);
   static void args(int, char**);
+  /**
+    Usage string displayed if Fl::args() detects an invalid argument.
+    This may be changed to point to customized text at run-time.
+  */
   static const char* const help;
 
   // things called by initialization:
@@ -247,17 +267,16 @@ public:
   /** Removes a file descriptor handler. */
   static void remove_fd(int); // platform dependent
 
-  static void add_idle(void (*cb)(void*), void* = 0);
-  static int  has_idle(void (*cb)(void*), void* = 0);
-  static void remove_idle(void (*cb)(void*), void* = 0);
+  static void add_idle(void (*cb)(void*), void* data = 0);
+  static int  has_idle(void (*cb)(void*), void* data = 0);
+  static void remove_idle(void (*cb)(void*), void* data = 0);
   /** If true then flush() will do something. */
   static int damage() {return damage_;}
   static void redraw();
   static void flush();
-  /** \defgroup  fl_windows fltk windows handling functions
-      Windows and standard dialogs handling
+  /** \addtogroup group_comdlg
     @{ */
-  /** \fn void (*warning)(const char*, ...)
+  /**
   FLTK calls this to print a warning message. You can
   override the behavior by setting the function pointer to your
   own routine.
@@ -272,7 +291,7 @@ public:
   own routine.
   <P>Fl::error means there is a recoverable error such as
   the inability to read an image file. The default implementation
-  prints the error message to stderr and returns.
+  shows an error dialog to stderr and returns.
   */
   static void (*error)(const char*, ...);
   /**
@@ -282,13 +301,19 @@ public:
   <P>Fl::fatal must not return, as FLTK is in an unusable
   state, however your version may be able to use longjmp
   or an exception to continue, as long as it does not call FLTK
-  again. The default implementation prints the error message to
-  stderr and exits with status 1.
+  again. The default implementation shows a fatal dialog box
+  and exits with status 1.
   */
   static void (*fatal)(const char*, ...);
+  /** @} */
+
+  /** \defgroup  fl_windows Windows handling functions
+      Windows and standard dialogs handling
+    @{ */
   static Fl_Window* first_window();
   static void first_window(Fl_Window*);
   static Fl_Window* next_window(const Fl_Window*);
+
   /**
     Returns the top-most modal() window currently shown.
     This is the most recently 
@@ -328,7 +353,7 @@ public:
   static void grab(Fl_Window*); // platform dependent
   /** @} */
 
-  /** \defgroup fl_events fltk global events handling functions
+  /** \defgroup fl_events Events handling functions
 	Fl class events handling API
 	@{
   */
@@ -383,18 +408,20 @@ public:
   */
   static void get_mouse(int &,int &); // platform dependent
   /**
-    The first form returns non-zero if the most recent FL_PUSH or
-    FL_KEYBOARD was a "double click".  Returns N-1 for
-    N clicks.  A double click is counted if the same button is pressed
+    Returns non zero if we had a double click event.
+    \retval Non-zero if the most recent FL_PUSH or FL_KEYBOARD was a "double click".  
+    \retval  N-1 for  N clicks. 
+    A double click is counted if the same button is pressed
     again while event_is_click() is true.
     
-    <P>The second form directly sets the number returned by 
-    Fl::event_clicks().  This can be used to set it to zero so that
-    later code does not think an item was double-clicked.
-  */
+   */
   static int event_clicks()	{return e_clicks;}
   /**
-    See int event_clicks()
+    Manually sets the number returned by Fl::event_clicks().  
+    This can be used to set it to zero so that
+    later code does not think an item was double-clicked.
+    \param[in] i correspond to no double-click if 0, i+1 mouse clicks otherwise
+    \see int event_clicks()
   */
   static void event_clicks(int i) {e_clicks = i;}
   /**
@@ -413,8 +440,10 @@ public:
   */
   static void event_is_click(int i) {e_is_click = i;}
   /**
-    Returns which mouse button caused te current event. This returns garbage if the
-    most recent event was not a FL_PUSH or FL_RELEASE event.
+    Gets which particular mouse button caused the current event. 
+    This returns garbage if the most recent event was not a FL_PUSH or FL_RELEASE event.
+    \retval FL_LEFT_MOUSE \retval FL_MIDDLE_MOUSE \retval FL_RIGHT_MOUSE.
+    \see Fl::event_buttons()
   */
   static int event_button()	{return e_keysym-FL_Button;}
   /**
@@ -445,11 +474,20 @@ public:
   static int event_state()	{return e_state;}
   /** See int event_state() */
   static int event_state(int i) {return e_state&i;}
+  /** Gets which key on the keyboard was last pushed.
+      \retval 0 if the last event was not a key press or release.
+    \see int event_key(int) */
+  static int event_key()	{return e_keysym;}
   /**
-    Fl::event_key() returns which key on the keyboard was last
-    pushed.  It returns zero if the last event was not a key press or release.
-    
-    <P>Fl::event_key(int) returns true if the given key was held
+    If NumLock is deactivated, FLTK translates events from the 
+    numeric keypad into the corresponding arrow key events. 
+    event_key() returns the translated key code, whereas
+    event_original_key() returns the keycode before 
+    NumLock translation.
+  */
+  static int event_original_key(){return e_original_keysym;}
+  /** 
+    Returns true if the given \a key was held
     down (or pressed) <I>during</I> the last event.  This is constant until
     the next event is read from the server.
     
@@ -490,23 +528,13 @@ public:
     <P>On WIN32 Fl::get_key(FL_KP_Enter) and 
     Fl::event_key(FL_KP_Enter) do not work.
   */
-  static int event_key()	{return e_keysym;}
-  /**
-    If NumLock is deactivated, FLTK translates events from the 
-    numeric keypad into the corresponding arrow key events. 
-    event_key() returns the translated key code, whereas
-    event_original_key() returns the keycode before 
-    NumLock translation.
-  */
-  static int event_original_key(){return e_original_keysym;}
-  /** See int event_key() */
-  static int event_key(int);
+  static int event_key(int key);
   /** 
-    Returns true if the given key is held down <I>now</I>.  
+    Returns true if the given \a key is held down <I>now</I>.  
     Under X this requires a round-trip to the server and is <I>
-    much</I> slower than Fl::event_key(int). See event_key().
+    much</I> slower than Fl::event_key(int). \see event_key(int)
   */
-  static int get_key(int); // platform dependent
+  static int get_key(int key); // platform dependent
   /** Returns the text associated with the current FL_PASTE or FL_DND_RELEASE event. */
   static const char* event_text() {return e_text;}
   /**
@@ -531,10 +559,12 @@ public:
 
   // event destinations:
   static int handle(int, Fl_Window*);
-  /** See Fl_Widget* belowmouse(Fl_Widget*) */
+  /**  Gets the widget that is below the mouse. 
+       \see  belowmouse(Fl_Widget*) */
   static Fl_Widget* belowmouse() {return belowmouse_;}
   static void belowmouse(Fl_Widget*);
-  /** See Fl_Widget* pushed(Fl_Widget*) */
+  /** Sets the widget that is being pushed 
+      \see Fl_Widget* pushed(Fl_Widget*) */
   static Fl_Widget* pushed()	{return pushed_;}
   static void pushed(Fl_Widget*);
   /** Gets the current Fl::focus() widget. \sa Fl::focus(Fl_Widget*) */
@@ -544,7 +574,7 @@ public:
   static void remove_handler(int (*h)(int));
   /** @} */
 
-  /** \defgroup  fl_clipboard  fltk selection/clipboard functions
+  /** \defgroup  fl_clipboard  Selection & Clipboard functions
 	fl global copy/cut/paste functions
    @{ */
   // cut/paste:
@@ -572,13 +602,14 @@ public:
   static int dnd(); // platform dependent
 
   // These are for back-compatibility only:
-  /** See Fl_Widget* selection_owner(Fl_Widget*) */
+  /**  back-compatibility only: Gets the widget owning the current selection  
+       \see Fl_Widget* selection_owner(Fl_Widget*) */
   static Fl_Widget* selection_owner() {return selection_owner_;}
   static void selection_owner(Fl_Widget*);
   static void selection(Fl_Widget &owner, const char*, int len);
   static void paste(Fl_Widget &receiver);
 /** @} */
-/** \defgroup  fl_screen  fltk screen functions
+/** \defgroup  fl_screen  Screen functions
 	fl global screen functions
      @{ */
   // screen size:
@@ -593,7 +624,12 @@ public:
 
   // multi-head support:
   static int screen_count();
-  /** See void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) */
+  /** 
+      Gets the bounding box of a screen 
+      that contains the mouse pointer in.
+      \param[out]  X,Y,W,H the corresponding screen bounding box
+      \see void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) 
+  */
   static void screen_xywh(int &X, int &Y, int &W, int &H) {
     screen_xywh(X, Y, W, H, e_x_root, e_y_root);
   }
@@ -602,7 +638,7 @@ public:
 
   /**   @} */
 
-  /** \defgroup  fl_attributes  fltk color,font functions
+  /** \defgroup  fl_attributes  Color & Font functions
 	fl global color, font functions
      @{ */
 
@@ -691,13 +727,14 @@ public:
   static int draw_box_active();
 
   // back compatibility:
-  /** for back compatibility. sets the (*fatal)() callback. */
   /** \addtogroup fl_windows 
     @{ */
+  /** For back compatibility, sets the void Fl::fatal handler callback */
   static void set_abort(void (*f)(const char*,...)) {fatal = f;}
   static void (*atclose)(Fl_Window*,void*);
   static void default_atclose(Fl_Window*,void*);
-  /** for back compatibility. sets the (*atclose)() callback. */
+  /** For back compatibility, sets the Fl::atclose handler callback. You
+      can now simply change the callback for the window instead \see Fl_Window::callback(Fl_Callback*) */
   static void set_atclose(void (*f)(Fl_Window*,void*)) {atclose = f;}
   /**   @} */
 
@@ -710,16 +747,16 @@ public:
   /** Returns non-zero if the Alt key is pressed. */
   static int event_alt() {return e_state&FL_ALT;}
   /**
-    Returns the button state bits; if non-zero, then at least one
-    button is pressed.  This function returns the button state at the 
+    Returns the mouse buttons state bits; if non-zero, then at least one
+    button is pressed now.  This function returns the button state at the 
     time of the event. During an FL_RELEASE event, the state 
     of the released button will be 0. To find out, which button 
-    caused an FL_RELEASE event, you can use 
-    Fl::event_button() instead.
+    caused an FL_RELEASE event, you can use Fl::event_button() instead.
+    \return a bit mask value like { [FL_BUTTON1] | [FL_BUTTON2] | [FL_BUTTON3] }
   */
   static int event_buttons() {return e_state&0x7f000000;}
   /**
-    Returns non-zero if button 1 is currently held down.
+    Returns non-zero if mouse button 1 is currently held down.
     For more details, see Fl::event_buttons().
   */
   static int event_button1() {return e_state&FL_BUTTON1;}
@@ -774,7 +811,7 @@ public:
     cut/paste shortcut.
   */
   static int  dnd_text_ops() { return dnd_text_ops_; }
-  /** \defgroup fl_multithread fltk multithreading support functions
+  /** \defgroup fl_multithread Multithreading support functions
 	fl multithreading support functions
    @{ */
 
@@ -793,7 +830,7 @@ public:
   static void* thread_message(); // platform dependent
   /** @} */
 
-  /** \defgroup fl_del_widget fltk safe widget deletion support functions
+  /** \defgroup fl_del_widget Safe widget deletion support functions
 	fl multithreading support functions
    @{ */
   // Widget deletion:
@@ -805,7 +842,7 @@ public:
   /** @} */
 
 #ifdef HAVE_CAIRO
-  /** \defgroup group_cairo Cairo functions support 
+  /** \defgroup group_cairo Cairo support functions and classes 
       @{ 
   */
 public:

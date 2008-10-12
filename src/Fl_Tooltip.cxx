@@ -209,7 +209,7 @@ void Fl_Tooltip::exit_(Fl_Widget *w) {
   fflush(stdout);
 #endif // DEBUG
 
-  if (!widget_ || w == window) return;
+  if (!widget_ || (w && w == window)) return;
   widget_ = 0;
   Fl::remove_timeout(tooltip_timeout);
   Fl::remove_timeout(recent_timeout);
