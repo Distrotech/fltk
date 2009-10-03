@@ -54,12 +54,13 @@ functionality to allow arbitrary widgets as list items. A Tree-like
 widget comes free with the FLTK 2 concept. FLTK 1 has no such thing and
 even Fluid had to hack the library badly to generate a tree view.
 
-(4) Namespaces: this is a minr issue that I include for completeness. FLTK 2
-introduces the ftk namespace, renaming all widgets. FLTK 3 will use the 
-FLTK 2 naming scheme and map FLTK 1 class names using typedefs. This is, as
-most things in programming are, a compromise. The "coding_style" function 
-must be used to switch between FLTK 1 and FLTK 2 code. No worries though,
-it's easy and straight forward.
+(4) Namespacesi and Class names: FLTK 2 introduces the ftk namespace, 
+renaming all widgets. FLTK 3 will use the FLTK 2 naming scheme and map FLTK 1 
+class names by deriving stub class. This kind of mapping is not perfect by 
+any means, but seems to be the only somewhat sane way. A somewhat transparent
+implementation uses F2/3 names for arguments, but always returns F1 pointers
+by casting. That way, no casting in the user code is required. As another 
+benefit FLTK3 always knows if a widget was created F1 or F2 style.
 
 (5) Layout: FLTK 1 uses a top-down approach for widget layout in which the
 parent widget decides about the childs size "resize(x, y, w, h)". In FLTK 2
@@ -609,6 +610,8 @@ correspond, and how they could be implemented in FLTK 3.
 1: class Fl_Window
 2: class Window
 *: should map easily
+**: basic mapping is done. There are a handfull of functions that exist in F2 
+    which are not in F1/3 yet. They can easily be ported.
 
 1: class Fl_Wizard
 2: class WizardGroup

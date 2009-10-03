@@ -28,7 +28,7 @@
 // Change the current cursor.
 // Under X the cursor is attached to the X window.  I tried to hide
 // this and pretend that changing the cursor is a drawing function.
-// This avoids a field in the Fl_Window, and I suspect is more
+// This avoids a field in the fltk::Window, and I suspect is more
 // portable to other systems.
 
 #include <FL/Fl.H>
@@ -51,7 +51,7 @@ void fl_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 
     For back compatibility only.
 */
-void Fl_Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void fltk::Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 //  if (c == FL_CURSOR_DEFAULT) c = FL_CURSOR_ARROW;
 
   cursor_default = c;
@@ -67,10 +67,10 @@ void Fl_Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 #    define IDC_HAND	MAKEINTRESOURCE(32649)
 #  endif // !IDC_HAND
 
-void Fl_Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
+void fltk::Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
   if (!shown()) return;
   // the cursor must be set for the top level window, not for subwindows
-  Fl_Window *w = window(), *toplevel = this;
+  fltk::Window *w = window(), *toplevel = this;
   while (w) { toplevel = w; w = w->window(); }
   if (toplevel != this) { toplevel->cursor(c, c1, c2); return; }
   // now set the actual cursor
@@ -209,7 +209,7 @@ static Cursor crsrARROW =
 
 #undef E
 
-void Fl_Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
+void fltk::Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
   if (c == FL_CURSOR_DEFAULT) {
     c = cursor_default;
   }
@@ -292,7 +292,7 @@ static struct TableEntry {
   {{0}, {0}} // FL_CURSOR_NONE & unknown
 };
 
-void Fl_Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void fltk::Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
   if (!shown()) return;
   Cursor xc;
   int deleteit = 0;

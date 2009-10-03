@@ -27,7 +27,7 @@
 
 include makeinclude
 
-DIRS = $(IMAGEDIRS) src $(CAIRODIR) fluid test documentation
+DIRS = $(IMAGEDIRS) src $(CAIRODIR) fluid test test2 documentation
 
 all: makeinclude fltk-config
 	for dir in $(DIRS); do\
@@ -88,6 +88,10 @@ distclean: clean
 		$(RM) test/`basename $$file .fl`.cxx; \
 		$(RM) test/`basename $$file .fl`.h; \
 	done
+	for file in test2/*.fl; do\
+		$(RM) test/`basename $$file .fl`.cxx; \
+		$(RM) test/`basename $$file .fl`.h; \
+	done
 
 fltk-config: configure configh.in fltk-config.in
 	if test -f config.status; then \
@@ -119,7 +123,7 @@ native-dist:
 	epm -v -f native fltk
 
 etags:
-	etags FL/*.H FL/*.h src/*.cxx src/*.c src/*.h src/xutf8/*.h src/xutf8/*.c cairo/*.cxx fluid/*.h fluid/*.cxx test/*.h test/*.cxx
+	etags FL/*.H FL/*.h src/*.cxx src/*.c src/*.h src/xutf8/*.h src/xutf8/*.c cairo/*.cxx fluid/*.h fluid/*.cxx test/*.h test/*.cxx test2/*.h test2/*.cxx
 
 #
 # End of "$Id$".

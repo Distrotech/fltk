@@ -81,10 +81,10 @@ int		Fl::e_length;
 int		Fl::visible_focus_ = 1,
 		Fl::dnd_text_ops_ = 1;
 
-Fl_Window *fl_xfocus;	// which window X thinks has focus
-Fl_Window *fl_xmousewin;// which window X thinks has FL_ENTER
-Fl_Window *Fl::grab_;	// most recent Fl::grab()
-Fl_Window *Fl::modal_;	// topmost modal() window
+fltk::Window *fl_xfocus;	// which window X thinks has focus
+fltk::Window *fl_xmousewin;     // which window X thinks has FL_ENTER
+fltk::Window *Fl::grab_;	// most recent Fl::grab()
+fltk::Window *Fl::modal_;	// topmost modal() window
 
 #endif // FL_DOXYGEN
 
@@ -599,7 +599,7 @@ Fl_Window* fl_find(Window xid) {
 	window->next = Fl_X::first;
 	Fl_X::first = window;
       }
-      return window->w;
+      return (Fl_Window*)window->w;
     }
   return 0;
 }
@@ -618,22 +618,22 @@ Fl_Window* fl_find(Window xid) {
 */
 Fl_Window* Fl::first_window() {
   Fl_X* i = Fl_X::first;
-  return i ? i->w : 0;
+  return i ? (Fl_Window*)i->w : 0;
 }
 
 /**
   Returns the next top-level window in the list of shown() windows.  You can
   use this call to iterate through all the windows that are shown().
 */
-Fl_Window* Fl::next_window(const Fl_Window* window) {
+Fl_Window* Fl::next_window(const fltk::Window* window) {
   Fl_X* i = Fl_X::i(window)->next;
-  return i ? i->w : 0;
+  return i ? (Fl_Window*)i->w : 0;
 }
 
 /**
   See Fl_Window* first_window()
 */
-void Fl::first_window(Fl_Window* window) {
+void Fl::first_window(fltk::Window* window) {
   if (!window || !window->shown()) return;
   fl_find(fl_xid(window));
 }
@@ -661,7 +661,7 @@ void Fl::flush() {
     damage_ = 0;
     for (Fl_X* i = Fl_X::first; i; i = i->next) {
       if (i->wait_for_expose) {damage_ = 1; continue;}
-      Fl_Window* wi = i->w;
+      fltk::Window* wi = i->w;
       if (!wi->visible_r()) continue;
       if (wi->damage()) {i->flush(); wi->clear_damage();}
       // destroy damage regions for windows that don't use them:
@@ -764,7 +764,7 @@ void Fl::focus(Fl_Widget *o) {
     // make sure that fl_xfocus is set to the top level window
     // of this widget, or fl_fix_focus will clear our focus again
     if (o) {
-      Fl_Window *win = 0, *w1 = o->window();
+      fltk::Window *win = 0, *w1 = o->window();
       while (w1) { win=w1; w1=win->window(); }
       if (win) fl_xfocus = win;
     }
@@ -922,7 +922,7 @@ void fl_throw_focus(Fl_Widget *o) {
 // Call to->handle but first replace the mouse x/y with the correct
 // values to account for nested X windows. 'window' is the outermost
 // window the event was posted to by X:
-static int send(int event, Fl_Widget* to, Fl_Window* window) {
+static int send(int event, Fl_Widget* to, fltk::Window* window) {
   int dx, dy;
   int old_event = Fl::e_number;
   if (window) {
@@ -942,7 +942,7 @@ static int send(int event, Fl_Widget* to, Fl_Window* window) {
   return ret;
 }
 
-int Fl::handle(int e, Fl_Window* window)
+int Fl::handle(int e, fltk::Window* window)
 /**
   Sends the event to a window for processing.  Returns non-zero if any
   widget uses the event.
@@ -1159,7 +1159,7 @@ int Fl::handle(int e, Fl_Window* window)
 extern void fl_destroy_xft_draw(Window);
 #endif
 
-void Fl_Window::hide() {
+void fltk::Window::hide() {
   clear_visible();
 
   if (!shown()) return;
@@ -1180,7 +1180,7 @@ void Fl_Window::hide() {
 
   // recursively remove any subwindows:
   for (Fl_X *wi = Fl_X::first; wi;) {
-    Fl_Window* W = wi->w;
+    fltk::Window* W = wi->w;
     if (W->window() == this) {
       W->hide();
       W->set_visible();
@@ -1189,7 +1189,7 @@ void Fl_Window::hide() {
   }
 
   if (this == Fl::modal_) { // we are closing the modal window, find next one:
-    Fl_Window* W;
+    fltk::Window* W;
     for (W = Fl::first_window(); W; W = Fl::next_window(W))
       if (W->modal()) break;
     Fl::modal_ = W;
@@ -1203,7 +1203,7 @@ void Fl_Window::hide() {
   // this little trick keeps the current clipboard alive, even if we are about
   // to destroy the window that owns the selection.
   if (GetClipboardOwner()==ip->xid) {
-    Fl_Window *w1 = Fl::first_window();
+    fltk::Window *w1 = Fl::first_window();
     if (w1 && OpenClipboard(fl_xid(w1))) {
       EmptyClipboard();
       SetClipboardData(CF_TEXT, NULL);
@@ -1218,7 +1218,7 @@ void Fl_Window::hide() {
       fl_window = (HWND)-1;
       fl_gc = 0;
 # ifdef USE_CAIRO
-      if (Fl::cairo_autolink_context()) Fl::cairo_make_current((Fl_Window*) 0);
+      if (Fl::cairo_autolink_context()) Fl::cairo_make_current((fltk::Window*) 0);
 # endif
     }
 #elif defined(__APPLE_QUARTZ__)
@@ -1256,7 +1256,7 @@ void Fl_Window::hide() {
   delete ip;
 }
 
-Fl_Window::~Fl_Window() {
+fltk::Window::~Window() {
   hide();
 }
 
@@ -1268,7 +1268,7 @@ Fl_Window::~Fl_Window() {
 // Fl_Window::show() or Fl_Window::hide() is called, or in response to
 // iconize/deiconize events from the system.
 
-int Fl_Window::handle(int ev)
+int fltk::Window::handle(int ev)
 {
   if (parent()) {
     switch (ev) {
@@ -1408,7 +1408,7 @@ void Fl_Widget::damage(uchar fl) {
     damage(fl, x(), y(), w(), h());
   } else {
     // damage entire window by deleting the region:
-    Fl_X* i = Fl_X::i((Fl_Window*)this);
+    Fl_X* i = Fl_X::i((fltk::Window*)this);
     if (!i) return; // window not mapped, so ignore it
     if (i->region) {XDestroyRegion(i->region); i->region = 0;}
     damage_ |= fl;
@@ -1425,7 +1425,7 @@ void Fl_Widget::damage(uchar fl, int X, int Y, int W, int H) {
     if (!wi) return;
     fl = FL_DAMAGE_CHILD;
   }
-  Fl_X* i = Fl_X::i((Fl_Window*)wi);
+  Fl_X* i = Fl_X::i((fltk::Window*)wi);
   if (!i) return; // window not mapped, so ignore it
 
   // clip the damage to the window and quit if none:
@@ -1470,7 +1470,7 @@ void Fl_Widget::damage(uchar fl, int X, int Y, int W, int H) {
   }
   Fl::damage(FL_DAMAGE_CHILD);
 }
-void Fl_Window::flush() {
+void fltk::Window::flush() {
   make_current();
 //if (damage() == FL_DAMAGE_EXPOSE && can_boxcheat(box())) fl_boxcheat = this;
   fl_clip_region(i->region); i->region = 0;
