@@ -106,7 +106,7 @@ int fl_disable_transient_for;        // secret method of removing TRANSIENT_FOR
 const Fl_Window* fl_modal_for;       // parent of modal() window
 Fl_Region fl_window_region = 0;
 Window fl_window;
-fltk::Window *fltk::Window::current_;
+Fl_Window *Fl_Window::current_;
 EventRef fl_os_event;		// last (mouse) event
 
 // forward declarations of variables in this file
@@ -1731,7 +1731,7 @@ static void get_window_frame_sizes(int &bx, int &by, int &bt) {
 /**
  * \todo this is a leftover from OS9 times. Please check how much applies to Carbon!
  */
-int Fl_X::fake_X_wm(const fltk::Window* w,int &X,int &Y, int &bt,int &bx, int &by) {
+int Fl_X::fake_X_wm(const Fl_Window* w,int &X,int &Y, int &bt,int &bx, int &by) {
   int W, H, xoff, yoff, dx, dy;
   int ret = bx = by = bt = 0;
   if (w->border() && !w->parent()) {
@@ -2099,7 +2099,7 @@ static void  q_set_window_title(Window xid, const char * name ) {
  * go ahead, create that (sub)window
  * \todo we should make menu windows slightly transparent for the new Mac look
  */
-void Fl_X::make(fltk::Window* w)
+void Fl_X::make(Fl_Window* w)
 {
   static int xyPos = 100;
   if ( w->parent() ) // create a subwindow
@@ -2194,7 +2194,7 @@ void Fl_X::make(fltk::Window* w)
 
     if (w->non_modal() && Fl_X::first && !fl_disable_transient_for) {
       // find some other window to be "transient for":
-      fltk::Window* w = Fl_X::first->w;
+      Fl_Window* w = Fl_X::first->w;
       while (w->parent()) w = w->window(); // todo: this code does not make any sense! (w!=w??)
     }
 
@@ -2324,7 +2324,7 @@ void Fl_X::make(fltk::Window* w)
 /**
  * Tell the OS what window sizes we want to allow
  */
-void fltk::Window::size_range_() {
+void Fl_Window::size_range_() {
   size_range_set = 1;
   HISize minSize = { minw, minh };
   HISize maxSize = { maxw?maxw:32000, maxh?maxh:32000 };
@@ -2359,7 +2359,7 @@ const char *fl_filename_name( const char *name )
  * set the window title bar
  * \todo make the titlebar icon work!
  */
-void fltk::Window::label(const char *name,const char * /*iname*/) {
+void Fl_Window::label(const char *name,const char */*iname*/) {
   Fl_Widget::label(name);
 
   if (shown() || i) {
@@ -2371,7 +2371,7 @@ void fltk::Window::label(const char *name,const char * /*iname*/) {
 /**
  * make a window visible
  */
-void fltk::Window::show() {
+void Fl_Window::show() {
   image(Fl::scheme_bg_);
   if (Fl::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
@@ -2398,7 +2398,7 @@ void fltk::Window::show() {
 /**
  * resize a window
  */
-void fltk::Window::resize(int X,int Y,int W,int H) {
+void Fl_Window::resize(int X,int Y,int W,int H) {
   if (W<=0) W = 1; // OS X does not like zero width windows
   if (H<=0) H = 1;
   int is_a_resize = (W != w() || H != h());
@@ -2440,7 +2440,7 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
 /**
  * make all drawing go into this window (called by subclass flush() impl.)
  */
-void fltk::Window::make_current() 
+void Fl_Window::make_current() 
 {
 #ifdef __APPLE_QUARTZ__
   OSStatus err;
@@ -2454,7 +2454,7 @@ void fltk::Window::make_current()
   SetPort( GetWindowPort(i->xid) ); // \todo check for the handling of doublebuffered windows
 
   int xp = 0, yp = 0;
-  fltk::Window *win = this;
+  Fl_Window *win = this;
   while ( win ) 
   {
     if ( !win->window() )
@@ -2470,7 +2470,7 @@ void fltk::Window::make_current()
   // \todo for performance reasons: we don't have to create this unless the child windows moved
   for ( Fl_X *cx = i->xidChildren; cx; cx = cx->xidNext )
   {
-    fltk::Window *cw = cx->w;
+    Fl_Window *cw = cx->w;
     if (!cw->visible_r()) continue;
     Fl_Region r = NewRgn();
     SetRectRgn( r, cw->x() - xp, cw->y() - yp, 
@@ -2848,13 +2848,13 @@ static void MacRelinkWindow(Fl_X *x, Fl_X *p) {
   p->xidChildren = x;
 }
 
-void MacDestroyWindow(fltk::Window *w, WindowPtr p) {
+void MacDestroyWindow(Fl_Window *w, WindowPtr p) {
   MacUnmapWindow(w, p);
   if (w && !w->parent() && p)
     DisposeWindow(p);
 }
 
-void MacMapWindow(fltk::Window *w, WindowPtr p) {
+void MacMapWindow(Fl_Window *w, WindowPtr p) {
   if (w && p)
     ShowWindow(p);
   //+ link to window list
@@ -2864,7 +2864,7 @@ void MacMapWindow(fltk::Window *w, WindowPtr p) {
   }
 }
 
-void MacUnmapWindow(fltk::Window *w, WindowPtr p) {
+void MacUnmapWindow(Fl_Window *w, WindowPtr p) {
   if (w && !w->parent() && p) 
     HideWindow(p);
   if (w && Fl_X::i(w)) 

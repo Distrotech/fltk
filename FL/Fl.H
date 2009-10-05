@@ -52,10 +52,6 @@ class Fl_Window;
 class Fl_Image;
 struct Fl_Label;
 
-namespace fltk {
-  class Window;
-};
-
 /** signature of some label drawing functions passed as parameters */
 typedef void (Fl_Label_Draw_F)(const Fl_Label*, int,int,int,int, Fl_Align);
 
@@ -98,8 +94,8 @@ public: // should be private!
   static Fl_Widget* focus_;
   static int damage_;
   static Fl_Widget* selection_owner_;
-  static fltk::Window* modal_;
-  static fltk::Window* grab_;
+  static Fl_Window* modal_;
+  static Fl_Window* grab_;
   static int compose_state;
   static int visible_focus_;
   static int dnd_text_ops_;
@@ -332,8 +328,8 @@ public:
       Windows and standard dialogs handling
     @{ */
   static Fl_Window* first_window();
-  static void first_window(fltk::Window*);
-  static Fl_Window* next_window(const fltk::Window*);
+  static void first_window(Fl_Window*);
+  static Fl_Window* next_window(const Fl_Window*);
 
   /**
     Returns the top-most modal() window currently shown.
@@ -344,7 +340,7 @@ public:
     for all events, and no other windows will have handle()
     called (grab() overrides this).
   */
-  static Fl_Window* modal() {return (Fl_Window*)modal_;}
+  static Fl_Window* modal() {return modal_;}
   /**
     This is used when pop-up menu systems are active.
     
@@ -369,9 +365,9 @@ public:
     limit mouse pointer grabbing to the time during which a mouse button 
     is held down. Some OS's may not support grabbing at all.
   */
-  static Fl_Window* grab() {return (Fl_Window*)grab_;}
+  static Fl_Window* grab() {return grab_;}
   /** Selects the window to grab. See Fl_Window* Fl::grab() */
-  static void grab(fltk::Window*); // platform dependent
+  static void grab(Fl_Window*); // platform dependent
   /** @} */
 
   /** \defgroup fl_events Events handling functions
@@ -595,7 +591,7 @@ public:
   static int test_shortcut(Fl_Shortcut);
 
   // event destinations:
-  static int handle(int, fltk::Window*);
+  static int handle(int, Fl_Window*);
   /**  Gets the widget that is below the mouse. 
        \see  belowmouse(Fl_Widget*) */
   static Fl_Widget* belowmouse() {return belowmouse_;}
@@ -769,12 +765,12 @@ public:
     @{ */
   /** For back compatibility, sets the void Fl::fatal handler callback */
   static void set_abort(void (*f)(const char*,...)) {fatal = f;}
-  static void (*atclose)(fltk::Window*,void*);
-  static void default_atclose(fltk::Window*,void*);
+  static void (*atclose)(Fl_Window*,void*);
+  static void default_atclose(Fl_Window*,void*);
   /** For back compatibility, sets the Fl::atclose handler callback. You
       can now simply change the callback for the window instead.
       \see Fl_Window::callback(Fl_Callback*) */
-  static void set_atclose(void (*f)(fltk::Window*,void*)) {atclose = f;}
+  static void set_atclose(void (*f)(Fl_Window*,void*)) {atclose = f;}
   /**   @} */
 
   /** \addtogroup fl_events 
@@ -818,7 +814,7 @@ public:
   */
   static void set_idle(void (*cb)()) {idle = cb;}
   /** See Fl_Window* grab() */
-  static void grab(fltk::Window&win) {grab(&win);}
+  static void grab(Fl_Window&win) {grab(&win);}
   /** Releases the current grabbed window, equals grab(0).
   \deprecated Use Fl::grab(0) instead.
   \see Fl_Window* grab() */
@@ -915,7 +911,7 @@ public:
   */
 public:
   // Cairo support API
-  static cairo_t * cairo_make_current(fltk::Window* w);
+  static cairo_t * cairo_make_current(Fl_Window* w);
    /** when HAVE_CAIRO is defined and cairo_autolink_context() is true, 
       any current window dc is linked to a current context.
       This is not the default, because it may not be necessary

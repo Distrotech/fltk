@@ -29,7 +29,7 @@
 
 extern char fl_show_iconic; // in Fl_x.cxx
 
-void fltk::Window::iconize() {
+void Fl_Window::iconize() {
   if (!shown()) {
     fl_show_iconic = 1;
     show();

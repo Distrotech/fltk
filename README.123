@@ -75,6 +75,9 @@ easy to implement. The API is pretty much the same in both versions.
 (and often repeated) parameters of every widget. API's are similar though,
 so this is luckily another pretty straight-forward upgrade.
 
+(8) Symbols: FLTK 2 combines vector drawings and images into a common base
+class called Symbols. These can be used within labels etc. . This is nice
+and flexibe and should be possible to implement/port.
 
  Comparison Chart by Class
 ---------------------------

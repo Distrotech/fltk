@@ -31,7 +31,6 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Menu_.H>
-#include <FL/Fl_Window.H>
 
 static Fl_Menu_* the_widget;
 
