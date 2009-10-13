@@ -93,9 +93,9 @@ static void fatal(const char *format, ...) {
 
 #endif
 
-void (*Fl::warning)(const char* format, ...) = ::warning;
-void (*Fl::error)(const char* format, ...) = ::error;
-void (*Fl::fatal)(const char* format, ...) = ::fatal;
+void (*fltk::warning)(const char* format, ...) = ::warning;
+void (*fltk::error)(const char* format, ...) = ::error;
+void (*fltk::fatal)(const char* format, ...) = ::fatal;
 
 //
 // End of "$Id$".

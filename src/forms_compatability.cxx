@@ -38,8 +38,8 @@ void fl_end_form() {
 void Fl_Group::forms_end() {
   // set the dimensions of a group to surround contents
   if (children() && !w()) {
-    Fl_Widget*const* a = array();
-    Fl_Widget* o = *a++;
+    fltk::Widget*const* a = array();
+    fltk::Widget* o = *a++;
     int rx = o->x();
     int ry = o->y();
     int rw = rx+o->w();
@@ -58,11 +58,11 @@ void Fl_Group::forms_end() {
   }
   // flip all the children's coordinate systems:
   if (fl_flip) {
-    Fl_Widget* o = (type()>=FL_WINDOW) ? this : window();
+    fltk::Widget* o = (type()>=FL_WINDOW) ? this : window();
     int Y = o->h();
-    Fl_Widget*const* a = array();
+    fltk::Widget*const* a = array();
     for (int i=children(); i--;) {
-      Fl_Widget* ow = *a++;
+      fltk::Widget* ow = *a++;
       int newy = Y-ow->y()-ow->h();
       ow->y(newy);
     }
@@ -79,7 +79,7 @@ void fl_initialize(int *argc, char **argv, const char *, FL_CMD_OPT *, int) {
   int i,j;
   for (i=0; i<=*argc; i++) initargv[i] = argv[i];
   for (i=j=1; i<*argc; ) {
-    if (Fl::arg(*argc,argv,i));
+    if (fltk::arg(*argc,argv,i));
     else argv[j++] = argv[i++];
   }
   argv[j] = 0;
@@ -89,7 +89,7 @@ void fl_initialize(int *argc, char **argv, const char *, FL_CMD_OPT *, int) {
 
 char fl_modal_next; // set by fl_freeze_forms()
 
-void fl_show_form(Fl_Window *f,int place,int b,const char *n) {
+void fl_show_form(fltk::Window *f,int place,int b,const char *n) {
 
   f->label(n);
   if (!b) f->clear_border();
@@ -99,7 +99,7 @@ void fl_show_form(Fl_Window *f,int place,int b,const char *n) {
 
   if (place & FL_PLACE_CENTER) {
     int scr_x, scr_y, scr_w, scr_h;
-    Fl::screen_xywh(scr_x, scr_y, scr_w, scr_h);
+    fltk::screen_xywh(scr_x, scr_y, scr_w, scr_h);
     f->position(scr_x+(scr_w-f->w())/2, scr_y+(scr_h-f->h())/2);
   }
 
@@ -108,8 +108,8 @@ void fl_show_form(Fl_Window *f,int place,int b,const char *n) {
 
   if (place & (FL_PLACE_POSITION | FL_PLACE_GEOMETRY))
     f->position(
-      (f->x() < 0) ? Fl::w()-f->w()+f->x()-1 : f->x(),
-      (f->y() < 0) ? Fl::h()-f->h()+f->y()-1 : f->y());
+                (f->x() < 0) ? fltk::w()-f->w()+f->x()-1 : f->x(),
+                (f->y() < 0) ? fltk::h()-f->h()+f->y()-1 : f->y());
 
 // if (place & FL_PLACE_ASPECT) {
 // this is not yet implemented
@@ -125,15 +125,15 @@ void fl_show_form(Fl_Window *f,int place,int b,const char *n) {
   else f->show();
 }
 
-Fl_Widget *fl_do_forms(void) {
-  Fl_Widget *obj;
-  while (!(obj = Fl::readqueue())) if (!Fl::wait()) exit(0);
+fltk::Widget *fl_do_forms(void) {
+  fltk::Widget *obj;
+  while (!(obj = fltk::readqueue())) if (!fltk::wait()) exit(0);
   return obj;
 }
 
-Fl_Widget *fl_check_forms() {
-  Fl::check();
-  return Fl::readqueue();
+fltk::Widget *fl_check_forms() {
+  fltk::check();
+  return fltk::readqueue();
 }
 
 void fl_set_graphics_mode(int /*r*/,int /*d*/) {}
@@ -179,15 +179,15 @@ Fl_Button *fl_add_button(uchar t,int x,int y,int w,int h,const char *l) {
 }
 
 void fl_show_message(const char *q1,const char *q2,const char *q3) {
-  fl_message("%s\n%s\n%s", q1?q1:"", q2?q2:"", q3?q3:"");
+  fltk::message("%s\n%s\n%s", q1?q1:"", q2?q2:"", q3?q3:"");
 }
 
 void fl_show_alert(const char *q1,const char *q2,const char *q3,int) {
-  fl_alert("%s\n%s\n%s", q1?q1:"", q2?q2:"", q3?q3:"");
+  fltk::alert("%s\n%s\n%s", q1?q1:"", q2?q2:"", q3?q3:"");
 }
 
 int fl_show_question(const char *q1,const char *q2,const char *q3) {
-  return fl_choice("%s\n%s\n%s", "No", "Yes", 0L, q1?q1:"", q2?q2:"", q3?q3:"");
+  return fltk::choice("%s\n%s\n%s", "No", "Yes", 0L, q1?q1:"", q2?q2:"", q3?q3:"");
 }
 
 int fl_show_choice(
@@ -198,11 +198,11 @@ int fl_show_choice(
   const char *b0,
   const char *b1,
   const char *b2) {
-  return fl_choice("%s\n%s\n%s", q1?q1:"", q2?q2:"", q3?q3:"", b0,b1,b2)+1;
+  return fltk::choice("%s\n%s\n%s", q1?q1:"", q2?q2:"", q3?q3:"", b0,b1,b2)+1;
 }
 
 char *fl_show_simple_input(const char *str1, const char *defstr) {
-  const char *r = fl_input(str1, defstr);
+  const char *r = fltk::input(str1, defstr);
   return (char *)(r ? r : defstr);
 }
 

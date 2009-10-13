@@ -50,23 +50,23 @@ static void call_idle() {
 }
 
 /**
-  Adds a callback function that is called every time by Fl::wait() and also
-  makes it act as though the timeout is zero (this makes Fl::wait() return
+  Adds a callback function that is called every time by fltk::wait() and also
+  makes it act as though the timeout is zero (this makes fltk::wait() return
   immediately, so if it is in a loop it is called repeatedly, and thus the
   idle fucntion is called repeatedly).  The idle function can be used to get
   background processing done.
     
   You can have multiple idle callbacks. To remove an idle callback use
-  Fl::remove_idle().
+  fltk::remove_idle().
     
-  Fl::wait() and Fl::check() call idle callbacks, but Fl::ready() does not.
+  fltk::wait() and fltk::check() call idle callbacks, but fltk::ready() does not.
     
-  The idle callback can call any FLTK functions, including Fl::wait(),
-  Fl::check(), and Fl::ready().
+  The idle callback can call any FLTK functions, including fltk::wait(),
+  fltk::check(), and fltk::ready().
 
   FLTK will not recursively call the idle callback.
 */
-void Fl::add_idle(void (*cb)(void*), void* data) {
+void fltk::add_idle(void (*cb)(void*), void* data) {
   idle_cb* p = freelist;
   if (p) freelist = p->next;
   else p = new idle_cb;
@@ -86,7 +86,7 @@ void Fl::add_idle(void (*cb)(void*), void* data) {
 /**
   Returns true if the specified idle callback is currently installed.
 */
-int Fl::has_idle(void (*cb)(void*), void* data) {
+int fltk::has_idle(void (*cb)(void*), void* data) {
   idle_cb* p = first;
   if (!p) return 0;
   for (;; p = p->next) {
@@ -98,7 +98,7 @@ int Fl::has_idle(void (*cb)(void*), void* data) {
 /**
   Removes the specified idle callback, if it is installed.
 */
-void Fl::remove_idle(void (*cb)(void*), void* data) {
+void fltk::remove_idle(void (*cb)(void*), void* data) {
   idle_cb* p = first;
   if (!p) return;
   idle_cb* l = last;

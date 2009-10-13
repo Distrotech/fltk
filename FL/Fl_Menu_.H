@@ -45,7 +45,7 @@
   array may either be supplied directly by the user program, or it may
   be "private": a dynamically allocated array managed by the Fl_Menu_.
 */
-class FL_EXPORT Fl_Menu_ : public Fl_Widget {
+class FL_EXPORT Fl_Menu_ : public fltk::Widget {
 
   Fl_Menu_Item *menu_;
   const Fl_Menu_Item *value_;
@@ -76,13 +76,13 @@ public:
   const Fl_Menu_Item *menu() const {return menu_;}
   void menu(const Fl_Menu_Item *m);
   void copy(const Fl_Menu_Item *m, void* user_data = 0);
-  int  add(const char*, int shortcut, Fl_Callback*, void* = 0, int = 0);
-  /** See int Fl_Menu_::add(const char* label, int shortcut, Fl_Callback*, void *user_data=0, int flags=0)*/
-  int  add(const char* a, const char* b, Fl_Callback* c, void* d = 0, int e = 0) {
+  int  add(const char*, int shortcut, fltk::Callback*, void* = 0, int = 0);
+  /** See int Fl_Menu_::add(const char* label, int shortcut, fltk::Callback*, void *user_data=0, int flags=0)*/
+  int  add(const char* a, const char* b, fltk::Callback* c, void* d = 0, int e = 0) {
       return add(a,fl_old_shortcut(b),c,d,e);}
   int  add(const char *);
   int  size() const ;
-  void size(int W, int H) { Fl_Widget::size(W, H); }
+  void size(int W, int H) { fltk::Widget::size(W, H); }
   void clear();
   void replace(int,const char *);
   void remove(int);

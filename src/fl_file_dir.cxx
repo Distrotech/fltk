@@ -33,7 +33,7 @@
 
 static Fl_File_Chooser	*fc = (Fl_File_Chooser *)0;
 static void		(*current_callback)(const char*) = 0;
-static const char	*current_label = fl_ok;
+static const char	*current_label = fltk::ok;
 
 
 // Do a file chooser callback...
@@ -58,7 +58,7 @@ void fl_file_chooser_callback(void (*cb)(const char*)) {
 */
 void fl_file_chooser_ok_label(const char *l) {
   if (l) current_label = l;
-  else current_label = fl_ok;
+  else current_label = fltk::ok;
 }
 
 /** \relates Fl_File_Chooser
@@ -136,7 +136,7 @@ fl_file_chooser(const char *message,	// I - Message in titlebar
   fc->show();
 
   while (fc->shown())
-    Fl::wait();
+    fltk::wait();
 
   if (fc->value() && relative) {
     fl_filename_relative(retname, sizeof(retname), fc->value());
@@ -177,7 +177,7 @@ fl_dir_chooser(const char *message,	// I - Message for titlebar
   fc->show();
 
   while (fc->shown())
-    Fl::wait();
+    fltk::wait();
 
   if (fc->value() && relative) {
     fl_filename_relative(retname, sizeof(retname), fc->value());

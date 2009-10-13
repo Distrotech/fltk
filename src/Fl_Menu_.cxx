@@ -148,7 +148,7 @@ const Fl_Menu_Item* Fl_Menu_::picked(const Fl_Menu_Item* v) {
     value_ = v;
     if (when()&(FL_WHEN_CHANGED|FL_WHEN_RELEASE)) {
       if (changed() || when()&FL_WHEN_NOT_CHANGED) {
-	if (value_ && value_->callback_) value_->do_callback((Fl_Widget*)this);
+        if (value_ && value_->callback_) value_->do_callback((fltk::Widget*)this);
 	else do_callback();
       }
     }
@@ -177,7 +177,7 @@ void Fl_Menu_Item::setonly() {
  and label string.  menu() is initialized to null.
  */
 Fl_Menu_::Fl_Menu_(int X,int Y,int W,int H,const char* l)
-: Fl_Widget(X,Y,W,H,l) {
+: fltk::Widget(X,Y,W,H,l) {
   set_flag(SHORTCUT_LABEL);
   box(FL_UP_BOX);
   when(FL_WHEN_RELEASE_ALWAYS);

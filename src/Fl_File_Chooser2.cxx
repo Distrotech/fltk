@@ -283,7 +283,7 @@
 /** \fn int Fl_File_Chooser::visible()
   Returns 1 if the Fl_File_Chooser window is visible.*/
 
-/** \fn Fl_Widget* Fl_File_Chooser::add_extra(Fl_Widget*)
+/** \fn fltk::Widget* Fl_File_Chooser::add_extra(fltk::Widget*)
   Adds extra widget at the bottom of Fl_File_Chooser window.
   Returns pointer for previous extra widget or NULL if not set previously.
   If argument is NULL only remove previous extra widget.
@@ -293,7 +293,7 @@
 */
   /** \fn int Fl_File_Chooser::shown()
     Returns non-zero if the file chooser main window show() has been called (but not hide()
-    see Fl_Window::shown()
+    see fltk::Window::shown()
   */
 
   /** \fn void Fl_File_Chooser::callback(void (*cb)(Fl_File_Chooser *, void *), void *d = 0)
@@ -561,7 +561,7 @@ Fl_File_Chooser::favoritesButtonCB()
 //
 
 void
-Fl_File_Chooser::favoritesCB(Fl_Widget *w)
+Fl_File_Chooser::favoritesCB(fltk::Widget *w)
 					// I - Widget
 {
   int		i;			// Looping var
@@ -703,7 +703,7 @@ Fl_File_Chooser::fileListCB()
     snprintf(pathname, sizeof(pathname), "%s/%s", directory_, filename);
   }
 
-  if (Fl::event_clicks()) {
+  if (fltk::event_clicks()) {
 #if (defined(WIN32) && ! defined(__CYGWIN__)) || defined(__EMX__)
     if ((strlen(pathname) == 2 && pathname[1] == ':') ||
         _fl_filename_isdir_quick(pathname))
@@ -718,7 +718,7 @@ Fl_File_Chooser::fileListCB()
       // be treated as a triple-click.  We use a value of -1 because
       // the next click will increment click count to 0, which is what
       // we really want...
-      Fl::event_clicks(-1);
+      fltk::event_clicks(-1);
     }
     else
     {
@@ -764,8 +764,8 @@ Fl_File_Chooser::fileListCB()
     fileName->value(pathname);
 
     // Update the preview box...
-    Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
-    Fl::add_timeout(1.0, (Fl_Timeout_Handler)previewCB, this);
+    fltk::remove_timeout((Fl_Timeout_Handler)previewCB, this);
+    fltk::add_timeout(1.0, (Fl_Timeout_Handler)previewCB, this);
 
     // Do any callback that is registered...
     if (callback_) (*callback_)(this, data_);
@@ -798,7 +798,7 @@ Fl_File_Chooser::fileNameCB()
   const char	*file;		// File from directory
 
 //  puts("fileNameCB()");
-//  printf("Event: %s\n", fl_eventnames[Fl::event()]);
+//  printf("Event: %s\n", fl_eventnames[fltk::event()]);
 
   // Get the filename from the text field...
   filename = (char *)fileName->value();
@@ -834,7 +834,7 @@ Fl_File_Chooser::fileNameCB()
   filename = pathname;
 
   // Now process things according to the key pressed...
-  if (Fl::event_key() == FL_Enter || Fl::event_key() == FL_KP_Enter) {
+    if (fltk::event_key() == FL_Enter || fltk::event_key() == FL_KP_Enter) {
     // Enter pressed - select or change directory...
 #if (defined(WIN32) && ! defined(__CYGWIN__)) || defined(__EMX__)
     if ((isalpha(pathname[0] & 255) && pathname[1] == ':' && !pathname[2]) ||
@@ -858,11 +858,11 @@ Fl_File_Chooser::fileNameCB()
       }
     } else {
       // File doesn't exist, so beep at and alert the user...
-      fl_alert(existing_file_label);
+      fltk::alert(existing_file_label);
     }
   }
-  else if (Fl::event_key() != FL_Delete &&
-           Fl::event_key() != FL_BackSpace) {
+    else if (fltk::event_key() != FL_Delete &&
+             fltk::event_key() != FL_BackSpace) {
     // Check to see if the user has entered a directory...
     if ((slash = strrchr(pathname, '/')) == NULL)
       slash = strrchr(pathname, '\\');
@@ -1046,7 +1046,7 @@ Fl_File_Chooser::newdir()
 
 
   // Get a directory name from the user
-  if ((dir = fl_input(new_directory_label, NULL)) == NULL)
+  if ((dir = fltk::input(new_directory_label, NULL)) == NULL)
     return;
 
   // Make it relative to the current directory as needed...
@@ -1067,7 +1067,7 @@ Fl_File_Chooser::newdir()
 #endif /* WIN32 */
     if (errno != EEXIST)
     {
-      fl_alert("%s", strerror(errno));
+      fltk::alert("%s", strerror(errno));
       return;
     }
 
@@ -1213,7 +1213,7 @@ Fl_File_Chooser::showChoiceCB()
   item = showChoice->text(showChoice->value());
 
   if (strcmp(item, custom_filter_label) == 0) {
-    if ((item = fl_input(custom_filter_label, pattern_)) != NULL) {
+    if ((item = fltk::input(custom_filter_label, pattern_)) != NULL) {
       strlcpy(pattern_, item, sizeof(pattern_));
 
       quote_pathname(temp, item, sizeof(temp));
@@ -1295,13 +1295,13 @@ Fl_File_Chooser::update_preview()
   if ((filename = value()) == NULL || fl_filename_isdir(filename)) image = NULL;
   else {
     window->cursor(FL_CURSOR_WAIT);
-    Fl::check();
+    fltk::check();
 
     image = Fl_Shared_Image::get(filename);
 
     if (image) {
       window->cursor(FL_CURSOR_DEFAULT);
-      Fl::check();
+      fltk::check();
     }
   }
 
@@ -1330,7 +1330,7 @@ Fl_File_Chooser::update_preview()
     }
 
     window->cursor(FL_CURSOR_DEFAULT);
-    Fl::check();
+    fltk::check();
 
     // Scan the buffer for printable UTF8 chars...
     for (ptr = preview_text_; *ptr; ptr++) {

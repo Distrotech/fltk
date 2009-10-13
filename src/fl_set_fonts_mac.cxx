@@ -41,7 +41,7 @@
 #define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
 
 // turn a stored font name into a pretty name:
-const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
+const char* fltk::get_font_name(Fl_Font fnum, int* ap) {
   Fl_Fontdesc *f = fl_fonts + fnum;
   if (!f->fontname[0]) {
     const char* p = f->name;
@@ -58,7 +58,7 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
 
 static int fl_free_font = FL_FREE_FONT;
 
-Fl_Font Fl::set_fonts(const char* xstarname) {
+Fl_Font fltk::set_fonts(const char* xstarname) {
 #pragma unused ( xstarname )
 #if defined(OLD__APPLE_QUARTZ__)
   ATSFontIterator it;
@@ -73,9 +73,9 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
     CFStringGetCString(fname, buf, 1024, kCFStringEncodingUTF8);
     int i;
     for (i=0; i<FL_FREE_FONT; i++) // skip if one of our built-in fonts
-      if (!strcmp(Fl::get_font_name((Fl_Font)i),buf)) break;
+      if (!strcmp(fltk::get_font_name((Fl_Font)i),buf)) break;
     if ( i < FL_FREE_FONT ) continue;
-    Fl::set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
+    fltk::set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
   }
   ATSFontIteratorRelease(&it);
   return (Fl_Font)fl_free_font;
@@ -109,7 +109,7 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
       oName[511] = 0;
     else
       oName[actualLength] = 0;
-	Fl::set_font((Fl_Font)(fl_free_font++), strdup(oName));
+    fltk::set_font((Fl_Font)(fl_free_font++), strdup(oName));
 //	free(oName);
   }
   free(oFontIDs);
@@ -118,7 +118,7 @@ Fl_Font Fl::set_fonts(const char* xstarname) {
 }
 
 static int array[128];
-int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
+int fltk::get_font_sizes(Fl_Font fnum, int*& sizep) {
   Fl_Fontdesc *s = fl_fonts+fnum;
   if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
   int cnt = 0;

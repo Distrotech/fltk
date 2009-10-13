@@ -91,7 +91,7 @@ void fl_color(uchar r, uchar g, uchar b) {
 #endif
 }
 
-void Fl::set_color(Fl_Color i, unsigned c) {
+void fltk::set_color(Fl_Color i, unsigned c) {
   if (fl_cmap[i] != c) {
     fl_cmap[i] = c;
   }

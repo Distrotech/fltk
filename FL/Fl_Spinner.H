@@ -62,7 +62,7 @@ class Fl_Spinner : public Fl_Group
 		down_button_;		// Down button
 
 
-  static void	sb_cb(Fl_Widget *w, Fl_Spinner *sb) {
+  static void	sb_cb(fltk::Widget *w, Fl_Spinner *sb) {
 		  double v;		// New value
 
 		  if (w == &(sb->input_)) {
@@ -142,11 +142,11 @@ class Fl_Spinner : public Fl_Group
 		  input_.value("1");
 		  input_.type(FL_INT_INPUT);
 		  input_.when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
-		  input_.callback((Fl_Callback *)sb_cb, this);
+          input_.callback((fltk::Callback *)sb_cb, this);
 
-		  up_button_.callback((Fl_Callback *)sb_cb, this);
+          up_button_.callback((fltk::Callback *)sb_cb, this);
 
-		  down_button_.callback((Fl_Callback *)sb_cb, this);
+          down_button_.callback((fltk::Callback *)sb_cb, this);
 		}
 
   /** Sets or returns the format string for the value. */
@@ -158,10 +158,10 @@ class Fl_Spinner : public Fl_Group
 		  switch (event) {
 		    case FL_KEYDOWN :
 		    case FL_SHORTCUT :
-		      if (Fl::event_key() == FL_Up) {
+		      if (fltk::event_key() == FL_Up) {
 			up_button_.do_callback();
 			return 1;
-		      } else if (Fl::event_key() == FL_Down) {
+		      } else if (fltk::event_key() == FL_Down) {
 			down_button_.do_callback();
 			return 1;
 		      } else return 0;

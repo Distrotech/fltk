@@ -26,7 +26,7 @@
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_Widget.H>
+#include <FL3/Widget.h>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tooltip.H>
 #include <FL/fl_draw.H>
@@ -42,14 +42,14 @@
 
 const int QUEUE_SIZE = 20;
 
-static Fl_Widget *obj_queue[QUEUE_SIZE];
+static fltk::Widget *obj_queue[QUEUE_SIZE];
 static int obj_head, obj_tail;
 
-void Fl_Widget::default_callback(Fl_Widget *o, void * /*v*/) {
+void fltk::Widget::default_callback(fltk::Widget *o, void * /*v*/) {
 #if 0
   // This is necessary for strict forms compatibility but is confusing.
   // Use the parent's callback if this widget does not have one.
-  for (Fl_Widget *p = o->parent(); p; p = p->parent())
+  for (fltk::Widget *p = o->parent(); p; p = p->parent())
     if (p->callback() != default_callback) {
       p->do_callback(o,v);
       return;
@@ -63,27 +63,23 @@ void Fl_Widget::default_callback(Fl_Widget *o, void * /*v*/) {
   }
 }
 /**
-    All Fl_Widgets that don't have a callback defined use a
+    All fltk::Widgets that don't have a callback defined use a
     default callback that puts a pointer to the widget in this queue,
     and this method reads the oldest widget out of this queue.
 */
-Fl_Widget *Fl::readqueue() {
+fltk::Widget *fltk::readqueue() {
   if (obj_tail==obj_head) return 0;
-  Fl_Widget *o = obj_queue[obj_tail++];
+  fltk::Widget *o = obj_queue[obj_tail++];
   if (obj_tail >= QUEUE_SIZE) obj_tail = 0;
   return o;
 }
     
 ////////////////////////////////////////////////////////////////
 
-int Fl_Widget::handle(int) {
-  return 0;
-}
-
 /** Default font size for widgets */
 Fl_Fontsize FL_NORMAL_SIZE = 14;
 
-Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L) {
+fltk::Widget::Widget(int X, int Y, int W, int H, const char* L) {
 
   x_ = X; y_ = Y; w_ = W; h_ = H;
 
@@ -110,42 +106,42 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L) {
   if (Fl_Group::current()) Fl_Group::current()->add(this);
 }
 
-void Fl_Widget::resize(int X, int Y, int W, int H) {
+void fltk::Widget::resize(int X, int Y, int W, int H) {
   x_ = X; y_ = Y; w_ = W; h_ = H;
 }
 
 // this is useful for parent widgets to call to resize children:
-int Fl_Widget::damage_resize(int X, int Y, int W, int H) {
+int fltk::Widget::damage_resize(int X, int Y, int W, int H) {
   if (x() == X && y() == Y && w() == W && h() == H) return 0;
   resize(X, Y, W, H);
   redraw();
   return 1;
 }
 
-int Fl_Widget::take_focus() {
+int fltk::Widget::take_focus() {
   if (!takesevents()) return 0;
   if (!visible_focus()) return 0;
   if (!handle(FL_FOCUS)) return 0; // see if it wants it
-  if (contains(Fl::focus())) return 1; // it called Fl::focus for us
-  Fl::focus(this);
+  if (contains(fltk::focus())) return 1; // it called fltk::focus for us
+  fltk::focus(this);
   return 1;
 }
 
-extern void fl_throw_focus(Fl_Widget*); // in Fl_x.cxx
+extern void fl_throw_focus(fltk::Widget*); // in Fl_x.cxx
 
 /**
    Destroys the widget, taking care of throwing focus before if any.
    Destruction removes the widget from any parent group! And groups when
    destroyed destroy all their children. This is convenient and fast.
 */
-Fl_Widget::~Fl_Widget() {
-  Fl::clear_widget_pointer(this);
+fltk::Widget::~Widget() {
+  fltk::clear_widget_pointer(this);
   if (flags() & COPIED_LABEL) free((void *)(label_.value));
   // remove from parent group
   if (parent_) parent_->remove(this);
 #ifdef DEBUG_DELETE
   if (parent_) { // this should never happen
-    printf("*** Fl_Widget: parent_->remove(this) failed [%p,%p]\n",parent_,this);
+    printf("*** fltk::Widget: parent_->remove(this) failed [%p,%p]\n",parent_,this);
   }
 #endif // DEBUG_DELETE
   parent_ = 0; // Don't throw focus to a parent widget.
@@ -154,8 +150,8 @@ Fl_Widget::~Fl_Widget() {
 
 /** Draws a focus box for the widget at the given position and size */
 void
-Fl_Widget::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
-  if (!Fl::visible_focus()) return;
+fltk::Widget::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
+  if (!fltk::visible_focus()) return;
   switch (B) {
     case FL_DOWN_BOX:
     case FL_DOWN_FRAME:
@@ -171,8 +167,8 @@ Fl_Widget::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
 
 #if defined(USE_X11) || defined(__APPLE_QUARTZ__)
   fl_line_style(FL_DOT);
-  fl_rect(X + Fl::box_dx(B), Y + Fl::box_dy(B),
-          W - Fl::box_dw(B) - 1, H - Fl::box_dh(B) - 1);
+  fl_rect(X + fltk::box_dx(B), Y + fltk::box_dy(B),
+          W - fltk::box_dw(B) - 1, H - fltk::box_dh(B) - 1);
   fl_line_style(FL_SOLID);
 #elif defined(WIN32) 
   // Windows 95/98/ME do not implement the dotted line style, so draw
@@ -183,10 +179,10 @@ Fl_Widget::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
   // on odd-numbered rows...
   int i, xx, yy;
 
-  X += Fl::box_dx(B);
-  Y += Fl::box_dy(B);
-  W -= Fl::box_dw(B) + 2;
-  H -= Fl::box_dh(B) + 2;
+  X += fltk::box_dx(B);
+  Y += fltk::box_dy(B);
+  W -= fltk::box_dw(B) + 2;
+  H -= fltk::box_dh(B) + 2;
 
   for (xx = 0, i = 1; xx < W; xx ++, i ++) if (i & 1) fl_point(X + xx, Y);
   for (yy = 0; yy < H; yy ++, i ++) if (i & 1) fl_point(X + W, Y + yy);
@@ -198,19 +194,19 @@ Fl_Widget::draw_focus(Fl_Boxtype B, int X, int Y, int W, int H) const {
 }
 
 
-void Fl_Widget::activate() {
+void fltk::Widget::activate() {
   if (!active()) {
     clear_flag(INACTIVE);
     if (active_r()) {
       redraw();
       redraw_label();
       handle(FL_ACTIVATE);
-      if (inside(Fl::focus())) Fl::focus()->take_focus();
+      if (inside(fltk::focus())) fltk::focus()->take_focus();
     }
   }
 }
 
-void Fl_Widget::deactivate() {
+void fltk::Widget::deactivate() {
   if (active_r()) {
     set_flag(INACTIVE);
     redraw();
@@ -222,28 +218,28 @@ void Fl_Widget::deactivate() {
   }
 }
 
-int Fl_Widget::active_r() const {
-  for (const Fl_Widget* o = this; o; o = o->parent())
+int fltk::Widget::active_r() const {
+  for (const fltk::Widget* o = this; o; o = o->parent())
     if (!o->active()) return 0;
   return 1;
 }
 
-void Fl_Widget::show() {
+void fltk::Widget::show() {
   if (!visible()) {
     clear_flag(INVISIBLE);
     if (visible_r()) {
       redraw();
       redraw_label();
       handle(FL_SHOW);
-      if (inside(Fl::focus())) Fl::focus()->take_focus();
+      if (inside(fltk::focus())) fltk::focus()->take_focus();
     }
   }
 }
 
-void Fl_Widget::hide() {
+void fltk::Widget::hide() {
   if (visible_r()) {
     set_flag(INVISIBLE);
-    for (Fl_Widget *p = parent(); p; p = p->parent())
+    for (fltk::Widget *p = parent(); p; p = p->parent())
       if (p->box() || !p->parent()) {p->redraw(); break;}
     handle(FL_HIDE);
     fl_throw_focus(this);
@@ -252,22 +248,22 @@ void Fl_Widget::hide() {
   }
 }
 
-int Fl_Widget::visible_r() const {
-  for (const Fl_Widget* o = this; o; o = o->parent())
+int fltk::Widget::visible_r() const {
+  for (const fltk::Widget* o = this; o; o = o->parent())
     if (!o->visible()) return 0;
   return 1;
 }
 
 // return true if widget is inside (or equal to) this:
 // Returns false for null widgets.
-int Fl_Widget::contains(const Fl_Widget *o) const {
+int fltk::Widget::contains(const fltk::Widget *o) const {
   for (; o; o = o->parent_) if (o == this) return 1;
   return 0;
 }
 
 
 void
-Fl_Widget::label(const char *a) {
+fltk::Widget::label(const char *a) {
   if (flags() & COPIED_LABEL) {
     // reassigning a copied label remains the same copied label
     if (label_.value == a)
@@ -281,7 +277,7 @@ Fl_Widget::label(const char *a) {
 
 
 void
-Fl_Widget::copy_label(const char *a) {
+fltk::Widget::copy_label(const char *a) {
   if (flags() & COPIED_LABEL) free((void *)(label_.value));
   if (a) {
     set_flag(COPIED_LABEL);
@@ -302,12 +298,22 @@ Fl_Widget::copy_label(const char *a) {
   \see callback()
 */
 void
-Fl_Widget::do_callback(Fl_Widget* o,void* arg) {
+fltk::Widget::do_callback(fltk::Widget* o,void* arg) {
   Fl_Widget_Tracker wp(o);
   callback_(o,arg); 
   if (wp.deleted()) return;
   if (callback_ != default_callback) 
     clear_changed();
+}
+
+void fltk::Widget::draw() {
+  draw_box();
+  draw_label();
+}
+
+int fltk::Widget::handle(int event) {
+  if (event == FL_ENTER || event == FL_LEAVE) return 1;
+  else return 0;
 }
 
 //

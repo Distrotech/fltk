@@ -37,7 +37,7 @@
 
 #include <config.h>
 #include <FL/Fl.H>
-#include <FL/Fl_Widget.H>
+#include <FL3/Widget.h>
 #include <FL/fl_draw.H>
 #include <FL/x.H>
 
@@ -552,7 +552,7 @@ void fl_push_clip(int x, int y, int w, int h) {
 #endif
   }
   if (rstackptr < STACK_MAX) rstack[++rstackptr] = r;
-  else Fl::warning("fl_push_clip: clip stack overflow!\n");
+  else fltk::warning("fl_push_clip: clip stack overflow!\n");
   fl_restore_clip();
 }
 
@@ -562,7 +562,7 @@ void fl_push_clip(int x, int y, int w, int h) {
 */
 void fl_push_no_clip() {
   if (rstackptr < STACK_MAX) rstack[++rstackptr] = 0;
-  else Fl::warning("fl_push_no_clip: clip stack overflow!\n");
+  else fltk::warning("fl_push_no_clip: clip stack overflow!\n");
   fl_restore_clip();
 }
 
@@ -578,7 +578,7 @@ void fl_pop_clip() {
   if (rstackptr > 0) {
     Fl_Region oldr = rstack[rstackptr--];
     if (oldr) XDestroyRegion(oldr);
-  } else Fl::warning("fl_pop_clip: clip stack underflow!\n");
+  } else fltk::warning("fl_pop_clip: clip stack underflow!\n");
   fl_restore_clip();
 }
 

@@ -29,7 +29,7 @@
 // be one of these it allows an infinte number!)
 
 #include <FL/Fl.H>
-#include <FL/Fl_Widget.H>
+#include <FL3/Widget.h>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Multi_Label.H>
 
@@ -65,13 +65,13 @@ static void multi_measure(const Fl_Label* o, int& w, int& h) {
   w += W; if (H>h) h = H;
 }
 
-void Fl_Multi_Label::label(Fl_Widget* o) {
-  Fl::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
+void Fl_Multi_Label::label(fltk::Widget* o) {
+  fltk::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
   o->label(_FL_MULTI_LABEL, (const char*)this);
 }
 
 void Fl_Multi_Label::label(Fl_Menu_Item* o) {
-  Fl::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
+  fltk::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
   o->label(_FL_MULTI_LABEL, (const char*)this);
 }
 

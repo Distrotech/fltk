@@ -23,7 +23,23 @@ to 1 and 2. Just prepend your code with the "coding_style" instruction
 and FLTK 3 will do the rest. It is even possible to intermix F1 and 
 F2 coding styles at any place.
 
-Nice challange, eh? So let's get going:
+Nice challange, eh? So let's get going.
+
+
+ Progress Report
+-----------------
+
+The current archive contains a preliminary code merge with a few features 
+and warnings:
+
+- this version should compile all FLTK1 code including Fluid1 using Xcode on 
+  OS X 10.6 without changes to their source code
+- 'hello2' and 'helloask2' are original FLTK2 applications that will compile
+  and run without changes to the source code
+- Fluid1 and Fluid2 are our references. Any code change to the API and source
+  must keep Fluid1 fully functional. The process will be successful when 
+  Fluid2 also comiles and runs without code changes
+- compiling Fluid2 is still far far away
 
 
  The Big Differences
@@ -54,13 +70,13 @@ functionality to allow arbitrary widgets as list items. A Tree-like
 widget comes free with the FLTK 2 concept. FLTK 1 has no such thing and
 even Fluid had to hack the library badly to generate a tree view.
 
-(4) Namespacesi and Class names: FLTK 2 introduces the ftk namespace, 
-renaming all widgets. FLTK 3 will use the FLTK 2 naming scheme and map FLTK 1 
-class names by deriving stub class. This kind of mapping is not perfect by 
-any means, but seems to be the only somewhat sane way. A somewhat transparent
-implementation uses F2/3 names for arguments, but always returns F1 pointers
-by casting. That way, no casting in the user code is required. As another 
-benefit FLTK3 always knows if a widget was created F1 or F2 style.
+(4) Namespaces and Class names: FLTK 2 introduces the ftk namespace, 
+renaming all widgets. FLTK 3 will use the FLTK 2 naming scheme and map FLTK 1
+class names by #define'ing Fl_ classes as theit fltk:: counterpart. 
+This kind of mapping is not perfect by any means, but seems to be the only 
+somewhat sane way. In order for the core library to differentiate between
+widgets that are meant to be F1 or F2 compliant, we will have to introduce
+some "coding style" flag.
 
 (5) Layout: FLTK 1 uses a top-down approach for widget layout in which the
 parent widget decides about the childs size "resize(x, y, w, h)". In FLTK 2

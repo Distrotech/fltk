@@ -34,7 +34,7 @@
 #include <FL/Fl.H>
 #include <FL/x.H>
 #include <FL/fl_draw.H>
-#include <FL/Fl_Widget.H>
+#include <FL3/Widget.h>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Bitmap.H>
 #include "flstring.h"
@@ -330,12 +330,12 @@ void Fl_Bitmap::uncache() {
   }
 }
 
-void Fl_Bitmap::label(Fl_Widget* widget) {
+void Fl_Bitmap::label(fltk::Widget* widget) {
   widget->image(this);
 }
 
 void Fl_Bitmap::label(Fl_Menu_Item* m) {
-  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
+  fltk::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
   m->label(_FL_IMAGE_LABEL, (const char*)this);
 }
 
