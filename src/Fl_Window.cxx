@@ -60,7 +60,7 @@ void fltk::Window::_Fl_Window() {
 }
 
 fltk::Window::Window(int X,int Y,int W, int H, const char *l)
-: Fl_Group(X, Y, W, H, l) {
+: fltk::Group(X, Y, W, H, l) {
   cursor_default = FL_CURSOR_DEFAULT;
   cursor_fg      = FL_BLACK;
   cursor_bg      = FL_WHITE;
@@ -71,7 +71,7 @@ fltk::Window::Window(int X,int Y,int W, int H, const char *l)
 
 fltk::Window::Window(int W, int H, const char *l)
 // fix common user error of a missing end() with current(0):
-  : Fl_Group((Fl_Group::current(0),0), 0, W, H, l) {
+: fltk::Group((fltk::Group::current(0),0), 0, W, H, l) {
   cursor_default = FL_CURSOR_DEFAULT;
   cursor_fg      = FL_BLACK;
   cursor_bg      = FL_WHITE;
@@ -100,7 +100,7 @@ int fltk::Window::y_root() const {
 
 void fltk::Window::draw() {
 
-  // The following is similar to Fl_Group::draw(), but ...
+  // The following is similar to fltk::Group::draw(), but ...
   //  - we draw the box with x=0 and y=0 instead of x() and y()
   //  - we don't draw a label
 

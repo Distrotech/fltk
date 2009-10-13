@@ -90,7 +90,7 @@
   clipping is not conveyed to it when drawn, and it will draw over the
   scrollbars and neighboring objects.</I>
 */
-class FL_EXPORT Fl_Scroll : public Fl_Group {
+class FL_EXPORT Fl_Scroll : public fltk::Group {
 
   int xposition_, yposition_;
   int width_, height_;

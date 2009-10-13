@@ -103,7 +103,7 @@ fltk::Widget::Widget(int X, int Y, int W, int H, const char* L) {
   when_		 = FL_WHEN_RELEASE;
 
   parent_ = 0;
-  if (Fl_Group::current()) Fl_Group::current()->add(this);
+  if (fltk::Group::current()) fltk::Group::current()->add(this);
 }
 
 void fltk::Widget::resize(int X, int Y, int W, int H) {

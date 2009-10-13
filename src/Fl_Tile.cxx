@@ -70,7 +70,7 @@ void Fl_Tile::position(int oix, int oiy, int newx, int newy) {
 
 // move the lower-right corner (sort of):
 void Fl_Tile::resize(int X,int Y,int W,int H) {
-  //Fl_Group::resize(X, Y, W, H);
+  //fltk::Group::resize(X, Y, W, H);
   //return;
   // remember how much to move the child widgets:
   int dx = X-x();
@@ -78,7 +78,7 @@ void Fl_Tile::resize(int X,int Y,int W,int H) {
   int dw = W-w();
   int dh = H-h();
   int *p = sizes();
-  // resize this (skip the Fl_Group resize):
+  // resize this (skip the fltk::Group resize):
   fltk::Widget::resize(X,Y,W,H);
   // find bottom-right of resiable:
   int OR = p[5];
@@ -172,7 +172,7 @@ int Fl_Tile::handle(int event) {
     if (mindy <= GRABAREA) {sdrag |= DRAGV; sy = oldy;}
     set_cursor(this, cursors[sdrag]);
     if (sdrag) return 1;
-    return Fl_Group::handle(event);
+      return fltk::Group::handle(event);
   }
 
   case FL_LEAVE:
@@ -206,7 +206,7 @@ int Fl_Tile::handle(int event) {
 
   }
 
-  return Fl_Group::handle(event);
+  return fltk::Group::handle(event);
 }
 
 //

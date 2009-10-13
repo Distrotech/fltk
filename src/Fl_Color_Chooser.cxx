@@ -465,7 +465,7 @@ void Fl_Color_Chooser::mode_cb(fltk::Widget* o, void*) {
   \param[in] L widget label, default is no label
  */
 Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
-  : Fl_Group(0,0,195,115,L),
+: fltk::Group(0,0,195,115,L),
     huebox(0,0,115,115),
     valuebox(115,0,20,115),
     choice(140,0,55,25),
@@ -551,7 +551,7 @@ int fl_color_chooser(const char* name, double& r, double& g, double& b) {
   cancel_color.r = uchar(255*r+.5); ok_color.r = cancel_color.r;
   ok_color.g = cancel_color.g = uchar(255*g+.5);
   ok_color.b = cancel_color.b = uchar(255*b+.5);
-  Fl_Button cancel_button(110, 165, 95, 25, fltk::cancel);
+  fltk::Button cancel_button(110, 165, 95, 25, fltk::cancel);
   window.resizable(chooser);
   chooser.rgb(r,g,b);
   chooser.callback(chooser_cb, &ok_color);

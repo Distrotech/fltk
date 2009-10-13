@@ -31,22 +31,13 @@
 #ifndef Fl_Button_H
 #define Fl_Button_H
 
-#ifndef Fl_Widget_H
 #include "Fl_Widget.H"
-#endif
 
-// values for type()
-#define FL_NORMAL_BUTTON	0   /**< value() will be set to 1 during the press of the button and 
-                                         reverts back to 0 when the button is released */
-#define FL_TOGGLE_BUTTON	1   ///< value() toggles between 0 and 1 at every click of the button
-#define FL_RADIO_BUTTON		(FL_RESERVED_TYPE+2) /**< is set to 1 at button press, and all other
-				         buttons in the same group with <tt>type() == FL_RADIO_BUTTON</tt>
-				         are set to zero.*/
-#define FL_HIDDEN_BUTTON	3   ///< for Forms compatibility
+#include "../FL3/Button.h"
 
-#ifndef FL_DOXYGEN
-extern FL_EXPORT Fl_Shortcut fl_old_shortcut(const char*);
-#endif
+#define Fl_Button fltk::Button
+
+#if 0
 
 /**
   \class Fl_Button
@@ -168,6 +159,8 @@ public:
   /// (for backwards compatibility)
   void down_color(unsigned c) {selection_color(c);}
 };
+
+#endif 
 
 #endif
 

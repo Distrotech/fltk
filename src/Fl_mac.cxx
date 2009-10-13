@@ -2104,7 +2104,7 @@ void Fl_X::make(fltk::Window* w)
   static int xyPos = 100;
   if ( w->parent() ) // create a subwindow
   {
-    Fl_Group::current(0);
+    fltk::Group::current(0);
     Rect wRect;
     wRect.top    = w->y();
     wRect.left   = w->x();
@@ -2137,7 +2137,7 @@ void Fl_X::make(fltk::Window* w)
   }
   else // create a desktop window
   {
-    Fl_Group::current(0);
+    fltk::Group::current(0);
     fl_open_display();
     int winclass = kDocumentWindowClass;
     int winattr = kWindowStandardHandlerAttribute | kWindowCloseBoxAttribute | kWindowCollapseBoxAttribute;
@@ -2427,7 +2427,7 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
   }
   resize_from_system = 0;
   if (is_a_resize) {
-    Fl_Group::resize(X,Y,W,H);
+    fltk::Group::resize(X,Y,W,H);
     if (shown()) { 
       redraw(); 
     }

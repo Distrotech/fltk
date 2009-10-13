@@ -113,7 +113,7 @@ public:
   color using dithering.
  */
 /** @} */
-class FL_EXPORT Fl_Color_Chooser : public Fl_Group {
+class FL_EXPORT Fl_Color_Chooser : public fltk::Group {
   Flcc_HueBox huebox;
   Flcc_ValueBox valuebox;
   Fl_Choice choice;

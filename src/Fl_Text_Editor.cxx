@@ -590,7 +590,7 @@ int Fl_Text_Editor::handle(int event) {
     case FL_PUSH:
       if (fltk::event_button() == 2) {
         // don't let the text_display see this event
-        if (Fl_Group::handle(event)) return 1;
+        if (fltk::Group::handle(event)) return 1;
         dragType = -1;
         fltk::paste(*this, 0);
         fltk::focus(this);

@@ -106,7 +106,7 @@ int Fl_Browser_::leftedge() const {
 
 // The scrollbars may be moved again by draw(), since each one's size
 // depends on whether the other is visible or not.  This skips over
-// Fl_Group::resize since it moves the scrollbars uselessly.
+// fltk::Group::resize since it moves the scrollbars uselessly.
 /**
   Repositions and/or resizes the browser.
   \param[in] X,Y,W,H The new position and size for the browser, in pixels.
@@ -748,7 +748,7 @@ J1:
     }
   }
   
-  if (Fl_Group::handle(event)) return 1;
+  if (fltk::Group::handle(event)) return 1;
   int X, Y, W, H; bbox(X, Y, W, H);
   int my;
 // NOTE:
@@ -914,7 +914,7 @@ J1:
   \param[in] L The label string, may be NULL.
 */
 Fl_Browser_::Fl_Browser_(int X, int Y, int W, int H, const char* L)
-  : Fl_Group(X, Y, W, H, L),
+: fltk::Group(X, Y, W, H, L),
     scrollbar(0, 0, 0, 0, 0), // they will be resized by draw()
     hscrollbar(0, 0, 0, 0, 0)
 {

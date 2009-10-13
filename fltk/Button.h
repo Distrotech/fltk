@@ -1,9 +1,9 @@
 //
-// "$Id$"
+// "$Id: Button.h 5433 2006-09-16 03:00:02Z spitzak $"
 //
-// Radio button header file for the Fast Light Tool Kit (FLTK).
+// Push button widget
 //
-// Copyright 1998-2009 by Bill Spitzak and others.
+// Copyright 2002 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -20,27 +20,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA.
 //
-// Please report all bugs and problems on the following page:
-//
-//     http://www.fltk.org/str.php
+// Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-/* \file
-   Fl_Radio_Button widget . */
+#ifndef fltk_Button_h
+#define fltk_Button_h
 
-#ifndef Fl_Radio_Button_H
-#define Fl_Radio_Button_H
+#include "Widget.h"
 
-#include "Fl_Button.H"
-
-class Fl_Radio_Button : public fltk::Button {
-public:
-    Fl_Radio_Button(int x,int y,int w,int h,const char *l=0)
-	: fltk::Button(x,y,w,h,l) {type(FL_RADIO_BUTTON);}
-};
+#include "../FL3/Button.h"
 
 #endif
 
 //
-// End of "$Id$".
+// End of "$Id: Button.h 5433 2006-09-16 03:00:02Z spitzak $".
 //

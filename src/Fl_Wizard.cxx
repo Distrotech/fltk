@@ -58,7 +58,7 @@ Fl_Wizard::Fl_Wizard(int        xx,	// I - Lefthand position
 		     int        ww,	// I - Width
 		     int        hh,	// I - Height
 		     const char *l) :	// I - Label
-    Fl_Group(xx, yy, ww, hh, l)
+fltk::Group(xx, yy, ww, hh, l)
 {
   box(FL_THIN_UP_BOX);
 

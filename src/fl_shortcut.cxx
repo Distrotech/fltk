@@ -54,7 +54,7 @@
 /**
     Test the current event, which must be an FL_KEYBOARD or 
     FL_SHORTCUT, against a shortcut value (described in 
-    Fl_Button).  Returns non-zero if there is a match.  Not to
+    fltk::Button).  Returns non-zero if there is a match.  Not to
     be confused with 
     fltk::Widget::test_shortcut().
 */
@@ -165,7 +165,7 @@ static Keyname table[] = {
 /**
   Get a human-readable string from a shortcut value.
 
-  Unparse a shortcut value as used by Fl_Button or Fl_Menu_Item into
+  Unparse a shortcut value as used by fltk::Button or Fl_Menu_Item into
   a human-readable string like "Alt+N". This only works if the shortcut
   is a character key or a numbered function key. If the shortcut is
   zero then an empty string is returned. The return value points at

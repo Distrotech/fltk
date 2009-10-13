@@ -134,7 +134,7 @@ public:
       fltk::e_y = fltk::e_y_root-fl_dnd_target_window->y();
     }
     if (fillCurrentDragData(0)) {
-      // Fl_Group will change DND_DRAG into DND_ENTER and DND_LEAVE if needed
+      // fltk::Group will change DND_DRAG into DND_ENTER and DND_LEAVE if needed
       if ( fltk::handle( FL_DND_DRAG, fl_dnd_target_window ) )
         *pdwEffect = DROPEFFECT_MOVE|DROPEFFECT_COPY; //|DROPEFFECT_LINK;
       else

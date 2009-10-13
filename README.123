@@ -36,6 +36,8 @@ and warnings:
   OS X 10.6 without changes to their source code
 - 'hello2' and 'helloask2' are original FLTK2 applications that will compile
   and run without changes to the source code
+- 'button' is currently being implemented and is supported except for image
+  handling
 - Fluid1 and Fluid2 are our references. Any code change to the API and source
   must keep Fluid1 fully functional. The process will be successful when 
   Fluid2 also comiles and runs without code changes
@@ -105,6 +107,7 @@ correspond, and how they could be implemented in FLTK 3.
 2: namespace fltk
 *: this is a pretty straight-forward mapping of functions. The actual work
    lies in finding and listing all global functions and adapting those.
+**: initial transfer done
 
 1: class Fl_Adjuster
 2: class Adjuster
@@ -145,6 +148,7 @@ correspond, and how they could be implemented in FLTK 3.
    a bunch of other box-like classes which have some predefined properties,
    however this is the best match for FLTK 1. fltk::InvisibleBox can be used
    as well.
+**: initial transfer done
 
 1: class Fl_Browser
 2: class Browser
@@ -155,6 +159,7 @@ correspond, and how they could be implemented in FLTK 3.
 1: class Fl_Button
 2: class Button
 *: should map easily
+**: initial transfer done
 
 1: class Fl_Cairo_State
 2:
@@ -213,6 +218,8 @@ correspond, and how they could be implemented in FLTK 3.
 
 1: class Fl_End
 2:
+*: I am not sure if there is an FLTK2 equivalent
+**: initial transfer done
 
 1: 
 2: class EngravedLabel
@@ -285,6 +292,7 @@ correspond, and how they could be implemented in FLTK 3.
 1: class Fl_Group
 2: class Group
 *: should map easily, must manage coordinate systems
+**: initial transfer done
 
 1: 
 2: class GSave
@@ -343,8 +351,11 @@ correspond, and how they could be implemented in FLTK 3.
 2: class IntInput
 *: should map easily
 
-1: 
+1: class Fl_Box
 2: class InvisibleBox
+*: silly FLTK2 does exactly what FLTK1 does. I have no clue why this is
+   named Invisible... 
+**: initial transfer done
 
 1: 
 2: class Item
@@ -622,6 +633,7 @@ correspond, and how they could be implemented in FLTK 3.
 1: class Fl_Widget
 2: class Widget
 *: should map easily for the most part
+**: initial transfer done
 
 1: class Fl_Widget_Tracker
 2:
@@ -629,8 +641,7 @@ correspond, and how they could be implemented in FLTK 3.
 1: class Fl_Window
 2: class Window
 *: should map easily
-**: basic mapping is done. There are a handfull of functions that exist in F2 
-    which are not in F1/3 yet. They can easily be ported.
+**: initial transfer done
 
 1: class Fl_Wizard
 2: class WizardGroup

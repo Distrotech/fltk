@@ -56,7 +56,7 @@
   widgets directly, using the menubutton()
   and input() accessor methods.
 */
-class Fl_Input_Choice : public Fl_Group {
+class Fl_Input_Choice : public fltk::Group {
   // Private class to handle slightly 'special' behavior of menu button
   class InputMenuButton : public Fl_Menu_Button {
     void draw() {
@@ -133,8 +133,8 @@ public:
     and label string.
   <P> Inherited destructor Destroys the widget and any value associated with it.
   */
-  Fl_Input_Choice (int x,int y,int w,int h,const char*l=0) : Fl_Group(x,y,w,h,l) {
-    Fl_Group::box(FL_DOWN_BOX);
+  Fl_Input_Choice (int x,int y,int w,int h,const char*l=0) : fltk::Group(x,y,w,h,l) {
+    fltk::Group::box(FL_DOWN_BOX);
     align(FL_ALIGN_LEFT);				// default like Fl_Input
     inp_ = new Fl_Input(inp_x(), inp_y(),
 			inp_w(), inp_h());
@@ -170,7 +170,7 @@ public:
   /** Sets the Fl_Menu_Item array used for the menu. */
   void menu(const Fl_Menu_Item *m) { menu_->menu(m); }
   void resize(int X, int Y, int W, int H) {
-    Fl_Group::resize(X,Y,W,H);
+    fltk::Group::resize(X,Y,W,H);
     inp_->resize(inp_x(), inp_y(), inp_w(), inp_h());
     menu_->resize(menu_x(), menu_y(), menu_w(), menu_h());
   }

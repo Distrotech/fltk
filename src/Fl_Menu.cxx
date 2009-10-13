@@ -791,7 +791,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
     const Fl_Menu_* pbutton,
     const Fl_Menu_Item* t,
     int menubar) const {
-  Fl_Group::current(0); // fix possible user error...
+  fltk::Group::current(0); // fix possible user error...
 
   button = pbutton;
   if (pbutton) {

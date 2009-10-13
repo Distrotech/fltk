@@ -40,7 +40,7 @@
   \param[in] v button value.
   \see set(), clear()
  */
-int Fl_Button::value(int v) {
+int fltk::Button::value(int v) {
   v = v ? 1 : 0;
   oldval = v;
   clear_changed();
@@ -58,17 +58,17 @@ int Fl_Button::value(int v) {
   Turns on this button and turns off all other radio buttons in the group
   (calling \c value(1) or \c set() does not do this).
  */
-void Fl_Button::setonly() { // set this radio button on, turn others off
+void fltk::Button::setonly() { // set this radio button on, turn others off
   value(1);
-  Fl_Group* g = (Fl_Group*)parent();
+  fltk::Group* g = (fltk::Group*)parent();
   fltk::Widget*const* a = g->array();
   for (int i = g->children(); i--;) {
     fltk::Widget* o = *a++;
-    if (o != this && o->type()==FL_RADIO_BUTTON) ((Fl_Button*)o)->value(0);
+    if (o != this && o->type()==FL_RADIO_BUTTON) ((fltk::Button*)o)->value(0);
   }
 }
 
-void Fl_Button::draw() {
+void fltk::Button::draw() {
   if (type() == FL_HIDDEN_BUTTON) return;
   Fl_Color col = value() ? selection_color() : color();
   draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(), col);
@@ -81,7 +81,7 @@ void Fl_Button::draw() {
   if (fltk::focus() == this) draw_focus();
 }
 
-int Fl_Button::handle(int event) {
+int fltk::Button::handle(int event) {
   int newval;
   switch (event) {
   case FL_ENTER:
@@ -176,7 +176,7 @@ int Fl_Button::handle(int event) {
   \param[in] X, Y, W, H position and size of the widget
   \param[in] L widget label, default is no label
  */
-Fl_Button::Fl_Button(int X, int Y, int W, int H, const char *L)
+fltk::Button::Button(int X, int Y, int W, int H, const char *L)
 : fltk::Widget(X,Y,W,H,L) {
   box(FL_UP_BOX);
   down_box(FL_NO_BOX);

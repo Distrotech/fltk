@@ -33,9 +33,9 @@
 
 char fl_flip = 2;
 void fl_end_form() {
-  while (Fl_Group::current()) Fl_Group::current()->forms_end();
+  while (fltk::Group::current()) fltk::Group::current()->forms_end();
 }
-void Fl_Group::forms_end() {
+void fltk::Group::forms_end() {
   // set the dimensions of a group to surround contents
   if (children() && !w()) {
     fltk::Widget*const* a = array();
@@ -149,8 +149,8 @@ void Fl_FormsText::draw() {
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Repeat_Button.H>
 
-Fl_Button *fl_add_button(uchar t,int x,int y,int w,int h,const char *l) {
-  Fl_Button *b;
+fltk::Button *fl_add_button(uchar t,int x,int y,int w,int h,const char *l) {
+  fltk::Button *b;
   switch (t) {
   case FL_RETURN_BUTTON:
   case FL_HIDDEN_RET_BUTTON:
@@ -160,7 +160,7 @@ Fl_Button *fl_add_button(uchar t,int x,int y,int w,int h,const char *l) {
     b = new Fl_Repeat_Button(x,y,w,h,l);
     break;
   default:
-    b = new Fl_Button(x,y,w,h,l);
+      b = new fltk::Button(x,y,w,h,l);
   }
   switch (t) {
   case FL_TOGGLE_BUTTON:

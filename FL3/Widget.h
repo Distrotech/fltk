@@ -37,9 +37,9 @@
 
 namespace fltk {
   class Window;
+  class Group;
 };
 
-class Fl_Group;
 class Fl_Image;
 
 namespace fltk {
@@ -97,9 +97,9 @@ struct FL_EXPORT Fl_Label {
  */
 namespace fltk {
   class FL_EXPORT Widget {
-    friend class ::Fl_Group;
+    friend class Group;
     
-    Fl_Group* parent_;
+    fltk::Group* parent_;
     Callback* callback_;
     void* user_data_;
     int x_,y_,w_,h_;
@@ -151,7 +151,7 @@ namespace fltk {
       OVERRIDE        = 1<<8,   ///< position window on top (fltk::Window)
       VISIBLE_FOCUS   = 1<<9,   ///< accepts keyboard focus navigation if the widget can have the focus
       COPIED_LABEL    = 1<<10,  ///< the widget label is internally copied, its destruction is handled by the widget
-      CLIP_CHILDREN   = 1<<11,  ///< all drawing within this widget will be clipped (Fl_Group)
+      CLIP_CHILDREN   = 1<<11,  ///< all drawing within this widget will be clipped (fltk::Group)
       MENU_WINDOW     = 1<<12,  ///< a temporary popup window, dismissed by clicking outside (fltk::Window)
       TOOLTIP_WINDOW  = 1<<13,  ///< a temporary popup, transparent to events, and dismissed easily (fltk::Window)
       MODAL           = 1<<14,  ///< a window blocking input to all other winows (fltk::Window)
@@ -232,21 +232,21 @@ namespace fltk {
     virtual int handle(int event);
     
     /** Returns a pointer to the parent widget.  
-     Usually this is a Fl_Group or fltk::Window. 
+     Usually this is a fltk::Group or fltk::Window. 
      \retval NULL if the widget has no parent
-     \see Fl_Group::add(Widget*)
+     \see fltk::Group::add(Widget*)
      */
-    Fl_Group* parent() const {return parent_;}
+    fltk::Group* parent() const {return parent_;}
     
     /** Internal use only - "for hacks only".
      
      It is \em \b STRONGLY recommended not to use this method, because it
-     short-circuits Fl_Group's normal widget adding and removing methods,
-     if the widget is already a child widget of another Fl_Group.
+     short-circuits fltk::Group's normal widget adding and removing methods,
+     if the widget is already a child widget of another fltk::Group.
      
-     Use Fl_Group::add(Widget*) and/or Fl_Group::remove(Widget*) instead.
+     Use fltk::Group::add(Widget*) and/or fltk::Group::remove(Widget*) instead.
      */
-    void parent(Fl_Group* p) {parent_ = p;} // for hacks only, use Fl_Group::add()
+    void parent(fltk::Group* p) {parent_ = p;} // for hacks only, use fltk::Group::add()
     
     /** Gets the widget type.
      Returns the widget type value, which is used for Forms compatibility

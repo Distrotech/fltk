@@ -148,7 +148,7 @@ struct Fl_Help_Target
   elements are supported, as well as a primitive implementation of tables.
   GIF, JPEG, and PNG images are displayed inline.
 */
-class FL_EXPORT Fl_Help_View : public Fl_Group	// Help viewer widget
+class FL_EXPORT Fl_Help_View : public fltk::Group	// Help viewer widget
 {
   enum { RIGHT = -1, CENTER, LEFT };	///< Alignments
 

@@ -50,7 +50,7 @@
 static fltk::Window *message_form;
 static Fl_Box *message;
 static Fl_Box *icon;
-static Fl_Button *button[3];
+static fltk::Button *button[3];
 static Fl_Input *input;
 static const char *iconlabel = "?";
 Fl_Font fltk::message_font_ = FL_HELVETICA;
@@ -65,8 +65,8 @@ static fltk::Window *makeform() {
  }
  // make sure that the dialog does not become the child of some 
  // current group
- Fl_Group *previously_current_group = Fl_Group::current();
- Fl_Group::current(0);
+  fltk::Group *previously_current_group = fltk::Group::current();
+  fltk::Group::current(0);
  // create a new top level window
   fltk::Window *w = message_form = new fltk::Window(410,103,"");
  // w->clear_border();
@@ -81,17 +81,17 @@ static fltk::Window *makeform() {
   o->color(FL_WHITE);
   o->labelcolor(FL_BLUE);
  }
- button[0] = new Fl_Button(310, 70, 90, 23);
+  button[0] = new fltk::Button(310, 70, 90, 23);
  button[0]->shortcut(FL_Escape);
  button[0]->align(FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
  button[1] = new Fl_Return_Button(210, 70, 90, 23);
  button[1]->align(FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
- button[2] = new Fl_Button(110, 70, 90, 23);
+  button[2] = new fltk::Button(110, 70, 90, 23);
  button[2]->align(FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
  w->resizable(new Fl_Box(60,10,110-60,27));
  w->end();
  w->set_modal();
- Fl_Group::current(previously_current_group);
+  fltk::Group::current(previously_current_group);
  return w;
 }
 

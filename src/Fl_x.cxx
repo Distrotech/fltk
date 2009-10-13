@@ -1355,7 +1355,7 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
   if (is_a_move && resize_from_program) set_flag(FORCE_POSITION);
   else if (!is_a_resize && !is_a_move) return;
   if (is_a_resize) {
-    Fl_Group::resize(X,Y,W,H);
+    fltk::Group::resize(X,Y,W,H);
     if (shown()) {redraw(); i->wait_for_expose = 1;}
   } else {
     x(X); y(Y);
@@ -1419,7 +1419,7 @@ ExposureMask|StructureNotifyMask
 
 void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
 {
-  Fl_Group::current(0); // get rid of very common user bug: forgot end()
+  fltk::Group::current(0); // get rid of very common user bug: forgot end()
 
   int X = win->x();
   int Y = win->y();

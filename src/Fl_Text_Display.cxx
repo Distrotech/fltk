@@ -79,7 +79,7 @@ static int scroll_x = 0;
 
 /**  Creates a new text display widget.*/
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
-    : Fl_Group(X, Y, W, H, l) {
+: fltk::Group(X, Y, W, H, l) {
   int i;
 
   mMaxsize = 0;
@@ -3239,7 +3239,7 @@ int Fl_Text_Display::handle(int event) {
       !dragging && event != FL_LEAVE && event != FL_ENTER &&
       event != FL_MOVE && event != FL_FOCUS && event != FL_UNFOCUS &&
       event != FL_KEYBOARD && event != FL_KEYUP) {
-    return Fl_Group::handle(event);
+    return fltk::Group::handle(event);
   }
 
   switch (event) {
@@ -3275,7 +3275,7 @@ int Fl_Text_Display::handle(int event) {
         fltk::focus(this);
 	  handle(FL_FOCUS);
 	}
-        if (Fl_Group::handle(event)) return 1;
+      if (fltk::Group::handle(event)) return 1;
       if (fltk::event_state()&FL_SHIFT) return handle(FL_DRAG);
         dragging = 1;
       int pos = xy_to_position(fltk::event_x(), fltk::event_y(), CURSOR_POS);

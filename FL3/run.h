@@ -875,7 +875,7 @@ namespace fltk {
     These functions support deletion of widgets inside callbacks.
 
     fltk::delete_widget() should be called when deleting widgets
-    or complete widget trees (Fl_Group, fltk::Window, ...) inside
+    or complete widget trees (fltk::Group, fltk::Window, ...) inside
     callbacks.
 
     The other functions are intended for internal use. The preferred

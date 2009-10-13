@@ -73,7 +73,7 @@ void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H) {
     case _FL_OVAL_FRAME :
     case _FL_PLASTIC_UP_FRAME :
     case _FL_PLASTIC_DOWN_FRAME :
-      if (s->parent() == (Fl_Group *)s->window() && fltk::scheme_bg_) {
+      if (s->parent() == (fltk::Group *)s->window() && fltk::scheme_bg_) {
         fltk::scheme_bg_->draw(X-(X%((Fl_Tiled_Image *)fltk::scheme_bg_)->image()->w()),
                                Y-(Y%((Fl_Tiled_Image *)fltk::scheme_bg_)->image()->h()),
                                W+((Fl_Tiled_Image *)fltk::scheme_bg_)->image()->w(),
@@ -369,7 +369,7 @@ void Fl_Scroll::scroll_to(int X, int Y) {
     if (o == &hscrollbar || o == &scrollbar) continue;
     o->position(o->x()+dx, o->y()+dy);
   }
-  if (parent() == (Fl_Group *)window() && fltk::scheme_bg_) damage(FL_DAMAGE_ALL);
+  if (parent() == (fltk::Group *)window() && fltk::scheme_bg_) damage(FL_DAMAGE_ALL);
   else damage(FL_DAMAGE_SCROLL);
 }
 
@@ -393,7 +393,7 @@ void Fl_Scroll::scrollbar_cb(fltk::Widget* o, void*) {
   that it is destroyed last.
 */
 Fl_Scroll::Fl_Scroll(int X,int Y,int W,int H,const char* L)
-  : Fl_Group(X,Y,W,H,L), 
+: fltk::Group(X,Y,W,H,L), 
 scrollbar(X+W-fltk::scrollbar_size(),Y,
           fltk::scrollbar_size(),H-fltk::scrollbar_size()),
 hscrollbar(X,Y+H-fltk::scrollbar_size(),
@@ -409,7 +409,7 @@ hscrollbar(X,Y+H-fltk::scrollbar_size(),
 
 int Fl_Scroll::handle(int event) {
   fix_scrollbar_order();
-  return Fl_Group::handle(event);
+  return fltk::Group::handle(event);
 }
 
 //

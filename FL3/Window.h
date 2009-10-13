@@ -46,7 +46,7 @@ namespace fltk {
   or a "subwindow" inside a window.  This is controlled by whether or not
   the window has a parent().
   <P>Once you create a window, you usually add children fltk::Widget
-  's to it by using window-&gt;add(child) for each new widget.  See Fl_Group for more information
+  's to it by using window-&gt;add(child) for each new widget.  See fltk::Group for more information
   on how to add and remove children. </P>
   <P>There are several subclasses of Window that provide
   double-buffering, overlay, menu, and OpenGL support. </P>
@@ -55,7 +55,7 @@ namespace fltk {
   fltk::modal() is zero or equal to the window. Window
   has a default callback that calls Window::hide().
 */
-class FL_EXPORT Window : public Fl_Group {
+  class FL_EXPORT Window : public fltk::Group {
 
   friend class ::Fl_X;
   Fl_X *i; // points at the system-specific stuff
@@ -89,7 +89,7 @@ public:
 
   /**
     Creates a window from the given size and title. 
-    If Fl_Group::current() is not NULL, the window is created as a 
+    If fltk::Group::current() is not NULL, the window is created as a 
     subwindow of the parent window.</p>
     
     <p>The first form of the constructor creates a top-level window
@@ -135,7 +135,7 @@ public:
     true, these changes are communicated to the window server (which may
     refuse that size and cause a further resize).  If shown() is
     false, the size and position are used when show() is called.
-    See Fl_Group for the effect
+    See fltk::Group for the effect
     of resizing on the child widgets.
     <P>You can also call the fltk::Widget methods size(x,y)
     and position(w,h), which are inline wrappers for this virtual

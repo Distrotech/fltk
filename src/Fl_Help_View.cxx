@@ -2961,7 +2961,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       redraw();
       return 1;
     case FL_ENTER :
-      Fl_Group::handle(event);
+      fltk::Group::handle(event);
       return 1;
     case FL_LEAVE :
       fl_cursor(FL_CURSOR_DEFAULT);
@@ -2971,7 +2971,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       else fl_cursor(FL_CURSOR_DEFAULT);
       return 1;
     case FL_PUSH:
-      if (Fl_Group::handle(event)) return 1;
+      if (fltk::Group::handle(event)) return 1;
       linkp = find_link(xx, yy);
       if (linkp) {
         fl_cursor(FL_CURSOR_HAND);
@@ -3022,7 +3022,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       }
       break; }
   }
-  return (Fl_Group::handle(event));
+  return (fltk::Group::handle(event));
 }
 
 /** 
@@ -3034,7 +3034,7 @@ Fl_Help_View::Fl_Help_View(int        xx,	// I - Left position
 			   int        ww,	// I - Width in pixels
 			   int        hh,	// I - Height in pixels
 			   const char *l)
-    : Fl_Group(xx, yy, ww, hh, l),
+: fltk::Group(xx, yy, ww, hh, l),
 scrollbar_(xx + ww - fltk::scrollbar_size(), yy,
            fltk::scrollbar_size(), hh - fltk::scrollbar_size()),
 hscrollbar_(xx, yy + hh - fltk::scrollbar_size(),

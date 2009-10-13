@@ -1298,7 +1298,7 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
     flags |= SWP_NOMOVE;
   }
   if (is_a_resize) {
-    Fl_Group::resize(X,Y,W,H);
+    fltk::Group::resize(X,Y,W,H);
     if (visible_r()) {
       redraw(); 
       // only wait for exposure if this window has a size - a window 
@@ -1373,7 +1373,7 @@ UINT fl_wake_msg = 0;
 int fl_disable_transient_for; // secret method of removing TRANSIENT_FOR
 
 Fl_X* Fl_X::make(fltk::Window* w) {
-  Fl_Group::current(0); // get rid of very common user bug: forgot end()
+  fltk::Group::current(0); // get rid of very common user bug: forgot end()
 
   // if the window is a subwindow and our parent is not mapped yet, we
   // mark this window visible, so that mapping the parent at a later

@@ -239,13 +239,13 @@ inline void fl_redraw_object(fltk::Widget* o) {o->redraw();}
 inline void fl_show_object(fltk::Widget* o) {o->show();}
 inline void fl_hide_object(fltk::Widget* o) {o->hide();}
 inline void fl_free_object(fltk::Widget* x) {delete x;}
-inline void fl_delete_object(fltk::Widget* o) {((Fl_Group*)(o->parent()))->remove(*o);}
+inline void fl_delete_object(fltk::Widget* o) {((fltk::Group*)(o->parent()))->remove(*o);}
 inline void fl_activate_object(fltk::Widget* o) {o->activate();}
 inline void fl_deactivate_object(fltk::Widget* o) {o->deactivate();}
 
 inline void fl_add_object(fltk::Window* f, fltk::Widget* x) {f->add(x);}
 inline void fl_insert_object(fltk::Widget* o, fltk::Widget* b) {
-    ((Fl_Group*)(b->parent()))->insert(*o,b);}
+  ((fltk::Group*)(b->parent()))->insert(*o,b);}
 
 inline fltk::Window* FL_ObjWin(fltk::Widget* o) {return o->window();}
 
@@ -271,9 +271,9 @@ inline fltk::Window* fl_bgn_form(Fl_Boxtype b,int w,int h) {
 }
 FL_EXPORT void fl_end_form();
 inline void fl_addto_form(fltk::Window* f) {f->begin();}
-inline Fl_Group* fl_bgn_group() {return new Fl_Group(0,0,0,0,0);}
-inline void fl_end_group() {Fl_Group::current()->forms_end();}
-inline void fl_addto_group(fltk::Widget* o) {((Fl_Group* )o)->begin();}
+inline fltk::Group* fl_bgn_group() {return new fltk::Group(0,0,0,0,0);}
+inline void fl_end_group() {fltk::Group::current()->forms_end();}
+inline void fl_addto_group(fltk::Widget* o) {((fltk::Group* )o)->begin();}
 #define resizebox _ddfdesign_kludge()
 
 inline void fl_scale_form(fltk::Window* f, double x, double y) {
@@ -483,12 +483,12 @@ inline int fl_isdisplayed_browser_line(fltk::Widget* o, int n) {
 #define FL_PUSH_BUTTON		FL_TOGGLE_BUTTON
 #define FL_MENU_BUTTON		9
 
-FL_EXPORT Fl_Button* fl_add_button(uchar t,int x,int y,int w,int h,const char* l);
-inline int fl_get_button(fltk::Widget* b) {return ((Fl_Button*)b)->value();}
-inline void fl_set_button(fltk::Widget* b, int v) {((Fl_Button*)b)->value(v);}
+FL_EXPORT fltk::Button* fl_add_button(uchar t,int x,int y,int w,int h,const char* l);
+inline int fl_get_button(fltk::Widget* b) {return ((fltk::Button*)b)->value();}
+inline void fl_set_button(fltk::Widget* b, int v) {((fltk::Button*)b)->value(v);}
 inline int fl_get_button_numb(fltk::Widget*) {return fltk::event_button();}
 inline void fl_set_button_shortcut(fltk::Widget* b, const char* s,int=0) {
-    ((Fl_Button*)b)->shortcut(s);}
+  ((fltk::Button*)b)->shortcut(s);}
 //#define fl_set_object_shortcut(b,s) fl_set_button_shortcut(b,s)
 
 #include "Fl_Light_Button.H"

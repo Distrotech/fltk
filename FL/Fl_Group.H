@@ -31,14 +31,18 @@
 #ifndef Fl_Group_H
 #define Fl_Group_H
 
-#ifndef Fl_Widget_H
 #include "Fl_Widget.H"
-#endif
+
+#include "../FL3/Group.h"
+
+#define Fl_Group fltk::Group
+
+#if 0
 
 /**
-  The Fl_Group class is the FLTK container widget. It maintains
+  The fltk::Group class is the FLTK container widget. It maintains
   an array of child widgets. These children can themselves be any widget
-  including Fl_Group. The most important subclass of Fl_Group
+  including fltk::Group. The most important subclass of fltk::Group
   is fltk::Window, however groups can also be used to control radio buttons 
   or to enforce resize behavior.
 */
@@ -200,9 +204,9 @@ public:
   \code 
    class MyClass {
    Fl_Group group;
-   Fl_Button button_in_group;
+   fltk::Button button_in_group;
    Fl_End end;
-   Fl_Button button_outside_group;
+   fltk::Button button_outside_group;
    MyClass();
   };
   MyClass::MyClass() :
@@ -218,6 +222,8 @@ public:
   /** All it does is calling Fl_Group::current()->end() */
   Fl_End() {Fl_Group::current()->end();}
 };
+
+#endif
 
 #endif
 

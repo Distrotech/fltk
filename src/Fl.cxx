@@ -741,7 +741,7 @@ static int send_handlers(int e) {
 
 ////////////////////////////////////////////////////////////////
 
-fltk::Widget* fl_oldfocus; // kludge for Fl_Group...
+fltk::Widget* fl_oldfocus; // kludge for fltk::Group...
 
 /**
     Sets the widget that will receive FL_KEYBOARD events.
@@ -1312,7 +1312,7 @@ int fltk::Window::handle(int ev)
 //    Fl_Tooltip::exit(Fl_Tooltip::current());
   }
 
-  return Fl_Group::handle(ev);
+  return fltk::Group::handle(ev);
 }
 
 ////////////////////////////////////////////////////////////////

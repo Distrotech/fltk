@@ -27,7 +27,7 @@
 
 // FLTK widget for drag-adjusting a floating point value.
 // Warning: this works by making a child Fl_Input object, even
-// though this object is *not* an Fl_Group.  May be a kludge?
+// though this object is *not* an fltk::Group.  May be a kludge?
 
 #include <FL/Fl.H>
 #include <FL/Fl_Value_Input.H>
@@ -124,8 +124,8 @@ Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
 : Fl_Valuator(X, Y, W, H, l), input(X, Y, W, H, 0) {
   soft_ = 0;
   if (input.parent())  // defeat automatic-add
-    ((Fl_Group*)input.parent())->remove(input);
-  input.parent((Fl_Group *)this); // kludge!
+    ((fltk::Group*)input.parent())->remove(input);
+  input.parent((fltk::Group *)this); // kludge!
   input.callback(input_cb, this);
   input.when(FL_WHEN_CHANGED);
   box(input.box());
@@ -138,7 +138,7 @@ Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
 
 Fl_Value_Input::~Fl_Value_Input() {
 
-  if (input.parent() == (Fl_Group *)this)
+  if (input.parent() == (fltk::Group *)this)
     input.parent(0);   // *revert* ctor kludge!
 }
 

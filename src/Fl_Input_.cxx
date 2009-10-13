@@ -1034,7 +1034,7 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
   Creates a new Fl_Input_ widget.
 
   This function creates a new Fl_Input_ widget and adds it to the current
-  Fl_Group. The value() is set to \c NULL.
+  fltk::Group. The value() is set to \c NULL.
   The default boxtype is \c FL_DOWN_BOX.
 
   \param X, Y, W, H the dimensions of the new widget
@@ -1217,7 +1217,7 @@ void Fl_Input_::resize(int X, int Y, int W, int H) {
   Destroys the widget.
 
   The destructor clears all allocated buffers and removes the widget
-  from the parent Fl_Group.
+  from the parent fltk::Group.
 */
 Fl_Input_::~Fl_Input_() {
   if (undowidget == this) undowidget = 0;

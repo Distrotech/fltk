@@ -32,7 +32,7 @@
 #define REPEAT .1
 
 void Fl_Repeat_Button::repeat_callback(void *v) {
-  Fl_Button *b = (Fl_Button*)v;
+  fltk::Button *b = (fltk::Button*)v;
   fltk::add_timeout(REPEAT,repeat_callback,b);
   b->do_callback();
 }
@@ -61,7 +61,7 @@ int Fl_Repeat_Button::handle(int event) {
     }
     return 1;
   default:
-    return Fl_Button::handle(event);
+      return fltk::Button::handle(event);
   }
 }
 
