@@ -349,10 +349,10 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
 */
 int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
 {
-  Fl_Shared_Image	*img;		// Image file
+  fltk::SharedImage	*img;		// Image file
 
 
-  img = Fl_Shared_Image::get(ifile);
+  img = fltk::SharedImage::get(ifile);
   if (!img || !img->count() || !img->w() || !img->h()) return -1;
 
   if (img->count() == 1) {
@@ -676,7 +676,7 @@ Fl_File_Icon::load_system_icons(void) {
   // Add symbols if they haven't been added already...
   if (!init) {
     // This method requires the images library...
-    fl_register_images();
+    fltk::register_images();
 
     if (!kdedir) {
       // Figure out where KDE is installed...

@@ -207,7 +207,7 @@ index_    = -1;
 max_      = 0;
 find_pos_ = 0;
 
-fl_register_images();
+  fltk::register_images();
 }
 
 Fl_Help_Dialog::~Fl_Help_Dialog() {

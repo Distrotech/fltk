@@ -148,7 +148,7 @@ class FL_EXPORT Fl_Image {
     The copy() method creates a copy of the specified
     image. If the width and height are provided, the image is
     resized to the specified size. The image should be deleted (or in
-    the case of Fl_Shared_Image, released) when you are done
+    the case of fltk::SharedImage, released) when you are done
     with it.
   */
   Fl_Image *copy() { return copy(w(), h()); }

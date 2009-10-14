@@ -36,8 +36,8 @@ and warnings:
   OS X 10.6 without changes to their source code
 - 'hello2' and 'helloask2' are original FLTK2 applications that will compile
   and run without changes to the source code
-- 'button' is currently being implemented and is supported except for image
-  handling
+- 'button' is currently being implemented and is supported except for FLTK2
+  clipping, required to get the backdrop images right
 - Fluid1 and Fluid2 are our references. Any code change to the API and source
   must keep Fluid1 fully functional. The process will be successful when 
   Fluid2 also comiles and runs without code changes
@@ -518,6 +518,7 @@ correspond, and how they could be implemented in FLTK 3.
 1: class Fl_Shared_Image
 2: class SharedImage
 *: should map easily
+**: initial transfer done
 
 1: 
 2: class ShortcutFunctor
@@ -593,6 +594,7 @@ correspond, and how they could be implemented in FLTK 3.
 1: class Fl_Tiled_Image
 2: class TiledImage
 *: should map easily
+**: initial transfer done
 
 1: class Fl_Timer
 2:

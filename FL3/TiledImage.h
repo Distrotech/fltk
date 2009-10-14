@@ -1,5 +1,5 @@
 //
-// "$Id$"
+// "$Id: Fl_Tiled_Image.H 6614 2009-01-01 16:11:32Z matt $"
 //
 // Tiled image header file for the Fast Light Tool Kit (FLTK).
 //
@@ -26,16 +26,14 @@
 //
 
 /* \file
-   Fl_Tiled_Image widget . */
+   fltk::TiledImage widget . */
 
-#ifndef Fl_Tiled_Image_H
-#  define Fl_Tiled_Image_H
+#ifndef fltk3_tiled_image_h
+#  define fltk3_tiled_image_h
 
-#  include "Fl_Image.H"
+#  include "../FL/Fl_Image.H"
 
-#include "../FL3/TiledImage.h"
-
-#if 0
+namespace fltk {
 
 /**
   This class supports tiling of images
@@ -45,7 +43,7 @@
   or inactive()
   methods.
 */
-class FL_EXPORT Fl_Tiled_Image : public Fl_Image {
+  class FL_EXPORT TiledImage : public ::Fl_Image {
   protected:
 
   Fl_Image	*image_;		// The image that is shared
@@ -53,8 +51,8 @@ class FL_EXPORT Fl_Tiled_Image : public Fl_Image {
 
   public:
 
-  Fl_Tiled_Image(Fl_Image *i, int W = 0, int H = 0);
-  virtual ~Fl_Tiled_Image();
+  TiledImage(Fl_Image *i, int W = 0, int H = 0);
+  virtual ~TiledImage();
 
   virtual Fl_Image *copy(int W, int H);
   Fl_Image *copy() { return copy(w(), h()); }
@@ -64,12 +62,34 @@ class FL_EXPORT Fl_Tiled_Image : public Fl_Image {
   void draw(int X, int Y) { draw(X, Y, w(), h(), 0, 0); }
   /** Gets The image that is shared */ 
   Fl_Image *image() { return image_; }
+}; // class TiledImage
+
+}; // namespace fltk
+
+#endif // !fltk::TiledImage_H
+
+//==============================================================================
+  
+#if 0
+  
+#include "Symbol.h"
+
+namespace fltk {
+
+class FL_API TiledImage : public Symbol {
+protected:
+  const Symbol* image_;
+public:
+  TiledImage(Symbol *i) : Symbol(0), image_(i) {}
+  const Symbol* image() const {return image_;}
+  void image(const Symbol* i) {image_ = i;}
+  void _measure(int& w, int& h) const;
+  void _draw(const Rectangle&) const;
 };
 
+}
 #endif
 
-#endif // !Fl_Tiled_Image_H
-
 //
-// End of "$Id$"
+// End of "$Id: TiledImage.h 5810 2007-05-11 22:44:12Z spitzak $"
 //

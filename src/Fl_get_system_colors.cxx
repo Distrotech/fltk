@@ -352,7 +352,7 @@ int fltk::reload_scheme() {
 
     tile.uncache();
 
-    if (!scheme_bg_) scheme_bg_ = new Fl_Tiled_Image(&tile, w(), h());
+    if (!scheme_bg_) scheme_bg_ = new fltk::TiledImage(&tile, w(), h());
 
     // Load plastic buttons, etc...
     set_boxtype(FL_UP_FRAME,        FL_PLASTIC_UP_FRAME);

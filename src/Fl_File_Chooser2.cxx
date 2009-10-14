@@ -1284,7 +1284,7 @@ void
 Fl_File_Chooser::update_preview()
 {
   const char		*filename;	// Current filename
-  Fl_Shared_Image	*image,		// New image
+  fltk::SharedImage	*image,		// New image
 			*oldimage;	// Old image
   int			pbw, pbh;	// Width and height of preview box
   int			w, h;		// Width and height of preview image
@@ -1297,7 +1297,7 @@ Fl_File_Chooser::update_preview()
     window->cursor(FL_CURSOR_WAIT);
     fltk::check();
 
-    image = Fl_Shared_Image::get(filename);
+    image = fltk::SharedImage::get(filename);
 
     if (image) {
       window->cursor(FL_CURSOR_DEFAULT);
@@ -1305,7 +1305,7 @@ Fl_File_Chooser::update_preview()
     }
   }
 
-  oldimage = (Fl_Shared_Image *)previewBox->image();
+  oldimage = (fltk::SharedImage *)previewBox->image();
 
   if (oldimage) oldimage->release();
 
@@ -1395,7 +1395,7 @@ Fl_File_Chooser::update_preview()
 	w = h * image->w() / image->h();
       }
 
-      oldimage = (Fl_Shared_Image *)image->copy(w, h);
+      oldimage = (fltk::SharedImage *)image->copy(w, h);
       previewBox->image((Fl_Image *)oldimage);
 
       image->release();

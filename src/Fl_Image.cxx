@@ -80,7 +80,7 @@ void Fl_Image::draw_empty(int X, int Y) {
   The copy() method creates a copy of the specified
   image. If the width and height are provided, the image is
   resized to the specified size. The image should be deleted (or in
-  the case of Fl_Shared_Image, released) when you are done
+  the case of fltk::SharedImage, released) when you are done
   with it.
 */
 Fl_Image *Fl_Image::copy(int W, int H) {

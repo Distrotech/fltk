@@ -188,9 +188,15 @@
 		C952F11C10850E34008A2809 /* WidgetClassType.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C952F10110850E34008A2809 /* WidgetClassType.cxx */; };
 		C952F11D10850E34008A2809 /* WidgetType.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C952F10210850E34008A2809 /* WidgetType.cxx */; };
 		C952F11E10850E34008A2809 /* WindowType.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C952F10310850E34008A2809 /* WindowType.cxx */; };
-		C952F1991085212B008A2809 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
-		C952F19B1085212B008A2809 /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
-		C952F1AA10852164008A2809 /* button.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C952F1A910852164008A2809 /* button.cxx */; };
+		C952F2DD10859B6B008A2809 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
+		C952F2DE10859B6B008A2809 /* fltk_images.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3EC790DD6398C00486E4F /* fltk_images.framework */; };
+		C952F2DF10859B6B008A2809 /* fltk_jpeg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3EC9A0DD639E600486E4F /* fltk_jpeg.framework */; };
+		C952F2E010859B6B008A2809 /* fltk_png.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3EC8E0DD639CE00486E4F /* fltk_png.framework */; };
+		C952F2E210859B6B008A2809 /* fltk_png.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3EC8E0DD639CE00486E4F /* fltk_png.framework */; };
+		C952F2E310859B6B008A2809 /* fltk_images.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3EC790DD6398C00486E4F /* fltk_images.framework */; };
+		C952F2E410859B6B008A2809 /* fltk_jpeg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3EC9A0DD639E600486E4F /* fltk_jpeg.framework */; };
+		C952F2E510859B6B008A2809 /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
+		C952F2F810859BA2008A2809 /* button.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C952F1A910852164008A2809 /* button.cxx */; };
 		C969E9A00DDAE446003BCABC /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
 		C97741930DD9D1BD0047C1BF /* cursor.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C97741920DD9D1BD0047C1BF /* cursor.cxx */; };
 		C977419A0DD9D1C90047C1BF /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A3E9510DD6336500486E4F /* fltk.framework */; };
@@ -1629,12 +1635,33 @@
 			remoteGlobalIDString = C9C873730DD7772000A9793F;
 			remoteInfo = Fluid;
 		};
-		C952F1941085212B008A2809 /* PBXContainerItemProxy */ = {
+		C952F2D210859B6B008A2809 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C9A3E93C0DD6332D00486E4F /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C9A3E9500DD6336500486E4F;
 			remoteInfo = fltk;
+		};
+		C952F2D410859B6B008A2809 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9A3E93C0DD6332D00486E4F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9A3EC780DD6398C00486E4F;
+			remoteInfo = fltk_images;
+		};
+		C952F2D610859B6B008A2809 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9A3E93C0DD6332D00486E4F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9A3EC8D0DD639CE00486E4F;
+			remoteInfo = fltk_png;
+		};
+		C952F2D810859B6B008A2809 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9A3E93C0DD6332D00486E4F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9A3EC990DD639E600486E4F;
+			remoteInfo = fltk_jpeg;
 		};
 		C97742130DD9D38A0047C1BF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2082,13 +2109,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C952F19A1085212B008A2809 /* CopyFiles */ = {
+		C952F2E110859B6B008A2809 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C952F19B1085212B008A2809 /* fltk.framework in CopyFiles */,
+				C952F2E210859B6B008A2809 /* fltk_png.framework in CopyFiles */,
+				C952F2E310859B6B008A2809 /* fltk_images.framework in CopyFiles */,
+				C952F2E410859B6B008A2809 /* fltk_jpeg.framework in CopyFiles */,
+				C952F2E510859B6B008A2809 /* fltk.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2959,9 +2989,10 @@
 		C952F10110850E34008A2809 /* WidgetClassType.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WidgetClassType.cxx; path = ../../fluid2/WidgetClassType.cxx; sourceTree = SOURCE_ROOT; };
 		C952F10210850E34008A2809 /* WidgetType.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WidgetType.cxx; path = ../../fluid2/WidgetType.cxx; sourceTree = SOURCE_ROOT; };
 		C952F10310850E34008A2809 /* WindowType.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WindowType.cxx; path = ../../fluid2/WindowType.cxx; sourceTree = SOURCE_ROOT; };
-		C952F19F1085212B008A2809 /* button.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = button.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C952F1A61085212C008A2809 /* button-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "button-Info copy.plist"; path = "plists/button-Info copy.plist"; sourceTree = "<group>"; };
 		C952F1A910852164008A2809 /* button.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = button.cxx; path = ../../test2/button.cxx; sourceTree = SOURCE_ROOT; };
+		C952F2E910859B6B008A2809 /* help.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = help.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C952F2ED10859B6B008A2809 /* help-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "help-Info copy.plist"; path = "plists/help-Info copy.plist"; sourceTree = "<group>"; };
 		C97741850DD9D1910047C1BF /* cursor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cursor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C97741870DD9D1910047C1BF /* cursor-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "cursor-Info.plist"; path = "plists/cursor-Info.plist"; sourceTree = "<group>"; };
 		C97741920DD9D1BD0047C1BF /* cursor.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cursor.cxx; path = ../../test/cursor.cxx; sourceTree = SOURCE_ROOT; };
@@ -3730,11 +3761,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C952F1981085212B008A2809 /* Frameworks */ = {
+		C952F2DC10859B6B008A2809 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C952F1991085212B008A2809 /* fltk.framework in Frameworks */,
+				C952F2DD10859B6B008A2809 /* fltk.framework in Frameworks */,
+				C952F2DE10859B6B008A2809 /* fltk_images.framework in Frameworks */,
+				C952F2DF10859B6B008A2809 /* fltk_jpeg.framework in Frameworks */,
+				C952F2E010859B6B008A2809 /* fltk_png.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4123,7 +4157,7 @@
 				C939D947108349A000BB4FB4 /* hello.app */,
 				C952F01F1083D6E5008A2809 /* hello.app */,
 				C952F0D610850D60008A2809 /* Fluid.app */,
-				C952F19F1085212B008A2809 /* button.app */,
+				C952F2E910859B6B008A2809 /* help.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4207,6 +4241,7 @@
 				C952F02C1083D6E6008A2809 /* hello-Info copy 3.plist */,
 				C952F0D910850D61008A2809 /* Fluid-Info copy.plist */,
 				C952F1A61085212C008A2809 /* button-Info copy.plist */,
+				C952F2ED10859B6B008A2809 /* help-Info copy.plist */,
 			);
 			name = plists;
 			sourceTree = "<group>";
@@ -5597,23 +5632,26 @@
 			productReference = C952F0D610850D60008A2809 /* Fluid.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C952F1921085212B008A2809 /* button2 */ = {
+		C952F2D010859B6B008A2809 /* button2 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C952F19C1085212B008A2809 /* Build configuration list for PBXNativeTarget "button2" */;
+			buildConfigurationList = C952F2E610859B6B008A2809 /* Build configuration list for PBXNativeTarget "button2" */;
 			buildPhases = (
-				C952F1951085212B008A2809 /* Resources */,
-				C952F1961085212B008A2809 /* Sources */,
-				C952F1981085212B008A2809 /* Frameworks */,
-				C952F19A1085212B008A2809 /* CopyFiles */,
+				C952F2D910859B6B008A2809 /* Resources */,
+				C952F2DA10859B6B008A2809 /* Sources */,
+				C952F2DC10859B6B008A2809 /* Frameworks */,
+				C952F2E110859B6B008A2809 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C952F1931085212B008A2809 /* PBXTargetDependency */,
+				C952F2D110859B6B008A2809 /* PBXTargetDependency */,
+				C952F2D310859B6B008A2809 /* PBXTargetDependency */,
+				C952F2D510859B6B008A2809 /* PBXTargetDependency */,
+				C952F2D710859B6B008A2809 /* PBXTargetDependency */,
 			);
 			name = button2;
-			productName = button;
-			productReference = C952F19F1085212B008A2809 /* button.app */;
+			productName = help;
+			productReference = C952F2E910859B6B008A2809 /* help.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C97741840DD9D1910047C1BF /* cursor */ = {
@@ -6295,7 +6333,7 @@
 				C918E1BD0DDA12CF00167E99 /* valuators */,
 				C939D93A108349A000BB4FB4 /* hello2 */,
 				C952F0121083D6E5008A2809 /* helloask2 */,
-				C952F1921085212B008A2809 /* button2 */,
+				C952F2D010859B6B008A2809 /* button2 */,
 			);
 		};
 /* End PBXProject section */
@@ -6640,7 +6678,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C952F1951085212B008A2809 /* Resources */ = {
+		C952F2D910859B6B008A2809 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -7246,11 +7284,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C952F1961085212B008A2809 /* Sources */ = {
+		C952F2DA10859B6B008A2809 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C952F1AA10852164008A2809 /* button.cxx in Sources */,
+				C952F2F810859BA2008A2809 /* button.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8351,10 +8389,25 @@
 			target = C9C873730DD7772000A9793F /* Fluid */;
 			targetProxy = C952F0E010850D78008A2809 /* PBXContainerItemProxy */;
 		};
-		C952F1931085212B008A2809 /* PBXTargetDependency */ = {
+		C952F2D110859B6B008A2809 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C9A3E9500DD6336500486E4F /* fltk */;
-			targetProxy = C952F1941085212B008A2809 /* PBXContainerItemProxy */;
+			targetProxy = C952F2D210859B6B008A2809 /* PBXContainerItemProxy */;
+		};
+		C952F2D310859B6B008A2809 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9A3EC780DD6398C00486E4F /* fltk_images */;
+			targetProxy = C952F2D410859B6B008A2809 /* PBXContainerItemProxy */;
+		};
+		C952F2D510859B6B008A2809 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9A3EC8D0DD639CE00486E4F /* fltk_png */;
+			targetProxy = C952F2D610859B6B008A2809 /* PBXContainerItemProxy */;
+		};
+		C952F2D710859B6B008A2809 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9A3EC990DD639E600486E4F /* fltk_jpeg */;
+			targetProxy = C952F2D810859B6B008A2809 /* PBXContainerItemProxy */;
 		};
 		C97742140DD9D38A0047C1BF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -10865,7 +10918,7 @@
 			};
 			name = Release;
 		};
-		C952F19D1085212B008A2809 /* Debug */ = {
+		C952F2E710859B6B008A2809 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -10876,20 +10929,20 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = ../../;
-				INFOPLIST_FILE = "plists/button-Info copy.plist";
+				INFOPLIST_FILE = "plists/help-Info copy.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Carbon,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = button;
+				PRODUCT_NAME = help;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
-		C952F19E1085212B008A2809 /* Release */ = {
+		C952F2E810859B6B008A2809 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
@@ -10899,14 +10952,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = ../../;
-				INFOPLIST_FILE = "plists/button-Info copy.plist";
+				INFOPLIST_FILE = "plists/help-Info copy.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Carbon,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = button;
+				PRODUCT_NAME = help;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -12713,11 +12766,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C952F19C1085212B008A2809 /* Build configuration list for PBXNativeTarget "button2" */ = {
+		C952F2E610859B6B008A2809 /* Build configuration list for PBXNativeTarget "button2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C952F19D1085212B008A2809 /* Debug */,
-				C952F19E1085212B008A2809 /* Release */,
+				C952F2E710859B6B008A2809 /* Debug */,
+				C952F2E810859B6B008A2809 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
