@@ -1777,6 +1777,8 @@ void Fl_Window::show() {
     if (!fl_capture) BringWindowToTop(i->xid);
     //ShowWindow(i->xid,fl_capture?SW_SHOWNOACTIVATE:SW_RESTORE);
   }
+void preparePrintFront(void);
+preparePrintFront();
 }
 
 Fl_Window *Fl_Window::current_;
@@ -1923,6 +1925,39 @@ Fl_Region fl_win_makecliprectregion(int x, int y, int w, int h)
   POINT pt[2] = { {x, y}, {x + w, y + h} };
   LPtoDP(fl_gc, pt, 2);
   return CreateRectRgn(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+}
+
+// temporary for testing purposes of the Fl_Printer class
+// contains also preparePrintFront call above
+#include <FL/Fl_Printer.H>
+#include <FL/Fl_Button.H>
+void printFront(Fl_Widget *o, void *data)
+{
+  Fl_Printer printer;
+  o->window()->hide();
+  Fl_Window *win = Fl::first_window();
+  if(!win) return;
+  int x,y,w,h;
+  if( printer.start_job(1) ) return;
+  if( printer.start_page() ) return;
+  printer.printable_rect(&x,&y,&w,&h);
+  printer.origin(x,y);
+  printer.print_widget( win );
+  printer.end_page();
+  printer.end_job();
+  o->window()->show();
+}
+
+void preparePrintFront(void)
+{
+  static BOOL first=TRUE;
+  if(!first) return;
+  first=FALSE;
+  static Fl_Window w(0,0,120,30);
+  static Fl_Button b(0,0,w.w(),w.h(), "Print front window");
+  b.callback(printFront);
+  w.end();
+  w.show();
 }
 #endif // FL_DOXYGEN
 
