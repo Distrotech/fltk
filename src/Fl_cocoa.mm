@@ -2344,7 +2344,7 @@ void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   CGAffineTransform mx = CGContextGetCTM(fl_gc);
   CGRect r2 = rect;
   // replace rect by its image through mx, the current transformation
-  rect.origin.x = rect.origin.x * mx.a +       (mx.tx+0.5f) - cx;
+  rect.origin.x = rect.origin.x * mx.a +       (mx.tx-0.5f) - cx;
   rect.origin.y = (rect.origin.y + h) * mx.d + (mx.ty+0.5f) + cy;
   rect.size.width *= mx.a;
   rect.size.height *= - mx.d;
