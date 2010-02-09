@@ -2823,6 +2823,7 @@ int MACscreen_init(XRectangle screens[])
 {
 }
 - (void)showPanel;
+- (void)printPanel;
 @end
 @implementation FLaboutItemTarget
 - (void)showPanel
@@ -2834,6 +2835,21 @@ int MACscreen_init(XRectangle screens[])
                 	     nil];
     [NSApp  orderFrontStandardAboutPanelWithOptions:options];
   }
+#include <FL/Fl_Printer.H>
+- (void)printPanel
+{
+  Fl_Printer printer;
+  Fl_Window *win = Fl::first_window();
+  if(!win) return;
+  int x,y,w,h;
+  if( printer.start_job(1) ) return;
+  if( printer.start_page() ) return;
+  printer.printable_rect(&x,&y,&w,&h);
+  printer.origin(x,y);
+  printer.print_widget( win );
+  printer.end_page();
+  printer.end_job();
+}
 @end
 
 static NSMenu *appleMenu;
@@ -2853,10 +2869,17 @@ static void createAppleMenu(void)
   appleMenu = [[NSMenu alloc] initWithTitle:@""];
   /* Add menu items */
   title = [@"About " stringByAppendingString:(NSString*)nsappname];
-  [appleMenu addItemWithTitle:title action:@selector(showPanel) keyEquivalent:@""];
+  menuItem = [appleMenu addItemWithTitle:title action:@selector(showPanel) keyEquivalent:@""];
   FLaboutItemTarget *about = [[FLaboutItemTarget alloc] init];
-  [[appleMenu itemAtIndex:0] setTarget:about];
+  [menuItem setTarget:about];
   [appleMenu addItem:[NSMenuItem separatorItem]];
+// temporary for testing Fl_Printer. Contains also printPanel of class FLaboutItemTarget.
+  menuItem = [appleMenu addItemWithTitle:@"Print front window" action:@selector(printPanel) keyEquivalent:@"p"];
+  [menuItem setTarget:about];
+  [appleMenu setAutoenablesItems:NO];
+  [menuItem setEnabled:YES];
+  [appleMenu addItem:[NSMenuItem separatorItem]];
+// end of temporary for testing Fl_Printer  
   // Services Menu
   services = [[NSMenu alloc] init];
   [appleMenu addItemWithTitle:@"Services" action:nil keyEquivalent:@""];
