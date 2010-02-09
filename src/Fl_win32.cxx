@@ -1785,6 +1785,7 @@ HDC fl_gc = 0;
 // the current window handle, initially set to -1 so we can correctly
 // allocate fl_GetDC(0)
 HWND fl_window = NULL;
+BOOL fl_win_isprintcontext = false; // true when fl_gc is a print context
 
 // Here we ensure only one GetDC is ever in place.
 HDC fl_GetDC(HWND w) {
@@ -1795,6 +1796,7 @@ HDC fl_GetDC(HWND w) {
   fl_gc = GetDC(w);
   fl_save_dc(w, fl_gc);
   fl_window = w;
+  fl_win_isprintcontext = false;
   // calling GetDC seems to always reset these: (?)
   SetTextAlign(fl_gc, TA_BASELINE|TA_LEFT);
   SetBkMode(fl_gc, TRANSPARENT);
@@ -1914,6 +1916,13 @@ void fl_cleanup_dc_list(void) {          // clean up the list
     delete (t);
     t = win_DC_list;
   } while(t);
+}
+
+Fl_Region fl_win_makecliprectregion(int x, int y, int w, int h)
+{
+  POINT pt[2] = { {x, y}, {x + w, y + h} };
+  LPtoDP(fl_gc, pt, 2);
+  return CreateRectRgn(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
 }
 #endif // FL_DOXYGEN
 

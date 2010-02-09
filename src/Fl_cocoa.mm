@@ -2322,6 +2322,7 @@ void Fl_X::q_release_context(Fl_X *x) {
 #endif
 }
 
+/* the former implementation
 void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   CGContextSaveGState(fl_gc);
   CGAffineTransform mx = CGContextGetCTM(fl_gc);
@@ -2334,7 +2335,30 @@ void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   rect.origin.x = -(mx.tx+0.5f) + rect.origin.x     - cx;
   rect.origin.y =  (mx.ty+0.5f) - rect.origin.y - h + cy;
   rect.size.width = w;
-  rect.size.height = h; 
+  rect.size.height = h;
+}
+*/
+void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
+  // TODO: make sure that cases where cx or cy is non null are correct
+  CGContextSaveGState(fl_gc);
+  CGAffineTransform mx = CGContextGetCTM(fl_gc);
+  CGRect r2 = rect;
+  // replace rect by its image through mx, the current transformation
+  rect.origin.x = rect.origin.x * mx.a +       (mx.tx+0.5f) - cx;
+  rect.origin.y = (rect.origin.y + h) * mx.d + (mx.ty+0.5f) + cy;
+  rect.size.width *= mx.a;
+  rect.size.height *= - mx.d;
+  // clip around the image (transformation matrix is still in action)
+  r2.origin.x -= 0.5f;
+  r2.origin.y -= 0.5f;
+  CGContextClipToRect(fl_gc, r2);
+  // replace mx by its inverse, correct because there's no rotation, only scaling, translation and y reversal
+  mx.a = 1/mx.a;
+  mx.d = 1/mx.d;
+  mx.tx *= - mx.a;
+  mx.ty *= - mx.d;
+  CGContextConcatCTM(fl_gc, mx);
+  // now the current transformation is the identity
 }
 
 void Fl_X::q_end_image() {
