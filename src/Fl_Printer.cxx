@@ -10,47 +10,39 @@
 #include <src/Fl_Printer_win32.cxx>
 #endif
 
-static int is_child(Fl_Widget *child, Fl_Widget *parent, int *px, int *py)
-//returns 1 iff child is a subwindow of parent
-//in that case puts in px,py the offset of child relatively to parent
-{
-  *px = child->x();
-  *py = child->y();
-  if (parent->parent() != NULL) { // if parent is not the topmost window
-    *px -= parent->x(); // subtract parent's offset in its window
-    *py -= parent->y();
-    }
-  while(1) {
-    child = child->parent();
-    if (child == NULL) return 0;
-    if (child->parent() != NULL && child->type() >= FL_WINDOW) {
-      *px += child->x();
-      *py += child->y();
-      }
-    if (child == parent) return 1;
-  }
-}
-
 void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y) 
 { 
-  int old_x, old_y, x_offset, y_offset;
+  int old_x, old_y, new_x, new_y, x_offset, y_offset, is_topwindow, is_window;
   Fl_Window *win, *target;
   if ( ! widget->visible() ) return;
-  widget->damage(FL_DAMAGE_ALL); 
-  if (delta_x || delta_y) {
-    origin(&old_x, &old_y);
-    origin(old_x + delta_x, old_y + delta_y);
+  is_window = widget->type() >= FL_WINDOW;
+  is_topwindow = is_window && widget->window() == NULL;
+  widget->damage(FL_DAMAGE_ALL);
+  // set origin to the desired top-left position of the widget
+  origin(&old_x, &old_y);
+  new_x = old_x + delta_x;
+  new_y = old_y + delta_y;
+  if (!is_window) {
+    new_x -= widget->x();
+    new_y -= widget->y();
     }
-  if (widget->type() >= FL_WINDOW && widget->window() == NULL) fl_push_clip(0, 0, widget->w(), widget->h() );
+  if (new_x != old_x || new_y != old_y) origin(new_x, new_y);
+  // if widget is a window, clip all drawings to the window area
+  if (is_window) fl_push_clip(0, 0, widget->w(), widget->h() );
   widget->draw();
-  if (delta_x || delta_y) origin(old_x, old_y);
+  if (is_window) fl_pop_clip();
+  // reset origin to where it was
+  if(new_x != old_x || new_y != old_y) origin(old_x, old_y);
   // set target to the window where widget lies
-  if (widget->type() < FL_WINDOW) target = widget->window(); 
+  if (!is_window) target = widget->window(); 
   else target = (Fl_Window*)widget;
   // find all windows that are one level within widget, and print them
   win = Fl::first_window();
   while(win) {
-    if (win->visible() && win->window() == target && is_child(win, widget, &x_offset, &y_offset) ) {
+    if (win->visible() && win->window() == target && widget->contains(win) ) {
+      // compute desired position of top-left of win
+      x_offset = win->x() - (is_window ? 0 : widget->x());
+      y_offset = win->y() - (is_window ? 0 : widget->y());
       print_widget(win, delta_x + x_offset, delta_y + y_offset);
     }
     win = Fl::next_window(win);
