@@ -2343,11 +2343,12 @@ void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   CGContextSaveGState(fl_gc);
   CGAffineTransform mx = CGContextGetCTM(fl_gc);
   CGRect r2 = rect;
-  // replace rect by its image through mx, the current transformation
+  // replace rect.origin by its image through mx, the current transformation
   rect.origin.x = rect.origin.x * mx.a +       (mx.tx-0.5f) - cx;
   rect.origin.y = (rect.origin.y + h) * mx.d + (mx.ty+0.5f) + cy;
-  rect.size.width *= mx.a;
-  rect.size.height *= - mx.d;
+  // replace rect.size by its image through mx
+  rect.size.width = w * mx.a;
+  rect.size.height = - h * mx.d;
   // clip around the image (transformation matrix is still in action)
   r2.origin.x -= 0.5f;
   r2.origin.y -= 0.5f;
@@ -2844,6 +2845,7 @@ int MACscreen_init(XRectangle screens[])
   int x,y,w,h;
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
+  printer.scale(0.68,0.68);
   printer.printable_rect(&x,&y,&w,&h);
   printer.origin(x,y);
   printer.print_widget( win );
