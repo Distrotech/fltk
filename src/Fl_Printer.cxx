@@ -41,6 +41,7 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
     origin(&old_x, &old_y);
     origin(old_x + delta_x, old_y + delta_y);
     }
+  if (widget->type() >= FL_WINDOW && widget->window() == NULL) fl_push_clip(0, 0, widget->w(), widget->h() );
   widget->draw();
   if (delta_x || delta_y) origin(old_x, old_y);
   // set target to the window where widget lies
