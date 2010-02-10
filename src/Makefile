@@ -69,6 +69,7 @@ CPPFILES = \
 	Fl_Pixmap.cxx \
 	Fl_Positioner.cxx \
 	Fl_Preferences.cxx \
+	Fl_Printer.cxx \
 	Fl_Progress.cxx \
 	Fl_Repeat_Button.cxx \
 	Fl_Return_Button.cxx \
