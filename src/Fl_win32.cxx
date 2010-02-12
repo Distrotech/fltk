@@ -1941,6 +1941,13 @@ void printFront(Fl_Widget *o, void *data)
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
   printer.printable_rect(&x,&y,&w,&h);
+  // scale the printer device so that the window fits on the page
+  if (win->w()>w || win->h()>h) {
+    float scale = (float)w/win->w();
+    if ((float)h/win->h() < scale) scale = (float)h/win->h();
+    printer.scale(scale,scale);
+    printer.printable_rect(&x,&y,&w,&h);
+  }
   printer.origin(x,y);
   printer.print_widget( win );
   printer.end_page();
