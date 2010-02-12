@@ -30,6 +30,9 @@
 <p>
 <a href="class_fl___printer-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Classes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><b>chain_elt</b></td></tr>
+
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="82f5d6a0fe67c6b756251c6c2f470010"></a><!-- doxytag: member="Fl_Printer::Fl_Printer" ref="82f5d6a0fe67c6b756251c6c2f470010" args="(void)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#82f5d6a0fe67c6b756251c6c2f470010">Fl_Printer</a> (void)</td></tr>
@@ -70,13 +73,13 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Provides an OS-independent interface to printing under MSWindows and Mac OS X. 
 <p>
-At present, this class is only implemented for MSWindows and Mac OS X. It allows to use all FLTK drawing, color, text, and clip functions, and to have them operate on printed page(s). There are two main ways to use it. <ul>
+At present, this class is only implemented for MSWindows and Mac OS X. It allows to use all FLTK drawing, color, text, and clip functions, and to have them operate on printed page(s). There are two main, non exclusive, ways to use it. <ul>
 <li>
-Print any widget (standard, custom, window) as it appears on screen, with optional translation and scaling. This is done by calling <a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">print_widget()</a> or <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a>. </li>
+Print any widget (standard, custom, Fl_Window except Fl_Gl_Window) as it appears on screen, with optional translation and scaling. This is done by calling <a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">print_widget()</a> or <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a>. </li>
 <li>
 Use a series of FLTK graphics commands (e.g., font, text, lines, colors, clip) to compose a page appropriately shaped for printing. </li>
 </ul>
-In both cases, begin by <a class="el" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job()</a>, <a class="el" href="class_fl___printer.html#a7c9294391ecebe05a59b868fe16bac1" title="Starts a new printed page.">start_page()</a>, <a class="el" href="class_fl___printer.html#a99af80f55b9fdb3162636a3d7b45635" title="Computes the origin and size of the printable area of the page.">printable_rect()</a> and <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a> calls and finish by <a class="el" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a" title="To be called at the end of each page.">end_page()</a> and <a class="el" href="class_fl___printer.html#181c505fbfba8818368f844f7276b06a" title="To be called at the end of a print job.">end_job()</a> calls. Fl_Gl_Window's can't be printed. <hr><h2>Member Function Documentation</h2>
+In both cases, begin by <a class="el" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job()</a>, <a class="el" href="class_fl___printer.html#a7c9294391ecebe05a59b868fe16bac1" title="Starts a new printed page.">start_page()</a>, <a class="el" href="class_fl___printer.html#a99af80f55b9fdb3162636a3d7b45635" title="Computes the origin and size of the printable area of the page.">printable_rect()</a> and <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a> calls and finish by <a class="el" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a" title="To be called at the end of each page.">end_page()</a> and <a class="el" href="class_fl___printer.html#181c505fbfba8818368f844f7276b06a" title="To be called at the end of a print job.">end_job()</a> calls. <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="c3afd751b80f12a11f02a6e87eeb332a"></a><!-- doxytag: member="Fl_Printer::end_page" ref="c3afd751b80f12a11f02a6e87eeb332a" args="(void)" -->
 <div class="memitem">
 <div class="memproto">
@@ -252,11 +255,12 @@ The widget's position on the printed page is determined by the last call to <a c
 <p>
 Prints a rectangular part of a window. 
 <p>
-Capture, possibly before the <a class="el" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job()</a> call, the window part of interest by <br>
- <code>uchar *image_data = fl_read_image(NULL, x, y, w, h);</code><br>
+Before calling <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a>, capture, possibly before the <a class="el" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job()</a> call, the window part of interest by <br>
+ <code>win-&gt;make_current();<br>
+ uchar *image_data = fl_read_image(NULL, x, y, w, h);</code><br>
  The image position on the printed page is determined by the last call to <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a>. The image can be scaled by a <a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale()</a> call. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>image_data</em>&nbsp;</td><td>An array containing the RGB image data to be printed. It can be freed using delete at any time after <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a> returns. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>image_data</em>&nbsp;</td><td>An array containing the RGB image data to be printed. It must not be freed (using delete) until after the <a class="el" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a" title="To be called at the end of each page.">end_page()</a> call. </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>w</em>&nbsp;</td><td>The image width </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>h</em>&nbsp;</td><td>The image height </td></tr>
   </table>
@@ -416,7 +420,7 @@ The page coordinates are initially in points, i.e., 1/72 inch, and with origin a
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___printer_8_h_source.html">Fl_Printer.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Feb 12 12:59:29 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Feb 12 18:23:56 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
