@@ -142,7 +142,7 @@ int Fl_Printer::start_page (void)
     x_offset = 0;
     y_offset = 0;
     printable_rect(&x_offset, &y_offset, &w, &h);
-    image = NULL;
+    image_list_ = NULL;
     fl_clip_region(0);
     fl_win_isprintcontext = true;
   }
@@ -165,7 +165,7 @@ int Fl_Printer::end_page (void)
 {
   int  rsult;
   
-  if(image) delete image;
+  delete_image_list();
   fl_win_isprintcontext = false;
   rsult = 0;
   if (hPr != NULL) {

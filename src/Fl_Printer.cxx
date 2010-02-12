@@ -57,10 +57,25 @@ void Fl_Printer::origin(int *x, int *y)
 
 void Fl_Printer::print_window_part(const uchar *image_data, int w, int h)
 {
-  Fl_RGB_Image *tmp_image = new Fl_RGB_Image(image_data, w, h);
-  // the image is duplicated so the caller can free it, 
-  // because it must be kept until the page is closed
-  image = tmp_image->copy();
-  delete tmp_image;
+  Fl_RGB_Image *image = new Fl_RGB_Image(image_data, w, h);
   image->draw(0, 0);
+  add_image(image);
+}
+
+void Fl_Printer::add_image(Fl_Image *image)
+{
+  struct chain_elt *elt =  (struct chain_elt *)calloc(sizeof(struct chain_elt), 1);
+  elt->image = image;
+  if (image_list_) { elt->next = image_list_; }
+  image_list_ = elt;
+}
+
+void Fl_Printer::delete_image_list()
+{
+  while(image_list_) {
+    struct chain_elt *next = image_list_->next;
+    delete image_list_->image;
+    free(image_list_);
+    image_list_ = next;
+    }
 }

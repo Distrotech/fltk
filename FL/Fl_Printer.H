@@ -12,19 +12,24 @@
  *
  At present, this class is only implemented for MSWindows and Mac OS X.
  It allows to use all FLTK drawing, color, text, and clip functions, and to have them operate
- on printed page(s). There are two main ways to use it.
- <ul><li>Print any widget (standard, custom, window) as it appears on screen, with optional
- translation and scaling. This is done by calling print_widget() or print_window_part().
+ on printed page(s). There are two main, non exclusive, ways to use it.
+ <ul><li>Print any widget (standard, custom, Fl_Window except Fl_Gl_Window) as it appears 
+ on screen, with optional translation and scaling. This is done by calling print_widget() 
+ or print_window_part().
  <li>Use a series of FLTK graphics commands (e.g., font, text, lines, colors, clip) to
  compose a page appropriately shaped for printing. 
  </ul>
  In both cases, begin by start_job(), start_page(), printable_rect() and origin() calls
- and finish by end_page() and end_job() calls. Fl_Gl_Window's can't be printed.
+ and finish by end_page() and end_job() calls.
  */
 class Fl_Printer {
+  struct chain_elt {
+    Fl_Image *image;
+    struct chain_elt *next;
+  };
   int y_offset;
   int x_offset;
-  Fl_Image *image;
+  struct chain_elt *image_list_; // chained list of Fl_Image's used in this page
 #ifdef __APPLE__
    float scale_x;
    float scale_y;
@@ -37,6 +42,9 @@ class Fl_Printer {
    HDC           hPr;
    int           prerr;
 #endif
+  
+  void add_image(Fl_Image *image); // adds an image to the page image list
+  void delete_image_list(); // deletes the page image list
 public:
   /** 
    @brief The constructor.
@@ -118,12 +126,14 @@ public:
   /**
    @brief Prints a rectangular part of a window.
    *
-   Capture, possibly before the start_job() call, the window part of interest by \n
-   <tt>uchar *image_data = fl_read_image(NULL, x, y, w, h);</tt>\n
+   Before calling print_window_part(), capture, possibly before the start_job() call, 
+   the window part of interest by \n
+   <tt>win->make_current();\n
+   uchar *image_data = fl_read_image(NULL, x, y, w, h);</tt>\n
    The image position on the printed page is determined by the last call to origin(). The image
    can be scaled by a scale() call.
-   @param image_data An array containing the RGB image data to be printed. It can be freed using delete
-   at any time after print_window_part() returns.
+   @param image_data An array containing the RGB image data to be printed. It must not be freed (using delete)
+   until after the end_page() call.
    @param w The image width
    @param h The image height
    */
