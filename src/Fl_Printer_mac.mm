@@ -170,6 +170,7 @@ int Fl_Printer::start_page (void)
   x_offset = 0;
   scale_x = scale_y = 1;
   win_scale_x = win_scale_y = 1;
+  image = NULL;
   CGContextTranslateCTM(fl_gc, margins.left, margins.bottom + h - 0.5f);
   CGContextScaleCTM(fl_gc, win_scale_x, - win_scale_y);
   fl_quartz_restore_line_style_();
@@ -187,6 +188,7 @@ int Fl_Printer::end_page (void)
   CGContextRestoreGState(fl_gc);
   CGContextRestoreGState(fl_gc);
   OSStatus status = PMSessionEndPageNoDialog(printSession);
+  if(image) delete image;
   return status != noErr;
 }
 

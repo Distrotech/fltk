@@ -5,6 +5,7 @@
 #include <FL/Fl.H>
 #include <FL/x.H>
 #include <FL/fl_draw.H>
+#include <FL/Fl_RGB_Image.H>
 
 /**
  * @brief Provides an OS-independent interface to printing under MSWindows and Mac OS X.
@@ -13,16 +14,17 @@
  It allows to use all FLTK drawing, color, text, and clip functions, and to have them operate
  on printed page(s). There are two main ways to use it.
  <ul><li>Print any widget (standard, custom, window) as it appears on screen, with optional
- translation and scaling. This is done by calling print_widget().
+ translation and scaling. This is done by calling print_widget() or print_window_part().
  <li>Use a series of FLTK graphics commands (e.g., font, text, lines, colors, clip) to
  compose a page appropriately shaped for printing. 
  </ul>
  In both cases, begin by start_job(), start_page(), printable_rect() and origin() calls
- and finish by end_page() and end_job() calls.
+ and finish by end_page() and end_job() calls. Fl_Gl_Window's can't be printed.
  */
 class Fl_Printer {
-   int y_offset;
-   int x_offset;
+  int y_offset;
+  int x_offset;
+  Fl_Image *image;
 #ifdef __APPLE__
    float scale_x;
    float scale_y;
@@ -55,7 +57,7 @@ public:
    @brief Starts a new printed page
    *
    The page coordinates are initially in points, i.e., 1/72 inch, 
-   and with origin at the top left of the page or of the printable page area.
+   and with origin at the top left of the printable page area.
    @return 0 iff OK
    */
   int start_page (void);
@@ -103,7 +105,7 @@ public:
   /**
    @brief Draws the widget on the printed page.
    *
-   The widget's position on the printed page is determined by a previous call to origin()
+   The widget's position on the printed page is determined by the last call to origin()
    and by the optional delta_x and delta_y arguments.
    Its dimensions are in points unless there was a previous call to scale().
    @param[in] widget Any FLTK widget (e.g., standard, custom, window).
@@ -112,6 +114,20 @@ public:
    @param[in] delta_y Same as above, vertically.
    */
   void print_widget(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
+  
+  /**
+   @brief Prints a rectangular part of a window.
+   *
+   Capture, possibly before the start_job() call, the window part of interest by \n
+   <tt>uchar *image_data = fl_read_image(NULL, x, y, w, h);</tt>\n
+   The image position on the printed page is determined by the last call to origin(). The image
+   can be scaled by a scale() call.
+   @param image_data An array containing the RGB image data to be printed. It can be freed using delete
+   at any time after print_window_part() returns.
+   @param w The image width
+   @param h The image height
+   */
+   void print_window_part(const uchar *image_data, int w, int h);
   
   /**
    @brief To be called at the end of each page.

@@ -62,6 +62,7 @@ class Drawing : public Fl_Window {
     fl_font(FL_HELVETICA, 24);
     fl_draw("bottom clipped text", 5, h() + 4);
     printf ("porsche.draw()\n");
+    fl_rect(x()+200,y()+10,64,64);
     porsche.draw(x()+200,y()+10,64,64);
     fl_push_matrix();
     if (args[8]) {

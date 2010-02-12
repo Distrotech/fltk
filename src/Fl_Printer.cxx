@@ -55,4 +55,12 @@ void Fl_Printer::origin(int *x, int *y)
   if (y) *y = y_offset;
 }
 
-
+void Fl_Printer::print_window_part(const uchar *image_data, int w, int h)
+{
+  Fl_RGB_Image *tmp_image = new Fl_RGB_Image(image_data, w, h);
+  // the image is duplicated so the caller can free it, 
+  // because it must be kept until the page is closed
+  image = tmp_image->copy();
+  delete tmp_image;
+  image->draw(0, 0);
+}
