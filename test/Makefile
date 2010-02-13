@@ -82,6 +82,7 @@ CPPFILES =\
 	pixmap_browser.cxx \
 	pixmap.cxx \
 	preferences.cxx \
+	print.cxx \
 	radio.cxx \
 	resizebox.cxx \
 	resize.cxx \
