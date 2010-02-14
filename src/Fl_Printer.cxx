@@ -12,11 +12,9 @@
 
 void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y) 
 { 
-  int old_x, old_y, new_x, new_y, x_offset, y_offset, is_topwindow, is_window;
-  Fl_Window *win, *target;
+  int old_x, old_y, new_x, new_y, is_window;
   if ( ! widget->visible() ) return;
-  is_window = widget->type() >= FL_WINDOW;
-  is_topwindow = is_window && widget->window() == NULL;
+  is_window = (widget->as_window() != NULL);
   widget->damage(FL_DAMAGE_ALL);
   // set origin to the desired top-left position of the widget
   origin(&old_x, &old_y);
@@ -31,21 +29,28 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
   if (is_window) fl_push_clip(0, 0, widget->w(), widget->h() );
   widget->draw();
   if (is_window) fl_pop_clip();
+  if (new_x != old_x + delta_x || new_y != old_y + delta_y) origin(old_x + delta_x, old_y + delta_y);
+  // find subwindows of widget and print them
+  traverse(widget);
   // reset origin to where it was
-  if(new_x != old_x || new_y != old_y) origin(old_x, old_y);
-  // set target to the window where widget lies
-  if (!is_window) target = widget->window(); 
-  else target = (Fl_Window*)widget;
-  // find all windows that are one level within widget, and print them
-  win = Fl::first_window();
-  while(win) {
-    if (win->visible() && win->window() == target && widget->contains(win) ) {
-      // compute desired position of top-left of win
-      x_offset = win->x() - (is_window ? 0 : widget->x());
-      y_offset = win->y() - (is_window ? 0 : widget->y());
-      print_widget(win, delta_x + x_offset, delta_y + y_offset);
-    }
-    win = Fl::next_window(win);
+  if(delta_x || delta_y) origin(old_x, old_y);
+}
+
+void Fl_Printer::traverse(Fl_Widget *widget)
+{
+  Fl_Group *g = widget->as_group();
+  if (!g) return;
+  int is_window = (widget->as_window() != NULL);
+  int n = g->children();
+  for (int i = 0; i < n; i++) {
+    Fl_Widget *c = g->child(i);
+    if (c->as_window()) {
+      // compute desired position of top-left of window c
+      int x_offset = c->x() - (is_window ? 0 : widget->x());
+      int y_offset = c->y() - (is_window ? 0 : widget->y());
+      print_widget(c, x_offset, y_offset);
+      }
+    else traverse(c);
   }
 }
 

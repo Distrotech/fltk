@@ -45,6 +45,7 @@ class Fl_Printer {
   
   void add_image(Fl_Image *image); // adds an image to the page image list
   void delete_image_list(); // deletes the page image list
+  void traverse(Fl_Widget *widget); // finds subwindows of widget and prints them
 public:
   /** 
    @brief The constructor.
