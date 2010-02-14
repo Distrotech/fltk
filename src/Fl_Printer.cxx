@@ -28,14 +28,9 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
     }
   if (new_x != old_x || new_y != old_y) origin(new_x, new_y);
   // if widget is a window, clip all drawings to the window area
-#ifdef __APPLE__
-  // TODO sort out this also for WIN32
   if (is_window) fl_push_clip(0, 0, widget->w(), widget->h() );
-#endif
   widget->draw();
-#ifdef __APPLE__
   if (is_window) fl_pop_clip();
-#endif
   // reset origin to where it was
   if(new_x != old_x || new_y != old_y) origin(old_x, old_y);
   // set target to the window where widget lies

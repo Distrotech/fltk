@@ -734,7 +734,14 @@ int fl_not_clipped(int x, int y, int w, int h) {
 #elif defined(WIN32)
   if (!r) return 1;
   RECT rect;
-  rect.left = x; rect.top = y; rect.right = x+w; rect.bottom = y+h;
+  if (fl_win_isprintcontext) { // in case of print context, convert coords from logical to device
+    POINT pt[2] = { {x, y}, {x + w, y + h} };
+    LPtoDP(fl_gc, pt, 2);
+    rect.left = pt[0].x; rect.top = pt[0].y; rect.right = pt[1].x; rect.bottom = pt[1].y;
+    }
+  else {
+    rect.left = x; rect.top = y; rect.right = x+w; rect.bottom = y+h;
+    }
   return RectInRegion(r,&rect);
 #elif defined(__APPLE_QUARTZ__)
   if (!r) return 1;
@@ -806,10 +813,17 @@ int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
     ret = 2;
   } else if (EqualRgn(temp, rr)) { // complete
     ret = 0;
-  } else {	// parital intersection
+  } else {	// partial intersection
     RECT rect;
     GetRgnBox(temp, &rect);
-    X = rect.left; Y = rect.top; W = rect.right - X; H = rect.bottom - Y;
+    if(fl_win_isprintcontext) { // if print context, convert coords from device to logical
+      POINT pt[2] = { {rect.left, rect.top}, {rect.right, rect.bottom} };
+      DPtoLP(fl_gc, pt, 2);
+      X = pt[0].x; Y = pt[0].y; W = pt[1].x - X; H = pt[1].y - Y;
+    }
+    else {
+      X = rect.left; Y = rect.top; W = rect.right - X; H = rect.bottom - Y;
+      }
     ret = 1;
   }
   DeleteObject(temp);
