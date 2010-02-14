@@ -102,12 +102,12 @@ void Fl_Printer::end_job (void)
   }
 }
 
-int Fl_Printer::printable_rect(int *x, int *y, int *w, int *h)
+void Fl_Printer::absolute_printable_rect(int *x, int *y, int *w, int *h)
 {
   POINT         physPageSize;
   POINT         pixelsPerInch;
     
-  if (hPr == NULL) return 1;
+  if (hPr == NULL) return;
   SetWindowOrgEx(fl_gc, 0, 0, NULL);
   
   physPageSize.x = GetDeviceCaps(hPr, HORZRES);
@@ -118,18 +118,36 @@ int Fl_Printer::printable_rect(int *x, int *y, int *w, int *h)
   pixelsPerInch.x = GetDeviceCaps(hPr, LOGPIXELSX);
   pixelsPerInch.y = GetDeviceCaps(hPr, LOGPIXELSY);
   DPtoLP(hPr, &pixelsPerInch, 1);
-  *x = (pixelsPerInch.x / 4);
+  left_margin = (pixelsPerInch.x / 4);
   *w -= (pixelsPerInch.x / 2);
-  *y = (pixelsPerInch.y / 4);
+  top_margin = (pixelsPerInch.y / 4);
   *h -= (pixelsPerInch.y / 2);
   
-  SetWindowOrgEx(fl_gc, - x_offset, - y_offset, NULL);
+  *x = left_margin;
+  *y = top_margin;
+  origin(x_offset, y_offset);
+}
+
+void Fl_Printer::margins(int *left, int *top, int *right, int *bottom)
+{
+  int x, y, w, h;
+  absolute_printable_rect(&x, &y, &w, &h);
+  if (left) *left = x;
+  if (top) *top = y;
+  if (right) *right = x;
+  if (bottom) *bottom = y;
+}
+
+int Fl_Printer::printable_rect(int *w, int *h)
+{
+  int x, y;
+  absolute_printable_rect(&x, &y, w, h);
   return 0;
 }
 
 int Fl_Printer::start_page (void)
 {
-  int  rsult;
+  int  rsult, w, h;
   
   rsult = 0;
   if (hPr != NULL) {
@@ -139,8 +157,8 @@ int Fl_Printer::start_page (void)
       fl_alert ("StartPage error %d", prerr);
       rsult = 1;
     }
-    x_offset = 0;
-    y_offset = 0;
+    printable_rect(&w, &h);
+    origin(0, 0);
     image_list_ = NULL;
     fl_clip_region(0);
     fl_win_isprintcontext = true;
@@ -150,14 +168,17 @@ int Fl_Printer::start_page (void)
 
 void Fl_Printer::origin (int deltax, int deltay)
 {
-  SetWindowOrgEx(fl_gc, - deltax, - deltay, NULL);
+  SetWindowOrgEx(fl_gc, - left_margin - deltax, - top_margin - deltay, NULL);
   x_offset = deltax;
   y_offset = deltay;
 }
 
 void Fl_Printer::scale (float scalex, float scaley)
 {
+  int w, h;
   SetWindowExtEx(fl_gc, (int)(720 / scalex + 0.5), (int)(720 / scaley + 0.5), NULL);
+  printable_rect(&w, &h);
+  origin(0, 0);
 }
 
 int Fl_Printer::end_page (void)

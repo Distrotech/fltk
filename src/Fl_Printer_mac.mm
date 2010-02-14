@@ -101,19 +101,32 @@ int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
   return 0;
 }
 
-int Fl_Printer::printable_rect(int *x, int *y, int *w, int *h)
+void Fl_Printer::margins(int *left, int *top, int *right, int *bottom)
+{
+  PMPaper paper;
+  PMGetPageFormatPaper(pageFormat, &paper);
+  PMPaperMargins margins;
+  PMPaperGetMargins(paper, &margins);
+  if (left) *left = (int)(margins.left / scale_x + 0.5);
+  if (top) *top = (int)(margins.top / scale_y + 0.5);
+  if (right) *right = (int)(margins.right / scale_x + 0.5);
+  if (bottom) *bottom = (int)(margins.bottom / scale_y + 0.5);
+}
+
+int Fl_Printer::printable_rect(int *w, int *h)
 //returns 0 iff OK
 {
   OSStatus status;
   PMRect pmRect;
+  int x, y;
   
   status = PMGetAdjustedPageRect(pageFormat, &pmRect);
   if (status != noErr) return 1;
   
-  *x = (int)pmRect.left;
-  *y = (int)pmRect.top;
-  *w = (int)(pmRect.right - *x) / scale_x + 1;
-  *h = (int)(pmRect.bottom - *y) / scale_y + 1;
+  x = (int)pmRect.left;
+  y = (int)pmRect.top;
+  *w = (int)(pmRect.right - x) / scale_x + 1;
+  *h = (int)(pmRect.bottom - y) / scale_y + 1;
   return 0;
 }
 
@@ -137,7 +150,7 @@ void Fl_Printer::scale (float s_x, float s_y)
   CGContextRestoreGState(fl_gc);
   CGContextSaveGState(fl_gc);
   CGContextScaleCTM(fl_gc, scale_x, scale_y);
-  CGContextTranslateCTM(fl_gc, x_offset, y_offset);
+  x_offset = y_offset = 0;
   CGContextSaveGState(fl_gc);
 }
 
@@ -166,8 +179,8 @@ int Fl_Printer::start_page (void)
   
   status = PMGetAdjustedPageRect(pageFormat, &pmRect);
   double h = pmRect.bottom - pmRect.top;
-  y_offset = 0; 
   x_offset = 0;
+  y_offset = 0; 
   scale_x = scale_y = 1;
   win_scale_x = win_scale_y = 1;
   image_list_ = NULL;

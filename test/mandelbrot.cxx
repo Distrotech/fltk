@@ -50,15 +50,13 @@ static void print(Fl_Widget *o, void *data)
   Fl_Printer printer;
   Fl_Window *win = o->window();
   if(!win->visible()) return;
-  int x,y,w,h;
   win->make_current();
   uchar *image_data = fl_read_image(NULL, 0, 0, 450, 520, 0);
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
-  printer.scale(.8,.8);
   printer.print_window_part(image_data, 450, 520);
-  delete image_data;
   printer.end_page();
+  delete image_data;
   printer.end_job();
 }
 

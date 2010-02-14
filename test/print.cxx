@@ -117,29 +117,25 @@ void print_cb(Fl_Widget* o, void* v) {
   if ( printer.start_job(1) ) return;
   if (printer.start_page() ) return;
   // draw the printable area border
-  printer.printable_rect(&x, &y, &w, &h);
+  printer.printable_rect(&w, &h);
   fl_color(FL_GRAY);
   fl_line_style(FL_DOT, 0);
-  fl_rect(x,y,w,h);  
+  fl_rect(0,0,w,h);  
   //print the full window at top left of page
   printer.scale(.5,.5);
-  printer.printable_rect(&x, &y, &w, &h);
-  printer.origin(x,y);
   printer.print_widget(win);
   //print the shrinked Drawing custom widget at right of page
   printer.scale(.6,.6);
-  printer.printable_rect(&x, &y, &w, &h);
-  printer.origin(x + w - d->w(), 100);
+  printer.printable_rect(&w, &h);
+  printer.origin(w - d->w(), 100);
   printer.print_widget(d);
   //print the print button at bottom left
   printer.scale(1,1);
-  printer.printable_rect(&x, &y, &w, &h);
-  printer.origin(x, y);
+  printer.printable_rect(&w, &h);
   printer.print_widget(o, 0, h - o->h() );
   //print the scaled window at bottom right
   printer.scale(.5,.5);
-  printer.printable_rect(&x, &y, &w, &h);
-  printer.origin(x, y);
+  printer.printable_rect(&w, &h);
   printer.print_widget(win, w - win->w(), h - win->h());
 
   // close page and print job

@@ -31,21 +31,26 @@ class Fl_Printer {
   int x_offset;
   struct chain_elt *image_list_; // chained list of Fl_Image's used in this page
 #ifdef __APPLE__
-   float scale_x;
-   float scale_y;
-   PMPrintSession  printSession;
-   PMPageFormat    pageFormat;
-   PMPrintSettings printSettings;
+  float scale_x;
+  float scale_y;
+  PMPrintSession  printSession;
+  PMPageFormat    pageFormat;
+  PMPrintSettings printSettings;
 #elif defined(WIN32)
-   int   abortPrint;
-   PRINTDLG      pd;
-   HDC           hPr;
-   int           prerr;
+  int   abortPrint;
+  PRINTDLG      pd;
+  HDC           hPr;
+  int           prerr;
+  int left_margin;
+  int top_margin;
 #endif
   
   void add_image(Fl_Image *image); // adds an image to the page image list
   void delete_image_list(); // deletes the page image list
   void traverse(Fl_Widget *widget); // finds subwindows of widget and prints them
+#ifdef WIN32
+  void absolute_printable_rect(int *x, int *y, int *w, int *h);
+#endif
 public:
   /** 
    @brief The constructor.
@@ -72,21 +77,34 @@ public:
   int start_page (void);
   
   /**
-   @brief Computes the origin and size of the printable area of the page.
+   @brief Computes the width and height of the printable area of the page.
    *
    Values are in the same unit as that used by FLTK drawing functions,
    are unchanged by calls to origin(), but are changed by scale() calls.
    Values account for the user-selected paper type and print orientation.
    @return 0 iff OK.
    */
-  int printable_rect(int *x, int *y, int *w, int *h);
+  int printable_rect(int *w, int *h);
+  
+  /**
+   @brief Computes the dimensions of margins that lie between the printable page area and
+   the full page.
+   *
+   Values are in the same unit as that used by FLTK drawing functions. They are changed
+   by scale() calls.
+   @param[out] left If non-null, *left is set to the left margin size.
+   @param[out] top If non-null, *top is set to the top margin size.
+   @param[out] right If non-null, *right is set to the right margin size.
+   @param[out] bottom If non-null, *bottom is set to the bottom margin size.
+   */
+   void margins(int *left, int *top, int *right, int *bottom);
   
   /**
    @brief Sets the position in page coordinates of the origin of graphics functions.
    *
    Arguments should be expressed relatively to the result of a previous printable_rect() call.
-   That is, <tt>printable_rect(&x, &y, &w, &h); origin(x, y);</tt> sets the graphics origin at the
-   top left of the page printable area.
+   That is, <tt>printable_rect(&w, &h); origin(w/2, 0);</tt> sets the graphics origin at the
+   top center of the page printable area.
    Successive origin() calls don't combine their effects.
    @param[in] x Horizontal position in page coordinates of the desired origin of graphics functions.
    @param[in] y Same as above, vertically.
@@ -104,7 +122,8 @@ public:
   /**
    @brief Changes the scaling of page coordinates.
    *
-   After a scale() call, do a printable_rect() call to get the new coordinates of the printable page area.
+   This function also resets the origin of graphics functions at top left of printable page area.
+   After a scale() call, do a printable_rect() call to get the new dimensions of the printable page area.
    Successive scale() calls don't combine their effects.
    @param scale_x Horizontal dimensions of plot are multiplied by this quantity.
    @param scale_y Same as above, vertically.
