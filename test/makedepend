@@ -323,6 +323,7 @@ mandelbrot.o: ../FL/Fl_Export.H ../FL/fl_types.h mandelbrot.h ../FL/Fl_Box.H
 mandelbrot.o: ../FL/Fl_Slider.H ../FL/Fl_Valuator.H ../FL/Fl_Double_Window.H
 mandelbrot.o: ../FL/Fl_Window.H ../FL/Fl_Group.H ../FL/Fl_Widget.H
 mandelbrot.o: ../FL/Fl_Input.H ../FL/Fl_Input_.H ../FL/fl_draw.H
+mandelbrot.o: ../FL/Fl_Button.H ../FL/Fl_Printer.H ../FL/x.H ../FL/Fl_Image.H
 menubar.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 menubar.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 menubar.o: ../FL/fl_types.h ../FL/Fl_Box.H ../FL/Fl_Double_Window.H
@@ -418,6 +419,15 @@ preferences.o: ../FL/Fl_Round_Button.H ../FL/Fl_Light_Button.H
 preferences.o: ../FL/Fl_Button.H ../FL/Fl_Box.H ../FL/Fl_Check_Button.H
 preferences.o: ../FL/Fl_Value_Slider.H ../FL/Fl_Slider.H ../FL/Fl_Valuator.H
 preferences.o: ../FL/filename.H ../FL/fl_ask.H
+print.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
+print.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
+print.o: ../FL/fl_types.h ../FL/fl_ask.H ../FL/Fl_Double_Window.H
+print.o: ../FL/Fl_Window.H ../FL/Fl_Group.H ../FL/Fl_Widget.H
+print.o: ../FL/Fl_Hor_Value_Slider.H ../FL/Fl_Value_Slider.H
+print.o: ../FL/Fl_Slider.H ../FL/Fl_Valuator.H ../FL/fl_draw.H
+print.o: ../FL/Fl_Toggle_Button.H ../FL/Fl_Button.H ../FL/Fl_Printer.H
+print.o: ../FL/x.H ../FL/Fl_Image.H ../FL/Fl_Pixmap.H ../FL/Fl_Image.H
+print.o: pixmaps/porsche.xpm
 radio.o: radio.h ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H
 radio.o: ../FL/fl_types.h ../FL/Xutf8.h ../FL/Enumerations.H
 radio.o: ../FL/Fl_Export.H ../FL/fl_types.h ../FL/Fl_Double_Window.H

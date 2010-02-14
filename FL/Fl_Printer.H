@@ -1,11 +1,14 @@
 /*
- *  Fl_Printer.h
+ *  Fl_Printer.H
  *
  */
+
+#ifndef Fl_Printer_H
+#define Fl_Printer_H
+
 #include <FL/Fl.H>
 #include <FL/x.H>
-#include <FL/fl_draw.H>
-#include <FL/Fl_RGB_Image.H>
+#include <FL/Fl_Image.H>
 
 /**
  * @brief Provides an OS-independent interface to printing under MSWindows and Mac OS X.
@@ -171,3 +174,5 @@ public:
    */
   void end_job (void);
 };
+
+#endif // Fl_Printer_H

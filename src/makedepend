@@ -267,6 +267,10 @@ Fl_Preferences.o: ../FL/Fl_Window.H ../FL/Fl_Tree_Item.H ../FL/Fl_Widget.H
 Fl_Preferences.o: ../FL/Fl_Image.H ../FL/Fl_Tree_Item_Array.H
 Fl_Preferences.o: ../FL/Fl_Tree_Prefs.H ../FL/filename.H ../FL/fl_utf8.h
 Fl_Preferences.o: flstring.h ../config.h
+Fl_Printer.o: ../FL/Fl_Printer.H ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H
+Fl_Printer.o: ../FL/fl_types.h ../FL/Xutf8.h ../FL/Enumerations.H
+Fl_Printer.o: ../FL/Fl_Export.H ../FL/fl_types.h ../FL/x.H ../FL/Fl_Window.H
+Fl_Printer.o: ../FL/Fl_Image.H ../FL/fl_draw.H
 Fl_Progress.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 Fl_Progress.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 Fl_Progress.o: ../FL/fl_types.h ../FL/Fl_Progress.H ../FL/Fl_Widget.H

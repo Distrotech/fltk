@@ -26,7 +26,7 @@
 //
 
 #include <FL/Fl.H>
-#include <FL/Fl_ask.H>
+#include <FL/fl_ask.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Hor_Value_Slider.H>
 #include <FL/fl_draw.H>
@@ -109,12 +109,20 @@ void slider_cb(Fl_Widget* o, void* v) {
 }
 
 void print_cb(Fl_Widget* o, void* v) {
-  int from, to, x, y, w, h;
+  int w, h;
   Drawing *d = (Drawing *)v;
   Fl_Window *win = o->window();
   // start print job and one page
   Fl_Printer printer;
-  if ( printer.start_job(1) ) return;
+  if ( printer.start_job(1) ) {
+#if defined(__APPLE__) || defined(WIN32)
+    fl_alert("error starting print job");
+#else
+    fl_alert("error starting print job\n"
+    	     "this platform doesn't support printing yet");
+#endif
+    return;
+  }
   if (printer.start_page() ) return;
   // draw the printable area border
   printer.printable_rect(&w, &h);

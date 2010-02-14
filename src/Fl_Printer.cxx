@@ -3,11 +3,26 @@
  *  FLTK
  *
  */
+#include <FL/Fl_Printer.H>
+#include <FL/fl_draw.H>
 
 #ifdef __APPLE__
-#include <src/Fl_Printer_mac.mm>
+#include "Fl_Printer_mac.mm"
 #elif defined(WIN32)
-#include <src/Fl_Printer_win32.cxx>
+#include "Fl_Printer_win32.cxx"
+
+#else // Linux/Unix/X11 -- empty methods, for compatibility only
+
+Fl_Printer::Fl_Printer(void) {}
+int Fl_Printer::start_job (int pagecount, int *frompage, int *topage) {return 1;}
+void Fl_Printer::end_job (void) {}
+void Fl_Printer::margins(int *left, int *top, int *right, int *bottom) {}
+int Fl_Printer::printable_rect(int *w, int *h) {return 0;}
+int Fl_Printer::start_page (void) {return 1;}
+void Fl_Printer::origin (int deltax, int deltay) {}
+void Fl_Printer::scale (float scalex, float scaley) {}
+int Fl_Printer::end_page (void) {return 1;}
+
 #endif
 
 void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y) 

@@ -4,7 +4,6 @@
  */
 #ifdef __APPLE__
 
-#include <FL/Fl_Printer.H>
 #include <FL/fl_ask.H>
 #ifdef __APPLE_COCOA__
 #import <Cocoa/Cocoa.h>
