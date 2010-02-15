@@ -59,6 +59,7 @@ void Fl_Printer::traverse(Fl_Widget *widget)
   int n = g->children();
   for (int i = 0; i < n; i++) {
     Fl_Widget *c = g->child(i);
+    if (!c->visible()) continue;
     if (c->as_window()) {
       // compute desired position of top-left of window c
       int x_offset = c->x() - (is_window ? 0 : widget->x());
