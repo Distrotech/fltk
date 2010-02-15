@@ -50,7 +50,7 @@ class Fl_Printer {
   
   void add_image(Fl_Image *image); // adds an image to the page image list
   void delete_image_list(); // deletes the page image list
-  void traverse(Fl_Widget *widget); // finds subwindows of widget and prints them
+  void traverse(Fl_Widget *widget, Fl_Widget *from); // finds subwindows of widget and prints them
 #ifdef WIN32
   void absolute_printable_rect(int *x, int *y, int *w, int *h);
 #endif

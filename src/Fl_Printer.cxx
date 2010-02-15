@@ -46,27 +46,27 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
   if (is_window) fl_pop_clip();
   if (new_x != old_x + delta_x || new_y != old_y + delta_y) origin(old_x + delta_x, old_y + delta_y);
   // find subwindows of widget and print them
-  traverse(widget);
+  traverse(widget, widget);
   // reset origin to where it was
   if(delta_x || delta_y) origin(old_x, old_y);
 }
 
-void Fl_Printer::traverse(Fl_Widget *widget)
+void Fl_Printer::traverse(Fl_Widget *widget, Fl_Widget *from)
 {
   Fl_Group *g = widget->as_group();
   if (!g) return;
-  int is_window = (widget->as_window() != NULL);
+  int is_window = (from->as_window() != NULL);
   int n = g->children();
   for (int i = 0; i < n; i++) {
     Fl_Widget *c = g->child(i);
     if (!c->visible()) continue;
     if (c->as_window()) {
       // compute desired position of top-left of window c
-      int x_offset = c->x() - (is_window ? 0 : widget->x());
-      int y_offset = c->y() - (is_window ? 0 : widget->y());
+      int x_offset = c->x() - (is_window ? 0 : from->x());
+      int y_offset = c->y() - (is_window ? 0 : from->y());
       print_widget(c, x_offset, y_offset);
       }
-    else traverse(c);
+    else traverse(c, from);
   }
 }
 
