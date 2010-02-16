@@ -604,6 +604,8 @@ void print2(Fl_Widget *, void *w) {
   delete p; // no need to close file
 };
 
+#endif
+
 
 class My_Button:public Fl_Button{
 protected:
@@ -625,24 +627,11 @@ public:
 };
 
 
-
-
-#endif
-
-
-
-
-
-
 int main(int argc, char ** argv) {
 
     Fl::visual(FL_RGB);
 
-    
-
-
  
-
    Fl_Window * w2 = new Fl_Window(500,560,"Graphics test");
    Fl_Group *c2 =new Fl_Group(3, 43, 494, 514 );
 
@@ -655,26 +644,14 @@ int main(int argc, char ** argv) {
 
   make_image();
   Fl_RGB_Image *rgb = new Fl_RGB_Image(image, width, height,4);
-#ifdef FL_DEVICE
   My_Button b_rgb(10,245,100,100,"Image w/Alpha");
-#else
-  Fl_Button b_rgb(10,245,100,100,"Image w/Alpha");
-#endif
   b_rgb.image(rgb);
 
-#ifdef FL_DEVICE
   My_Button b_pixmap(10,345,100,100,"Pixmap");
-#else
-  Fl_Button b_pixmap(10,345,100,100,"Pixmap");
-#endif
   Fl_Pixmap *pixmap = new Fl_Pixmap(porsche_xpm);
   b_pixmap.image(pixmap);
 
-#ifdef FL_DEVICE
   My_Button b_bitmap(10,445,100,100,"Bitmap");
-#else
-  Fl_Button b_bitmap(10,445,100,100,"Bitmap");
-#endif
   b_bitmap.image(new Fl_Bitmap(sorceress_bits,sorceress_width,sorceress_height));
 
   new Fl_Clock(360,230,120,120);
