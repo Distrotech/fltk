@@ -49,6 +49,7 @@ CPPFILES =\
 	cursor.cxx \
 	curve.cxx \
 	demo.cxx \
+	device.cxx \
 	doublebuffer.cxx \
 	editor.cxx \
 	fast_slow.cxx \
@@ -120,6 +121,7 @@ ALL =	\
 	cursor$(EXEEXT) \
 	curve$(EXEEXT) \
 	demo$(EXEEXT) \
+	device$(EXEEXT) \
 	doublebuffer$(EXEEXT) \
 	editor$(EXEEXT) \
 	fast_slow$(EXEEXT) \
@@ -318,6 +320,10 @@ curve$(EXEEXT): curve.o
 demo$(EXEEXT): demo.o
 	echo Linking $@...
 	$(CXX) $(ARCHFLAGS) $(LDFLAGS) -o $@ demo.o $(LINKFLTKFORMS) $(LDLIBS)
+
+device$(EXEEXT): device.o $(IMGLIBNAME)
+	echo Linking $@...
+	$(CXX) $(ARCHFLAGS) $(LDFLAGS) device.o -o $@ $(LINKFLTKIMG) $(LDLIBS)
 
 doublebuffer$(EXEEXT): doublebuffer.o
 
