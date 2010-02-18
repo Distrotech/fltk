@@ -265,7 +265,9 @@ Arguments should be expressed relatively to the result of a previous <a class="e
 <p>
 Draws the widget on the printed page. 
 <p>
-The widget's position on the printed page is determined by the last call to <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a> and by the optional delta_x and delta_y arguments. Its dimensions are in points unless there was a previous call to <a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale()</a>. <dl compact><dt><b>Parameters:</b></dt><dd>
+The widget's position on the printed page is determined by the last call to <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a> and by the optional delta_x and delta_y arguments. Its dimensions are in points unless there was a previous call to <a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale()</a>. <br>
+Under MSWindows, most printers don't allow interaction between what is being printed and what was previously printed at the same position on the page. Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed with black color where a transparent background is expected, fl_read_image() returns a white rectangle. A functional replacement is to first capture from the screen the correctly displayed pixmap or transparent image and then to put that on paper with a <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a> call. <br>
+Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced on paper. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>widget</em>&nbsp;</td><td>Any FLTK widget (e.g., standard, custom, window). </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>delta_x</em>&nbsp;</td><td>Optional horizontal offset for positioning the widget relatively to the current origin of graphics functions. </td></tr>
@@ -309,10 +311,11 @@ The widget's position on the printed page is determined by the last call to <a c
 <p>
 Prints a rectangular part of a window. 
 <p>
+The image position on the printed page is determined by the last call to <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a>. The image can be scaled by a <a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale()</a> call. <br>
 Before calling <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a>, capture, possibly before the <a class="el" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job()</a> call, the window part of interest by <br>
- <code>win-&gt;make_current();<br>
+ <code><em>win</em>-&gt;make_current();<br>
  uchar *image_data = fl_read_image(NULL, x, y, w, h);</code><br>
- The image position on the printed page is determined by the last call to <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a>. The image can be scaled by a <a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale()</a> call. <dl compact><dt><b>Parameters:</b></dt><dd>
+ <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>image_data</em>&nbsp;</td><td>An array containing the RGB image data to be printed. It must not be freed (using delete) until after the <a class="el" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a" title="To be called at the end of each page.">end_page()</a> call. </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>w</em>&nbsp;</td><td>The image width </td></tr>
@@ -462,7 +465,7 @@ The page coordinates are initially in points, i.e., 1/72 inch, and with origin a
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___printer_8_h_source.html">Fl_Printer.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Feb 14 19:11:14 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Feb 18 17:57:46 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
