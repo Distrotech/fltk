@@ -139,6 +139,15 @@ public:
    The widget's position on the printed page is determined by the last call to origin()
    and by the optional delta_x and delta_y arguments.
    Its dimensions are in points unless there was a previous call to scale().
+   <br>Under MSWindows, most printers don't allow interaction
+   between what is being printed and what was previously printed at the same position on the page.
+   Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed
+   with black color where a transparent background is expected, fl_read_image() returns a
+   white rectangle. A functional replacement is to first capture from the screen
+   the correctly displayed pixmap or transparent image and then to put that
+   on paper with a print_window_part() call. 
+   <br>Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced
+   on paper.
    @param[in] widget Any FLTK widget (e.g., standard, custom, window).
    @param[in] delta_x Optional horizontal offset for positioning the widget relatively
    to the current origin of graphics functions.
@@ -149,12 +158,12 @@ public:
   /**
    @brief Prints a rectangular part of a window.
    *
-   Before calling print_window_part(), capture, possibly before the start_job() call, 
-   the window part of interest by \n
-   <tt>win->make_current();\n
-   uchar *image_data = fl_read_image(NULL, x, y, w, h);</tt>\n
    The image position on the printed page is determined by the last call to origin(). The image
-   can be scaled by a scale() call.
+   can be scaled by a scale() call. 
+   <br>Before calling print_window_part(), capture, possibly before the start_job() call, 
+   the window part of interest by \n
+   <tt><i>win</i>->make_current();\n
+   uchar *image_data = fl_read_image(NULL, x, y, w, h);</tt>\n
    @param image_data An array containing the RGB image data to be printed. It must not be freed (using delete)
    until after the end_page() call.
    @param w The image width
