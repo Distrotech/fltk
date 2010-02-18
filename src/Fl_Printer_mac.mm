@@ -104,12 +104,22 @@ void Fl_Printer::margins(int *left, int *top, int *right, int *bottom)
 {
   PMPaper paper;
   PMGetPageFormatPaper(pageFormat, &paper);
+  PMOrientation orientation;
+  PMGetOrientation(pageFormat, &orientation);
   PMPaperMargins margins;
   PMPaperGetMargins(paper, &margins);
-  if (left) *left = (int)(margins.left / scale_x + 0.5);
-  if (top) *top = (int)(margins.top / scale_y + 0.5);
-  if (right) *right = (int)(margins.right / scale_x + 0.5);
-  if (bottom) *bottom = (int)(margins.bottom / scale_y + 0.5);
+  if(orientation == kPMPortrait) {
+    if (left) *left = (int)(margins.left / scale_x + 0.5);
+    if (top) *top = (int)(margins.top / scale_y + 0.5);
+    if (right) *right = (int)(margins.right / scale_x + 0.5);
+    if (bottom) *bottom = (int)(margins.bottom / scale_y + 0.5);
+    }
+  else {
+    if (left) *left = (int)(margins.top / scale_x + 0.5);
+    if (top) *top = (int)(margins.left / scale_y + 0.5);
+    if (right) *right = (int)(margins.bottom / scale_x + 0.5);
+    if (bottom) *bottom = (int)(margins.right / scale_y + 0.5);
+  }
 }
 
 int Fl_Printer::printable_rect(int *w, int *h)
@@ -175,6 +185,8 @@ int Fl_Printer::start_page (void)
   PMGetPageFormatPaper(pageFormat, &paper);
   PMPaperMargins margins;
   PMPaperGetMargins(paper, &margins);
+  PMOrientation orientation;
+  PMGetOrientation(pageFormat, &orientation);
   
   status = PMGetAdjustedPageRect(pageFormat, &pmRect);
   double h = pmRect.bottom - pmRect.top;
@@ -183,7 +195,10 @@ int Fl_Printer::start_page (void)
   scale_x = scale_y = 1;
   win_scale_x = win_scale_y = 1;
   image_list_ = NULL;
-  CGContextTranslateCTM(fl_gc, margins.left, margins.bottom + h - 0.5f);
+  if(orientation == kPMPortrait)
+    CGContextTranslateCTM(fl_gc, margins.left, margins.bottom + h - 0.5f);
+  else
+    CGContextTranslateCTM(fl_gc, margins.top, margins.right + h - 0.5f);
   CGContextScaleCTM(fl_gc, win_scale_x, - win_scale_y);
   fl_quartz_restore_line_style_();
   CGContextSetShouldAntialias(fl_gc, false);

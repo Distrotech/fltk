@@ -10,6 +10,7 @@
 #include <FL/x.H>
 #include <FL/Fl_Image.H>
 
+
 /**
  * @brief Provides an OS-independent interface to printing under MSWindows and Mac OS X.
  *
@@ -24,6 +25,7 @@
  </ul>
  In both cases, begin by start_job(), start_page(), printable_rect() and origin() calls
  and finish by end_page() and end_job() calls.
+ \see class Fl_Gl_Printer to print Fl_Gl_Window's.
  */
 class Fl_Printer {
   struct chain_elt {
@@ -182,6 +184,7 @@ public:
    @brief To be called at the end of a print job.
    */
   void end_job (void);
+    
 };
 
 #endif // Fl_Printer_H

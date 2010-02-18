@@ -6,6 +6,9 @@
 #include <FL/Fl_Printer.H>
 #include <FL/fl_draw.H>
 
+#include "Fl_Gl_Choice.H"
+#include <FL/Fl_Gl_Window.H>
+
 #ifdef __APPLE__
 #include "Fl_Printer_mac.mm"
 #elif defined(WIN32)
@@ -42,7 +45,13 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
   if (new_x != old_x || new_y != old_y) origin(new_x, new_y);
   // if widget is a window, clip all drawings to the window area
   if (is_window) fl_push_clip(0, 0, widget->w(), widget->h() );
+#ifdef __APPLE__
+  CGContextRef save_gc = fl_gc;
+#else
+  HDC save_gc = fl_gc;
+#endif
   widget->draw();
+  fl_gc = save_gc;
   if (is_window) fl_pop_clip();
   // find subwindows of widget and print them
   traverse(widget);
@@ -58,7 +67,9 @@ void Fl_Printer::traverse(Fl_Widget *widget)
   for (int i = 0; i < n; i++) {
     Fl_Widget *c = g->child(i);
     if ( !c->visible() ) continue;
-    if ( c->as_window() ) print_widget(c, c->x(), c->y());
+    if ( c->as_window() ) {
+      print_widget(c, c->x(), c->y());
+      }
     else traverse(c);
   }
 }

@@ -118,7 +118,7 @@ void cube_box::draw() {
   glScalef(float(size),float(size),float(size));
   drawcube(wire);
   glPopMatrix();
-  gl_color(FL_GRAY);
+  gl_color(FL_WHITE);
   glDisable(GL_DEPTH_TEST);
   gl_draw(wire ? "Cube: wire" : "Cube: flat", -4.5f, -4.5f );
   glEnable(GL_DEPTH_TEST);
@@ -157,7 +157,38 @@ void makeform(const char *name) {
   form->end();
 }
 
+// added to demo printing
+#include <FL/Fl_Sys_Menu_Bar.H>
+#include <FL/Fl_Gl_Printer.H>
+
+void print_cb(Fl_Widget *w, void *data)
+{
+  Fl_Gl_Printer printer;
+  Fl_Window *win = Fl::first_window();
+  if(!win) return;
+  if( printer.start_job(1) ) return;
+  if( printer.start_page() ) return;
+  printer.scale(0.68,0.68);
+  printer.print_widget( win );
+  printer.print_gl_window( cube, cube->x(), cube->y() );
+  printer.print_gl_window( cube2, cube2->x(), cube2->y() );
+  printer.end_page();
+  printer.end_job();
+}
+// end of printing demo 
+
 int main(int argc, char **argv) {
+  // added to demo printing
+  static Fl_Menu_Item	items[] = {
+    { "Menu", 0, 0, 0, FL_SUBMENU },
+    { "Print", 0, print_cb, 0, 0 },
+    { 0 },
+    { 0 }
+  };
+  Fl_Sys_Menu_Bar *menubar_;
+  menubar_ = new Fl_Sys_Menu_Bar(0, 0, 1, 25);
+  menubar_->menu(items);
+  // end of printing demo 
   makeform(argv[0]);
   speed->bounds(4,0);
   speed->value(cube->speed = cube2->speed = 1.0);
