@@ -30,64 +30,66 @@
 <a name="l00010"></a>00010 <span class="preprocessor">#include &lt;FL/x.H&gt;</span>
 <a name="l00011"></a>00011 <span class="preprocessor">#include &lt;FL/Fl_Image.H&gt;</span>
 <a name="l00012"></a>00012 
-<a name="l00028"></a><a class="code" href="class_fl___printer.html">00028</a> <span class="keyword">class </span><a class="code" href="class_fl___printer.html" title="Provides an OS-independent interface to printing under MSWindows and Mac OS X.">Fl_Printer</a> {
-<a name="l00029"></a>00029   <span class="keyword">struct </span>chain_elt {
-<a name="l00030"></a>00030     Fl_Image *image;
-<a name="l00031"></a>00031     <span class="keyword">struct </span>chain_elt *next;
-<a name="l00032"></a>00032   };
-<a name="l00033"></a>00033   <span class="keywordtype">int</span> y_offset;
-<a name="l00034"></a>00034   <span class="keywordtype">int</span> x_offset;
-<a name="l00035"></a>00035   <span class="keyword">struct </span>chain_elt *image_list_; <span class="comment">// chained list of Fl_Image's used in this page</span>
-<a name="l00036"></a>00036 <span class="preprocessor">#ifdef __APPLE__</span>
-<a name="l00037"></a>00037 <span class="preprocessor"></span>  <span class="keywordtype">float</span> scale_x;
-<a name="l00038"></a>00038   <span class="keywordtype">float</span> scale_y;
-<a name="l00039"></a>00039   PMPrintSession  printSession;
-<a name="l00040"></a>00040   PMPageFormat    pageFormat;
-<a name="l00041"></a>00041   PMPrintSettings printSettings;
-<a name="l00042"></a>00042 <span class="preprocessor">#elif defined(WIN32)</span>
-<a name="l00043"></a>00043 <span class="preprocessor"></span>  <span class="keywordtype">int</span>   abortPrint;
-<a name="l00044"></a>00044   PRINTDLG      pd;
-<a name="l00045"></a>00045   HDC           hPr;
-<a name="l00046"></a>00046   <span class="keywordtype">int</span>           prerr;
-<a name="l00047"></a>00047   <span class="keywordtype">int</span> left_margin;
-<a name="l00048"></a>00048   <span class="keywordtype">int</span> top_margin;
-<a name="l00049"></a>00049 <span class="preprocessor">#endif</span>
-<a name="l00050"></a>00050 <span class="preprocessor"></span>  
-<a name="l00051"></a>00051   <span class="keywordtype">void</span> add_image(Fl_Image *image); <span class="comment">// adds an image to the page image list</span>
-<a name="l00052"></a>00052   <span class="keywordtype">void</span> delete_image_list(); <span class="comment">// deletes the page image list</span>
-<a name="l00053"></a>00053   <span class="keywordtype">void</span> traverse(Fl_Widget *widget); <span class="comment">// finds subwindows of widget and prints them</span>
-<a name="l00054"></a>00054 <span class="preprocessor">#ifdef WIN32</span>
-<a name="l00055"></a>00055 <span class="preprocessor"></span>  <span class="keywordtype">void</span> absolute_printable_rect(<span class="keywordtype">int</span> *x, <span class="keywordtype">int</span> *y, <span class="keywordtype">int</span> *w, <span class="keywordtype">int</span> *h);
-<a name="l00056"></a>00056 <span class="preprocessor">#endif</span>
-<a name="l00057"></a>00057 <span class="preprocessor"></span><span class="keyword">public</span>:
-<a name="l00061"></a>00061   <a class="code" href="class_fl___printer.html#82f5d6a0fe67c6b756251c6c2f470010" title="The constructor.">Fl_Printer</a>(<span class="keywordtype">void</span>);
-<a name="l00062"></a>00062   
-<a name="l00071"></a>00071   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job</a>(<span class="keywordtype">int</span> pagecount, <span class="keywordtype">int</span> *frompage = NULL, <span class="keywordtype">int</span> *topage = NULL);
-<a name="l00072"></a>00072   
-<a name="l00080"></a>00080   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#a7c9294391ecebe05a59b868fe16bac1" title="Starts a new printed page.">start_page</a> (<span class="keywordtype">void</span>);
-<a name="l00081"></a>00081   
-<a name="l00090"></a>00090   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#e7d6d14dd0c0711634f38c599811db9c" title="Computes the width and height of the printable area of the page.">printable_rect</a>(<span class="keywordtype">int</span> *w, <span class="keywordtype">int</span> *h);
-<a name="l00091"></a>00091   
-<a name="l00103"></a>00103    <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#b0bb5557d714b1b8c0705c8af56bd26a" title="Computes the dimensions of margins that lie between the printable page area and the...">margins</a>(<span class="keywordtype">int</span> *left, <span class="keywordtype">int</span> *top, <span class="keywordtype">int</span> *right, <span class="keywordtype">int</span> *bottom);
-<a name="l00104"></a>00104   
-<a name="l00115"></a>00115   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y);
-<a name="l00116"></a>00116   
-<a name="l00123"></a>00123   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin</a>(<span class="keywordtype">int</span> *x, <span class="keywordtype">int</span> *y);
-<a name="l00124"></a>00124   
-<a name="l00134"></a>00134   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale</a> (<span class="keywordtype">float</span> scale_x, <span class="keywordtype">float</span> scale_y);
-<a name="l00135"></a>00135   
-<a name="l00156"></a>00156   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">print_widget</a>(Fl_Widget* widget, <span class="keywordtype">int</span> delta_x = 0, <span class="keywordtype">int</span> delta_y = 0);
-<a name="l00157"></a>00157   
-<a name="l00172"></a>00172    <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part</a>(<span class="keyword">const</span> uchar *image_data, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);
-<a name="l00173"></a>00173   
-<a name="l00179"></a>00179   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a" title="To be called at the end of each page.">end_page</a> (<span class="keywordtype">void</span>);
-<a name="l00180"></a>00180   
-<a name="l00184"></a>00184   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#181c505fbfba8818368f844f7276b06a" title="To be called at the end of a print job.">end_job</a> (<span class="keywordtype">void</span>);
-<a name="l00185"></a>00185 };
-<a name="l00186"></a>00186 
-<a name="l00187"></a>00187 <span class="preprocessor">#endif // Fl_Printer_H</span>
+<a name="l00013"></a>00013 
+<a name="l00030"></a><a class="code" href="class_fl___printer.html">00030</a> <span class="keyword">class </span><a class="code" href="class_fl___printer.html" title="Provides an OS-independent interface to printing under MSWindows and Mac OS X.">Fl_Printer</a> {
+<a name="l00031"></a>00031   <span class="keyword">struct </span>chain_elt {
+<a name="l00032"></a>00032     Fl_Image *image;
+<a name="l00033"></a>00033     <span class="keyword">struct </span>chain_elt *next;
+<a name="l00034"></a>00034   };
+<a name="l00035"></a>00035   <span class="keywordtype">int</span> y_offset;
+<a name="l00036"></a>00036   <span class="keywordtype">int</span> x_offset;
+<a name="l00037"></a>00037   <span class="keyword">struct </span>chain_elt *image_list_; <span class="comment">// chained list of Fl_Image's used in this page</span>
+<a name="l00038"></a>00038 <span class="preprocessor">#ifdef __APPLE__</span>
+<a name="l00039"></a>00039 <span class="preprocessor"></span>  <span class="keywordtype">float</span> scale_x;
+<a name="l00040"></a>00040   <span class="keywordtype">float</span> scale_y;
+<a name="l00041"></a>00041   PMPrintSession  printSession;
+<a name="l00042"></a>00042   PMPageFormat    pageFormat;
+<a name="l00043"></a>00043   PMPrintSettings printSettings;
+<a name="l00044"></a>00044 <span class="preprocessor">#elif defined(WIN32)</span>
+<a name="l00045"></a>00045 <span class="preprocessor"></span>  <span class="keywordtype">int</span>   abortPrint;
+<a name="l00046"></a>00046   PRINTDLG      pd;
+<a name="l00047"></a>00047   HDC           hPr;
+<a name="l00048"></a>00048   <span class="keywordtype">int</span>           prerr;
+<a name="l00049"></a>00049   <span class="keywordtype">int</span> left_margin;
+<a name="l00050"></a>00050   <span class="keywordtype">int</span> top_margin;
+<a name="l00051"></a>00051 <span class="preprocessor">#endif</span>
+<a name="l00052"></a>00052 <span class="preprocessor"></span>  
+<a name="l00053"></a>00053   <span class="keywordtype">void</span> add_image(Fl_Image *image); <span class="comment">// adds an image to the page image list</span>
+<a name="l00054"></a>00054   <span class="keywordtype">void</span> delete_image_list(); <span class="comment">// deletes the page image list</span>
+<a name="l00055"></a>00055   <span class="keywordtype">void</span> traverse(Fl_Widget *widget); <span class="comment">// finds subwindows of widget and prints them</span>
+<a name="l00056"></a>00056 <span class="preprocessor">#ifdef WIN32</span>
+<a name="l00057"></a>00057 <span class="preprocessor"></span>  <span class="keywordtype">void</span> absolute_printable_rect(<span class="keywordtype">int</span> *x, <span class="keywordtype">int</span> *y, <span class="keywordtype">int</span> *w, <span class="keywordtype">int</span> *h);
+<a name="l00058"></a>00058 <span class="preprocessor">#endif</span>
+<a name="l00059"></a>00059 <span class="preprocessor"></span><span class="keyword">public</span>:
+<a name="l00063"></a>00063   <a class="code" href="class_fl___printer.html#82f5d6a0fe67c6b756251c6c2f470010" title="The constructor.">Fl_Printer</a>(<span class="keywordtype">void</span>);
+<a name="l00064"></a>00064   
+<a name="l00073"></a>00073   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job</a>(<span class="keywordtype">int</span> pagecount, <span class="keywordtype">int</span> *frompage = NULL, <span class="keywordtype">int</span> *topage = NULL);
+<a name="l00074"></a>00074   
+<a name="l00082"></a>00082   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#a7c9294391ecebe05a59b868fe16bac1" title="Starts a new printed page.">start_page</a> (<span class="keywordtype">void</span>);
+<a name="l00083"></a>00083   
+<a name="l00092"></a>00092   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#e7d6d14dd0c0711634f38c599811db9c" title="Computes the width and height of the printable area of the page.">printable_rect</a>(<span class="keywordtype">int</span> *w, <span class="keywordtype">int</span> *h);
+<a name="l00093"></a>00093   
+<a name="l00105"></a>00105    <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#b0bb5557d714b1b8c0705c8af56bd26a" title="Computes the dimensions of margins that lie between the printable page area and the...">margins</a>(<span class="keywordtype">int</span> *left, <span class="keywordtype">int</span> *top, <span class="keywordtype">int</span> *right, <span class="keywordtype">int</span> *bottom);
+<a name="l00106"></a>00106   
+<a name="l00117"></a>00117   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y);
+<a name="l00118"></a>00118   
+<a name="l00125"></a>00125   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin</a>(<span class="keywordtype">int</span> *x, <span class="keywordtype">int</span> *y);
+<a name="l00126"></a>00126   
+<a name="l00136"></a>00136   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale</a> (<span class="keywordtype">float</span> scale_x, <span class="keywordtype">float</span> scale_y);
+<a name="l00137"></a>00137   
+<a name="l00158"></a>00158   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">print_widget</a>(Fl_Widget* widget, <span class="keywordtype">int</span> delta_x = 0, <span class="keywordtype">int</span> delta_y = 0);
+<a name="l00159"></a>00159   
+<a name="l00174"></a>00174    <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part</a>(<span class="keyword">const</span> uchar *image_data, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);
+<a name="l00175"></a>00175   
+<a name="l00181"></a>00181   <span class="keywordtype">int</span> <a class="code" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a" title="To be called at the end of each page.">end_page</a> (<span class="keywordtype">void</span>);
+<a name="l00182"></a>00182   
+<a name="l00186"></a>00186   <span class="keywordtype">void</span> <a class="code" href="class_fl___printer.html#181c505fbfba8818368f844f7276b06a" title="To be called at the end of a print job.">end_job</a> (<span class="keywordtype">void</span>);
+<a name="l00187"></a>00187     
+<a name="l00188"></a>00188 };
+<a name="l00189"></a>00189 
+<a name="l00190"></a>00190 <span class="preprocessor">#endif // Fl_Printer_H</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Feb 18 17:57:46 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Feb 19 00:45:11 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
