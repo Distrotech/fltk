@@ -6,9 +6,6 @@
 #include <FL/Fl_Printer.H>
 #include <FL/fl_draw.H>
 
-#include "Fl_Gl_Choice.H"
-#include <FL/Fl_Gl_Window.H>
-
 #ifdef __APPLE__
 #include "Fl_Printer_mac.mm"
 #elif defined(WIN32)
