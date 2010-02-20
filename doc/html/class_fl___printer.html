@@ -62,9 +62,9 @@ Inherited by <a class="el" href="class_fl___gl___printer.html">Fl_Gl_Printer</a>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f">scale</a> (float scale_x, float scale_y)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Changes the scaling of page coordinates.  <a href="#3016929f51bfa77c9e680f33d8a2227f"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2c5e858532b376ee7627369c9c8b1c36"></a><!-- doxytag: member="Fl_Printer::rotate" ref="2c5e858532b376ee7627369c9c8b1c36" args="(float angle)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>rotate</b> (float angle)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#2c5e858532b376ee7627369c9c8b1c36">rotate</a> (float angle)</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Rotates the graphics operations relatively to paper (Mac only for now).  <a href="#2c5e858532b376ee7627369c9c8b1c36"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150">print_widget</a> (Fl_Widget *widget, int delta_x=0, int delta_y=0)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draws the widget on the printed page.  <a href="#0b6a37315107179fec2eab69008f5150"></a><br></td></tr>
@@ -364,6 +364,33 @@ Values are in the same unit as that used by FLTK drawing functions, are unchange
 
 </div>
 </div><p>
+<a class="anchor" name="2c5e858532b376ee7627369c9c8b1c36"></a><!-- doxytag: member="Fl_Printer::rotate" ref="2c5e858532b376ee7627369c9c8b1c36" args="(float angle)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Fl_Printer::rotate           </td>
+          <td>(</td>
+          <td class="paramtype">float&nbsp;</td>
+          <td class="paramname"> <em>angle</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Rotates the graphics operations relatively to paper (Mac only for now). 
+<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>angle</em>&nbsp;</td><td>Rotation angle in counterclockwise degrees. </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="3016929f51bfa77c9e680f33d8a2227f"></a><!-- doxytag: member="Fl_Printer::scale" ref="3016929f51bfa77c9e680f33d8a2227f" args="(float scale_x, float scale_y)" -->
 <div class="memitem">
 <div class="memproto">
@@ -472,7 +499,7 @@ The page coordinates are initially in points, i.e., 1/72 inch, and with origin a
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___printer_8_h_source.html">Fl_Printer.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Feb 20 09:45:54 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Feb 20 23:56:34 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
