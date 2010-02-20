@@ -45,8 +45,7 @@ Inherits <a class="el" href="class_fl___printer.html">Fl_Printer</a>.
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 To print Fl_Gl_Window's. 
 <p>
-Because <a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">Fl_Printer::print_widget()</a> prints only the background of Fl_Gl_Window's, this class is to be used to print Fl_Gl_Window's. <br>
-At present, implemented only under Mac OS X. <hr><h2>Member Function Documentation</h2>
+Because <a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">Fl_Printer::print_widget()</a> prints only the background of Fl_Gl_Window's, this class is to be used to print them. <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="f5a45dfdabf53274f6d0374b5b48dbb1"></a><!-- doxytag: member="Fl_Gl_Printer::print_gl_window" ref="f5a45dfdabf53274f6d0374b5b48dbb1" args="(Fl_Gl_Window *glw, int delta_x=0, int delta_y=0)" -->
 <div class="memitem">
 <div class="memproto">
@@ -81,7 +80,7 @@ At present, implemented only under Mac OS X. <hr><h2>Member Function Documentati
 <p>
 Prints an Fl_Gl_Window. 
 <p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
+Under MSWindows, take care to move the print dialog window(s) out of the target OpenGL window(s) before closing them. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>glw</em>&nbsp;</td><td>an Fl_Gl_Window to be printed. </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>delta_x</em>&nbsp;</td><td>Optional horizontal offset for positioning the window relatively to the current origin of graphics functions. </td></tr>
@@ -94,7 +93,7 @@ Prints an Fl_Gl_Window.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___gl___printer_8_h_source.html">Fl_Gl_Printer.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Feb 19 00:45:11 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Feb 20 09:45:54 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
