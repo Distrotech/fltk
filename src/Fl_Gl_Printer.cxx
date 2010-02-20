@@ -10,31 +10,41 @@
 
 void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
 {
+#ifdef WIN32
+  HDC save_gc = fl_gc;
+  const int bytesperpixel = 3;
+#else
   CGContextRef save_gc = fl_gc;
+  const int bytesperpixel = 4;
+#endif
   glw->redraw();
   Fl::check();
   glw->make_current();
   // select front buffer as our source for pixel data
   glReadBuffer(GL_FRONT);
-  //Read OpenGL context pixels directly.
+  // Read OpenGL context pixels directly.
   // For extra safety, save & restore OpenGL states that are changed
   glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
   glPixelStorei(GL_PACK_ALIGNMENT, 4); /* Force 4-byte alignment */
   glPixelStorei(GL_PACK_ROW_LENGTH, 0);
   glPixelStorei(GL_PACK_SKIP_ROWS, 0);
   glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
-  //Read a block of pixels from the frame buffer
-  int mByteWidth = glw->w() * 4;                // Assume 4 bytes/pixel for now
+  // Read a block of pixels from the frame buffer
+  int mByteWidth = glw->w() * bytesperpixel;                
   mByteWidth = (mByteWidth + 3) & ~3;    // Align to 4 bytes
   uchar *baseAddress = (uchar*)malloc(mByteWidth * glw->h());
-  glReadPixels(0, 0, glw->w(), glw->h(), GL_BGRA, 
-	       GL_UNSIGNED_INT_8_8_8_8_REV,
+  glReadPixels(0, 0, glw->w(), glw->h(), 
+#ifdef WIN32
+	       GL_RGB, GL_UNSIGNED_BYTE,
+#else
+	       GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+#endif
 	       baseAddress);
   glPopClientAttrib();
   fl_gc = save_gc;
-  
 #ifdef WIN32
-  fl_draw_image(baseAddress, x, y, glw->w(), glw->h(), 4, mByteWidth);
+  fl_win_isprintcontext = true;
+  fl_draw_image(baseAddress, x, y, glw->w(), glw->h(), bytesperpixel, mByteWidth);
 #else
   CGColorSpaceRef cSpace = CGColorSpaceCreateWithName (kCGColorSpaceGenericRGB);  
   CGContextRef bitmap = CGBitmapContextCreate(baseAddress, glw->w(), glw->h(), 8, mByteWidth, cSpace,  
