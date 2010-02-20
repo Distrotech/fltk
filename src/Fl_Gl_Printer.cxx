@@ -44,7 +44,7 @@ void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
   fl_gc = save_gc;
 #ifdef WIN32
   fl_win_isprintcontext = true;
-  fl_draw_image(baseAddress, x, y, glw->w(), glw->h(), bytesperpixel, mByteWidth);
+  fl_draw_image(baseAddress + (glw->h() - 1) * mByteWidth, x, y , glw->w(), glw->h(), bytesperpixel, - mByteWidth);
 #else
   CGColorSpaceRef cSpace = CGColorSpaceCreateWithName (kCGColorSpaceGenericRGB);  
   CGContextRef bitmap = CGBitmapContextCreate(baseAddress, glw->w(), glw->h(), 8, mByteWidth, cSpace,  
