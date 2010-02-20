@@ -38,6 +38,7 @@ class Fl_Printer {
 #ifdef __APPLE__
   float scale_x;
   float scale_y;
+  float angle; // rotation angle in radians
   PMPrintSession  printSession;
   PMPageFormat    pageFormat;
   PMPrintSettings printSettings;
@@ -134,6 +135,13 @@ public:
    @param scale_y Same as above, vertically.
    */
   void scale (float scale_x, float scale_y);
+  
+  /**
+   @brief Rotates the graphics operations relatively to paper (Mac only for now).
+   *
+   @param angle Rotation angle in counterclockwise degrees.
+   */
+   void rotate(float angle);
   
   /**
    @brief Draws the widget on the printed page.

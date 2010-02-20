@@ -147,6 +147,7 @@ void Fl_Printer::origin(int x, int y)
   CGContextRestoreGState(fl_gc);
   CGContextSaveGState(fl_gc);
   CGContextScaleCTM(fl_gc, scale_x, scale_y);
+  CGContextRotateCTM(fl_gc, angle);
   CGContextTranslateCTM(fl_gc, x, y);
   CGContextSaveGState(fl_gc);
 }
@@ -159,7 +160,20 @@ void Fl_Printer::scale (float s_x, float s_y)
   CGContextRestoreGState(fl_gc);
   CGContextSaveGState(fl_gc);
   CGContextScaleCTM(fl_gc, scale_x, scale_y);
+  CGContextRotateCTM(fl_gc, angle);
   x_offset = y_offset = 0;
+  CGContextSaveGState(fl_gc);
+}
+
+void Fl_Printer::rotate (float rot_angle)
+{
+  angle = - rot_angle * M_PI / 180.;
+  CGContextRestoreGState(fl_gc);
+  CGContextRestoreGState(fl_gc);
+  CGContextSaveGState(fl_gc);
+  CGContextScaleCTM(fl_gc, scale_x, scale_y);
+  CGContextRotateCTM(fl_gc, angle);
+  CGContextTranslateCTM(fl_gc, x_offset, y_offset);
   CGContextSaveGState(fl_gc);
 }
 
@@ -192,6 +206,7 @@ int Fl_Printer::start_page (void)
   double h = pmRect.bottom - pmRect.top;
   x_offset = 0;
   y_offset = 0; 
+  angle = 0;
   scale_x = scale_y = 1;
   win_scale_x = win_scale_y = 1;
   image_list_ = NULL;

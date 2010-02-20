@@ -2370,9 +2370,20 @@ void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
 }
 */
 void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
+  CGRect r2;
   CGContextSaveGState(fl_gc);
   CGAffineTransform mx = CGContextGetCTM(fl_gc);
-  CGRect r2 = FL_CGRECTMAKE_COCOA(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+  if(mx.b != 0) { 
+    // if a rotation is active, move graphics context to origin of vertically reversed image 
+    CGContextTranslateCTM(fl_gc, rect.origin.x, rect.origin.y + h );
+    CGContextScaleCTM(fl_gc, 1, -1);
+    r2 = FL_CGRECTMAKE_COCOA(0,0,rect.size.width,rect.size.height);
+    CGContextClipToRect(fl_gc, r2);
+    rect.origin.x = rect.origin.y = 0;
+    return;
+    }
+  CGAffineTransform mx_inv = CGAffineTransformInvert(mx);
+  r2 = FL_CGRECTMAKE_COCOA(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
   // replace rect.origin translated by -cx,-cy by its image through mx, the current transformation
   rect.origin.x = (rect.origin.x     - cx) * mx.a + (mx.tx - 0.5f);
   rect.origin.y = (rect.origin.y + h - cy) * mx.d + (mx.ty + 0.5f);
@@ -2383,12 +2394,8 @@ void Fl_X::q_begin_image(CGRect &rect, int cx, int cy, int w, int h) {
   r2.origin.x -=   0.5f*mx.a;
   r2.origin.y -= - 0.5f*mx.d;
   CGContextClipToRect(fl_gc, r2);
-  // replace mx by its inverse, correct because there's no rotation, only scaling, translation and y reversal
-  mx.a = 1/mx.a;
-  mx.d = 1/mx.d;
-  mx.tx *= - mx.a;
-  mx.ty *= - mx.d;
-  CGContextConcatCTM(fl_gc, mx);
+  // cancel mx by multiplication by its inverse
+  CGContextConcatCTM(fl_gc, mx_inv);
   // now the current transformation is the identity
 }
 
@@ -2880,6 +2887,8 @@ int MACscreen_init(XRectangle screens[])
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
   printer.scale(0.68,0.68);
+  printer.rotate(20);
+  printer.origin(-0.1*win->w(), 0.8*win->h());
 #if USE_PRINT_WINDOW_PART
   printer.print_window_part( image_data, win->w(), win->h() );
 #else
