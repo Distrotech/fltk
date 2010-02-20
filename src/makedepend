@@ -771,6 +771,7 @@ Fl_Gl_Window.o: ../FL/fl_utf8.h ../FL/fl_types.h ../FL/Xutf8.h
 Fl_Gl_Window.o: ../FL/Enumerations.H ../FL/Fl_Export.H ../FL/fl_types.h
 Fl_Gl_Window.o: ../FL/x.H ../FL/Fl_Window.H Fl_Gl_Choice.H
 Fl_Gl_Window.o: ../FL/Fl_Gl_Window.H ../FL/fl_utf8.h
+Fl_Gl_Printer.o: ../FL/Fl_Gl_Printer.H ../FL/Fl_Printer.H ../FL/Fl_Gl_Window.H
 freeglut_geometry.o: ../FL/glut.H ../FL/gl.h ../FL/Enumerations.H
 freeglut_geometry.o: ../FL/Fl_Export.H ../FL/fl_types.h ../FL/Fl.H
 freeglut_geometry.o: ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
