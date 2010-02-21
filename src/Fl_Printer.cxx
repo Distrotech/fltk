@@ -44,7 +44,7 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
   if (is_window) fl_push_clip(0, 0, widget->w(), widget->h() );
 #ifdef __APPLE__
   CGContextRef save_gc = fl_gc;
-#elif defined(WIN32) && !defined(__CYGWIN__)
+#elif defined(WIN32) // && !defined(__CYGWIN__)
   HDC save_gc = fl_gc;
 #else
   _XGC *save_gc = fl_gc;	// FIXME

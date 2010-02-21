@@ -4,7 +4,7 @@
 
 #include "FL/Fl_Gl_Printer.H"
 #include "Fl_Gl_Choice.H"
-#ifdef WIN32
+#ifndef __APPLE__
 #include "FL/fl_draw.H"
 #endif
 
@@ -13,9 +13,12 @@ void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
 #ifdef WIN32
   HDC save_gc = fl_gc;
   const int bytesperpixel = 3;
-#else
+#elif defined(__APPLE__)
   CGContextRef save_gc = fl_gc;
   const int bytesperpixel = 4;
+#else
+  _XGC *save_gc = fl_gc;		// FIXME Linux/Unix
+  const int bytesperpixel = 3;
 #endif
   glw->redraw();
   Fl::check();
@@ -36,8 +39,10 @@ void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
   glReadPixels(0, 0, glw->w(), glw->h(), 
 #ifdef WIN32
 	       GL_RGB, GL_UNSIGNED_BYTE,
-#else
+#elif defined(__APPLE__)
 	       GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+#else // FIXME Linux/Unix
+	       GL_RGB, GL_UNSIGNED_BYTE,
 #endif
 	       baseAddress);
   glPopClientAttrib();
@@ -45,7 +50,7 @@ void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
 #ifdef WIN32
   fl_win_isprintcontext = true;
   fl_draw_image(baseAddress + (glw->h() - 1) * mByteWidth, x, y , glw->w(), glw->h(), bytesperpixel, - mByteWidth);
-#else
+#elif defined(__APPLE__)
   CGColorSpaceRef cSpace = CGColorSpaceCreateWithName (kCGColorSpaceGenericRGB);  
   CGContextRef bitmap = CGBitmapContextCreate(baseAddress, glw->w(), glw->h(), 8, mByteWidth, cSpace,  
 #if __BIG_ENDIAN__
@@ -71,5 +76,7 @@ void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
   CGContextRestoreGState(fl_gc);
   CFRelease(image);
   free(baseAddress);
+#else // FIXME Linux/Unix
+  fl_draw_image(baseAddress + (glw->h() - 1) * mByteWidth, x, y , glw->w(), glw->h(), bytesperpixel, - mByteWidth);
 #endif // WIN32
 }
