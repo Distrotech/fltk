@@ -163,7 +163,9 @@ protected:
 
   }
 public:
-    MyWidget(int x, int y):Fl_Box(x,y,100,100, "Clipping and rect(f):\nYellow rect.framed\nby B-Y-G-R rect. 1 p.\nthick. Your printer my \nrender very thin lines\nsurrounding \"X\""){
+    MyWidget(int x, int y):Fl_Box(x,y,100,100, "Clipping and rect(f):\n"
+	    "Yellow rect.framed\nby B-Y-G-R rect. 1 p.\nthick. Your printer may \n"
+				  "render very thin lines\nsurrounding \"X\""){
       align(FL_ALIGN_TOP);
       labelsize(10);
     };
@@ -278,7 +280,8 @@ protected:
 
   };
 public:
-  MyWidget3(int x, int y):Fl_Box(x,y,100,100, "Sub-bixel drawing of\nlines 1.63 points apart\nOn the screen you\ncan see aliasing, the\nprinter should render\nthem properly"){
+  MyWidget3(int x, int y):Fl_Box(x,y,100,100, "Sub-pixel drawing of\nlines 1.63 points apart\n"
+		"On the screen you\ncan see aliasing, the\nprinter should render\nthem properly"){
       labelsize(10);
       align(FL_ALIGN_TOP);
     };
@@ -538,7 +541,8 @@ protected:
 
   };
 public:
-  MyWidget5(int x, int y):Fl_Box(x,y,230,250, "Complex (double) drawings:\nBlue ellipse my not be\ncorrectly transformed\ndue to non-orthogonal\ntransformation"){
+  MyWidget5(int x, int y):Fl_Box(x,y,230,250, "Complex (double) drawings:\nBlue ellipse may not be\n"
+				 "correctly transformed\ndue to non-orthogonal\ntransformation"){
       labelsize(10);
       align(FL_ALIGN_TOP);
     };
@@ -689,7 +693,8 @@ int main(int argc, char ** argv) {
     }
     o->end();
   }
-  Fl_Box tx(120,492,230,50,"Background is not printed because\nencapsulating group, which we are\n printing, has not set the box type");
+  Fl_Box tx(120,492,230,50,"Background is not printed because\nencapsulating group, which we are\n"
+	    "printing, has not set the box type");
   tx.box(FL_SHADOW_BOX);
   tx.labelsize(12);
 
