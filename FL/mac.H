@@ -96,6 +96,7 @@ inline void XDestroyRegion(Fl_Region r) {
 }
 extern void *fl_default_cursor;
 extern void *fl_system_menu;
+extern bool fl_isprintcontext;
 typedef CGContextRef Fl_Offscreen;
 typedef CGImageRef Fl_Bitmask;
 

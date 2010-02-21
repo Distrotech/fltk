@@ -52,9 +52,9 @@ struct XRectangle {int x, y, width, height;};
 typedef HRGN Fl_Region;
 FL_EXPORT void fl_clip_region(Fl_Region);
 extern Fl_Region fl_win_makecliprectregion(int x, int y, int w, int h);
-extern BOOL fl_win_isprintcontext;
+extern BOOL fl_isprintcontext;
 inline Fl_Region XRectangleRegion(int x, int y, int w, int h) {
-  if (!fl_win_isprintcontext) return CreateRectRgn(x,y,x+w,y+h);
+  if (!fl_isprintcontext) return CreateRectRgn(x,y,x+w,y+h);
   return fl_win_makecliprectregion(x, y, w, h);
 }
 inline void XDestroyRegion(Fl_Region r) {DeleteObject(r);}

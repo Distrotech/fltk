@@ -211,15 +211,16 @@ int Fl_Printer::start_page (void)
   win_scale_x = win_scale_y = 1;
   image_list_ = NULL;
   if(orientation == kPMPortrait)
-    CGContextTranslateCTM(fl_gc, margins.left, margins.bottom + h - 0.5f);
+    CGContextTranslateCTM(fl_gc, margins.left + 0.5f, margins.bottom + h - 0.5f);
   else
-    CGContextTranslateCTM(fl_gc, margins.top, margins.right + h - 0.5f);
+    CGContextTranslateCTM(fl_gc, margins.top + 0.5f, margins.right + h - 0.5f);
   CGContextScaleCTM(fl_gc, win_scale_x, - win_scale_y);
   fl_quartz_restore_line_style_();
   CGContextSetShouldAntialias(fl_gc, false);
   CGContextSaveGState(fl_gc);
   CGContextSaveGState(fl_gc);
   fl_window = (void *)1; // TODO: something better
+  fl_isprintcontext = true;
   fl_clip_region(0);
   return status != noErr;
 }
@@ -229,6 +230,7 @@ int Fl_Printer::end_page (void)
   CGContextFlush(fl_gc);
   CGContextRestoreGState(fl_gc);
   CGContextRestoreGState(fl_gc);
+  fl_isprintcontext = false;
   OSStatus status = PMSessionEndPageNoDialog(printSession);
   delete_image_list();
   return status != noErr;

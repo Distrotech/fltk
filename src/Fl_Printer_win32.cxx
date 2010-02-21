@@ -160,7 +160,7 @@ int Fl_Printer::start_page (void)
     origin(0, 0);
     image_list_ = NULL;
     fl_clip_region(0);
-    fl_win_isprintcontext = true;
+    fl_isprintcontext = true;
   }
   return rsult;
 }
@@ -185,7 +185,7 @@ int Fl_Printer::end_page (void)
   int  rsult;
   
   delete_image_list();
-  fl_win_isprintcontext = false;
+  fl_isprintcontext = false;
   rsult = 0;
   if (hPr != NULL) {
     prerr = EndPage (hPr);

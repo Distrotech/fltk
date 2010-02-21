@@ -125,6 +125,7 @@ int fl_disable_transient_for;           // secret method of removing TRANSIENT_F
 Window fl_window;
 Fl_Window *Fl_Window::current_;
 //EventRef fl_os_event;		// last (mouse) event
+bool fl_isprintcontext = false;
 
 // forward declarations of variables in this file
 static int got_events = 0;
@@ -2276,6 +2277,7 @@ void Fl_Window::make_current()
   [[(NSWindow*)i->xid contentView]  lockFocus];
   i->gc = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
   fl_gc = i->gc;
+  fl_isprintcontext = false;
   Fl_Region fl_window_region = XRectangleRegion(0,0,w(),h());
   if ( ! this->window() ) {
     for ( Fl_X *cx = i->xidChildren; cx; cx = cx->xidNext ) {	// clip-out all sub-windows
