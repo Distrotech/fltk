@@ -219,6 +219,7 @@ int Fl_Printer::start_page (void)
   CGContextSetShouldAntialias(fl_gc, false);
   CGContextSaveGState(fl_gc);
   CGContextSaveGState(fl_gc);
+  fl_line_style(FL_SOLID);
   fl_window = (void *)1; // TODO: something better
   fl_isprintcontext = true;
   fl_clip_region(0);

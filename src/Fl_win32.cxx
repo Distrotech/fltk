@@ -1922,9 +1922,10 @@ void fl_cleanup_dc_list(void) {          // clean up the list
 
 Fl_Region fl_win_makecliprectregion(int x, int y, int w, int h)
 {
-  POINT pt[2] = { {x, y}, {x + w, y + h} };
-  LPtoDP(fl_gc, pt, 2);
-  return CreateRectRgn(pt[0].x, pt[0].y, pt[1].x, pt[1].y);
+  // beacuse rotation may apply, the rectangle becomes a polygon in device coords
+  POINT pt[4] = { {x, y}, {x + w, y}, {x + w, y + h}, {x, y + h} };
+  LPtoDP(fl_gc, pt, 4);
+  return CreatePolygonRgn(pt, 4, ALTERNATE);
 }
 
 // temporary for testing purposes of the Fl_Printer class
@@ -1947,6 +1948,9 @@ void printFront(Fl_Widget *o, void *data)
     if ((float)h/win->h() < scale) scale = (float)h/win->h();
     printer.scale(scale,scale);
   }
+  printer.scale(0.8,0.8);
+  printer.rotate(20.);
+  printer.origin(0, 200);
   printer.print_widget( win );
   printer.end_page();
   printer.end_job();

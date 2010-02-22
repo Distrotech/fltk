@@ -5,6 +5,7 @@
 #ifdef WIN32
 
 #include <FL/fl_ask.H>
+#include <math.h>
 
 extern HWND fl_window;
 
@@ -19,6 +20,7 @@ static void WIN_SetupPrinterDeviceContext(HDC prHDC)
   
   fl_window = 0;
   fl_gc = prHDC;
+  SetGraphicsMode(prHDC, GM_ADVANCED); // to allow for rotations
   SetMapMode(prHDC, MM_ANISOTROPIC);
   SetTextAlign(prHDC, TA_BASELINE|TA_LEFT);
   SetBkMode(prHDC, TRANSPARENT);	
@@ -47,7 +49,6 @@ int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
   if (PrintDlg (&pd) != 0) {
     hPr = pd.hDC;
     if (hPr != NULL) {
-      WIN_SetupPrinterDeviceContext (hPr);
       strcpy (docName, "FLTK");
       memset(&di, 0, sizeof(DOCINFO));
       di.cbSize = sizeof (DOCINFO);
@@ -178,6 +179,19 @@ void Fl_Printer::scale (float scalex, float scaley)
   SetWindowExtEx(fl_gc, (int)(720 / scalex + 0.5), (int)(720 / scaley + 0.5), NULL);
   printable_rect(&w, &h);
   origin(0, 0);
+}
+
+void Fl_Printer::rotate (float rot_angle)
+{
+  XFORM mat;
+  float angle;
+  angle = - rot_angle * M_PI / 180.;
+  mat.eM11 = cos(angle);
+  mat.eM12 = sin(angle);
+  mat.eM21 = - mat.eM12;
+  mat.eM22 = mat.eM11;
+  mat.eDx = mat.eDy = 0;
+  SetWorldTransform(fl_gc, &mat);
 }
 
 int Fl_Printer::end_page (void)
