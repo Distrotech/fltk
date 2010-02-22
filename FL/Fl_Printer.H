@@ -137,7 +137,7 @@ public:
   void scale (float scale_x, float scale_y);
   
   /**
-   @brief Rotates the graphics operations relatively to paper (Mac only for now).
+   @brief Rotates the graphics operations relatively to paper.
    *
    @param angle Rotation angle in counterclockwise degrees.
    */
