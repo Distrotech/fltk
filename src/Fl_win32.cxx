@@ -1938,20 +1938,23 @@ void printFront(Fl_Widget *o, void *data)
   o->window()->hide();
   Fl_Window *win = Fl::first_window();
   if(!win) return;
-  int w,h;
+  int w, h;
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
   printer.printable_rect(&w,&h);
   // scale the printer device so that the window fits on the page
-  if (win->w()>w || win->h()>h) {
-    float scale = (float)w/win->w();
+  float scale = 1;
+  if (win->w() > w || win->h() > h) {
+    scale = (float)w/win->w();
     if ((float)h/win->h() < scale) scale = (float)h/win->h();
-    printer.scale(scale,scale);
+    printer.scale(scale, scale);
   }
-  printer.scale(0.8,0.8);
+  printer.scale(scale * 0.8, scale * 0.8);
+  printer.printable_rect(&w, &h);
+  printer.origin(w/2, h/2 );
   printer.rotate(20.);
-  printer.origin(0, 200);
-  printer.print_widget( win );
+  printer.print_widget( win, - win->w()/2, - win->h()/2 );
+  //printer.print_window_part( win, 0,0, win->w(), win->h(), - win->w()/2, - win->h()/2 );
   printer.end_page();
   printer.end_job();
   o->window()->show();
