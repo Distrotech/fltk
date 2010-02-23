@@ -147,8 +147,8 @@ void Fl_Printer::origin(int x, int y)
   CGContextRestoreGState(fl_gc);
   CGContextSaveGState(fl_gc);
   CGContextScaleCTM(fl_gc, scale_x, scale_y);
-  CGContextRotateCTM(fl_gc, angle);
   CGContextTranslateCTM(fl_gc, x, y);
+  CGContextRotateCTM(fl_gc, angle);
   CGContextSaveGState(fl_gc);
 }
 
@@ -172,9 +172,22 @@ void Fl_Printer::rotate (float rot_angle)
   CGContextRestoreGState(fl_gc);
   CGContextSaveGState(fl_gc);
   CGContextScaleCTM(fl_gc, scale_x, scale_y);
-  CGContextRotateCTM(fl_gc, angle);
   CGContextTranslateCTM(fl_gc, x_offset, y_offset);
+  CGContextRotateCTM(fl_gc, angle);
   CGContextSaveGState(fl_gc);
+}
+
+void Fl_Printer::translate(int x, int y)
+{
+  CGContextSaveGState(fl_gc);
+  CGContextTranslateCTM(fl_gc, x, y );
+  CGContextSaveGState(fl_gc);
+}
+
+void Fl_Printer::untranslate(void)
+{
+  CGContextRestoreGState(fl_gc);
+  CGContextRestoreGState(fl_gc);
 }
 
 int Fl_Printer::start_page (void)
@@ -211,9 +224,9 @@ int Fl_Printer::start_page (void)
   win_scale_x = win_scale_y = 1;
   image_list_ = NULL;
   if(orientation == kPMPortrait)
-    CGContextTranslateCTM(fl_gc, margins.left + 0.5f, margins.bottom + h - 0.5f);
+    CGContextTranslateCTM(fl_gc, margins.left, margins.bottom + h);
   else
-    CGContextTranslateCTM(fl_gc, margins.top + 0.5f, margins.right + h - 0.5f);
+    CGContextTranslateCTM(fl_gc, margins.top, margins.right + h);
   CGContextScaleCTM(fl_gc, win_scale_x, - win_scale_y);
   fl_quartz_restore_line_style_();
   CGContextSetShouldAntialias(fl_gc, false);

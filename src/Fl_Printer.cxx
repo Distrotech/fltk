@@ -39,7 +39,9 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
     new_x -= widget->x();
     new_y -= widget->y();
     }
-  if (new_x != old_x || new_y != old_y) origin(new_x, new_y);
+  if (new_x != old_x || new_y != old_y) {
+    translate(new_x - old_x, new_y - old_y );
+    }
   // if widget is a window, clip all drawings to the window area
   if (is_window) fl_push_clip(0, 0, widget->w(), widget->h() );
 #ifdef __APPLE__
@@ -55,7 +57,9 @@ void Fl_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y)
   // find subwindows of widget and print them
   traverse(widget);
   // reset origin to where it was
-  if(new_x != old_x || new_y != old_y) origin(old_x, old_y);
+  if(new_x != old_x || new_y != old_y) {
+    untranslate();
+    }
 }
 
 void Fl_Printer::traverse(Fl_Widget *widget)
@@ -79,17 +83,32 @@ void Fl_Printer::origin(int *x, int *y)
   if (y) *y = y_offset;
 }
 
-void Fl_Printer::print_window_part(const uchar *image_data, int w, int h)
+void Fl_Printer::print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
 {
+#ifdef __APPLE__
+  CGContextRef save_gc = fl_gc;
+#elif defined(WIN32)
+  HDC save_gc = fl_gc;
+#else
+  _XGC *save_gc = fl_gc;
+#endif
+  Fl_Window *save_front = Fl::first_window();
+  win->show();
+  Fl::check();
+  win->make_current();
+  uchar *image_data = fl_read_image(NULL, x, y, w, h);
+  save_front->show();
+  fl_gc = save_gc;
   Fl_RGB_Image *image = new Fl_RGB_Image(image_data, w, h);
-  image->draw(0, 0);
-  add_image(image);
+  image->draw(delta_x, delta_y);
+  add_image(image, image_data);
 }
 
-void Fl_Printer::add_image(Fl_Image *image)
+void Fl_Printer::add_image(Fl_Image *image, const uchar *data)
 {
   struct chain_elt *elt =  (struct chain_elt *)calloc(sizeof(struct chain_elt), 1);
   elt->image = image;
+  elt->data = data;
   if (image_list_) { elt->next = image_list_; }
   image_list_ = elt;
 }
@@ -99,6 +118,7 @@ void Fl_Printer::delete_image_list()
   while(image_list_) {
     struct chain_elt *next = image_list_->next;
     delete image_list_->image;
+    if (image_list_->data) delete image_list_->data;
     free(image_list_);
     image_list_ = next;
     }

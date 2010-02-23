@@ -198,7 +198,6 @@ int Fl_Printer::end_page (void)
 {
   int  rsult;
   
-  delete_image_list();
   fl_isprintcontext = false;
   rsult = 0;
   if (hPr != NULL) {
@@ -209,7 +208,27 @@ int Fl_Printer::end_page (void)
       rsult = 1;
     }
   }
+  delete_image_list();
   return rsult;
+}
+
+void Fl_Printer::translate (int x, int y)
+{
+  XFORM tr;
+  tr.eM11 = tr.eM22 = 1;
+  tr.eM12 = tr.eM21 = 0;
+  tr.eDx =  x;
+  tr.eDy =  y;
+  ModifyWorldTransform(fl_gc, &tr, MWT_LEFTMULTIPLY);
+}
+
+void Fl_Printer::untranslate (void)
+{
+  XFORM mat;
+  GetWorldTransform(fl_gc, &mat);
+  mat.eDx = 0;
+  mat.eDy = 0;
+  SetWorldTransform(fl_gc, &mat);
 }
 
 #endif // WIN32

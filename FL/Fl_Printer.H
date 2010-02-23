@@ -30,6 +30,7 @@
 class Fl_Printer {
   struct chain_elt {
     Fl_Image *image;
+    const uchar *data;
     struct chain_elt *next;
   };
   int y_offset;
@@ -51,12 +52,24 @@ class Fl_Printer {
   int top_margin;
 #endif
   
-  void add_image(Fl_Image *image); // adds an image to the page image list
+  void add_image(Fl_Image *image, const uchar *data); // adds an image to the page image list
   void delete_image_list(); // deletes the page image list
   void traverse(Fl_Widget *widget); // finds subwindows of widget and prints them
 #ifdef WIN32
   void absolute_printable_rect(int *x, int *y, int *w, int *h);
 #endif
+private:
+  /**
+   @brief Translates the current graphics origin accounting for the current rotation.
+   *
+   This function is only useful after a rotate() call. Each translate() call must be matched by an untranslate() call.
+   */
+  void translate(int x, int y);
+  
+  /**
+   @brief Undoes the effect of a previous translate() call.
+   */
+  void untranslate(void);
 public:
   /** 
    @brief The constructor.
@@ -139,6 +152,8 @@ public:
   /**
    @brief Rotates the graphics operations relatively to paper.
    *
+   The rotation is centered on the current graphics origin. Successive rotate() calls don't combine their effects.
+   On MSWindows, Fl_RGB_Image's don't rotate well; print_window_part() is an efficient workaround.
    @param angle Rotation angle in counterclockwise degrees.
    */
    void rotate(float angle);
@@ -153,9 +168,7 @@ public:
    between what is being printed and what was previously printed at the same position on the page.
    Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed
    with black color where a transparent background is expected, fl_read_image() returns a
-   white rectangle. A functional replacement is to first capture from the screen
-   the correctly displayed pixmap or transparent image and then to put that
-   on paper with a print_window_part() call. 
+   white rectangle. A workaround is to use the print_window_part() call. 
    <br>Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced
    on paper.
    @param[in] widget Any FLTK widget (e.g., standard, custom, window).
@@ -166,20 +179,17 @@ public:
   void print_widget(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
   
   /**
-   @brief Prints a rectangular part of a window.
+   @brief Prints a rectangular part of an on-screen window.
    *
-   The image position on the printed page is determined by the last call to origin(). The image
-   can be scaled by a scale() call. 
-   <br>Before calling print_window_part(), capture, possibly before the start_job() call, 
-   the window part of interest by \n
-   <tt><i>win</i>->make_current();\n
-   uchar *image_data = fl_read_image(NULL, x, y, w, h);</tt>\n
-   @param image_data An array containing the RGB image data to be printed. It must not be freed (using delete)
-   until after the end_page() call.
-   @param w The image width
-   @param h The image height
+   @param win The window from where to capture.
+   @param x The rectangle left
+   @param y The rectangle top
+   @param w The rectangle width
+   @param h The rectangle height
+   @param delta_x Optional horizontal offset from current graphics origin where to print the captured rectangle.
+   @param delta_y As above, vertically.
    */
-   void print_window_part(const uchar *image_data, int w, int h);
+  void print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x = 0, int delta_y = 0);
   
   /**
    @brief To be called at the end of each page.
