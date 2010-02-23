@@ -64,13 +64,13 @@ Inherited by <a class="el" href="class_fl___gl___printer.html">Fl_Gl_Printer</a>
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Changes the scaling of page coordinates.  <a href="#3016929f51bfa77c9e680f33d8a2227f"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#2c5e858532b376ee7627369c9c8b1c36">rotate</a> (float angle)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Rotates the graphics operations relatively to paper (Mac only for now).  <a href="#2c5e858532b376ee7627369c9c8b1c36"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Rotates the graphics operations relatively to paper.  <a href="#2c5e858532b376ee7627369c9c8b1c36"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150">print_widget</a> (Fl_Widget *widget, int delta_x=0, int delta_y=0)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draws the widget on the printed page.  <a href="#0b6a37315107179fec2eab69008f5150"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc">print_window_part</a> (const uchar *image_data, int w, int h)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#fb75fad498e6e1eacd8d66f54a0964fd">print_window_part</a> (Fl_Window *win, int x, int y, int w, int h, int delta_x=0, int delta_y=0)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Prints a rectangular part of a window.  <a href="#b7071f49b53a68a6d048c3bb31d67ebc"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Prints a rectangular part of an on-screen window.  <a href="#fb75fad498e6e1eacd8d66f54a0964fd"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a">end_page</a> (void)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">To be called at the end of each page.  <a href="#c3afd751b80f12a11f02a6e87eeb332a"></a><br></td></tr>
@@ -84,7 +84,7 @@ Provides an OS-independent interface to printing under MSWindows and Mac OS X.
 <p>
 At present, this class is only implemented for MSWindows and Mac OS X. It allows to use all FLTK drawing, color, text, and clip functions, and to have them operate on printed page(s). There are two main, non exclusive, ways to use it. <ul>
 <li>
-Print any widget (standard, custom, Fl_Window except Fl_Gl_Window) as it appears on screen, with optional translation and scaling. This is done by calling <a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">print_widget()</a> or <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a>. </li>
+Print any widget (standard, custom, Fl_Window except Fl_Gl_Window) as it appears on screen, with optional translation and scaling. This is done by calling <a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150" title="Draws the widget on the printed page.">print_widget()</a> or <a class="el" href="class_fl___printer.html#fb75fad498e6e1eacd8d66f54a0964fd" title="Prints a rectangular part of an on-screen window.">print_window_part()</a>. </li>
 <li>
 Use a series of FLTK graphics commands (e.g., font, text, lines, colors, clip) to compose a page appropriately shaped for printing. </li>
 </ul>
@@ -273,7 +273,7 @@ Arguments should be expressed relatively to the result of a previous <a class="e
 Draws the widget on the printed page. 
 <p>
 The widget's position on the printed page is determined by the last call to <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a> and by the optional delta_x and delta_y arguments. Its dimensions are in points unless there was a previous call to <a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale()</a>. <br>
-Under MSWindows, most printers don't allow interaction between what is being printed and what was previously printed at the same position on the page. Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed with black color where a transparent background is expected, fl_read_image() returns a white rectangle. A functional replacement is to first capture from the screen the correctly displayed pixmap or transparent image and then to put that on paper with a <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a> call. <br>
+Under MSWindows, most printers don't allow interaction between what is being printed and what was previously printed at the same position on the page. Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed with black color where a transparent background is expected, fl_read_image() returns a white rectangle. A workaround is to use the <a class="el" href="class_fl___printer.html#fb75fad498e6e1eacd8d66f54a0964fd" title="Prints a rectangular part of an on-screen window.">print_window_part()</a> call. <br>
 Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced on paper. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>widget</em>&nbsp;</td><td>Any FLTK widget (e.g., standard, custom, window). </td></tr>
@@ -284,15 +284,27 @@ Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced on p
 
 </div>
 </div><p>
-<a class="anchor" name="b7071f49b53a68a6d048c3bb31d67ebc"></a><!-- doxytag: member="Fl_Printer::print_window_part" ref="b7071f49b53a68a6d048c3bb31d67ebc" args="(const uchar *image_data, int w, int h)" -->
+<a class="anchor" name="fb75fad498e6e1eacd8d66f54a0964fd"></a><!-- doxytag: member="Fl_Printer::print_window_part" ref="fb75fad498e6e1eacd8d66f54a0964fd" args="(Fl_Window *win, int x, int y, int w, int h, int delta_x=0, int delta_y=0)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void Fl_Printer::print_window_part           </td>
           <td>(</td>
-          <td class="paramtype">const uchar *&nbsp;</td>
-          <td class="paramname"> <em>image_data</em>, </td>
+          <td class="paramtype">Fl_Window *&nbsp;</td>
+          <td class="paramname"> <em>win</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>y</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -304,7 +316,19 @@ Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced on p
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&nbsp;</td>
-          <td class="paramname"> <em>h</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>delta_x</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>delta_y</em> = <code>0</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -316,17 +340,17 @@ Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced on p
 <div class="memdoc">
 
 <p>
-Prints a rectangular part of a window. 
+Prints a rectangular part of an on-screen window. 
 <p>
-The image position on the printed page is determined by the last call to <a class="el" href="class_fl___printer.html#c373a57ae77016b7c0565361323ceebc" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a>. The image can be scaled by a <a class="el" href="class_fl___printer.html#3016929f51bfa77c9e680f33d8a2227f" title="Changes the scaling of page coordinates.">scale()</a> call. <br>
-Before calling <a class="el" href="class_fl___printer.html#b7071f49b53a68a6d048c3bb31d67ebc" title="Prints a rectangular part of a window.">print_window_part()</a>, capture, possibly before the <a class="el" href="class_fl___printer.html#8f3603112736f55dd08ef7ad4aaed551" title="Starts a print job.">start_job()</a> call, the window part of interest by <br>
- <code><em>win</em>-&gt;make_current();<br>
- uchar *image_data = fl_read_image(NULL, x, y, w, h);</code><br>
- <dl compact><dt><b>Parameters:</b></dt><dd>
+<dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>image_data</em>&nbsp;</td><td>An array containing the RGB image data to be printed. It must not be freed (using delete) until after the <a class="el" href="class_fl___printer.html#c3afd751b80f12a11f02a6e87eeb332a" title="To be called at the end of each page.">end_page()</a> call. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>w</em>&nbsp;</td><td>The image width </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>h</em>&nbsp;</td><td>The image height </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>win</em>&nbsp;</td><td>The window from where to capture. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>x</em>&nbsp;</td><td>The rectangle left </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>y</em>&nbsp;</td><td>The rectangle top </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>w</em>&nbsp;</td><td>The rectangle width </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>h</em>&nbsp;</td><td>The rectangle height </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>delta_x</em>&nbsp;</td><td>Optional horizontal offset from current graphics origin where to print the captured rectangle. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>delta_y</em>&nbsp;</td><td>As above, vertically. </td></tr>
   </table>
 </dl>
 
@@ -381,9 +405,9 @@ Values are in the same unit as that used by FLTK drawing functions, are unchange
 <div class="memdoc">
 
 <p>
-Rotates the graphics operations relatively to paper (Mac only for now). 
+Rotates the graphics operations relatively to paper. 
 <p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
+The rotation is centered on the current graphics origin. Successive <a class="el" href="class_fl___printer.html#2c5e858532b376ee7627369c9c8b1c36" title="Rotates the graphics operations relatively to paper.">rotate()</a> calls don't combine their effects. On MSWindows, Fl_RGB_Image's don't rotate well; <a class="el" href="class_fl___printer.html#fb75fad498e6e1eacd8d66f54a0964fd" title="Prints a rectangular part of an on-screen window.">print_window_part()</a> is an efficient workaround. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>angle</em>&nbsp;</td><td>Rotation angle in counterclockwise degrees. </td></tr>
   </table>
@@ -499,7 +523,7 @@ The page coordinates are initially in points, i.e., 1/72 inch, and with origin a
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___printer_8_h_source.html">Fl_Printer.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Feb 20 23:56:34 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Tue Feb 23 17:06:48 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
