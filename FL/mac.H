@@ -73,14 +73,17 @@ struct XPoint { int x, y; };
 struct XRectangle {int x, y, width, height;};
 
 #ifdef __APPLE_COCOA__
-// necessary so a CGRect matches exactly what is denoted x,y,w,h for clipping purposes
-#define FL_CGRECTMAKE_COCOA(x,y,w,h)  CGRectMake(x, y, w > 0 ? w - 0.9 : 0, h > 0 ? h - 0.9 : 0)
 
 typedef void *Window; // this is really a pter to the subclass FLWindow of NSWindow
 typedef struct flCocoaRegion {
   int count;
   CGRect *rects;
 } *Fl_Region;  // a region is the union of a series of rectangles
+extern bool fl_isprintcontext;
+// so a CGRect matches exactly what is denoted x,y,w,h for clipping purposes
+#define FL_CGRECTMAKE_COCOA(x,y,w,h) \
+(fl_isprintcontext ? CGRectMake(x, y, w-1.5 , h-1.5 ) : CGRectMake(x, y, w > 0 ? w - 0.9 : 0, h > 0 ? h - 0.9 : 0) )
+
 inline Fl_Region XRectangleRegion(int x, int y, int w, int h) {
   Fl_Region R = (Fl_Region)malloc(sizeof(*R));
   R->count = 1;
@@ -96,7 +99,6 @@ inline void XDestroyRegion(Fl_Region r) {
 }
 extern void *fl_default_cursor;
 extern void *fl_system_menu;
-extern bool fl_isprintcontext;
 typedef CGContextRef Fl_Offscreen;
 typedef CGImageRef Fl_Bitmask;
 

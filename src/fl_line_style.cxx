@@ -143,6 +143,8 @@ void fl_line_style(int style, int width, char* dashes) {
   if (width<1) width = 1;
   fl_quartz_line_width_ = (float)width; 
   fl_quartz_line_cap_ = Cap[(style>>8)&3];
+  // when printing kCGLineCapSquare seems better for solid lines
+  if (fl_isprintcontext && style == FL_SOLID) fl_quartz_line_cap_ = kCGLineCapSquare;
   fl_quartz_line_join_ = Join[(style>>12)&3];
   char *d = dashes; 
   static CGFloat pattern[16];
