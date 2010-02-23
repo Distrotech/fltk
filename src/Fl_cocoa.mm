@@ -2860,30 +2860,29 @@ int MACscreen_init(XRectangle screens[])
     [NSApp  orderFrontStandardAboutPanelWithOptions:options];
   }
 #include <FL/Fl_Printer.H>
-#define USE_PRINT_WINDOW_PART 0
 - (void)printPanel
 {
   Fl_Printer printer;
+  int w, h;
   Fl_Window *win = Fl::first_window();
   if(!win) return;
-#if USE_PRINT_WINDOW_PART
-  win->make_current();
-  uchar *image_data = fl_read_image(NULL, 0, 0, win->w(), win->h());
-#endif
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
-  printer.scale(0.68,0.68);
-  printer.rotate(20);
-  printer.origin(-0.1*win->w(), 0.8*win->h());
-#if USE_PRINT_WINDOW_PART
-  printer.print_window_part( image_data, win->w(), win->h() );
-#else
-  printer.print_widget( win );
-#endif
+  // scale the printer device so that the window fits on the page
+  float scale = 1;
+  printer.printable_rect(&w, &h);
+  if (win->w()>w || win->h()>h) {
+    scale = (float)w/win->w();
+    if ((float)h/win->h() < scale) scale = (float)h/win->h();
+    printer.scale(scale, scale);
+  }
+  printer.scale(scale * 0.8, scale * 0.8);
+  printer.printable_rect(&w, &h);
+  printer.origin(w/2, h/2 );
+  printer.rotate(20.);
+  //printer.print_window_part( win, 0,0, win->w(), win->h() , - win->w()/2, - win->h()/2);
+  printer.print_widget( win, - win->w()/2, - win->h()/2 );
   printer.end_page();
-#if USE_PRINT_WINDOW_PART
-  delete image_data;
-#endif
   printer.end_job();
 }
 @end
