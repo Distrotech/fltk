@@ -5,6 +5,7 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Device.H>
+#include <FL/Fl_Printer.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Image.H>
 

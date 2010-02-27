@@ -50,7 +50,6 @@ CPPFILES = \
 	Fl_File_Icon.cxx \
 	Fl_File_Input.cxx \
 	Fl_Group.cxx \
-	Fl_GDI_Printer.cxx \
 	Fl_Help_View.cxx \
 	Fl_Image.cxx \
 	Fl_Input.cxx \
@@ -71,8 +70,7 @@ CPPFILES = \
 	Fl_Pixmap.cxx \
 	Fl_Positioner.cxx \
 	Fl_Preferences.cxx \
-	Fl_PS_Printer.cxx \
-	Fl_Quartz_Printer.mm \
+	Fl_Printer.cxx \
 	Fl_Progress.cxx \
 	Fl_Repeat_Button.cxx \
 	Fl_Return_Button.cxx \
@@ -215,7 +213,7 @@ UTF8CFILES = \
 
 include ../makeinclude
 
-OBJECTS = $(CPPFILES:.cxx=.o) $(CFILES:.c=.o) $(UTF8CFILES:.c=.o) Fl_Quartz_Printer.o
+OBJECTS = $(CPPFILES:.cxx=.o) $(CFILES:.c=.o) $(UTF8CFILES:.c=.o)
 GLOBJECTS = $(GLCPPFILES:.cxx=.o)
 FLOBJECTS = $(FLCPPFILES:.cxx=.o)
 IMGOBJECTS = $(IMGCPPFILES:.cxx=.o)
@@ -493,7 +491,7 @@ fl_font.o:	fl_font_mac.cxx fl_font_x.cxx fl_font_xft.cxx fl_font_win32.cxx
 fl_read_image.o: fl_read_image_mac.cxx fl_read_image_win32.cxx
 fl_set_fonts.o:	fl_set_fonts_mac.cxx fl_set_fonts_x.cxx \
 		fl_set_fonts_xft.cxx fl_set_fonts_win32.cxx
-Fl_Printer.o:	Fl_Printer_mac.mm Fl_Printer_win32.cxx
+Fl_Printer.o:	Fl_Quartz_Printer.mm Fl_GDI_Printer.cxx Fl_PS_Printer.cxx
 
 fl_arci.o:	../FL/mac.H ../FL/win32.H
 Fl_arg.o:	../FL/mac.H ../FL/win32.H
@@ -527,6 +525,7 @@ fl_overlay_visual.o:	../FL/mac.H ../FL/win32.H
 Fl_Overlay_Window.o:	../FL/mac.H ../FL/win32.H
 Fl_own_colormap.o:	../FL/mac.H ../FL/win32.H
 Fl_Pixmap.o:	../FL/mac.H ../FL/win32.H
+Fl_Printer.o:  ../FL/mac.H ../FL/win32.H
 fl_read_image.o:	../FL/mac.H ../FL/win32.H
 fl_read_image_mac.o:	../FL/mac.H ../FL/win32.H
 fl_read_image_win32.o:	../FL/mac.H ../FL/win32.H

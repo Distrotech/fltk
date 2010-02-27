@@ -2863,7 +2863,7 @@ int MACscreen_init(XRectangle screens[])
                 	     nil];
     [NSApp  orderFrontStandardAboutPanelWithOptions:options];
   }
-//#include <FL/Fl_Printer.H>
+#include <FL/Fl_Printer.H>
 - (void)printPanel
 {
   Fl_Printer printer;

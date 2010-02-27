@@ -1,20 +1,12 @@
-/*
- *  Fl_Printer.H
- *
- */
-
 #ifndef Fl_Printer_H
 #define Fl_Printer_H
 
-#include <FL/Fl.H>
-#include <FL/x.H>
-#include <FL/Fl_Image.H>
-
+#include <FL/Fl_Device.H>
+#include <stdio.h>
 
 /**
- * @brief Provides an OS-independent interface to printing under MSWindows and Mac OS X.
+ * @brief Provides an OS-independent interface to printing.
  *
- At present, this class is only implemented for MSWindows and Mac OS X.
  It allows to use all FLTK drawing, color, text, and clip functions, and to have them operate
  on printed page(s). There are two main, non exclusive, ways to use it.
  <ul><li>Print any widget (standard, custom, Fl_Window except Fl_Gl_Window) as it appears 
@@ -27,54 +19,38 @@
  and finish by end_page() and end_job() calls.
  \see class Fl_Gl_Printer to print Fl_Gl_Window's.
  */
-class Fl_Printer {
+class Fl_Virtual_Printer : public Fl_Device {
+private:
   struct chain_elt {
     Fl_Image *image;
     const uchar *data;
     struct chain_elt *next;
   };
-  int y_offset;
-  int x_offset;
-  struct chain_elt *image_list_; // chained list of Fl_Image's used in this page
-#ifdef __APPLE__
-  float scale_x;
-  float scale_y;
-  float angle; // rotation angle in radians
-  PMPrintSession  printSession;
-  PMPageFormat    pageFormat;
-  PMPrintSettings printSettings;
-#elif defined(WIN32)
-  int   abortPrint;
-  PRINTDLG      pd;
-  HDC           hPr;
-  int           prerr;
-  int left_margin;
-  int top_margin;
-#endif
-  
+  Fl_Display *current_display_;
   void add_image(Fl_Image *image, const uchar *data); // adds an image to the page image list
-  void delete_image_list(); // deletes the page image list
   void traverse(Fl_Widget *widget); // finds subwindows of widget and prints them
-#ifdef WIN32
-  void absolute_printable_rect(int *x, int *y, int *w, int *h);
-#endif
-private:
   /**
    @brief Translates the current graphics origin accounting for the current rotation.
    *
    This function is only useful after a rotate() call. Each translate() call must be matched by an untranslate() call.
    */
-  void translate(int x, int y);
+  virtual void translate(int x, int y);
   
   /**
    @brief Undoes the effect of a previous translate() call.
    */
-  void untranslate(void);
-public:
+  virtual void untranslate(void);
+protected:
+  int y_offset;
+  int x_offset;
+  struct chain_elt *image_list_; // chained list of Fl_Image's used in this page
+  
   /** 
    @brief The constructor.
    */
-  Fl_Printer(void);
+  Fl_Virtual_Printer(void) { current_display_ = (Fl_Display*)fl_device;};
+  void delete_image_list(); // deletes the page image list
+public:
   
   /**
    @brief Starts a print job.
@@ -84,7 +60,7 @@ public:
    @param[out] topage if non-null, *topage is set to the last page the user wants printed
    @return 0 iff OK
    */
-  int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
+  virtual int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
   
   /**
    @brief Starts a new printed page
@@ -93,7 +69,7 @@ public:
    and with origin at the top left of the printable page area.
    @return 0 iff OK
    */
-  int start_page (void);
+  virtual int start_page (void);
   
   /**
    @brief Computes the width and height of the printable area of the page.
@@ -103,7 +79,7 @@ public:
    Values account for the user-selected paper type and print orientation.
    @return 0 iff OK.
    */
-  int printable_rect(int *w, int *h);
+  virtual int printable_rect(int *w, int *h);
   
   /**
    @brief Computes the dimensions of margins that lie between the printable page area and
@@ -116,7 +92,7 @@ public:
    @param[out] right If non-null, *right is set to the right margin size.
    @param[out] bottom If non-null, *bottom is set to the bottom margin size.
    */
-   void margins(int *left, int *top, int *right, int *bottom);
+  virtual void margins(int *left, int *top, int *right, int *bottom);
   
   /**
    @brief Sets the position in page coordinates of the origin of graphics functions.
@@ -127,8 +103,8 @@ public:
    Successive origin() calls don't combine their effects.
    @param[in] x Horizontal position in page coordinates of the desired origin of graphics functions.
    @param[in] y Same as above, vertically.
-  */
-  void origin(int x, int y);
+   */
+  virtual void origin(int x, int y);
   
   /**
    @brief Computes the page coordinates of the current origin of graphics functions.
@@ -147,7 +123,7 @@ public:
    @param scale_x Horizontal dimensions of plot are multiplied by this quantity.
    @param scale_y Same as above, vertically.
    */
-  void scale (float scale_x, float scale_y);
+  virtual void scale (float scale_x, float scale_y);
   
   /**
    @brief Rotates the graphics operations relatively to paper.
@@ -156,7 +132,7 @@ public:
    On MSWindows, Fl_RGB_Image's don't rotate well; print_window_part() is an efficient workaround.
    @param angle Rotation angle in counterclockwise degrees.
    */
-   void rotate(float angle);
+  virtual void rotate(float angle);
   
   /**
    @brief Draws the widget on the printed page.
@@ -196,13 +172,319 @@ public:
    *
    @return 0 iff OK.
    */
-  int end_page (void);
+  virtual int end_page (void);
   
   /**
    @brief To be called at the end of a print job.
    */
-  void end_job (void);
-    
+  virtual void end_job (void);
+  
+  /**
+   @brief Returns the display device currently in action.
+   */
+  Fl_Display *current_display() {return current_display_; };
 };
 
+#ifdef __APPLE__
+class Fl_Quartz_Printer : public Fl_Virtual_Printer {
+private:
+  float scale_x;
+  float scale_y;
+  float angle; // rotation angle in radians
+  PMPrintSession  printSession;
+  PMPageFormat    pageFormat;
+  PMPrintSettings printSettings;
+  void translate(int x, int y);
+  void untranslate(void);
+public:
+  Fl_Quartz_Printer(void) : Fl_Virtual_Printer() {};
+  int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
+  int start_page (void);
+  int printable_rect(int *w, int *h);
+  void margins(int *left, int *top, int *right, int *bottom);
+  void origin(int x, int y);
+  void scale (float scale_x, float scale_y);
+  void rotate(float angle);
+  int end_page (void);
+  void end_job (void);
+};
+#endif
+
+#ifdef WIN32
+class Fl_GDI_Printer : public Fl_Virtual_Printer {
+private:
+  int   abortPrint;
+  PRINTDLG      pd;
+  HDC           hPr;
+  int           prerr;
+  int left_margin;
+  int top_margin;
+  void translate(int x, int y);
+  void untranslate(void);
+  void absolute_printable_rect(int *x, int *y, int *w, int *h);
+public:
+  Fl_GDI_Printer(void);
+  int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
+  int start_page (void);
+  int printable_rect(int *w, int *h);
+  void margins(int *left, int *top, int *right, int *bottom);
+  void origin(int x, int y);
+  void scale (float scale_x, float scale_y);
+  void rotate(float angle);
+  int end_page (void);
+  void end_job (void);
+};
+#endif
+
+const int NO_PAGE_FORMATS=30;
+const int page_formats[NO_PAGE_FORMATS][2]={
+
+// A* // index(Ai) = i
+{2384, 3370}, //A0
+{1684, 2384}, //A1
+{1191, 1684}, //A2
+{842, 1191},  //A3
+{595, 842},   //A4
+{420, 595},   //A5
+{297, 420},   //A6
+{210, 297},   //A7
+{148, 210},   //A8
+{105, 148},   //A9
+
+// B* // index(Bi) = i+10
+{2920, 4127}, //B0
+{2064, 2920}, //B1
+{1460, 2064}, //B2
+{1032, 1460}, //B3
+{729, 1032},  //B4
+{516, 729},   //B5
+{316, 516},   //B6
+{258, 516},   //B7
+{181, 258},   //B8
+{127, 181},   //B9
+{91,127},     //B10
+
+// others (look at Fl_Printer.H} //
+{462, 649},
+{312, 623},
+{541, 719},
+{595, 935},
+{1224, 790},
+{612, 1009},
+{612, 790},
+{791, 1224},
+{297, 683}
+
+};
+
+class Fl_PS_Printer : public Fl_Virtual_Printer { // defined for all 3 platforms
+  enum SHAPE{NONE=0, LINE, LOOP, POLYGON, POINTS};
+  
+  class Clip{
+  public:
+    int x, y, w, h;
+    Clip *prev;
+  };
+  Clip * clip_;
+  
+  int lang_level_;
+  int font_;
+  int size_;
+  Fl_Color color_;
+  FILE *output;
+  //int nPages;
+  int gap_;
+  int pages_;
+  
+  double width_;
+  double height_;
+  
+  int shape_;
+  int linewidth_;// need for clipping, lang level 1-2
+  int linestyle_;//
+  int interpolate_; //interpolation of images
+  unsigned char cr_,cg_,cb_;
+  char  linedash_[256];//should be enought
+  void concat();  // transform ror scalable dradings...
+  void reconcat(); //invert
+  void recover(); //recovers the state afrer grestore (such as line styles...)
+  void reset();
+  
+  uchar * mask;
+  int mx; // width of mask;
+  int my; // mask lines
+  //Fl_Color bg_;
+  int (*close_cmd_)(FILE *);
+  int page_policy_;
+  int nPages;
+  int orientation_;
+  
+  float scale_x;
+  float scale_y;
+  float angle;
+  void translate(int x, int y);
+  void untranslate(void);
+  
+protected:
+  double pw_, ph_;
+  static const int page_formats[NO_PAGE_FORMATS][2];
+  
+  uchar bg_r, bg_g, bg_b;
+  /*  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);
+   */
+  void draw(const char* s, int n, int x, int y) {transformed_draw(s,n,x,y); };
+  void draw(int angle, const char *str, int n, int x, int y);
+  void transformed_draw(const char* s, int n, double x, double y); //precise text placing
+  void transformed_draw(const char* s, double x, double y);
+  /*  
+   void draw_scalled_image(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
+   void draw_scalled_image_mono(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
+   void draw_scalled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
+   void draw_scalled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
+   */
+public:
+  void page_policy(int p);
+  int page_policy(){return page_policy_;};
+  
+  
+  void close_command( int (*cmd)(FILE *)){close_cmd_=cmd;};
+  FILE * file(){return output;};
+  //void orientation (int o);
+  
+  //Fl_PS_Printer(FILE *o, int lang_level, int pages = 0); // ps (also multi-page) constructor
+  //Fl_PS_Printer(FILE *o, int lang_level, int x, int y, int w, int h); //eps constructor
+  ~Fl_PS_Printer();
+  void interpolate(int i){interpolate_=i;};
+  int interpolate(){return interpolate_;}
+  
+  void page(double pw, double ph, int media = 0);
+  void page(int format);
+  
+  void Fl_PS_Printer::place(double x, double y, double tx, double ty, double scale = 1);
+  
+  Fl_PS_Printer(void);
+  int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
+  int start_page (void);
+  int printable_rect(int *w, int *h);
+  void margins(int *left, int *top, int *right, int *bottom);
+  void origin(int x, int y);
+  void scale (float scale_x, float scale_y);
+  void rotate(float angle);
+  int end_page (void);
+  void end_job (void);
+  
+public:
+  
+  enum Page_Format{
+    A0 = 0, 
+    A1,
+    A2,
+    A3,
+    A4,
+    A5,
+    A6,
+    A7,
+    A8,
+    A9,
+    B0,
+    B1,
+    B2,
+    B3,
+    B4,
+    B5,
+    B6,
+    B7,
+    B8,
+    B9,
+    B10,
+    C5E,
+    DLE,
+    EXECUTIVE,
+    FOLIO,
+    LEDGER,
+    LEGAL,
+    LETTER,
+    TABLOID,
+    ENVELOPE,
+    MEDIA = 0x1000
+  };
+  enum Page_Layout {PORTRAIT = 0, LANDSCAPE = 0x100, REVERSED = 0x200, ORIENTATION = 0x300};
+  
+protected:  // implementation of drawing methods
+  
+  void color(Fl_Color c);
+  //void bg_color(Fl_Color bg);
+  void color(uchar r, uchar g, uchar b);
+  Fl_Color color(){return color_;};
+  
+  
+  void push_clip(int x, int y, int w, int h);
+  int clip_box(int x, int y, int w, int h, int &X, int &Y, int &W, int &H);
+  int not_clipped(int x, int y, int w, int h);
+  void push_no_clip();
+  void pop_clip();
+  
+  void line_style(int style, int width=0, char* dashes=0);
+  
+  void rect(int x, int y, int w, int h);
+  void rectf(int x, int y, int w, int h);
+  
+  void xyline(int x, int y, int x1);
+  void xyline(int x, int y, int x1, int y2);
+  void xyline(int x, int y, int x1, int y2, int x3);
+  
+  void yxline(int x, int y, int y1);
+  void yxline(int x, int y, int y1, int x2);
+  void yxline(int x, int y, int y1, int x2, int y3);
+  
+  void line(int x1, int y1, int x2, int y2);
+  void line(int x1, int y1, int x2, int y2, int x3, int y3);  
+  
+  void loop(int x0, int y0, int x1, int y1, int x2, int y2);
+  void loop(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
+  void polygon(int x0, int y0, int x1, int y1, int x2, int y2);
+  void polygon(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
+  void point(int x, int y);
+  
+  void begin_points();
+  void begin_line();
+  void begin_loop();
+  void begin_polygon();
+  void vertex(double x, double y);
+  void curve(double x, double y, double x1, double y1, double x2, double y2, double x3, double y3);
+  void circle(double x, double y, double r);
+  void arc(double x, double y, double r, double start, double a);
+  void arc(int x, int y, int w, int h, double a1, double a2);
+  void pie(int x, int y, int w, int h, double a1, double a2);
+  void end_points();
+  void end_line();
+  void end_loop();
+  void end_polygon();
+  void begin_complex_polygon(){begin_polygon();};
+  void gap(){gap_=1;};
+  void end_complex_polygon(){end_polygon();};
+  void transformed_vertex(double x, double y);
+  
+  
+  void font(int face, int size);
+  int font(){return font_;};
+  int size(){return size_;};
+  double Fl_PS_Printer::width(unsigned c);
+  double Fl_PS_Printer::width(const char* s, int n);
+  int Fl_PS_Printer::descent();
+  int Fl_PS_Printer::height();
+};
+
+#ifdef __APPLE__
+class Fl_Printer : public Fl_Quartz_Printer {
+};
+#elif defined(WIN32)
+class Fl_Printer : public Fl_GDI_Printer {
+};
+#else
+class Fl_Printer : public Fl_PS_Printer {
+};
+#endif
+
 #endif // Fl_Printer_H
+

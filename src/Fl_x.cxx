@@ -1760,6 +1760,7 @@ void Fl_Window::make_current() {
 
 // temporary for testing purposes of the Fl_Printer class
 // contains also preparePrintFront call above
+#include <FL/Fl_Printer.H>
 #include <FL/Fl_Button.H>
 void printFront(Fl_Widget *o, void *data)
 {

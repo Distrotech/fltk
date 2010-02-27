@@ -143,6 +143,7 @@ Fl_File_Input.o: ../FL/Fl_Export.H ../FL/fl_types.h ../FL/Fl_File_Input.H
 Fl_File_Input.o: ../FL/Fl_Input.H ../FL/Fl_Input_.H ../FL/Fl_Window.H
 Fl_File_Input.o: ../FL/Fl_Group.H ../FL/Fl_Widget.H ../FL/fl_draw.H
 Fl_File_Input.o: ../FL/Fl_Window.H flstring.h ../config.h
+Fl_GL_Printer.o: ../FL/Fl_Device.H ../FL/Fl_Printer.H  ../FL/Fl_Gl_Window.H
 Fl_Group.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 Fl_Group.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 Fl_Group.o: ../FL/fl_types.h ../FL/Fl_Group.H ../FL/Fl_Window.H
@@ -267,7 +268,7 @@ Fl_Preferences.o: ../FL/Fl_Window.H ../FL/Fl_Tree_Item.H ../FL/Fl_Widget.H
 Fl_Preferences.o: ../FL/Fl_Image.H ../FL/Fl_Tree_Item_Array.H
 Fl_Preferences.o: ../FL/Fl_Tree_Prefs.H ../FL/filename.H ../FL/fl_utf8.h
 Fl_Preferences.o: flstring.h ../config.h
-Fl_Printer.o: ../FL/Fl_Printer.H ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H
+Fl_Printer.o: ../FL/Fl_Device.H ../FL/Fl_Printer.H ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H
 Fl_Printer.o: ../FL/fl_types.h ../FL/Xutf8.h ../FL/Enumerations.H
 Fl_Printer.o: ../FL/Fl_Export.H ../FL/fl_types.h ../FL/x.H ../FL/Fl_Window.H
 Fl_Printer.o: ../FL/Fl_Image.H ../FL/fl_draw.H
@@ -577,10 +578,6 @@ fl_font.o: ../FL/fl_utf8.h ../FL/fl_types.h ../FL/Xutf8.h
 fl_font.o: ../FL/Enumerations.H ../FL/Fl_Export.H ../FL/fl_types.h
 fl_font.o: ../FL/fl_draw.H ../FL/Fl_Window.H ../FL/x.H Fl_Font.H
 fl_font.o: fl_font_xft.cxx
-Fl_GDI_Printer.o: ../FL/Fl_Device.H ../FL/fl_ask.H
-Fl_GL_Printer.o: ../FL/Fl_Device.H ../FL/Fl_Gl_Window.H
-Fl_PS_Printer.o: ../FL/Fl_Device.H ../FL/fl_ask.H ../FL/fl_draw.H ../FL/Fl_Native_File_Chooser.H ../FL/Fl.H
-Fl_Quartz_Printer.o: ../FL/Fl_Device.H ../FL/fl_ask.H ../FL/fl_draw.H ../FL/Fl.H
 fl_gtk.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 fl_gtk.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 fl_gtk.o: ../FL/fl_types.h ../FL/fl_draw.H ../FL/Fl_Window.H

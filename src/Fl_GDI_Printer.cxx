@@ -3,7 +3,7 @@
  */
 
 #ifdef WIN32
-#include <FL/Fl_Device.H>
+#include <FL/Fl_Printer.H>
 
 
 #include <FL/fl_ask.H>

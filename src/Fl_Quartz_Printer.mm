@@ -3,7 +3,7 @@
  *
  */
 #ifdef __APPLE__
-#include <FL/Fl_Device.H>
+#include <FL/Fl_Printer.H>
 
 #include <FL/Fl.H>
 #include <FL/fl_ask.H>
