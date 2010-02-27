@@ -83,7 +83,7 @@ CPPFILES =\
 	pixmap_browser.cxx \
 	pixmap.cxx \
 	preferences.cxx \
-	print.cxx \
+	device.cxx \
 	radio.cxx \
 	resizebox.cxx \
 	resize.cxx \
@@ -151,7 +151,7 @@ ALL =	\
 	pixmap$(EXEEXT) \
 	pixmap_browser$(EXEEXT) \
 	preferences$(EXEEXT) \
-	print$(EXEEXT) \
+	device$(EXEEXT) \
 	radio$(EXEEXT) \
 	resize$(EXEEXT) \
 	resizebox$(EXEEXT) \
@@ -412,7 +412,7 @@ pixmap_browser$(EXEEXT): pixmap_browser.o $(IMGLIBNAME)
 preferences$(EXEEXT):	preferences.o
 preferences.cxx:	preferences.fl ../fluid/fluid$(EXEEXT)
 
-print$(EXEEXT): print.o
+device$(EXEEXT): device.o
 
 radio$(EXEEXT): radio.o
 radio.cxx:	radio.fl ../fluid/fluid$(EXEEXT)

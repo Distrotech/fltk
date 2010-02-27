@@ -31,7 +31,8 @@
 #include <FL/Fl_Hor_Value_Slider.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Toggle_Button.H>
-#include <FL/Fl_Printer.H>
+//#include <FL/Fl_Printer.H>
+#include <FL/Fl_Device.H>
 #include <FL/Fl_Pixmap.H>
 #include "pixmaps/porsche.xpm"
 Fl_Pixmap porsche (porsche_xpm);
@@ -42,6 +43,7 @@ const char* name[9] = {
 
 int points;
 
+#include <FL/Fl_Box.H>
 class Drawing : public Fl_Window {
   void draw() {
     fl_push_clip(0,0,w(),h());
@@ -61,7 +63,7 @@ class Drawing : public Fl_Window {
     fl_color(FL_BLACK);
     fl_font(FL_HELVETICA, 24);
     fl_draw("bottom clipped text", 5, h() + 4);
-    printf ("porsche.draw()\n");
+    fl_line_style(FL_SOLID, 0);
     fl_rect(x()+200,y()+10,64,64);
     porsche.draw(x()+200,y()+10,64,64);
     fl_push_matrix();
@@ -129,8 +131,8 @@ void print_cb(Fl_Widget* o, void* v) {
   fl_color(FL_GRAY);
   fl_line_style(FL_DOT, 0);
   fl_rect(0,0,w,h);  
+  fl_line_style(FL_SOLID, 0);
   //print the full window at top left of page
-  printer.scale(.5,.5);
   printer.print_widget(win);
   //print the shrinked Drawing custom widget at right of page
   printer.scale(.6,.6);

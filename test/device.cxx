@@ -6,6 +6,7 @@
 // modify it under the terms of the GNU Library General Public License
 // version 2 as published by the Free Software Foundation.
 //
+
 // This library is distributed  WITHOUT ANY WARRANTY;
 // WITHOUT even the implied warranty of MERCHANTABILITY 
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -14,11 +15,6 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
-// This file has been included here from
-//
-//   http://phy19.phy.tcd.ie/fltk/Fl_Device/fltk-1.1.4-Fl_Device.tar.gz
-//
-// and slightly modified to compile w/o the Fl_Device patch.
 
 #include <math.h>
 #include <FL/Fl.H>
@@ -33,39 +29,12 @@
 #include <FL/Fl_Round_Button.H>
 
 
+#include <FL/Fl_Device.H>
 
-#ifdef FL_DEVICE 
-
-//#include <FL/Fl_Printer.H>
-#include <FL/Fl_PS_Printer.H>
-
-#ifdef WIN32
-  #include <FL/Fl_GDI_Printer.H>
-#endif
-
-#include <FL/fl_printer_chooser.H>
-
-#endif
+//#include "fl_printer_chooser.H"
 
 #include <FL/Fl_File_Chooser.H>
-
-
-
-
 #include <FL/fl_draw.H>
-
-#ifdef FL_DEVICE
-  #include <src/Fl_PS_Printer.cxx>
-
-#ifdef WIN32
-  #include <src/Fl_GDI_Printer.cxx>
-#endif
-
-#endif
-
-
-
-
 
 
 #define sorceress_width 75
@@ -163,9 +132,7 @@ protected:
 
   }
 public:
-    MyWidget(int x, int y):Fl_Box(x,y,100,100, "Clipping and rect(f):\n"
-	    "Yellow rect.framed\nby B-Y-G-R rect. 1 p.\nthick. Your printer may \n"
-				  "render very thin lines\nsurrounding \"X\""){
+    MyWidget(int x, int y):Fl_Box(x,y,100,100, "Clipping and rect(f):\nYellow rect.framed\nby B-Y-G-R rect. 1 p.\nthick. Your printer may \nrender very thin lines\nsurrounding \"X\""){
       align(FL_ALIGN_TOP);
       labelsize(10);
     };
@@ -189,6 +156,13 @@ protected:
      fl_line(x()+52,d,x()+92,d-40);
    }
    fl_pop_clip();
+
+
+
+
+
+
+
     
     fl_line_style(FL_DASH);
     fl_xyline(x()+5,y()+55,x()+48);
@@ -200,8 +174,15 @@ protected:
     fl_xyline(x()+5,y()+64,x()+48);
     fl_line_style(0,0,"\7\3\7\2");
     fl_xyline(x()+5,y()+67,x()+48);
+
+
+
+
+
       
     fl_line_style(0);
+
+
 
 
     fl_line(x()+5,y()+72,x()+25,y()+95);
@@ -212,20 +193,23 @@ protected:
     fl_color(FL_RED);
     fl_loop(x()+11, y()+72,x()+27,y()+91,x()+29,y()+72);
 
+	fl_color(FL_BLUE); ////
+	fl_line_style(FL_SOLID, 6);
+    fl_loop(x()+31, y()+12,x()+47,y()+31,x()+49,y()+12);
+	fl_line_style(0);
+
+
     fl_color(200,0,200);
     fl_polygon(x()+35,y()+72,x()+33,y()+95,x()+48,y()+95,x()+43,y()+72);
     fl_color(FL_GREEN);
     fl_loop(x()+35,y()+72,x()+33,y()+95,x()+48,y()+95,x()+43,y()+72);
 
-    fl_color(FL_BLACK);
+ 
 
-    fl_xyline(x()+55,y()+55,x()+75,y()+75);
-    fl_color(FL_RED);
-    fl_yxline(x()+55,y()+56,y()+75,x()+74);
-    fl_color(FL_GREEN);
-    fl_xyline(x()+56,y()+56,x()+74,y()+74,x()+56);
-    fl_color(FL_BLUE);    
-    fl_yxline(x()+56,y()+57,y()+73,x()+73,y()+57);
+	fl_color(FL_BLUE);    
+    fl_yxline(x()+65,y()+63,y()+66);
+	fl_color(FL_GREEN);    
+    fl_yxline(x()+66,y()+66,y()+63);
 
     fl_color(FL_BLUE);
     fl_rect(x()+80,y()+55,5,5);
@@ -242,6 +226,45 @@ protected:
     fl_arc(x()+57, y()+80, 22 ,15 ,40, 270);
     fl_color(FL_YELLOW);
     fl_pie(x()+58, y()+81, 20 ,13 ,40, 270);
+
+
+
+
+	fl_line_style(0);
+
+
+	fl_color(FL_BLACK);
+  fl_point(x()+58,y()+58);
+	fl_color(FL_RED);
+	fl_yxline(x()+59,y()+58,y()+59);
+  fl_color(FL_GREEN);
+	fl_yxline(x()+60,y()+59,y()+58);
+  fl_color(FL_BLACK);
+	fl_xyline(x()+61,y()+58,x()+62);
+  fl_color(FL_RED);
+	fl_xyline(x()+62,y()+59,x()+61);
+
+  fl_color(FL_GREEN);
+  fl_yxline(x()+57,y()+58,y()+59,x()+58);
+  fl_color(FL_BLUE);
+  fl_xyline(x()+58,y()+60,x()+56,y()+58);
+  fl_color(FL_RED);
+  fl_xyline(x()+58,y()+61,x()+56,y()+63);
+  fl_color(FL_GREEN);
+  fl_yxline(x()+57,y()+63,y()+62,x()+58);
+
+  fl_color(FL_BLUE);
+  fl_line(x()+58,y()+63, x()+60, y()+65);
+  fl_color(FL_BLACK);
+  fl_line(x()+61,y()+65, x()+59, y()+63);
+
+
+
+
+
+
+
+
 
     fl_color(FL_BLACK);
   };
@@ -280,8 +303,7 @@ protected:
 
   };
 public:
-  MyWidget3(int x, int y):Fl_Box(x,y,100,100, "Sub-pixel drawing of\nlines 1.63 points apart\n"
-		"On the screen you\ncan see aliasing, the\nprinter should render\nthem properly"){
+  MyWidget3(int x, int y):Fl_Box(x,y,100,100, "Sub-pixel drawing of\nlines 1.63 points apart\nOn the screen you\ncan see aliasing, the\nprinter should render\nthem properly"){
       labelsize(10);
       align(FL_ALIGN_TOP);
     };
@@ -541,8 +563,7 @@ protected:
 
   };
 public:
-  MyWidget5(int x, int y):Fl_Box(x,y,230,250, "Complex (double) drawings:\nBlue ellipse may not be\n"
-				 "correctly transformed\ndue to non-orthogonal\ntransformation"){
+  MyWidget5(int x, int y):Fl_Box(x,y,230,250, "Complex (double) drawings:\nBlue ellipse may not be\ncorrectly transformed\ndue to non-orthogonal\ntransformation"){
       labelsize(10);
       align(FL_ALIGN_TOP);
     };
@@ -573,42 +594,34 @@ void make_image() {
   }
 }
 
-#ifdef FL_DEVICE // this is for printing using Fl_Device patch
 
 void print(Fl_Widget *, void *w) {
     Fl_Widget * g = (Fl_Widget *)w;
-
-    // Fl_Printer * p = fl_printer_chooser();
-
-
-    
-    char * filename = fl_file_chooser("Print to file...","*.ps","*.ps");
-    if(!filename) return;
-    FILE * f = fopen(filename,"w");
-    if(!f) return;
-    Fl_Printer * p = new Fl_PS_Printer(f, 3);
-    p->page(Fl_Printer::A4);
-    p->place(g, 70, 70, p->page_width() - 140, p->page_height() - 140,  FL_ALIGN_CENTER);
-    Fl_Output_Device * c = p->set_current();
-    fl_draw(g);
-    c->set_current();
+ 
+  //Fl_Printer * p = new Fl_PS_Printer(f, 3);
+  Fl_Printer * p = new Fl_Printer();
+    //p->page(Fl_Printer::A4);
+    //p->place(g, 70, 70, p->page_width() - 140, p->page_height() - 140,  FL_ALIGN_CENTER);
+  p->start_job(1);
+  p->start_page();
+  p->print_widget(g);
+  p->end_page();
+  p->end_job();
     delete p;
-    fclose(f); //we need close file here
 };
 
-void print2(Fl_Widget *, void *w) {
-
+/*void print2(Fl_Widget *, void *w) {
   Fl_Widget * g = (Fl_Widget *)w;
   Fl_Printer * p = fl_printer_chooser();
   if(!p) return;
   p->page(Fl_Printer::A4);
-  p->place(g, FL_INCH, FL_INCH, p->page_width() - 2 * FL_INCH, p->page_height() - 2 * FL_INCH,  FL_ALIGN_CENTER);
   // fitting inside margins 1 inch wide
-  p->draw(g); // also swaps devices before and after printing
-  delete p; // no need to close file
-};
-
-#endif
+  p->place(g, FL_INCH, FL_INCH, p->page_width() - 2 * FL_INCH, p->page_height() - 2 * FL_INCH,  FL_ALIGN_CENTER);
+  Fl_Device * c = p->set_current();
+  fl_draw(g); 
+  c->set_current();
+  delete p;
+};*/
 
 
 class My_Button:public Fl_Button{
@@ -633,12 +646,14 @@ public:
 
 int main(int argc, char ** argv) {
 
-    Fl::visual(FL_RGB);
+  //Fl::scheme("plastic");
 
- 
-   Fl_Window * w2 = new Fl_Window(500,560,"Graphics test");
-   Fl_Group *c2 =new Fl_Group(3, 43, 494, 514 );
 
+
+  Fl_Window * w2 = new Fl_Window(500,560,"Graphics test");
+
+
+  Fl_Group *c2 =new Fl_Group(3, 43, 494, 514 );
 
   new MyWidget(10,140);
   new MyWidget2(110,80);
@@ -647,19 +662,26 @@ int main(int argc, char ** argv) {
   new MyWidget5(140,270);
 
   make_image();
-  Fl_RGB_Image *rgb = new Fl_RGB_Image(image, width, height,4);
-  My_Button b_rgb(10,245,100,100,"Image w/Alpha");
+  Fl_RGB_Image *rgb = new Fl_RGB_Image(image, width, height, 4);
+  My_Button b_rgb(10,245,100,100,"RGB with alpha");
+#if defined(__APPLE__) || defined(WIN32)
   b_rgb.image(rgb);
+#endif
 
   My_Button b_pixmap(10,345,100,100,"Pixmap");
   Fl_Pixmap *pixmap = new Fl_Pixmap(porsche_xpm);
+#if defined(__APPLE__) || defined(WIN32)
   b_pixmap.image(pixmap);
+#endif
 
   My_Button b_bitmap(10,445,100,100,"Bitmap");
+#if defined(__APPLE__) || defined(WIN32)
   b_bitmap.image(new Fl_Bitmap(sorceress_bits,sorceress_width,sorceress_height));
+#endif
 
   new Fl_Clock(360,230,120,120);
-  new Fl_Return_Button (360, 360, 120,30, "Return");
+  Fl_Return_Button * ret = new Fl_Return_Button (360, 360, 120,30, "Return");
+  ret->deactivate();
   Fl_Button but1(360, 390, 30, 30, "@->|");
   but1.labelcolor(FL_DARK3);
   Fl_Button but2(390, 390, 30, 30, "@UpArrow");
@@ -672,8 +694,9 @@ int main(int argc, char ** argv) {
   but5.labelfont(FL_BOLD|FL_ITALIC);
   but5.labeltype(FL_SHADOW_LABEL);
   but5.box(FL_ROUND_UP_BOX);
+//  but5.selection_color(FL_WHITE);
 
-  Fl_Button but6(360, 460, 120, 30, "Plastic ");
+  Fl_Button but6(360, 460, 120, 30, "Plastic");
   but6.box(FL_PLASTIC_UP_BOX);
 
   //Fl_Button but7(, 480, 120, 30, "Engraved box");
@@ -692,32 +715,28 @@ int main(int argc, char ** argv) {
       o->end();
     }
     o->end();
+    o->deactivate();
   }
-  Fl_Box tx(120,492,230,50,"Background is not printed because\nencapsulating group, which we are\n"
-	    "printing, has not set the box type");
+  Fl_Box tx(120,492,230,50,"Background is not printed because\nencapsulating group, which we are\n printing, has not set the box type");
   tx.box(FL_SHADOW_BOX);
   tx.labelsize(12);
 
 
 
-  /*
-  for(int i=0; i<FL_FREE_BOXTYPE; i++){
-    Fl_Box * b = new Fl_Box(360+41*(i%3),360+16*(i/3),40,15);
-    b->box((Fl_Boxtype)i);
-  };
-  */
-
-
   c2->end();
-#ifdef FL_DEVICE
-  Fl_Button *b4 = new Fl_Button(5,5, 150, 25, "Print to PostScript file");
-  b4->callback(print,c2);
-  Fl_Button *b5 = new Fl_Button(165,5, 90, 25, "Print");
-  b5->callback(print2,c2);
-
+  Fl_Button *b4 = new Fl_Button(10,5, 150, 25, 
+#if defined(__APPLE__) || defined(WIN32)
+				"Print"
+#else
+				"Save to PostScript file"
 #endif
+  );
+  b4->callback(print,c2);
+  /*Fl_Button *b5 = new Fl_Button(165,5, 90, 25, "Print");
+  b5->tooltip("This is a tooltip");
+  b5->callback(print2,c2);*/
+
   w2->end();
-  //w2->show(argc, argv);
   w2->show(argc, argv);
    
 

@@ -49,6 +49,7 @@ extern "C" {
 }
 
 
+#include <FL/Fl_Device.H>
 #include <FL/Fl.H>
 #include <FL/x.H>
 #include <FL/Fl_Window.H>
@@ -109,6 +110,9 @@ static void convert_crlf(char * string, size_t len);
 static void createAppleMenu(void);
 static Fl_Region MacRegionMinusRect(Fl_Region r, int x,int y,int w,int h);
 static void cocoaMouseHandler(NSEvent *theEvent);
+
+static Fl_Quartz_Display default_display;
+Fl_Device *fl_device = (Fl_Device*)&default_display;
 
 // public variables
 int fl_screen;
@@ -2859,7 +2863,7 @@ int MACscreen_init(XRectangle screens[])
                 	     nil];
     [NSApp  orderFrontStandardAboutPanelWithOptions:options];
   }
-#include <FL/Fl_Printer.H>
+//#include <FL/Fl_Printer.H>
 - (void)printPanel
 {
   Fl_Printer printer;
@@ -3370,6 +3374,7 @@ WindowRef MACwindowRef(Fl_Window *w)
 {
   return (WindowRef)[(FLWindow*)Fl_X::i(w)->xid windowRef];
 }
+
 #endif // FL_DOXYGEN
 
 //

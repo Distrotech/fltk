@@ -77,7 +77,7 @@ void fl_quartz_restore_line_style_() {
   \note      The \p dashes array does not work under Windows 95, 98 or Me,
              since those operating systems do not support complex line styles.
 */
-void fl_line_style(int style, int width, char* dashes) {
+void Fl_Device::line_style(int style, int width, char* dashes) {
 
 #if defined(USE_X11)
   int ndashes = dashes ? strlen(dashes) : 0;

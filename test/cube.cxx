@@ -118,7 +118,7 @@ void cube_box::draw() {
   glScalef(float(size),float(size),float(size));
   drawcube(wire);
   glPopMatrix();
-  gl_color(FL_WHITE);
+  gl_color(FL_GRAY);
   glDisable(GL_DEPTH_TEST);
   gl_draw(wire ? "Cube: wire" : "Cube: flat", -4.5f, -4.5f );
   glEnable(GL_DEPTH_TEST);
@@ -178,7 +178,9 @@ void print_cb(Fl_Widget *w, void *data)
 // end of printing demo 
 
 int main(int argc, char **argv) {
+  makeform(argv[0]);
   // added to demo printing
+  form->begin();
   static Fl_Menu_Item	items[] = {
     { "Menu", 0, 0, 0, FL_SUBMENU },
     { "Print", 0, print_cb, 0, 0 },
@@ -186,10 +188,10 @@ int main(int argc, char **argv) {
     { 0 }
   };
   Fl_Sys_Menu_Bar *menubar_;
-  menubar_ = new Fl_Sys_Menu_Bar(0, 0, 1, 25);
+  menubar_ = new Fl_Sys_Menu_Bar(0, 0, 40, 25);
   menubar_->menu(items);
+  form->end();
   // end of printing demo 
-  makeform(argv[0]);
   speed->bounds(4,0);
   speed->value(cube->speed = cube2->speed = 1.0);
   size->bounds(4,0.01);

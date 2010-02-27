@@ -4,6 +4,7 @@
 
 #include "FL/Fl_Gl_Printer.H"
 #include "Fl_Gl_Choice.H"
+#include "FL/Fl.H"
 #ifndef __APPLE__
 #include "FL/fl_draw.H"
 #endif

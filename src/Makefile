@@ -42,6 +42,7 @@ CPPFILES = \
 	Fl_Color_Chooser.cxx \
 	Fl_Counter.cxx \
 	Fl_Dial.cxx \
+	Fl_Device.cxx \
 	Fl_Double_Window.cxx \
 	Fl_File_Browser.cxx \
 	Fl_File_Chooser.cxx \
@@ -49,6 +50,7 @@ CPPFILES = \
 	Fl_File_Icon.cxx \
 	Fl_File_Input.cxx \
 	Fl_Group.cxx \
+	Fl_GDI_Printer.cxx \
 	Fl_Help_View.cxx \
 	Fl_Image.cxx \
 	Fl_Input.cxx \
@@ -69,7 +71,8 @@ CPPFILES = \
 	Fl_Pixmap.cxx \
 	Fl_Positioner.cxx \
 	Fl_Preferences.cxx \
-	Fl_Printer.cxx \
+	Fl_PS_Printer.cxx \
+	Fl_Quartz_Printer.mm \
 	Fl_Progress.cxx \
 	Fl_Repeat_Button.cxx \
 	Fl_Return_Button.cxx \
@@ -212,7 +215,7 @@ UTF8CFILES = \
 
 include ../makeinclude
 
-OBJECTS = $(CPPFILES:.cxx=.o) $(CFILES:.c=.o) $(UTF8CFILES:.c=.o)
+OBJECTS = $(CPPFILES:.cxx=.o) $(CFILES:.c=.o) $(UTF8CFILES:.c=.o) Fl_Quartz_Printer.o
 GLOBJECTS = $(GLCPPFILES:.cxx=.o)
 FLOBJECTS = $(FLCPPFILES:.cxx=.o)
 IMGOBJECTS = $(IMGCPPFILES:.cxx=.o)

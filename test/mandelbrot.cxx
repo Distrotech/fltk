@@ -28,7 +28,8 @@
 #include "mandelbrot_ui.h"
 #include <FL/fl_draw.H>
 #include <FL/Fl_Button.H>
-#include <FL/Fl_Printer.H>
+//#include <FL/Fl_Printer.H>
+#include <FL/Fl_Device.H>
 #include <stdio.h>
 #include <stdlib.h>
 

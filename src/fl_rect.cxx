@@ -48,7 +48,8 @@ extern float fl_quartz_line_width_;
 /**
   Draws a 1-pixel border \e inside the given bounding box
 */
-void fl_rect(int x, int y, int w, int h) {
+void Fl_Device::rect(int x, int y, int w, int h) {
+
   if (w<=0 || h<=0) return;
 #if defined(USE_X11)
   XDrawRectangle(fl_display, fl_window, fl_gc, x, y, w-1, h-1);
@@ -79,7 +80,7 @@ void fl_rect(int x, int y, int w, int h) {
 /**
   Colors a rectangle that exactly fills the given bounding box
 */
-void fl_rectf(int x, int y, int w, int h) {
+void Fl_Device::rectf(int x, int y, int w, int h) {
   if (w<=0 || h<=0) return;
 #if defined(USE_X11)
   if (w && h) XFillRectangle(fl_display, fl_window, fl_gc, x, y, w, h);
@@ -109,7 +110,7 @@ void fl_rectf(int x, int y, int w, int h) {
 /**
   Draws a horizontal line from (x,y) to (x1,y)
 */
-void fl_xyline(int x, int y, int x1) {
+void Fl_Device::xyline(int x, int y, int x1) {
 #if defined(USE_X11)
   XDrawLine(fl_display, fl_window, fl_gc, x, y, x1, y);
 #elif defined(WIN32)
@@ -136,7 +137,7 @@ void fl_xyline(int x, int y, int x1) {
 /**
   Draws a horizontal line from (x,y) to (x1,y), then vertical from (x1,y) to (x1,y2)
 */
-void fl_xyline(int x, int y, int x1, int y2) {
+void Fl_Device::xyline(int x, int y, int x1, int y2) {
 #if defined (USE_X11)
   XPoint p[3];
   p[0].x = x;  p[0].y = p[1].y = y;
@@ -172,7 +173,7 @@ void fl_xyline(int x, int y, int x1, int y2) {
   Draws a horizontal line from (x,y) to (x1,y), then a vertical from (x1,y) to (x1,y2)
   and then another horizontal from (x1,y2) to (x3,y2)
 */
-void fl_xyline(int x, int y, int x1, int y2, int x3) {
+void Fl_Device::xyline(int x, int y, int x1, int y2, int x3) {
 #if defined(USE_X11)
   XPoint p[4];
   p[0].x = x;  p[0].y = p[1].y = y;
@@ -210,7 +211,7 @@ void fl_xyline(int x, int y, int x1, int y2, int x3) {
 /**
   Draws a vertical line from (x,y) to (x,y1)
 */
-void fl_yxline(int x, int y, int y1) {
+void Fl_Device::yxline(int x, int y, int y1) {
 #if defined(USE_X11)
   XDrawLine(fl_display, fl_window, fl_gc, x, y, x, y1);
 #elif defined(WIN32)
@@ -239,7 +240,7 @@ void fl_yxline(int x, int y, int y1) {
 /**
   Draws a vertical line from (x,y) to (x,y1), then a horizontal from (x,y1) to (x2,y1)
 */
-void fl_yxline(int x, int y, int y1, int x2) {
+void Fl_Device::yxline(int x, int y, int y1, int x2) {
 #if defined(USE_X11)
   XPoint p[3];
   p[0].x = p[1].x = x;  p[0].y = y;
@@ -275,7 +276,7 @@ void fl_yxline(int x, int y, int y1, int x2) {
   Draws a vertical line from (x,y) to (x,y1) then a horizontal from (x,y1)
   to (x2,y1), then another vertical from (x2,y1) to (x2,y3)
 */
-void fl_yxline(int x, int y, int y1, int x2, int y3) {
+void Fl_Device::yxline(int x, int y, int y1, int x2, int y3) {
 #if defined(USE_X11)
   XPoint p[4];
   p[0].x = p[1].x = x;  p[0].y = y;
@@ -313,7 +314,7 @@ void fl_yxline(int x, int y, int y1, int x2, int y3) {
 /**
   Draws a line from (x,y) to (x1,y1)
 */
-void fl_line(int x, int y, int x1, int y1) {
+void Fl_Device::line(int x, int y, int x1, int y1) {
 #if defined(USE_X11)
   XDrawLine(fl_display, fl_window, fl_gc, x, y, x1, y1);
 #elif defined(WIN32)
@@ -344,7 +345,7 @@ void fl_line(int x, int y, int x1, int y1) {
 /**
   Draws a line from (x,y) to (x1,y1) and another from (x1,y1) to (x2,y2)
 */
-void fl_line(int x, int y, int x1, int y1, int x2, int y2) {
+void Fl_Device::line(int x, int y, int x1, int y1, int x2, int y2) {
 #if defined(USE_X11)
   XPoint p[3];
   p[0].x = x;  p[0].y = y;
@@ -381,7 +382,7 @@ void fl_line(int x, int y, int x1, int y1, int x2, int y2) {
 /**
   Outlines a 3-sided polygon with lines
 */
-void fl_loop(int x, int y, int x1, int y1, int x2, int y2) {
+void Fl_Device::loop(int x, int y, int x1, int y1, int x2, int y2) {
 #if defined(USE_X11)
   XPoint p[4];
   p[0].x = x;  p[0].y = y;
@@ -414,7 +415,7 @@ void fl_loop(int x, int y, int x1, int y1, int x2, int y2) {
 /**
   Outlines a 4-sided polygon with lines
 */
-void fl_loop(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
+void Fl_Device::loop(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
 #if defined(USE_X11)
   XPoint p[5];
   p[0].x = x;  p[0].y = y;
@@ -450,7 +451,7 @@ void fl_loop(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
 /**
   Fills a 3-sided polygon. The polygon must be convex.
 */
-void fl_polygon(int x, int y, int x1, int y1, int x2, int y2) {
+void Fl_Device::polygon(int x, int y, int x1, int y1, int x2, int y2) {
   XPoint p[4];
   p[0].x = x;  p[0].y = y;
   p[1].x = x1; p[1].y = y1;
@@ -482,7 +483,7 @@ void fl_polygon(int x, int y, int x1, int y1, int x2, int y2) {
 /**
   Fills a 4-sided polygon. The polygon must be convex.
 */
-void fl_polygon(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
+void Fl_Device::polygon(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
   XPoint p[5];
   p[0].x = x;  p[0].y = y;
   p[1].x = x1; p[1].y = y1;
@@ -516,7 +517,7 @@ void fl_polygon(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
 /**
   Draws a single pixel at the given coordinates
 */
-void fl_point(int x, int y) {
+void Fl_Device::point(int x, int y) {
 #if defined(USE_X11)
   XDrawPoint(fl_display, fl_window, fl_gc, x, y);
 #elif defined(WIN32)
@@ -645,7 +646,7 @@ Fl_Region fl_clip_region() {
   new region onto the stack.
   \param[in] x,y,w,h position and size
 */
-void fl_push_clip(int x, int y, int w, int h) {
+void Fl_Device::push_clip(int x, int y, int w, int h) {
   Fl_Region r;
   if (w > 0 && h > 0) {
     r = XRectangleRegion(x,y,w,h);
@@ -694,7 +695,7 @@ void fl_push_clip(int x, int y, int w, int h) {
 /**
   Pushes an empty clip region onto the stack so nothing will be clipped.
 */
-void fl_push_no_clip() {
+void Fl_Device::push_no_clip() {
   if (rstackptr < STACK_MAX) rstack[++rstackptr] = 0;
   else Fl::warning("fl_push_no_clip: clip stack overflow!\n");
   fl_restore_clip();
@@ -708,7 +709,7 @@ void fl_push_no_clip() {
   Unpredictable results may occur if the clip stack is not empty when
   you return to FLTK.
 */
-void fl_pop_clip() {
+void Fl_Device::pop_clip() {
   if (rstackptr > 0) {
     Fl_Region oldr = rstack[rstackptr--];
     if (oldr) XDestroyRegion(oldr);
@@ -726,7 +727,7 @@ void fl_pop_clip() {
   Under X this returns 2 if the rectangle is partially clipped, 
   and 1 if it is entirely inside the clip region.
 */
-int fl_not_clipped(int x, int y, int w, int h) {
+int Fl_Device::not_clipped(int x, int y, int w, int h) {
   if (x+w <= 0 || y+h <= 0) return 0;
   Fl_Region r = rstack[rstackptr];
 #if defined (USE_X11)
@@ -777,7 +778,7 @@ int fl_not_clipped(int x, int y, int w, int h) {
 	      completely outside the region.
   \returns Non-zero if the resulting rectangle is different to the original.
 */
-int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
+int Fl_Device::clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
   X = x; Y = y; W = w; H = h;
   Fl_Region r = rstack[rstackptr];
   if (!r) return 0;

@@ -143,7 +143,7 @@ void fl_font(Fl_Font fnum, Fl_Fontsize size, int angle) {
   fl_fontsize = find(fnum, size, angle);
 }
 
-void fl_font(Fl_Font fnum, Fl_Fontsize size) {
+void Fl_Device::font(Fl_Font fnum, Fl_Fontsize size) {
   fl_font(fnum, size, 0);
 }
 
@@ -331,7 +331,7 @@ exit_error:
   return;
 } // fl_text_extents
 
-void fl_draw(const char* str, int n, int x, int y) {
+void Fl_Device::draw(const char* str, int n, int x, int y) {
   int i = 0;
   int lx = 0;
   char *end = (char *)&str[n];
@@ -359,7 +359,7 @@ void fl_draw(const char* str, int n, int x, int y) {
   SetTextColor(fl_gc, oldColor);
 }
 
-void fl_draw(int angle, const char* str, int n, int x, int y) {
+void Fl_Device::draw(int angle, const char* str, int n, int x, int y) {
   fl_font(fl_font_, fl_size_, angle);
 //  fl_draw(str, n, (int)x, (int)y);
   int i = 0, i2=0;

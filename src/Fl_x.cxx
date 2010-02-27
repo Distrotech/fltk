@@ -51,6 +51,9 @@
 #  include <X11/Xlocale.h>
 #  include <X11/Xlib.h>
 
+FL_EXPORT Fl_Xlib_Display fl_disp;
+Fl_Device *fl_device = (Fl_Device*)&fl_disp;
+
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:
 
@@ -1731,6 +1734,8 @@ void Fl_Window::show() {
   } else {
     XMapRaised(fl_display, i->xid);
   }
+void preparePrintFront(void);
+preparePrintFront();
 }
 
 Window fl_window;
@@ -1751,6 +1756,37 @@ void Fl_Window::make_current() {
   if (Fl::cairo_autolink_context()) Fl::cairo_make_current(this);
 #endif
 
+}
+
+// temporary for testing purposes of the Fl_Printer class
+// contains also preparePrintFront call above
+#include <FL/Fl_Button.H>
+void printFront(Fl_Widget *o, void *data)
+{
+  Fl_Printer printer;
+  o->window()->hide();
+  Fl_Window *win = Fl::first_window();
+  if(!win) return;
+  int w, h;
+  if( printer.start_job(1) ) return;
+  if( printer.start_page() ) return;
+  printer.print_widget( win );
+  //printer.print_window_part( win, 0,0 );
+  printer.end_page();
+  printer.end_job();
+  o->window()->show();
+}
+
+void preparePrintFront(void)
+{
+  static int first=1;
+  if(!first) return;
+  first=0;
+  static Fl_Window w(0,0,150,30);
+  static Fl_Button b(0,0,w.w(),w.h(), "Front window to PS");
+  b.callback(printFront);
+  w.end();
+  w.show();
 }
 
 #endif
