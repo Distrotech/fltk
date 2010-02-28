@@ -115,7 +115,7 @@ extern Fl_Device *fl_device;
 
 
 class Fl_Display : public Fl_Device {
-  friend class Fl_PS_Printer; //RK: temporary hack for font sizes
+  friend class Fl_PSfile_Device; //RK: temporary hack for font sizes
 };
 
 #ifdef __APPLE__

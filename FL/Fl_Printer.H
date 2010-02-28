@@ -236,107 +236,8 @@ public:
 };
 #endif
 
-class Fl_PS_Printer : public Fl_Virtual_Printer { // defined for all 3 platforms
-  enum SHAPE{NONE=0, LINE, LOOP, POLYGON, POINTS};
-  
-  class Clip{
-  public:
-    int x, y, w, h;
-    Clip *prev;
-  };
-  Clip * clip_;
-  
-  int lang_level_;
-  int font_;
-  int size_;
-  Fl_Color color_;
-  FILE *output;
-  //int nPages;
-  int gap_;
-  int pages_;
-  
-  double width_;
-  double height_;
-  
-  int shape_;
-  int linewidth_;// need for clipping, lang level 1-2
-  int linestyle_;//
-  int interpolate_; //interpolation of images
-  unsigned char cr_,cg_,cb_;
-  char  linedash_[256];//should be enought
-  void concat();  // transform ror scalable dradings...
-  void reconcat(); //invert
-  void recover(); //recovers the state afrer grestore (such as line styles...)
-  void reset();
-  
-  uchar * mask;
-  int mx; // width of mask;
-  int my; // mask lines
-  //Fl_Color bg_;
-  int (*close_cmd_)(FILE *);
-  int page_policy_;
-  int nPages;
-  int orientation_;
-  
-  float scale_x;
-  float scale_y;
-  float angle;
-  int left_margin;
-  int top_margin;
-  void translate(int x, int y);
-  void untranslate(void);
-  
-protected:
-  double pw_, ph_;
-  static const int NO_PAGE_FORMATS=30;
-  static const int page_formats[NO_PAGE_FORMATS][2];
-  
-  uchar bg_r, bg_g, bg_b;
-  /*  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);
-   */
-  void draw(const char* s, int n, int x, int y) {transformed_draw(s,n,x,y); };
-  void draw(int angle, const char *str, int n, int x, int y);
-  void transformed_draw(const char* s, int n, double x, double y); //precise text placing
-  void transformed_draw(const char* s, double x, double y);
-  /*  
-   void draw_scalled_image(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
-   void draw_scalled_image_mono(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
-   void draw_scalled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
-   void draw_scalled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
-   */
+class Fl_PSfile_Device : public Fl_Virtual_Printer { // defined for all 3 platforms
 public:
-  void page_policy(int p);
-  int page_policy(){return page_policy_;};
-  
-  
-  void close_command( int (*cmd)(FILE *)){close_cmd_=cmd;};
-  FILE * file(){return output;};
-  //void orientation (int o);
-  
-  //Fl_PS_Printer(FILE *o, int lang_level, int pages = 0); // ps (also multi-page) constructor
-  //Fl_PS_Printer(FILE *o, int lang_level, int x, int y, int w, int h); //eps constructor
-  ~Fl_PS_Printer();
-  void interpolate(int i){interpolate_=i;};
-  int interpolate(){return interpolate_;}
-  
-  void page(double pw, double ph, int media = 0);
-  void page(int format);
-  
-  void Fl_PS_Printer::place(double x, double y, double tx, double ty, double scale = 1);
-  
-  Fl_PS_Printer(void);
-  int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
-  int start_page (void);
-  int printable_rect(int *w, int *h);
-  void margins(int *left, int *top, int *right, int *bottom);
-  void origin(int x, int y);
-  void scale (float scale_x, float scale_y);
-  void rotate(float angle);
-  int end_page (void);
-  void end_job (void);
-  
-public:
-  
   enum Page_Format{
     A0 = 0, 
     A1,
@@ -371,9 +272,110 @@ public:
     MEDIA = 0x1000
   };
   enum Page_Layout {PORTRAIT = 0, LANDSCAPE = 0x100, REVERSED = 0x200, ORIENTATION = 0x300};
+private:
+  enum SHAPE{NONE=0, LINE, LOOP, POLYGON, POINTS};
   
-protected:  // implementation of drawing methods
+  class Clip{
+  public:
+    int x, y, w, h;
+    Clip *prev;
+  };
+  Clip * clip_;
   
+  int lang_level_;
+  int font_;
+  int size_;
+  Fl_Color color_;
+  int gap_;
+  int pages_;
+  
+  double width_;
+  double height_;
+  
+  int shape_;
+  int linewidth_;// need for clipping, lang level 1-2
+  int linestyle_;//
+  int interpolate_; //interpolation of images
+  unsigned char cr_,cg_,cb_;
+  char  linedash_[256];//should be enought
+  void concat();  // transform ror scalable dradings...
+  void reconcat(); //invert
+  void recover(); //recovers the state afrer grestore (such as line styles...)
+  void reset();
+  
+  uchar * mask;
+  int mx; // width of mask;
+  int my; // mask lines
+  //Fl_Color bg_;
+  int (*close_cmd_)(FILE *);
+  int page_policy_;
+  int nPages;
+  int orientation_;
+  
+  float scale_x;
+  float scale_y;
+  float angle;
+  int left_margin;
+  int top_margin;
+  void translate(int x, int y);
+  void untranslate(void);
+  int start_postscript (int pagecount, enum Page_Format format);
+
+protected:
+  FILE *output;
+  double pw_, ph_;
+  static const int NO_PAGE_FORMATS=30;
+  static const int page_formats[NO_PAGE_FORMATS][2];
+  
+  uchar bg_r, bg_g, bg_b;
+  /*  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);
+   */
+  void draw(const char* s, int n, int x, int y) {transformed_draw(s,n,x,y); };
+  void draw(int angle, const char *str, int n, int x, int y);
+  void transformed_draw(const char* s, int n, double x, double y); //precise text placing
+  void transformed_draw(const char* s, double x, double y);
+  /*  
+   void draw_scalled_image(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
+   void draw_scalled_image_mono(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
+   void draw_scalled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
+   void draw_scalled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
+   */
+public:
+  void page_policy(int p);
+  int page_policy(){return page_policy_;};
+  
+  
+  void close_command( int (*cmd)(FILE *)){close_cmd_=cmd;};
+  FILE * file(){return output;};
+  //void orientation (int o);
+  
+  //Fl_PSfile_Device(FILE *o, int lang_level, int pages = 0); // ps (also multi-page) constructor
+  //Fl_PSfile_Device(FILE *o, int lang_level, int x, int y, int w, int h); //eps constructor
+  ~Fl_PSfile_Device();
+  void interpolate(int i){interpolate_=i;};
+  int interpolate(){return interpolate_;}
+  
+  void page(double pw, double ph, int media = 0);
+  void page(int format);
+  
+  void Fl_PSfile_Device::place(double x, double y, double tx, double ty, double scale = 1);
+  
+  Fl_PSfile_Device(void);
+  int start_job(int pagecount, enum Page_Format format, int *frompage = NULL, int *topage = NULL);
+  inline int start_job(int pagecount, int *frompage = NULL, int *topage = NULL) {start_job(pagecount,A4,frompage,topage); };
+  int start_page (void);
+  int printable_rect(int *w, int *h);
+  void margins(int *left, int *top, int *right, int *bottom);
+  void origin(int x, int y);
+  void scale (float scale_x, float scale_y);
+  void rotate(float angle);
+  int end_page (void);
+  void end_job (void);
+  
+protected:  
+  enum Page_Format page_format_;
+  char *ps_filename_;
+  // implementation of drawing methods
   void color(Fl_Color c);
   //void bg_color(Fl_Color bg);
   void color(uchar r, uchar g, uchar b);
@@ -431,10 +433,10 @@ protected:  // implementation of drawing methods
   void font(int face, int size);
   int font(){return font_;};
   int size(){return size_;};
-  double Fl_PS_Printer::width(unsigned c);
-  double Fl_PS_Printer::width(const char* s, int n);
-  int Fl_PS_Printer::descent();
-  int Fl_PS_Printer::height();
+  double Fl_PSfile_Device::width(unsigned c);
+  double Fl_PSfile_Device::width(const char* s, int n);
+  int Fl_PSfile_Device::descent();
+  int Fl_PSfile_Device::height();
 };
 
 #ifdef __APPLE__
@@ -444,8 +446,15 @@ class Fl_Printer : public Fl_Quartz_Printer {
 class Fl_Printer : public Fl_GDI_Printer {
 };
 #else
+class Fl_PS_Printer : public Fl_PSfile_Device {
+public:
+  Fl_PS_Printer(void) {};
+  int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
+  void end_job(void);
+};
 class Fl_Printer : public Fl_PS_Printer {
 };
+
 #endif
 
 #endif // Fl_Printer_H
