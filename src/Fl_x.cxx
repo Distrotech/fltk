@@ -51,8 +51,8 @@
 #  include <X11/Xlocale.h>
 #  include <X11/Xlib.h>
 
-FL_EXPORT Fl_Xlib_Display fl_disp;
-Fl_Device *fl_device = (Fl_Device*)&fl_disp;
+FL_EXPORT Fl_Xlib_Display fl_display_device;
+Fl_Device *fl_device = (Fl_Device*)&fl_display_device;
 
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:

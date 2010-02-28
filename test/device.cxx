@@ -29,7 +29,7 @@
 #include <FL/Fl_Round_Button.H>
 
 
-#include <FL/Fl_Device.H>
+#include <FL/Fl_Printer.H>
 
 //#include "fl_printer_chooser.H"
 

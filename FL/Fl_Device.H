@@ -115,6 +115,7 @@ extern Fl_Device *fl_device;
 
 
 class Fl_Display : public Fl_Device {
+  friend class Fl_PS_Printer; //RK: temporary hack for font sizes
 };
 
 #ifdef __APPLE__
@@ -128,13 +129,7 @@ public:
   Fl_GDI_Display() {};
 };
 #else
-extern int   fl_height();
-extern int   fl_descent();
-extern double fl_width(unsigned int);
-extern double fl_width(const char* txt, int n);
 class Fl_Xlib_Display : public Fl_Display {
-protected:
-  friend class Fl_PS_Printer; //RK: temporary hack for font sizes
 public:
   Fl_Xlib_Display() {};
 };

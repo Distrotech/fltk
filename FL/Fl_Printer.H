@@ -236,47 +236,6 @@ public:
 };
 #endif
 
-const int NO_PAGE_FORMATS=30;
-const int page_formats[NO_PAGE_FORMATS][2]={
-
-// A* // index(Ai) = i
-{2384, 3370}, //A0
-{1684, 2384}, //A1
-{1191, 1684}, //A2
-{842, 1191},  //A3
-{595, 842},   //A4
-{420, 595},   //A5
-{297, 420},   //A6
-{210, 297},   //A7
-{148, 210},   //A8
-{105, 148},   //A9
-
-// B* // index(Bi) = i+10
-{2920, 4127}, //B0
-{2064, 2920}, //B1
-{1460, 2064}, //B2
-{1032, 1460}, //B3
-{729, 1032},  //B4
-{516, 729},   //B5
-{316, 516},   //B6
-{258, 516},   //B7
-{181, 258},   //B8
-{127, 181},   //B9
-{91,127},     //B10
-
-// others (look at Fl_Printer.H} //
-{462, 649},
-{312, 623},
-{541, 719},
-{595, 935},
-{1224, 790},
-{612, 1009},
-{612, 790},
-{791, 1224},
-{297, 683}
-
-};
-
 class Fl_PS_Printer : public Fl_Virtual_Printer { // defined for all 3 platforms
   enum SHAPE{NONE=0, LINE, LOOP, POLYGON, POINTS};
   
@@ -322,11 +281,14 @@ class Fl_PS_Printer : public Fl_Virtual_Printer { // defined for all 3 platforms
   float scale_x;
   float scale_y;
   float angle;
+  int left_margin;
+  int top_margin;
   void translate(int x, int y);
   void untranslate(void);
   
 protected:
   double pw_, ph_;
+  static const int NO_PAGE_FORMATS=30;
   static const int page_formats[NO_PAGE_FORMATS][2];
   
   uchar bg_r, bg_g, bg_b;

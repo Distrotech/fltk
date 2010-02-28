@@ -2,7 +2,6 @@
  *  Fl_PS_Printer.cxx
  *
  */
-#if ! ( defined(__APPLE__) || defined(WIN32) )
 #include <FL/Fl_Device.H>
 
 #include <FL/Fl.H>
@@ -11,6 +10,7 @@
 #include <FL/Fl_Native_File_Chooser.H>
 #include <stdio.h>
 #include <math.h>
+
 
 const int Fl_PS_Printer::page_formats[NO_PAGE_FORMATS][2]={
 
@@ -328,8 +328,6 @@ int Fl_PS_Printer::start_job (int pagecount, int *frompage, int *topage)
   output = fopen(fnfc.filename(), "w");
   if(output == NULL) return 1;
   this->set_current();
-  x_offset = 0;
-  y_offset = 0;
   if(frompage) *frompage = 1;
   if(topage) *topage = pagecount;
   
@@ -341,6 +339,9 @@ int Fl_PS_Printer::start_job (int pagecount, int *frompage, int *topage)
     fprintf(output, "%%%%Pages: %i\n", pagecount);
   else
     fprintf(output, "%%%%Pages: (atend)\n");
+  fprintf(output, "%%%%BeginFeature: *PageSize\n");
+  fprintf(output, "A4\n"); // TODO something better
+  fprintf(output, "%%%%EndFeature\n");
   fprintf(output, "%%%%EndComments\n");
   fprintf(output, prolog);
   if(lang_level_ >1)
@@ -475,11 +476,11 @@ void Fl_PS_Printer::page(int format){
   
   
   if(format &  LANDSCAPE){
-    ph_=Fl_Printer::page_formats[format & 0xFF][0];
-    pw_=Fl_Printer::page_formats[format & 0xFF][1];
+    ph_=Fl_PS_Printer::page_formats[format & 0xFF][0];
+    pw_=Fl_PS_Printer::page_formats[format & 0xFF][1];
   }else{
-    pw_=Fl_Printer::page_formats[format & 0xFF][0];
-    ph_=Fl_Printer::page_formats[format & 0xFF][1];
+    pw_=Fl_PS_Printer::page_formats[format & 0xFF][0];
+    ph_=Fl_PS_Printer::page_formats[format & 0xFF][1];
   }
   page(pw_,ph_,format & 0xFF00);//,orientation only;
 };
@@ -727,7 +728,7 @@ static const char *_fontNames[] = {
 "ZapfDingbats"
 };
 // TODO RK: CRITICAL: this is hacky/temporary implementation of fonts. All below should be replaced.
-extern Fl_Xlib_Display fl_disp;
+extern Fl_Display fl_display_device;
 
 void Fl_PS_Printer::font(int f, int s) {
   
@@ -736,22 +737,22 @@ void Fl_PS_Printer::font(int f, int s) {
     f = FL_COURIER;
   fprintf(output, "/%s SF\n" , _fontNames[f]);
   fprintf(output,"%i FS\n", s);
-  fl_disp.font(f,s); //Dirty hack for font measurement ;-(
+  fl_display_device.font(f,s); //Dirty hack for font measurement ;-(
   font_=f; size_=s;
 };
 
 /*double Fl_PS_Printer::width(unsigned c){
-  return fl_disp.width(c); //Dirty...
+  return fl_display_device.width(c); //Dirty...
 }
 
 double Fl_PS_Printer::width(const char* s, int n){;
-  return fl_disp.width(s,n); //Very Dirty...
+  return fl_display_device.width(s,n); //Very Dirty...
 }
 int Fl_PS_Printer::descent(){
-  return fl_disp.descent(); //A bit Dirty...
+  return fl_display_device.descent(); //A bit Dirty...
 }
 int Fl_PS_Printer::height(){
-  return fl_disp.height(); //Still Dirty...
+  return fl_display_device.height(); //Still Dirty...
 }*/
 
 void Fl_PS_Printer::color(Fl_Color c) {
@@ -1077,43 +1078,63 @@ int Fl_PS_Printer::not_clipped(int x, int y, int w, int h){
 
 void Fl_PS_Printer::margins(int *left, int *top, int *right, int *bottom) // to implement
 {
+  if(left) *left = (int)(left_margin / scale_x + .5);
+  if(right) *right = (int)(left_margin / scale_x + .5);
+  if(top) *top = (int)(top_margin / scale_y + .5);
+  if(bottom) *bottom = (int)(top_margin / scale_y + .5);
 }
 
-int Fl_PS_Printer::printable_rect(int *w, int *h) // to implement
+int Fl_PS_Printer::printable_rect(int *w, int *h)
 //returns 0 iff OK
 {
+  if(w) *w = (int)((pw_ - 2 * left_margin) / scale_x + .5);
+  if(h) *h = (int)((ph_ - 2 * top_margin) / scale_y + .5);
   return 0;
 }
 
-void Fl_PS_Printer::origin(int x, int y) // to implement
+void Fl_PS_Printer::origin(int x, int y)
 {
+  x_offset = x;
+  y_offset = y;
+  fprintf(output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
+	  left_margin, top_margin, scale_x, scale_y, x, y, angle);
 }
 
-void Fl_PS_Printer::scale (float s_x, float s_y) // to implement
+void Fl_PS_Printer::scale (float s_x, float s_y)
 {
   scale_x = s_x;
   scale_y = s_y;
+  fprintf(output, "GR GR GS %d %d TR  %f %f SC %f rotate GS\n", 
+	  left_margin, top_margin, scale_x, scale_y, angle);
 }
 
-void Fl_PS_Printer::rotate (float rot_angle) // to implement
+void Fl_PS_Printer::rotate (float rot_angle)
 {
-  angle = - rot_angle * M_PI / 180.;
+  angle = - rot_angle;
+  fprintf(output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
+	  left_margin, top_margin, scale_x, scale_y, x_offset, y_offset, angle);
 }
 
 void Fl_PS_Printer::translate(int x, int y)
 {
-  fprintf(output, "%d %d translate GS\n", x, y);
+  fprintf(output, "GS %d %d translate GS\n", x, y);
 }
 
 void Fl_PS_Printer::untranslate(void)
 {
-  fprintf(output, "GR\n");
+  fprintf(output, "GR GR\n");
 }
 
 int Fl_PS_Printer::start_page (void)
 {
   page(A4);
-  fprintf(output, "%d %d translate GS\n", 50, 80); // Temporary
+  x_offset = 0;
+  y_offset = 0;
+  scale_x = scale_y = 1.;
+  left_margin = 30;
+  top_margin = 30;
+  angle = 0;
+  fprintf(output, "GR GR GS %d %d translate GS\n", left_margin, top_margin);
   return 0;
 }
 
@@ -1126,6 +1147,4 @@ void Fl_PS_Printer::end_job (void)
 {
   current_display()->set_current();
 }
-
-#endif // ! ( defined(__APPLE__) || defined(WIN32) )
 

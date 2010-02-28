@@ -110,6 +110,7 @@ void slider_cb(Fl_Widget* o, void* v) {
   d->redraw();
 }
 
+#include <FL/Fl_Printer.H>
 void print_cb(Fl_Widget* o, void* v) {
   int w, h;
   Drawing *d = (Drawing *)v;

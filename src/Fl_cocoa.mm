@@ -111,8 +111,8 @@ static void createAppleMenu(void);
 static Fl_Region MacRegionMinusRect(Fl_Region r, int x,int y,int w,int h);
 static void cocoaMouseHandler(NSEvent *theEvent);
 
-static Fl_Quartz_Display default_display;
-Fl_Device *fl_device = (Fl_Device*)&default_display;
+FL_EXPORT Fl_Quartz_Display fl_display_device;
+Fl_Device *fl_device = (Fl_Device*)&fl_display_device;
 
 // public variables
 int fl_screen;
@@ -2867,6 +2867,7 @@ int MACscreen_init(XRectangle screens[])
 - (void)printPanel
 {
   Fl_Printer printer;
+//  Fl_PS_Printer printer;
   int w, h;
   Fl_Window *win = Fl::first_window();
   if(!win) return;

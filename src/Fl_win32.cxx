@@ -95,9 +95,8 @@
   for async mode proper operation, not mentioning the side effects...
 */
 
-static Fl_GDI_Display default_display;
-Fl_Device *fl_device = (Fl_Device*)&default_display;
-
+FL_EXPORT Fl_Display fl_display_device;
+Fl_Device *fl_device = (Fl_Device*)&fl_display_device;
 
 // dynamic wsock dll handling api:
 #if defined(__CYGWIN__) && !defined(SOCKET)
