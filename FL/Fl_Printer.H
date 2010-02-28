@@ -358,11 +358,11 @@ public:
   void page(double pw, double ph, int media = 0);
   void page(int format);
   
-  void Fl_PSfile_Device::place(double x, double y, double tx, double ty, double scale = 1);
+  void place(double x, double y, double tx, double ty, double scale = 1);
   
   Fl_PSfile_Device(void);
   int start_job(int pagecount, enum Page_Format format, int *frompage = NULL, int *topage = NULL);
-  inline int start_job(int pagecount, int *frompage = NULL, int *topage = NULL) {start_job(pagecount,A4,frompage,topage); };
+  inline int start_job(int pagecount, int *frompage = NULL, int *topage = NULL) {return start_job(pagecount,A4,frompage,topage); };
   int start_page (void);
   int printable_rect(int *w, int *h);
   void margins(int *left, int *top, int *right, int *bottom);
@@ -433,10 +433,10 @@ protected:
   void font(int face, int size);
   int font(){return font_;};
   int size(){return size_;};
-  double Fl_PSfile_Device::width(unsigned c);
-  double Fl_PSfile_Device::width(const char* s, int n);
-  int Fl_PSfile_Device::descent();
-  int Fl_PSfile_Device::height();
+  double width(unsigned c);
+  double width(const char* s, int n);
+  int descent();
+  int height();
 };
 
 #ifdef __APPLE__
