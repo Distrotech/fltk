@@ -332,7 +332,7 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
   else
     fprintf(output, "%%%%Pages: (atend)\n");
   fprintf(output, "%%%%BeginFeature: *PageSize\n" );
-  fprintf(output, "%s\n", (format==A4?"A4":"LETTER") );
+  fprintf(output, "%s\n", (format==A4?"a4":"letter") );
   fprintf(output, "%%%%EndFeature\n");
   fprintf(output, "%%%%EndComments\n");
   fprintf(output, prolog);
