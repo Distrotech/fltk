@@ -1,7 +1,7 @@
 //
 // "$Id: Fl_cocoa.mm 6971 2009-04-13 07:32:01Z matt $"
 //
-// MacOS specific code for the Fast Light Tool Kit (FLTK).
+// MacOS-Cocoa specific code for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2009 by Bill Spitzak and others.
 //
@@ -37,6 +37,47 @@
 // One Compile to link them all, One Compile to merge them,
 // One Compile to copy them all and in the bundle bind them,
 // in the Land of MacOS X where the Drop-Shadows lie."
+
+/*
+ TODO: The following messages point to the last Carbon remainders. We should 
+ really remove these as well, so we can stop linking to Carbon alltogether.
+ 
+ "_GetKeys", referenced from:
+ Fl::get_key(int)  in Fl_get_key.o
+ 
+ "_GetCurrentEventQueue", referenced from:
+ do_queued_events(double)in Fl.o
+ 
+ "_InstallEventLoopTimer", referenced from:
+ Fl::add_timeout(double, void (*)(void*), void*)in Fl.o
+ 
+ "_FlushEvents", referenced from:
+ fl_open_display()     in Fl.o
+ 
+ "_GetEventParameter", referenced from:
+ carbonTextHandler(OpaqueEventHandlerCallRef*, OpaqueEventRef*, void*) in Fl.o
+ 
+ "_InstallEventHandler", referenced from:
+ fl_open_display()     in Fl.o
+ 
+ "_GetEventDispatcherTarget", referenced from:
+ fl_open_display()     in Fl.o
+ 
+ "_SetEventLoopTimerNextFireTime", referenced from:
+ Fl::add_timeout(double, void (*)(void*), void*)in Fl.o
+ 
+ "_RemoveEventLoopTimer", referenced from:
+ Fl::add_timeout(double, void (*)(void*), void*)in Fl.o
+ delete_timer(MacTimeout&)       in Fl.o
+ 
+ "_GetMainEventLoop", referenced from:
+ Fl::add_timeout(double, void (*)(void*), void*)in Fl.o
+ 
+ "_GetCurrentKeyModifiers", referenced from:
+ -[FLView flagsChanged:] in Fl.o
+ 
+ */
+
 
 // we don't need the following definition because we deliver only
 // true mouse moves.  On very slow systems however, this flag may
@@ -1187,6 +1228,8 @@ OSStatus cocoaKeyboardHandler(NSEvent *theEvent)
 	UniChar one;
 	CFStringGetCharacters((CFStringRef)sim, CFRangeMake(0, 1), &one);
 	sym = one;
+	// charactersIgnoringModifiers does'nt ignore shift, remove it when it's on
+	if(sym >= 'A' && sym <= 'Z') sym += 32;
       }
       
       Fl::e_keysym = Fl::e_original_keysym = sym;
@@ -1306,6 +1349,8 @@ extern "C" {
 - (void)windowDidMiniaturize:(NSNotification *)notif;
 - (void)windowWillClose:(NSNotification *)notif;
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)sender;
+- (void)applicationDidBecomeActive:(NSNotification *)notify;
+- (void)applicationWillResignActive:(NSNotification *)notify;
 
 @end
 @implementation FLDelegate
@@ -1393,6 +1438,83 @@ extern "C" {
   }
   fl_unlock_function();
   return reply;
+}
+/**
+ * Cocoa organizes the Z depth of windows on a global priority. FLTK however
+ * expectes the window manager to organize Z level by application. The trickery
+ * below will change Z order during activation and deactivation.
+ */
+- (void)applicationDidBecomeActive:(NSNotification *)notify
+{
+  Fl_X *x;
+  FLWindow *top = 0, *topModal = 0, *topNonModal = 0;
+  for (x = Fl_X::first;x;x = x->next) {
+    FLWindow *cw = (FLWindow*)x->xid;
+    Fl_Window *win = x->w;
+    if (win && cw) {
+      if (win->modal()) {
+        [cw setLevel:NSModalPanelWindowLevel];
+        if (topModal) 
+          [cw orderWindow:NSWindowBelow relativeTo:[topModal windowNumber]];
+        else
+          topModal = cw;
+      } else if (win->non_modal()) {
+        [cw setLevel:NSFloatingWindowLevel];
+        if (topNonModal) 
+          [cw orderWindow:NSWindowBelow relativeTo:[topNonModal windowNumber]];
+        else
+          topNonModal = cw;
+      } else {
+        if (top) 
+          ;
+        else
+          top = cw;
+      }
+    }
+  }
+}
+- (void)applicationWillResignActive:(NSNotification *)notify
+{
+  Fl_X *x;
+  FLWindow *top = 0;
+  // sort in all regular windows
+  for (x = Fl_X::first;x;x = x->next) {
+    FLWindow *cw = (FLWindow*)x->xid;
+    Fl_Window *win = x->w;
+    if (win && cw) {
+      if (win->modal()) {
+      } else if (win->non_modal()) {
+      } else {
+        if (!top) top = cw;
+      }
+    }
+  }
+  // now sort in all modals
+  for (x = Fl_X::first;x;x = x->next) {
+    FLWindow *cw = (FLWindow*)x->xid;
+    Fl_Window *win = x->w;
+    if (win && cw) {
+      if (win->modal()) {
+        [cw setLevel:NSNormalWindowLevel];
+        if (top) [cw orderWindow:NSWindowAbove relativeTo:[top windowNumber]];
+      } else if (win->non_modal()) {
+      } else {
+      }
+    }
+  }
+  // finally all non-modals
+  for (x = Fl_X::first;x;x = x->next) {
+    FLWindow *cw = (FLWindow*)x->xid;
+    Fl_Window *win = x->w;
+    if (win && cw) {
+      if (win->modal()) {
+      } else if (win->non_modal()) {
+        [cw setLevel:NSNormalWindowLevel];
+        if (top) [cw orderWindow:NSWindowAbove relativeTo:[top windowNumber]];
+      } else {
+      }
+    }
+  }
 }
 @end
 
@@ -1842,7 +1964,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
     if ( Fl::e_keysym ) 
       sendEvent = ( prevMods<mods ) ? FL_KEYBOARD : FL_KEYUP;
     Fl::e_length = 0;
-    Fl::e_text = "";
+    Fl::e_text = (char*)"";
     prevMods = mods;
   }
   mods_to_e_state( mods );
@@ -1936,11 +2058,6 @@ void Fl_X::make(Fl_Window* w)
   static int xyPos = 100;
   if ( w->parent() ) {		// create a subwindow
     Fl_Group::current(0);
-    Rect wRect;
-    wRect.top    = w->y();
-    wRect.left   = w->x();
-    wRect.bottom = w->y() + w->h(); if (wRect.bottom<=wRect.top) wRect.bottom = wRect.top+1;
-    wRect.right  = w->x() + w->w(); if (wRect.right<=wRect.left) wRect.right = wRect.left+1;
     // our subwindow needs this structure to know about its clipping. 
     Fl_X* x = new Fl_X;
     x->other_xid = 0;
@@ -2039,12 +2156,6 @@ void Fl_X::make(Fl_Window* w)
       Fl_Window* w = Fl_X::first->w;
       while (w->parent()) w = w->window(); // todo: this code does not make any sense! (w!=w??)
     }
-    
-    Rect wRect;
-    wRect.top    = w->y();
-    wRect.left   = w->x();
-    wRect.bottom = w->y() + w->h(); if (wRect.bottom<=wRect.top) wRect.bottom = wRect.top+1;
-    wRect.right  = w->x() + w->w(); if (wRect.right<=wRect.left) wRect.right = wRect.left+1;
     
     const char *name = w->label();
     
@@ -2640,7 +2751,6 @@ static void MacRelinkWindow(Fl_X *x, Fl_X *p) {
 }
 
 void MacDestroyWindow(Fl_Window *w, void *p) {
-  MacUnmapWindow(w, p);
   if (w && !w->parent() && p) {
     [[(NSWindow *)p contentView] release];
     [(NSWindow *)p close];

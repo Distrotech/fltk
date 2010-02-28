@@ -77,7 +77,7 @@ void Fl_Group::begin() {current_ = this;}
   <I>Exactly the same as</I> current(this->parent()). Any new widgets
   added to the widget tree will be added to the parent of the group.
 */
-void Fl_Group::end() {current_ = (Fl_Group*)parent();}
+void Fl_Group::end() {current_ = parent();}
 
 /**
   Returns the currently active group.
@@ -102,7 +102,7 @@ static int send(Fl_Widget* o, int event) {
   if (o->type() < FL_WINDOW) return o->handle(event);
   switch ( event )
   {
-  case FL_DND_ENTER:
+  case FL_DND_ENTER: /* FALLTHROUGH */
   case FL_DND_DRAG:
     // figure out correct type of event:
     event = (o->contains(Fl::belowmouse())) ? FL_DND_DRAG : FL_DND_ENTER;
@@ -114,7 +114,7 @@ static int send(Fl_Widget* o, int event) {
   Fl::e_x = save_x;
   switch ( event )
   {
-  case FL_ENTER:
+  case FL_ENTER: /* FALLTHROUGH */
   case FL_DND_ENTER:
     // Successful completion of FL_ENTER means the widget is now the
     // belowmouse widget, but only call Fl::belowmouse if the child
@@ -227,8 +227,9 @@ int Fl_Group::handle(int event) {
     for (i = children(); i--;) {
       o = a[i];
       if (o->takesevents() && Fl::event_inside(o)) {
+	Fl_Widget_Tracker wp(o);
 	if (send(o,FL_PUSH)) {
-	  if (Fl::pushed() && !o->contains(Fl::pushed())) Fl::pushed(o);
+	  if (Fl::pushed() && wp.exists() && !o->contains(Fl::pushed())) Fl::pushed(o);
 	  return 1;
 	}
       }
@@ -428,7 +429,7 @@ Fl_Group::~Fl_Group() {
 */
 void Fl_Group::insert(Fl_Widget &o, int index) {
   if (o.parent()) {
-    Fl_Group* g = (Fl_Group*)(o.parent());
+    Fl_Group* g = o.parent();
     int n = g->find(o);
     if (g == this) {
       if (index > n) index--;

@@ -213,6 +213,7 @@ public:
 };
 
 class Fl_Decl_Type : public Fl_Type {
+protected:
   char public_;
   char static_;
 public:
@@ -225,6 +226,19 @@ public:
   void read_property(const char *);
   virtual int is_public() const;
   int pixmapID() { return 10; }
+};
+
+class Fl_Data_Type : public Fl_Decl_Type {
+	const char *filename_;
+public:
+  Fl_Type *make();
+  void write_code1();
+  void write_code2();
+  void open();
+  virtual const char *type_name() {return "data";}
+  void write_properties();
+  void read_property(const char *);
+  int pixmapID() { return 49; }
 };
 
 class Fl_DeclBlock_Type : public Fl_Type {
@@ -807,6 +821,12 @@ public:
   virtual const char *help() = 0;
   // handle a command and return the number of args used, or 0
   virtual int arg(int argc, char **argv, int &i) = 0;
+  // optional test the plugin
+  virtual int test(const char *a1=0L, const char *a2=0L, const char *a3=0L) { 
+    return 0;
+  }
+  // show a GUI panel to edit some data
+  virtual void show_panel() { }
 };
 
 

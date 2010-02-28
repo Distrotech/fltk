@@ -137,14 +137,19 @@ int Fl_Counter::handle(int event) {
     return 1;
   case FL_PUSH:
     if (Fl::visible_focus()) Fl::focus(this);
-    handle_push();
+    { Fl_Widget_Tracker wp(this);
+      handle_push();
+      if (wp.deleted()) return 1;
+    }
   case FL_DRAG:
     i = calc_mouseobj();
     if (i != mouseobj) {
       Fl::remove_timeout(repeat_callback, this);
       mouseobj = (uchar)i;
       if (i) Fl::add_timeout(INITIALREPEAT, repeat_callback, this);
+      Fl_Widget_Tracker wp(this);
       increment_cb();
+      if (wp.deleted()) return 1;
       redraw();
     }
     return 1;
@@ -160,13 +165,13 @@ int Fl_Counter::handle(int event) {
         return 0;
     }
     // break not required because of switch...
-  case FL_FOCUS :
+  case FL_FOCUS : /* FALLTHROUGH */
   case FL_UNFOCUS :
     if (Fl::visible_focus()) {
       redraw();
       return 1;
     } else return 0;
-  case FL_ENTER :
+  case FL_ENTER : /* FALLTHROUGH */
   case FL_LEAVE :
     return 1;
   default:

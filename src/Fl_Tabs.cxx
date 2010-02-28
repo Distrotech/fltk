@@ -151,6 +151,7 @@ int Fl_Tabs::handle(int event) {
     } else {
       if (Fl::event_y() < y()+h()+H) return Fl_Group::handle(event);
     }}
+    /* FALLTHROUGH */
   case FL_DRAG:
   case FL_RELEASE:
     o = which(Fl::event_x(), Fl::event_y());
@@ -161,8 +162,10 @@ int Fl_Tabs::handle(int event) {
         redraw_tabs();
       }
       if (o && value(o)) {
+        Fl_Widget_Tracker wp(o);
         set_changed();
 	do_callback();
+	if (wp.deleted()) return 1;
       }
       Fl_Tooltip::current(o);
     } else {
