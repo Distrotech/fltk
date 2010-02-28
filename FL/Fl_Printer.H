@@ -449,6 +449,7 @@ class Fl_Printer : public Fl_GDI_Printer {
 class Fl_PS_Printer : public Fl_PSfile_Device {
 public:
   Fl_PS_Printer(void) {};
+  ~Fl_PS_Printer(void) {};
   int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
   void end_job(void);
 };
