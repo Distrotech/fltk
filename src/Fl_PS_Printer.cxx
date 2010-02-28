@@ -41,14 +41,14 @@ const int Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS][2]={
 
 // others (look at Fl_Printer.H} //
 {462, 649},  // c5 envelope
-{312, 623},  // d1 envelope
-{541, 719},
-{595, 935},
-{1224, 790},  //Ledger landscape
-{612, 1009},  //Legal
-{612, 790}, //Letter
-{791, 1224},  //Ledger
-{297, 683}   //Comm10 envelope
+{312, 623},  // dl envelope
+{541, 719}, // executive
+{595, 935}, // folio
+{1224, 790},  // Ledger landscape
+{612, 1009},  // Legal
+{612, 790}, // Letter
+{791, 1224},  // tabloid
+{297, 683}   //  envelope
 
 };
 
@@ -331,8 +331,8 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
     fprintf(output, "%%%%Pages: %i\n", pagecount);
   else
     fprintf(output, "%%%%Pages: (atend)\n");
-  fprintf(output, "%%%%BeginFeature: *PageSize\n" );
-  fprintf(output, "%s\n", (format==A4?"a4":"letter") );
+  fprintf(output, "%%%%BeginFeature: *PageSize %s\n", (format==A4?"A4":"Letter") );
+  fprintf(output, "<</PageSize[%d %d]>>setpagedevice\n", page_formats[format][0], page_formats[format][1] );
   fprintf(output, "%%%%EndFeature\n");
   fprintf(output, "%%%%EndComments\n");
   fprintf(output, prolog);
