@@ -351,7 +351,7 @@ public:
   
   //Fl_PSfile_Device(FILE *o, int lang_level, int pages = 0); // ps (also multi-page) constructor
   //Fl_PSfile_Device(FILE *o, int lang_level, int x, int y, int w, int h); //eps constructor
-  ~Fl_PSfile_Device();
+  virtual ~Fl_PSfile_Device();
   void interpolate(int i){interpolate_=i;};
   int interpolate(){return interpolate_;}
   
