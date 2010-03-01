@@ -4,6 +4,7 @@
 #include <FL/Fl_Device.H>
 #include <stdio.h>
 
+
 /**
  * @brief Provides an OS-independent interface to printing.
  *
@@ -19,7 +20,13 @@
  and finish by end_page() and end_job() calls.
  \see class Fl_Gl_Printer to print Fl_Gl_Window's.
  */
-class Fl_Virtual_Printer : public Fl_Device {
+class 
+#ifndef FL_DOXYGEN
+  Fl_Virtual_Printer
+#else
+  Fl_Printer
+#endif
+   : public Fl_Device {
 private:
   struct chain_elt {
     Fl_Image *image;
@@ -44,145 +51,158 @@ protected:
   int y_offset;
   int x_offset;
   struct chain_elt *image_list_; // chained list of Fl_Image's used in this page
-  
-  /** 
-   @brief The constructor.
-   */
-  Fl_Virtual_Printer(void) { current_display_ = (Fl_Display*)fl_device;};
   void delete_image_list(); // deletes the page image list
+#ifndef FL_DOXYGEN
+     Fl_Virtual_Printer(void) { current_display_ = (Fl_Display*)fl_device;};
+#endif
 public:
-  
-  /**
-   @brief Starts a print job.
-   *
-   @param[in] pagecount the total number of pages of the job
-   @param[out] frompage if non-null, *frompage is set to the first page the user wants printed
-   @param[out] topage if non-null, *topage is set to the last page the user wants printed
-   @return 0 iff OK
-   */
-  virtual int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
-  
-  /**
-   @brief Starts a new printed page
-   *
-   The page coordinates are initially in points, i.e., 1/72 inch, 
-   and with origin at the top left of the printable page area.
-   @return 0 iff OK
-   */
-  virtual int start_page (void);
-  
-  /**
-   @brief Computes the width and height of the printable area of the page.
-   *
-   Values are in the same unit as that used by FLTK drawing functions,
-   are unchanged by calls to origin(), but are changed by scale() calls.
-   Values account for the user-selected paper type and print orientation.
-   @return 0 iff OK.
-   */
-  virtual int printable_rect(int *w, int *h);
-  
-  /**
-   @brief Computes the dimensions of margins that lie between the printable page area and
-   the full page.
-   *
-   Values are in the same unit as that used by FLTK drawing functions. They are changed
-   by scale() calls.
-   @param[out] left If non-null, *left is set to the left margin size.
-   @param[out] top If non-null, *top is set to the top margin size.
-   @param[out] right If non-null, *right is set to the right margin size.
-   @param[out] bottom If non-null, *bottom is set to the bottom margin size.
-   */
-  virtual void margins(int *left, int *top, int *right, int *bottom);
-  
-  /**
-   @brief Sets the position in page coordinates of the origin of graphics functions.
-   *
-   Arguments should be expressed relatively to the result of a previous printable_rect() call.
-   That is, <tt>printable_rect(&w, &h); origin(w/2, 0);</tt> sets the graphics origin at the
-   top center of the page printable area.
-   Successive origin() calls don't combine their effects.
-   @param[in] x Horizontal position in page coordinates of the desired origin of graphics functions.
-   @param[in] y Same as above, vertically.
-   */
-  virtual void origin(int x, int y);
-  
-  /**
-   @brief Computes the page coordinates of the current origin of graphics functions.
-   *
-   @param[out] x If non-null, *x is set to the horizontal page offset of graphics origin.
-   @param[out] y Same as above, vertically.
-   */
-  void origin(int *x, int *y);
-  
-  /**
-   @brief Changes the scaling of page coordinates.
-   *
-   This function also resets the origin of graphics functions at top left of printable page area.
-   After a scale() call, do a printable_rect() call to get the new dimensions of the printable page area.
-   Successive scale() calls don't combine their effects.
-   @param scale_x Horizontal dimensions of plot are multiplied by this quantity.
-   @param scale_y Same as above, vertically.
-   */
-  virtual void scale (float scale_x, float scale_y);
-  
-  /**
-   @brief Rotates the graphics operations relatively to paper.
-   *
-   The rotation is centered on the current graphics origin. Successive rotate() calls don't combine their effects.
-   On MSWindows, Fl_RGB_Image's don't rotate well; print_window_part() is an efficient workaround.
-   @param angle Rotation angle in counterclockwise degrees.
-   */
-  virtual void rotate(float angle);
-  
-  /**
-   @brief Draws the widget on the printed page.
-   *
-   The widget's position on the printed page is determined by the last call to origin()
-   and by the optional delta_x and delta_y arguments.
-   Its dimensions are in points unless there was a previous call to scale().
-   <br>Under MSWindows, most printers don't allow interaction
-   between what is being printed and what was previously printed at the same position on the page.
-   Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed
-   with black color where a transparent background is expected, fl_read_image() returns a
-   white rectangle. A workaround is to use the print_window_part() call. 
-   <br>Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced
-   on paper.
-   @param[in] widget Any FLTK widget (e.g., standard, custom, window).
-   @param[in] delta_x Optional horizontal offset for positioning the widget relatively
-   to the current origin of graphics functions.
-   @param[in] delta_y Same as above, vertically.
-   */
-  void print_widget(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
-  
-  /**
-   @brief Prints a rectangular part of an on-screen window.
-   *
-   @param win The window from where to capture.
-   @param x The rectangle left
-   @param y The rectangle top
-   @param w The rectangle width
-   @param h The rectangle height
-   @param delta_x Optional horizontal offset from current graphics origin where to print the captured rectangle.
-   @param delta_y As above, vertically.
-   */
-  void print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x = 0, int delta_y = 0);
-  
-  /**
-   @brief To be called at the end of each page.
-   *
-   @return 0 iff OK.
-   */
-  virtual int end_page (void);
-  
-  /**
-   @brief To be called at the end of a print job.
-   */
-  virtual void end_job (void);
-  
-  /**
-   @brief Returns the display device currently in action.
-   */
-  Fl_Display *current_display() {return current_display_; };
+#ifdef FL_DOXYGEN
+     /** 
+      @brief The constructor.
+      */
+     Fl_Printer(void);
+
+     /** 
+      @brief The destructor.
+      */
+     ~Fl_Printer(void);
+#endif
+     
+     /**
+      @brief Starts a print job.
+      *
+      Fully implemented for Mac OS X and MSWindows. For other platforms, temporarily
+      implemented as an Fl_PSfile_Device, that is, graphics go to an A4-sized local PostScript file,
+      and frompage/topage args are ignored.
+      @param[in] pagecount the total number of pages of the job
+      @param[out] frompage if non-null, *frompage is set to the first page the user wants printed
+      @param[out] topage if non-null, *topage is set to the last page the user wants printed
+      @return 0 iff OK
+      */
+     virtual int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
+     
+     /**
+      @brief Starts a new printed page
+      *
+      The page coordinates are initially in points, i.e., 1/72 inch, 
+      and with origin at the top left of the printable page area.
+      @return 0 iff OK
+      */
+     virtual int start_page(void);
+     
+     /**
+      @brief Computes the width and height of the printable area of the page.
+      *
+      Values are in the same unit as that used by FLTK drawing functions,
+      are unchanged by calls to origin(), but are changed by scale() calls.
+      Values account for the user-selected paper type and print orientation.
+      @return 0 iff OK.
+      */
+     virtual int printable_rect(int *w, int *h);
+     
+     /**
+      @brief Computes the dimensions of margins that lie between the printable page area and
+      the full page.
+      *
+      Values are in the same unit as that used by FLTK drawing functions. They are changed
+      by scale() calls. Values are as given by the system on Mac OS X and MSWindows; they are approximate
+      on other platforms and for PostScript file output (Fl_PSfile_Device).
+      @param[out] left If non-null, *left is set to the left margin size.
+      @param[out] top If non-null, *top is set to the top margin size.
+      @param[out] right If non-null, *right is set to the right margin size.
+      @param[out] bottom If non-null, *bottom is set to the bottom margin size.
+      */
+     virtual void margins(int *left, int *top, int *right, int *bottom);
+     
+     /**
+      @brief Sets the position in page coordinates of the origin of graphics functions.
+      *
+      Arguments should be expressed relatively to the result of a previous printable_rect() call.
+      That is, <tt>printable_rect(&w, &h); origin(w/2, 0);</tt> sets the graphics origin at the
+      top center of the page printable area.
+      Successive origin() calls don't combine their effects.
+      @param[in] x Horizontal position in page coordinates of the desired origin of graphics functions.
+      @param[in] y Same as above, vertically.
+      */
+     virtual void origin(int x, int y);
+     
+     /**
+      @brief Computes the page coordinates of the current origin of graphics functions.
+      *
+      @param[out] x If non-null, *x is set to the horizontal page offset of graphics origin.
+      @param[out] y Same as above, vertically.
+      */
+     void origin(int *x, int *y);
+     
+     /**
+      @brief Changes the scaling of page coordinates.
+      *
+      This function also resets the origin of graphics functions at top left of printable page area.
+      After a scale() call, do a printable_rect() call to get the new dimensions of the printable page area.
+      Successive scale() calls don't combine their effects.
+      @param scale_x Horizontal dimensions of plot are multiplied by this quantity.
+      @param scale_y Same as above, vertically.
+      */
+     virtual void scale (float scale_x, float scale_y);
+     
+     /**
+      @brief Rotates the graphics operations relatively to paper.
+      *
+      The rotation is centered on the current graphics origin. Successive rotate() calls don't combine their effects.
+      On MSWindows, Fl_RGB_Image's don't rotate well; print_window_part() is an efficient workaround.
+      @param angle Rotation angle in counterclockwise degrees.
+      */
+     virtual void rotate(float angle);
+     
+     /**
+      @brief Draws the widget on the printed page.
+      *
+      The widget's position on the printed page is determined by the last call to origin()
+      and by the optional delta_x and delta_y arguments.
+      Its dimensions are in points unless there was a previous call to scale().
+      <br>Under MSWindows, most printers don't allow interaction
+      between what is being printed and what was previously printed at the same position on the page.
+      Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed
+      with black color where a transparent background is expected, fl_read_image() returns a
+      white rectangle. A workaround is to use the print_window_part() call. 
+      <br>Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced
+      on paper.
+      @param[in] widget Any FLTK widget (e.g., standard, custom, window).
+      @param[in] delta_x Optional horizontal offset for positioning the widget relatively
+      to the current origin of graphics functions.
+      @param[in] delta_y Same as above, vertically.
+      */
+     void print_widget(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
+     
+     /**
+      @brief Prints a rectangular part of an on-screen window.
+      *
+      @param win The window from where to capture.
+      @param x The rectangle left
+      @param y The rectangle top
+      @param w The rectangle width
+      @param h The rectangle height
+      @param delta_x Optional horizontal offset from current graphics origin where to print the captured rectangle.
+      @param delta_y As above, vertically.
+      */
+     void print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x = 0, int delta_y = 0);
+     
+     /**
+      @brief To be called at the end of each page.
+      *
+      @return 0 iff OK.
+      */
+     virtual int end_page (void);
+     
+     /**
+      @brief To be called at the end of a print job.
+      */
+     virtual void end_job (void);
+     
+     /**
+      @brief Returns the display device of the platform.
+      */
+     Fl_Display *current_display() {return current_display_; };
 };
 
 #ifdef __APPLE__
@@ -236,7 +256,20 @@ public:
 };
 #endif
 
-class Fl_PSfile_Device : public Fl_Virtual_Printer { // defined for all 3 platforms
+
+/**
+ @brief Creates a session where all graphics will go to a local PostScript file.
+ *
+ This class has the same API as class Fl_Printer except for start_job() member function.
+ \see class Fl_Printer.
+ */
+class Fl_PSfile_Device : public 
+#ifndef FL_DOXYGEN
+  Fl_Virtual_Printer 
+#else
+  Fl_Device 
+#endif
+  { // defined for all 3 platforms
 public:
   enum Page_Format{
     A0 = 0, 
@@ -272,6 +305,28 @@ public:
     MEDIA = 0x1000
   };
   enum Page_Layout {PORTRAIT = 0, LANDSCAPE = 0x100, REVERSED = 0x200, ORIENTATION = 0x300};
+
+    /**
+     @brief The constructor.
+     */
+    Fl_PSfile_Device(void);
+    
+    /**
+     @brief The destructor.
+     */
+    virtual ~Fl_PSfile_Device();
+    
+    /**
+     @brief Begins the session where all graphics will go to a local PostScript file.
+     *
+     Opens a file dialog to select an output PostScript file.
+     @param pagecount the total number of pages to be created
+     @param format desired page format
+     @return 0 iff OK
+     */
+    int start_job(int pagecount, enum Page_Format format = A4);
+
+#ifndef FL_DOXYGEN
 private:
   enum SHAPE{NONE=0, LINE, LOOP, POLYGON, POINTS};
   
@@ -352,7 +407,6 @@ public:
   
   //Fl_PSfile_Device(FILE *o, int lang_level, int pages = 0); // ps (also multi-page) constructor
   //Fl_PSfile_Device(FILE *o, int lang_level, int x, int y, int w, int h); //eps constructor
-  virtual ~Fl_PSfile_Device();
   void interpolate(int i){interpolate_=i;};
   int interpolate(){return interpolate_;}
   
@@ -360,9 +414,6 @@ public:
   void page(int format);
   
   void place(double x, double y, double tx, double ty, double scale = 1);
-  
-  Fl_PSfile_Device(void);
-  int start_job(int pagecount, enum Page_Format format = A4);
   int start_page (void);
   int printable_rect(int *w, int *h);
   void margins(int *left, int *top, int *right, int *bottom);
@@ -437,7 +488,10 @@ protected:
   double width(const char* s, int n);
   int descent();
   int height();
+#endif // FL_DOXYGEN
 };
+
+#ifndef FL_DOXYGEN
 
 #ifdef __APPLE__
 class Fl_Printer : public Fl_Quartz_Printer {
@@ -456,7 +510,9 @@ public:
 class Fl_Printer : public Fl_PS_Printer {
 };
 
-#endif
+#endif  // __APPLE__
+
+#endif // FL_DOXYGEN
 
 #endif // Fl_Printer_H
 

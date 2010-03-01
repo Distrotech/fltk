@@ -14,6 +14,9 @@
 #include <stdio.h>
 #endif
 
+/**
+ @brief A pure virtual class subclassed to send graphics output to display, local files, or printers.
+ */
 class Fl_Device {
 protected:
   friend void fl_rect(int x, int y, int w, int h);
@@ -108,27 +111,49 @@ protected:
   virtual void pop_clip();
   
 public:
+  /**
+   @brief Sets this device (display, local file, printer) as the target of future graphics calls.
+   *
+   @return  The current target device of graphics calls.
+   */
   virtual Fl_Device *set_current();
+  
+  /**
+   @brief    Returns the current target device of graphics calls.
+   */
   static Fl_Device *current();
 };
 extern Fl_Device *fl_device;
 
-
+/**
+ @brief A virtual class subclassed for OS-specific display graphics.
+ */
 class Fl_Display : public Fl_Device {
   friend class Fl_PSfile_Device; //RK: temporary hack for font sizes
 };
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(FL_DOXYGEN)
+/**
+ @brief The Mac OS X-specific display graphics class.
+ */
 class Fl_Quartz_Display : public Fl_Display {
 public:
   Fl_Quartz_Display() {};
 };
-#elif defined(WIN32)
+#endif
+#if defined(WIN32) || defined(FL_DOXYGEN)
+/**
+ @brief The MSWindows-specific display graphics class.
+ */
 class Fl_GDI_Display : public Fl_Display {
 public:
   Fl_GDI_Display() {};
 };
-#else
+#endif
+#if !( defined(__APPLE__) || defined(WIN32)) || defined(FL_DOXYGEN)
+/**
+ @brief The X11-specific display graphics class.
+ */
 class Fl_Xlib_Display : public Fl_Display {
 public:
   Fl_Xlib_Display() {};
