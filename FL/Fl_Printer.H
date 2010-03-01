@@ -319,7 +319,6 @@ private:
   int top_margin;
   void translate(int x, int y);
   void untranslate(void);
-  int start_postscript (int pagecount, enum Page_Format format);
 
 protected:
   FILE *output;
@@ -329,6 +328,7 @@ protected:
   static const char *page_format_names[NO_PAGE_FORMATS];
   
   uchar bg_r, bg_g, bg_b;
+  int start_postscript (int pagecount, enum Page_Format format);
   /*  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);
    */
   void draw(const char* s, int n, int x, int y) {transformed_draw(s,n,x,y); };
@@ -362,8 +362,7 @@ public:
   void place(double x, double y, double tx, double ty, double scale = 1);
   
   Fl_PSfile_Device(void);
-  int start_job(int pagecount, enum Page_Format format, int *frompage = NULL, int *topage = NULL);
-  inline int start_job(int pagecount, int *frompage = NULL, int *topage = NULL) {return start_job(pagecount,A4,frompage,topage); };
+  int start_job(int pagecount, enum Page_Format format = A4);
   int start_page (void);
   int printable_rect(int *w, int *h);
   void margins(int *left, int *top, int *right, int *bottom);

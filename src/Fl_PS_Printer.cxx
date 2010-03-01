@@ -1139,7 +1139,7 @@ int Fl_PSfile_Device::end_page (void)
   return 0;
 }
 
-int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, int *frompage, int *topage)
+int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format)
 {
   Fl_Native_File_Chooser fnfc;
   fnfc.title("Create a .ps file");
@@ -1150,8 +1150,6 @@ int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, int *fr
   output = fopen(fnfc.filename(), "w");
   if(output == NULL) return 1;
   ps_filename_ = strdup(fnfc.filename());
-  if(frompage) *frompage = 1;
-  if(topage) *topage = pagecount;
   return start_postscript(pagecount, format);
 }
 
@@ -1181,15 +1179,22 @@ void Fl_PSfile_Device::end_job (void)
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
 int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
-  // TODO should start a print dialog and return the selected paper format and the temp .ps file
-  // and desired page range
-  return Fl_PSfile_Device::start_job(pages,A4,firstpage,lastpage); 
+  // TODO should start and close a print dialog and 
+  // transmit the selected paper format to the Fl_PSfile_Device::start_postscript() call,
+  // create a temp .ps file, open it for writing on member var output, 
+  // and strdup its name to member var ps_filename_
+  // return the user's desired page range to the caller and transmit the range total to start_postscript()
+  // terminate by : return Fl_PSfile_Device::start_postscript(pages, format); 
+  enum Page_Format format = A4; // temporary
+  if(firstpage) *firstpage = 1; // temporary
+  if(lastpage) *lastpage = pages; // temporary
+  return Fl_PSfile_Device::start_job(pages, format); // temporary
 }
 
 void Fl_PS_Printer::end_job(void)
 {
   Fl_PSfile_Device::end_job(); 
-  // TODO should print the ps_filename_ file
+  // TODO should send the ps_filename_ file to the print queue and delete it
 }
 
 #endif
