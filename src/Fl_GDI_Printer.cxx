@@ -225,11 +225,12 @@ void Fl_GDI_Printer::translate (int x, int y)
 
 void Fl_GDI_Printer::untranslate (void)
 {
+/* unused now
   XFORM mat;
   GetWorldTransform(fl_gc, &mat);
   mat.eDx = 0;
   mat.eDy = 0;
-  SetWorldTransform(fl_gc, &mat);
+  SetWorldTransform(fl_gc, &mat); */
 }
 
 #endif // WIN32

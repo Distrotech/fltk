@@ -39,7 +39,8 @@ private:
   /**
    @brief Translates the current graphics origin accounting for the current rotation.
    *
-   This function is only useful after a rotate() call. Each translate() call must be matched by an untranslate() call.
+   This function is only useful after a rotate() call. 
+   On Mac and X11, each translate() call must be matched by an untranslate() call.
    */
   virtual void translate(int x, int y);
   
