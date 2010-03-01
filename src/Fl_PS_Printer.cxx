@@ -81,7 +81,7 @@ const char *Fl_PSfile_Device::page_format_names[NO_PAGE_FORMATS]={ // order of e
 //  Prolog string 
 
 static const char * prolog =
-"%%%%BeginProlog\n"
+"%%BeginProlog\n"
 "/L { /y2 exch def\n"
 "/x2 exch def\n"
 "/y1 exch def\n"
@@ -348,18 +348,18 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
   this->set_current();
   page_format_ = format;
   
-  fputs("%%!PS-Adobe-3.0\n", output);
-  fputs("%%%%Creator: FLTK\n", output);
+  fputs("%!PS-Adobe-3.0\n", output);
+  fputs("%%Creator: FLTK\n", output);
   if(lang_level_>1)
     fprintf(output, "%%%%LanguageLevel: %i\n" , lang_level_);
   if((pages_ = pagecount))
     fprintf(output, "%%%%Pages: %i\n", pagecount);
   else
-    fputs("%%%%Pages: (atend)\n", output);
+    fputs("%%Pages: (atend)\n", output);
   fprintf(output, "%%%%BeginFeature: *PageSize %s\n", page_format_names[format] );
   fprintf(output, "<</PageSize[%d %d]>>setpagedevice\n", page_formats[format][0], page_formats[format][1] );
-  fputs("%%%%EndFeature\n", output);
-  fputs("%%%%EndComments\n", output);
+  fputs("%%EndFeature\n", output);
+  fputs("%%EndComments\n", output);
   fputs(prolog, output);
   if(lang_level_ >1)
     fputs(prolog_2, output);
@@ -375,7 +375,7 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
   page_policy_=1;
   
   
-  fprintf(output, "%%%%EndProlog\n");
+  fputs("%%EndProlog\n",output);
   if(lang_level_>=2)
     fprintf(output,"<< /Policies << /Pagesize 1 >> >> setpagedevice\n");
   
@@ -1164,7 +1164,7 @@ void Fl_PSfile_Device::end_job (void)
     };
   } else
     fprintf(output, "GR\n restore\n");
-  fprintf(output, "%%%%EOF");
+  fputs("%%EOF",output);
   reset();
   fclose(output);
   
