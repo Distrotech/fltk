@@ -326,6 +326,7 @@ protected:
   double pw_, ph_;
   static const int NO_PAGE_FORMATS=30;
   static const int page_formats[NO_PAGE_FORMATS][2];
+  static const char *page_format_names[NO_PAGE_FORMATS];
   
   uchar bg_r, bg_g, bg_b;
   /*  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);

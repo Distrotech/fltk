@@ -12,8 +12,8 @@
 #include <math.h>
 
 
-const int Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS][2]={
-
+const int Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS][2] = { // order of enum Page_Format
+// comes from appendix B of 5003.PPD_Spec_v4.3.pdf
 // A* // index(Ai) = i
 {2384, 3370}, //A0
 {1684, 2384}, //A1
@@ -33,23 +33,48 @@ const int Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS][2]={
 {1032, 1460}, //B3
 {729, 1032},  //B4
 {516, 729},   //B5
-{316, 516},   //B6
-{258, 516},   //B7
+{363, 516},   //B6
+{258, 363},   //B7
 {181, 258},   //B8
 {127, 181},   //B9
 {91,127},     //B10
 
 // others (look at Fl_Printer.H} //
-{462, 649},  // c5 envelope
-{312, 623},  // dl envelope
-{541, 719}, // executive
-{595, 935}, // folio
-{1224, 790},  // Ledger landscape
-{612, 1009},  // Legal
-{612, 790}, // Letter
-{791, 1224},  // tabloid
-{297, 683}   //  envelope
+{459, 649},  // EnvC5 envelope
+{312, 624},  // EnvDL envelope
+{522, 756}, // Executive
+{595, 935}, // Folio
+{1224, 792},  // Ledger (landscape)
+{612, 1008},  // Legal
+{612, 792}, // Letter
+{792, 1224},  // Tabloid
+{297, 684}   //  Env10 envelope
+};
 
+const char *Fl_PSfile_Device::page_format_names[NO_PAGE_FORMATS]={ // order of enum Page_Format
+// comes from appendix B of 5003.PPD_Spec_v4.3.pdf
+"A0",
+"A1",
+"A2",
+"A3",
+"A4",
+"A5",
+"A6",
+"A7",
+"A8",
+"A9",
+"B0",
+"B1",
+"B2",
+"B3",
+"B4",
+"B5",
+"B6",
+"B7",
+"B8",
+"B9",
+"B10",
+"EnvC5", "EnvDL", "Executive", "Folio", "Ledger", "Legal", "Letter", "Tabloid", "Env10"
 };
 
 
@@ -323,29 +348,29 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
   this->set_current();
   page_format_ = format;
   
-  fprintf(output, "%%!PS-Adobe-3.0\n");
-  fprintf(output, "%%%%Creator: FLTK\n");
+  fputs("%%!PS-Adobe-3.0\n", output);
+  fputs("%%%%Creator: FLTK\n", output);
   if(lang_level_>1)
     fprintf(output, "%%%%LanguageLevel: %i\n" , lang_level_);
   if((pages_ = pagecount))
     fprintf(output, "%%%%Pages: %i\n", pagecount);
   else
-    fprintf(output, "%%%%Pages: (atend)\n");
-  fprintf(output, "%%%%BeginFeature: *PageSize %s\n", (format==A4?"A4":"Letter") );
+    fputs("%%%%Pages: (atend)\n", output);
+  fprintf(output, "%%%%BeginFeature: *PageSize %s\n", page_format_names[format] );
   fprintf(output, "<</PageSize[%d %d]>>setpagedevice\n", page_formats[format][0], page_formats[format][1] );
-  fprintf(output, "%%%%EndFeature\n");
-  fprintf(output, "%%%%EndComments\n");
-  fprintf(output, prolog);
+  fputs("%%%%EndFeature\n", output);
+  fputs("%%%%EndComments\n", output);
+  fputs(prolog, output);
   if(lang_level_ >1)
-    fprintf(output, prolog_2);
+    fputs(prolog_2, output);
   if(lang_level_ >2)
-    fprintf(output, prolog_3);
+    fputs(prolog_3, output);
   if(lang_level_>=3){
-    fprintf(output, "/CS { clipsave } bind def\n");
-    fprintf(output, "/CR { cliprestore } bind def\n");
+    fputs("/CS { clipsave } bind def\n", output);
+    fputs("/CR { cliprestore } bind def\n", output);
   }else{
-    fprintf(output, "/CS { GS } bind def\n");
-    fprintf(output, "/CR { GR } bind def\n");
+    fputs("/CS { GS } bind def\n", output);
+    fputs("/CR { GR } bind def\n", output);
   }
   page_policy_=1;
   
