@@ -290,6 +290,12 @@
 		7CB17E9719E2ED63185685A8 /* tiled_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 31AF3BE892E037D620187264 /* tiled_image.cxx */; };
 		7E164F0DBBF2832AC7ADE4B0 /* Fl_lock.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 05CF978B6C390922B941DA6E /* Fl_lock.cxx */; };
 		7E45989D6A2254528D595181 /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = 86C891DD18ED67D8F749D3BA /* inffast.c */; };
+		7F38E046113D0C4500335A38 /* Fl_Printer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E045113D0C4500335A38 /* Fl_Printer.cxx */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
+		7F38E04A113D0C8900335A38 /* Fl_Device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E049113D0C8900335A38 /* Fl_Device.cxx */; };
+		7F38E077113D1B9C00335A38 /* Fl_Gl_Printer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E076113D1B9C00335A38 /* Fl_Gl_Printer.cxx */; };
+		7F38E114113D239900335A38 /* keysym2Ucs.c in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E113113D239900335A38 /* keysym2Ucs.c */; };
+		7F38E11D113D240000335A38 /* utf8Input.c in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E11C113D240000335A38 /* utf8Input.c */; };
+		7F38E120113D242600335A38 /* utf8Utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E11F113D242600335A38 /* utf8Utils.c */; };
 		7F87C5B4B381059562D04D1B /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5941DB9F3E72D2BF8A0677 /* fltk.framework */; };
 		8011D2FAF0976F4DD1EC4CD4 /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 9A6DC6214B8F5A2B500E8ADC /* jdatasrc.c */; };
 		80956FF523327A1302D93B71 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5941DB9F3E72D2BF8A0677 /* fltk.framework */; };
@@ -3540,7 +3546,7 @@
 		21C56BFC5DD69169DC43582E /* Fl_Group.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Group.cxx; path = ../../src/Fl_Group.cxx; sourceTree = SOURCE_ROOT; };
 		2212025F862EC5EA3196B661 /* color_chooser.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = color_chooser.cxx; path = ../../test/color_chooser.cxx; sourceTree = SOURCE_ROOT; };
 		22EF8416A96C8927E6165EC8 /* Fl_Browser_load.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Browser_load.cxx; path = ../../src/Fl_Browser_load.cxx; sourceTree = SOURCE_ROOT; };
-		22F1165F2AB221ABB4D248F0 /* fast_slow.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = fast_slow.fl; path = ../../test/fast_slow.fl; sourceTree = SOURCE_ROOT; };
+		22F1165F2AB221ABB4D248F0 /* fast_slow.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fast_slow.fl; path = ../../test/fast_slow.fl; sourceTree = SOURCE_ROOT; };
 		22F786460FB6372F0AE9246B /* Fl_Text_Editor.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Text_Editor.cxx; path = ../../src/Fl_Text_Editor.cxx; sourceTree = SOURCE_ROOT; };
 		23200EAB33CB26B79883D84C /* arc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = arc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		232906A4A3338C2ED0336155 /* Fl_Value_Slider.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Value_Slider.cxx; path = ../../src/Fl_Value_Slider.cxx; sourceTree = SOURCE_ROOT; };
@@ -3555,14 +3561,14 @@
 		2B449E14E5D2D1BC518FA266 /* input.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = input.cxx; path = ../../test/input.cxx; sourceTree = SOURCE_ROOT; };
 		2BF73370278C5F016EEDFEEA /* Fl_Browser_.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Browser_.cxx; path = ../../src/Fl_Browser_.cxx; sourceTree = SOURCE_ROOT; };
 		2BFFAFFD36C7DF3A12895A23 /* jdcolor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdcolor.c; path = ../../jpeg/jdcolor.c; sourceTree = SOURCE_ROOT; };
-		2CCEB125C2191E2C6EF8310B /* keyboard_ui.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = keyboard_ui.fl; path = ../../test/keyboard_ui.fl; sourceTree = SOURCE_ROOT; };
+		2CCEB125C2191E2C6EF8310B /* keyboard_ui.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = keyboard_ui.fl; path = ../../test/keyboard_ui.fl; sourceTree = SOURCE_ROOT; };
 		2D005E7D962037302692E6BF /* align_widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = align_widget.cxx; path = ../../fluid/align_widget.cxx; sourceTree = SOURCE_ROOT; };
 		2D4A61EC6E2F4E04918E0038 /* glut_font.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = glut_font.cxx; path = ../../src/glut_font.cxx; sourceTree = SOURCE_ROOT; };
 		2DA86861B463A8B2DE6CB9E1 /* Fl_Tree_Prefs.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Tree_Prefs.cxx; path = ../../src/Fl_Tree_Prefs.cxx; sourceTree = SOURCE_ROOT; };
 		2DA9067AF17C419E5F0F93FE /* Fl_Value_Output.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Value_Output.cxx; path = ../../src/Fl_Value_Output.cxx; sourceTree = SOURCE_ROOT; };
 		2DC50FC109B5309EBA87B42E /* Fl_Group_Type.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Group_Type.cxx; path = ../../fluid/Fl_Group_Type.cxx; sourceTree = SOURCE_ROOT; };
 		2E560F6AA28859737329F3AE /* filename_ext.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = filename_ext.cxx; path = ../../src/filename_ext.cxx; sourceTree = SOURCE_ROOT; };
-		2E61ED7C79AF76226EDA5E53 /* valuators.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = valuators.fl; path = ../../test/valuators.fl; sourceTree = SOURCE_ROOT; };
+		2E61ED7C79AF76226EDA5E53 /* valuators.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = valuators.fl; path = ../../test/valuators.fl; sourceTree = SOURCE_ROOT; };
 		2EA41FEC8809904E45D65E0E /* file.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = file.cxx; path = ../../fluid/file.cxx; sourceTree = SOURCE_ROOT; };
 		2FEAEA1A11A3398B7BE80C0A /* fltkpng.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = fltkpng.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3020ABF15211EBFA98245BB3 /* Fl_own_colormap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_own_colormap.cxx; path = ../../src/Fl_own_colormap.cxx; sourceTree = SOURCE_ROOT; };
@@ -3581,7 +3587,7 @@
 		39D57E986BD7B9736FC5B4AC /* fl_encoding_latin1.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_encoding_latin1.cxx; path = ../../src/fl_encoding_latin1.cxx; sourceTree = SOURCE_ROOT; };
 		3BCA332D46126060E750A667 /* about_panel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = about_panel.cxx; path = ../../fluid/about_panel.cxx; sourceTree = SOURCE_ROOT; };
 		3C5AB33AE72B5A579BF1C084 /* Fl_File_Chooser.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_File_Chooser.cxx; path = ../../src/Fl_File_Chooser.cxx; sourceTree = SOURCE_ROOT; };
-		3CD7B01E1E321D6E1EFF9EF3 /* CubeViewUI.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = CubeViewUI.fl; path = ../../test/CubeViewUI.fl; sourceTree = SOURCE_ROOT; };
+		3CD7B01E1E321D6E1EFF9EF3 /* CubeViewUI.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CubeViewUI.fl; path = ../../test/CubeViewUI.fl; sourceTree = SOURCE_ROOT; };
 		3F21205544AE3E0E18A2625D /* image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = image.cxx; path = ../../test/image.cxx; sourceTree = SOURCE_ROOT; };
 		3FA6BA54A0D8A49C61E56F82 /* fl_engraved_label.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_engraved_label.cxx; path = ../../src/fl_engraved_label.cxx; sourceTree = SOURCE_ROOT; };
 		3FCC11FB364D2A7C2DBDB3F9 /* pngwtran.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwtran.c; path = ../../png/pngwtran.c; sourceTree = SOURCE_ROOT; };
@@ -3623,7 +3629,7 @@
 		5754D05A879B4739FC1FA08F /* pixmap_browser.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pixmap_browser.cxx; path = ../../test/pixmap_browser.cxx; sourceTree = SOURCE_ROOT; };
 		57777EC867BA3537CF88D187 /* jfdctfst.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jfdctfst.c; path = ../../jpeg/jfdctfst.c; sourceTree = SOURCE_ROOT; };
 		578C76381AB1A77BEAAA00EE /* fltkimages.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = fltkimages.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		583DD254752150AF37641D0F /* resize.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = resize.fl; path = ../../test/resize.fl; sourceTree = SOURCE_ROOT; };
+		583DD254752150AF37641D0F /* resize.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resize.fl; path = ../../test/resize.fl; sourceTree = SOURCE_ROOT; };
 		5A760E8650CC8F64F061E7BC /* filename_setext.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = filename_setext.cxx; path = ../../src/filename_setext.cxx; sourceTree = SOURCE_ROOT; };
 		5AABFC0A2148790A2DC9F095 /* fl_cursor.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_cursor.cxx; path = ../../src/fl_cursor.cxx; sourceTree = SOURCE_ROOT; };
 		5ABD77E8C75A3DC7A96050BB /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = ../../zlib/crc32.c; sourceTree = SOURCE_ROOT; };
@@ -3683,6 +3689,12 @@
 		7E043FE1A54E28B339D94D84 /* Fl_Text_Display.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Text_Display.cxx; path = ../../src/Fl_Text_Display.cxx; sourceTree = SOURCE_ROOT; };
 		7EA1F7EC265233574F3FC423 /* pack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EF88166AA71C7D4A54EA976 /* Fl_PNM_Image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_PNM_Image.cxx; path = ../../src/Fl_PNM_Image.cxx; sourceTree = SOURCE_ROOT; };
+		7F38E045113D0C4500335A38 /* Fl_Printer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Printer.cxx; path = ../../src/Fl_Printer.cxx; sourceTree = SOURCE_ROOT; };
+		7F38E049113D0C8900335A38 /* Fl_Device.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Device.cxx; path = ../../src/Fl_Device.cxx; sourceTree = SOURCE_ROOT; };
+		7F38E076113D1B9C00335A38 /* Fl_Gl_Printer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Gl_Printer.cxx; path = ../../src/Fl_Gl_Printer.cxx; sourceTree = SOURCE_ROOT; };
+		7F38E113113D239900335A38 /* keysym2Ucs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = keysym2Ucs.c; path = ../../src/xutf8/keysym2Ucs.c; sourceTree = SOURCE_ROOT; };
+		7F38E11C113D240000335A38 /* utf8Input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf8Input.c; path = ../../src/xutf8/utf8Input.c; sourceTree = SOURCE_ROOT; };
+		7F38E11F113D242600335A38 /* utf8Utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf8Utils.c; path = ../../src/xutf8/utf8Utils.c; sourceTree = SOURCE_ROOT; };
 		7F6FFE0603CA62245FB7D4AF /* checkers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checkers.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FFABB7F8A77C703F03E5690 /* filename_absolute.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = filename_absolute.cxx; path = ../../src/filename_absolute.cxx; sourceTree = SOURCE_ROOT; };
 		802BCAAB86140DBCA902085E /* jctrans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jctrans.c; path = ../../jpeg/jctrans.c; sourceTree = SOURCE_ROOT; };
@@ -3748,7 +3760,7 @@
 		9F52BBF4D8DAD99C8747164E /* threads.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = threads.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A04368922A48651F325E0764 /* fl_gtk.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_gtk.cxx; path = ../../src/fl_gtk.cxx; sourceTree = SOURCE_ROOT; };
 		A0512904F0803DC12F86520D /* Fl_Chart.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Chart.cxx; path = ../../src/Fl_Chart.cxx; sourceTree = SOURCE_ROOT; };
-		A0BD99D14B207BF26E917056 /* radio.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = radio.fl; path = ../../test/radio.fl; sourceTree = SOURCE_ROOT; };
+		A0BD99D14B207BF26E917056 /* radio.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = radio.fl; path = ../../test/radio.fl; sourceTree = SOURCE_ROOT; };
 		A2A50779495F237662CD4405 /* Fl_GIF_Image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_GIF_Image.cxx; path = ../../src/Fl_GIF_Image.cxx; sourceTree = SOURCE_ROOT; };
 		A3BF678A013A6B1B73036E12 /* fl_vertex.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_vertex.cxx; path = ../../src/fl_vertex.cxx; sourceTree = SOURCE_ROOT; };
 		A4A5BF5FA062C56065B8BCA3 /* Fl_Scroll.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Scroll.cxx; path = ../../src/Fl_Scroll.cxx; sourceTree = SOURCE_ROOT; };
@@ -3787,7 +3799,7 @@
 		B79727B27FB8921656588818 /* buttons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = buttons.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B86305A4C25294329669ABA9 /* line_style.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = line_style.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1D2668AF79CB8E11CC59B5 /* pngwrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwrite.c; path = ../../png/pngwrite.c; sourceTree = SOURCE_ROOT; };
-		BA3AF572158EEE2A34FB425C /* mandelbrot_ui.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = mandelbrot_ui.fl; path = ../../test/mandelbrot_ui.fl; sourceTree = SOURCE_ROOT; };
+		BA3AF572158EEE2A34FB425C /* mandelbrot_ui.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = mandelbrot_ui.fl; path = ../../test/mandelbrot_ui.fl; sourceTree = SOURCE_ROOT; };
 		BA760022A4592363041172AE /* forms.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = forms.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB1AE2A5530E00EA05C8CB85 /* jmemmgr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jmemmgr.c; path = ../../jpeg/jmemmgr.c; sourceTree = SOURCE_ROOT; };
 		BC00723C2D734F7F87524965 /* Fl_Text_Buffer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Text_Buffer.cxx; path = ../../src/Fl_Text_Buffer.cxx; sourceTree = SOURCE_ROOT; };
@@ -3819,7 +3831,7 @@
 		CA386E43262B76BED49D3A36 /* Fluid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluid.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE95F89D2C84B71976A47F3 /* widget_panel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = widget_panel.cxx; path = ../../fluid/widget_panel.cxx; sourceTree = SOURCE_ROOT; };
 		CCEB931485B252BDAEA081D8 /* Fl_Value_Input.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Value_Input.cxx; path = ../../src/Fl_Value_Input.cxx; sourceTree = SOURCE_ROOT; };
-		CD180C4588030B9816A751E9 /* inactive.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = inactive.fl; path = ../../test/inactive.fl; sourceTree = SOURCE_ROOT; };
+		CD180C4588030B9816A751E9 /* inactive.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = inactive.fl; path = ../../test/inactive.fl; sourceTree = SOURCE_ROOT; };
 		CDB1894E7AB07410918675F4 /* fl_scroll_area.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fl_scroll_area.cxx; path = ../../src/fl_scroll_area.cxx; sourceTree = SOURCE_ROOT; };
 		CE4858B5F0659BAE25648133 /* CodeEditor.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CodeEditor.cxx; path = ../../fluid/CodeEditor.cxx; sourceTree = SOURCE_ROOT; };
 		CE7A0012B5DAAC436CCF66F7 /* table.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = table.cxx; path = ../../test/table.cxx; sourceTree = SOURCE_ROOT; };
@@ -3844,7 +3856,7 @@
 		D9E58E4213CDFE1AFC26C42B /* Fl_Valuator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Valuator.cxx; path = ../../src/Fl_Valuator.cxx; sourceTree = SOURCE_ROOT; };
 		DA4871381667FB71880C41F7 /* Fl_Color_Chooser.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Color_Chooser.cxx; path = ../../src/Fl_Color_Chooser.cxx; sourceTree = SOURCE_ROOT; };
 		DB0C0C928D205350BC87B2F0 /* navigation.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = navigation.cxx; path = ../../test/navigation.cxx; sourceTree = SOURCE_ROOT; };
-		DD11262E04C818DD84C3459D /* preferences.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = preferences.fl; path = ../../test/preferences.fl; sourceTree = SOURCE_ROOT; };
+		DD11262E04C818DD84C3459D /* preferences.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = preferences.fl; path = ../../test/preferences.fl; sourceTree = SOURCE_ROOT; };
 		DD1B26C134362F543BE1844A /* CubeMain.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CubeMain.cxx; path = ../../test/CubeMain.cxx; sourceTree = SOURCE_ROOT; };
 		DD38BB22CC33D7FC1ED91F21 /* adjuster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = adjuster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDAFD19E47FDFFDE779521C8 /* symbols.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = symbols.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3898,7 +3910,7 @@
 		FC82CB393FC8D3A651BCD5A2 /* jccoefct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jccoefct.c; path = ../../jpeg/jccoefct.c; sourceTree = SOURCE_ROOT; };
 		FD9D183FA12C0BF72AC334CB /* Fl_Adjuster.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fl_Adjuster.cxx; path = ../../src/Fl_Adjuster.cxx; sourceTree = SOURCE_ROOT; };
 		FE00E52D7E8EBD9FB0D5F914 /* gl_overlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gl_overlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FE87B31C03C9ABA4F978002F /* tabs.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fluid; name = tabs.fl; path = ../../test/tabs.fl; sourceTree = SOURCE_ROOT; };
+		FE87B31C03C9ABA4F978002F /* tabs.fl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tabs.fl; path = ../../test/tabs.fl; sourceTree = SOURCE_ROOT; };
 		FEBB55E1498430C1F750F97F /* output.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = output.cxx; path = ../../test/output.cxx; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -4838,6 +4850,7 @@
 				DE63D1BA05202F04C5CE4170 /* Fl_Clock.cxx */,
 				DA4871381667FB71880C41F7 /* Fl_Color_Chooser.cxx */,
 				F0568BC187A9B199C3AC7AF3 /* Fl_Counter.cxx */,
+				7F38E049113D0C8900335A38 /* Fl_Device.cxx */,
 				4F8AD36BC8171F166D4FE16E /* Fl_Dial.cxx */,
 				443B5E8F1004E2A0E3B85379 /* Fl_Double_Window.cxx */,
 				205AA8D483A813D6C32B6C49 /* Fl_File_Browser.cxx */,
@@ -4865,6 +4878,7 @@
 				D0FDC8F8F965D67C11DD151E /* Fl_Pixmap.cxx */,
 				ACE983D8FA79A06CACB6EE0C /* Fl_Positioner.cxx */,
 				28D3CC9E0B81302E007581F1 /* Fl_Preferences.cxx */,
+				7F38E045113D0C4500335A38 /* Fl_Printer.cxx */,
 				7A7D7335B4D7111E1BDA19C1 /* Fl_Progress.cxx */,
 				81FC4D00E5DB75F4B6B57720 /* Fl_Repeat_Button.cxx */,
 				4EB6B98CD2D6C3F3AAB8298B /* Fl_Return_Button.cxx */,
@@ -4969,6 +4983,9 @@
 				998E51CD4AF011B186CB18FA /* case.c */,
 				A638181864F344A4B7158236 /* is_right2left.c */,
 				4DCB8612F36D7BC603D75A10 /* is_spacing.c */,
+				7F38E113113D239900335A38 /* keysym2Ucs.c */,
+				7F38E11C113D240000335A38 /* utf8Input.c */,
+				7F38E11F113D242600335A38 /* utf8Utils.c */,
 			);
 			name = fltk;
 			sourceTree = "<group>";
@@ -5252,6 +5269,7 @@
 			children = (
 				C7E219ADB3D494E01747E35F /* Fl_Gl_Choice.cxx */,
 				19A2B21BAB870B9820E6AFFF /* Fl_Gl_Overlay.cxx */,
+				7F38E076113D1B9C00335A38 /* Fl_Gl_Printer.cxx */,
 				9E69D9FED286A30929AB6FDA /* Fl_Gl_Window.cxx */,
 				7D61B9ED49250E7E7111795E /* freeglut_geometry.cxx */,
 				C282A1FFEC28A1EC3192A003 /* freeglut_stroke_mono_roman.cxx */,
@@ -8399,6 +8417,11 @@
 				5337B34A4D042AA7523A4774 /* case.c in Sources */,
 				A82A4AE8C965D0134B481AFA /* is_right2left.c in Sources */,
 				5AF06A21B8DF9C46BB49CB75 /* is_spacing.c in Sources */,
+				7F38E046113D0C4500335A38 /* Fl_Printer.cxx in Sources */,
+				7F38E04A113D0C8900335A38 /* Fl_Device.cxx in Sources */,
+				7F38E114113D239900335A38 /* keysym2Ucs.c in Sources */,
+				7F38E11D113D240000335A38 /* utf8Input.c in Sources */,
+				7F38E120113D242600335A38 /* utf8Utils.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8756,6 +8779,7 @@
 				3BA43593FFC974B6845B9511 /* gl_draw.cxx in Sources */,
 				163AFE89023DAE4F9E11030F /* glut_compatability.cxx in Sources */,
 				D65DAE3CA5D736F4ECEDEA49 /* glut_font.cxx in Sources */,
+				7F38E077113D1B9C00335A38 /* Fl_Gl_Printer.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12051,6 +12075,2426 @@
 			};
 			name = Release;
 		};
+		7F38E08C113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PFE_FILE_C_DIALECTS = "c c++";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/X11config\"",
+					"$(SDKROOT)/usr/X11/include",
+					"$(SDKROOT)/usr/X11/include/freetype2",
+					../../,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-U__APPLE__",
+					"-DUSE_X11",
+				);
+				OTHER_LDFLAGS = (
+					"-L$(SDKROOT)/usr/X11/lib",
+					"-lX11",
+				);
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = DebugX11;
+		};
+		7F38E08D113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/Fluid-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Fluid;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E08E113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/X11config\"",
+					"$(SDKROOT)/usr/X11/include",
+					"$(SDKROOT)/usr/X11/include/freetype2",
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/fltk-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-L$(SDKROOT)/usr/X11/lib",
+					"-lXft",
+					"-lX11",
+					"-lfontconfig",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = fltk;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E08F113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				INFOPLIST_FILE = "plists/fltkgl-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-L$(SDKROOT)/usr/X11/lib",
+					"-lX11",
+					"-lGL",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = fltkgl;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E090113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/fltkimages-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = fltkimages;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E091113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/fltkpng-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = fltkpng;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E092113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/fltkjpeg-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = fltkjpeg;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E093113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/fltkforms-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = fltkforms;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E094113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/zlib-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = zlib;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E095113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				INFOPLIST_FILE = "plists/Demo-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Demo;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E096113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/adjuster-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = adjuster;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E097113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/arc-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = arc;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E098113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/ask-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = ask;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E099113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/bitmap-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = bitmap;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E09A113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/blocks-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = blocks;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E09B113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/boxtype-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = boxtype;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E09C113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/browser-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = browser;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E09D113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/button-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = button;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E09E113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/buttons-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = buttons;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E09F113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/checkers-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = checkers;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A0113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/clock-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = clock;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A1113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/colbrowser-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = colbrowser;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A2113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/color_chooser-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = color_chooser;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A3113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/cube-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = cube;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A4113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/CubeView-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = CubeView;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A5113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/cursor-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = cursor;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A6113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/curve-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = curve;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A7113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/doublebuffer-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = doublebuffer;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A8113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/editor-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = editor;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0A9113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/fast_slow-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = fast_slow;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0AA113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/file_chooser-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = file_chooser;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0AB113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/fonts-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = fonts;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0AC113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/forms-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = forms;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0AD113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/fractals-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = fractals;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0AE113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/fullscreen-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = fullscreen;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0AF113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/gl_overlay-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = gl_overlay;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B0113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/glpuzzle-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = glpuzzle;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B1113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/hello-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = hello;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B2113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/help-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = help;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B3113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/iconize-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = iconize;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B4113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/image-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = image;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B5113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/inactive-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = inactive;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B6113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/input-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = input;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B7113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/input_choice-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = input_choice;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B8113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/keyboard-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = keyboard;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0B9113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/label-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = label;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0BA113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/line_style-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = line_style;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0BB113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/list_visuals-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = list_visuals;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0BC113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/mandelbrot-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = mandelbrot;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0BD113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/menubar-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = menubar;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0BE113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/message-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = message;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0BF113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/minimum-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = minimum;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C0113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/navigation-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = navigation;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C1113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/native-filechooser-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					fltkimages,
+					"-L$(SDKROOT)/usr/X11/lib",
+					"-lX11",
+				);
+				PRODUCT_NAME = "native-filechooser";
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C2113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/output-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = output;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C3113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/overlay-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = overlay;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C4113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/pack-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = pack;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C5113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/pixmap_browser-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = pixmap_browser;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C6113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/pixmap-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = pixmap;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C7113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/preferences-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = preferences;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C8113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/radio-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = radio;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0C9113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/resizebox-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = resizebox;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0CA113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/resize-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = resize;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0CB113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/scroll-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = scroll;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0CC113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/shape-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = shape;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0CD113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/subwindow-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = subwindow;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0CE113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/sudoku-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = sudoku;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0CF113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/symbols-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = symbols;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D0113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/table-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = table;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D1113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/tabs-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = tabs;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D2113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/threads-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = threads;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D3113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/tile-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = tile;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D4113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				INFOPLIST_FILE = "plists/tiled_image-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = tiled_image;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D5113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/tree-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = tree;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D6113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/utf8-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = utf8;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
+		7F38E0D7113D1E6C00335A38 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/valuators-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					Carbon,
+				);
+				PRODUCT_NAME = valuators;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = DebugX11;
+		};
 		84F1ACA038D3BFE25E845D30 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -14673,6 +17117,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				934BA37B93283E99099E85AE /* Debug */,
+				7F38E0BD113D1E6C00335A38 /* DebugX11 */,
 				A95B10F0DF2011FFD7C85E0B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14682,6 +17127,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9E85352BA7FF0F4591671CA2 /* Debug */,
+				7F38E0D1113D1E6C00335A38 /* DebugX11 */,
 				B19D23F49ED96AB19AB55F2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14691,6 +17137,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AD05859F97522D746B5B93ED /* Debug */,
+				7F38E0C0113D1E6C00335A38 /* DebugX11 */,
 				C4A798DBA5051C48B50D29D0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14700,6 +17147,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D75DFF1FFCFDD37EB827FFAF /* Debug */,
+				7F38E0A1113D1E6C00335A38 /* DebugX11 */,
 				BCFEF25BAB3352C36C784BB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14709,6 +17157,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A51E57529CBB344E5D562090 /* Debug */,
+				7F38E0AA113D1E6C00335A38 /* DebugX11 */,
 				F5F54A499C535987045F20FF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14718,6 +17167,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4EEDF46C944A42FDE39106DF /* Debug */,
+				7F38E095113D1E6C00335A38 /* DebugX11 */,
 				386B09E9D2D09D2D9F048EBB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14727,6 +17177,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				69C1D26445E32A760DE5B283 /* Debug */,
+				7F38E0A9113D1E6C00335A38 /* DebugX11 */,
 				AE4D1680F08795E312CB381E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14736,6 +17187,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1066BBADCB8E1A7B0CEB1CEC /* Debug */,
+				7F38E0B2113D1E6C00335A38 /* DebugX11 */,
 				E731A8BD00C0AD2E554A6EC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14745,6 +17197,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8DC45F95BD7EAB438AB15449 /* Debug */,
+				7F38E090113D1E6C00335A38 /* DebugX11 */,
 				505FDEAFF14F5595195D9691 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14754,6 +17207,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7164509881705FFD5C0A5EC0 /* Debug */,
+				7F38E0BF113D1E6C00335A38 /* DebugX11 */,
 				31C34C3484B86F18E8BAE4DF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14763,6 +17217,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5E3D782526AD453D04CEE9F6 /* Debug */,
+				7F38E0CB113D1E6C00335A38 /* DebugX11 */,
 				B81EF5B2ECEA1665B621979F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14772,6 +17227,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4F6DB47BDC669706DFE90413 /* Debug */,
+				7F38E0A7113D1E6C00335A38 /* DebugX11 */,
 				662953166C6D31D95EBDDF87 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14781,6 +17237,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DFF6049A4211DCB664084D27 /* Debug */,
+				7F38E0B7113D1E6C00335A38 /* DebugX11 */,
 				A3837234EFF7D62979188D62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14790,6 +17247,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				588390D8F8398C825BA6B187 /* Debug */,
+				7F38E0C3113D1E6C00335A38 /* DebugX11 */,
 				0C1D0CA98810629792FEBB78 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14799,6 +17257,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1317ABD59CACC48D04161783 /* Debug */,
+				7F38E0BC113D1E6C00335A38 /* DebugX11 */,
 				0154FBFA85A59BFD9B6ED0E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14808,6 +17267,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A7C5674A67436DE46FA8327A /* Debug */,
+				7F38E0C9113D1E6C00335A38 /* DebugX11 */,
 				A83563E74E9E90AF227825AE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14817,6 +17277,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D48031EC3B51236BED885552 /* Debug */,
+				7F38E0B9113D1E6C00335A38 /* DebugX11 */,
 				E1EAE353E388CF1340EF52F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14826,6 +17287,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8EA90F7EC88393228448D42F /* Debug */,
+				7F38E09A113D1E6C00335A38 /* DebugX11 */,
 				35AF6F3FF79058D4F93AE591 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14835,6 +17297,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DA8A66E9CAF97F32DC8304C /* Debug */,
+				7F38E098113D1E6C00335A38 /* DebugX11 */,
 				EB41EE3E3D05D72A9163A087 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14844,6 +17307,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86B5297B0C9281E590496E55 /* Debug */,
+				7F38E0B3113D1E6C00335A38 /* DebugX11 */,
 				0A337D6101304799FF0EEC91 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14853,6 +17317,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3F0B6C49B293857CE6F04330 /* Debug */,
+				7F38E0A8113D1E6C00335A38 /* DebugX11 */,
 				5E45942B8D7510AE4F63C148 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14862,6 +17327,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8892AE4C863CBF1E344B053E /* Debug */,
+				7F38E0C2113D1E6C00335A38 /* DebugX11 */,
 				0E353268AEB5D94E513A1458 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14871,6 +17337,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F86B8E7A0BAE74ADB166E301 /* Debug */,
+				7F38E0D4113D1E6C00335A38 /* DebugX11 */,
 				919756A2913A6DDD0FDFE3E3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14880,6 +17347,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CABB50082831C8837D2BF44C /* Debug */,
+				7F38E08F113D1E6C00335A38 /* DebugX11 */,
 				2F6CEBD89A63A92094709A4B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14889,6 +17357,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA59E89E5B951083B3912CF4 /* Debug */,
+				7F38E09C113D1E6C00335A38 /* DebugX11 */,
 				21AB922CD9FA62D566EEF974 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14898,6 +17367,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F72B0B3529DB19E14936B940 /* Debug */,
+				7F38E09E113D1E6C00335A38 /* DebugX11 */,
 				E897655B3D2596CDCF062425 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14907,6 +17377,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C593E2C2FB96134E36085511 /* Debug */,
+				7F38E096113D1E6C00335A38 /* DebugX11 */,
 				44C2AFC385E74E69F04CC91E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14916,6 +17387,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				912355CA9FB633F42BED1F62 /* Debug */,
+				7F38E0CD113D1E6C00335A38 /* DebugX11 */,
 				B0BF42B340FCF3D15E03EB2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14925,6 +17397,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA5E5CD95FC55452E239E703 /* Debug */,
+				7F38E0B8113D1E6C00335A38 /* DebugX11 */,
 				209EF04CF2867AC8ACEF9DDC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14934,6 +17407,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7183C680BA1F9AE3A8D97F02 /* Debug */,
+				7F38E08E113D1E6C00335A38 /* DebugX11 */,
 				1D88D5E1CB4B388E1DFD66F7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14943,6 +17417,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ED3B6F70C585F4F5CED47A12 /* Debug */,
+				7F38E0B5113D1E6C00335A38 /* DebugX11 */,
 				8EE278DED39DED367B79E16D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14952,6 +17427,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8FF30C796B21BB9F65E39B7A /* Debug */,
+				7F38E097113D1E6C00335A38 /* DebugX11 */,
 				69F183BA6F5D9A1CE2699BC0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14961,6 +17437,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A8EBA73860E1DA8FD9A39A63 /* Debug */,
+				7F38E0D5113D1E6C00335A38 /* DebugX11 */,
 				8DC212BC7E9E846807CBD7EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14970,6 +17447,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3F1933307AFC2741DADBF903 /* Debug */,
+				7F38E0D6113D1E6C00335A38 /* DebugX11 */,
 				656C377933DB88F1DF8AB85F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14979,6 +17457,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7229D956997607EACF0A1BD3 /* Debug */,
+				7F38E08C113D1E6C00335A38 /* DebugX11 */,
 				F9692C29736567CFB18AF98B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14988,6 +17467,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4944F60ED49991777845192A /* Debug */,
+				7F38E0C7113D1E6C00335A38 /* DebugX11 */,
 				5F2854E91A9E53E4B247C78E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -14997,6 +17477,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				90D640B6B4430EE0CB553A0A /* Debug */,
+				7F38E0CF113D1E6C00335A38 /* DebugX11 */,
 				D115F43AAF4DB42CD1899A15 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15006,6 +17487,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9163BF77A42C456633B476B /* Debug */,
+				7F38E092113D1E6C00335A38 /* DebugX11 */,
 				EC64312AC7BFB7B94FD3FA6F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15015,6 +17497,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F925FFC9C714A0CA1172BF05 /* Debug */,
+				7F38E08D113D1E6C00335A38 /* DebugX11 */,
 				F7AD37BF2D15761D8FD90A25 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15024,6 +17507,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				77D7D8020C8D4994531E357B /* Debug */,
+				7F38E0A0113D1E6C00335A38 /* DebugX11 */,
 				40BA43558D6F5F65AF0C2A40 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15033,6 +17517,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0A1F9866D990616803452131 /* Debug */,
+				7F38E0B6113D1E6C00335A38 /* DebugX11 */,
 				4E3437D2013BE5FF8B0C2FFB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15042,6 +17527,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				926D384359328D74D4BD0955 /* Debug */,
+				7F38E0B0113D1E6C00335A38 /* DebugX11 */,
 				E4B8E1503F13496FD19DE5D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15051,6 +17537,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D280762A6F8542BD446CF48 /* Debug */,
+				7F38E0C5113D1E6C00335A38 /* DebugX11 */,
 				42DB07308072BE92EBEA0A76 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15060,6 +17547,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6C29B7AB59C30B89F65858C4 /* Debug */,
+				7F38E0B4113D1E6C00335A38 /* DebugX11 */,
 				6FF09CB07C34DBAA07389F86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15069,6 +17557,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DEAE51946F2C5F1ADC96040 /* Debug */,
+				7F38E09D113D1E6C00335A38 /* DebugX11 */,
 				65E195A431F42546673A5DA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15078,6 +17567,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				373C72DCB5EAB9AF4D13AB2A /* Debug */,
+				7F38E0A5113D1E6C00335A38 /* DebugX11 */,
 				E8D4E3208F436B92F2AD5527 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15087,6 +17577,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F9C0C612C4266AD57DFA1E35 /* Debug */,
+				7F38E093113D1E6C00335A38 /* DebugX11 */,
 				F58A3672F896FE2C319625C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15096,6 +17587,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3AB2E46A193B6A69C095F688 /* Debug */,
+				7F38E0D3113D1E6C00335A38 /* DebugX11 */,
 				6851B9724E433FD0608C2746 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15105,6 +17597,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8F0F64F977048F30893DB67A /* Debug */,
+				7F38E099113D1E6C00335A38 /* DebugX11 */,
 				20DDC70656185236B4125EEA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15114,6 +17607,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5BB0BA2E2CBA40C44CF5359A /* Debug */,
+				7F38E0C8113D1E6C00335A38 /* DebugX11 */,
 				C839436BF1638EBCAC949C7A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15123,6 +17617,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8AFA57E41BD48F72997CE1A7 /* Debug */,
+				7F38E0AD113D1E6C00335A38 /* DebugX11 */,
 				224B0F5BB9E16911EACE589C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15132,6 +17627,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A74DFED84FD8AAE6B80E23E2 /* Debug */,
+				7F38E0AC113D1E6C00335A38 /* DebugX11 */,
 				F3F688FF4EC62181566F38D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15141,6 +17637,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0EE5D909A7185A8C42BE49E7 /* Debug */,
+				7F38E0C6113D1E6C00335A38 /* DebugX11 */,
 				F8EC37EC7EE6B67B273C6F1A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15150,6 +17647,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				40542A9F9A9286B92B5B8AF1 /* Debug */,
+				7F38E09B113D1E6C00335A38 /* DebugX11 */,
 				CB6C587E99819A5AC505AF1E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15159,6 +17657,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CF7E280BF34F3922A0E63EBD /* Debug */,
+				7F38E0BE113D1E6C00335A38 /* DebugX11 */,
 				E095DE739F4458F0AE6FCD2E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15168,6 +17667,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				09B8AFF63655C75C46D0E97A /* Debug */,
+				7F38E0A6113D1E6C00335A38 /* DebugX11 */,
 				397224BCBDD18FB042A89D5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15177,6 +17677,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C671679CED6FEFB795082472 /* Debug */,
+				7F38E09F113D1E6C00335A38 /* DebugX11 */,
 				37079BE14CAE60361BE8A305 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15186,6 +17687,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06783C81EE8D5F53E633F1F5 /* Debug */,
+				7F38E0AE113D1E6C00335A38 /* DebugX11 */,
 				6F46B8FD0ECA68BEDF75A5DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15195,6 +17697,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1038491B59495E95FBF458E0 /* Debug */,
+				7F38E0C1113D1E6C00335A38 /* DebugX11 */,
 				77767168B07D0FC14C9A3DF5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15204,6 +17707,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E0FDEE83A9CD07D627DCE917 /* Debug */,
+				7F38E0AF113D1E6C00335A38 /* DebugX11 */,
 				8B7FC70C83EAC026A6CA6D05 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15213,6 +17717,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0D1F15A749D5055851287FC5 /* Debug */,
+				7F38E0A4113D1E6C00335A38 /* DebugX11 */,
 				0E2E371B33DD792D684D9CDC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15222,6 +17727,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				454E56E770FA8D6CDA86E7DA /* Debug */,
+				7F38E0A2113D1E6C00335A38 /* DebugX11 */,
 				9133B6F011327952DAB1F73C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15231,6 +17737,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E3CAB59484E0F35CD6E786A0 /* Debug */,
+				7F38E0D0113D1E6C00335A38 /* DebugX11 */,
 				7D185A4DF9354D23C0304A1F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15240,6 +17747,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DD7FFFD51371D383EEA7923 /* Debug */,
+				7F38E0CC113D1E6C00335A38 /* DebugX11 */,
 				9F6ECD1D86E19E8032E78B63 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15249,6 +17757,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1869398A51F3CEB6722BE777 /* Debug */,
+				7F38E091113D1E6C00335A38 /* DebugX11 */,
 				B1C13467680F712442C8D913 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15258,6 +17767,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37D8DE9960A474159C9B4324 /* Debug */,
+				7F38E0CE113D1E6C00335A38 /* DebugX11 */,
 				B77014881C9CD4F8FF88101C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15267,6 +17777,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DA8C71BF66CDE42CF942EEF1 /* Debug */,
+				7F38E0A3113D1E6C00335A38 /* DebugX11 */,
 				911602F9F5CF26CF03DC167C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15276,6 +17787,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				59BAD72D94C62D32FEB49D3B /* Debug */,
+				7F38E0D2113D1E6C00335A38 /* DebugX11 */,
 				1F61F1C77A78090BE00B496E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15285,6 +17797,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7BC37F17CB99A7AB73D193D4 /* Debug */,
+				7F38E0CA113D1E6C00335A38 /* DebugX11 */,
 				84F1ACA038D3BFE25E845D30 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15294,6 +17807,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BCEB44FB7807E9523149C5D6 /* Debug */,
+				7F38E0BA113D1E6C00335A38 /* DebugX11 */,
 				B414E659E294DC84351200EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15303,6 +17817,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AD1E4EEE146C6299F1F76AB0 /* Debug */,
+				7F38E0B1113D1E6C00335A38 /* DebugX11 */,
 				1EFED07491EE2C834791F3C6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15312,6 +17827,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				232CCBEC9FA98759024AD58E /* Debug */,
+				7F38E0C4113D1E6C00335A38 /* DebugX11 */,
 				C67B2C6C17B2856A5800F03B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15321,6 +17837,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8BA526B49742E63F7686E033 /* Debug */,
+				7F38E0AB113D1E6C00335A38 /* DebugX11 */,
 				AD9A120931DA602F27C23FD9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15330,6 +17847,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				73F399C48591DDA3A03CD6C5 /* Debug */,
+				7F38E0D7113D1E6C00335A38 /* DebugX11 */,
 				7CBD9B4D96A3912C369E014D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15339,6 +17857,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C8791F79D59375B544E80F36 /* Debug */,
+				7F38E0BB113D1E6C00335A38 /* DebugX11 */,
 				ABCC8C9AB3AB7DC68C6C5203 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -15348,6 +17867,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				888F3DC7D63A721B0D8062F9 /* Debug */,
+				7F38E094113D1E6C00335A38 /* DebugX11 */,
 				6B76566D00A66246CCAE8C23 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
