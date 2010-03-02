@@ -2,6 +2,10 @@
 #define Fl_Printer_H
 
 #include <FL/Fl_Device.H>
+#include <FL/Fl_draw.H>
+#include <FL/Fl_Pixmap.H>
+#include <FL/Fl_RGB_Image.H>
+#include <FL/Fl_Bitmap.H>
 #include <stdio.h>
 
 /**
@@ -26,6 +30,9 @@ class
   Fl_Printer
 #endif
    : public Fl_Device {
+     friend class Fl_Pixmap;
+     friend class Fl_RGB_Image;
+     friend class Fl_Bitmap;
 private:
   struct chain_elt {
     Fl_Image *image;
@@ -217,7 +224,7 @@ private:
   void translate(int x, int y);
   void untranslate(void);
 public:
-  Fl_Quartz_Printer(void) : Fl_Virtual_Printer() {};
+  Fl_Quartz_Printer(void);
   int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
   int start_page (void);
   int printable_rect(int *w, int *h);
@@ -396,12 +403,12 @@ protected:
   void draw(int angle, const char *str, int n, int x, int y);
   void transformed_draw(const char* s, int n, double x, double y); //precise text placing
   void transformed_draw(const char* s, double x, double y);
-  /*  
-   void draw_scalled_image(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
-   void draw_scalled_image_mono(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
-   void draw_scalled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
-   void draw_scalled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
-   */
+  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);
+  void draw_scaled_image(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
+  void draw_scaled_image_mono(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D=3, int LD=0);
+  void draw_scaled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
+  void draw_scaled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
+
 public:
   void page_policy(int p);
   int page_policy(){return page_policy_;};
@@ -486,7 +493,6 @@ protected:
   void end_complex_polygon(){end_polygon();};
   void transformed_vertex(double x, double y);
   
-  
   void font(int face, int size);
   int font(){return font_;};
   int size(){return size_;};
@@ -494,6 +500,16 @@ protected:
   double width(const char* s, int n);
   int descent();
   int height();
+    
+  void draw_image(const uchar* d, int x,int y,int w,int h, int delta=3, int ldelta=0){draw_scaled_image(d,x,y,w,h,w,h,delta,ldelta);};
+  void draw_image_mono(const uchar* d, int x,int y,int w,int h, int delta=1, int ld=0){draw_scaled_image_mono(d,x,y,w,h,w,h,delta,ld);};
+  void draw_image(Fl_Draw_Image_Cb call, void* data, int x,int y, int w, int h, int delta=3){draw_scaled_image(call,data, x, y, w, h, w, h, delta);};
+  void draw_image_mono(Fl_Draw_Image_Cb call, void* data, int x,int y, int w, int h, int delta=1){draw_scaled_image_mono(call, data, x, y, w, h, w, h, delta);};
+    
+  void draw(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_Bitmap * bitmap,int XP, int YP, int WP, int HP, int cx, int cy);
+    
 #endif // FL_DOXYGEN
 };
 

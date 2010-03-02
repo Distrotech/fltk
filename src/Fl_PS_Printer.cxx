@@ -310,9 +310,10 @@ static const char * prolog_3 = // prolog relevant only if lang_level >2
 Fl_PSfile_Device::Fl_PSfile_Device(void)
 {
   close_cmd_ = 0;
-  lang_level_ = 1;
+  lang_level_ = 3;
   mask = 0;
   ps_filename_ = NULL;
+  type_ = postscript_device;
 }
 
 int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
@@ -471,6 +472,7 @@ void Fl_PSfile_Device::rect(int x, int y, int w, int h) {
 
 void Fl_PSfile_Device::rectf(int x, int y, int w, int h) {
   fprintf(output, "%g %g %i %i FR\n", x-0.5, y-0.5, w, h);
+  Fl::get_color(color_, bg_r_, bg_g_, bg_b_);
 }
 
 void Fl_PSfile_Device::line(int x1, int y1, int x2, int y2) {

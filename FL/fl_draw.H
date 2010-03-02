@@ -407,13 +407,17 @@ typedef void (*Fl_Draw_Image_Cb)(void* data,int x,int y,int w,uchar* buf);
   any visual of 8 bits or less, and all common TrueColor visuals up
   to 32 bits.
   */
-FL_EXPORT void fl_draw_image(const uchar* buf, int X,int Y,int W,int H, int D=3, int L=0);
+//FL_EXPORT void fl_draw_image(const uchar* buf, int X,int Y,int W,int H, int D=3, int L=0);
+inline void fl_draw_image(const uchar* buf, int X,int Y,int W,int H, int D=3, int L=0)
+  { fl_device->draw_image(buf, X, Y, W, H, D, L); };
 
 /**
   Draw a gray-scale (1 channel) image.
   \see fl_draw_image(const uchar* buf, int X,int Y,int W,int H, int D, int L)
   */
-FL_EXPORT void fl_draw_image_mono(const uchar* buf, int X,int Y,int W,int H, int D=1, int L=0);
+//FL_EXPORT void fl_draw_image_mono(const uchar* buf, int X,int Y,int W,int H, int D=1, int L=0);
+inline void fl_draw_image_mono(const uchar* buf, int X,int Y,int W,int H, int D=1, int L=0)
+  { fl_device->draw_image_mono(buf, X, Y, W, H, D, L); };
 
 /**
   Draw image using callback function to generate image data.
@@ -447,7 +451,9 @@ FL_EXPORT void fl_draw_image_mono(const uchar* buf, int X,int Y,int W,int H, int
 
   If \p D is 4 or more, you must fill in the unused bytes with zero.
   */
-FL_EXPORT void fl_draw_image(Fl_Draw_Image_Cb cb, void* data, int X,int Y,int W,int H, int D=3);
+//FL_EXPORT void fl_draw_image(Fl_Draw_Image_Cb cb, void* data, int X,int Y,int W,int H, int D=3);
+inline void fl_draw_image(Fl_Draw_Image_Cb cb, void* data, int X,int Y,int W,int H, int D=3)
+  { fl_device->draw_image(cb, data, X, Y, W, H, D); };
 
 /**
   Draw gray-scale image using callback function to generate image data.

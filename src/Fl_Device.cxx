@@ -11,6 +11,21 @@
 
 extern Fl_Device *fl_device;
 
+void Fl_Device::draw(Fl_Pixmap *pxm,int XP, int YP, int WP, int HP, int cx, int cy)
+{
+  // presently, never gets called
+}
+
+void Fl_Device::draw(Fl_Bitmap *bm,int XP, int YP, int WP, int HP, int cx, int cy)
+{
+  // presently, never gets called
+}
+
+void Fl_Device::draw(Fl_RGB_Image *rgb,int XP, int YP, int WP, int HP, int cx, int cy)
+{
+  // presently, never gets called
+}
+
 void Fl_Virtual_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y) 
 { 
   int old_x, old_y, new_x, new_y, is_window;

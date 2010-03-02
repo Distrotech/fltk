@@ -664,20 +664,14 @@ int main(int argc, char ** argv) {
   make_image();
   Fl_RGB_Image *rgb = new Fl_RGB_Image(image, width, height, 4);
   My_Button b_rgb(10,245,100,100,"RGB with alpha");
-#if defined(__APPLE__) || defined(WIN32)
   b_rgb.image(rgb);
-#endif
 
   My_Button b_pixmap(10,345,100,100,"Pixmap");
   Fl_Pixmap *pixmap = new Fl_Pixmap(porsche_xpm);
-#if defined(__APPLE__) || defined(WIN32)
   b_pixmap.image(pixmap);
-#endif
 
   My_Button b_bitmap(10,445,100,100,"Bitmap");
-#if defined(__APPLE__) || defined(WIN32)
   b_bitmap.image(new Fl_Bitmap(sorceress_bits,sorceress_width,sorceress_height));
-#endif
 
   new Fl_Clock(360,230,120,120);
   Fl_Return_Button * ret = new Fl_Return_Button (360, 360, 120,30, "Return");

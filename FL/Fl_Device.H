@@ -14,11 +14,19 @@
 #include <stdio.h>
 #endif
 
+class Fl_Image;
+class Fl_RGB_Image;
+class Fl_Pixmap;
+class Fl_Bitmap;
+typedef void (*Fl_Draw_Image_Cb)(void* ,int,int,int,uchar*);
+
 /**
  @brief A pure virtual class subclassed to send graphics output to display, local files, or printers.
  */
 class Fl_Device {
 protected:
+  int type_;
+  uchar bg_r_, bg_g_, bg_b_; // color for background and/or mixing if particular device does not support masking and/or alpha
   friend void fl_rect(int x, int y, int w, int h);
   friend void fl_rectf(int x, int y, int w, int h);
   friend void fl_line_style(int style, int width, char* dashes);
@@ -65,6 +73,11 @@ protected:
   friend void fl_begin_complex_polygon();
   friend void fl_gap();
   friend void fl_end_complex_polygon();
+  friend void fl_draw_image(const uchar*, int,int,int,int, int delta, int ldelta);
+  friend void fl_draw_image_mono(const uchar*, int,int,int,int, int delta, int ld);
+  friend void fl_draw_image(Fl_Draw_Image_Cb, void*, int,int,int,int, int delta);
+  friend void fl_draw_image_mono(Fl_Draw_Image_Cb, void*, int,int,int,int, int delta);
+  
   virtual void rect(int x, int y, int w, int h);
   virtual void rectf(int x, int y, int w, int h);
   virtual void line_style(int style, int width=0, char* dashes=0);
@@ -109,8 +122,25 @@ protected:
   virtual int not_clipped(int x, int y, int w, int h);
   virtual void push_no_clip();
   virtual void pop_clip();
+  // Images
+  virtual   void draw_image(const uchar*, int,int,int,int, int delta=3, int ldelta=0);
+  virtual   void draw_image_mono(const uchar*, int,int,int,int, int delta=1, int ld=0);
+  virtual   void draw_image(Fl_Draw_Image_Cb, void*, int,int,int,int, int delta=3);
+  virtual   void draw_image_mono(Fl_Draw_Image_Cb, void*, int,int,int,int, int delta=1);
+  // Image classes
+  virtual   void draw(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int cx, int cy);
+  virtual   void draw(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, int cx, int cy);
+  virtual   void draw(Fl_Bitmap * bmp,int XP, int YP, int WP, int HP, int cx, int cy);
   
 public:
+  enum device_types { 
+    xlib_display = 0, quartz_display, gdi_display, 
+    gdi_printer = 256, quartz_printer, postscript_device 
+  };
+  /** 
+   @brief An RTTI emulation of device classes. It returns values < 256 if it is a screen device 
+   */
+  int type() {return type_;};
   /**
    @brief Sets this device (display, local file, printer) as the target of future graphics calls.
    *
@@ -140,7 +170,7 @@ class Fl_Display : public Fl_Device {
  */
 class Fl_Quartz_Display : public Fl_Display {
 public:
-  Fl_Quartz_Display() {};
+  Fl_Quartz_Display() { type_ = quartz_display; };
 };
 #endif
 #if defined(WIN32) || defined(FL_DOXYGEN)
@@ -149,7 +179,7 @@ public:
  */
 class Fl_GDI_Display : public Fl_Display {
 public:
-  Fl_GDI_Display() {};
+  Fl_GDI_Display() { type_ = gdi_display; };
 };
 #endif
 #if !( defined(__APPLE__) || defined(WIN32)) || defined(FL_DOXYGEN)
@@ -158,7 +188,7 @@ public:
  */
 class Fl_Xlib_Display : public Fl_Display {
 public:
-  Fl_Xlib_Display() {};
+  Fl_Xlib_Display() { type_ = xlib_display; };
 };
 #endif
 

@@ -14,11 +14,12 @@
 
 extern void fl_quartz_restore_line_style_();
 
-/*Fl_Quartz_Printer::Fl_Quartz_Printer(void)
+Fl_Quartz_Printer::Fl_Quartz_Printer(void)
 {
   x_offset = 0;
   y_offset = 0;
-}*/
+  type_ = quartz_printer;
+}
 
 int Fl_Quartz_Printer::start_job (int pagecount, int *frompage, int *topage)
 //printing using a Quartz graphics context
@@ -100,6 +101,7 @@ int Fl_Quartz_Printer::start_job (int pagecount, int *frompage, int *topage)
 #endif
   if (status != noErr) return 1;
   y_offset = x_offset = 0;
+  this->set_current();
   return 0;
 }
 
@@ -262,6 +264,7 @@ void Fl_Quartz_Printer::end_job (void)
     fl_alert ("PM Session error %d", (int)status);
   }
   PMSessionEndDocumentNoDialog(printSession);
+  current_display()->set_current();
   fl_gc = 0;
   Fl::first_window()->show();
 }

@@ -13,6 +13,7 @@ extern HWND fl_window;
 
 Fl_GDI_Printer::Fl_GDI_Printer(void) : Fl_Virtual_Printer() {
   hPr = NULL;
+  type_ = gdi_printer;
 }
 
 static void WIN_SetupPrinterDeviceContext(HDC prHDC)
@@ -80,12 +81,14 @@ int Fl_GDI_Printer::start_job (int pagecount, int *frompage, int *topage)
     }
     x_offset = 0;
     y_offset = 0;
+    this->set_current();
   }
   return err;
 }
 
 void Fl_GDI_Printer::end_job (void)
 {
+  current_display()->set_current();
   if (hPr != NULL) {
     if (! abortPrint) {
       prerr = EndDoc (hPr);
