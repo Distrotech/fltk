@@ -118,6 +118,8 @@ public:
    */
   virtual Fl_Device *set_current();
   
+  virtual ~Fl_Device() {};
+
   /**
    @brief    Returns the current target device of graphics calls.
    */
