@@ -259,7 +259,7 @@ void Fl_Quartz_Printer::end_job (void)
   
   status = PMSessionError(printSession);
   if (status != noErr) {
-    fl_alert ("PM Session error %d", status);
+    fl_alert ("PM Session error %d", (int)status);
   }
   PMSessionEndDocumentNoDialog(printSession);
   fl_gc = 0;
