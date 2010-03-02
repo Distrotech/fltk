@@ -11,72 +11,45 @@
 #include <stdio.h>
 #include <math.h>
 
-
-const int Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS][2] = { // order of enum Page_Format
+const struct Fl_PSfile_Device::page_format Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS] = { // order of enum Page_Format
 // comes from appendix B of 5003.PPD_Spec_v4.3.pdf
-// A* // index(Ai) = i
-{2384, 3370}, //A0
-{1684, 2384}, //A1
-{1191, 1684}, //A2
-{842, 1191},  //A3
-{595, 842},   //A4
-{420, 595},   //A5
-{297, 420},   //A6
-{210, 297},   //A7
-{148, 210},   //A8
-{105, 148},   //A9
 
-// B* // index(Bi) = i+10
-{2920, 4127}, //B0
-{2064, 2920}, //B1
-{1460, 2064}, //B2
-{1032, 1460}, //B3
-{729, 1032},  //B4
-{516, 729},   //B5
-{363, 516},   //B6
-{258, 363},   //B7
-{181, 258},   //B8
-{127, 181},   //B9
-{91,127},     //B10
+  // A* // index(Ai) = i
+  {2384, 3370, "A0"},
+  {1684, 2384, "A1"},
+  {1191, 1684, "A2"},
+  { 842, 1191, "A3"},
+  { 595,  842, "A4"},
+  { 420,  595, "A5"},
+  { 297,  420, "A6"},
+  { 210,  297, "A7"},
+  { 148,  210, "A8"},
+  { 105,  148, "A9"},
 
-// others (look at Fl_Printer.H} //
-{459, 649},  // EnvC5 envelope
-{312, 624},  // EnvDL envelope
-{522, 756}, // Executive
-{595, 935}, // Folio
-{1224, 792},  // Ledger (landscape)
-{612, 1008},  // Legal
-{612, 792}, // Letter
-{792, 1224},  // Tabloid
-{297, 684}   //  Env10 envelope
+  // B* // index(Bi) = i+10
+  {2920, 4127, "B0"},
+  {2064, 2920, "B1"},
+  {1460, 2064, "B2"},
+  {1032, 1460, "B3"},
+  { 729, 1032, "B4"},
+  { 516,  729, "B5"},
+  { 363,  516, "B6"},
+  { 258,  363, "B7"},
+  { 181,  258, "B8"},
+  { 127,  181, "B9"},
+  {  91,  127, "B10"},
+
+  // others (look at Fl_Printer.H} //
+  { 459,  649, "EnvC5"}, // envelope
+  { 312,  624, "EnvDL"}, // envelope
+  { 522,  756, "Executive"},
+  { 595,  935, "Folio"},
+  {1224,  792, "Ledger"}, // landscape
+  { 612, 1008, "Legal"},
+  { 612,  792, "Letter"},
+  { 792, 1224, "Tabloid"},
+  { 297,  684, "Env10"} // envelope
 };
-
-const char *Fl_PSfile_Device::page_format_names[NO_PAGE_FORMATS]={ // order of enum Page_Format
-// comes from appendix B of 5003.PPD_Spec_v4.3.pdf
-"A0",
-"A1",
-"A2",
-"A3",
-"A4",
-"A5",
-"A6",
-"A7",
-"A8",
-"A9",
-"B0",
-"B1",
-"B2",
-"B3",
-"B4",
-"B5",
-"B6",
-"B7",
-"B8",
-"B9",
-"B10",
-"EnvC5", "EnvDL", "Executive", "Folio", "Ledger", "Legal", "Letter", "Tabloid", "Env10"
-};
-
 
 //  Prolog string 
 
@@ -356,8 +329,8 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
     fprintf(output, "%%%%Pages: %i\n", pagecount);
   else
     fputs("%%Pages: (atend)\n", output);
-  fprintf(output, "%%%%BeginFeature: *PageSize %s\n", page_format_names[format] );
-  fprintf(output, "<</PageSize[%d %d]>>setpagedevice\n", page_formats[format][0], page_formats[format][1] );
+  fprintf(output, "%%%%BeginFeature: *PageSize %s\n", page_formats[format].name );
+  fprintf(output, "<</PageSize[%d %d]>>setpagedevice\n", page_formats[format].width, page_formats[format].height );
   fputs("%%EndFeature\n", output);
   fputs("%%EndComments\n", output);
   fputs(prolog, output);
@@ -472,11 +445,11 @@ void Fl_PSfile_Device::page(int format){
   
   
   if(format &  LANDSCAPE){
-    ph_=Fl_PSfile_Device::page_formats[format & 0xFF][0];
-    pw_=Fl_PSfile_Device::page_formats[format & 0xFF][1];
+    ph_=Fl_PSfile_Device::page_formats[format & 0xFF].width;
+    pw_=Fl_PSfile_Device::page_formats[format & 0xFF].height;
   }else{
-    pw_=Fl_PSfile_Device::page_formats[format & 0xFF][0];
-    ph_=Fl_PSfile_Device::page_formats[format & 0xFF][1];
+    pw_=Fl_PSfile_Device::page_formats[format & 0xFF].width;
+    ph_=Fl_PSfile_Device::page_formats[format & 0xFF].height;
   }
   page(pw_,ph_,format & 0xFF00);//,orientation only;
 };

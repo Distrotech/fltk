@@ -4,7 +4,6 @@
 #include <FL/Fl_Device.H>
 #include <stdio.h>
 
-
 /**
  * @brief Provides an OS-independent interface to printing.
  *
@@ -377,11 +376,17 @@ private:
   void untranslate(void);
 
 protected:
+
+  struct page_format {
+    int width;
+    int height;
+    const char *name;
+  };
+
   FILE *output;
   double pw_, ph_;
   static const int NO_PAGE_FORMATS=30;
-  static const int page_formats[NO_PAGE_FORMATS][2];
-  static const char *page_format_names[NO_PAGE_FORMATS];
+  static const struct page_format page_formats[NO_PAGE_FORMATS];
   
   uchar bg_r, bg_g, bg_b;
   int start_postscript (int pagecount, enum Page_Format format);
