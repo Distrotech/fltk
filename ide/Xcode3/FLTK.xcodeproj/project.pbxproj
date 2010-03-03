@@ -297,6 +297,10 @@
 		7F38E11D113D240000335A38 /* utf8Input.c in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E11C113D240000335A38 /* utf8Input.c */; };
 		7F38E120113D242600335A38 /* utf8Utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7F38E11F113D242600335A38 /* utf8Utils.c */; };
 		7F87C5B4B381059562D04D1B /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5941DB9F3E72D2BF8A0677 /* fltk.framework */; };
+		7FAD6210113E721500AFA956 /* ps_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD620F113E721500AFA956 /* ps_image.cxx */; };
+		7FAD6420113EBE4700AFA956 /* device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD641F113EBE4700AFA956 /* device.cxx */; };
+		7FAD6432113EC00200AFA956 /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9B5941DB9F3E72D2BF8A0677 /* fltk.framework */; };
+		7FAD6435113EC03D00AFA956 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5941DB9F3E72D2BF8A0677 /* fltk.framework */; };
 		8011D2FAF0976F4DD1EC4CD4 /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 9A6DC6214B8F5A2B500E8ADC /* jdatasrc.c */; };
 		80956FF523327A1302D93B71 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B5941DB9F3E72D2BF8A0677 /* fltk.framework */; };
 		80BD132748AF46B5A6B00EE5 /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = BF0570F9FD9C7A1AF5AB11AF /* pngget.c */; };
@@ -2092,6 +2096,20 @@
 			remoteGlobalIDString = 24FCA88EC0EEED69F1B5FFF5;
 			remoteInfo = "native-filechooser";
 		};
+		7FAD640B113EBDC400AFA956 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28E5F5BCC7BEE6A4EBA96DD6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD2F3E7A534913DA35750EB /* fltk */;
+			remoteInfo = fltk;
+		};
+		7FAD6450113EC75300AFA956 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28E5F5BCC7BEE6A4EBA96DD6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7FAD63FC113EBDB500AFA956 /* device */;
+			remoteInfo = device;
+		};
 		801D2908872320C241DCDFE0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 28E5F5BCC7BEE6A4EBA96DD6 /* Project object */;
@@ -3146,6 +3164,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7FAD6433113EC02000AFA956 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7FAD6432113EC00200AFA956 /* fltk.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		81F1362D8248DD6A37A305E4 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3696,6 +3724,9 @@
 		7F38E11C113D240000335A38 /* utf8Input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf8Input.c; path = ../../src/xutf8/utf8Input.c; sourceTree = SOURCE_ROOT; };
 		7F38E11F113D242600335A38 /* utf8Utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf8Utils.c; path = ../../src/xutf8/utf8Utils.c; sourceTree = SOURCE_ROOT; };
 		7F6FFE0603CA62245FB7D4AF /* checkers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checkers.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FAD620F113E721500AFA956 /* ps_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ps_image.cxx; path = ../../src/ps_image.cxx; sourceTree = SOURCE_ROOT; };
+		7FAD63FD113EBDB500AFA956 /* device.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = device.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FAD641F113EBE4700AFA956 /* device.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = device.cxx; path = ../../test/device.cxx; sourceTree = SOURCE_ROOT; };
 		7FFABB7F8A77C703F03E5690 /* filename_absolute.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = filename_absolute.cxx; path = ../../src/filename_absolute.cxx; sourceTree = SOURCE_ROOT; };
 		802BCAAB86140DBCA902085E /* jctrans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jctrans.c; path = ../../jpeg/jctrans.c; sourceTree = SOURCE_ROOT; };
 		80C0F01DF59DB4E97ED254FB /* ide_support_ui.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ide_support_ui.cxx; path = ../../fluid/ide_support_ui.cxx; sourceTree = SOURCE_ROOT; };
@@ -4249,6 +4280,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AF202D6B15A1BDE7B3DCA38 /* fltk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7FAD63FB113EBDB500AFA956 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FAD6435113EC03D00AFA956 /* fltk.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4977,6 +5016,7 @@
 				A3BF678A013A6B1B73036E12 /* fl_vertex.cxx */,
 				C3327761127FB29E3BE13684 /* flstring.c */,
 				7014DEBFCAF974D4F5E4987B /* numericsort.c */,
+				7FAD620F113E721500AFA956 /* ps_image.cxx */,
 				A50EB1EAD4703432158A3D87 /* scandir.c */,
 				EDA38317E14A295FE07E3000 /* screen_xywh.cxx */,
 				026FB673161F8153CBFCF779 /* vsnprintf.c */,
@@ -5094,6 +5134,7 @@
 				0506546449DEA797221BA963 /* CubeView */,
 				3AE4800B5631C777A48743C4 /* cursor */,
 				3BAADFEA5FBB1F9AF4EC1C45 /* curve */,
+				7FAD641E113EBE2100AFA956 /* device */,
 				D71C950781A83BD64C636980 /* doublebuffer */,
 				F963384D8B25DD03B5785C76 /* editor */,
 				3EB27BB3E9F189884A1A521E /* fast_slow */,
@@ -5262,6 +5303,14 @@
 				DD11262E04C818DD84C3459D /* preferences.fl */,
 			);
 			name = preferences;
+			sourceTree = "<group>";
+		};
+		7FAD641E113EBE2100AFA956 /* device */ = {
+			isa = PBXGroup;
+			children = (
+				7FAD641F113EBE4700AFA956 /* device.cxx */,
+			);
+			name = device;
 			sourceTree = "<group>";
 		};
 		833A6CE80FB2CA2A96F8CE98 /* fltkgl */ = {
@@ -5468,6 +5517,7 @@
 				C5B6CD64F19551003C23B235 /* tree.app */,
 				7585362A95A70617B878646D /* utf8.app */,
 				791CB34485C4014C6CD4F089 /* valuators.app */,
+				7FAD63FD113EBDB500AFA956 /* device.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -6423,6 +6473,25 @@
 			productReference = 23200EAB33CB26B79883D84C /* arc.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7FAD63FC113EBDB500AFA956 /* device */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7FAD640A113EBDB800AFA956 /* Build configuration list for PBXNativeTarget "device" */;
+			buildPhases = (
+				7FAD63F9113EBDB500AFA956 /* Resources */,
+				7FAD63FA113EBDB500AFA956 /* Sources */,
+				7FAD63FB113EBDB500AFA956 /* Frameworks */,
+				7FAD6433113EC02000AFA956 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7FAD640C113EBDC400AFA956 /* PBXTargetDependency */,
+			);
+			name = device;
+			productName = device;
+			productReference = 7FAD63FD113EBDB500AFA956 /* device.app */;
+			productType = "com.apple.product-type.application";
+		};
 		886048CA51D601C92009D0D0 /* overlay */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 17C323CDCDA14149A58EFAD6 /* Build configuration list for PBXNativeTarget "overlay" */;
@@ -6725,6 +6794,7 @@
 				9A880260656719262070A2AA /* PBXTargetDependency */,
 				17926427B4E8BA74F626CA16 /* PBXTargetDependency */,
 				A057C4D95F858FCE84A72F3B /* PBXTargetDependency */,
+				7FAD6451113EC75300AFA956 /* PBXTargetDependency */,
 			);
 			name = Demo;
 			productName = Demo;
@@ -7348,6 +7418,7 @@
 				08226177A4D85895E06AED0E /* CubeView */,
 				1B4877FD93842997C132CD02 /* cursor */,
 				99E0C8F279AE4FE47BD48E86 /* curve */,
+				7FAD63FC113EBDB500AFA956 /* device */,
 				135E56B9B7D980EAC9D5F867 /* doublebuffer */,
 				78D41CB0D11B043B43FBEAD0 /* editor */,
 				CBFA9014AAF138E645D7AC32 /* fast_slow */,
@@ -7641,6 +7712,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		7EAA11885FAFD9E2648D9E23 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7FAD63F9113EBDB500AFA956 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -8422,6 +8500,7 @@
 				7F38E114113D239900335A38 /* keysym2Ucs.c in Sources */,
 				7F38E11D113D240000335A38 /* utf8Input.c in Sources */,
 				7F38E120113D242600335A38 /* utf8Utils.c in Sources */,
+				7FAD6210113E721500AFA956 /* ps_image.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8440,6 +8519,14 @@
 				42308D3FAA944547AF4D7728 /* CubeView.cxx in Sources */,
 				00EE7B7B9DC249149073E419 /* CubeMain.cxx in Sources */,
 				819B905988ED74BA464D60AD /* CubeViewUI.fl in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7FAD63FA113EBDB500AFA956 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FAD6420113EBE4700AFA956 /* device.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9271,6 +9358,16 @@
 			isa = PBXTargetDependency;
 			target = 158265CAC6C7937A3FDE6CCA /* Fluid */;
 			targetProxy = F9512382C2D50CFFA23A9C33 /* PBXContainerItemProxy */;
+		};
+		7FAD640C113EBDC400AFA956 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD2F3E7A534913DA35750EB /* fltk */;
+			targetProxy = 7FAD640B113EBDC400AFA956 /* PBXContainerItemProxy */;
+		};
+		7FAD6451113EC75300AFA956 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7FAD63FC113EBDB500AFA956 /* device */;
+			targetProxy = 7FAD6450113EC75300AFA956 /* PBXContainerItemProxy */;
 		};
 		80B07EC502FF19194A9F3F76 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -14495,6 +14592,78 @@
 			};
 			name = DebugX11;
 		};
+		7FAD6407113EBDB800AFA956 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+				);
+				INFOPLIST_FILE = "plists/curve-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = device;
+			};
+			name = Debug;
+		};
+		7FAD6408113EBDB800AFA956 /* DebugX11 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INFOPLIST_FILE = "device-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = device;
+			};
+			name = DebugX11;
+		};
+		7FAD6409113EBDB800AFA956 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "device-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = device;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		84F1ACA038D3BFE25E845D30 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -17569,6 +17738,16 @@
 				373C72DCB5EAB9AF4D13AB2A /* Debug */,
 				7F38E0A5113D1E6C00335A38 /* DebugX11 */,
 				E8D4E3208F436B92F2AD5527 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7FAD640A113EBDB800AFA956 /* Build configuration list for PBXNativeTarget "device" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7FAD6407113EBDB800AFA956 /* Debug */,
+				7FAD6408113EBDB800AFA956 /* DebugX11 */,
+				7FAD6409113EBDB800AFA956 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
