@@ -239,7 +239,6 @@ int Fl_Quartz_Printer::start_page (void)
   CGContextSaveGState(fl_gc);
   fl_line_style(FL_SOLID);
   fl_window = (void *)1; // TODO: something better
-  fl_isprintcontext = true;
   fl_clip_region(0);
   return status != noErr;
 }
@@ -249,7 +248,6 @@ int Fl_Quartz_Printer::end_page (void)
   CGContextFlush(fl_gc);
   CGContextRestoreGState(fl_gc);
   CGContextRestoreGState(fl_gc);
-  fl_isprintcontext = false;
   OSStatus status = PMSessionEndPageNoDialog(printSession);
   delete_image_list();
   return status != noErr;

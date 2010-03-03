@@ -49,7 +49,6 @@ void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
   glPopClientAttrib();
   fl_gc = save_gc;
 #ifdef WIN32
-  fl_isprintcontext = true;
   fl_draw_image(baseAddress + (glw->h() - 1) * mByteWidth, x, y , glw->w(), glw->h(), bytesperpixel, - mByteWidth);
 #elif defined(__APPLE__)
   CGColorSpaceRef cSpace = CGColorSpaceCreateWithName (kCGColorSpaceGenericRGB);  

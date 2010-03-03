@@ -170,7 +170,6 @@ int fl_disable_transient_for;           // secret method of removing TRANSIENT_F
 Window fl_window;
 Fl_Window *Fl_Window::current_;
 //EventRef fl_os_event;		// last (mouse) event
-bool fl_isprintcontext = false;
 
 // forward declarations of variables in this file
 static int got_events = 0;
@@ -2392,7 +2391,6 @@ void Fl_Window::make_current()
   [[(NSWindow*)i->xid contentView]  lockFocus];
   i->gc = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
   fl_gc = i->gc;
-  fl_isprintcontext = false;
   Fl_Region fl_window_region = XRectangleRegion(0,0,w(),h());
   if ( ! this->window() ) {
     for ( Fl_X *cx = i->xidChildren; cx; cx = cx->xidNext ) {	// clip-out all sub-windows
@@ -2783,7 +2781,7 @@ static Fl_Region MacRegionMinusRect(Fl_Region r, int x,int y,int w,int h)
   Fl_Region outr = (Fl_Region)malloc(sizeof(*outr));
   outr->rects = (CGRect*)malloc(4 * r->count * sizeof(CGRect));
   outr->count = 0;
-  CGRect rect = FL_CGRECTMAKE_COCOA(x, y, w, h);
+  CGRect rect = fl_cgrectmake_cocoa(x, y, w, h);
   for( int i = 0; i < r->count; i++) {
     CGRect A = r->rects[i];
     CGRect test = CGRectIntersection(A, rect);
@@ -2828,7 +2826,7 @@ Fl_Region MacRectRegionIntersect(Fl_Region current, int x,int y,int w, int h)
  */
 {
   if (current == NULL) return XRectangleRegion(x,y,w,h);
-  CGRect r = FL_CGRECTMAKE_COCOA(x, y, w, h);
+  CGRect r = fl_cgrectmake_cocoa(x, y, w, h);
   Fl_Region outr = (Fl_Region)malloc(sizeof(*outr));
   outr->count = current->count;
   outr->rects =(CGRect*)malloc(outr->count * sizeof(CGRect));
@@ -3488,6 +3486,12 @@ void MACsetContainsGLsubwindow(Fl_Window *w)
 WindowRef MACwindowRef(Fl_Window *w)
 {
   return (WindowRef)[(FLWindow*)Fl_X::i(w)->xid windowRef];
+}
+
+// so a CGRect matches exactly what is denoted x,y,w,h for clipping purposes
+CGRect fl_cgrectmake_cocoa(int x, int y, int w, int h) {
+  if (Fl_Device::current()->type() == Fl_Device::quartz_printer) return CGRectMake(x, y, w-1.5 , h-1.5 ); 
+  return CGRectMake(x, y, w > 0 ? w - 0.9 : 0, h > 0 ? h - 0.9 : 0);
 }
 
 #endif // FL_DOXYGEN

@@ -1790,7 +1790,6 @@ HDC fl_gc = 0;
 // the current window handle, initially set to -1 so we can correctly
 // allocate fl_GetDC(0)
 HWND fl_window = NULL;
-BOOL fl_isprintcontext = false; // true when fl_gc is a print context
 
 // Here we ensure only one GetDC is ever in place.
 HDC fl_GetDC(HWND w) {
@@ -1801,7 +1800,6 @@ HDC fl_GetDC(HWND w) {
   fl_gc = GetDC(w);
   fl_save_dc(w, fl_gc);
   fl_window = w;
-  fl_isprintcontext = false;
   // calling GetDC seems to always reset these: (?)
   SetTextAlign(fl_gc, TA_BASELINE|TA_LEFT);
   SetBkMode(fl_gc, TRANSPARENT);
@@ -1923,9 +1921,9 @@ void fl_cleanup_dc_list(void) {          // clean up the list
   } while(t);
 }
 
-Fl_Region fl_win_makecliprectregion(int x, int y, int w, int h)
-{
-  // beacuse rotation may apply, the rectangle becomes a polygon in device coords
+Fl_Region XRectangleRegion(int x, int y, int w, int h) {
+  if (Fl_Device::current()->type() < 256) return CreateRectRgn(x,y,x+w,y+h);
+  // because rotation may apply, the rectangle becomes a polygon in device coords
   POINT pt[4] = { {x, y}, {x + w, y}, {x + w, y + h}, {x, y + h} };
   LPtoDP(fl_gc, pt, 4);
   return CreatePolygonRgn(pt, 4, ALTERNATE);

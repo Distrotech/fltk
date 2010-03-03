@@ -254,7 +254,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
         }            
       }
     }
-  if(fl_isprintcontext) { 
+  if(Fl_Device::current()->type() == Fl_Device::gdi_printer) {
     // if print context, device and logical units are not equal, so SetDIBitsToDevice
     // does not do the expected job, whereas StretchDIBits does it.
     StretchDIBits(fl_gc, x, y+j-k, w, k, 0, 0, w, k,

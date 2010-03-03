@@ -45,18 +45,15 @@
 #define VK_APPS 0x5D
 #endif
 
+#include <FL/Fl_Device.H>
+
 // some random X equivalents
 typedef HWND Window;
 typedef POINT XPoint;
 struct XRectangle {int x, y, width, height;};
 typedef HRGN Fl_Region;
 FL_EXPORT void fl_clip_region(Fl_Region);
-extern Fl_Region fl_win_makecliprectregion(int x, int y, int w, int h);
-extern BOOL fl_isprintcontext;
-inline Fl_Region XRectangleRegion(int x, int y, int w, int h) {
-  if (!fl_isprintcontext) return CreateRectRgn(x,y,x+w,y+h);
-  return fl_win_makecliprectregion(x, y, w, h);
-}
+extern Fl_Region XRectangleRegion(int x, int y, int w, int h);
 inline void XDestroyRegion(Fl_Region r) {DeleteObject(r);}
 inline void XClipBox(Fl_Region r,XRectangle* rect) {
     RECT win_rect; GetRgnBox(r,&win_rect);

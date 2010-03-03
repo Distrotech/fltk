@@ -165,7 +165,6 @@ int Fl_GDI_Printer::start_page (void)
     origin(0, 0);
     image_list_ = NULL;
     fl_clip_region(0);
-    fl_isprintcontext = true;
   }
   return rsult;
 }
@@ -202,7 +201,6 @@ int Fl_GDI_Printer::end_page (void)
 {
   int  rsult;
   
-  fl_isprintcontext = false;
   rsult = 0;
   if (hPr != NULL) {
     prerr = EndPage (hPr);
