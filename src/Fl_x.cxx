@@ -1772,7 +1772,7 @@ void printFront(Fl_Widget *o, void *data)
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
   printer.print_widget( win );
-  //printer.print_window_part( win, 0,0 );
+  //printer.print_window_part( win, 0,0,win->w(), win->h() );
   printer.end_page();
   printer.end_job();
   o->window()->show();
