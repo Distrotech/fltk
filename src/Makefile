@@ -163,7 +163,8 @@ CPPFILES = \
 	fl_symbols.cxx \
 	fl_vertex.cxx \
 	screen_xywh.cxx \
-	fl_utf8.cxx
+	fl_utf8.cxx \
+	ps_image.cxx
 
 FLCPPFILES = \
 	forms_compatability.cxx \

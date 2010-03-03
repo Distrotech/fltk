@@ -913,6 +913,8 @@ Fl_PNM_Image.o: ../FL/fl_utf8.h flstring.h ../config.h
 flstring.o: flstring.h ../FL/Fl_Export.H ../config.h
 scandir.o: flstring.h ../FL/Fl_Export.H ../config.h ../FL/fl_utf8.h
 numericsort.o: ../config.h ../FL/filename.H
+ps_image.o: ../FL/Fl_Printer.H ../FL/Fl.H ../FL/Fl_Pixmap.H ../FL/Fl_Bitmap.H
+ps_image.o: ../FL/Fl_Device.H
 vsnprintf.o: flstring.h ../FL/Fl_Export.H ../config.h
 fl_utf.o: ../FL/fl_utf8.h
 xutf8/case.o: xutf8/headers/case.h
