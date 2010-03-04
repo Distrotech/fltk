@@ -58,9 +58,10 @@ protected:
   int y_offset;
   int x_offset;
   struct chain_elt *image_list_; // chained list of Fl_Image's used in this page
+  void *gc; // the printer's graphics context, if there's one, NULL otherwise
   void delete_image_list(); // deletes the page image list
 #ifndef FL_DOXYGEN
-     Fl_Virtual_Printer(void) { current_display_ = (Fl_Display*)fl_device;};
+     Fl_Virtual_Printer(void) { current_display_ = (Fl_Display*)fl_device; gc = NULL; };
 #endif
 public:
 #ifdef FL_DOXYGEN
@@ -210,6 +211,8 @@ public:
       @brief Returns the display device of the platform.
       */
      Fl_Display *current_display() {return current_display_; };
+     
+     Fl_Device *Fl_Virtual_Printer::set_current(void);
 };
 
 #ifdef __APPLE__

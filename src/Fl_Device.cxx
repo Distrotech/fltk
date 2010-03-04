@@ -91,20 +91,14 @@ void Fl_Virtual_Printer::origin(int *x, int *y)
 
 void Fl_Virtual_Printer::print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
 {
-#ifdef __APPLE__
-  CGContextRef save_gc = fl_gc;
-#elif defined(WIN32)
-  HDC save_gc = fl_gc;
-#else
-  _XGC *save_gc = fl_gc;
-#endif
+  this->current_display()->set_current();
   Fl_Window *save_front = Fl::first_window();
   win->show();
   Fl::check();
   win->make_current();
   uchar *image_data = fl_read_image(NULL, x, y, w, h);
   save_front->show();
-  fl_gc = save_gc;
+  this->set_current();
   Fl_RGB_Image *image = new Fl_RGB_Image(image_data, w, h);
   image->draw(delta_x, delta_y);
   add_image(image, image_data);
@@ -129,6 +123,19 @@ void Fl_Virtual_Printer::delete_image_list()
     image_list_ = next;
   }
 }
+
+Fl_Device *Fl_Virtual_Printer::set_current(void)
+{
+#ifdef __APPLE__
+  fl_gc = (CGContextRef)gc;
+#elif defined(WIN32)
+  fl_gc = (HDC)gc;
+#else
+  fl_gc = (_XGC*)gc;
+#endif
+  return this->Fl_Device::set_current();
+}
+
 
 int Fl_Virtual_Printer::start_job(int pagecount, int *frompage, int *topage) {return 1;}
 int Fl_Virtual_Printer::start_page (void) {return 1;}

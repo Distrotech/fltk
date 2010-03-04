@@ -240,6 +240,7 @@ int Fl_Quartz_Printer::start_page (void)
   fl_line_style(FL_SOLID);
   fl_window = (void *)1; // TODO: something better
   fl_clip_region(0);
+  if( status == noErr) gc = fl_gc;
   return status != noErr;
 }
 
@@ -250,6 +251,7 @@ int Fl_Quartz_Printer::end_page (void)
   CGContextRestoreGState(fl_gc);
   OSStatus status = PMSessionEndPageNoDialog(printSession);
   delete_image_list();
+  gc = NULL;
   return status != noErr;
 }
 

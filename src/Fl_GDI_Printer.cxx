@@ -165,6 +165,7 @@ int Fl_GDI_Printer::start_page (void)
     origin(0, 0);
     image_list_ = NULL;
     fl_clip_region(0);
+    gc = (void *)fl_gc;
   }
   return rsult;
 }
@@ -211,6 +212,7 @@ int Fl_GDI_Printer::end_page (void)
     }
   }
   delete_image_list();
+  gc = NULL;
   return rsult;
 }
 

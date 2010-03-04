@@ -2994,10 +2994,10 @@ int MACscreen_init(XRectangle screens[])
   printer.printable_rect(&w, &h);
   printer.origin(w/2, h/2 );
   printer.rotate(20.);
-  //printer.print_window_part( win, 0,0, win->w(), win->h() , - win->w()/2, - win->h()/2);
   printer.print_widget( win, - win->w()/2, - win->h()/2 );
 #else
   printer.print_widget( win);
+  //printer.print_window_part( win, 0,0, win->w(), win->h() );
 #endif
   printer.end_page();
   printer.end_job();
