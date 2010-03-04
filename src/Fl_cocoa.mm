@@ -152,8 +152,9 @@ static void createAppleMenu(void);
 static Fl_Region MacRegionMinusRect(Fl_Region r, int x,int y,int w,int h);
 static void cocoaMouseHandler(NSEvent *theEvent);
 
-FL_EXPORT Fl_Quartz_Display fl_display_device;
-Fl_Device *fl_device = (Fl_Device*)&fl_display_device;
+static Fl_Quartz_Display fl_quartz_device;
+FL_EXPORT Fl_Display *fl_display_device = (Fl_Display*)&fl_quartz_device; // does not change
+FL_EXPORT Fl_Device *fl_device = (Fl_Device*)&fl_quartz_device; // the current target device of graphics operations
 
 // public variables
 int fl_screen;

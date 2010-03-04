@@ -91,7 +91,7 @@ void Fl_Virtual_Printer::origin(int *x, int *y)
 
 void Fl_Virtual_Printer::print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
 {
-  this->current_display()->set_current();
+  Fl_Device::display_device()->set_current();
   Fl_Window *save_front = Fl::first_window();
   win->show();
   Fl::check();

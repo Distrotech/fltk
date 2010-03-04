@@ -264,7 +264,7 @@ void Fl_Quartz_Printer::end_job (void)
     fl_alert ("PM Session error %d", (int)status);
   }
   PMSessionEndDocumentNoDialog(printSession);
-  current_display()->set_current();
+  Fl_Device::display_device()->set_current();
   fl_gc = 0;
   Fl::first_window()->show();
 }

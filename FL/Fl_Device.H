@@ -18,6 +18,8 @@ class Fl_Image;
 class Fl_RGB_Image;
 class Fl_Pixmap;
 class Fl_Bitmap;
+class Fl_Display;
+extern Fl_Display *fl_display_device;
 typedef void (*Fl_Draw_Image_Cb)(void* ,int,int,int,uchar*);
 
 /**
@@ -154,6 +156,12 @@ public:
    @brief    Returns the current target device of graphics calls.
    */
   static Fl_Device *current();
+  
+  /**
+   @brief    Returns the platform's display device.
+   */
+  static Fl_Display *display_device() { return fl_display_device; };
+  
 };
 extern Fl_Device *fl_device;
 

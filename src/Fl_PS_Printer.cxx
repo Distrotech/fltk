@@ -699,7 +699,6 @@ static const char *_fontNames[] = {
 "ZapfDingbats"
 };
 // TODO RK: CRITICAL: this is hacky/temporary implementation of fonts. All below should be replaced.
-extern Fl_Display fl_display_device;
 
 void Fl_PSfile_Device::font(int f, int s) {
   
@@ -708,22 +707,22 @@ void Fl_PSfile_Device::font(int f, int s) {
     f = FL_COURIER;
   fprintf(output, "/%s SF\n" , _fontNames[f]);
   fprintf(output,"%i FS\n", s);
-  fl_display_device.font(f,s); //Dirty hack for font measurement ;-(
+  Fl_Device::display_device()->font(f,s); //Dirty hack for font measurement ;-(
   font_=f; size_=s;
 };
 
 /*double Fl_PSfile_Device::width(unsigned c){
-  return fl_display_device.width(c); //Dirty...
+  return Fl_Device::display_device()->width(c); //Dirty...
 }
 
 double Fl_PSfile_Device::width(const char* s, int n){;
-  return fl_display_device.width(s,n); //Very Dirty...
+  return Fl_Device::display_device()->width(s,n); //Very Dirty...
 }
 int Fl_PSfile_Device::descent(){
-  return fl_display_device.descent(); //A bit Dirty...
+  return Fl_Device::display_device()->descent(); //A bit Dirty...
 }
 int Fl_PSfile_Device::height(){
-  return fl_display_device.height(); //Still Dirty...
+  return Fl_Device::display_device()->height(); //Still Dirty...
 }*/
 
 void Fl_PSfile_Device::color(Fl_Color c) {
@@ -1149,7 +1148,7 @@ void Fl_PSfile_Device::end_job (void)
     delete c;
   }
   if (close_cmd_) (*close_cmd_)(output);
-  current_display()->set_current();
+  Fl_Device::display_device()->set_current();
 }
 
 #if ! (defined(__APPLE__) || defined(WIN32) )

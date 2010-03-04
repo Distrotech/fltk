@@ -75,8 +75,8 @@ void Fl_Gl_Printer::print_gl_window(Fl_Gl_Window *glw, int x, int y)
   Fl_X::q_end_image();
   CGContextRestoreGState(fl_gc);
   CFRelease(image);
-  free(baseAddress);
 #else // FIXME Linux/Unix
   fl_draw_image(baseAddress + (glw->h() - 1) * mByteWidth, x, y , glw->w(), glw->h(), bytesperpixel, - mByteWidth);
 #endif // WIN32
+  free(baseAddress);
 }

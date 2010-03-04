@@ -95,8 +95,9 @@
   for async mode proper operation, not mentioning the side effects...
 */
 
-FL_EXPORT Fl_Display fl_display_device;
-Fl_Device *fl_device = (Fl_Device*)&fl_display_device;
+static Fl_GDI_Display fl_gdi_device;
+FL_EXPORT Fl_Display *fl_display_device = (Fl_Display*)&fl_gdi_device; // does not change
+FL_EXPORT Fl_Device *fl_device = (Fl_Device*)&fl_gdi_device; // the current target device of graphics operations
 
 // dynamic wsock dll handling api:
 #if defined(__CYGWIN__) && !defined(SOCKET)

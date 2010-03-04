@@ -39,7 +39,6 @@ private:
     const uchar *data;
     struct chain_elt *next;
   };
-  Fl_Display *current_display_;
   void add_image(Fl_Image *image, const uchar *data); // adds an image to the page image list
   void traverse(Fl_Widget *widget); // finds subwindows of widget and prints them
   /**
@@ -61,7 +60,7 @@ protected:
   void *gc; // the printer's graphics context, if there's one, NULL otherwise
   void delete_image_list(); // deletes the page image list
 #ifndef FL_DOXYGEN
-     Fl_Virtual_Printer(void) { current_display_ = (Fl_Display*)fl_device; gc = NULL; };
+     Fl_Virtual_Printer(void) { gc = NULL; };
 #endif
 public:
 #ifdef FL_DOXYGEN
@@ -206,12 +205,7 @@ public:
       @brief To be called at the end of a print job.
       */
      virtual void end_job (void);
-     
-     /**
-      @brief Returns the display device of the platform.
-      */
-     Fl_Display *current_display() {return current_display_; };
-     
+          
      Fl_Device *Fl_Virtual_Printer::set_current(void);
 };
 
