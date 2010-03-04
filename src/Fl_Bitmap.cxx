@@ -264,6 +264,7 @@ Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) 
   return (mask);
 }
 
+typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
 void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if(fl_device->type() == Fl_Device::postscript_device) {
     ((Fl_Virtual_Printer*)fl_device)->draw(this, XP, YP, WP, HP, cx, cy);
@@ -302,8 +303,19 @@ void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   int save = SaveDC(tempdc);
   SelectObject(tempdc, (HGDIOBJ)id);
   SelectObject(fl_gc, fl_brush());
-  // secret bitblt code found in old MSWindows reference manual:
-  BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, 0xE20746L);
+  if(fl_device->type() == Fl_Device::gdi_printer) {
+    static HMODULE hMod = NULL;
+    if (!hMod) hMod = LoadLibrary("MSIMG32.DLL");
+    if(hMod) {
+      fl_transp_func fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
+      fl_TransparentBlt(fl_gc, X,Y,W,H, tempdc, cx, cy, w(), h(), RGB(0,0,0) );
+      }
+    else BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, SRCCOPY);
+    }
+  else {
+    // secret bitblt code found in old MSWindows reference manual:
+    BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, 0xE20746L);
+    }
   RestoreDC(tempdc, save);
   DeleteDC(tempdc);
 #elif defined(__APPLE_QUARTZ__)

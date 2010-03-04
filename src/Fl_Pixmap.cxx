@@ -74,6 +74,7 @@ void Fl_Pixmap::measure() {
   }
 }
 
+typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
 void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if(fl_device->type() == Fl_Device::postscript_device) {
     ((Fl_Virtual_Printer*)fl_device)->draw(this, XP, YP, WP, HP, cx, cy);
@@ -144,15 +145,33 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
     fl_restore_clip();
   }
 #elif defined(WIN32)
-  if (fl_device->type() == Fl_Device::gdi_printer) { // print with white instead of transparent background
-    Fl_Offscreen tmp_id = fl_create_offscreen(w(), h());
-    fl_begin_offscreen(tmp_id);
-    uchar *bitmap = 0;
-    fl_mask_bitmap = &bitmap;
-    fl_draw_pixmap(data(), 0, 0, FL_WHITE );
-    fl_end_offscreen();
-    fl_copy_offscreen(X, Y, W, H, tmp_id, cx, cy);
-    fl_delete_offscreen(tmp_id);
+  if (fl_device->type() == Fl_Device::gdi_printer) {
+    static HMODULE hMod = NULL;
+    if (!hMod) hMod = LoadLibrary("MSIMG32.DLL");
+    if (hMod) {
+#     define UNLIKELY_RGB_COLOR 2,3,4
+#     define WIN_COLOR RGB(2,3,4)
+      Fl_Offscreen tmp_id = fl_create_offscreen(w(), h());
+      fl_begin_offscreen(tmp_id);
+      uchar *bitmap = 0;
+      fl_mask_bitmap = &bitmap;
+      Fl_Color save_c = fl_color();
+      fl_color(UNLIKELY_RGB_COLOR);
+      fl_draw_pixmap(data(), 0, 0, fl_color() );
+      fl_color( save_c );
+      fl_end_offscreen();
+      HDC new_gc = CreateCompatibleDC(fl_gc);
+      int save = SaveDC(new_gc);
+      SelectObject(new_gc, (void*)tmp_id);
+      fl_transp_func fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
+      fl_TransparentBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, w(), h(), WIN_COLOR);
+      RestoreDC(new_gc,save);
+      DeleteDC(new_gc);
+      fl_delete_offscreen(tmp_id);
+    }
+    else {
+      fl_copy_offscreen(X, Y, W, H, (Fl_Offscreen)id, cx, cy);
+    }
   }
   else if (mask) {
     HDC new_gc = CreateCompatibleDC(fl_gc);
