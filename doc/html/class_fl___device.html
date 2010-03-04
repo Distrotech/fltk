@@ -33,7 +33,23 @@ Inherited by <a class="el" href="class_fl___display.html">Fl_Display</a>, <a cla
 <p>
 <a href="class_fl___device-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Public Types</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><b>device_types</b> { <br>
+&nbsp;&nbsp;<b>xlib_display</b> =  0, 
+<b>quartz_display</b>, 
+<b>gdi_display</b>, 
+<b>gdi_printer</b> =  256, 
+<br>
+&nbsp;&nbsp;<b>quartz_printer</b>, 
+<b>postscript_device</b>
+<br>
+ }</td></tr>
+
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b2a9771fb09d94cbf4fe16829ebf89f8"></a><!-- doxytag: member="Fl_Device::type" ref="b2a9771fb09d94cbf4fe16829ebf89f8" args="()" -->
+int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___device.html#b2a9771fb09d94cbf4fe16829ebf89f8">type</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">An RTTI emulation of device classes. It returns values &lt; 256 if it is a screen device. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">virtual <a class="el" href="class_fl___device.html">Fl_Device</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___device.html#a751ed7f5bf9a7c1c38d85de8c276c5e">set_current</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Sets this device (display, local file, printer) as the target of future graphics calls.  <a href="#a751ed7f5bf9a7c1c38d85de8c276c5e"></a><br></td></tr>
@@ -42,6 +58,10 @@ Inherited by <a class="el" href="class_fl___display.html">Fl_Display</a>, <a cla
 static <a class="el" href="class_fl___device.html">Fl_Device</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___device.html#de78749561525edd844681f11dbf65f6">current</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the current target device of graphics calls. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6e9a44d3c91173c4c1795fbeab0146a5"></a><!-- doxytag: member="Fl_Device::display_device" ref="6e9a44d3c91173c4c1795fbeab0146a5" args="()" -->
+static <a class="el" href="class_fl___display.html">Fl_Display</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___device.html#6e9a44d3c91173c4c1795fbeab0146a5">display_device</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the platform's display device. <br></td></tr>
 <tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="76145eac98934878738725ddd42ad4f4"></a><!-- doxytag: member="Fl_Device::rect" ref="76145eac98934878738725ddd42ad4f4" args="(int x, int y, int w, int h)" -->
 virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>rect</b> (int x, int y, int w, int h)</td></tr>
@@ -174,6 +194,40 @@ virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>push_no_clip<
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="39c100790e4ede54333106ad25ad095e"></a><!-- doxytag: member="Fl_Device::pop_clip" ref="39c100790e4ede54333106ad25ad095e" args="()" -->
 virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>pop_clip</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="56858014c4f39233b801ab064a1c8fc3"></a><!-- doxytag: member="Fl_Device::draw_image" ref="56858014c4f39233b801ab064a1c8fc3" args="(const uchar *, int, int, int, int, int delta=3, int ldelta=0)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>draw_image</b> (const uchar *, int, int, int, int, int delta=3, int ldelta=0)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="9195e6e7d2ee22c9df452f29e019238f"></a><!-- doxytag: member="Fl_Device::draw_image_mono" ref="9195e6e7d2ee22c9df452f29e019238f" args="(const uchar *, int, int, int, int, int delta=1, int ld=0)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>draw_image_mono</b> (const uchar *, int, int, int, int, int delta=1, int ld=0)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7bb3b29f237ac807c858f2a9db1e2bec"></a><!-- doxytag: member="Fl_Device::draw_image" ref="7bb3b29f237ac807c858f2a9db1e2bec" args="(Fl_Draw_Image_Cb, void *, int, int, int, int, int delta=3)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>draw_image</b> (Fl_Draw_Image_Cb, void *, int, int, int, int, int delta=3)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="01b714c143fdaada183cc96425bcfe87"></a><!-- doxytag: member="Fl_Device::draw_image_mono" ref="01b714c143fdaada183cc96425bcfe87" args="(Fl_Draw_Image_Cb, void *, int, int, int, int, int delta=1)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>draw_image_mono</b> (Fl_Draw_Image_Cb, void *, int, int, int, int, int delta=1)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="66ee0a459fd79664c21b2f69c3a5d267"></a><!-- doxytag: member="Fl_Device::draw" ref="66ee0a459fd79664c21b2f69c3a5d267" args="(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>draw</b> (Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="03730144e3187fff25830a14faea9faf"></a><!-- doxytag: member="Fl_Device::draw" ref="03730144e3187fff25830a14faea9faf" args="(Fl_RGB_Image *rgb, int XP, int YP, int WP, int HP, int cx, int cy)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>draw</b> (Fl_RGB_Image *rgb, int XP, int YP, int WP, int HP, int cx, int cy)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8b9289d8f8f1a6fc916dfba81d580ae1"></a><!-- doxytag: member="Fl_Device::draw" ref="8b9289d8f8f1a6fc916dfba81d580ae1" args="(Fl_Bitmap *bmp, int XP, int YP, int WP, int HP, int cx, int cy)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>draw</b> (Fl_Bitmap *bmp, int XP, int YP, int WP, int HP, int cx, int cy)</td></tr>
+
+<tr><td colspan="2"><br><h2>Protected Attributes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fb7cf774b8c77be6d92dafad6c40fada"></a><!-- doxytag: member="Fl_Device::type_" ref="fb7cf774b8c77be6d92dafad6c40fada" args="" -->
+int&nbsp;</td><td class="memItemRight" valign="bottom"><b>type_</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5967d4ff3021ef21ddab941beb279a17"></a><!-- doxytag: member="Fl_Device::bg_r_" ref="5967d4ff3021ef21ddab941beb279a17" args="" -->
+uchar&nbsp;</td><td class="memItemRight" valign="bottom"><b>bg_r_</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8d523c545d90f04f76a13538834cb92d"></a><!-- doxytag: member="Fl_Device::bg_g_" ref="8d523c545d90f04f76a13538834cb92d" args="" -->
+uchar&nbsp;</td><td class="memItemRight" valign="bottom"><b>bg_g_</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4aaee02d0ec2284ba15e1946debb8c41"></a><!-- doxytag: member="Fl_Device::bg_b_" ref="4aaee02d0ec2284ba15e1946debb8c41" args="" -->
+uchar&nbsp;</td><td class="memItemRight" valign="bottom"><b>bg_b_</b></td></tr>
 
 <tr><td colspan="2"><br><h2>Friends</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="690c83e11f49fa837b563f4c0bc4fd1b"></a><!-- doxytag: member="Fl_Device::fl_rect" ref="690c83e11f49fa837b563f4c0bc4fd1b" args="(int x, int y, int w, int h)" -->
@@ -314,6 +368,18 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>fl_gap</b> ()</td></t
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ca7783f2d66b9a65a3201516bfd74694"></a><!-- doxytag: member="Fl_Device::fl_end_complex_polygon" ref="ca7783f2d66b9a65a3201516bfd74694" args="()" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>fl_end_complex_polygon</b> ()</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="10bd7236fcc246c3b6094c216a1b3102"></a><!-- doxytag: member="Fl_Device::fl_draw_image" ref="10bd7236fcc246c3b6094c216a1b3102" args="(const uchar *, int, int, int, int, int delta, int ldelta)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>fl_draw_image</b> (const uchar *, int, int, int, int, int delta, int ldelta)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fb898d62e0b121bdb0f2cd36da1b2f16"></a><!-- doxytag: member="Fl_Device::fl_draw_image_mono" ref="fb898d62e0b121bdb0f2cd36da1b2f16" args="(const uchar *, int, int, int, int, int delta, int ld)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>fl_draw_image_mono</b> (const uchar *, int, int, int, int, int delta, int ld)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e83b1953d7e9ec2962fdcc4c0a015feb"></a><!-- doxytag: member="Fl_Device::fl_draw_image" ref="e83b1953d7e9ec2962fdcc4c0a015feb" args="(Fl_Draw_Image_Cb, void *, int, int, int, int, int delta)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>fl_draw_image</b> (Fl_Draw_Image_Cb, void *, int, int, int, int, int delta)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b898d247c2ce9335bc16814434938ad5"></a><!-- doxytag: member="Fl_Device::fl_draw_image_mono" ref="b898d247c2ce9335bc16814434938ad5" args="(Fl_Draw_Image_Cb, void *, int, int, int, int, int delta)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>fl_draw_image_mono</b> (Fl_Draw_Image_Cb, void *, int, int, int, int, int delta)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 A pure virtual class subclassed to send graphics output to display, local files, or printers. <hr><h2>Member Function Documentation</h2>
@@ -337,12 +403,14 @@ Sets this device (display, local file, printer) as the target of future graphics
 <p>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The current target device of graphics calls. </dd></dl>
 
+<p>Reimplemented in <a class="el" href="class_fl___printer.html#f364bc6e41b798edf40cdfcc0a44d209">Fl_Printer</a>.</p>
+
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___device_8_h_source.html">Fl_Device.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Mar 1 13:51:41 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Mar 4 18:58:48 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

@@ -80,7 +80,7 @@ public:
       *
       Fully implemented for Mac OS X and MSWindows. For other platforms, temporarily
       implemented as an Fl_PSfile_Device, that is, graphics go to an A4-sized local PostScript file,
-      and frompage/topage args are ignored.
+      and frompage/topage arguments are ignored.
       @param[in] pagecount the total number of pages of the job
       @param[out] frompage if non-null, *frompage is set to the first page the user wants printed
       @param[out] topage if non-null, *topage is set to the last page the user wants printed
@@ -167,13 +167,8 @@ public:
       The widget's position on the printed page is determined by the last call to origin()
       and by the optional delta_x and delta_y arguments.
       Its dimensions are in points unless there was a previous call to scale().
-      <br>Under MSWindows, most printers don't allow interaction
-      between what is being printed and what was previously printed at the same position on the page.
-      Consequently, Fl_RGB_Image's are printed without transparency, Fl_Pixmap's are printed
-      with black color where a transparent background is expected, fl_read_image() returns a
-      white rectangle. A workaround is to use the print_window_part() call. 
-      <br>Under Mac OS X, transparent RGB images and pixmaps are correctly reproduced
-      on paper.
+      <br>Under MSWindows, Fl_RGB_Image's are printed without transparency.
+      A workaround is to use the print_window_part() call. 
       @param[in] widget Any FLTK widget (e.g., standard, custom, window).
       @param[in] delta_x Optional horizontal offset for positioning the widget relatively
       to the current origin of graphics functions.
@@ -206,8 +201,12 @@ public:
       */
      virtual void end_job (void);
           
-     Fl_Device *Fl_Virtual_Printer::set_current(void);
-};
+     /**
+      @brief Sets this printer as the target of future graphics calls.
+      @return The current target device of graphics calls.
+      */
+     Fl_Device *set_current(void);
+   };
 
 #ifdef __APPLE__
 class Fl_Quartz_Printer : public Fl_Virtual_Printer {
@@ -262,7 +261,7 @@ public:
 
 
 /**
- @brief Creates a session where all graphics will go to a local PostScript file.
+ @brief Creates a session where all graphics will go to a local PostScript file. Same API as Fl_Printer class.
  *
  This class has the same API as class Fl_Printer except for start_job() member function.
  \see class Fl_Printer.
