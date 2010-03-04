@@ -264,7 +264,6 @@ Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) 
   return (mask);
 }
 
-typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
 void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if(fl_device->type() == Fl_Device::postscript_device) {
     ((Fl_Virtual_Printer*)fl_device)->draw(this, XP, YP, WP, HP, cx, cy);
@@ -307,6 +306,7 @@ void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
     static HMODULE hMod = NULL;
     if (!hMod) hMod = LoadLibrary("MSIMG32.DLL");
     if(hMod) {
+      typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
       fl_transp_func fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
       fl_TransparentBlt(fl_gc, X,Y,W,H, tempdc, cx, cy, w(), h(), RGB(0,0,0) );
       }

@@ -74,7 +74,6 @@ void Fl_Pixmap::measure() {
   }
 }
 
-typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
 void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   if(fl_device->type() == Fl_Device::postscript_device) {
     ((Fl_Virtual_Printer*)fl_device)->draw(this, XP, YP, WP, HP, cx, cy);
@@ -151,6 +150,7 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
     if (hMod) {
 #     define UNLIKELY_RGB_COLOR 2,3,4
 #     define WIN_COLOR RGB(2,3,4)
+      typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
       Fl_Offscreen tmp_id = fl_create_offscreen(w(), h());
       fl_begin_offscreen(tmp_id);
       uchar *bitmap = 0;
