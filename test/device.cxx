@@ -602,12 +602,13 @@ void print(Fl_Widget *, void *w) {
   Fl_Printer * p = new Fl_Printer();
     //p->page(Fl_Printer::A4);
     //p->place(g, 70, 70, p->page_width() - 140, p->page_height() - 140,  FL_ALIGN_CENTER);
-  p->start_job(1);
-  p->start_page();
-  p->print_widget(g);
-  p->end_page();
-  p->end_job();
-    delete p;
+  if (!p->start_job(1)) {
+    p->start_page();
+    p->print_widget(g);
+    p->end_page();
+    p->end_job();
+  }
+  delete p;
 };
 
 /*void print2(Fl_Widget *, void *w) {
