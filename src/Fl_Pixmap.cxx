@@ -144,7 +144,17 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
     fl_restore_clip();
   }
 #elif defined(WIN32)
-  if (mask) {
+  if (fl_device->type() == Fl_Device::gdi_printer) { // print with white instead of transparent background
+    Fl_Offscreen tmp_id = fl_create_offscreen(w(), h());
+    fl_begin_offscreen(tmp_id);
+    uchar *bitmap = 0;
+    fl_mask_bitmap = &bitmap;
+    fl_draw_pixmap(data(), 0, 0, FL_WHITE );
+    fl_end_offscreen();
+    fl_copy_offscreen(X, Y, W, H, tmp_id, cx, cy);
+    fl_delete_offscreen(tmp_id);
+  }
+  else if (mask) {
     HDC new_gc = CreateCompatibleDC(fl_gc);
     int save = SaveDC(new_gc);
     SelectObject(new_gc, (void*)mask);
