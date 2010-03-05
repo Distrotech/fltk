@@ -90,11 +90,12 @@ Fl_Type.o: pixmaps/flWindow.xpm pixmaps/flButton.xpm
 Fl_Type.o: pixmaps/flCheckButton.xpm pixmaps/flRoundButton.xpm
 Fl_Type.o: pixmaps/flBox.xpm pixmaps/flGroup.xpm pixmaps/flFunction.xpm
 Fl_Type.o: pixmaps/flCode.xpm pixmaps/flCodeBlock.xpm pixmaps/flComment.xpm
-Fl_Type.o: pixmaps/flDeclaration.xpm pixmaps/flDeclarationBlock.xpm
-Fl_Type.o: pixmaps/flClass.xpm pixmaps/flTabs.xpm pixmaps/flInput.xpm
-Fl_Type.o: pixmaps/flChoice.xpm pixmaps/flMenuitem.xpm pixmaps/flMenubar.xpm
-Fl_Type.o: pixmaps/flSubmenu.xpm pixmaps/flScroll.xpm pixmaps/flTile.xpm
-Fl_Type.o: pixmaps/flWizard.xpm pixmaps/flPack.xpm pixmaps/flReturnButton.xpm
+Fl_Type.o: pixmaps/flData.xpm pixmaps/flDeclaration.xpm
+Fl_Type.o: pixmaps/flDeclarationBlock.xpm pixmaps/flClass.xpm
+Fl_Type.o: pixmaps/flTabs.xpm pixmaps/flInput.xpm pixmaps/flChoice.xpm
+Fl_Type.o: pixmaps/flMenuitem.xpm pixmaps/flMenubar.xpm pixmaps/flSubmenu.xpm
+Fl_Type.o: pixmaps/flScroll.xpm pixmaps/flTile.xpm pixmaps/flWizard.xpm
+Fl_Type.o: pixmaps/flPack.xpm pixmaps/flReturnButton.xpm
 Fl_Type.o: pixmaps/flLightButton.xpm pixmaps/flRepeatButton.xpm
 Fl_Type.o: pixmaps/flMenuButton.xpm pixmaps/flOutput.xpm
 Fl_Type.o: pixmaps/flTextDisplay.xpm pixmaps/flTextEdit.xpm

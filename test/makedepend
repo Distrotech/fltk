@@ -119,10 +119,16 @@ cube.o: ../FL/Fl_Light_Button.H ../FL/Fl_Button.H ../FL/Fl_Slider.H
 cube.o: ../FL/Fl_Valuator.H ../FL/Fl_Gl_Window.H ../FL/Fl_Window.H ../FL/gl.h
 cube.o: ../FL/Fl_Sys_Menu_Bar.H ../FL/Fl_Menu_Bar.H ../FL/Fl_Menu_.H
 cube.o: ../FL/Fl_Menu_Item.H ../FL/Fl_Image.H ../FL/x.H ../FL/Fl_Gl_Printer.H
-cube.o: ../FL/Fl_Printer.H ../FL/Fl_Device.H ../FL/x.H
+cube.o: ../FL/Fl_Printer.H ../FL/Fl_Device.H ../FL/x.H ../FL/fl_draw.H
+cube.o: ../FL/Fl_Pixmap.H ../FL/Fl_RGB_Image.H ../FL/Fl_Bitmap.H
 CubeMain.o: ../config.h ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H
 CubeMain.o: ../FL/fl_types.h ../FL/Xutf8.h ../FL/Enumerations.H
-CubeMain.o: ../FL/Fl_Export.H ../FL/fl_types.h
+CubeMain.o: ../FL/Fl_Export.H ../FL/fl_types.h CubeViewUI.h
+CubeMain.o: ../FL/Fl_Double_Window.H ../FL/Fl_Window.H ../FL/Fl_Group.H
+CubeMain.o: ../FL/Fl_Widget.H ../FL/Fl_Group.H ../FL/Fl_Roller.H
+CubeMain.o: ../FL/Fl_Valuator.H ../FL/Fl_Slider.H ../FL/Fl_Box.H CubeView.h
+CubeMain.o: ../FL/Fl_Gl_Window.H ../FL/gl.h ../FL/Fl_Value_Slider.H
+CubeMain.o: ../FL/Fl_Slider.H
 CubeView.o: CubeView.h ../config.h ../FL/Fl.H ../FL/fl_utf8.h
 CubeView.o: ../FL/Fl_Export.H ../FL/fl_types.h ../FL/Xutf8.h
 CubeView.o: ../FL/Enumerations.H ../FL/Fl_Export.H ../FL/fl_types.h
@@ -155,15 +161,15 @@ device.o: ../FL/Fl_Light_Button.H ../FL/fl_draw.H ../FL/Fl_Clock.H
 device.o: ../test/pixmaps/porsche.xpm ../FL/Fl_Pixmap.H ../FL/Fl_Image.H
 device.o: ../FL/Fl_Bitmap.H ../FL/Fl_Round_Button.H ../FL/Fl_Light_Button.H
 device.o: ../FL/Fl_Button.H ../FL/Fl_Printer.H ../FL/Fl_Device.H ../FL/x.H
-device.o: ../FL/Fl_File_Chooser.H ../FL/Fl_Double_Window.H ../FL/Fl_Group.H
-device.o: ../FL/Fl_Choice.H ../FL/Fl_Menu_.H ../FL/Fl_Menu_Item.H
-device.o: ../FL/Fl_Menu_Button.H ../FL/Fl_Button.H ../FL/Fl_Preferences.H
-device.o: ../FL/Fl_Tile.H ../FL/Fl_File_Browser.H ../FL/Fl_Browser.H
-device.o: ../FL/Fl_Browser_.H ../FL/Fl_Scrollbar.H ../FL/Fl_Slider.H
-device.o: ../FL/Fl_Valuator.H ../FL/Fl_File_Icon.H ../FL/Fl.H
-device.o: ../FL/filename.H ../FL/Fl_Box.H ../FL/Fl_Check_Button.H
-device.o: ../FL/Fl_File_Input.H ../FL/Fl_Input.H ../FL/Fl_Input_.H
-device.o: ../FL/Fl_Return_Button.H ../FL/fl_ask.H
+device.o: ../FL/Fl_RGB_Image.H ../FL/Fl_File_Chooser.H
+device.o: ../FL/Fl_Double_Window.H ../FL/Fl_Group.H ../FL/Fl_Choice.H
+device.o: ../FL/Fl_Menu_.H ../FL/Fl_Menu_Item.H ../FL/Fl_Menu_Button.H
+device.o: ../FL/Fl_Button.H ../FL/Fl_Preferences.H ../FL/Fl_Tile.H
+device.o: ../FL/Fl_File_Browser.H ../FL/Fl_Browser.H ../FL/Fl_Browser_.H
+device.o: ../FL/Fl_Scrollbar.H ../FL/Fl_Slider.H ../FL/Fl_Valuator.H
+device.o: ../FL/Fl_File_Icon.H ../FL/Fl.H ../FL/filename.H ../FL/Fl_Box.H
+device.o: ../FL/Fl_Check_Button.H ../FL/Fl_File_Input.H ../FL/Fl_Input.H
+device.o: ../FL/Fl_Input_.H ../FL/Fl_Return_Button.H ../FL/fl_ask.H
 doublebuffer.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 doublebuffer.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 doublebuffer.o: ../FL/fl_types.h ../FL/Fl_Single_Window.H ../FL/Fl_Window.H
@@ -261,7 +267,8 @@ glpuzzle.o: ../FL/Fl_Widget.H ../FL/glu.h trackball.c trackball.h
 glpuzzle.o: ../FL/Fl_Sys_Menu_Bar.H ../FL/Fl_Menu_Bar.H ../FL/Fl_Menu_.H
 glpuzzle.o: ../FL/Fl_Menu_Item.H ../FL/Fl_Image.H ../FL/x.H ../FL/Xutf8.h
 glpuzzle.o: ../FL/Fl_Gl_Printer.H ../FL/Fl_Printer.H ../FL/Fl_Device.H
-glpuzzle.o: ../FL/x.H ../FL/Fl_Gl_Window.H
+glpuzzle.o: ../FL/x.H ../FL/fl_draw.H ../FL/Fl_Pixmap.H ../FL/Fl_RGB_Image.H
+glpuzzle.o: ../FL/Fl_Bitmap.H ../FL/Fl_Gl_Window.H
 hello.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 hello.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 hello.o: ../FL/fl_types.h ../FL/Fl_Window.H ../FL/Fl_Group.H
@@ -343,7 +350,9 @@ mandelbrot.o: ../FL/Fl_Export.H ../FL/fl_types.h mandelbrot.h ../FL/Fl_Box.H
 mandelbrot.o: ../FL/Fl_Slider.H ../FL/Fl_Valuator.H ../FL/Fl_Double_Window.H
 mandelbrot.o: ../FL/Fl_Window.H ../FL/Fl_Group.H ../FL/Fl_Widget.H
 mandelbrot.o: ../FL/Fl_Input.H ../FL/Fl_Input_.H ../FL/fl_draw.H
-mandelbrot.o: ../FL/Fl_Button.H ../FL/Fl_Device.H ../FL/x.H
+mandelbrot.o: ../FL/Fl_Button.H ../FL/Fl_Printer.H ../FL/Fl_Device.H
+mandelbrot.o: ../FL/x.H ../FL/Fl_Pixmap.H ../FL/Fl_Image.H
+mandelbrot.o: ../FL/Fl_RGB_Image.H ../FL/Fl_Bitmap.H
 menubar.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 menubar.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 menubar.o: ../FL/fl_types.h ../FL/Fl_Box.H ../FL/Fl_Double_Window.H
@@ -447,15 +456,15 @@ device.o: ../FL/Fl_Light_Button.H ../FL/fl_draw.H ../FL/Fl_Clock.H
 device.o: ../test/pixmaps/porsche.xpm ../FL/Fl_Pixmap.H ../FL/Fl_Image.H
 device.o: ../FL/Fl_Bitmap.H ../FL/Fl_Round_Button.H ../FL/Fl_Light_Button.H
 device.o: ../FL/Fl_Button.H ../FL/Fl_Printer.H ../FL/Fl_Device.H ../FL/x.H
-device.o: ../FL/Fl_File_Chooser.H ../FL/Fl_Double_Window.H ../FL/Fl_Group.H
-device.o: ../FL/Fl_Choice.H ../FL/Fl_Menu_.H ../FL/Fl_Menu_Item.H
-device.o: ../FL/Fl_Menu_Button.H ../FL/Fl_Button.H ../FL/Fl_Preferences.H
-device.o: ../FL/Fl_Tile.H ../FL/Fl_File_Browser.H ../FL/Fl_Browser.H
-device.o: ../FL/Fl_Browser_.H ../FL/Fl_Scrollbar.H ../FL/Fl_Slider.H
-device.o: ../FL/Fl_Valuator.H ../FL/Fl_File_Icon.H ../FL/Fl.H
-device.o: ../FL/filename.H ../FL/Fl_Box.H ../FL/Fl_Check_Button.H
-device.o: ../FL/Fl_File_Input.H ../FL/Fl_Input.H ../FL/Fl_Input_.H
-device.o: ../FL/Fl_Return_Button.H ../FL/fl_ask.H
+device.o: ../FL/Fl_RGB_Image.H ../FL/Fl_File_Chooser.H
+device.o: ../FL/Fl_Double_Window.H ../FL/Fl_Group.H ../FL/Fl_Choice.H
+device.o: ../FL/Fl_Menu_.H ../FL/Fl_Menu_Item.H ../FL/Fl_Menu_Button.H
+device.o: ../FL/Fl_Button.H ../FL/Fl_Preferences.H ../FL/Fl_Tile.H
+device.o: ../FL/Fl_File_Browser.H ../FL/Fl_Browser.H ../FL/Fl_Browser_.H
+device.o: ../FL/Fl_Scrollbar.H ../FL/Fl_Slider.H ../FL/Fl_Valuator.H
+device.o: ../FL/Fl_File_Icon.H ../FL/Fl.H ../FL/filename.H ../FL/Fl_Box.H
+device.o: ../FL/Fl_Check_Button.H ../FL/Fl_File_Input.H ../FL/Fl_Input.H
+device.o: ../FL/Fl_Input_.H ../FL/Fl_Return_Button.H ../FL/fl_ask.H
 radio.o: radio.h ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H
 radio.o: ../FL/fl_types.h ../FL/Xutf8.h ../FL/Enumerations.H
 radio.o: ../FL/Fl_Export.H ../FL/fl_types.h ../FL/Fl_Double_Window.H
