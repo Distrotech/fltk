@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <math.h>
 
+#if ! (defined(__APPLE__) || defined(WIN32) )
+  #include "print_panel.cxx"
+#endif
+
 const struct Fl_PSfile_Device::page_format Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS] = { // order of enum Page_Format
 // comes from appendix B of 5003.PPD_Spec_v4.3.pdf
 
@@ -1140,8 +1144,14 @@ void Fl_PSfile_Device::end_job (void)
     fprintf(output, "GR\n restore\n");
   fputs("%%EOF",output);
   reset();
+#if ! (defined(__APPLE__) || defined(WIN32) )
+  if (print_pipe)
+    pclose(output);
+  else
+    fclose(output);
+#else
   fclose(output);
-  
+#endif
   while (clip_){
     Clip * c= clip_;
     clip_= clip_->prev;
@@ -1153,17 +1163,73 @@ void Fl_PSfile_Device::end_job (void)
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
 int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
-  // TODO should start and close a print dialog and 
-  // transmit the selected paper format to the Fl_PSfile_Device::start_postscript() call,
-  // create a temp .ps file, open it for writing on member var output, 
-  // and strdup its name to member var ps_filename_
-  // return the user's desired page range to the caller and transmit the range total to start_postscript()
-  // terminate by : return Fl_PSfile_Device::start_postscript(pages, format); 
-  enum Page_Format format = A4; // temporary
+  // TODO:
+  // should start and close a print dialog		*DONE*
+  // transmit the selected paper format to
+  // the Fl_PSfile_Device::start_postscript() call	*DONE*
+  // create a temp .ps file, open it for writing
+  // on member var output, 
+  // and strdup its name to member var ps_filename_	*DONE*
+  // return the user's desired page range to the caller
+  // and transmit the range total to start_postscript()	*TODO*
+  // terminate by:
+  // return Fl_PSfile_Device::start_postscript(pages, format);	*DONE*
+
+  enum Page_Format format = A4; // default
   if(firstpage) *firstpage = 1; // temporary
   if(lastpage) *lastpage = pages; // temporary
-  return Fl_PSfile_Device::start_job(pages, format); // temporary
+
+  // first test version for print dialog
+
+  if (!print_panel) make_print_panel();
+  print_load();
+  print_selection->deactivate();
+  print_all->setonly();
+  print_all->do_callback();
+  print_panel->show(); // this is modal
+  while (print_panel->shown()) Fl::wait();
+  
+  if (!print_start) // user clicked cancel
+    return 1;
+
+  // get options
+
+  format = print_page_size->value() ? A4 : LETTER;
+
+  print_pipe = print_choice->value();	// 0 = print to file, >0 = printer (pipe)
+
+  const char *media = print_page_size->text(print_page_size->value());
+  const char *printer = (const char *)print_choice->menu()[print_choice->value()].user_data();
+  if (!print_pipe) printer = "<File>";
+
+  if (!print_pipe) // fall back to file printing
+    return Fl_PSfile_Device::start_job (pages, format);
+
+  // Print: pipe the output into the lp command...
+
+  char command[1024];
+  snprintf(command, sizeof(command), "lp -s -d %s -n %.0f -t '%s' -o media=%s",
+             printer, print_collate_button->value() ? 1.0 : print_copies->value(),
+	     "FLTK", media);
+
+  output = popen(command, "w");
+  if (!output) {
+    fl_alert("could not run command: %s\n",command);
+    return 1;
+  }
+
+  ps_filename_ = strdup("FLTK.ps");	// dummy filename (needed?)
+
+  return Fl_PSfile_Device::start_postscript(pages, format); // start printing
 }
+
+/*
+void print_cb(Fl_Return_Button *, void *) {
+  printf ("print_cb called\n"); fflush(stdout);
+  print_panel->hide();
+  // return Fl_PSfile_Device::start_postscript(pages, format); // temporary
+}
+*/
 
 void Fl_PS_Printer::end_job(void)
 {

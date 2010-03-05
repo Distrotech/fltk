@@ -2,7 +2,7 @@
 #define Fl_Printer_H
 
 #include <FL/Fl_Device.H>
-#include <FL/Fl_draw.H>
+#include <FL/fl_draw.H>
 #include <FL/Fl_Pixmap.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Bitmap.H>

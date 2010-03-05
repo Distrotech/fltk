@@ -1941,8 +1941,8 @@ void printFront(Fl_Widget *o, void *data)
   Fl_Window *win = Fl::first_window();
   if(!win) return;
   int w, h;
-  if( printer.start_job(1) ) return;
-  if( printer.start_page() ) return;
+  if( printer.start_job(1) ) { o->window()->show(); return; }
+  if( printer.start_page() ) { o->window()->show(); return; }
   printer.printable_rect(&w,&h);
   // scale the printer device so that the window fits on the page
   float scale = 1;
@@ -1951,11 +1951,12 @@ void printFront(Fl_Widget *o, void *data)
     if ((float)h/win->h() < scale) scale = (float)h/win->h();
     printer.scale(scale, scale);
   }
+// #define ROTATE 20.0
 #ifdef ROTATE
   printer.scale(scale * 0.8, scale * 0.8);
   printer.printable_rect(&w, &h);
   printer.origin(w/2, h/2 );
-  printer.rotate(20.);
+  printer.rotate(ROTATE);
   printer.print_widget( win, - win->w()/2, - win->h()/2 );
 #else
   printer.print_widget( win );

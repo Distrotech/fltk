@@ -1770,9 +1770,28 @@ void printFront(Fl_Widget *o, void *data)
   Fl_Window *win = Fl::first_window();
   if(!win) return;
   int w, h;
-  if( printer.start_job(1) ) return;
-  if( printer.start_page() ) return;
+  if( printer.start_job(1) ) { o->window()->show(); return; }
+  if( printer.start_page() ) { o->window()->show(); return; }
+  printer.printable_rect(&w,&h);
+  // scale the printer device so that the window fits on the page
+  float scale = 1;
+  if (win->w() > w || win->h() > h) {
+    scale = (float)w/win->w();
+    if ((float)h/win->h() < scale) scale = (float)h/win->h();
+    printer.scale(scale, scale);
+  }
+
+// #define ROTATE 20.0
+#ifdef ROTATE
+  printer.scale(scale * 0.8, scale * 0.8);
+  printer.printable_rect(&w, &h);
+  printer.origin(w/2, h/2 );
+  printer.rotate(ROTATE);
+  printer.print_widget( win, - win->w()/2, - win->h()/2 );
+#else
   printer.print_widget( win );
+#endif
+
   //printer.print_window_part( win, 0,0,win->w(), win->h() );
   printer.end_page();
   printer.end_job();
@@ -1785,7 +1804,7 @@ void preparePrintFront(void)
   if(!first) return;
   first=0;
   static Fl_Window w(0,0,150,30);
-  static Fl_Button b(0,0,w.w(),w.h(), "Front window to PS");
+  static Fl_Button b(0,0,w.w(),w.h(), "Print front window");
   b.callback(printFront);
   w.end();
   w.show();

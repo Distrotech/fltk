@@ -720,13 +720,7 @@ b_bitmap.labelcolor(FL_GREEN);
 
 
   c2->end();
-  Fl_Button *b4 = new Fl_Button(10,5, 150, 25, 
-#if defined(__APPLE__) || defined(WIN32)
-				"Print"
-#else
-				"Save to PostScript file"
-#endif
-  );
+  Fl_Button *b4 = new Fl_Button(10,5, 150, 25, "Print");
   b4->callback(print,c2);
   /*Fl_Button *b5 = new Fl_Button(165,5, 90, 25, "Print");
   b5->tooltip("This is a tooltip");
