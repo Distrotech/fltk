@@ -298,21 +298,48 @@ void Fl_Bitmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
 #elif defined(WIN32)
   if (!id) id = fl_create_bitmap(w(), h(), array);
 
-  HDC tempdc = CreateCompatibleDC(fl_gc);
-  int save = SaveDC(tempdc);
-  SelectObject(tempdc, (HGDIOBJ)id);
-  SelectObject(fl_gc, fl_brush());
-  if(fl_device->type() == Fl_Device::gdi_printer) {
+  typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
+  static fl_transp_func fl_TransparentBlt;
+  HDC tempdc;
+  int save;
+  BOOL use_print_algo = false;
+  if (fl_device->type() == Fl_Device::gdi_printer) {
     static HMODULE hMod = NULL;
-    if (!hMod) hMod = LoadLibrary("MSIMG32.DLL");
-    if(hMod) {
-      typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
-      fl_transp_func fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
-      fl_TransparentBlt(fl_gc, X,Y,W,H, tempdc, cx, cy, w(), h(), RGB(0,0,0) );
+    if (!hMod) {
+      hMod = LoadLibrary("MSIMG32.DLL");
+      if (hMod) fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
       }
-    else BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, SRCCOPY);
+    if (hMod) use_print_algo = true;
     }
-  else {
+  if (use_print_algo) { // algorithm for bitmap output to Fl_GDI_Printer
+    Fl_Offscreen tmp_id = fl_create_offscreen(W, H);
+    fl_begin_offscreen(tmp_id);
+    Fl_Color save_c = fl_color(); // save bitmap's desired color
+    uchar r, g, b;
+    Fl::get_color(save_c, r, g, b);
+    r = 255-r;
+    g = 255-g;
+    b = 255-b;
+    Fl_Color background = fl_rgb_color(r, g, b); // a color very different from the bitmap's
+    fl_color(background);
+    fl_rectf(0,0,W,H); // use this color as offscreen background
+    fl_color(save_c); // back to bitmap's color
+    tempdc = CreateCompatibleDC(fl_gc);
+    save = SaveDC(tempdc);
+    SelectObject(tempdc, (HGDIOBJ)id);
+    SelectObject(fl_gc, fl_brush()); // use bitmap's desired color
+    BitBlt(fl_gc, 0, 0, W, H, tempdc, 0, 0, 0xE20746L); // draw bitmap to offscreen
+    fl_end_offscreen(); // offscreen data is in tmp_id
+    SelectObject(tempdc, (HGDIOBJ)tmp_id); // use offscreen data
+    // draw it to printer context with background color as transparent
+    fl_TransparentBlt(fl_gc, X,Y,W,H, tempdc, cx, cy, w(), h(), RGB(r, g, b) ); 
+    fl_delete_offscreen(tmp_id);
+    }
+  else { // algorithm for bitmap output to display
+    tempdc = CreateCompatibleDC(fl_gc);
+    save = SaveDC(tempdc);
+    SelectObject(tempdc, (HGDIOBJ)id);
+    SelectObject(fl_gc, fl_brush());
     // secret bitblt code found in old MSWindows reference manual:
     BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, 0xE20746L);
     }
