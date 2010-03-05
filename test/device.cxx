@@ -672,6 +672,7 @@ int main(int argc, char ** argv) {
   b_pixmap.image(pixmap);
 
   My_Button b_bitmap(10,445,100,100,"Bitmap");
+b_bitmap.labelcolor(FL_GREEN);
   b_bitmap.image(new Fl_Bitmap(sorceress_bits,sorceress_width,sorceress_height));
 
   new Fl_Clock(360,230,120,120);
