@@ -145,27 +145,45 @@ void Fl_Pixmap::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   }
 #elif defined(WIN32)
   if (fl_device->type() == Fl_Device::gdi_printer) {
+    typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
     static HMODULE hMod = NULL;
-    if (!hMod) hMod = LoadLibrary("MSIMG32.DLL");
+    static fl_transp_func fl_TransparentBlt = NULL;
+    if (!hMod) {
+      hMod = LoadLibrary("MSIMG32.DLL");
+      if(hMod) fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
+      }
     if (hMod) {
-#     define UNLIKELY_RGB_COLOR 2,3,4
+#     define UNLIKELY_RGB_COLOR 2,3,4 // a nearly black color unlikely to occur in pixmaps
 #     define WIN_COLOR RGB(2,3,4)
-      typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
       Fl_Offscreen tmp_id = fl_create_offscreen(w(), h());
       fl_begin_offscreen(tmp_id);
       uchar *bitmap = 0;
       fl_mask_bitmap = &bitmap;
-      Fl_Color save_c = fl_color();
-      fl_color(UNLIKELY_RGB_COLOR);
-      fl_draw_pixmap(data(), 0, 0, fl_color() );
-      fl_color( save_c );
+      // draw pixmap to offscreen using the unlikely color for background
+      fl_draw_pixmap(data(), 0, 0, fl_rgb_color(UNLIKELY_RGB_COLOR) ); 
       fl_end_offscreen();
       HDC new_gc = CreateCompatibleDC(fl_gc);
       int save = SaveDC(new_gc);
       SelectObject(new_gc, (void*)tmp_id);
-      fl_transp_func fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
-      fl_TransparentBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, w(), h(), WIN_COLOR);
+      // print all of offscreen but its parts using unlikely color
+      fl_TransparentBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, w(), h(), WIN_COLOR );
       RestoreDC(new_gc,save);
+      // This is an approximate algorithm that fails to print pixmap pixels that would use the unlikely color.
+      // It can be transformed into an exact algorithm by adding the following commented out statements
+      // that print pixmap one more time hiding another color (any color would fit)
+      /*
+#     define UNLIKELY_RGB_COLOR2 4,3,2
+#     define WIN_COLOR2 RGB(4,3,2)
+      {
+	fl_begin_offscreen(tmp_id);
+	fl_draw_pixmap(data(), 0, 0, fl_rgb_color(UNLIKELY_RGB_COLOR2) );
+	fl_end_offscreen();
+      }
+      save = SaveDC(new_gc);
+      SelectObject(new_gc, (void*)tmp_id);
+      fl_TransparentBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, w(), h(), WIN_COLOR2 );
+      RestoreDC(new_gc,save);
+      */
       DeleteDC(new_gc);
       fl_delete_offscreen(tmp_id);
     }
