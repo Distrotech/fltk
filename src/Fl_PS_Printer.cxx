@@ -314,17 +314,18 @@ static const char * prolog_3 = // prolog relevant only if lang_level >2
 Fl_PSfile_Device::Fl_PSfile_Device(void)
 {
   close_cmd_ = 0;
-  lang_level_ = 3;
+  //lang_level_ = 3;
+  lang_level_ = 2;
   mask = 0;
   ps_filename_ = NULL;
   type_ = postscript_device;
 }
 
-int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format)
+int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format, enum Page_Layout layout)
 //returns 0 iff OK
 {
   this->set_current();
-  page_format_ = format;
+  page_format_ = (enum Page_Format)(format | layout);
   
   fputs("%!PS-Adobe-3.0\n", output);
   fputs("%%Creator: FLTK\n", output);
@@ -1117,7 +1118,7 @@ int Fl_PSfile_Device::end_page (void)
   return 0;
 }
 
-int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format)
+int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, enum Page_Layout layout)
 {
   Fl_Native_File_Chooser fnfc;
   fnfc.title("Create a .ps file");
@@ -1128,7 +1129,7 @@ int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format)
   output = fopen(fnfc.filename(), "w");
   if(output == NULL) return 1;
   ps_filename_ = strdup(fnfc.filename());
-  return start_postscript(pagecount, format);
+  return start_postscript(pagecount, format, layout);
 }
 
 void Fl_PSfile_Device::end_job (void)
@@ -1176,6 +1177,7 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   // return Fl_PSfile_Device::start_postscript(pages, format);	*DONE*
 
   enum Page_Format format = A4; // default
+  enum Page_Layout layout = PORTRAIT; // default
   if(firstpage) *firstpage = 1; // temporary
   if(lastpage) *lastpage = pages; // temporary
 
@@ -1195,6 +1197,11 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   // get options
 
   format = print_page_size->value() ? A4 : LETTER;
+  
+  if (print_output_mode[0]->value()) layout = PORTRAIT;
+  else if (print_output_mode[1]->value()) layout = LANDSCAPE;
+  else if (print_output_mode[2]->value()) layout = PORTRAIT;
+  else layout = LANDSCAPE;
 
   print_pipe = print_choice->value();	// 0 = print to file, >0 = printer (pipe)
 
@@ -1203,7 +1210,7 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   if (!print_pipe) printer = "<File>";
 
   if (!print_pipe) // fall back to file printing
-    return Fl_PSfile_Device::start_job (pages, format);
+    return Fl_PSfile_Device::start_job (pages, format, layout);
 
   // Print: pipe the output into the lp command...
 
@@ -1218,9 +1225,7 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
     return 1;
   }
 
-  ps_filename_ = strdup("FLTK.ps");	// dummy filename (needed?)
-
-  return Fl_PSfile_Device::start_postscript(pages, format); // start printing
+  return Fl_PSfile_Device::start_postscript(pages, format, layout); // start printing
 }
 
 /*

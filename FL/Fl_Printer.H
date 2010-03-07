@@ -274,7 +274,11 @@ class Fl_PSfile_Device : public
 #endif
   { // defined for all 3 platforms
 public:
-  enum Page_Format{
+    
+    /**
+     @brief Possible page formats.
+     */
+    enum Page_Format{
     A0 = 0, 
     A1,
     A2,
@@ -307,7 +311,11 @@ public:
     ENVELOPE,
     MEDIA = 0x1000
   };
-  enum Page_Layout {PORTRAIT = 0, LANDSCAPE = 0x100, REVERSED = 0x200, ORIENTATION = 0x300};
+    
+    /**
+     @brief Possible page layouts.
+     */
+    enum Page_Layout {PORTRAIT = 0, LANDSCAPE = 0x100, REVERSED = 0x200, ORIENTATION = 0x300};
 
     /**
      @brief The constructor.
@@ -323,11 +331,12 @@ public:
      @brief Begins the session where all graphics will go to a local PostScript file.
      *
      Opens a file dialog to select an output PostScript file.
-     @param pagecount the total number of pages to be created
-     @param format desired page format
+     @param pagecount The total number of pages to be created.
+     @param format Desired page format.
+     @param layout Desired page layout.
      @return 0 iff OK
      */
-    int start_job(int pagecount, enum Page_Format format = A4);
+    int start_job(int pagecount, enum Page_Format format = A4, enum Page_Layout layout = PORTRAIT);
 
 #ifndef FL_DOXYGEN
 private:
@@ -392,7 +401,7 @@ protected:
   static const struct page_format page_formats[NO_PAGE_FORMATS];
   
   uchar bg_r, bg_g, bg_b;
-  int start_postscript (int pagecount, enum Page_Format format);
+  int start_postscript (int pagecount, enum Page_Format format, enum Page_Layout layout);
   /*  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);
    */
   void draw(const char* s, int n, int x, int y) {transformed_draw(s,n,x,y); };
