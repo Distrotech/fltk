@@ -71,6 +71,13 @@ Inherited by <a class="el" href="class_fl___gl___printer.html">Fl_Gl_Printer</a>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#a3a19ba5b963b44a3b4b97beae036a23">rotate</a> (float angle)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Rotates the graphics operations relatively to paper.  <a href="#a3a19ba5b963b44a3b4b97beae036a23"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#f5f2ab5abfa6a54c9cc15b92307f4693">translate</a> (int x, int y)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Translates the current graphics origin accounting for the current rotation.  <a href="#f5f2ab5abfa6a54c9cc15b92307f4693"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8a11dc0a10a7af2ca323999e49a235eb"></a><!-- doxytag: member="Fl_Printer::untranslate" ref="8a11dc0a10a7af2ca323999e49a235eb" args="(void)" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#8a11dc0a10a7af2ca323999e49a235eb">untranslate</a> (void)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Undoes the effect of a previous <a class="el" href="class_fl___printer.html#f5f2ab5abfa6a54c9cc15b92307f4693" title="Translates the current graphics origin accounting for the current rotation.">translate()</a> call. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___printer.html#0b6a37315107179fec2eab69008f5150">print_widget</a> (Fl_Widget *widget, int delta_x=0, int delta_y=0)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draws the widget on the printed page.  <a href="#0b6a37315107179fec2eab69008f5150"></a><br></td></tr>
@@ -265,7 +272,7 @@ Computes the page coordinates of the current origin of graphics functions.
 <p>
 Sets the position in page coordinates of the origin of graphics functions. 
 <p>
-Arguments should be expressed relatively to the result of a previous <a class="el" href="class_fl___printer.html#2e6e37222414b4498e7e60222bc8f9ce" title="Computes the width and height of the printable area of the page.">printable_rect()</a> call. That is, <code>printable_rect(&amp;w, &amp;h); origin(w/2, 0);</code> sets the graphics origin at the top center of the page printable area. Successive <a class="el" href="class_fl___printer.html#521bca5044405d890d8ffb39dd50f794" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a> calls don't combine their effects. <dl compact><dt><b>Parameters:</b></dt><dd>
+Arguments should be expressed relatively to the result of a previous <a class="el" href="class_fl___printer.html#2e6e37222414b4498e7e60222bc8f9ce" title="Computes the width and height of the printable area of the page.">printable_rect()</a> call. That is, <code>printable_rect(&amp;w, &amp;h); origin(w/2, 0);</code> sets the graphics origin at the top center of the page printable area. Origin() calls are not affected by <a class="el" href="class_fl___printer.html#a3a19ba5b963b44a3b4b97beae036a23" title="Rotates the graphics operations relatively to paper.">rotate()</a> calls. Successive <a class="el" href="class_fl___printer.html#521bca5044405d890d8ffb39dd50f794" title="Sets the position in page coordinates of the origin of graphics functions.">origin()</a> calls don't combine their effects. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>x</em>&nbsp;</td><td>Horizontal position in page coordinates of the desired origin of graphics functions. </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>y</em>&nbsp;</td><td>Same as above, vertically. </td></tr>
@@ -580,10 +587,41 @@ The page coordinates are initially in points, i.e., 1/72 inch, and with origin a
 
 </div>
 </div><p>
+<a class="anchor" name="f5f2ab5abfa6a54c9cc15b92307f4693"></a><!-- doxytag: member="Fl_Printer::translate" ref="f5f2ab5abfa6a54c9cc15b92307f4693" args="(int x, int y)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Fl_Printer::translate           </td>
+          <td>(</td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>y</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Translates the current graphics origin accounting for the current rotation. 
+<p>
+This function is only useful after a <a class="el" href="class_fl___printer.html#a3a19ba5b963b44a3b4b97beae036a23" title="Rotates the graphics operations relatively to paper.">rotate()</a> call. Each <a class="el" href="class_fl___printer.html#f5f2ab5abfa6a54c9cc15b92307f4693" title="Translates the current graphics origin accounting for the current rotation.">translate()</a> call must be matched by an <a class="el" href="class_fl___printer.html#8a11dc0a10a7af2ca323999e49a235eb" title="Undoes the effect of a previous translate() call.">untranslate()</a> call. Successive <a class="el" href="class_fl___printer.html#f5f2ab5abfa6a54c9cc15b92307f4693" title="Translates the current graphics origin accounting for the current rotation.">translate()</a> calls add up their effects. 
+</div>
+</div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___printer_8_h_source.html">Fl_Printer.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Mar 4 18:58:48 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Mar 8 19:13:45 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

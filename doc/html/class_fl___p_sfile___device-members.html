@@ -148,8 +148,8 @@
   <tr bgcolor="#f0f0f0"><td><b>MEDIA</b> enum value (defined in <a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a>)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>not_clipped</b>(int x, int y, int w, int h) (defined in <a class="el" href="class_fl___device.html">Fl_Device</a>)</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [protected, virtual]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>ORIENTATION</b> enum value (defined in <a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a>)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>Page_Format</b> enum name (defined in <a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a>)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>Page_Layout</b> enum name (defined in <a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a>)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="class_fl___p_sfile___device.html#23149afb6179bf2719b546103f0f24f9">Page_Format</a> enum name</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="class_fl___p_sfile___device.html#d76ea602260de7dac702fea740ad5e50">Page_Layout</a> enum name</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>pie</b>(int x, int y, int w, int h, double a1, double a2) (defined in <a class="el" href="class_fl___device.html">Fl_Device</a>)</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [protected, virtual]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>point</b>(int x, int y) (defined in <a class="el" href="class_fl___device.html">Fl_Device</a>)</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [protected, virtual]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>polygon</b>(int x0, int y0, int x1, int y1, int x2, int y2) (defined in <a class="el" href="class_fl___device.html">Fl_Device</a>)</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [protected, virtual]</code></td></tr>
@@ -165,7 +165,7 @@
   <tr bgcolor="#f0f0f0"><td><b>rectf</b>(int x, int y, int w, int h) (defined in <a class="el" href="class_fl___device.html">Fl_Device</a>)</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [protected, virtual]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>REVERSED</b> enum value (defined in <a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a>)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="class_fl___device.html#a751ed7f5bf9a7c1c38d85de8c276c5e">set_current</a>()</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [virtual]</code></td></tr>
-  <tr class="memlist"><td><a class="el" href="class_fl___p_sfile___device.html#2e65205d37ba0f7ace8f960b73057963">start_job</a>(int pagecount, enum Page_Format format=A4)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="class_fl___p_sfile___device.html#ace67e903c05c7bde97a4f550b191232">start_job</a>(int pagecount, enum Page_Format format=A4, enum Page_Layout layout=PORTRAIT)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>TABLOID</b> enum value (defined in <a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a>)</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>transformed_vertex</b>(double x, double y) (defined in <a class="el" href="class_fl___device.html">Fl_Device</a>)</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [protected, virtual]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="class_fl___device.html#b2a9771fb09d94cbf4fe16829ebf89f8">type</a>()</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [inline]</code></td></tr>
@@ -181,7 +181,7 @@
   <tr bgcolor="#f0f0f0"><td><b>~Fl_Device</b>() (defined in <a class="el" href="class_fl___device.html">Fl_Device</a>)</td><td><a class="el" href="class_fl___device.html">Fl_Device</a></td><td><code> [inline, virtual]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="class_fl___p_sfile___device.html#3f5fd352cb1f8f4daa1b59bdb03801ae">~Fl_PSfile_Device</a>()</td><td><a class="el" href="class_fl___p_sfile___device.html">Fl_PSfile_Device</a></td><td><code> [virtual]</code></td></tr>
 </table></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Mar 4 18:58:48 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Mar 8 19:13:45 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

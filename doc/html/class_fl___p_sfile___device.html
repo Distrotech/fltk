@@ -34,7 +34,7 @@ Inherits <a class="el" href="class_fl___device.html">Fl_Device</a>.
 <a href="class_fl___p_sfile___device-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Types</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><b>Page_Format</b> { <br>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___p_sfile___device.html#23149afb6179bf2719b546103f0f24f9">Page_Format</a> { <br>
 &nbsp;&nbsp;<b>A0</b> =  0, 
 <b>A1</b>, 
 <b>A2</b>, 
@@ -76,12 +76,14 @@ Inherits <a class="el" href="class_fl___device.html">Fl_Device</a>.
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><b>Page_Layout</b> { <b>PORTRAIT</b> =  0, 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Possible page formats. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___p_sfile___device.html#d76ea602260de7dac702fea740ad5e50">Page_Layout</a> { <b>PORTRAIT</b> =  0, 
 <b>LANDSCAPE</b> =  0x100, 
 <b>REVERSED</b> =  0x200, 
 <b>ORIENTATION</b> =  0x300
  }</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Possible page layouts. <br></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6636de65889e03f4edda95fb3c0daa29"></a><!-- doxytag: member="Fl_PSfile_Device::Fl_PSfile_Device" ref="6636de65889e03f4edda95fb3c0daa29" args="(void)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___p_sfile___device.html#6636de65889e03f4edda95fb3c0daa29">Fl_PSfile_Device</a> (void)</td></tr>
@@ -91,16 +93,16 @@ Inherits <a class="el" href="class_fl___device.html">Fl_Device</a>.
 virtual&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___p_sfile___device.html#3f5fd352cb1f8f4daa1b59bdb03801ae">~Fl_PSfile_Device</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The destructor. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___p_sfile___device.html#2e65205d37ba0f7ace8f960b73057963">start_job</a> (int pagecount, enum Page_Format format=A4)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___p_sfile___device.html#ace67e903c05c7bde97a4f550b191232">start_job</a> (int pagecount, enum <a class="el" href="class_fl___p_sfile___device.html#23149afb6179bf2719b546103f0f24f9">Page_Format</a> format=A4, enum <a class="el" href="class_fl___p_sfile___device.html#d76ea602260de7dac702fea740ad5e50">Page_Layout</a> layout=PORTRAIT)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Begins the session where all graphics will go to a local PostScript file.  <a href="#2e65205d37ba0f7ace8f960b73057963"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Begins the session where all graphics will go to a local PostScript file.  <a href="#ace67e903c05c7bde97a4f550b191232"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Creates a session where all graphics will go to a local PostScript file. Same API as <a class="el" href="class_fl___printer.html" title="Provides an OS-independent interface to printing.">Fl_Printer</a> class. 
 <p>
-This class has the same API as class <a class="el" href="class_fl___printer.html" title="Provides an OS-independent interface to printing.">Fl_Printer</a> except for <a class="el" href="class_fl___p_sfile___device.html#2e65205d37ba0f7ace8f960b73057963" title="Begins the session where all graphics will go to a local PostScript file.">start_job()</a> member function. <dl class="see" compact><dt><b>See also:</b></dt><dd>class <a class="el" href="class_fl___printer.html" title="Provides an OS-independent interface to printing.">Fl_Printer</a>. </dd></dl>
+This class has the same API as class <a class="el" href="class_fl___printer.html" title="Provides an OS-independent interface to printing.">Fl_Printer</a> except for <a class="el" href="class_fl___p_sfile___device.html#ace67e903c05c7bde97a4f550b191232" title="Begins the session where all graphics will go to a local PostScript file.">start_job()</a> member function. <dl class="see" compact><dt><b>See also:</b></dt><dd>class <a class="el" href="class_fl___printer.html" title="Provides an OS-independent interface to printing.">Fl_Printer</a>. </dd></dl>
 <hr><h2>Member Function Documentation</h2>
-<a class="anchor" name="2e65205d37ba0f7ace8f960b73057963"></a><!-- doxytag: member="Fl_PSfile_Device::start_job" ref="2e65205d37ba0f7ace8f960b73057963" args="(int pagecount, enum Page_Format format=A4)" -->
+<a class="anchor" name="ace67e903c05c7bde97a4f550b191232"></a><!-- doxytag: member="Fl_PSfile_Device::start_job" ref="ace67e903c05c7bde97a4f550b191232" args="(int pagecount, enum Page_Format format=A4, enum Page_Layout layout=PORTRAIT)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -113,8 +115,14 @@ This class has the same API as class <a class="el" href="class_fl___printer.html
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">enum Page_Format&nbsp;</td>
-          <td class="paramname"> <em>format</em> = <code>A4</code></td><td>&nbsp;</td>
+          <td class="paramtype">enum <a class="el" href="class_fl___p_sfile___device.html#23149afb6179bf2719b546103f0f24f9">Page_Format</a>&nbsp;</td>
+          <td class="paramname"> <em>format</em> = <code>A4</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">enum <a class="el" href="class_fl___p_sfile___device.html#d76ea602260de7dac702fea740ad5e50">Page_Layout</a>&nbsp;</td>
+          <td class="paramname"> <em>layout</em> = <code>PORTRAIT</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -130,8 +138,9 @@ Begins the session where all graphics will go to a local PostScript file.
 <p>
 Opens a file dialog to select an output PostScript file. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>pagecount</em>&nbsp;</td><td>the total number of pages to be created </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>format</em>&nbsp;</td><td>desired page format </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pagecount</em>&nbsp;</td><td>The total number of pages to be created. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>format</em>&nbsp;</td><td>Desired page format. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>layout</em>&nbsp;</td><td>Desired page layout. </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>0 iff OK </dd></dl>
@@ -141,7 +150,7 @@ Opens a file dialog to select an output PostScript file. <dl compact><dt><b>Para
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___printer_8_h_source.html">Fl_Printer.H</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Mar 4 18:58:48 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Mar 8 19:13:45 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
