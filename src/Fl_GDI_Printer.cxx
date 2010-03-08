@@ -216,7 +216,12 @@ int Fl_GDI_Printer::end_page (void)
   return rsult;
 }
 
-void Fl_GDI_Printer::translate (int x, int y)
+static int translate_stack_depth = 0;
+const int translate_stack_max = 5;
+static int translate_stack_x[translate_stack_max];
+static int translate_stack_y[translate_stack_max];
+
+static void do_translate(int x, int y)
 {
   XFORM tr;
   tr.eM11 = tr.eM22 = 1;
@@ -226,14 +231,22 @@ void Fl_GDI_Printer::translate (int x, int y)
   ModifyWorldTransform(fl_gc, &tr, MWT_LEFTMULTIPLY);
 }
 
+void Fl_GDI_Printer::translate (int x, int y)
+{
+  do_translate(x, y);
+  if (translate_stack_depth < translate_stack_max) {
+    translate_stack_x[translate_stack_depth] = x;
+    translate_stack_y[translate_stack_depth] = y;
+    translate_stack_depth++;
+    }
+}
+
 void Fl_GDI_Printer::untranslate (void)
 {
-/* unused now
-  XFORM mat;
-  GetWorldTransform(fl_gc, &mat);
-  mat.eDx = 0;
-  mat.eDy = 0;
-  SetWorldTransform(fl_gc, &mat); */
+  if (translate_stack_depth > 0) {
+    translate_stack_depth--;
+    do_translate( - translate_stack_x[translate_stack_depth], - translate_stack_y[translate_stack_depth] );
+    }
 }
 
 #endif // WIN32

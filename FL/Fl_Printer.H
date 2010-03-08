@@ -41,18 +41,6 @@ private:
   };
   void add_image(Fl_Image *image, const uchar *data); // adds an image to the page image list
   void traverse(Fl_Widget *widget); // finds subwindows of widget and prints them
-  /**
-   @brief Translates the current graphics origin accounting for the current rotation.
-   *
-   This function is only useful after a rotate() call. 
-   On Mac and X11, each translate() call must be matched by an untranslate() call.
-   */
-  virtual void translate(int x, int y);
-  
-  /**
-   @brief Undoes the effect of a previous translate() call.
-   */
-  virtual void untranslate(void);
 protected:
   int y_offset;
   int x_offset;
@@ -127,6 +115,7 @@ public:
       Arguments should be expressed relatively to the result of a previous printable_rect() call.
       That is, <tt>printable_rect(&w, &h); origin(w/2, 0);</tt> sets the graphics origin at the
       top center of the page printable area.
+      Origin() calls are not affected by rotate() calls.
       Successive origin() calls don't combine their effects.
       @param[in] x Horizontal position in page coordinates of the desired origin of graphics functions.
       @param[in] y Same as above, vertically.
@@ -160,6 +149,20 @@ public:
       @param angle Rotation angle in counterclockwise degrees.
       */
      virtual void rotate(float angle);
+     
+     /**
+      @brief Translates the current graphics origin accounting for the current rotation.
+      *
+      This function is only useful after a rotate() call. 
+      Each translate() call must be matched by an untranslate() call.
+      Successive translate() calls add up their effects.
+      */
+     virtual void translate(int x, int y);
+     
+     /**
+      @brief Undoes the effect of a previous translate() call.
+      */
+     virtual void untranslate(void);
      
      /**
       @brief Draws the widget on the printed page.

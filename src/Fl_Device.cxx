@@ -58,12 +58,8 @@ void Fl_Virtual_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_
   // find subwindows of widget and print them
   traverse(widget);
   // reset origin to where it was
-  if(new_x != old_x || new_y != old_y) {
-#ifdef WIN32
-    translate( - (new_x - old_x), - (new_y - old_y) );
-#else
+  if (new_x != old_x || new_y != old_y) {
     untranslate();
-#endif
   }
 }
 
