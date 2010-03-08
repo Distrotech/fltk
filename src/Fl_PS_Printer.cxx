@@ -324,19 +324,23 @@ Fl_PSfile_Device::Fl_PSfile_Device(void)
 int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format, enum Page_Layout layout)
 //returns 0 iff OK
 {
+  int w, h, x;
   this->set_current();
   page_format_ = (enum Page_Format)(format | layout);
   
   fputs("%!PS-Adobe-3.0\n", output);
   fputs("%%Creator: FLTK\n", output);
-  if(lang_level_>1)
+  if (lang_level_>1)
     fprintf(output, "%%%%LanguageLevel: %i\n" , lang_level_);
-  if((pages_ = pagecount))
+  if ((pages_ = pagecount))
     fprintf(output, "%%%%Pages: %i\n", pagecount);
   else
     fputs("%%Pages: (atend)\n", output);
   fprintf(output, "%%%%BeginFeature: *PageSize %s\n", page_formats[format].name );
-  fprintf(output, "<</PageSize[%d %d]>>setpagedevice\n", page_formats[format].width, page_formats[format].height );
+  w = page_formats[format].width;
+  h = page_formats[format].height;
+  if (lang_level_ == 3 && (layout & LANDSCAPE) ) { x = w; w = h; h = x; }
+  fprintf(output, "<</PageSize[%d %d]>>setpagedevice\n", w, h );
   fputs("%%EndFeature\n", output);
   fputs("%%EndComments\n", output);
   fputs(prolog, output);
@@ -423,8 +427,8 @@ void Fl_PSfile_Device::page(double pw, double ph, int media) {
   }
   fprintf(output, "%%%%EndPageSetup\n");
   
-  pw_=pw;
-  ph_=ph;
+  pw_ = pw;
+  ph_ = ph;
   reset();
   
   fprintf(output, "save\n");
@@ -434,15 +438,19 @@ void Fl_PSfile_Device::page(double pw, double ph, int media) {
   line_style(0);
   fprintf(output, "GS\n");
   
-  if(!((media & MEDIA) &&(lang_level_>1))){
-    if(pw>ph)
-      if(media & REVERSED)
+  if (!((media & MEDIA) &&(lang_level_>1))){
+    if (pw > ph) {
+      if(media & REVERSED) {
         fprintf(output, "-90 rotate %i 0 translate\n", int(-pw));
-      else
-        fprintf(output, "90 rotate 0 %i translate\n", int(-ph));
-      else
+	}
+      else {
+        fprintf(output, "90 rotate -%i -%i translate\n", (lang_level_ == 2 ? int(pw - ph) : 0), int(ph));
+	}
+      }
+      else {
 	if(media & REVERSED)
 	  fprintf(output, "180 rotate %i %i translate\n", int(-pw), int(-ph));
+	}
   }
   fprintf(output, "GS\nCS\n");
 };
