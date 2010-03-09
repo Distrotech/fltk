@@ -254,20 +254,6 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
         }            
       }
     }
-  if(Fl_Device::current()->type() == Fl_Device::gdi_printer) {
-    // if print context, device and logical units are not equal, so SetDIBitsToDevice
-    // does not do the expected job, whereas StretchDIBits does it.
-    StretchDIBits(fl_gc, x, y+j-k, w, k, 0, 0, w, k,
-		      (LPSTR)((uchar*)buffer+(blocking-k)*linesize),
-		      &bmi,
-#if USE_COLORMAP
-		      indexed ? DIB_PAL_COLORS : DIB_RGB_COLORS
-#else
-		      DIB_RGB_COLORS
-#endif
-		      , SRCCOPY );
-    }
-    else {
       SetDIBitsToDevice(fl_gc, x, y+j-k, w, k, 0, 0, 0, k,
 			(LPSTR)((uchar*)buffer+(blocking-k)*linesize),
 			&bmi,
@@ -277,7 +263,6 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
 			DIB_RGB_COLORS
 #endif
 			);
-    }
   }
 }
 
