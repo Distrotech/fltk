@@ -100,8 +100,7 @@ public:
       the full page.
       *
       Values are in the same unit as that used by FLTK drawing functions. They are changed
-      by scale() calls. Values are as given by the system on Mac OS X and MSWindows; they are approximate
-      on other platforms and for PostScript file output (Fl_PSfile_Device).
+      by scale() calls.
       @param[out] left If non-null, *left is set to the left margin size.
       @param[out] top If non-null, *top is set to the top margin size.
       @param[out] right If non-null, *right is set to the right margin size.
@@ -528,7 +527,6 @@ public:
   Fl_PS_Printer(void) {};
   ~Fl_PS_Printer(void) {};
   int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
-  void end_job(void);
 };
 class Fl_Printer : public Fl_PS_Printer {
 };

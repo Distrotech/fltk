@@ -326,6 +326,14 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format, 
 {
   int w, h, x;
   this->set_current();
+  if (format == A4) {
+    left_margin = 18;
+    top_margin = 18;
+  }
+  else {
+    left_margin = 12;
+    top_margin = 12;
+  }
   page_format_ = (enum Page_Format)(format | layout);
   
   fputs("%!PS-Adobe-3.0\n", output);
@@ -1114,8 +1122,6 @@ int Fl_PSfile_Device::start_page (void)
   x_offset = 0;
   y_offset = 0;
   scale_x = scale_y = 1.;
-  left_margin = 30;
-  top_margin = 30;
   angle = 0;
   fprintf(output, "GR GR GS %d %d translate GS\n", left_margin, top_margin);
   return 0;
@@ -1131,6 +1137,7 @@ int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, enum Pa
   Fl_Native_File_Chooser fnfc;
   fnfc.title("Create a .ps file");
   fnfc.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
+  fnfc.options(Fl_Native_File_Chooser::SAVEAS_CONFIRM);
   fnfc.filter("PostScript\t*.ps\n");
   // Show native chooser
   if ( fnfc.show() ) return 1;
@@ -1173,19 +1180,11 @@ void Fl_PSfile_Device::end_job (void)
 #if ! (defined(__APPLE__) || defined(WIN32) )
 int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   // TODO:
-  // should start and close a print dialog		*DONE*
-  // transmit the selected paper format to
-  // the Fl_PSfile_Device::start_postscript() call	*DONE*
-  // create a temp .ps file, open it for writing
-  // on member var output, 
-  // and strdup its name to member var ps_filename_	*DONE*
   // return the user's desired page range to the caller
   // and transmit the range total to start_postscript()	*TODO*
-  // terminate by:
-  // return Fl_PSfile_Device::start_postscript(pages, format);	*DONE*
 
-  enum Page_Format format = A4; // default
-  enum Page_Layout layout = PORTRAIT; // default
+  enum Page_Format format;
+  enum Page_Layout layout;
   if(firstpage) *firstpage = 1; // temporary
   if(lastpage) *lastpage = pages; // temporary
 
@@ -1243,12 +1242,6 @@ void print_cb(Fl_Return_Button *, void *) {
   // return Fl_PSfile_Device::start_postscript(pages, format); // temporary
 }
 */
-
-void Fl_PS_Printer::end_job(void)
-{
-  Fl_PSfile_Device::end_job(); 
-  // TODO should send the ps_filename_ file to the print queue and delete it
-}
 
 #endif
 
