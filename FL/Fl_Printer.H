@@ -220,8 +220,6 @@ private:
   PMPrintSession  printSession;
   PMPageFormat    pageFormat;
   PMPrintSettings printSettings;
-  void translate(int x, int y);
-  void untranslate(void);
 public:
   Fl_Quartz_Printer(void);
   int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
@@ -231,6 +229,8 @@ public:
   void origin(int x, int y);
   void scale (float scale_x, float scale_y);
   void rotate(float angle);
+  void translate(int x, int y);
+  void untranslate(void);
   int end_page (void);
   void end_job (void);
 };
@@ -245,8 +245,6 @@ private:
   int           prerr;
   int left_margin;
   int top_margin;
-  void translate(int x, int y);
-  void untranslate(void);
   void absolute_printable_rect(int *x, int *y, int *w, int *h);
 public:
   Fl_GDI_Printer(void);
@@ -257,6 +255,8 @@ public:
   void origin(int x, int y);
   void scale (float scale_x, float scale_y);
   void rotate(float angle);
+  void translate(int x, int y);
+  void untranslate(void);
   int end_page (void);
   void end_job (void);
 };
@@ -276,70 +276,48 @@ class Fl_PSfile_Device : public
   Fl_Device 
 #endif
   { // defined for all 3 platforms
-public:
-    
+public: 
     /**
      @brief Possible page formats.
      */
     enum Page_Format{
-    A0 = 0, 
-    A1,
-    A2,
-    A3,
-    A4,
-    A5,
-    A6,
-    A7,
-    A8,
-    A9,
-    B0,
-    B1,
-    B2,
-    B3,
-    B4,
-    B5,
-    B6,
-    B7,
-    B8,
-    B9,
-    B10,
-    C5E,
-    DLE,
-    EXECUTIVE,
-    FOLIO,
-    LEDGER,
-    LEGAL,
-    LETTER,
-    TABLOID,
-    ENVELOPE,
-    MEDIA = 0x1000
-  };
+      A0 = 0, 
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      B0,
+      B1,
+      B2,
+      B3,
+      B4,
+      B5,
+      B6,
+      B7,
+      B8,
+      B9,
+      B10,
+      C5E,
+      DLE,
+      EXECUTIVE,
+      FOLIO,
+      LEDGER,
+      LEGAL,
+      LETTER,
+      TABLOID,
+      ENVELOPE,
+      MEDIA = 0x1000
+    };
     
     /**
      @brief Possible page layouts.
      */
     enum Page_Layout {PORTRAIT = 0, LANDSCAPE = 0x100, REVERSED = 0x200, ORIENTATION = 0x300};
-
-    /**
-     @brief The constructor.
-     */
-    Fl_PSfile_Device(void);
-    
-    /**
-     @brief The destructor.
-     */
-    virtual ~Fl_PSfile_Device();
-    
-    /**
-     @brief Begins the session where all graphics will go to a local PostScript file.
-     *
-     Opens a file dialog to select an output PostScript file.
-     @param pagecount The total number of pages to be created.
-     @param format Desired page format.
-     @param layout Desired page layout.
-     @return 0 iff OK
-     */
-    int start_job(int pagecount, enum Page_Format format = A4, enum Page_Layout layout = PORTRAIT);
 
 #ifndef FL_DOXYGEN
 private:
@@ -387,11 +365,8 @@ private:
   float angle;
   int left_margin;
   int top_margin;
-  void translate(int x, int y);
-  void untranslate(void);
 
 protected:
-
   struct page_format {
     int width;
     int height;
@@ -417,34 +392,6 @@ protected:
   void draw_scaled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
   void draw_scaled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D);
 
-public:
-  void page_policy(int p);
-  int page_policy(){return page_policy_;};
-  
-  
-  void close_command( int (*cmd)(FILE *)){close_cmd_=cmd;};
-  FILE * file(){return output;};
-  //void orientation (int o);
-  
-  //Fl_PSfile_Device(FILE *o, int lang_level, int pages = 0); // ps (also multi-page) constructor
-  //Fl_PSfile_Device(FILE *o, int lang_level, int x, int y, int w, int h); //eps constructor
-  void interpolate(int i){interpolate_=i;};
-  int interpolate(){return interpolate_;}
-  
-  void page(double pw, double ph, int media = 0);
-  void page(int format);
-  
-  void place(double x, double y, double tx, double ty, double scale = 1);
-  int start_page (void);
-  int printable_rect(int *w, int *h);
-  void margins(int *left, int *top, int *right, int *bottom);
-  void origin(int x, int y);
-  void scale (float scale_x, float scale_y);
-  void rotate(float angle);
-  int end_page (void);
-  void end_job (void);
-  
-protected:  
   enum Page_Format page_format_;
   char *ps_filename_;
   // implementation of drawing methods
@@ -452,7 +399,6 @@ protected:
   //void bg_color(Fl_Color bg);
   void color(uchar r, uchar g, uchar b);
   Fl_Color color(){return color_;};
-  
   
   void push_clip(int x, int y, int w, int h);
   int clip_box(int x, int y, int w, int h, int &X, int &Y, int &W, int &H);
@@ -508,18 +454,65 @@ protected:
   double width(const char* s, int n);
   int descent();
   int height();
-    
+  
   void draw_image(const uchar* d, int x,int y,int w,int h, int delta=3, int ldelta=0){draw_scaled_image(d,x,y,w,h,w,h,delta,ldelta);};
   void draw_image_mono(const uchar* d, int x,int y,int w,int h, int delta=1, int ld=0){draw_scaled_image_mono(d,x,y,w,h,w,h,delta,ld);};
   void draw_image(Fl_Draw_Image_Cb call, void* data, int x,int y, int w, int h, int delta=3){draw_scaled_image(call,data, x, y, w, h, w, h, delta);};
   void draw_image_mono(Fl_Draw_Image_Cb call, void* data, int x,int y, int w, int h, int delta=1){draw_scaled_image_mono(call, data, x, y, w, h, w, h, delta);};
-    
+  
   void draw(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_Bitmap * bitmap,int XP, int YP, int WP, int HP, int cx, int cy);
     
+public:
+  void page_policy(int p);
+  int page_policy(){return page_policy_;};
+  void close_command( int (*cmd)(FILE *)){close_cmd_=cmd;};
+  FILE * file() {return output;};
+  //void orientation (int o);
+  //Fl_PSfile_Device(FILE *o, int lang_level, int pages = 0); // ps (also multi-page) constructor
+  //Fl_PSfile_Device(FILE *o, int lang_level, int x, int y, int w, int h); //eps constructor
+  void interpolate(int i){interpolate_=i;};
+  int interpolate(){return interpolate_;}
+  
+  void page(double pw, double ph, int media = 0);
+  void page(int format);
+  
+  void place(double x, double y, double tx, double ty, double scale = 1);
+  int start_page (void);
+  int printable_rect(int *w, int *h);
+  void margins(int *left, int *top, int *right, int *bottom);
+  void origin(int x, int y);
+  void scale (float scale_x, float scale_y);
+  void rotate(float angle);
+  void translate(int x, int y);
+  void untranslate(void);
+  int end_page (void);
+  void end_job (void);
+  
 #endif // FL_DOXYGEN
-};
+    
+    /**
+     @brief The constructor.
+     */
+    Fl_PSfile_Device(void);
+    
+    /**
+     @brief The destructor.
+     */
+    virtual ~Fl_PSfile_Device();
+    
+    /**
+     @brief Begins the session where all graphics will go to a local PostScript file.
+     *
+     Opens a file dialog to select an output PostScript file.
+     @param pagecount The total number of pages to be created.
+     @param format Desired page format.
+     @param layout Desired page layout.
+     @return 0 iff OK
+     */
+    int start_job(int pagecount, enum Page_Format format = A4, enum Page_Layout layout = PORTRAIT);
+  };
 
 #ifndef FL_DOXYGEN
 
