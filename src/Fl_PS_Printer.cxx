@@ -316,6 +316,7 @@ Fl_PSfile_Device::Fl_PSfile_Device(void)
   close_cmd_ = 0;
   //lang_level_ = 3;
   lang_level_ = 2;
+  //lang_level_ = 1;
   mask = 0;
   ps_filename_ = NULL;
   type_ = postscript_device;
@@ -1179,14 +1180,8 @@ void Fl_PSfile_Device::end_job (void)
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
 int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
-  // TODO:
-  // return the user's desired page range to the caller
-  // and transmit the range total to start_postscript()	*TODO*
-
   enum Page_Format format;
   enum Page_Layout layout;
-  if(firstpage) *firstpage = 1; // temporary
-  if(lastpage) *lastpage = pages; // temporary
 
   // first test version for print dialog
 
@@ -1195,6 +1190,9 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   print_selection->deactivate();
   print_all->setonly();
   print_all->do_callback();
+  print_from->value("1");
+  { char tmp[10]; snprintf(tmp, sizeof(tmp), "%d", pages); print_to->value(tmp); }
+  print_copies->parent()->deactivate(); // TODO: manage copy # and collate options
   print_panel->show(); // this is modal
   while (print_panel->shown()) Fl::wait();
   
@@ -1204,6 +1202,19 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   // get options
 
   format = print_page_size->value() ? A4 : LETTER;
+  { // page range choice
+    int from = 1, to = pages;
+    if (print_pages->value()) {
+      sscanf(print_from->value(), "%d", &from);
+      sscanf(print_to->value(), "%d", &to);
+    }
+    if (from < 1) from = 1;
+    if (to > pages) to = pages;
+    if (to < from) to = from;
+    if (firstpage) *firstpage = from;
+    if (lastpage) *lastpage = to;
+    pages = to - from + 1;
+  }
   
   if (print_output_mode[0]->value()) layout = PORTRAIT;
   else if (print_output_mode[1]->value()) layout = LANDSCAPE;

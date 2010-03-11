@@ -46,6 +46,7 @@
 #include <stdlib.h>
 #include "../src/flstring.h"
 #include <FL/Fl_Preferences.H>
+#include <FL/Fl_Int_Input.H>
 
 // extern Fl_Preferences fluid_prefs;
 
@@ -62,8 +63,8 @@ static Fl_Group *print_collate_group[2]={(Fl_Group *)0};
 static Fl_Progress *print_progress=(Fl_Progress *)0;
 static Fl_Double_Window *print_properties_panel=(Fl_Double_Window *)0;
 static Fl_Choice *print_page_size=(Fl_Choice *)0;
-static Fl_Input *print_from=(Fl_Input *)0;
-static Fl_Input *print_to=(Fl_Input *)0;
+static Fl_Int_Input *print_from=(Fl_Int_Input *)0;
+static Fl_Int_Input *print_to=(Fl_Int_Input *)0;
 static Fl_Spinner *print_copies=(Fl_Spinner *)0;
 
 static int print_start = 0;	// 1 if print_okay has been clicked
@@ -282,16 +283,16 @@ Fl_Double_Window* make_print_panel() {
           print_selection->down_box(FL_ROUND_DOWN_BOX);
           print_selection->callback((Fl_Callback*)cb_print_selection);
         } // Fl_Round_Button* print_selection
-        { print_from = new Fl_Input(136, 126, 28, 25, "From:");
+        { print_from = new Fl_Int_Input(136, 126, 28, 25, "From:");
           print_from->type(2);
           print_from->textfont(4);
           print_from->deactivate();
-        } // Fl_Input* print_from
-        { print_to = new Fl_Input(199, 126, 28, 25, "To:");
+        } // Fl_Int_Input* print_from
+        { print_to = new Fl_Int_Input(199, 126, 28, 25, "To:");
           print_to->type(2);
           print_to->textfont(4);
           print_to->deactivate();
-        } // Fl_Input* print_to
+        } // Fl_Int_Input* print_to
         o->end();
       } // Fl_Group* o
       { Fl_Group* o = new Fl_Group(247, 86, 210, 105, "Copies");
@@ -587,7 +588,7 @@ void print_update_status() {
 
   snprintf(name, sizeof(name), "%s/page_size", printer);
   // fluid_prefs.get(name, val, 0);
-  print_page_size->value(val);
+  print_page_size->value(1); // FIXME
 
   snprintf(name, sizeof(name), "%s/output_mode", printer);
   // fluid_prefs.get(name, val, 0);
