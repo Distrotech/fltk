@@ -31,13 +31,22 @@
 #ifndef Fl_Button_H
 #define Fl_Button_H
 
+#ifndef Fl_Widget_H
 #include "Fl_Widget.H"
+#endif
 
-#include "../FL3/Button.h"
+// values for type()
+#define FL_NORMAL_BUTTON	0   /**< value() will be set to 1 during the press of the button and 
+                                         reverts back to 0 when the button is released */
+#define FL_TOGGLE_BUTTON	1   ///< value() toggles between 0 and 1 at every click of the button
+#define FL_RADIO_BUTTON		(FL_RESERVED_TYPE+2) /**< is set to 1 at button press, and all other
+				         buttons in the same group with <tt>type() == FL_RADIO_BUTTON</tt>
+				         are set to zero.*/
+#define FL_HIDDEN_BUTTON	3   ///< for Forms compatibility
 
-#define Fl_Button fltk::Button
-
-#if 0
+#ifndef FL_DOXYGEN
+extern FL_EXPORT Fl_Shortcut fl_old_shortcut(const char*);
+#endif
 
 /**
   \class Fl_Button
@@ -72,7 +81,7 @@
          (when the user pushes and releases the button, and as the mouse is
 	 dragged around in and out of the button).
 */
-class FL_EXPORT Fl_Button : public fltk::Widget {
+class FL_EXPORT Fl_Button : public Fl_Widget {
 
   int shortcut_;
   char value_;
@@ -125,11 +134,11 @@ public:
     <tt>'a'</tt>.
     A value of 0 disables the shortcut.
 
-    The key can be any value returned by fltk::event_key(), but will usually be
+    The key can be any value returned by Fl::event_key(), but will usually be
     an ASCII letter.  Use a lower-case letter unless you require the shift key
     to be held down.
 
-    The shift flags can be any set of values accepted by fltk::event_state().
+    The shift flags can be any set of values accepted by Fl::event_state().
     If the bit is on, that shift key must be pushed.  Meta, Alt, Ctrl, and
     Shift must be off if they are not in the shift flags (zero for the other
     bits indicates a "don't care" setting).
@@ -159,8 +168,6 @@ public:
   /// (for backwards compatibility)
   void down_color(unsigned c) {selection_color(c);}
 };
-
-#endif 
 
 #endif
 

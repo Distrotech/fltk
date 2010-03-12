@@ -25,6 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
+#define IDE_SUPPORT
+
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Box.H>
@@ -34,6 +36,7 @@
 #include <FL/Fl_Hold_Browser.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Input.H>
+#include <FL/Fl_Plugin.H>
 #include <FL/fl_ask.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_File_Chooser.H>
@@ -99,6 +102,7 @@ int gridy = 5;
 int snap = 1;
 int show_guides = 1;
 int show_comments = 1;
+int show_coredevmenus = 1;
 
 // File history info...
 char	absolute_history[10][1024];
@@ -109,6 +113,12 @@ void	update_history(const char *);
 
 // Shell command support...
 void	show_shell_window();
+
+Fl_Menu_Item *save_item = 0L;
+Fl_Menu_Item *history_item = 0L;
+Fl_Menu_Item *widgetbin_item = 0L;
+Fl_Menu_Item *sourceview_item = 0L;
+Fl_Menu_Item *dbmanager_item = 0L;
 
 ////////////////////////////////////////////////////////////////
 
@@ -632,6 +642,7 @@ void new_cb(Fl_Widget *, void *v) {
   undo_clear();
 }
 
+int exit_early = 0;
 int compile_only = 0;
 int compile_strings = 0;
 int header_file_set = 0;
@@ -1570,6 +1581,30 @@ void print_cb(Fl_Return_Button *, void *) {
 }
 #endif // WIN32 && !__CYGWIN__
 
+void fltkdb_cb(Fl_Widget*, void*) {
+  Fl_Plugin_Manager pm("commandline");  
+  Fl_Commandline_Plugin *pi = (Fl_Commandline_Plugin*)pm.plugin("FltkDB.fluid.fltk.org");
+  if (pi) pi->test("/Users/matt/dev/fltk-1.3.0/fltk.db");
+}
+
+void dbxcode_cb(Fl_Widget*, void*) {
+  Fl_Plugin_Manager pm("commandline");  
+  Fl_Commandline_Plugin *pi = (Fl_Commandline_Plugin*)pm.plugin("ideXcode.fluid.fltk.org");
+  if (pi) pi->test("/Users/matt/dev/fltk-1.3.0/fltk.db", "/Users/matt/dev/fltk-1.3.0");
+}
+
+void dbvisualc_cb(Fl_Widget*, void*) {
+  Fl_Plugin_Manager pm("commandline");  
+  Fl_Commandline_Plugin *pi = (Fl_Commandline_Plugin*)pm.plugin("ideVisualC.fluid.fltk.org");
+  if (pi) pi->test("/Users/matt/dev/fltk-1.3.0/fltk.db", "/Users/matt/dev/fltk-1.3.0");
+}
+
+void show_dbmanager_cb(Fl_Widget*, void*) {
+  Fl_Plugin_Manager pm("commandline");  
+  Fl_Commandline_Plugin *pi = (Fl_Commandline_Plugin*)pm.plugin("FltkDB.fluid.fltk.org");
+  if (pi) pi->show_panel();
+}
+
 ////////////////////////////////////////////////////////////////
 
 extern Fl_Menu_Item New_Menu[];
@@ -1582,7 +1617,6 @@ Fl_Menu_Item Main_Menu[] = {
   {"&New...", FL_COMMAND+'n', new_cb, 0},
   {"&Open...", FL_COMMAND+'o', open_cb, 0},
   {"&Insert...", FL_COMMAND+'i', open_cb, (void*)1, FL_MENU_DIVIDER},
-#define SAVE_ITEM 4
   {"&Save", FL_COMMAND+'s', save_cb, 0},
   {"Save &As...", FL_COMMAND+FL_SHIFT+'s', save_cb, (void*)1},
   {"Sa&ve A Copy...", 0, save_cb, (void*)2},
@@ -1591,7 +1625,6 @@ Fl_Menu_Item Main_Menu[] = {
   {"&Print...", FL_COMMAND+'p', print_menu_cb},
   {"Write &Code...", FL_COMMAND+FL_SHIFT+'c', write_cb, 0},
   {"&Write Strings...", FL_COMMAND+FL_SHIFT+'w', write_strings_cb, 0, FL_MENU_DIVIDER},
-#define HISTORY_ITEM 12
   {relative_history[0], FL_COMMAND+'0', open_history_cb, absolute_history[0]},
   {relative_history[1], FL_COMMAND+'1', open_history_cb, absolute_history[1]},
   {relative_history[2], FL_COMMAND+'2', open_history_cb, absolute_history[2]},
@@ -1621,12 +1654,11 @@ Fl_Menu_Item Main_Menu[] = {
   {"&Group", FL_F+7, group_cb},
   {"Ung&roup", FL_F+8, ungroup_cb,0, FL_MENU_DIVIDER},
   {"Hide O&verlays",FL_COMMAND+FL_SHIFT+'o',toggle_overlays},
-#define WIDGETBIN_ITEM 41
   {"Show Widget &Bin...",FL_ALT+'b',toggle_widgetbin_cb},
-#define SOURCEVIEW_ITEM 42
   {"Show Source Code...",FL_ALT+FL_SHIFT+'s', (Fl_Callback*)toggle_sourceview_cb, 0, FL_MENU_DIVIDER},
   {"Pro&ject Settings...",FL_ALT+'p',show_project_cb},
   {"GU&I Settings...",FL_ALT+FL_SHIFT+'p',show_settings_cb},
+  {"Manage &FLTK Database...",0,show_dbmanager_cb},
   {0},
 {"&New", 0, 0, (void *)New_Menu, FL_SUBMENU_POINTER},
 {"&Layout",0,0,0,FL_SUBMENU},
@@ -1664,11 +1696,16 @@ Fl_Menu_Item Main_Menu[] = {
 {"&Shell",0,0,0,FL_SUBMENU},
   {"Execute &Command...",FL_ALT+'x',(Fl_Callback *)show_shell_window},
   {"Execute &Again...",FL_ALT+'g',(Fl_Callback *)do_shell_command},
+#ifdef IDE_SUPPORT
+  {"--fltkdb",0,(Fl_Callback *)fltkdb_cb},
+  {"--dbxcode3",0,(Fl_Callback *)dbxcode_cb},
+  {"--dbvisualc6",0,(Fl_Callback *)dbvisualc_cb},
+#endif
   {0},
 {"&Help",0,0,0,FL_SUBMENU},
+  {"&Rapid development with FLUID...",0,help_cb},
+  {"&FLTK Programmers Manual...",0,manual_cb, 0, FL_MENU_DIVIDER},
   {"&About FLUID...",0,about_cb},
-  {"&On FLUID...",0,help_cb},
-  {"&Manual...",0,manual_cb},
   {0},
 {0}};
 
@@ -1705,16 +1742,15 @@ void scheme_cb(Fl_Choice *, void *) {
 void toggle_widgetbin_cb(Fl_Widget *, void *) {
   if (!widgetbin_panel) {
     make_widgetbin();
-    widgetbin_panel->callback(toggle_widgetbin_cb);
     if (!position_window(widgetbin_panel,"widgetbin_pos", 1, 320, 30)) return;
   }
 
   if (widgetbin_panel->visible()) {
     widgetbin_panel->hide();
-    Main_Menu[WIDGETBIN_ITEM].label("Show Widget &Bin...");
+    widgetbin_item->label("Show Widget &Bin...");
   } else {
     widgetbin_panel->show();
-    Main_Menu[WIDGETBIN_ITEM].label("Hide Widget &Bin");
+    widgetbin_item->label("Hide Widget &Bin");
   }
 }
 
@@ -1738,10 +1774,10 @@ void toggle_sourceview_cb(Fl_Double_Window *, void *) {
 
   if (sourceview_panel->visible()) {
     sourceview_panel->hide();
-    Main_Menu[SOURCEVIEW_ITEM].label("Show Source Code...");
+    sourceview_item->label("Show Source Code...");
   } else {
     sourceview_panel->show();
-    Main_Menu[SOURCEVIEW_ITEM].label("Hide Source Code...");
+    sourceview_item->label("Hide Source Code...");
     update_sourceview_cb(0,0);
   }
 }
@@ -1758,11 +1794,7 @@ void make_main_window() {
     fluid_prefs.get("show_guides", show_guides, 0);
     fluid_prefs.get("widget_size", Fl_Widget_Type::default_size, 14);
     fluid_prefs.get("show_comments", show_comments, 1);
-
-    load_history();
-
     make_layout_window();
-    make_settings_window();
     make_shell_window();
   }
 
@@ -1776,9 +1808,20 @@ void make_main_window() {
     main_window->resizable(o);
     main_menubar = new Fl_Menu_Bar(0,0,BROWSERWIDTH,MENUHEIGHT);
     main_menubar->menu(Main_Menu);
+    // quick access to all dynamic menu items
+    save_item = (Fl_Menu_Item*)main_menubar->find_item(save_cb);
+    history_item = (Fl_Menu_Item*)main_menubar->find_item(open_history_cb);
+    widgetbin_item = (Fl_Menu_Item*)main_menubar->find_item(toggle_widgetbin_cb);
+    sourceview_item = (Fl_Menu_Item*)main_menubar->find_item((Fl_Callback*)toggle_sourceview_cb);
+    dbmanager_item = (Fl_Menu_Item*)main_menubar->find_item((Fl_Callback*)show_dbmanager_cb);
     main_menubar->global();
     fill_in_New_Menu();
     main_window->end();
+  }
+
+  if (!compile_only) {
+    load_history();
+    make_settings_window();
   }
 }
 
@@ -1798,14 +1841,14 @@ void load_history() {
       fl_filename_relative(relative_history[i], sizeof(relative_history[i]),
                            absolute_history[i]);
 
-      if (i == 9) Main_Menu[i + HISTORY_ITEM].flags = FL_MENU_DIVIDER;
-      else Main_Menu[i + HISTORY_ITEM].flags = 0;
+      if (i == 9) history_item[i].flags = FL_MENU_DIVIDER;
+      else history_item[i].flags = 0;
     } else break;
   }
 
   for (; i < 10; i ++) {
-    if (i) Main_Menu[i + HISTORY_ITEM - 1].flags |= FL_MENU_DIVIDER;
-    Main_Menu[i + HISTORY_ITEM].hide();
+    if (i) history_item[i-1].flags |= FL_MENU_DIVIDER;
+    history_item[i].hide();
   }
 }
 
@@ -1848,15 +1891,15 @@ void update_history(const char *flname) {
   for (i = 0; i < max_files; i ++) {
     fluid_prefs.set( Fl_Preferences::Name("file%d", i), absolute_history[i]);
     if (absolute_history[i][0]) {
-      if (i == 9) Main_Menu[i + HISTORY_ITEM].flags = FL_MENU_DIVIDER;
-      else Main_Menu[i + HISTORY_ITEM].flags = 0;
+      if (i == 9) history_item[i].flags = FL_MENU_DIVIDER;
+      else history_item[i].flags = 0;
     } else break;
   }
 
   for (; i < 10; i ++) {
     fluid_prefs.set( Fl_Preferences::Name("file%d", i), "");
-    if (i) Main_Menu[i + HISTORY_ITEM - 1].flags |= FL_MENU_DIVIDER;
-    Main_Menu[i + HISTORY_ITEM].hide();
+    if (i) history_item[i-1].flags |= FL_MENU_DIVIDER;
+    history_item[i].hide();
   }
 }
 
@@ -2227,8 +2270,8 @@ void set_modflag(int mf) {
   }
 
   // Enable/disable the Save menu item...
-  if (modflag) Main_Menu[SAVE_ITEM].activate();
-  else Main_Menu[SAVE_ITEM].deactivate();
+  if (modflag) save_item->activate();
+  else save_item->deactivate();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -2247,6 +2290,13 @@ static int arg(int argc, char** argv, int& i) {
     header_file_set  = 1;
     i += 2;
     return 2;
+  }
+  Fl_Plugin_Manager pm("commandline");
+  int j, n = pm.plugins();
+  for (j=0; j<n; j++) {
+    Fl_Commandline_Plugin *pi = (Fl_Commandline_Plugin*)pm.plugin(j);
+    int r = pi->arg(argc, argv, i);
+    if (r) return r;
   }
   return 0;
 }
@@ -2273,17 +2323,30 @@ static void sigint(SIGARG) {
 }
 #endif
 
+
 int main(int argc,char **argv) {
   int i = 1;
+  
   if (!Fl::args(argc,argv,i,arg) || i < argc-1) {
-    fprintf(stderr,"usage: %s <switches> name.fl\n"
+    fprintf(stderr,
+"usage: %s <switches> name.fl\n"
 " -c : write .cxx and .h and exit\n"
 " -cs : write .cxx and .h and strings and exit\n"
 " -o <name> : .cxx output filename, or extension if <name> starts with '.'\n"
 " -h <name> : .h output filename, or extension if <name> starts with '.'\n"
-"%s\n", argv[0], Fl::help);
+            , argv[0]);
+    Fl_Plugin_Manager pm("commandline");
+    int i, n = pm.plugins();
+    for (i=0; i<n; i++) {
+      Fl_Commandline_Plugin *pi = (Fl_Commandline_Plugin*)pm.plugin(i);
+      if (pi) puts(pi->help());
+    }
+    fprintf(stderr, "%s\n", Fl::help);
     return 1;
   }
+  if (exit_early)
+    exit(0);
+  
   const char *c = argv[i];
 
   fl_register_images();

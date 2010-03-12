@@ -43,7 +43,7 @@
   
   Clicking the tab makes a child visible() by calling
   show() on it, and all other children are made invisible
-  by calling hide() on them. Usually the children are fltk::Group widgets
+  by calling hide() on them. Usually the children are Fl_Group widgets
   containing several widgets themselves.
   
   Each child makes a card, and its label() is printed
@@ -59,24 +59,24 @@
   fluid browser to select each child group and resize them until
   the tabs look the way you want them to.
 */
-class FL_EXPORT Fl_Tabs : public fltk::Group {
-  fltk::Widget *value_;
-  fltk::Widget *push_;
+class FL_EXPORT Fl_Tabs : public Fl_Group {
+  Fl_Widget *value_;
+  Fl_Widget *push_;
   int tab_positions(int*, int*);
   int tab_height();
-  void draw_tab(int x1, int x2, int W, int H, fltk::Widget* o, int sel=0);
+  void draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int sel=0);
 protected:
   void redraw_tabs();
   void draw();
 
 public:
   int handle(int);
-  fltk::Widget *value();
-  int value(fltk::Widget *);
-  fltk::Widget *push() const {return push_;}
-  int push(fltk::Widget *);
+  Fl_Widget *value();
+  int value(Fl_Widget *);
+  Fl_Widget *push() const {return push_;}
+  int push(Fl_Widget *);
   Fl_Tabs(int,int,int,int,const char * = 0);
-  fltk::Widget *which(int event_x, int event_y);
+  Fl_Widget *which(int event_x, int event_y);
 };
 
 #endif

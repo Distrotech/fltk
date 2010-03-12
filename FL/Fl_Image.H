@@ -33,9 +33,7 @@
 
 #  include "Enumerations.H"
 
-namespace fltk {
-  class Widget;
-}
+class Fl_Widget;
 struct Fl_Menu_Item;
 struct Fl_Label;
 
@@ -148,7 +146,7 @@ class FL_EXPORT Fl_Image {
     The copy() method creates a copy of the specified
     image. If the width and height are provided, the image is
     resized to the specified size. The image should be deleted (or in
-    the case of fltk::SharedImage, released) when you are done
+    the case of Fl_Shared_Image, released) when you are done
     with it.
   */
   Fl_Image *copy() { return copy(w(), h()); }
@@ -161,7 +159,7 @@ class FL_EXPORT Fl_Image {
   */
   void inactive() { color_average(FL_GRAY, .33f); }
   virtual void desaturate();
-  virtual void label(fltk::Widget*w);
+  virtual void label(Fl_Widget*w);
   virtual void label(Fl_Menu_Item*m);
   /**
     The draw() methods draw the image. This form specifies
@@ -212,7 +210,7 @@ class FL_EXPORT Fl_RGB_Image : public Fl_Image {
   virtual void desaturate();
   virtual void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
   void draw(int X, int Y) {draw(X, Y, w(), h(), 0, 0);}
-  virtual void label(fltk::Widget*w);
+  virtual void label(Fl_Widget*w);
   virtual void label(Fl_Menu_Item*m);
   virtual void uncache();
 };

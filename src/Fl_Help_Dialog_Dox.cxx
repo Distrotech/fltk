@@ -1,5 +1,5 @@
 //
-// "$Id"
+// "$Id$"
 //
 // Fl_Help_Dialog dialog for the Fast Light Tool Kit (FLTK).
 //
@@ -105,16 +105,16 @@
 
 /** \fn void Fl_Help_Dialog::show()
   Shows the main Help Dialog Window
-  Delegates call to encapsulated window_ void fltk::Window::show() method */
+  Delegates call to encapsulated window_ void Fl_Window::show() method */
 
 /** \fn void Fl_Help_Dialog::show(int argc, char **argv)
   Shows the main Help Dialog Window
-  Delegates call to encapsulated window_ void fltk::Window::show(int argc, char **argv) instance method */
+  Delegates call to encapsulated window_ void Fl_Window::show(int argc, char **argv) instance method */
 
 /** \fn void Fl_Help_Dialog::textsize(Fl_Fontsize s)
   Sets the internal Fl_Help_View instance text size.
   Delegates call to encapsulated view_ void Fl_Help_View::textsize(Fl_Fontsize s) instance method */
 
 //
-// End of "$Id".
+// End of "$Id$".
 //

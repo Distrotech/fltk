@@ -44,7 +44,7 @@
 #include <FL/Fl.H>
 #include <FL/fl_draw.H>
 #include <FL/x.H>
-#include <FL3/Widget.h>
+#include <FL/Fl_Widget.H>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Pixmap.H>
 
@@ -179,12 +179,12 @@ void Fl_Pixmap::uncache() {
   }
 }
 
-void Fl_Pixmap::label(fltk::Widget* widget) {
+void Fl_Pixmap::label(Fl_Widget* widget) {
   widget->image(this);
 }
 
 void Fl_Pixmap::label(Fl_Menu_Item* m) {
-  fltk::set_labeltype(_FL_IMAGE_LABEL, labeltype, Fl_Image::measure);
+  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, Fl_Image::measure);
   m->label(_FL_IMAGE_LABEL, (const char*)this);
 }
 
@@ -346,7 +346,7 @@ void Fl_Pixmap::color_average(Fl_Color c, float i) {
   uchar		r, g, b;
   unsigned	ia, ir, ig, ib;
 
-  fltk::get_color(c, r, g, b);
+  Fl::get_color(c, r, g, b);
   if (i < 0.0f) i = 0.0f;
   else if (i > 1.0f) i = 1.0f;
 

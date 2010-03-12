@@ -32,7 +32,7 @@
 #include <FL/fl_draw.H>
 
 // On systems that support double buffering "naturally" the base
-// fltk::Window class will probably do double-buffer and this subclass
+// Fl_Window class will probably do double-buffer and this subclass
 // does nothing.
 
 #if USE_XDBE
@@ -61,7 +61,7 @@ static int can_xdbe() {
 #endif
 
 void Fl_Double_Window::show() {
-  fltk::Window::show();
+  Fl_Window::show();
 }
 
 #if defined(USE_X11)
@@ -100,10 +100,9 @@ char fl_can_do_alpha_blending() {
   fl_alpha_blend = (fl_alpha_blend_func)GetProcAddress(hMod, "AlphaBlend");
   // give up if we can't find it (Win95)
   if (!fl_alpha_blend) return 0;
-  // we have the  call, but does our display support alpha blending?
-  HDC dc = 0L;//fl_gc;
-  // get the current or the desktop's device context
-  if (!dc) dc = GetDC(0L);
+  // we have the call, but does our display support alpha blending?
+  // get the desktop's device context
+  HDC dc = GetDC(0L);
   if (!dc) return 0;
   // check the device capabilities flags. However GetDeviceCaps
   // does not return anything useful, so we have to do it manually:
@@ -117,8 +116,8 @@ char fl_can_do_alpha_blending() {
   RestoreDC(new_gc, save);
   DeleteDC(new_gc);
   DeleteObject(bm);
+  ReleaseDC(0L, dc);
 
-  if (!fl_gc) ReleaseDC(0L, dc);
   if (alpha_ok) can_do = 1;
   return can_do;
 }
@@ -324,7 +323,7 @@ void Fl_Double_Window::flush(int eraseoverlay) {
     DeleteDC(fl_gc);
     fl_gc = _sgc;
     //# if defined(USE_CAIRO)
-    //if fltk::cairo_autolink_context() fltk::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
+    //if Fl::cairo_autolink_context() Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
     //# endif
 #elif defined(__APPLE__)
     if ( myi->other_xid ) {
@@ -351,7 +350,7 @@ void Fl_Double_Window::flush(int eraseoverlay) {
 void Fl_Double_Window::resize(int X,int Y,int W,int H) {
   int ow = w();
   int oh = h();
-  fltk::Window::resize(X,Y,W,H);
+  Fl_Window::resize(X,Y,W,H);
 #if USE_XDBE
   if (use_xdbe) return;
 #endif
@@ -370,7 +369,7 @@ void Fl_Double_Window::hide() {
 #endif
       fl_delete_offscreen(myi->other_xid);
   }
-  fltk::Window::hide();
+  Fl_Window::hide();
 }
 
 /**

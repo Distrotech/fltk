@@ -64,7 +64,7 @@ void Fl_Counter::draw() {
   fl_color(active_r() ? textcolor() : fl_inactive(textcolor()));
   char str[128]; format(str);
   fl_draw(str, xx[0], y(), ww[0], h(), FL_ALIGN_CENTER);
-  if (fltk::focus() == this) draw_focus(boxtype[0], xx[0], y(), ww[0], h());
+  if (Fl::focus() == this) draw_focus(boxtype[0], xx[0], y(), ww[0], h());
   if (!(damage()&FL_DAMAGE_ALL)) return; // only need to redraw text
 
   if (active_r())
@@ -104,7 +104,7 @@ void Fl_Counter::increment_cb() {
 void Fl_Counter::repeat_callback(void* v) {
   Fl_Counter* b = (Fl_Counter*)v;
   if (b->mouseobj) {
-    fltk::add_timeout(REPEAT, repeat_callback, b);
+    Fl::add_timeout(REPEAT, repeat_callback, b);
     b->increment_cb();
   }
 }
@@ -112,14 +112,14 @@ void Fl_Counter::repeat_callback(void* v) {
 int Fl_Counter::calc_mouseobj() {
   if (type() == FL_NORMAL_COUNTER) {
     int W = w()*15/100;
-    if (fltk::event_inside(x(), y(), W, h())) return 1;
-    if (fltk::event_inside(x()+W, y(), W, h())) return 2;
-    if (fltk::event_inside(x()+w()-2*W, y(), W, h())) return 3;
-    if (fltk::event_inside(x()+w()-W, y(), W, h())) return 4;
+    if (Fl::event_inside(x(), y(), W, h())) return 1;
+    if (Fl::event_inside(x()+W, y(), W, h())) return 2;
+    if (Fl::event_inside(x()+w()-2*W, y(), W, h())) return 3;
+    if (Fl::event_inside(x()+w()-W, y(), W, h())) return 4;
   } else {
     int W = w()*20/100;
-    if (fltk::event_inside(x(), y(), W, h())) return 2;
-    if (fltk::event_inside(x()+w()-W, y(), W, h())) return 3;
+    if (Fl::event_inside(x(), y(), W, h())) return 2;
+    if (Fl::event_inside(x()+w()-W, y(), W, h())) return 3;
   }
   return -1;
 }
@@ -129,27 +129,32 @@ int Fl_Counter::handle(int event) {
   switch (event) {
   case FL_RELEASE:
     if (mouseobj) {
-      fltk::remove_timeout(repeat_callback, this);
+      Fl::remove_timeout(repeat_callback, this);
       mouseobj = 0;
       redraw();
     }
     handle_release();
     return 1;
   case FL_PUSH:
-      if (fltk::visible_focus()) fltk::focus(this);
-    handle_push();
+    if (Fl::visible_focus()) Fl::focus(this);
+    { Fl_Widget_Tracker wp(this);
+      handle_push();
+      if (wp.deleted()) return 1;
+    }
   case FL_DRAG:
     i = calc_mouseobj();
     if (i != mouseobj) {
-      fltk::remove_timeout(repeat_callback, this);
+      Fl::remove_timeout(repeat_callback, this);
       mouseobj = (uchar)i;
-      if (i) fltk::add_timeout(INITIALREPEAT, repeat_callback, this);
+      if (i) Fl::add_timeout(INITIALREPEAT, repeat_callback, this);
+      Fl_Widget_Tracker wp(this);
       increment_cb();
+      if (wp.deleted()) return 1;
       redraw();
     }
     return 1;
   case FL_KEYBOARD :
-      switch (fltk::event_key()) {
+    switch (Fl::event_key()) {
       case FL_Left:
 	handle_drag(clamp(increment(value(),-1)));
 	return 1;
@@ -160,13 +165,13 @@ int Fl_Counter::handle(int event) {
         return 0;
     }
     // break not required because of switch...
-  case FL_FOCUS :
+  case FL_FOCUS : /* FALLTHROUGH */
   case FL_UNFOCUS :
-      if (fltk::visible_focus()) {
+    if (Fl::visible_focus()) {
       redraw();
       return 1;
     } else return 0;
-  case FL_ENTER :
+  case FL_ENTER : /* FALLTHROUGH */
   case FL_LEAVE :
     return 1;
   default:
@@ -178,7 +183,7 @@ int Fl_Counter::handle(int event) {
   Destroys the valuator.
  */
 Fl_Counter::~Fl_Counter() {
-  fltk::remove_timeout(repeat_callback, this);
+  Fl::remove_timeout(repeat_callback, this);
 }
 
 /**

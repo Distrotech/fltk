@@ -34,7 +34,7 @@
 #include <FL/Fl.H>
 #include <FL/x.H>
 #include <FL/fl_draw.H>
-#include <FL3/Widget.h>
+#include <FL/Fl_Widget.H>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Bitmap.H>
 #include "flstring.h"
@@ -325,17 +325,21 @@ Fl_Bitmap::~Fl_Bitmap() {
 
 void Fl_Bitmap::uncache() {
   if (id) {
+#if defined(__APPLE__) && defined(__APPLE_COCOA__)
+    fl_delete_bitmask((Fl_Bitmask)id);
+#else
     fl_delete_bitmask((Fl_Offscreen)id);
+#endif
     id = 0;
   }
 }
 
-void Fl_Bitmap::label(fltk::Widget* widget) {
+void Fl_Bitmap::label(Fl_Widget* widget) {
   widget->image(this);
 }
 
 void Fl_Bitmap::label(Fl_Menu_Item* m) {
-  fltk::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
+  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
   m->label(_FL_IMAGE_LABEL, (const char*)this);
 }
 

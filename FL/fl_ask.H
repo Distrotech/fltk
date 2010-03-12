@@ -30,32 +30,49 @@
 
 #  include "Enumerations.H"
 
-#include "../FL3/ask.h"
+class Fl_Widget;
+/** Different system beeps available. \relatesalso fl_beep(int) */
+enum {
+  FL_BEEP_DEFAULT = 0,
+  FL_BEEP_MESSAGE,
+  FL_BEEP_ERROR,
+  FL_BEEP_QUESTION,
+  FL_BEEP_PASSWORD,
+  FL_BEEP_NOTIFICATION
+};
 
-#define FL_BEEP_DEFAULT       fltk::BEEP_DEFAULT
-#define FL_BEEP_MESSAGE       fltk::BEEP_MESSAGE
-#define FL_BEEP_ERROR         fltk::BEEP_ERROR
-#define FL_BEEP_QUESTION      fltk::BEEP_QESTION
-#define FL_BEEP_PASSWORD      fltk::BEEP_PASSWORD
-#define FL_BEEP_NOTIFICATION  fltk::BEEP_NOTIFICATION
+#  ifdef __GNUC__
+#    define __fl_attr(x) __attribute__ (x)
+#    if __GNUC__ < 3
+#      define __deprecated__
+#    endif // __GNUC__ < 3
+#  else
+#    define __fl_attr(x)
+#  endif // __GNUC__
 
-#define fl_beep fltk::beep
-#define fl_message fltk::message
-#define fl_alert fltk::alert
-#define fl_ask fltk::ask
-#define fl_choice fltk::choice
-#define fl_input fltk::input
-#define fl_password fltk::password
+FL_EXPORT void fl_beep(int type = FL_BEEP_DEFAULT);
+FL_EXPORT void fl_message(const char *,...) __fl_attr((__format__ (__printf__, 1, 2)));
+FL_EXPORT void fl_alert(const char *,...) __fl_attr((__format__ (__printf__, 1, 2)));
+// fl_ask() is deprecated since it uses "Yes" and "No" for the buttons,
+// which does not conform to the current FLTK Human Interface Guidelines.
+// Use fl_choice() instead with the appropriate verbs instead.
+FL_EXPORT int fl_ask(const char *,...) __fl_attr((__format__ (__printf__, 1, 2), __deprecated__));
+FL_EXPORT int fl_choice(const char *q,const char *b0,const char *b1,const char *b2,...) __fl_attr((__format__ (__printf__, 1, 5)));
+FL_EXPORT const char *fl_input(const char *label, const char *deflt = 0, ...) __fl_attr((__format__ (__printf__, 1, 3)));
+FL_EXPORT const char *fl_password(const char *label, const char *deflt = 0, ...) __fl_attr((__format__ (__printf__, 1, 3)));
 
-#define fl_message_icon fltk::message_icon
-#define fl_message_font fltk::message_font
+FL_EXPORT Fl_Widget *fl_message_icon();
+extern FL_EXPORT Fl_Font fl_message_font_;
+extern FL_EXPORT Fl_Fontsize fl_message_size_;
+inline void fl_message_font(Fl_Font f, Fl_Fontsize s) {
+  fl_message_font_ = f; fl_message_size_ = s;}
 
-#define fl_no fltk::no
-#define fl_yes fltk::yes
-#define fl_ok fltk::ok
-#define fl_cancel fltk::cancel
-#define fl_close fltk::close
-
+// pointers you can use to change FLTK to a foreign language:
+extern FL_EXPORT const char* fl_no;
+extern FL_EXPORT const char* fl_yes;
+extern FL_EXPORT const char* fl_ok;
+extern FL_EXPORT const char* fl_cancel;
+extern FL_EXPORT const char* fl_close;
 #endif // !fl_ask_H
 
 //

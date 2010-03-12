@@ -26,7 +26,7 @@
 //
 // Contents:
 //
-//   fltk::register_images() - Register the image formats.
+//   fl_register_images() - Register the image formats.
 //   fl_check_images()    - Check for a supported image format.
 //
 
@@ -57,8 +57,8 @@ static Fl_Image	*fl_check_images(const char *name, uchar *header, int headerlen)
 // 'fl_register_images()' - Register the image formats.
 //
 
-void fltk::register_images() {
-  fltk::SharedImage::add_handler(fl_check_images);
+void fl_register_images() {
+  Fl_Shared_Image::add_handler(fl_check_images);
 }
 
 

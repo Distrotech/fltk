@@ -28,7 +28,7 @@
 // Change the current cursor.
 // Under X the cursor is attached to the X window.  I tried to hide
 // this and pretend that changing the cursor is a drawing function.
-// This avoids a field in the fltk::Window, and I suspect is more
+// This avoids a field in the Fl_Window, and I suspect is more
 // portable to other systems.
 
 #include <FL/Fl.H>
@@ -44,14 +44,14 @@
   The cursors are defined in the <FL/Enumerations.H> header file. 
   */
 void fl_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
-  if (fltk::first_window()) fltk::first_window()->cursor(c,fg,bg);
+  if (Fl::first_window()) Fl::first_window()->cursor(c,fg,bg);
 }
 /** 
     Sets the default window cursor as well as its color.
 
     For back compatibility only.
 */
-void fltk::Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void Fl_Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 //  if (c == FL_CURSOR_DEFAULT) c = FL_CURSOR_ARROW;
 
   cursor_default = c;
@@ -67,10 +67,10 @@ void fltk::Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 #    define IDC_HAND	MAKEINTRESOURCE(32649)
 #  endif // !IDC_HAND
 
-void fltk::Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
+void Fl_Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
   if (!shown()) return;
   // the cursor must be set for the top level window, not for subwindows
-  fltk::Window *w = window(), *toplevel = this;
+  Fl_Window *w = window(), *toplevel = this;
   while (w) { toplevel = w; w = w->window(); }
   if (toplevel != this) { toplevel->cursor(c, c1, c2); return; }
   // now set the actual cursor
@@ -133,6 +133,113 @@ void fltk::Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
 #else
 # error "Either __LITTLE_ENDIAN__ or __BIG_ENDIAN__ must be defined"
 #endif
+
+#ifdef __APPLE_COCOA__
+extern void *MACSetCursor(Fl_Cursor c);
+extern Fl_Offscreen fl_create_offscreen_with_alpha(int w, int h);
+
+
+CGContextRef CreateHelpImage(void)
+{
+  int w = 20, h = 20;
+  Fl_Offscreen off = fl_create_offscreen_with_alpha(w, h);
+  fl_begin_offscreen(off);
+  CGContextSetRGBFillColor( (CGContextRef)off, 0,0,0,0);
+  fl_rectf(0,0,w,h);
+  fl_color(FL_BLACK);
+  fl_font(FL_COURIER_BOLD, 20);
+  fl_draw("?", 1, h-1);
+  fl_end_offscreen();
+  return (CGContextRef)off;
+}
+
+CGContextRef CreateNoneImage(void)
+{
+  int w = 20, h = 20;
+  Fl_Offscreen off = fl_create_offscreen_with_alpha(w, h);
+  fl_begin_offscreen(off);
+  CGContextSetRGBFillColor( (CGContextRef)off, 0,0,0,0);
+  fl_rectf(0,0,w,h);
+  fl_end_offscreen();
+  return (CGContextRef)off;
+}
+
+CGContextRef CreateWatchImage(void)
+{
+  int w, h, r = 5;
+  w = 2*r+6;
+  h = 4*r;
+  Fl_Offscreen off = fl_create_offscreen_with_alpha(w, h);
+  fl_begin_offscreen(off);
+  CGContextSetRGBFillColor( (CGContextRef)off, 0,0,0,0);
+  fl_rectf(0,0,w,h);
+  CGContextTranslateCTM( (CGContextRef)off, w/2, h/2);
+  fl_color(FL_WHITE);
+  fl_circle(0, 0, r+1);
+  fl_color(FL_BLACK);
+  fl_rectf(-r*0.7, -r*1.7, 1.4*r, 3.4*r);
+  fl_rectf(r-1, -1, 3, 3);
+  fl_color(FL_WHITE);
+  fl_pie(-r, -r, 2*r, 2*r, 0, 360);
+  fl_color(FL_BLACK);
+  fl_circle(0,0,r);
+  fl_xyline(0, 0, -r*.7);
+  fl_xyline(0, 0, 0, -r*.7);
+  fl_end_offscreen();
+  return (CGContextRef)off;
+}
+
+CGContextRef CreateNESWImage(void)
+{
+  int c = 7, r = 2*c;
+  int w = r, h = r;
+  Fl_Offscreen off = fl_create_offscreen_with_alpha(w, h);
+  fl_begin_offscreen(off);
+  CGContextSetRGBFillColor( (CGContextRef)off, 0,0,0,0);
+  fl_rectf(0,0,w,h);
+  CGContextTranslateCTM( (CGContextRef)off, 0, h);
+  CGContextScaleCTM( (CGContextRef)off, 1, -1);
+  fl_color(FL_BLACK);
+  fl_polygon(0, 0, c, 0, 0, c);
+  fl_polygon(r, r, r, r-c, r-c, r);
+  fl_line_style(FL_SOLID, 2, 0);
+  fl_line(0,1, r,r+1);
+  fl_line_style(FL_SOLID, 0, 0);
+  fl_end_offscreen();
+  return (CGContextRef)off;
+}
+
+CGContextRef CreateNWSEImage(void)
+{
+  int c = 7, r = 2*c;
+  int w = r, h = r;
+  Fl_Offscreen off = fl_create_offscreen_with_alpha(w, h);
+  fl_begin_offscreen(off);
+  CGContextSetRGBFillColor( (CGContextRef)off, 0,0,0,0);
+  fl_rectf(0,0,w,h);
+  CGContextTranslateCTM( (CGContextRef)off, 0, h);
+  CGContextScaleCTM( (CGContextRef)off, 1, -1);
+  fl_color(FL_BLACK);
+  fl_polygon(r-1, 0, r-1, c, r-1-c, 0);
+  fl_polygon(-1, r, c-1, r, -1, r-c);
+  fl_line_style(FL_SOLID, 2, 0);
+  fl_line(r-1,1, -1,r+1);
+  fl_line_style(FL_SOLID, 0, 0);
+  fl_end_offscreen();
+  return (CGContextRef)off;
+}
+
+void Fl_Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
+  if (c == FL_CURSOR_DEFAULT) {
+    c = cursor_default;
+  }
+  void *cursor = MACSetCursor( c );
+  if (i) {
+	  i->cursor = cursor;
+  }
+}
+
+#else
 
 static Cursor crsrHAND =
 {
@@ -209,12 +316,12 @@ static Cursor crsrARROW =
 
 #undef E
 
-void fltk::Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
+void Fl_Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
   if (c == FL_CURSOR_DEFAULT) {
     c = cursor_default;
   }
   CursHandle icrsr = fl_default_cursor;
-  switch (c) {
+	switch (c) {
   case FL_CURSOR_CROSS:  icrsr = GetCursor( crossCursor ); break;
   case FL_CURSOR_WAIT:   icrsr = GetCursor( watchCursor ); break;
   case FL_CURSOR_INSERT: icrsr = GetCursor( iBeamCursor ); break;
@@ -245,6 +352,8 @@ void fltk::Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
     }
   }
 }
+
+#endif //__APPLE_COCOA__
 
 #else
 
@@ -292,7 +401,7 @@ static struct TableEntry {
   {{0}, {0}} // FL_CURSOR_NONE & unknown
 };
 
-void fltk::Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void Fl_Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
   if (!shown()) return;
   Cursor xc;
   int deleteit = 0;
@@ -327,10 +436,10 @@ void fltk::Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
     }
     XColor fgc;
     uchar r,g,b;
-    fltk::get_color(fg,r,g,b);
+    Fl::get_color(fg,r,g,b);
     fgc.red = r<<8; fgc.green = g<<8; fgc.blue = b<<8;
     XColor bgc;
-    fltk::get_color(bg,r,g,b);
+    Fl::get_color(bg,r,g,b);
     bgc.red = r<<8; bgc.green = g<<8; bgc.blue = b<<8;
     XRecolorCursor(fl_display, xc, &fgc, &bgc);
   }

@@ -29,7 +29,7 @@
 
 #include <stdio.h>
 #include <FL/Fl.H>
-#include <FL3/Widget.h>
+#include <FL/Fl_Widget.H>
 #include <FL/Fl_Browser_.H>
 #include <FL/fl_draw.H>
 
@@ -59,11 +59,11 @@
    4 = redraw all items
 */
 
-static void scrollbar_callback(fltk::Widget* s, void*) {
+static void scrollbar_callback(Fl_Widget* s, void*) {
   ((Fl_Browser_*)(s->parent()))->position(int(((Fl_Scrollbar*)s)->value()));
 }
 
-static void hscrollbar_callback(fltk::Widget* s, void*) {
+static void hscrollbar_callback(Fl_Widget* s, void*) {
   ((Fl_Browser_*)(s->parent()))->hposition(int(((Fl_Scrollbar*)s)->value()));
 }
 
@@ -75,12 +75,12 @@ static void hscrollbar_callback(fltk::Widget* s, void*) {
                       (The original contents of these parameters are overwritten)
 */
 void Fl_Browser_::bbox(int& X, int& Y, int& W, int& H) const {
-  int scrollsize = scrollbar_size_ ? scrollbar_size_ : fltk::scrollbar_size();
+  int scrollsize = scrollbar_size_ ? scrollbar_size_ : Fl::scrollbar_size();
   Fl_Boxtype b = box() ? box() : FL_DOWN_BOX;
-  X = x()+fltk::box_dx(b);
-  Y = y()+fltk::box_dy(b);
-  W = w()-fltk::box_dw(b);
-  H = h()-fltk::box_dh(b);
+  X = x()+Fl::box_dx(b);
+  Y = y()+Fl::box_dy(b);
+  W = w()-Fl::box_dw(b);
+  H = h()-Fl::box_dh(b);
   if (scrollbar.visible()) {
     W -= scrollsize;
     if (scrollbar.align() & FL_ALIGN_LEFT) X += scrollsize;
@@ -106,14 +106,14 @@ int Fl_Browser_::leftedge() const {
 
 // The scrollbars may be moved again by draw(), since each one's size
 // depends on whether the other is visible or not.  This skips over
-// fltk::Group::resize since it moves the scrollbars uselessly.
+// Fl_Group::resize since it moves the scrollbars uselessly.
 /**
   Repositions and/or resizes the browser.
   \param[in] X,Y,W,H The new position and size for the browser, in pixels.
 */
 void Fl_Browser_::resize(int X, int Y, int W, int H) {
-  int scrollsize = scrollbar_size_ ? scrollbar_size_ : fltk::scrollbar_size();
-  fltk::Widget::resize(X, Y, W, H);
+  int scrollsize = scrollbar_size_ ? scrollbar_size_ : Fl::scrollbar_size();
+  Fl_Widget::resize(X, Y, W, H);
   // move the scrollbars so they can respond to events:
   bbox(X,Y,W,H);
   scrollbar.resize(
@@ -416,7 +416,7 @@ J1:
 	fl_pop_clip();
       }
       item_draw(l, X-hposition_, yy+Y, W+hposition_, hh);
-      if (l == selection_ && fltk::focus() == this) {
+      if (l == selection_ && Fl::focus() == this) {
 	draw_box(FL_BORDER_FRAME, X, yy+Y, W, hh, color());
 	draw_focus(FL_NO_BOX, X, yy+Y, W+1, hh+1);
       }
@@ -455,7 +455,7 @@ J1:
   }
 
   // update the scrollbars and redraw them:
-  int scrollsize = scrollbar_size_ ? scrollbar_size_ : fltk::scrollbar_size();
+  int scrollsize = scrollbar_size_ ? scrollbar_size_ : Fl::scrollbar_size();
   int dy = top_ ? item_quick_height(top_) : 0; if (dy < 10) dy = 10;
   if (scrollbar.visible()) {
     scrollbar.damage_resize(
@@ -583,7 +583,7 @@ void Fl_Browser_::inserting(void* a, void* b) {
 /**
   This method returns the item under mouse y position \p ypos.
   NULL is returned if no item is displayed at that position.
-  \param[in] ypos The y position (eg. fltk::event_y()) to find an item under.
+  \param[in] ypos The y position (eg. Fl::event_y()) to find an item under.
   \returns The item, or NULL if not found
 */
 void* Fl_Browser_::find_item(int ypos) {
@@ -678,11 +678,15 @@ int Fl_Browser_::deselect(int docallbacks) {
 int Fl_Browser_::select_only(void* item, int docallbacks) {
   if (!item) return deselect(docallbacks);
   int change = 0;
+  Fl_Widget_Tracker wp(this);
   if (type() == FL_MULTI_BROWSER) {
-    for (void* p = item_first(); p; p = item_next(p))
+    for (void* p = item_first(); p; p = item_next(p)) {
       if (p != item) change |= select(p, 0, docallbacks);
+      if (wp.deleted()) return change;
+    }
   }
   change |= select(item, 1, docallbacks);
+  if (wp.deleted()) return change;
   display(item);
   return change;
 }
@@ -693,6 +697,20 @@ int Fl_Browser_::select_only(void* item, int docallbacks) {
   \returns 1 if event was processed, 0 if not.
 */
 int Fl_Browser_::handle(int event) {
+
+  // NOTE:
+  // We use Fl_Widget_Tracker to test if the user has deleted
+  // this widget in a callback. Callbacks can be called by:
+  //  - do_callback()
+  //  - select()
+  //  - select_only()
+  //  - deselect()
+  // Thus we must test wp.deleted() after each of these calls,
+  // unless we return directly after one of these.
+  // If wp.deleted() is true, we return 1 because we used the event.
+
+  Fl_Widget_Tracker wp(this);
+
   // must do shortcuts first or the scrollbar will get them...
   if (event == FL_ENTER || event == FL_LEAVE) return 1;
   if (event == FL_KEYBOARD && type() >= FL_HOLD_BROWSER) {
@@ -700,21 +718,26 @@ int Fl_Browser_::handle(int event) {
     void* l = l1; if (!l) l = top_; if (!l) l = item_first();
     if (l) {
       if (type()==FL_HOLD_BROWSER) {
-        switch (fltk::event_key()) {
+        switch (Fl::event_key()) {
         case FL_Down:
           while ((l = item_next(l)))
             if (item_height(l)>0) {select_only(l, when()); break;}
             return 1;
         case FL_Up:
-          while ((l = item_prev(l))) if (item_height(l)>0) {
-            select_only(l, when()); break;}
+          while ((l = item_prev(l))) {
+	    if (item_height(l)>0) {
+	      select_only(l, when());
+	      break; // no need to test wp (return 1)
+	    }
+	  }
           return 1;
         } 
       } else  {
-        switch (fltk::event_key()) {
+        switch (Fl::event_key()) {
         case FL_Enter:
         case FL_KP_Enter:
           select_only(l, when() & ~FL_WHEN_ENTER_KEY);
+	  if (wp.deleted()) return 1;
 	  if (when() & FL_WHEN_ENTER_KEY) {
 	    set_changed();
 	    do_callback();
@@ -726,15 +749,17 @@ int Fl_Browser_::handle(int event) {
           return 1;
         case FL_Down:
           while ((l = item_next(l))) {
-            if (fltk::event_state(FL_SHIFT|FL_CTRL))
+            if (Fl::event_state(FL_SHIFT|FL_CTRL))
               select(l, l1 ? item_selected(l1) : 1, when());
+	    if (wp.deleted()) return 1;
             if (item_height(l)>0) goto J1;
           }
           return 1;
         case FL_Up:
           while ((l = item_prev(l))) {
-            if (fltk::event_state(FL_SHIFT|FL_CTRL))
+            if (Fl::event_state(FL_SHIFT|FL_CTRL))
               select(l, l1 ? item_selected(l1) : 1, when());
+	    if (wp.deleted()) return 1;
             if (item_height(l)>0) goto J1;
           }
           return 1;
@@ -748,7 +773,9 @@ J1:
     }
   }
   
-  if (fltk::Group::handle(event)) return 1;
+  if (Fl_Group::handle(event)) return 1;
+  if (wp.deleted()) return 1;
+
   int X, Y, W, H; bbox(X, Y, W, H);
   int my;
 // NOTE:
@@ -762,7 +789,7 @@ J1:
 //     }
 // See str #834
 // The first form calls the callback *before* setting change.
-// The callback may execute an fltk::wait(), resulting in another
+// The callback may execute an Fl::wait(), resulting in another
 // call of Fl_Browser_::handle() for the same widget. The sequence
 // of events can be an FL_PUSH followed by an FL_RELEASE.
 // This second call of Fl_Browser_::handle() may result in a -
@@ -773,35 +800,39 @@ J1:
   static int py;
   switch (event) {
   case FL_PUSH:
-      if (!fltk::event_inside(X, Y, W, H)) return 0;
-      if (fltk::visible_focus()) {
-        fltk::focus(this);
+    if (!Fl::event_inside(X, Y, W, H)) return 0;
+    if (Fl::visible_focus()) {
+      Fl::focus(this);
       redraw();
     }
-      my = py = fltk::event_y();
+    my = py = Fl::event_y();
     change = 0;
     if (type() == FL_NORMAL_BROWSER || !top_)
       ;
     else if (type() != FL_MULTI_BROWSER) {
       change = select_only(find_item(my), 0);
+      if (wp.deleted()) return 1;
       if (change && (when() & FL_WHEN_CHANGED)) {
 	set_changed();
 	do_callback();
+	if (wp.deleted()) return 1;
       }
     } else {
       void* l = find_item(my);
       whichway = 1;
-      if (fltk::event_state(FL_CTRL)) { // toggle selection:
+      if (Fl::event_state(FL_CTRL)) { // toggle selection:
       TOGGLE:
 	if (l) {
 	  whichway = !item_selected(l);
 	  change = select(l, whichway, 0);
+	  if (wp.deleted()) return 1;
 	  if (change && (when() & FL_WHEN_CHANGED)) {
 	    set_changed();
 	    do_callback();
+	    if (wp.deleted()) return 1;
 	  }
 	}
-      } else if (fltk::event_state(FL_SHIFT)) { // extend selection:
+      } else if (Fl::event_state(FL_SHIFT)) { // extend selection:
 	if (l == selection_) goto TOGGLE;
 	// state of previous selection determines new value:
 	whichway = l ? !item_selected(l) : 1;
@@ -814,30 +845,36 @@ J1:
 	  if (!m) {down = 0; break;}
 	}}
 	if (down) {
-	  for (void* m = selection_; m != l; m = item_next(m))
+	  for (void* m = selection_; m != l; m = item_next(m)) {
 	    select(m, whichway, when() & FL_WHEN_CHANGED);
+	    if (wp.deleted()) return 1;
+	  }
 	} else {
 	  void* e = selection_;
 	  for (void* m = item_next(l); m; m = item_next(m)) {
 	    select(m, whichway, when() & FL_WHEN_CHANGED);
+	    if (wp.deleted()) return 1;
 	    if (m == e) break;
 	  }
 	}
 	// do the clicked item last so the select box is around it:
 	change = 1;
 	if (l) select(l, whichway, when() & FL_WHEN_CHANGED);
+	if (wp.deleted()) return 1;
       } else { // select only this item
 	change = select_only(l, 0);
+	if (wp.deleted()) return 1;
 	if (change && (when() & FL_WHEN_CHANGED)) {
 	  set_changed();
 	  do_callback();
+	  if (wp.deleted()) return 1;
 	}
       }
     }
     return 1;
   case FL_DRAG:
     // do the scrolling first:
-      my = fltk::event_y();
+    my = Fl::event_y();
     if (my < Y && my < py) {
       int p = real_position_+my-Y;
       if (p<0) p = 0;
@@ -863,26 +900,32 @@ J1:
       for (; t && t != b; t = item_next(t)) {
 	char change_t;
 	change_t = select(t, whichway, 0);
+	if (wp.deleted()) return 1;
 	change |= change_t;
 	if (change_t && (when() & FL_WHEN_CHANGED)) {
 	  set_changed();
 	  do_callback();
+	  if (wp.deleted()) return 1;
 	}
       }
       if (l) selection_ = l;
     } else {
       void* l1 = selection_;
       void* l =
-      (fltk::event_x()<x() || fltk::event_x()>x()+w()) ? selection_ :
+	(Fl::event_x()<x() || Fl::event_x()>x()+w()) ? selection_ :
 	find_item(my);
       change = (l != l1);
       select_only(l, when() & FL_WHEN_CHANGED);
+      if (wp.deleted()) return 1;
     }
     py = my;
     return 1;
   case FL_RELEASE:
     if (type() == FL_SELECT_BROWSER) {
-      void* t = selection_; deselect(); selection_ = t;
+      void* t = selection_;
+      deselect();
+      if (wp.deleted()) return 1;
+      selection_ = t;
     }
     if (change) {
       set_changed();
@@ -890,16 +933,17 @@ J1:
     } else {
       if (when() & FL_WHEN_NOT_CHANGED) do_callback();
     }
-    
+    if (wp.deleted()) return 1;
+
     // double click calls the callback: (like Enter Key)
-      if (fltk::event_clicks() && (when() & FL_WHEN_ENTER_KEY)) {
+    if (Fl::event_clicks() && (when() & FL_WHEN_ENTER_KEY)) {
       set_changed();
       do_callback();
     }
     return 1;
   case FL_FOCUS:
   case FL_UNFOCUS:
-      if (type() >= FL_HOLD_BROWSER && fltk::visible_focus()) {
+    if (type() >= FL_HOLD_BROWSER && Fl::visible_focus()) {
       redraw();
       return 1;
     } else return 0;
@@ -914,7 +958,7 @@ J1:
   \param[in] L The label string, may be NULL.
 */
 Fl_Browser_::Fl_Browser_(int X, int Y, int W, int H, const char* L)
-: fltk::Group(X, Y, W, H, L),
+  : Fl_Group(X, Y, W, H, L),
     scrollbar(0, 0, 0, 0, 0), // they will be resized by draw()
     hscrollbar(0, 0, 0, 0, 0)
 {
@@ -962,7 +1006,7 @@ void Fl_Browser_::sort(int flags) {
     a = item_next(a);
     n++;
   }
-  for (i=n-1; i>0; i--) {
+  for (i=n; i>0; i--) {
     char swapped = 0;
     a = item_first();
     b = item_next(a);
@@ -981,6 +1025,7 @@ void Fl_Browser_::sort(int flags) {
           swapped = 1;
         }
       }
+      if (!c) break;
       b = c; a = item_prev(b);
     }
     if (!swapped)

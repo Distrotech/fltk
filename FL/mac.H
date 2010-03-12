@@ -36,16 +36,73 @@
 
 // Standard MacOS Carbon API includes...
 #include <Carbon/Carbon.h>
+#include <config.h>
+
+#ifdef __APPLE_COCOA__
+#ifndef MAC_OS_X_VERSION_10_3
+#define MAC_OS_X_VERSION_10_3 1030
+#endif
+#ifndef MAC_OS_X_VERSION_10_4
+#define MAC_OS_X_VERSION_10_4 1040
+#endif
+#ifndef MAC_OS_X_VERSION_10_5
+#define MAC_OS_X_VERSION_10_5 1050
+#endif
+#ifndef MAC_OS_X_VERSION_10_6
+#define MAC_OS_X_VERSION_10_6 1060
+#endif
+#ifndef MAC_OS_X_VERSION_MAX_ALLOWED
+#define MAC_OS_X_VERSION_MAX_ALLOWED MAC_OS_X_VERSION_10_3
+#endif
+#endif // __APPLE_COCOA__
+
+#ifndef CGFLOAT_DEFINED //appears with 10.5 in CGBase.h
+#if defined(__LP64__) && __LP64__
+typedef double CGFloat;
+#else
+typedef float CGFloat;
+#endif
+#endif // CGFLOAT_DEFINED
+
 
 // Now make some fixes to the headers...
 #undef check			// Dunno where this comes from...
 
 // Some random X equivalents
-typedef WindowPtr Window;
 struct XPoint { int x, y; };
 struct XRectangle {int x, y, width, height;};
+
+#ifdef __APPLE_COCOA__
+// necessary so a CGRect matches exactly what is denoted x,y,w,h for clipping purposes
+#define FL_CGRECTMAKE_COCOA(x,y,w,h)  CGRectMake(x, y, w > 0 ? w - 0.9 : 0, h > 0 ? h - 0.9 : 0)
+
+typedef void *Window; // this is really a pter to the subclass FLWindow of NSWindow
+typedef struct flCocoaRegion {
+  int count;
+  CGRect *rects;
+} *Fl_Region;  // a region is the union of a series of rectangles
+inline Fl_Region XRectangleRegion(int x, int y, int w, int h) {
+  Fl_Region R = (Fl_Region)malloc(sizeof(*R));
+  R->count = 1;
+  R->rects = (CGRect *)malloc(sizeof(CGRect));
+  *(R->rects) = FL_CGRECTMAKE_COCOA(x, y, w, h);
+  return R;
+}
+inline void XDestroyRegion(Fl_Region r) {
+  if(r) {
+	free(r->rects);
+	free(r);
+	}
+}
+extern void *fl_default_cursor;
+extern void *fl_system_menu;
+typedef CGContextRef Fl_Offscreen;
+typedef CGImageRef Fl_Bitmask;
+
+#else
+
+typedef WindowRef Window;
 typedef RgnHandle Fl_Region;
-void fl_clip_region(Fl_Region);
 inline Fl_Region XRectangleRegion(int x, int y, int w, int h) {
   Fl_Region R = NewRgn();
   SetRectRgn(R, x, y, x+w, y+h);
@@ -54,6 +111,14 @@ inline Fl_Region XRectangleRegion(int x, int y, int w, int h) {
 inline void XDestroyRegion(Fl_Region r) {
   DisposeRgn(r);
 }
+extern CursHandle fl_default_cursor;
+extern Handle fl_system_menu;
+typedef GWorldPtr Fl_Offscreen;
+typedef GWorldPtr Fl_Bitmask; // Carbon requires a 1-bit GWorld instead of a BitMap
+
+#endif
+
+void fl_clip_region(Fl_Region);
 
 #  include "Fl_Window.H"
 
@@ -62,24 +127,26 @@ inline void XDestroyRegion(Fl_Region r) {
 class Fl_X 
 {
 public:
-  Window xid;              // Mac WindowPtr
-  GWorldPtr other_xid;     // pointer for offscreen bitmaps (doublebuffer)
-  fltk::Window *w;            // FLTK window for 
+  Window xid;              // Cocoa: FLWindow* ; Carbon: WindowRef
+  Fl_Offscreen other_xid;  // pointer for offscreen bitmaps (doublebuffer)
+  Fl_Window *w;            // FLTK window for 
   Fl_Region region;
   Fl_Region subRegion;     // region for this specific subwindow
   Fl_X *next;              // linked tree to support subwindows
   Fl_X *xidChildren, *xidNext; // more subwindow tree
   int wait_for_expose;
+#ifdef __APPLE_COCOA__
+  void *cursor;			  // is really NSCursor*
+#else
   CursHandle cursor;
+#endif
   static Fl_X* first;
-  static Fl_X* i(const fltk::Window* w) {return w->i;}
-  static int fake_X_wm(const fltk::Window*,int&,int&,int&,int&,int&);
-  static void make(fltk::Window*);
+  static Fl_X* i(const Fl_Window* w) {return w->i;}
+  static int fake_X_wm(const Fl_Window*,int&,int&,int&,int&,int&);
+  static void make(Fl_Window*);
   void flush();
   // Quartz additions:
   CGContextRef gc;                 // graphics context (NULL when using QD)
-  static ATSUTextLayout atsu_layout; // windows share a global font
-  static ATSUStyle      atsu_style;
   static void q_fill_context();    // fill a Quartz context with current FLTK state
   static void q_clear_clipping();  // remove all clipping from a Quartz context
   static void q_release_context(Fl_X *x=0); // free all resources associated with fl_gc
@@ -87,17 +154,27 @@ public:
   static void q_end_image();
 };
 
-extern void MacDestroyWindow(fltk::Window*,WindowPtr);
-extern void MacMapWindow(fltk::Window*,WindowPtr);
-extern void MacUnmapWindow(fltk::Window*,WindowPtr);
-extern int MacUnlinkWindow(Fl_X*,Fl_X*start=0L);
+#ifdef __APPLE_COCOA__
+extern void MacDestroyWindow(Fl_Window*,void *);
+extern void MacMapWindow(Fl_Window*,void *);
+extern void MacUnmapWindow(Fl_Window*,void *);
+extern WindowRef MACwindowRef(Fl_Window *w);
+extern Fl_Region MacRectRegionIntersect(Fl_Region current, int x,int y,int w, int h);
+extern void MacCollapseWindow(Window w);
+extern void fl_mac_set_about( Fl_Callback *cb, void *user_data, int shortcut = 0);
+#else
+extern void MacDestroyWindow(Fl_Window*,WindowPtr);
+extern void MacMapWindow(Fl_Window*,WindowPtr);
+extern void MacUnmapWindow(Fl_Window*,WindowPtr);
+#endif
 
-inline Window fl_xid(const fltk::Window*w) 
+extern int MacUnlinkWindow(Fl_X*,Fl_X*start=0L);
+extern void fl_open_callback(void (*cb)(const char *));
+
+inline Window fl_xid(const Fl_Window*w) 
 {
   return Fl_X::i(w)->xid;
 }
-
-extern CursHandle fl_default_cursor;
 
 extern struct Fl_XMap {
   RGBColor rgb;
@@ -107,10 +184,8 @@ extern struct Fl_XMap {
 extern FL_EXPORT void *fl_display;
 extern FL_EXPORT Window fl_window;
 extern FL_EXPORT CGContextRef fl_gc;
-extern FL_EXPORT Handle fl_system_menu;
 extern FL_EXPORT class Fl_Sys_Menu_Bar *fl_sys_menu_bar;
 
-typedef GWorldPtr Fl_Offscreen;
 
 extern Fl_Offscreen fl_create_offscreen(int w, int h);
 extern void fl_copy_offscreen(int x,int y,int w,int h, Fl_Offscreen gWorld, int srcx,int srcy);
@@ -118,7 +193,6 @@ extern void fl_delete_offscreen(Fl_Offscreen gWorld);
 extern void fl_begin_offscreen(Fl_Offscreen gWorld);
 extern void fl_end_offscreen();
 
-typedef GWorldPtr Fl_Bitmask; // Carbon requires a 1-bit GWorld instead of a BitMap
 
 extern FL_EXPORT Fl_Bitmask fl_create_bitmask(int w, int h, const uchar *data);
 extern FL_EXPORT Fl_Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *data);

@@ -26,6 +26,7 @@
 //
 
 #include <FL/Fl.H>
+#include <FL/x.H>
 
 //
 // MRS: Uncomment the following define to get the original (pre-1.1.2)
@@ -38,6 +39,15 @@
 
 #ifdef __APPLE__
 
+#ifdef __APPLE_COCOA__
+
+static const char* const compose_pairs =
+"  ! % # $ y=| & : c a <<~ - r _ * +-2 3 ' u p . , 1 o >>141234? "//00A0 ...
+"`A'A^A~A:A*AAE,C`E'E^E:E`I'I^I:I-D~N`O'O^O~O:Ox O/`U'U^U:U'YTHss" //00C0 ...
+"`a'a^a~a:a*aae,c`e'e^e:e`i'i^i:i-d~n`o'o^o~o:o-:o/`u'u^u:u'yth:y";//00E0 ...
+
+#else
+
 static const char* const compose_pairs =
 ":A*A,C'E~N:O:U'a`a^a:a~a*a,c'e`e"
 "^e:e'i`i^i:i~n'o`o^o:o~o'u`u^u:u"
@@ -47,6 +57,8 @@ static const char* const compose_pairs =
 "- --''``\"'\"`:-^V:y:Y//E=< > fifl"
 "++..,,_\"%%^A^E'A:E`E'I^I:I`I'O^O"
 "mc`O'U^U`U||^ ~^_ u . * , ~-; v ";
+
+#endif
 
 #else
 
@@ -86,18 +98,18 @@ static char dead_keys[] = {
 #endif // !WIN32 && OLD_DEAD_KEY_CODE
 
 #ifndef FL_DOXYGEN
-int fltk::compose_state = 0;
+int Fl::compose_state = 0;
 #endif
 
 /** Any text editing widget should call this for each FL_KEYBOARD event.
     Use of this function is very simple.
 
     <p>If <i>true</i> is returned, then it has modified the
-    fltk::event_text() and fltk::event_length() to a set of <i>bytes</i> to
+    Fl::event_text() and Fl::event_length() to a set of <i>bytes</i> to
     insert (it may be of zero length!).  In will also set the "del"
     parameter to the number of <i>bytes</i> to the left of the cursor to
     delete, this is used to delete the results of the previous call to
-    fltk::compose().
+    Fl::compose().
     
     <p>If <i>false</i> is returned, the keys should be treated as function
     keys, and del is set to zero. You could insert the text anyways, if
@@ -107,7 +119,7 @@ int fltk::compose_state = 0;
     versions may take quite awhile, as they may pop up a window or do
     other user-interface things to allow characters to be selected.
 */
-int fltk::compose(int& del) {
+int Fl::compose(int& del) {
 
   del = 0;
   unsigned char ascii = (unsigned)e_text[0];

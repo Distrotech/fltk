@@ -1,5 +1,30 @@
+#
+# "$Id$"
+#
 # Main CMakeLists.txt to build the FLTK project using CMake (www.cmake.org)
 # Written by Andy Cedilnik and Julien Jomier
+#
+# Copyright 1998-2010 by Bill Spitzak and others.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+# USA.
+#
+# Please report all bugs and problems on the following page:
+#
+#     http:#www.fltk.org/str.php
+#
 
 PROJECT(FLTK)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.0)
@@ -42,6 +67,7 @@ IF(WIN32)
     IF(BORLAND)
       SET( FLTK_PLATFORM_DEPENDENT_LIBS import32 )
     ELSE(BORLAND)
+      ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)
       SET( FLTK_PLATFORM_DEPENDENT_LIBS comctl32 )
     ENDIF(BORLAND)
   ENDIF(NOT CYGWIN)
@@ -64,7 +90,7 @@ IF(UNIX AND NOT APPLE)
   FIND_PACKAGE(X11)
   ADD_DEFINITIONS(-DUSE_X11)
   SET( FLTK_PLATFORM_DEPENDENT_LIBS ${X11_LIBRARIES} -lm)
-ENDIF(UNIX)
+ENDIF(UNIX AND NOT APPLE)
 
 IF(APPLE AND NOT FLTK_APPLE_X11)
   SET( FLTK_PLATFORM_DEPENDENT_LIBS
@@ -247,6 +273,9 @@ ELSE(FLTK_USE_SYSTEM_PNG)
   INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/png")
 ENDIF(FLTK_USE_SYSTEM_PNG)
 
+# Do we have the POSIX compatible scandir() prototype?
+PERFORM_CMAKE_TEST(CMake/PlatformTests.cxx HAVE_SCANDIR_POSIX)
+
 SET(FLTK_DATADIR "${CMAKE_INSTALL_PREFIX}/share/FLTK")
 SET(FLTK_DOCDIR  "${CMAKE_INSTALL_PREFIX}/share/doc/FLTK")
 
@@ -410,3 +439,7 @@ INSTALL_FILES(/lib/FLTK-${FLTK_VERSION} FILES "${FLTK_SOURCE_DIR}/CMake/FLTKUse.
 INSTALL_FILES(/lib/FLTK-${FLTK_VERSION} FILES "${FLTK_BINARY_DIR}/FLTKBuildSettings.cmake")
 INSTALL_FILES(/lib/FLTK-${FLTK_VERSION} FILES "${FLTK_BINARY_DIR}/FLTKLibraryDepends.cmake")
 INSTALL_FILES(/lib/FLTK-${FLTK_VERSION} FILES "${FLTK_BINARY_DIR}/CMake/FLTKConfig.cmake")
+
+#
+# End of "$Id$".
+#

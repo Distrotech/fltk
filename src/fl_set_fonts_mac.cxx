@@ -41,7 +41,7 @@
 #define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
 
 // turn a stored font name into a pretty name:
-const char* fltk::get_font_name(Fl_Font fnum, int* ap) {
+const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
   Fl_Fontdesc *f = fl_fonts + fnum;
   if (!f->fontname[0]) {
     const char* p = f->name;
@@ -58,8 +58,39 @@ const char* fltk::get_font_name(Fl_Font fnum, int* ap) {
 
 static int fl_free_font = FL_FREE_FONT;
 
-Fl_Font fltk::set_fonts(const char* xstarname) {
+Fl_Font Fl::set_fonts(const char* xstarname) {
 #pragma unused ( xstarname )
+#if defined(__APPLE_COCOA__) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+static SInt32 MACsystemVersion = 0;
+if(MACsystemVersion == 0) Gestalt(gestaltSystemVersion, &MACsystemVersion);
+if(MACsystemVersion >= 0x1050) {
+//if(CTFontCreateWithFontDescriptor != NULL) {// CTFontCreateWithFontDescriptor != NULL on 10.4 also!
+  int value[1] = {1};
+  CFDictionaryRef dict = CFDictionaryCreate(NULL, 
+					    (const void **)kCTFontCollectionRemoveDuplicatesOption, 
+					    (const void **)&value, 1, NULL, NULL);
+  CTFontCollectionRef fcref = CTFontCollectionCreateFromAvailableFonts(dict);
+  CFRelease(dict);
+  CFArrayRef arrayref = CTFontCollectionCreateMatchingFontDescriptors(fcref);
+  CFRelease(fcref);
+  CFIndex count = CFArrayGetCount(arrayref);
+  CFIndex i;
+  for (i = 0; i < count; i++) {
+	CTFontDescriptorRef fdesc = (CTFontDescriptorRef)CFArrayGetValueAtIndex(arrayref, i);
+	CTFontRef font = CTFontCreateWithFontDescriptor(fdesc, 0., NULL);
+	CFStringRef cfname = CTFontCopyPostScriptName(font);
+	CFRelease(font);
+	static char fname[100];
+	CFStringGetCString(cfname, fname, sizeof(fname), kCFStringEncodingUTF8);
+	CFRelease(cfname);
+	Fl::set_font((Fl_Font)(fl_free_font++), strdup(fname));
+	}
+  CFRelease(arrayref);
+  return (Fl_Font)fl_free_font;
+}
+else {
+#endif
+#if ! __LP64__
 #if defined(OLD__APPLE_QUARTZ__)
   ATSFontIterator it;
   ATSFontIteratorCreate(kATSFontContextGlobal, 0L, 0L, kATSOptionFlagsUnRestrictedScope, &it);  
@@ -73,9 +104,9 @@ Fl_Font fltk::set_fonts(const char* xstarname) {
     CFStringGetCString(fname, buf, 1024, kCFStringEncodingUTF8);
     int i;
     for (i=0; i<FL_FREE_FONT; i++) // skip if one of our built-in fonts
-      if (!strcmp(fltk::get_font_name((Fl_Font)i),buf)) break;
+      if (!strcmp(Fl::get_font_name((Fl_Font)i),buf)) break;
     if ( i < FL_FREE_FONT ) continue;
-    fltk::set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
+    Fl::set_font((Fl_Font)(fl_free_font++), strdup((char*)buf));
   }
   ATSFontIteratorRelease(&it);
   return (Fl_Font)fl_free_font;
@@ -109,16 +140,21 @@ Fl_Font fltk::set_fonts(const char* xstarname) {
       oName[511] = 0;
     else
       oName[actualLength] = 0;
-    fltk::set_font((Fl_Font)(fl_free_font++), strdup(oName));
+	Fl::set_font((Fl_Font)(fl_free_font++), strdup(oName));
 //	free(oName);
   }
   free(oFontIDs);
   return (Fl_Font)fl_free_font;
+#endif //OLD__APPLE_QUARTZ__
+#endif //__LP64__
+#if defined(__APPLE_COCOA__) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+  }
 #endif
+  return 0; // FIXME: I do not understand the shuffeling of the above ifdef's and why they are here!
 }
 
 static int array[128];
-int fltk::get_font_sizes(Fl_Font fnum, int*& sizep) {
+int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
   Fl_Fontdesc *s = fl_fonts+fnum;
   if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
   int cnt = 0;

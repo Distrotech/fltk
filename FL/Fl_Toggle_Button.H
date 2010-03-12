@@ -42,7 +42,7 @@
   control exactly when and how by changing the values for type()
   and when().
 */
-class Fl_Toggle_Button : public fltk::Button {
+class Fl_Toggle_Button : public Fl_Button {
 public:
   /**
     Creates a new Fl_Toggle_Button widget using the given
@@ -50,7 +50,7 @@ public:
     <P>The inherited destructor deletes the toggle button.
   */
     Fl_Toggle_Button(int X,int Y,int W,int H,const char *l=0)
-	: fltk::Button(X,Y,W,H,l) {type(FL_TOGGLE_BUTTON);}
+	: Fl_Button(X,Y,W,H,l) {type(FL_TOGGLE_BUTTON);}
 };
 
 #endif

@@ -88,7 +88,7 @@ struct FD {
 
 static FD *fd = 0;
 
-void fltk::add_fd(int n, int events, void (*cb)(int, void*), void *v) {
+void Fl::add_fd(int n, int events, void (*cb)(int, void*), void *v) {
   remove_fd(n,events);
   int i = nfds++;
   if (i >= fd_array_size) {
@@ -126,11 +126,11 @@ void fltk::add_fd(int n, int events, void (*cb)(int, void*), void *v) {
 #  endif
 }
 
-void fltk::add_fd(int n, void (*cb)(int, void*), void* v) {
-  fltk::add_fd(n, POLLIN, cb, v);
+void Fl::add_fd(int n, void (*cb)(int, void*), void* v) {
+  Fl::add_fd(n, POLLIN, cb, v);
 }
 
-void fltk::remove_fd(int n, int events) {
+void Fl::remove_fd(int n, int events) {
   int i,j;
   maxfd = -1; // recalculate maxfd on the fly
   for (i=j=0; i<nfds; i++) {
@@ -165,13 +165,13 @@ void fltk::remove_fd(int n, int events) {
 #  endif
 }
 
-void fltk::remove_fd(int n) {
+void Fl::remove_fd(int n) {
   remove_fd(n, -1);
 }
 
 #if CONSOLIDATE_MOTION
-static fltk::Window* send_motion;
-extern fltk::Window* fl_xmousewin;
+static Fl_Window* send_motion;
+extern Fl_Window* fl_xmousewin;
 #endif
 static bool in_a_window; // true if in any of our windows, even destroyed ones
 static void do_queued_events() {
@@ -182,16 +182,16 @@ static void do_queued_events() {
     fl_handle(xevent);
   }
   // we send FL_LEAVE only if the mouse did not enter some other window:
-  if (!in_a_window) fltk::handle(FL_LEAVE, 0);
+  if (!in_a_window) Fl::handle(FL_LEAVE, 0);
 #if CONSOLIDATE_MOTION
   else if (send_motion == fl_xmousewin) {
     send_motion = 0;
-    fltk::handle(FL_MOVE, fl_xmousewin);
+    Fl::handle(FL_MOVE, fl_xmousewin);
   }
 #endif
 }
 
-// these pointers are set by the fltk::lock() function:
+// these pointers are set by the Fl::lock() function:
 static void nothing() {}
 void (*fl_lock_function)() = nothing;
 void (*fl_unlock_function)() = nothing;
@@ -308,7 +308,7 @@ static void fd_callback(int,void *) {
 
 extern "C" {
   static int io_error_handler(Display*) {
-    fltk::fatal("X I/O error");
+    Fl::fatal("X I/O error");
     return 0;
   }
 
@@ -317,7 +317,7 @@ extern "C" {
     sprintf(buf1, "XRequest.%d", e->request_code);
     XGetErrorDatabaseText(d,"",buf1,buf1,buf2,128);
     XGetErrorText(d, e->error_code, buf1, 128);
-    fltk::warning("%s: %s 0x%lx", buf2, buf1, e->resourceid);
+    Fl::warning("%s: %s 0x%lx", buf2, buf1, e->resourceid);
     return 0;
   }
 }
@@ -425,7 +425,7 @@ void fl_reset_spot(void)
   //if (fl_xim_ic) XUnsetICFocus(fl_xim_ic);
 }
 
-void fl_set_spot(int font, int size, int X, int Y, int W, int H, fltk::Window *win)
+void fl_set_spot(int font, int size, int X, int Y, int W, int H, Fl_Window *win)
 {
   int change = 0;
   XVaNestedList preedit_attr;
@@ -516,20 +516,20 @@ void fl_init_xim()
     XGetIMValues (fl_xim_im, XNQueryInputStyle,
                   &xim_styles, NULL, NULL);
   } else {
-    fltk::warning("XOpenIM() failed\n");
+    Fl::warning("XOpenIM() failed\n");
     return;
   }
 
   if (xim_styles && xim_styles->count_styles) {
     fl_new_ic();
    } else {
-     fltk::warning("No XIM style found\n");
+     Fl::warning("No XIM style found\n");
      XCloseIM(fl_xim_im);
      fl_xim_im = NULL;
      return;
   }
   if (!fl_xim_ic) {
-    fltk::warning("XCreateIC() failed\n");
+    Fl::warning("XCreateIC() failed\n");
     XCloseIM(fl_xim_im);
     XFree(xim_styles);
     fl_xim_im = NULL;
@@ -547,7 +547,7 @@ void fl_open_display() {
   XSetErrorHandler(xerror_handler);
 
   Display *d = XOpenDisplay(0);
-  if (!d) fltk::fatal("Can't open display: %s",XDisplayName(0));
+  if (!d) Fl::fatal("Can't open display: %s",XDisplayName(0));
 
   fl_open_display(d);
 }
@@ -576,7 +576,7 @@ void fl_open_display(Display* d) {
   fl_XaUtf8String       = XInternAtom(d, "UTF8_STRING",         0);
   fl_XaTextUriList      = XInternAtom(d, "text/uri-list",       0);
 
-  fltk::add_fd(ConnectionNumber(d), POLLIN, fd_callback);
+  Fl::add_fd(ConnectionNumber(d), POLLIN, fd_callback);
 
   fl_screen = DefaultScreen(d);
 
@@ -591,12 +591,12 @@ void fl_open_display(Display* d) {
   fl_init_xim();
 
 #if !USE_COLORMAP
-  fltk::visual(FL_RGB);
+  Fl::visual(FL_RGB);
 #endif
 }
 
 void fl_close_display() {
-  fltk::remove_fd(ConnectionNumber(fl_display));
+  Fl::remove_fd(ConnectionNumber(fl_display));
   XCloseDisplay(fl_display);
 }
 
@@ -632,27 +632,27 @@ static void fl_init_workarea() {
   }
 }
 
-int fltk::x() {
+int Fl::x() {
   if (fl_workarea_xywh[0] < 0) fl_init_workarea();
   return fl_workarea_xywh[0];
 }
 
-int fltk::y() {
+int Fl::y() {
   if (fl_workarea_xywh[0] < 0) fl_init_workarea();
   return fl_workarea_xywh[1];
 }
 
-int fltk::w() {
+int Fl::w() {
   if (fl_workarea_xywh[0] < 0) fl_init_workarea();
   return fl_workarea_xywh[2];
 }
 
-int fltk::h() {
+int Fl::h() {
   if (fl_workarea_xywh[0] < 0) fl_init_workarea();
   return fl_workarea_xywh[3];
 }
 
-void fltk::get_mouse(int &xx, int &yy) {
+void Fl::get_mouse(int &xx, int &yy) {
   fl_open_display();
   Window root = RootWindow(fl_display, fl_screen);
   Window c; int mx,my,cx,cy; unsigned int mask;
@@ -664,21 +664,21 @@ void fltk::get_mouse(int &xx, int &yy) {
 ////////////////////////////////////////////////////////////////
 // Code used for paste and DnD into the program:
 
-fltk::Widget *fl_selection_requestor;
+Fl_Widget *fl_selection_requestor;
 char *fl_selection_buffer[2];
 int fl_selection_length[2];
 int fl_selection_buffer_length[2];
 char fl_i_own_selection[2] = {0,0};
 
 // Call this when a "paste" operation happens:
-void fltk::paste(fltk::Widget &receiver, int clipboard) {
+void Fl::paste(Fl_Widget &receiver, int clipboard) {
   if (fl_i_own_selection[clipboard]) {
     // We already have it, do it quickly without window server.
     // Notice that the text is clobbered if set_selection is
     // called in response to FL_PASTE!
-    fltk::e_text = fl_selection_buffer[clipboard];
-    fltk::e_length = fl_selection_length[clipboard];
-    if (!fltk::e_text) fltk::e_text = (char *)"";
+    Fl::e_text = fl_selection_buffer[clipboard];
+    Fl::e_length = fl_selection_length[clipboard];
+    if (!Fl::e_text) Fl::e_text = (char *)"";
     receiver.handle(FL_PASTE);
     return;
   }
@@ -686,7 +686,7 @@ void fltk::paste(fltk::Widget &receiver, int clipboard) {
   fl_selection_requestor = &receiver;
   Atom property = clipboard ? CLIPBOARD : XA_PRIMARY;
   XConvertSelection(fl_display, property, fl_XaUtf8String, property,
-                    fl_xid(fltk::first_window()), fl_event_time);
+                    fl_xid(Fl::first_window()), fl_event_time);
 }
 
 Window fl_dnd_source_window;
@@ -718,7 +718,7 @@ void fl_sendClientMessage(Window window, Atom message,
 ////////////////////////////////////////////////////////////////
 // Code for copying to clipboard and DnD out of the program:
 
-void fltk::copy(const char *stuff, int len, int clipboard) {
+void Fl::copy(const char *stuff, int len, int clipboard) {
   if (!stuff || len<0) return;
   if (len+1 > fl_selection_buffer_length[clipboard]) {
     delete[] fl_selection_buffer[clipboard];
@@ -738,7 +738,7 @@ void fltk::copy(const char *stuff, int len, int clipboard) {
 const XEvent* fl_xevent; // the current x event
 ulong fl_event_time; // the last timestamp from an x event
 
-char fl_key_vector[32]; // used by fltk::get_key()
+char fl_key_vector[32]; // used by Fl::get_key()
 
 // Record event mouse position and state from an XEvent:
 
@@ -749,45 +749,36 @@ static void set_event_xy() {
 #  if CONSOLIDATE_MOTION
   send_motion = 0;
 #  endif
-  fltk::e_x_root  = fl_xevent->xbutton.x_root;
-  fltk::e_x       = fl_xevent->xbutton.x;
-  fltk::e_y_root  = fl_xevent->xbutton.y_root;
-  fltk::e_y       = fl_xevent->xbutton.y;
-  fltk::e_state   = fl_xevent->xbutton.state << 16;
+  Fl::e_x_root  = fl_xevent->xbutton.x_root;
+  Fl::e_x       = fl_xevent->xbutton.x;
+  Fl::e_y_root  = fl_xevent->xbutton.y_root;
+  Fl::e_y       = fl_xevent->xbutton.y;
+  Fl::e_state   = fl_xevent->xbutton.state << 16;
   fl_event_time = fl_xevent->xbutton.time;
 #  ifdef __sgi
   // get the meta key off PC keyboards:
-  if (fl_key_vector[18]&0x18) fltk::e_state |= FL_META;
+  if (fl_key_vector[18]&0x18) Fl::e_state |= FL_META;
 #  endif
   // turn off is_click if enough time or mouse movement has passed:
-  if (abs(fltk::e_x_root-px)+abs(fltk::e_y_root-py) > 3 ||
+  if (abs(Fl::e_x_root-px)+abs(Fl::e_y_root-py) > 3 ||
       fl_event_time >= ptime+1000)
-    fltk::e_is_click = 0;
+    Fl::e_is_click = 0;
 }
 
 // if this is same event as last && is_click, increment click count:
 static inline void checkdouble() {
-  if (fltk::e_is_click == fltk::e_keysym)
-    fltk::e_clicks++;
+  if (Fl::e_is_click == Fl::e_keysym)
+    Fl::e_clicks++;
   else {
-    fltk::e_clicks = 0;
-    fltk::e_is_click = fltk::e_keysym;
+    Fl::e_clicks = 0;
+    Fl::e_is_click = Fl::e_keysym;
   }
-  px = fltk::e_x_root;
-  py = fltk::e_y_root;
+  px = Fl::e_x_root;
+  py = Fl::e_y_root;
   ptime = fl_event_time;
 }
 
-static fltk::Window* resize_bug_fix;
-
-extern "C" {
-  static Bool fake_keyup_test(Display*, XEvent* event, char* previous) {
-     return
-      event->type == KeyPress &&
-      event->xkey.keycode == ((XKeyEvent*)previous)->keycode &&
-      event->xkey.time == ((XKeyEvent*)previous)->time;
-  }
-}
+static Fl_Window* resize_bug_fix;
 
 ////////////////////////////////////////////////////////////////
 
@@ -835,8 +826,8 @@ int fl_handle(const XEvent& thisevent)
         }
         fl_set_spot(spotf, spots, spot.x, spot.y, spot.width, spot.height);
 #else
-    if (fltk::first_window() && fltk::first_window()->modal()) {
-      Window x  = fl_xid(fltk::first_window());
+    if (Fl::first_window() && Fl::first_window()->modal()) {
+      Window x  = fl_xid(Fl::first_window());
       if (x != xim_win) {
         xim_win  = x;
         XSetICValues(fl_xim_ic,
@@ -901,11 +892,11 @@ int fl_handle(const XEvent& thisevent)
       buffer[bytesread] = 0;
       if (!remaining) break;
     }
-    fltk::e_text = buffer ? (char*)buffer : (char *)"";
-    fltk::e_length = bytesread;
-    int old_event = fltk::e_number;
-    fl_selection_requestor->handle(fltk::e_number = FL_PASTE);
-    fltk::e_number = old_event;
+    Fl::e_text = buffer ? (char*)buffer : (char *)"";
+    Fl::e_length = bytesread;
+    int old_event = Fl::e_number;
+    fl_selection_requestor->handle(Fl::e_number = FL_PASTE);
+    Fl::e_number = old_event;
     // Detect if this paste is due to Xdnd by the property name (I use
     // XA_SECONDARY for that) and send an XdndFinished message. It is not
     // clear if this has to be delayed until now or if it can be done
@@ -967,7 +958,7 @@ int fl_handle(const XEvent& thisevent)
   }
 
   int event = 0;
-  fltk::Window* window = fl_find(xid);
+  Fl_Window* window = fl_find(xid);
 
   if (window) switch (xevent.type) {
 
@@ -1027,26 +1018,26 @@ int fl_handle(const XEvent& thisevent)
         fl_dnd_type = fl_dnd_source_types[0];
 
       event = FL_DND_ENTER;
-      fltk::e_text = unknown;
-      fltk::e_length = unknown_len;
+      Fl::e_text = unknown;
+      Fl::e_length = unknown_len;
       break;
 
     } else if (message == fl_XdndPosition) {
       fl_xmousewin = window;
       in_a_window = true;
       fl_dnd_source_window = data[0];
-      fltk::e_x_root = data[2]>>16;
-      fltk::e_y_root = data[2]&0xFFFF;
+      Fl::e_x_root = data[2]>>16;
+      Fl::e_y_root = data[2]&0xFFFF;
       if (window) {
-        fltk::e_x = fltk::e_x_root-window->x();
-        fltk::e_y = fltk::e_y_root-window->y();
+        Fl::e_x = Fl::e_x_root-window->x();
+        Fl::e_y = Fl::e_y_root-window->y();
       }
       fl_event_time = data[3];
       fl_dnd_source_action = data[4];
       fl_dnd_action = fl_XdndActionCopy;
-      fltk::e_text = unknown;
-      fltk::e_length = unknown_len;
-      int accept = fltk::handle(FL_DND_DRAG, window);
+      Fl::e_text = unknown;
+      Fl::e_length = unknown_len;
+      int accept = Fl::handle(FL_DND_DRAG, window);
       fl_sendClientMessage(data[0], fl_XdndStatus,
                            fl_xevent->xclient.window,
                            accept ? 1 : 0,
@@ -1058,8 +1049,8 @@ int fl_handle(const XEvent& thisevent)
     } else if (message == fl_XdndLeave) {
       fl_dnd_source_window = 0; // don't send a finished message to it
       event = FL_DND_LEAVE;
-      fltk::e_text = unknown;
-      fltk::e_length = unknown_len;
+      Fl::e_text = unknown;
+      Fl::e_length = unknown_len;
       break;
 
     } else if (message == fl_XdndDrop) {
@@ -1068,10 +1059,10 @@ int fl_handle(const XEvent& thisevent)
       fl_dnd_source_window = data[0];
       fl_event_time = data[2];
       Window to_window = fl_xevent->xclient.window;
-      fltk::e_text = unknown;
-      fltk::e_length = unknown_len;
-      if (fltk::handle(FL_DND_RELEASE, window)) {
-        fl_selection_requestor = fltk::belowmouse();
+      Fl::e_text = unknown;
+      Fl::e_length = unknown_len;
+      if (Fl::handle(FL_DND_RELEASE, window)) {
+        fl_selection_requestor = Fl::belowmouse();
         XConvertSelection(fl_display, fl_XdndSelection,
                           fl_dnd_type, XA_SECONDARY,
                           to_window, fl_event_time);
@@ -1097,8 +1088,8 @@ int fl_handle(const XEvent& thisevent)
 #  if 0
     // try to keep windows on top even if WM_TRANSIENT_FOR does not work:
     // opaque move/resize window managers do not like this, so I disabled it.
-      if (fltk::first_window()->non_modal() && window != fltk::first_window())
-        fltk::first_window()->show();
+    if (Fl::first_window()->non_modal() && window != Fl::first_window())
+      Fl::first_window()->show();
 #  endif
 
   case GraphicsExpose:
@@ -1162,22 +1153,46 @@ int fl_handle(const XEvent& thisevent)
         keysym = XKeycodeToKeysym(fl_display, keycode, 0);
       }
       }
-      // MRS: Can't use fltk::event_state(FL_CTRL) since the state is not
+      // MRS: Can't use Fl::event_state(FL_CTRL) since the state is not
       //      set until set_event_xy() is called later...
       if ((xevent.xkey.state & ControlMask) && keysym == '-') buffer[0] = 0x1f; // ^_
       buffer[len] = 0;
-      fltk::e_text = buffer;
-      fltk::e_length = len;
+      Fl::e_text = buffer;
+      Fl::e_length = len;
     } else {
       // Stupid X sends fake key-up events when a repeating key is held
       // down, probably due to some back compatibility problem. Fortunately
       // we can detect this because the repeating KeyPress event is in
       // the queue, get it and execute it instead:
-      XEvent temp;
-      if (XCheckIfEvent(fl_display,&temp,fake_keyup_test,(char*)(&xevent))){
-        xevent = temp;
-        goto KEYPRESS;
+      
+      // Bool XkbSetDetectableAutorepeat ( display, detectable, supported_rtrn )
+      // Display * display ;
+      // Bool detectable ;
+      // Bool * supported_rtrn ;
+      // ...would be the easy way to corrct this isuue. Unfortunatly, this call is also 
+      // broken on many Unix distros including Ubuntu and Solaris (as of Dec 2009)
+
+      // Bogus KeyUp events are generated by repeated KeyDown events. One 
+      // neccessary condition is an identical key event pending right after
+      // the bogus KeyUp.
+      // The new code introduced Dec 2009 differs in that it only check the very
+      // next event in the queue, not the entire queue of events.
+      // This function wrongly detects a repeat key if a software keyboard
+      // sends a burst of events containing two consecutive equal keys. However, 
+      // in every non-gaming situation, this is no problem because both KeyPress
+      // events will cause the expected behavior.
+      XEvent peekevent;
+      if (XPending(fl_display)) {
+        XPeekEvent(fl_display, &peekevent);
+        if (   (peekevent.type == KeyPress) // must be a KeyPress event
+            && (peekevent.xkey.keycode == xevent.xkey.keycode) // must be the same key
+            && (peekevent.xkey.time == xevent.xkey.time) // must be sent at the exact same time
+            ) {
+          XNextEvent(fl_display, &xevent);
+          goto KEYPRESS;
+        }
       }
+      
       event = FL_KEYUP;
       fl_key_vector[keycode/8] &= ~(1 << (keycode%8));
       // keyup events just get the unshifted keysym:
@@ -1210,7 +1225,7 @@ int fl_handle(const XEvent& thisevent)
       // numlock state...
       unsigned long keysym1 = XKeycodeToKeysym(fl_display, keycode, 1);
       if (keysym1 <= 0x7f || (keysym1 > 0xff9f && keysym1 <= FL_KP_Last))
-        fltk::e_original_keysym = (int)(keysym1 | FL_KP);
+        Fl::e_original_keysym = (int)(keysym1 | FL_KP);
       if ((xevent.xkey.state & Mod2Mask) &&
           (keysym1 <= 0x7f || (keysym1 > 0xff9f && keysym1 <= FL_KP_Last))) {
         // Store ASCII numeric keypad value...
@@ -1228,24 +1243,24 @@ int fl_handle(const XEvent& thisevent)
       }
     } else {
       // Store this so we can later know if the KP was used
-      fltk::e_original_keysym = (int)keysym;
+      Fl::e_original_keysym = (int)keysym;
     }
-    fltk::e_keysym = int(keysym);
+    Fl::e_keysym = int(keysym);
     set_event_xy();
-    fltk::e_is_click = 0;
+    Fl::e_is_click = 0;
     break;}
 
   case ButtonPress:
-      fltk::e_keysym = FL_Button + xevent.xbutton.button;
+    Fl::e_keysym = FL_Button + xevent.xbutton.button;
     set_event_xy();
     if (xevent.xbutton.button == Button4) {
-      fltk::e_dy = -1; // Up
+      Fl::e_dy = -1; // Up
       event = FL_MOUSEWHEEL;
     } else if (xevent.xbutton.button == Button5) {
-      fltk::e_dy = +1; // Down
+      Fl::e_dy = +1; // Down
       event = FL_MOUSEWHEEL;
     } else {
-      fltk::e_state |= (FL_BUTTON1 << (xevent.xbutton.button-1));
+      Fl::e_state |= (FL_BUTTON1 << (xevent.xbutton.button-1));
       event = FL_PUSH;
       checkdouble();
     }
@@ -1268,9 +1283,9 @@ int fl_handle(const XEvent& thisevent)
 #  endif
 
   case ButtonRelease:
-      fltk::e_keysym = FL_Button + xevent.xbutton.button;
+    Fl::e_keysym = FL_Button + xevent.xbutton.button;
     set_event_xy();
-      fltk::e_state &= ~(FL_BUTTON1 << (xevent.xbutton.button-1));
+    Fl::e_state &= ~(FL_BUTTON1 << (xevent.xbutton.button-1));
     if (xevent.xbutton.button == Button4 ||
         xevent.xbutton.button == Button5) return 0;
     event = FL_RELEASE;
@@ -1283,7 +1298,7 @@ int fl_handle(const XEvent& thisevent)
     if (xevent.xcrossing.detail == NotifyInferior) break;
     // XInstallColormap(fl_display, Fl_X::i(window)->colormap);
     set_event_xy();
-      fltk::e_state = xevent.xcrossing.state << 16;
+    Fl::e_state = xevent.xcrossing.state << 16;
     event = FL_ENTER;
 
     fl_xmousewin = window;
@@ -1293,7 +1308,7 @@ int fl_handle(const XEvent& thisevent)
   case LeaveNotify:
     if (xevent.xcrossing.detail == NotifyInferior) break;
     set_event_xy();
-      fltk::e_state = xevent.xcrossing.state << 16;
+    Fl::e_state = xevent.xcrossing.state << 16;
     fl_xmousewin = 0;
     in_a_window = false; // make do_queued_events produce FL_LEAVE event
     return 0;
@@ -1318,7 +1333,7 @@ int fl_handle(const XEvent& thisevent)
     XTranslateCoordinates(fl_display, fl_xid(window), actual.root,
                           0, 0, &X, &Y, &cr);
 
-    // tell fltk::Window about it and set flag to prevent echoing:
+    // tell Fl_Window about it and set flag to prevent echoing:
     resize_bug_fix = window;
     window->resize(X, Y, W, H);
     break; // allow add_handler to do something too
@@ -1335,19 +1350,19 @@ int fl_handle(const XEvent& thisevent)
                           xevent.xreparent.x, xevent.xreparent.y,
                           &xpos, &ypos, &junk);
 
-    // tell fltk::Window about it and set flag to prevent echoing:
+    // tell Fl_Window about it and set flag to prevent echoing:
     resize_bug_fix = window;
     window->position(xpos, ypos);
     break;
     }
   }
 
-  return fltk::handle(event, window);
+  return Fl::handle(event, window);
 }
 
 ////////////////////////////////////////////////////////////////
 
-void fltk::Window::resize(int X,int Y,int W,int H) {
+void Fl_Window::resize(int X,int Y,int W,int H) {
   int is_a_move = (X != x() || Y != y());
   int is_a_resize = (W != w() || H != h());
   int resize_from_program = (this != resize_bug_fix);
@@ -1355,7 +1370,7 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
   if (is_a_move && resize_from_program) set_flag(FORCE_POSITION);
   else if (!is_a_resize && !is_a_move) return;
   if (is_a_resize) {
-    fltk::Group::resize(X,Y,W,H);
+    Fl_Group::resize(X,Y,W,H);
     if (shown()) {redraw(); i->wait_for_expose = 1;}
   } else {
     x(X); y(Y);
@@ -1380,12 +1395,12 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
 
 ////////////////////////////////////////////////////////////////
 
-// A subclass of fltk::Window may call this to associate an X window it
-// creates with the fltk::Window:
+// A subclass of Fl_Window may call this to associate an X window it
+// creates with the Fl_Window:
 
 void fl_fix_focus(); // in Fl.cxx
 
-Fl_X* Fl_X::set_xid(fltk::Window* win, Window winxid) {
+Fl_X* Fl_X::set_xid(Fl_Window* win, Window winxid) {
   Fl_X* xp = new Fl_X;
   xp->xid = winxid;
   xp->other_xid = 0;
@@ -1395,7 +1410,7 @@ Fl_X* Fl_X::set_xid(fltk::Window* win, Window winxid) {
   xp->wait_for_expose = 1;
   xp->backbuffer_bad = 1;
   Fl_X::first = xp;
-  if (win->modal()) {fltk::modal_ = win; fl_fix_focus();}
+  if (win->modal()) {Fl::modal_ = win; fl_fix_focus();}
   return xp;
 }
 
@@ -1417,9 +1432,9 @@ ExposureMask|StructureNotifyMask
 |EnterWindowMask|LeaveWindowMask
 |PointerMotionMask;
 
-void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
+void Fl_X::make_xid(Fl_Window* win, XVisualInfo *visual, Colormap colormap)
 {
-  fltk::Group::current(0); // get rid of very common user bug: forgot end()
+  Fl_Group::current(0); // get rid of very common user bug: forgot end()
 
   int X = win->x();
   int Y = win->y();
@@ -1427,10 +1442,10 @@ void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
   if (W <= 0) W = 1; // X don't like zero...
   int H = win->h();
   if (H <= 0) H = 1; // X don't like zero...
-  if (!win->parent() && !fltk::grab()) {
+  if (!win->parent() && !Fl::grab()) {
     // center windows in case window manager does not do anything:
 #ifdef FL_CENTER_WINDOWS
-    if (!(win->flags() & fltk::Widget::FORCE_POSITION)) {
+    if (!(win->flags() & Fl_Widget::FORCE_POSITION)) {
       win->x(X = scr_x+(scr_w-W)/2);
       win->y(Y = scr_y+(scr_h-H)/2);
     }
@@ -1439,7 +1454,7 @@ void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
     // force the window to be on-screen.  Usually the X window manager
     // does this, but a few don't, so we do it here for consistency:
     int scr_x, scr_y, scr_w, scr_h;
-    fltk::screen_xywh(scr_x, scr_y, scr_w, scr_h, X, Y);
+    Fl::screen_xywh(scr_x, scr_y, scr_w, scr_h, X, Y);
 
     if (win->border()) {
       // ensure border is on screen:
@@ -1482,7 +1497,7 @@ void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
     attr.save_under = 1;
     mask |= CWOverrideRedirect | CWSaveUnder;
   } else attr.override_redirect = 0;
-  if (fltk::grab()) {
+  if (Fl::grab()) {
     attr.save_under = 1; mask |= CWSaveUnder;
     if (!win->border()) {attr.override_redirect = 1; mask |= CWOverrideRedirect;}
   }
@@ -1531,7 +1546,7 @@ void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
 
     if (win->non_modal() && xp->next && !fl_disable_transient_for) {
       // find some other window to be "transient for":
-      fltk::Window* wp = xp->next->w;
+      Fl_Window* wp = xp->next->w;
       while (wp->parent()) wp = wp->window();
       XSetTransientForHint(fl_display, xp->xid, fl_xid(wp));
       if (!wp->visible()) showit = 0; // guess that wm will not show it
@@ -1570,9 +1585,9 @@ void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
   XMapWindow(fl_display, xp->xid);
   if (showit) {
     win->set_visible();
-    int old_event = fltk::e_number;
-    win->handle(fltk::e_number = FL_SHOW); // get child windows to appear
-    fltk::e_number = old_event;
+    int old_event = Fl::e_number;
+    win->handle(Fl::e_number = FL_SHOW); // get child windows to appear
+    Fl::e_number = old_event;
     win->redraw();
   }
 }
@@ -1585,7 +1600,7 @@ void Fl_X::sendxjunk() {
 
   if (!w->size_range_set) { // default size_range based on resizable():
     if (w->resizable()) {
-      fltk::Widget *o = w->resizable();
+      Fl_Widget *o = w->resizable();
       int minw = o->w(); if (minw > 100) minw = 100;
       int minh = o->h(); if (minh > 100) minh = 100;
       w->size_range(w->w() - o->w() + minw, w->h() - o->h() + minh, 0, 0);
@@ -1619,8 +1634,8 @@ void Fl_X::sendxjunk() {
       // unfortunately we can't set just one maximum size.  Guess a
       // value for the other one.  Some window managers will make the
       // window fit on screen when maximized, others will put it off screen:
-      if (hints->max_width < hints->min_width) hints->max_width = fltk::w();
-      if (hints->max_height < hints->min_height) hints->max_height = fltk::h();
+      if (hints->max_width < hints->min_width) hints->max_width = Fl::w();
+      if (hints->max_height < hints->min_height) hints->max_height = Fl::h();
     }
     if (hints->width_inc && hints->height_inc) hints->flags |= PResizeInc;
     if (w->aspect) {
@@ -1636,7 +1651,7 @@ void Fl_X::sendxjunk() {
     prop[1] = 1|2|16; // MWM_FUNC_ALL | MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE
   }
 
-  if (w->flags() & fltk::Widget::FORCE_POSITION) {
+  if (w->flags() & Fl_Widget::FORCE_POSITION) {
     hints->flags |= USPosition;
     hints->x = w->x();
     hints->y = w->y();
@@ -1654,7 +1669,7 @@ void Fl_X::sendxjunk() {
   XFree(hints);
 }
 
-void fltk::Window::size_range_() {
+void Fl_Window::size_range_() {
   size_range_set = 1;
   if (shown()) i->sendxjunk();
 }
@@ -1669,8 +1684,8 @@ const char *fl_filename_name(const char *name) {
   return q;
 }
 
-void fltk::Window::label(const char *name,const char *iname) {
-  fltk::Widget::label(name);
+void Fl_Window::label(const char *name,const char *iname) {
+  Fl_Widget::label(name);
   iconlabel_ = iname;
   if (shown() && !parent()) {
     if (!name) name = "";
@@ -1683,7 +1698,7 @@ void fltk::Window::label(const char *name,const char *iname) {
 }
 
 ////////////////////////////////////////////////////////////////
-// Implement the virtual functions for the base fltk::Window class:
+// Implement the virtual functions for the base Fl_Window class:
 
 // If the box is a filled rectangle, we can make the redisplay *look*
 // faster by using X's background pixel erasing.  We can make it
@@ -1694,12 +1709,12 @@ void fltk::Window::label(const char *name,const char *iname) {
 // is resized while a save-behind window is atop it.  The previous
 // contents are restored to the area, but this assumes the area
 // is cleared to background color.  So this is disabled in this version.
-// fltk::Window *fl_boxcheat;
+// Fl_Window *fl_boxcheat;
 static inline int can_boxcheat(uchar b) {return (b==1 || (b&2) && b<=15);}
 
-void fltk::Window::show() {
-  image(fltk::scheme_bg_);
-  if (fltk::scheme_bg_) {
+void Fl_Window::show() {
+  image(Fl::scheme_bg_);
+  if (Fl::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
     align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
   } else {
@@ -1719,11 +1734,11 @@ void fltk::Window::show() {
 }
 
 Window fl_window;
-fltk::Window *fltk::Window::current_;
+Fl_Window *Fl_Window::current_;
 GC fl_gc;
 
 // make X drawing go into this window (called by subclass flush() impl.)
-void fltk::Window::make_current() {
+void Fl_Window::make_current() {
   static GC gc; // the GC used by all X windows
   if (!gc) gc = XCreateGC(fl_display, i->xid, 0, 0);
   fl_window = i->xid;
@@ -1733,7 +1748,7 @@ void fltk::Window::make_current() {
 
 #ifdef USE_CAIRO
   // update the cairo_t context
-  if (fltk::cairo_autolink_context()) fltk::cairo_make_current(this);
+  if (Fl::cairo_autolink_context()) Fl::cairo_make_current(this);
 #endif
 
 }

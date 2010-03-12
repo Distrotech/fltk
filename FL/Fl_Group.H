@@ -31,26 +31,22 @@
 #ifndef Fl_Group_H
 #define Fl_Group_H
 
+#ifndef Fl_Widget_H
 #include "Fl_Widget.H"
-
-#include "../FL3/Group.h"
-
-#define Fl_Group fltk::Group
-
-#if 0
+#endif
 
 /**
-  The fltk::Group class is the FLTK container widget. It maintains
+  The Fl_Group class is the FLTK container widget. It maintains
   an array of child widgets. These children can themselves be any widget
-  including fltk::Group. The most important subclass of fltk::Group
-  is fltk::Window, however groups can also be used to control radio buttons 
+  including Fl_Group. The most important subclass of Fl_Group
+  is Fl_Window, however groups can also be used to control radio buttons 
   or to enforce resize behavior.
 */
-class FL_EXPORT Fl_Group : public fltk::Widget {
+class FL_EXPORT Fl_Group : public Fl_Widget {
 
-  fltk::Widget** array_;
-  fltk::Widget* savedfocus_;
-  fltk::Widget* resizable_;
+  Fl_Widget** array_;
+  Fl_Widget* savedfocus_;
+  Fl_Widget* resizable_;
   int children_;
   int *sizes_; // remembered initial sizes of children
 
@@ -63,10 +59,10 @@ class FL_EXPORT Fl_Group : public fltk::Widget {
 
 protected:
   void draw();
-  void draw_child(fltk::Widget& widget) const;
+  void draw_child(Fl_Widget& widget) const;
   void draw_children();
-  void draw_outside_label(const fltk::Widget& widget) const ;
-  void update_child(fltk::Widget& widget) const;
+  void draw_outside_label(const Fl_Widget& widget) const ;
+  void update_child(Fl_Widget& widget) const;
   int  *sizes();
 
 public:
@@ -84,13 +80,13 @@ public:
   /**
     Returns array()[n].  <i>No range checking is done!</i>
   */
-  fltk::Widget* child(int n) const {return array()[n];}
-  int find(const fltk::Widget*) const;
+  Fl_Widget* child(int n) const {return array()[n];}
+  int find(const Fl_Widget*) const;
   /**
-    See int Fl_Group::find(const fltk::Widget *w) const 
+    See int Fl_Group::find(const Fl_Widget *w) const 
   */
-  int find(const fltk::Widget& o) const {return find(&o);}
-  fltk::Widget* const* array() const;
+  int find(const Fl_Widget& o) const {return find(&o);}
+  Fl_Widget* const* array() const;
 
   void resize(int,int,int,int);
   /**
@@ -99,29 +95,29 @@ public:
   */
   Fl_Group(int,int,int,int, const char * = 0);
   virtual ~Fl_Group();
-  void add(fltk::Widget&);
+  void add(Fl_Widget&);
   /**
-    See void Fl_Group::add(fltk::Widget &w) 
+    See void Fl_Group::add(Fl_Widget &w) 
   */
-  void add(fltk::Widget* o) {add(*o);}
-  void insert(fltk::Widget&, int i);
+  void add(Fl_Widget* o) {add(*o);}
+  void insert(Fl_Widget&, int i);
   /**
     This does insert(w, find(before)).  This will append the
     widget if \p before is not in the group.
   */
-  void insert(fltk::Widget& o, fltk::Widget* before) {insert(o,find(before));}
-  void remove(fltk::Widget&);
+  void insert(Fl_Widget& o, Fl_Widget* before) {insert(o,find(before));}
+  void remove(Fl_Widget&);
   /**
     Removes the widget \p o from the group.
-    \sa void remove(fltk::Widget&)
+    \sa void remove(Fl_Widget&)
   */
-  void remove(fltk::Widget* o) {remove(*o);}
+  void remove(Fl_Widget* o) {remove(*o);}
   void clear();
 
   /**
-    See void Fl_Group::resizable(fltk::Widget *box) 
+    See void Fl_Group::resizable(Fl_Widget *box) 
   */
-  void resizable(fltk::Widget& o) {resizable_ = &o;}
+  void resizable(Fl_Widget& o) {resizable_ = &o;}
   /**
     The resizable widget defines the resizing box for the group. When the
     group is resized it calculates a new size and position for all of its
@@ -141,7 +137,7 @@ public:
 
     The resizable may be set to the group itself, in which case all the
     contents are resized. This is the default value for Fl_Group,
-    although NULL is the default for fltk::Window and Fl_Pack.
+    although NULL is the default for Fl_Window and Fl_Pack.
 
     If the resizable is NULL then all widgets remain a fixed size
     and distance from the top-left corner.
@@ -150,15 +146,15 @@ public:
     invisible Fl_Box as the resizable and/or by using a hierarchy
     of child Fl_Group's.
   */
-  void resizable(fltk::Widget* o) {resizable_ = o;}
+  void resizable(Fl_Widget* o) {resizable_ = o;}
   /**
-    See void Fl_Group::resizable(fltk::Widget *box) 
+    See void Fl_Group::resizable(Fl_Widget *box) 
   */
-  fltk::Widget* resizable() const {return resizable_;}
+  Fl_Widget* resizable() const {return resizable_;}
   /**
     Adds a widget to the group and makes it the resizable widget.
   */
-  void add_resizable(fltk::Widget& o) {resizable_ = &o; add(o);}
+  void add_resizable(Fl_Widget& o) {resizable_ = &o; add(o);}
   void init_sizes();
 
   /**
@@ -180,17 +176,25 @@ public:
   */
   unsigned int clip_children() { return (flags() & CLIP_CHILDREN) != 0; }
 
+  /** Returns an Fl_Group pointer if this widget is an Fl_Group.
+  
+      \retval NULL if this widget is not derived from Fl_Group.
+      \note This method is provided to avoid dynamic_cast.
+      \todo More documentation ...
+   */
+  virtual Fl_Group* as_group() const { return (Fl_Group*)this; }
+
   // back compatibility functions:
 
   /**
     \deprecated This is for backwards compatibility only. You should use
     \e W->%take_focus() instead.
-    \sa fltk::Widget::take_focus();
+    \sa Fl_Widget::take_focus();
   */
-  void focus(fltk::Widget* W) {W->take_focus();}
+  void focus(Fl_Widget* W) {W->take_focus();}
 
   /** This is for forms compatibility only */
-  fltk::Widget* & _ddfdesign_kludge() {return resizable_;}
+  Fl_Widget* & _ddfdesign_kludge() {return resizable_;}
 
   /** This is for forms compatibility only */
   void forms_end();
@@ -204,9 +208,9 @@ public:
   \code 
    class MyClass {
    Fl_Group group;
-   fltk::Button button_in_group;
+   Fl_Button button_in_group;
    Fl_End end;
-   fltk::Button button_outside_group;
+   Fl_Button button_outside_group;
    MyClass();
   };
   MyClass::MyClass() :
@@ -222,8 +226,6 @@ public:
   /** All it does is calling Fl_Group::current()->end() */
   Fl_End() {Fl_Group::current()->end();}
 };
-
-#endif
 
 #endif
 

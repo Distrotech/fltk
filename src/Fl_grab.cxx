@@ -34,7 +34,7 @@
 // Events are all sent to the "grab window", which does not even
 // have to be displayed (and in the case of Fl_Menu.cxx it isn't).
 // The system is also told to "grab" events and send them to this app.
-// This also modifies how fltk::Window::show() works, on X it turns on
+// This also modifies how Fl_Window::show() works, on X it turns on
 // override_redirect, it does similar things on WIN32.
 
 extern void fl_fix_focus(); // in Fl.cxx
@@ -48,18 +48,28 @@ extern HWND fl_capture;
 
 #ifdef __APPLE__
 // MacOS Carbon does not seem to have a mechanism to grab the mouse pointer
-extern WindowRef fl_capture;
+#ifdef __APPLE_COCOA__
+extern void MACsetkeywindow(void *nsw);
+extern void *fl_capture;
+#else
+extern Window fl_capture;
+#endif
 #endif
 
-void fltk::grab(fltk::Window* win) {
+void Fl::grab(Fl_Window* win) {
   if (win) {
     if (!grab_) {
 #ifdef WIN32
       SetActiveWindow(fl_capture = fl_xid(first_window()));
       SetCapture(fl_capture);
 #elif defined(__APPLE__)
-      fl_capture = fl_xid( first_window() );
-      SetUserFocusWindow( fl_capture );
+#ifdef __APPLE_COCOA__
+			fl_capture = Fl_X::i(first_window())->xid;
+			MACsetkeywindow(fl_capture);
+#else
+			fl_capture = fl_xid( first_window() );
+			SetUserFocusWindow( fl_capture );
+#endif
 #else
       XGrabPointer(fl_display,
 		   fl_xid(first_window()),
@@ -87,7 +97,9 @@ void fltk::grab(fltk::Window* win) {
       ReleaseCapture();
 #elif defined(__APPLE__)
       fl_capture = 0;
+#ifndef __APPLE_COCOA__
       SetUserFocusWindow( (WindowRef)kUserFocusAuto );
+#endif
 #else
       XUngrabKeyboard(fl_display, fl_event_time);
       XUngrabPointer(fl_display, fl_event_time);

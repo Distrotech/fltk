@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-// Subclass of fltk::Button where the "box" indicates whether it is
+// Subclass of Fl_Button where the "box" indicates whether it is
 // pushed or not, and the "down box" is drawn small and square on
 // the left to indicate the current state.
 
@@ -38,14 +38,14 @@
 #include "flstring.h"
 
 void Fl_Light_Button::draw() {
-  if (box()) draw_box(this==fltk::pushed() ? fl_down(box()) : box(), color());
+  if (box()) draw_box(this==Fl::pushed() ? fl_down(box()) : box(), color());
   Fl_Color col = value() ? (active_r() ? selection_color() :
                             fl_inactive(selection_color())) : color();
   int W;
   int dx, dy;
 
   W  = labelsize();
-  dx = fltk::box_dx(box()) + 2;
+  dx = Fl::box_dx(box()) + 2;
   dy = (h() - W) / 2;
   // if (dy < 0) dy = 0;         // neg. offset o.k. for vertical centering
 
@@ -59,7 +59,7 @@ void Fl_Light_Button::draw() {
         // Check box...
         draw_box(down_box(), x()+dx, y()+dy, W, W, FL_BACKGROUND2_COLOR);
 	if (value()) {
-	  if (fltk::scheme() && !strcmp(fltk::scheme(), "gtk+")) {
+	  if (Fl::scheme() && !strcmp(Fl::scheme(), "gtk+")) {
 	    fl_color(FL_SELECTION_COLOR);
 	  } else {
 	    fl_color(col);
@@ -80,12 +80,12 @@ void Fl_Light_Button::draw() {
         // Radio button...
         draw_box(down_box(), x()+dx, y()+dy, W, W, FL_BACKGROUND2_COLOR);
 	if (value()) {
-	  int tW = (W - fltk::box_dw(down_box())) / 2 + 1;
+	  int tW = (W - Fl::box_dw(down_box())) / 2 + 1;
 	  if ((W - tW) & 1) tW++; // Make sure difference is even to center
 	  int tdx = dx + (W - tW) / 2;
 	  int tdy = dy + (W - tW) / 2;
 
-	  if (fltk::scheme() && !strcmp(fltk::scheme(), "gtk+")) {
+	  if (Fl::scheme() && !strcmp(Fl::scheme(), "gtk+")) {
 	    fl_color(FL_SELECTION_COLOR);
 	    tW --;
 	    fl_pie(x() + tdx - 1, y() + tdy - 1, tW + 3, tW + 3, 0.0, 360.0);
@@ -119,7 +119,7 @@ void Fl_Light_Button::draw() {
 	      break;
 	  }
 
-	  if (fltk::scheme() && !strcmp(fltk::scheme(), "gtk+")) {
+	  if (Fl::scheme() && !strcmp(Fl::scheme(), "gtk+")) {
 	    fl_color(fl_color_average(FL_WHITE, FL_SELECTION_COLOR, 0.5));
 	    fl_arc(x() + tdx, y() + tdy, tW + 1, tW + 1, 60.0, 180.0);
 	  }
@@ -135,7 +135,7 @@ void Fl_Light_Button::draw() {
     int ww = W/2+1;
     int xx = dx;
     if (w()<ww+2*xx) xx = (w()-ww)/2;
-    if (fltk::scheme() && !strcmp(fltk::scheme(), "plastic")) {
+    if (Fl::scheme() && !strcmp(Fl::scheme(), "plastic")) {
       col = active_r() ? selection_color() : fl_inactive(selection_color());
       fl_color(value() ? col : fl_color_average(col, FL_BLACK, 0.5f));
       fl_pie(x()+xx, y()+dy+1, ww, hh, 0, 360);
@@ -145,7 +145,7 @@ void Fl_Light_Button::draw() {
     dx = (ww + 2 * dx - W) / 2;
   }
   draw_label(x()+W+2*dx, y(), w()-W-2*dx, h());
-  if (fltk::focus() == this) draw_focus();
+  if (Fl::focus() == this) draw_focus();
 }
 
 int Fl_Light_Button::handle(int event) {
@@ -153,7 +153,7 @@ int Fl_Light_Button::handle(int event) {
   case FL_RELEASE:
     if (box()) redraw();
   default:
-      return fltk::Button::handle(event);
+    return Fl_Button::handle(event);
   }
 }
 
@@ -163,7 +163,7 @@ int Fl_Light_Button::handle(int event) {
   <P>The destructor deletes the check button.
 */
 Fl_Light_Button::Fl_Light_Button(int X, int Y, int W, int H, const char* l)
-: fltk::Button(X, Y, W, H, l) {
+: Fl_Button(X, Y, W, H, l) {
   type(FL_TOGGLE_BUTTON);
   selection_color(FL_YELLOW);
   align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);

@@ -63,6 +63,7 @@ CPPFILES = \
 	Fl_Menu_add.cxx \
 	Fl_Menu_global.cxx \
 	Fl_Multi_Label.cxx \
+	Fl_Native_File_Chooser.cxx \
 	Fl_Overlay_Window.cxx \
 	Fl_Pack.cxx \
 	Fl_Pixmap.cxx \
@@ -78,12 +79,18 @@ CPPFILES = \
 	Fl_Shared_Image.cxx \
 	Fl_Single_Window.cxx \
 	Fl_Slider.cxx \
+	Fl_Table.cxx \
+	Fl_Table_Row.cxx \
 	Fl_Tabs.cxx \
 	Fl_Text_Buffer.cxx \
 	Fl_Text_Display.cxx \
 	Fl_Text_Editor.cxx \
 	Fl_Tile.cxx \
 	Fl_Tiled_Image.cxx \
+	Fl_Tree.cxx \
+	Fl_Tree_Item.cxx \
+	Fl_Tree_Item_Array.cxx \
+	Fl_Tree_Prefs.cxx \
 	Fl_Tooltip.cxx \
 	Fl_Valuator.cxx \
 	Fl_Value_Input.cxx \
@@ -464,13 +471,16 @@ depend:	$(CPPFILES) $(FLCPPFILES) $(GLCPPFILES) $(IMGCPPFILES) $(CFILES) $(UTF8C
 	makedepend -Y -I.. -f makedepend $(CPPFILES) $(FLCPPFILES) \
 		$(GLCPPFILES) $(IMGCPPFILES) $(CFILES) $(UTF8CFILES)
 
-# Automatically generated dependencies...
+# Automatically generated dependencies... generated on a Linux/Unix host !
 include makedepend
 
 # These dependencies aren't part of the makedepend file since
 # they are part of the WIN32 and MacOS code base...
+# Please add only non-Linux/Unix files or such that are optional
+# (like "*xft*") here:
 Fl_get_key.o:	Fl_get_key_mac.cxx Fl_get_key_win32.cxx
-Fl.o:		Fl_mac.cxx Fl_win32.cxx
+Fl_Native_File_Chooser.o : Fl_Native_File_Chooser_MAC.cxx Fl_Native_File_Chooser_WIN32.cxx
+Fl.o:		Fl_mac.cxx Fl_win32.cxx Fl_cocoa.mm
 fl_color.o:	fl_color_mac.cxx fl_color_win32.cxx
 fl_dnd.o:	fl_dnd_mac.cxx fl_dnd_win32.cxx fl_dnd_x.cxx
 fl_draw_image.o: fl_draw_image_mac.cxx fl_draw_image_win32.cxx
@@ -486,7 +496,7 @@ Fl_Bitmap.o:	../FL/mac.H ../FL/win32.H
 fl_color.o:	../FL/mac.H ../FL/win32.H
 fl_cursor.o:	../FL/mac.H ../FL/win32.H
 fl_dnd.o:	../FL/mac.H ../FL/win32.H
-Fl.o:	../FL/mac.H ../FL/win32.H Fl_win32.cxx Fl_mac.cxx
+Fl.o:	../FL/mac.H ../FL/win32.H
 Fl_Double_Window.o:	../FL/mac.H ../FL/win32.H
 fl_draw_image.o:	../FL/mac.H ../FL/win32.H
 fl_draw_image_mac.o:	../FL/mac.H ../FL/win32.H
@@ -504,7 +514,7 @@ Fl_Gl_Window.o:	../FL/mac.H ../FL/win32.H
 Fl_grab.o:	../FL/mac.H ../FL/win32.H
 Fl_Image.o:	../FL/mac.H ../FL/win32.H
 fl_line_style.o:	../FL/mac.H ../FL/win32.H
-Fl_mac.o:	../FL/mac.H ../FL/win32.H
+Fl_Native_File_Chooser.o: ../FL/Fl_Native_File_Chooser_MAC.H ../FL/Fl_Native_File_Chooser_WIN32.H
 Fl_Menu_Window.o:	../FL/mac.H ../FL/win32.H
 fl_overlay.o:	../FL/mac.H ../FL/win32.H
 fl_overlay_visual.o:	../FL/mac.H ../FL/win32.H

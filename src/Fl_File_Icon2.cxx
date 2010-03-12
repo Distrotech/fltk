@@ -63,7 +63,7 @@
 
 #include <FL/Fl_File_Icon.H>
 #include <FL/Fl_Shared_Image.H>
-#include <FL3/Widget.h>
+#include <FL/Fl_Widget.H>
 #include <FL/fl_draw.H>
 #include <FL/filename.H>
 
@@ -118,7 +118,7 @@ Fl_File_Icon::load(const char *f)	// I - File to read from
 
   if (i)
   {
-    fltk::warning("Fl_File_Icon::load(): Unable to load icon file \"%s\".", f);
+    Fl::warning("Fl_File_Icon::load(): Unable to load icon file \"%s\".", f);
     return;
   }
 }
@@ -143,7 +143,7 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
   // Try to open the file...
   if ((fp = fl_fopen(fti, "rb")) == NULL)
   {
-    fltk::error("Fl_File_Icon::load_fti(): Unable to open \"%s\" - %s",
+    Fl::error("Fl_File_Icon::load_fti(): Unable to open \"%s\" - %s",
               fti, strerror(errno));
     return -1;
   }
@@ -173,7 +173,7 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
     // OK, this character better be a letter...
     if (!isalpha(ch))
     {
-      fltk::error("Fl_File_Icon::load_fti(): Expected a letter at file position %ld (saw '%c')",
+      Fl::error("Fl_File_Icon::load_fti(): Expected a letter at file position %ld (saw '%c')",
                 ftell(fp) - 1, ch);
       break;
     }
@@ -195,7 +195,7 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
     // Make sure we stopped on a parenthesis...
     if (ch != '(')
     {
-      fltk::error("Fl_File_Icon::load_fti(): Expected a ( at file position %ld (saw '%c')",
+      Fl::error("Fl_File_Icon::load_fti(): Expected a ( at file position %ld (saw '%c')",
                 ftell(fp) - 1, ch);
       break;
     }
@@ -216,7 +216,7 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
     // Make sure we stopped on a parenthesis...
     if (ch != ')')
     {
-      fltk::error("Fl_File_Icon::load_fti(): Expected a ) at file position %ld (saw '%c')",
+      Fl::error("Fl_File_Icon::load_fti(): Expected a ) at file position %ld (saw '%c')",
                 ftell(fp) - 1, ch);
       break;
     }
@@ -224,7 +224,7 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
     // Make sure the next character is a semicolon...
     if ((ch = getc(fp)) != ';')
     {
-      fltk::error("Fl_File_Icon::load_fti(): Expected a ; at file position %ld (saw '%c')",
+      Fl::error("Fl_File_Icon::load_fti(): Expected a ; at file position %ld (saw '%c')",
                 ftell(fp) - 1, ch);
       break;
     }
@@ -323,7 +323,7 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
     }
     else
     {
-      fltk::error("Fl_File_Icon::load_fti(): Unknown command \"%s\" at file position %ld.",
+      Fl::error("Fl_File_Icon::load_fti(): Unknown command \"%s\" at file position %ld.",
                 command, ftell(fp) - 1);
       break;
     }
@@ -349,10 +349,10 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
 */
 int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
 {
-  fltk::SharedImage	*img;		// Image file
+  Fl_Shared_Image	*img;		// Image file
 
 
-  img = fltk::SharedImage::get(ifile);
+  img = Fl_Shared_Image::get(ifile);
   if (!img || !img->count() || !img->w() || !img->h()) return -1;
 
   if (img->count() == 1) {
@@ -676,7 +676,7 @@ Fl_File_Icon::load_system_icons(void) {
   // Add symbols if they haven't been added already...
   if (!init) {
     // This method requires the images library...
-    fltk::register_images();
+    fl_register_images();
 
     if (!kdedir) {
       // Figure out where KDE is installed...

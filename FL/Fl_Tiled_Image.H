@@ -33,9 +33,6 @@
 
 #  include "Fl_Image.H"
 
-#include "../FL3/TiledImage.h"
-
-#if 0
 
 /**
   This class supports tiling of images
@@ -65,8 +62,6 @@ class FL_EXPORT Fl_Tiled_Image : public Fl_Image {
   /** Gets The image that is shared */ 
   Fl_Image *image() { return image_; }
 };
-
-#endif
 
 #endif // !Fl_Tiled_Image_H
 

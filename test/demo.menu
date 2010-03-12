@@ -18,7 +18,10 @@
 	@x:Fl_Tile:tile
 	@x:Fl_Scroll:scroll
 	@x:Fl_Pack:pack
-	@x:Fl_Menu:menubar
+	@x:more...:@xm
+		@xm:Fl_Menu:menubar
+		@xm:Fl_Table:table
+		@xm:Fl_Tree:tree
 
 @main:Window\nTests:@w
 	@w:overlay:overlay
@@ -63,8 +66,9 @@
 	@e:Sudoku:sudoku
 
 @main:Other\nTests:@o
-	@o:Color Choosers:color_chooser r
+	@o:Color Choosers:color_chooser
 	@o:File Chooser:file_chooser
+	@o:Native File Chooser:native-filechooser
 	@o:Font Tests:@of
 		@of:Fonts:fonts
 		@of:UTF-8:utf8

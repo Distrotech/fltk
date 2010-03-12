@@ -40,7 +40,7 @@
 
 #include <config.h>
 
-void fltk::Window::border(int b) {
+void Fl_Window::border(int b) {
   if (b) {
     if (border()) return;
     clear_flag(NOBORDER);
@@ -60,7 +60,7 @@ void fltk::Window::border(int b) {
 #endif
 }
 
-void fltk::Window::fullscreen() {
+void Fl_Window::fullscreen() {
 #ifndef WIN32
   //this would clobber the fake wm, since it relies on the border flags to
   //determine its thickness
@@ -68,21 +68,21 @@ void fltk::Window::fullscreen() {
 #endif
 #if defined(__APPLE__) || defined(WIN32)
   int sx, sy, sw, sh;
-  fltk::screen_xywh(sx, sy, sw, sh, x()+w()/2, y()+h()/2);
+  Fl::screen_xywh(sx, sy, sw, sh, x()+w()/2, y()+h()/2);
   // if we are on the main screen, we will leave the system menu bar unobstructed
-  if (fltk::x()>=sx && fltk::y()>=sy && fltk::x()+fltk::w()<=sx+sw && fltk::y()+fltk::h()<=sy+sh) {
-    sx = fltk::x(); sy = fltk::y(); 
-    sw = fltk::w(); sh = fltk::h();
+  if (Fl::x()>=sx && Fl::y()>=sy && Fl::x()+Fl::w()<=sx+sw && Fl::y()+Fl::h()<=sy+sh) {
+    sx = Fl::x(); sy = Fl::y(); 
+    sw = Fl::w(); sh = Fl::h();
   }
   if (x()==sx) x(sx+1); // make sure that we actually execute the resize
   resize(sx, sy, sw, sh);
 #else
   if (!x()) x(1); // force it to call XResizeWindow()
-  resize(0,0,fltk::w(),fltk::h());
+  resize(0,0,Fl::w(),Fl::h());
 #endif
 }
 
-void fltk::Window::fullscreen_off(int X,int Y,int W,int H) {
+void Fl_Window::fullscreen_off(int X,int Y,int W,int H) {
   // this order produces less blinking on IRIX:
   resize(X,Y,W,H);
 #ifndef WIN32

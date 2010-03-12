@@ -152,7 +152,13 @@ UNINSTALL_DESKTOP = @UNINSTALL_DESKTOP@
 
 .cxx.o:
 	echo Compiling $<...
-	$(CXX) -I.. $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CXXFLAGS) -c $< -o $@
+	@if test `uname` = Darwin -a $< = Fl.cxx ; then \
+		$(CXX) -I.. $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CXXFLAGS) -x objective-c++ -c $< -o $@; \
+	elif test `uname` = Darwin -a  $< = Fl_Native_File_Chooser.cxx ; then \
+		$(CXX) -I.. $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CXXFLAGS) -x objective-c++ -c $< -o $@; \
+	else \
+		$(CXX) -I.. $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CXXFLAGS) -c $< -o $@; \
+	fi
 
 .man.0 .man.1 .man.3 .man.6:
 	echo Formatting $<...

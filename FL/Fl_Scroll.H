@@ -39,19 +39,21 @@
   larger than your window.  If the child widgets are larger than the size
   of this object then scrollbars will appear so that you can scroll over
   to them:
-  <P ALIGN=CENTER>\image html Fl_Scroll.gif </P> 
+  \image html Fl_Scroll.gif
   \image latex  Fl_Scroll.eps "Fl_Scroll" width=4cm
-  <P>If all of the child widgets are packed together into a solid
+
+  If all of the child widgets are packed together into a solid
   rectangle then you want to set box() to FL_NO_BOX or
   one of the _FRAME types. This will result in the best output.
-  However, if the child widgets are a sparse arrangment you must set 
-  box() to a real _BOX type.  This can result in some
+  However, if the child widgets are a sparse arrangement you must
+  set box() to a real _BOX type. This can result in some
   blinking during redrawing, but that can be solved by using a 
-  Fl_Double_Window. </P>
+  Fl_Double_Window.
 
   By default you can scroll in both directions, and the scrollbars
   disappear if the data will fit in the area of the scroll. 
-  <P>Use Fl_Scroll::type() to change this as follows :
+
+  Use Fl_Scroll::type() to change this as follows :
   <UL>
   <LI>0                            - No scrollbars </LI>
   <LI>Fl_Scroll::HORIZONTAL        - Only a horizontal scrollbar. </LI>
@@ -62,42 +64,42 @@
   <LI>Fl_Scroll::BOTH_ALWAYS       - Both always on. </LI>
   </UL>
 
-  <P> Use <B> scrollbar.align(int) ( see void fltk::Widget::align(Fl_Align) ) :</B>
-  to change what side the scrollbars are drawn on.<BR>If the 
-  FL_ALIGN_LEFT bit is on, the vertical scrollbar is on the left.
+  Use <B> scrollbar.align(int) ( see void Fl_Widget::align(Fl_Align) ) :</B>
+  to change what side the scrollbars are drawn on.
+
+  If the FL_ALIGN_LEFT bit is on, the vertical scrollbar is on the left.
   If the FL_ALIGN_TOP bit is on, the horizontal scrollbar is on
   the top. Note that only the alignment flags in scrollbar are 
   considered. The flags in hscrollbar however are ignored.
 
-  <P>This widget can also be used to pan around a single child widget
+  This widget can also be used to pan around a single child widget
   "canvas".  This child widget should be of your own class, with a 
   draw() method that draws the contents.  The scrolling is done by
   changing the x() and y() of the widget, so this child
-  must use the x() and y() to position it's drawing.
+  must use the x() and y() to position its drawing.
   To speed up drawing it should test fl_push_clip().
 
-  <P>Another very useful child is a single 
-  Fl_Pack, which is itself a group that packs it's children
-  together and changes size to surround them.  Filling the Fl_Pack
-  with Fl_Tabs groups (and then putting
+  Another very useful child is a single Fl_Pack, which is itself a group
+  that packs its children together and changes size to surround them.
+  Filling the Fl_Pack with Fl_Tabs groups (and then putting
   normal widgets inside those) gives you a very powerful scrolling list
-  of individually-openable panels. </P>
+  of individually-openable panels.
 
-  <P>Fluid lets you create these, but you can only lay out objects that
+  Fluid lets you create these, but you can only lay out objects that
   fit inside the Fl_Scroll without scrolling.  Be sure to leave
-  space for the scrollbars, as Fluid won't show these either. </P>
-  <P><I>You cannot use fltk::Window as a child of this since the
+  space for the scrollbars, as Fluid won't show these either.
+
+  <I>You cannot use Fl_Window as a child of this since the
   clipping is not conveyed to it when drawn, and it will draw over the
   scrollbars and neighboring objects.</I>
 */
-class FL_EXPORT Fl_Scroll : public fltk::Group {
+class FL_EXPORT Fl_Scroll : public Fl_Group {
 
   int xposition_, yposition_;
-  int width_, height_;
   int oldx, oldy;
   int scrollbar_size_;
-  static void hscrollbar_cb(fltk::Widget*, void*);
-  static void scrollbar_cb(fltk::Widget*, void*);
+  static void hscrollbar_cb(Fl_Widget*, void*);
+  static void scrollbar_cb(Fl_Widget*, void*);
   void fix_scrollbar_order();
   static void draw_clip(void*,int,int,int,int);
 
@@ -157,10 +159,10 @@ public:
     Gets the current size of the scrollbars' troughs, in pixels.
 
     If this value is zero (default), this widget will use the 
-    fltk::scrollbar_size() value as the scrollbar's width.
+    Fl::scrollbar_size() value as the scrollbar's width.
   
-    \returns Scrollbar size in pixels, or 0 if the global fltk::scrollsize() is being used.
-    \see fltk::scrollbar_size(int)
+    \returns Scrollbar size in pixels, or 0 if the global Fl::scrollsize() is being used.
+    \see Fl::scrollbar_size(int)
   */
   int scrollbar_size() const {
       return(scrollbar_size_);
@@ -169,7 +171,7 @@ public:
     Sets the pixel size of the scrollbars' troughs to the \p size, in pixels.
 
     Normally you should not need this method, and should use
-    fltk::scrollbar_size(int) instead to manage the size of ALL 
+    Fl::scrollbar_size(int) instead to manage the size of ALL 
     your widgets' scrollbars. This ensures your application 
     has a consistent UI, is the default behavior, and is normally
     what you want.
@@ -178,11 +180,11 @@ public:
     scrollbar size. The need for this should be rare.
     
     Setting \p size to the special value of 0 causes the widget to
-    track the global fltk::scrollbar_size(), which is the default.
+    track the global Fl::scrollbar_size(), which is the default.
     
     \param[in] size Sets the scrollbar size in pixels.\n
-                    If 0 (default), scrollbar size tracks the global fltk::scrollbar_size()
-    \see fltk::scrollbar_size()
+                    If 0 (default), scrollbar size tracks the global Fl::scrollbar_size()
+    \see Fl::scrollbar_size()
   */
   void scrollbar_size(int size) {
       if ( size != scrollbar_size_ ) redraw();

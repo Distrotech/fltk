@@ -58,7 +58,7 @@ class Fl_Menu_;
   struct Fl_Menu_Item {
    const char*	        text; // label()
    ulong		shortcut_;
-   fltk::Callback*	        callback_;
+   Fl_Callback*	        callback_;
    void*		user_data_;
    int		        flags;
    uchar		labeltype_;
@@ -118,7 +118,7 @@ class Fl_Menu_;
 struct FL_EXPORT Fl_Menu_Item {
   const char *text;	    ///< menu item text, returned by label()
   int shortcut_;	    ///< menu item shortcut
-  fltk::Callback *callback_;   ///< menu item callback
+  Fl_Callback *callback_;   ///< menu item callback
   void *user_data_;	    ///< menu item user_data for 3rd party apps
   int flags;		    ///< menu item flags like FL_MENU_TOGGLE, FL_MENU_RADIO
   uchar labeltype_;	    ///< how the menu item text looks like
@@ -188,14 +188,14 @@ struct FL_EXPORT Fl_Menu_Item {
   /**
     Fonts are identified by small 8-bit indexes into a table. See the 
     enumeration list for predefined fonts. The default value is a
-    Helvetica font. The function fltk::set_font() can define new fonts.
+    Helvetica font. The function Fl::set_font() can define new fonts.
   */
   Fl_Font labelfont() const {return labelfont_;}
 
   /**
     Fonts are identified by small 8-bit indexes into a table. See the 
     enumeration list for predefined fonts. The default value is a
-    Helvetica font.  The function fltk::set_font() can define new fonts.
+    Helvetica font.  The function Fl::set_font() can define new fonts.
   */
   void labelfont(Fl_Font a) {labelfont_ = a;}
 
@@ -211,19 +211,19 @@ struct FL_EXPORT Fl_Menu_Item {
      is not passed to the callback, instead you have to get it by calling 
      ((Fl_Menu_*)w)->mvalue() where w is the widget argument.
   */
-  fltk::Callback_p callback() const {return callback_;}
+  Fl_Callback_p callback() const {return callback_;}
 
-  /** See fltk::Callback_p Fl_MenuItem::callback() const */
-  void callback(fltk::Callback* c, void* p) {callback_=c; user_data_=p;}
+  /** See Fl_Callback_p Fl_MenuItem::callback() const */
+  void callback(Fl_Callback* c, void* p) {callback_=c; user_data_=p;}
 
-  /** See fltk::Callback_p Fl_MenuItem::callback() const */
-  void callback(fltk::Callback* c) {callback_=c;}
+  /** See Fl_Callback_p Fl_MenuItem::callback() const */
+  void callback(Fl_Callback* c) {callback_=c;}
 
-  /** See fltk::Callback_p Fl_MenuItem::callback() const */
-  void callback(fltk::Callback0*c) {callback_=(fltk::Callback*)c;}
+  /** See Fl_Callback_p Fl_MenuItem::callback() const */
+  void callback(Fl_Callback0*c) {callback_=(Fl_Callback*)c;}
 
-  /** See fltk::Callback_p Fl_MenuItem::callback() const */
-  void callback(fltk::Callback1*c, long p=0) {callback_=(fltk::Callback*)c; user_data_=(void*)p;}
+  /** See Fl_Callback_p Fl_MenuItem::callback() const */
+  void callback(Fl_Callback1*c, long p=0) {callback_=(Fl_Callback*)c; user_data_=(void*)p;}
 
   /**
     Get or set the user_data argument that is sent to the
@@ -237,14 +237,14 @@ struct FL_EXPORT Fl_Menu_Item {
   void user_data(void* v) {user_data_ = v;}
   /**
     For convenience you can also define the callback as taking a long
-    argument.  This is implemented by casting this to a fltk::Callback
+    argument.  This is implemented by casting this to a Fl_Callback
     and casting the long to a void* and may not be
     portable to some machines.
   */
   long argument() const {return (long)user_data_;}
   /**
     For convenience you can also define the callback as taking a long
-    argument.  This is implemented by casting this to a fltk::Callback
+    argument.  This is implemented by casting this to a Fl_Callback
     and casting the long to a void* and may not be
     portable to some machines.
   */
@@ -259,11 +259,11 @@ struct FL_EXPORT Fl_Menu_Item {
     FL_ALT+'a' or FL_ALT+FL_F+10 or just 'a'.  A value of
     zero disables the shortcut.
 
-    The key can be any value returned by fltk::event_key(), but will usually 
+    The key can be any value returned by Fl::event_key(), but will usually 
     be an ASCII letter. Use a lower-case letter unless you require the shift 
     key to be held down.
 
-    The shift flags can be any set of values accepted by fltk::event_state().
+    The shift flags can be any set of values accepted by Fl::event_state().
     If the bit is on that shift key must be pushed.  Meta, Alt, Ctrl, 
     and Shift must be off if they are not in the shift flags (zero for the 
     other bits indicates a "don't care" setting).
@@ -353,27 +353,27 @@ struct FL_EXPORT Fl_Menu_Item {
 
   /**
     Calls the Fl_Menu_Item item's callback, and provides the 
-    fltk::Widget argument (and optionally overrides the user_data()
+    Fl_Widget argument (and optionally overrides the user_data()
     argument). You must first check that callback() is non-zero
     before calling this.
   */
-  void do_callback(fltk::Widget* o) const {callback_(o, user_data_);}
+  void do_callback(Fl_Widget* o) const {callback_(o, user_data_);}
 
   /**
     Calls the Fl_Menu_Item item's callback, and provides the 
-    fltk::Widget argument (and optionally overrides the user_data()
+    Fl_Widget argument (and optionally overrides the user_data()
     argument). You must first check that callback() is non-zero
     before calling this.
   */
-  void do_callback(fltk::Widget* o,void* arg) const {callback_(o, arg);}
+  void do_callback(Fl_Widget* o,void* arg) const {callback_(o, arg);}
 
   /**
     Calls the Fl_Menu_Item item's callback, and provides the 
-    fltk::Widget argument (and optionally overrides the user_data()
+    Fl_Widget argument (and optionally overrides the user_data()
     argument).  You must first check that callback() is non-zero
     before calling this.
   */
-  void do_callback(fltk::Widget* o,long arg) const {callback_(o, (void*)arg);}
+  void do_callback(Fl_Widget* o,long arg) const {callback_(o, (void*)arg);}
 
   // back-compatibility, do not use:
 
@@ -386,10 +386,10 @@ struct FL_EXPORT Fl_Menu_Item {
   /** back compatibility only \deprecated. */
   void uncheck() {flags &= ~FL_MENU_VALUE;}
 
-  int add(const char*, int shortcut, fltk::Callback*, void* =0, int = 0);
+  int add(const char*, int shortcut, Fl_Callback*, void* =0, int = 0);
 
-  /** See int add(const char*, int shortcut, fltk::Callback*, void*, int) */
-  int add(const char*a, const char* b, fltk::Callback* c,
+  /** See int add(const char*, int shortcut, Fl_Callback*, void*, int) */
+  int add(const char*a, const char* b, Fl_Callback* c,
 	  void* d = 0, int e = 0) {
     return add(a,fl_old_shortcut(b),c,d,e);}
 

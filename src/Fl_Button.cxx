@@ -40,7 +40,7 @@
   \param[in] v button value.
   \see set(), clear()
  */
-int fltk::Button::value(int v) {
+int Fl_Button::value(int v) {
   v = v ? 1 : 0;
   oldval = v;
   clear_changed();
@@ -58,17 +58,17 @@ int fltk::Button::value(int v) {
   Turns on this button and turns off all other radio buttons in the group
   (calling \c value(1) or \c set() does not do this).
  */
-void fltk::Button::setonly() { // set this radio button on, turn others off
+void Fl_Button::setonly() { // set this radio button on, turn others off
   value(1);
-  fltk::Group* g = (fltk::Group*)parent();
-  fltk::Widget*const* a = g->array();
+  Fl_Group* g = parent();
+  Fl_Widget*const* a = g->array();
   for (int i = g->children(); i--;) {
-    fltk::Widget* o = *a++;
-    if (o != this && o->type()==FL_RADIO_BUTTON) ((fltk::Button*)o)->value(0);
+    Fl_Widget* o = *a++;
+    if (o != this && o->type()==FL_RADIO_BUTTON) ((Fl_Button*)o)->value(0);
   }
 }
 
-void fltk::Button::draw() {
+void Fl_Button::draw() {
   if (type() == FL_HIDDEN_BUTTON) return;
   Fl_Color col = value() ? selection_color() : color();
   draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(), col);
@@ -78,20 +78,20 @@ void fltk::Button::draw() {
     draw_label();
     labelcolor(c);
   } else draw_label();
-  if (fltk::focus() == this) draw_focus();
+  if (Fl::focus() == this) draw_focus();
 }
 
-int fltk::Button::handle(int event) {
+int Fl_Button::handle(int event) {
   int newval;
   switch (event) {
-  case FL_ENTER:
+  case FL_ENTER: /* FALLTHROUGH */
   case FL_LEAVE:
 //  if ((value_?selection_color():color())==FL_GRAY) redraw();
     return 1;
   case FL_PUSH:
-      if (fltk::visible_focus() && handle(FL_FOCUS)) fltk::focus(this);
+    if (Fl::visible_focus() && handle(FL_FOCUS)) Fl::focus(this);
   case FL_DRAG:
-      if (fltk::event_inside(this)) {
+    if (Fl::event_inside(this)) {
       if (type() == FL_RADIO_BUTTON) newval = 1;
       else newval = !oldval;
     } else
@@ -117,15 +117,19 @@ int fltk::Button::handle(int event) {
     else {
       value(oldval);
       set_changed();
-      if (when() & FL_WHEN_CHANGED) do_callback();
+      if (when() & FL_WHEN_CHANGED) {
+	Fl_Widget_Tracker wp(this);
+        do_callback();
+        if (wp.deleted()) return 1;
+      }
     }
     if (when() & FL_WHEN_RELEASE) do_callback();
     return 1;
   case FL_SHORTCUT:
     if (!(shortcut() ?
-          fltk::test_shortcut(shortcut()) : test_shortcut())) return 0;
+	  Fl::test_shortcut(shortcut()) : test_shortcut())) return 0;
     
-      if (fltk::visible_focus() && handle(FL_FOCUS)) fltk::focus(this);
+    if (Fl::visible_focus() && handle(FL_FOCUS)) Fl::focus(this);
 
     if (type() == FL_RADIO_BUTTON && !value_) {
       setonly();
@@ -139,9 +143,9 @@ int fltk::Button::handle(int event) {
 	  do_callback();
     } else if (when() & FL_WHEN_RELEASE) do_callback();
     return 1;
-  case FL_FOCUS :
+  case FL_FOCUS : /* FALLTHROUGH */
   case FL_UNFOCUS :
-      if (fltk::visible_focus()) {
+    if (Fl::visible_focus()) {
       if (box() == FL_NO_BOX) {
 	// Widgets with the FL_NO_BOX boxtype need a parent to
 	// redraw, since it is responsible for redrawing the
@@ -153,9 +157,10 @@ int fltk::Button::handle(int event) {
       return 1;
     } else return 0;
   case FL_KEYBOARD :
-      if (fltk::focus() == this && fltk::event_key() == ' ' &&
-          !(fltk::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
+    if (Fl::focus() == this && Fl::event_key() == ' ' &&
+        !(Fl::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
       set_changed();
+      Fl_Widget_Tracker wp(this);
       if (type() == FL_RADIO_BUTTON && !value_) {
 	setonly();
 	if (when() & FL_WHEN_CHANGED) do_callback();
@@ -163,6 +168,7 @@ int fltk::Button::handle(int event) {
 	value(!value());
 	if (when() & FL_WHEN_CHANGED) do_callback();
       }
+      if (wp.deleted()) return 1;
       if (when() & FL_WHEN_RELEASE) do_callback();
       return 1;
     }
@@ -176,8 +182,8 @@ int fltk::Button::handle(int event) {
   \param[in] X, Y, W, H position and size of the widget
   \param[in] L widget label, default is no label
  */
-fltk::Button::Button(int X, int Y, int W, int H, const char *L)
-: fltk::Widget(X,Y,W,H,L) {
+Fl_Button::Fl_Button(int X, int Y, int W, int H, const char *L)
+: Fl_Widget(X,Y,W,H,L) {
   box(FL_UP_BOX);
   down_box(FL_NO_BOX);
   value_ = oldval = 0;

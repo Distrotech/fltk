@@ -27,7 +27,7 @@
 
 // FLTK widget for drag-adjusting a floating point value.
 // Warning: this works by making a child Fl_Input object, even
-// though this object is *not* an fltk::Group.  May be a kludge?
+// though this object is *not* an Fl_Group.  May be a kludge?
 
 #include <FL/Fl.H>
 #include <FL/Fl_Value_Input.H>
@@ -36,7 +36,7 @@
 #include <FL/math.h>
 
 
-void Fl_Value_Input::input_cb(fltk::Widget*, void* v) {
+void Fl_Value_Input::input_cb(Fl_Widget*, void* v) {
   Fl_Value_Input& t = *(Fl_Value_Input*)v;
   double nv;
   if ((t.step() - floor(t.step()))>0.0 || t.step() == 0.0) nv = strtod(t.input.value(), 0);
@@ -52,7 +52,7 @@ void Fl_Value_Input::draw() {
   if (damage()&~FL_DAMAGE_CHILD) input.clear_damage(FL_DAMAGE_ALL);
   input.box(box());
   input.color(color(), selection_color());
-  fltk::Widget *i = &input; i->draw(); // calls protected input.draw()
+  Fl_Widget *i = &input; i->draw(); // calls protected input.draw()
   input.clear_damage();
 }
 
@@ -71,14 +71,14 @@ void Fl_Value_Input::value_damage() {
 int Fl_Value_Input::handle(int event) {
   double v;
   int delta;
-  int mx = fltk::event_x_root();
+  int mx = Fl::event_x_root();
   static int ix, drag;
   input.when(when());
   switch (event) {
   case FL_PUSH:
     if (!step()) goto DEFAULT;
     ix = mx;
-      drag = fltk::event_button();
+    drag = Fl::event_button();
     handle_push();
     return 1;
   case FL_DRAG:
@@ -97,11 +97,13 @@ int Fl_Value_Input::handle(int event) {
     return 1;
   case FL_RELEASE:
     if (!step()) goto DEFAULT;
-      if (value() != previous_value() || fltk::event_is_click())
+    if (value() != previous_value() || !Fl::event_is_click())
       handle_release();
     else {
+      Fl_Widget_Tracker wp(&input);
       input.handle(FL_PUSH);
-      input.handle(FL_RELEASE);
+      if (wp.exists())
+	input.handle(FL_RELEASE);
     }
     return 1;
   case FL_FOCUS:
@@ -124,8 +126,8 @@ Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
 : Fl_Valuator(X, Y, W, H, l), input(X, Y, W, H, 0) {
   soft_ = 0;
   if (input.parent())  // defeat automatic-add
-    ((fltk::Group*)input.parent())->remove(input);
-  input.parent((fltk::Group *)this); // kludge!
+    input.parent()->remove(input);
+  input.parent((Fl_Group *)this); // kludge!
   input.callback(input_cb, this);
   input.when(FL_WHEN_CHANGED);
   box(input.box());
@@ -138,7 +140,7 @@ Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
 
 Fl_Value_Input::~Fl_Value_Input() {
 
-  if (input.parent() == (fltk::Group *)this)
+  if (input.parent() == (Fl_Group *)this)
     input.parent(0);   // *revert* ctor kludge!
 }
 

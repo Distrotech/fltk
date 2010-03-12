@@ -283,7 +283,7 @@
 /** \fn int Fl_File_Chooser::visible()
   Returns 1 if the Fl_File_Chooser window is visible.*/
 
-/** \fn fltk::Widget* Fl_File_Chooser::add_extra(fltk::Widget*)
+/** \fn Fl_Widget* Fl_File_Chooser::add_extra(Fl_Widget*)
   Adds extra widget at the bottom of Fl_File_Chooser window.
   Returns pointer for previous extra widget or NULL if not set previously.
   If argument is NULL only remove previous extra widget.
@@ -293,7 +293,7 @@
 */
   /** \fn int Fl_File_Chooser::shown()
     Returns non-zero if the file chooser main window show() has been called (but not hide()
-    see fltk::Window::shown()
+    see Fl_Window::shown()
   */
 
   /** \fn void Fl_File_Chooser::callback(void (*cb)(Fl_File_Chooser *, void *), void *d = 0)
@@ -304,6 +304,9 @@
 
   /** \fn void * Fl_File_Chooser::user_data() const
     Gets the file chooser user data d */
+
+  /** \fn Fl_File_Browser* Fl_File_Chooser::browser()
+   returns a pointer to the underlying Fl_File_Browser object */
 // *** END OF OUT OF SOURCE DOC ***
 
 // Contents:
@@ -561,7 +564,7 @@ Fl_File_Chooser::favoritesButtonCB()
 //
 
 void
-Fl_File_Chooser::favoritesCB(fltk::Widget *w)
+Fl_File_Chooser::favoritesCB(Fl_Widget *w)
 					// I - Widget
 {
   int		i;			// Looping var
@@ -703,7 +706,7 @@ Fl_File_Chooser::fileListCB()
     snprintf(pathname, sizeof(pathname), "%s/%s", directory_, filename);
   }
 
-  if (fltk::event_clicks()) {
+  if (Fl::event_clicks()) {
 #if (defined(WIN32) && ! defined(__CYGWIN__)) || defined(__EMX__)
     if ((strlen(pathname) == 2 && pathname[1] == ':') ||
         _fl_filename_isdir_quick(pathname))
@@ -718,7 +721,7 @@ Fl_File_Chooser::fileListCB()
       // be treated as a triple-click.  We use a value of -1 because
       // the next click will increment click count to 0, which is what
       // we really want...
-      fltk::event_clicks(-1);
+      Fl::event_clicks(-1);
     }
     else
     {
@@ -764,8 +767,8 @@ Fl_File_Chooser::fileListCB()
     fileName->value(pathname);
 
     // Update the preview box...
-    fltk::remove_timeout((Fl_Timeout_Handler)previewCB, this);
-    fltk::add_timeout(1.0, (Fl_Timeout_Handler)previewCB, this);
+    Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
+    Fl::add_timeout(1.0, (Fl_Timeout_Handler)previewCB, this);
 
     // Do any callback that is registered...
     if (callback_) (*callback_)(this, data_);
@@ -798,7 +801,7 @@ Fl_File_Chooser::fileNameCB()
   const char	*file;		// File from directory
 
 //  puts("fileNameCB()");
-//  printf("Event: %s\n", fl_eventnames[fltk::event()]);
+//  printf("Event: %s\n", fl_eventnames[Fl::event()]);
 
   // Get the filename from the text field...
   filename = (char *)fileName->value();
@@ -834,7 +837,7 @@ Fl_File_Chooser::fileNameCB()
   filename = pathname;
 
   // Now process things according to the key pressed...
-    if (fltk::event_key() == FL_Enter || fltk::event_key() == FL_KP_Enter) {
+  if (Fl::event_key() == FL_Enter || Fl::event_key() == FL_KP_Enter) {
     // Enter pressed - select or change directory...
 #if (defined(WIN32) && ! defined(__CYGWIN__)) || defined(__EMX__)
     if ((isalpha(pathname[0] & 255) && pathname[1] == ':' && !pathname[2]) ||
@@ -858,11 +861,11 @@ Fl_File_Chooser::fileNameCB()
       }
     } else {
       // File doesn't exist, so beep at and alert the user...
-      fltk::alert(existing_file_label);
+      fl_alert("%s",existing_file_label);
     }
   }
-    else if (fltk::event_key() != FL_Delete &&
-             fltk::event_key() != FL_BackSpace) {
+  else if (Fl::event_key() != FL_Delete &&
+           Fl::event_key() != FL_BackSpace) {
     // Check to see if the user has entered a directory...
     if ((slash = strrchr(pathname, '/')) == NULL)
       slash = strrchr(pathname, '\\');
@@ -1046,7 +1049,7 @@ Fl_File_Chooser::newdir()
 
 
   // Get a directory name from the user
-  if ((dir = fltk::input(new_directory_label, NULL)) == NULL)
+  if ((dir = fl_input("%s", NULL, new_directory_label)) == NULL)
     return;
 
   // Make it relative to the current directory as needed...
@@ -1067,7 +1070,7 @@ Fl_File_Chooser::newdir()
 #endif /* WIN32 */
     if (errno != EEXIST)
     {
-      fltk::alert("%s", strerror(errno));
+      fl_alert("%s", strerror(errno));
       return;
     }
 
@@ -1084,7 +1087,7 @@ void Fl_File_Chooser::preview(int e)
   prefs_.set("preview", e);
   prefs_.flush();
 
-  fltk::Group *p = previewBox->parent();
+  Fl_Group *p = previewBox->parent();
   if (e) {
     int w = p->w() * 2 / 3;
     fileList->resize(fileList->x(), fileList->y(),
@@ -1213,7 +1216,7 @@ Fl_File_Chooser::showChoiceCB()
   item = showChoice->text(showChoice->value());
 
   if (strcmp(item, custom_filter_label) == 0) {
-    if ((item = fltk::input(custom_filter_label, pattern_)) != NULL) {
+    if ((item = fl_input("%s", pattern_, custom_filter_label)) != NULL) {
       strlcpy(pattern_, item, sizeof(pattern_));
 
       quote_pathname(temp, item, sizeof(temp));
@@ -1284,34 +1287,58 @@ void
 Fl_File_Chooser::update_preview()
 {
   const char		*filename;	// Current filename
-  fltk::SharedImage	*image,		// New image
+  const char            *newlabel = 0;  // New label text
+  Fl_Shared_Image	*image = 0,     // New image
 			*oldimage;	// Old image
   int			pbw, pbh;	// Width and height of preview box
   int			w, h;		// Width and height of preview image
+  int                   set = 0;        // Set this flag as soon as a decent preview is found
 
 
   if (!previewButton->value()) return;
 
-  if ((filename = value()) == NULL || fl_filename_isdir(filename)) image = NULL;
-  else {
-    window->cursor(FL_CURSOR_WAIT);
-    fltk::check();
-
-    image = fltk::SharedImage::get(filename);
-
-    if (image) {
-      window->cursor(FL_CURSOR_DEFAULT);
-      fltk::check();
+  filename = value();
+  if (filename == NULL) {
+    // no file name at all, so we have an empty preview
+    set = 1;
+  } else if (fl_filename_isdir(filename)) {
+    // filename is a directory, show a folder icon
+    newlabel = "@fileopen";
+    set = 1;
+  } else {
+    struct stat s;
+    if (fl_stat(filename, &s)==0) {
+      if ((s.st_mode&S_IFMT)!=S_IFREG) {
+        // this is no regular file, probably some kind of device
+        newlabel = "@-3refresh"; // a cross
+        set = 1;
+      } else if (s.st_size==0) {
+        // this file is emty
+        newlabel = "<empty file>";
+        set = 1;
+      } else {
+        // if this file is an image, try to load it
+        window->cursor(FL_CURSOR_WAIT);
+        Fl::check();
+        
+        image = Fl_Shared_Image::get(filename);
+        
+        if (image) {
+          window->cursor(FL_CURSOR_DEFAULT);
+          Fl::check();
+          set = 1;
+        }
+      }
     }
   }
 
-  oldimage = (fltk::SharedImage *)previewBox->image();
+  oldimage = (Fl_Shared_Image *)previewBox->image();
 
   if (oldimage) oldimage->release();
 
   previewBox->image(0);
 
-  if (!image) {
+  if (!set) {
     FILE	*fp;
     int		bytes;
     char	*ptr;
@@ -1330,7 +1357,7 @@ Fl_File_Chooser::update_preview()
     }
 
     window->cursor(FL_CURSOR_DEFAULT);
-    fltk::check();
+    Fl::check();
 
     // Scan the buffer for printable UTF8 chars...
     for (ptr = preview_text_; *ptr; ptr++) {
@@ -1368,7 +1395,7 @@ Fl_File_Chooser::update_preview()
       // Non-printable file, just show a big ?...
       previewBox->label(filename ? "?" : 0);
       previewBox->align(FL_ALIGN_CLIP);
-      previewBox->labelsize(100);
+      previewBox->labelsize(75);
       previewBox->labelfont(FL_HELVETICA);
     } else {
       // Show the first 1k of text...
@@ -1382,7 +1409,7 @@ Fl_File_Chooser::update_preview()
       previewBox->labelsize(size);
       previewBox->labelfont(FL_COURIER);
     }
-  } else {
+  } else if (image) {
     pbw = previewBox->w() - 20;
     pbh = previewBox->h() - 20;
 
@@ -1395,7 +1422,7 @@ Fl_File_Chooser::update_preview()
 	w = h * image->w() / image->h();
       }
 
-      oldimage = (fltk::SharedImage *)image->copy(w, h);
+      oldimage = (Fl_Shared_Image *)image->copy(w, h);
       previewBox->image((Fl_Image *)oldimage);
 
       image->release();
@@ -1405,6 +1432,11 @@ Fl_File_Chooser::update_preview()
 
     previewBox->align(FL_ALIGN_CLIP);
     previewBox->label(0);
+  } else if (newlabel) {
+    previewBox->label(newlabel);
+    previewBox->align(FL_ALIGN_CLIP);
+    previewBox->labelsize(newlabel[0]=='@'?75:12);
+    previewBox->labelfont(FL_HELVETICA);
   }
 
   previewBox->redraw();

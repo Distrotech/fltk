@@ -57,7 +57,7 @@ static char	fl_fg_set = 0;
     the colors used as backgrounds by almost all widgets and used to draw 
     the edges of all the boxtypes.
 */
-void fltk::background(uchar r, uchar g, uchar b) {
+void Fl::background(uchar r, uchar g, uchar b) {
   fl_bg_set = 1;
 
   // replace the gray ramp so that FL_GRAY is this color
@@ -69,17 +69,17 @@ void fltk::background(uchar r, uchar g, uchar b) {
   double powb = log(b/255.0)/log((FL_GRAY-FL_GRAY_RAMP)/(FL_NUM_GRAY-1.0));
   for (int i = 0; i < FL_NUM_GRAY; i++) {
     double gray = i/(FL_NUM_GRAY-1.0);
-    fltk::set_color(fl_gray_ramp(i),
+    Fl::set_color(fl_gray_ramp(i),
 		  uchar(pow(gray,powr)*255+.5),
 		  uchar(pow(gray,powg)*255+.5),
 		  uchar(pow(gray,powb)*255+.5));
   }
 }
 /** Changes fl_color(FL_FOREGROUND_COLOR). */
-void fltk::foreground(uchar r, uchar g, uchar b) {
+void Fl::foreground(uchar r, uchar g, uchar b) {
   fl_fg_set = 1;
 
-  fltk::set_color(FL_FOREGROUND_COLOR,r,g,b);
+  Fl::set_color(FL_FOREGROUND_COLOR,r,g,b);
 }
 
 /**
@@ -88,21 +88,21 @@ void fltk::foreground(uchar r, uchar g, uchar b) {
     <P>This call may change fl_color(FL_FOREGROUND_COLOR) if it 
     does not provide sufficient contrast to FL_BACKGROUND2_COLOR.
 */
-void fltk::background2(uchar r, uchar g, uchar b) {
+void Fl::background2(uchar r, uchar g, uchar b) {
   fl_bg2_set = 1;
 
-  fltk::set_color(FL_BACKGROUND2_COLOR,r,g,b);
-  fltk::set_color(FL_FOREGROUND_COLOR,
+  Fl::set_color(FL_BACKGROUND2_COLOR,r,g,b);
+  Fl::set_color(FL_FOREGROUND_COLOR,
                 get_color(fl_contrast(FL_FOREGROUND_COLOR,FL_BACKGROUND2_COLOR)));
 }
 
-// these are set by fltk::args() and override any system colors:
+// these are set by Fl::args() and override any system colors:
 const char *fl_fg = NULL;
 const char *fl_bg = NULL;
 const char *fl_bg2 = NULL;
 
 static void set_selection_color(uchar r, uchar g, uchar b) {
-  fltk::set_color(FL_SELECTION_COLOR,r,g,b);
+  Fl::set_color(FL_SELECTION_COLOR,r,g,b);
 }
 
 #if defined(WIN32) || defined(__APPLE__)
@@ -143,11 +143,11 @@ int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b) {
   } else return 0;
 }
 #endif // WIN32 || __APPLE__
-/** \fn fltk::get_system_colors()
+/** \fn Fl::get_system_colors()
     Read the user preference colors from the system and use them to call
-    fltk::foreground(), fltk::background(), and 
-    fltk::background2().  This is done by
-    fltk::Window::show(argc,argv) before applying the -fg and -bg
+    Fl::foreground(), Fl::background(), and 
+    Fl::background2().  This is done by
+    Fl_Window::show(argc,argv) before applying the -fg and -bg
     switches.
     
     <P>On X this reads some common values from the Xdefaults database.
@@ -162,7 +162,7 @@ getsyscolor(int what, const char* arg, void (*func)(uchar,uchar,uchar))
   if (arg) {
     uchar r,g,b;
     if (!fl_parse_color(arg, r,g,b))
-      fltk::error("Unknown color: %s", arg);
+      Fl::error("Unknown color: %s", arg);
     else
       func(r,g,b);
   } else {
@@ -171,10 +171,10 @@ getsyscolor(int what, const char* arg, void (*func)(uchar,uchar,uchar))
   }
 }
 
-void fltk::get_system_colors() {
-  if (!fl_bg2_set) getsyscolor(COLOR_WINDOW,	fl_bg2,fltk::background2);
-  if (!fl_fg_set) getsyscolor(COLOR_WINDOWTEXT,	fl_fg, fltk::foreground);
-  if (!fl_bg_set) getsyscolor(COLOR_BTNFACE,	fl_bg, fltk::background);
+void Fl::get_system_colors() {
+  if (!fl_bg2_set) getsyscolor(COLOR_WINDOW,	fl_bg2,Fl::background2);
+  if (!fl_fg_set) getsyscolor(COLOR_WINDOWTEXT,	fl_fg, Fl::foreground);
+  if (!fl_bg_set) getsyscolor(COLOR_BTNFACE,	fl_bg, Fl::background);
   getsyscolor(COLOR_HIGHLIGHT,	0,     set_selection_color);
 }
 
@@ -182,9 +182,9 @@ void fltk::get_system_colors() {
 // MacOS X currently supports two color schemes - Blue and Graphite.
 // Since we aren't emulating the Aqua interface (even if Apple would
 // let us), we use some defaults that are similar to both.  The
-// fltk::scheme("plastic") color/box scheme provides a usable Aqua-like
+// Fl::scheme("plastic") color/box scheme provides a usable Aqua-like
 // look-n-feel...
-void fltk::get_system_colors()
+void Fl::get_system_colors()
 {
   fl_open_display();
 
@@ -227,27 +227,27 @@ getsyscolor(const char *key1, const char* key2, const char *arg, const char *def
   }
   XColor x;
   if (!XParseColor(fl_display, fl_colormap, arg, &x))
-    fltk::error("Unknown color: %s", arg);
+    Fl::error("Unknown color: %s", arg);
   else
     func(x.red>>8, x.green>>8, x.blue>>8);
 }
 
-void fltk::get_system_colors()
+void Fl::get_system_colors()
 {
   fl_open_display();
   const char* key1 = 0;
-  if (fltk::first_window()) key1 = fltk::first_window()->xclass();
+  if (Fl::first_window()) key1 = Fl::first_window()->xclass();
   if (!key1) key1 = "fltk";
-  if (!fl_bg2_set) getsyscolor("Text","background",	fl_bg2,	"#ffffff", fltk::background2);
-  if (!fl_fg_set) getsyscolor(key1,  "foreground",	fl_fg,	"#000000", fltk::foreground);
-  if (!fl_bg_set) getsyscolor(key1,  "background",	fl_bg,	"#c0c0c0", fltk::background);
+  if (!fl_bg2_set) getsyscolor("Text","background",	fl_bg2,	"#ffffff", Fl::background2);
+  if (!fl_fg_set) getsyscolor(key1,  "foreground",	fl_fg,	"#000000", Fl::foreground);
+  if (!fl_bg_set) getsyscolor(key1,  "background",	fl_bg,	"#c0c0c0", Fl::background);
   getsyscolor("Text", "selectBackground", 0, "#000080", set_selection_color);
 }
 
 #endif
 
 
-//// Simple implementation of 2.0 fltk::scheme() interface...
+//// Simple implementation of 2.0 Fl::scheme() interface...
 #define D1 BORDER_WIDTH
 #define D2 (BORDER_WIDTH+BORDER_WIDTH)
 
@@ -264,8 +264,8 @@ extern void	fl_thin_up_frame(int, int, int, int, Fl_Color);
 extern void	fl_thin_down_frame(int, int, int, int, Fl_Color);
 
 #ifndef FL_DOXYGEN
-const char	*fltk::scheme_ = (const char *)0;	    // current scheme 
-Fl_Image	*fltk::scheme_bg_ = (Fl_Image *)0;    // current background image for the scheme
+const char	*Fl::scheme_ = (const char *)0;	    // current scheme 
+Fl_Image	*Fl::scheme_bg_ = (Fl_Image *)0;    // current background image for the scheme
 #endif
 
 static Fl_Pixmap	tile(tile_xpm);
@@ -289,12 +289,12 @@ static Fl_Pixmap	tile(tile_xpm);
     
     </ul>
 */
-int fltk::scheme(const char *s) {
+int Fl::scheme(const char *s) {
   if (!s) {
     if ((s = getenv("FLTK_SCHEME")) == NULL) {
 #if !defined(WIN32) && !defined(__APPLE__)
       const char* key = 0;
-      if (fltk::first_window()) key = fltk::first_window()->xclass();
+      if (Fl::first_window()) key = Fl::first_window()->xclass();
       if (!key) key = "fltk";
       fl_open_display();
       s = XGetDefault(fl_display, key, "scheme");
@@ -320,8 +320,8 @@ int fltk::scheme(const char *s) {
   return reload_scheme();
 }
 
-int fltk::reload_scheme() {
-  fltk::Window *win;
+int Fl::reload_scheme() {
+  Fl_Window *win;
 
   if (scheme_ && !strcasecmp(scheme_, "plastic")) {
     // Update the tile image to match the background color...
@@ -352,7 +352,7 @@ int fltk::reload_scheme() {
 
     tile.uncache();
 
-    if (!scheme_bg_) scheme_bg_ = new fltk::TiledImage(&tile, w(), h());
+    if (!scheme_bg_) scheme_bg_ = new Fl_Tiled_Image(&tile, w(), h());
 
     // Load plastic buttons, etc...
     set_boxtype(FL_UP_FRAME,        FL_PLASTIC_UP_FRAME);
@@ -368,7 +368,7 @@ int fltk::reload_scheme() {
     set_boxtype(_FL_ROUND_DOWN_BOX, FL_PLASTIC_ROUND_DOWN_BOX);
 
     // Use standard size scrollbars...
-    fltk::scrollbar_size(16);
+    Fl::scrollbar_size(16);
   } else if (scheme_ && !strcasecmp(scheme_, "gtk+")) {
     // Use a GTK+ inspired look-n-feel...
     if (scheme_bg_) {
@@ -389,7 +389,7 @@ int fltk::reload_scheme() {
     set_boxtype(_FL_ROUND_DOWN_BOX, FL_GTK_ROUND_DOWN_BOX);
 
     // Use slightly thinner scrollbars...
-    fltk::scrollbar_size(15);
+    Fl::scrollbar_size(15);
   } else {
     // Use the standard FLTK look-n-feel...
     if (scheme_bg_) {
@@ -410,7 +410,7 @@ int fltk::reload_scheme() {
     set_boxtype(_FL_ROUND_DOWN_BOX, fl_round_down_box, 3, 3, 6, 6);
 
     // Use standard size scrollbars...
-    fltk::scrollbar_size(16);
+    Fl::scrollbar_size(16);
   }
 
   // Set (or clear) the background tile for all windows...

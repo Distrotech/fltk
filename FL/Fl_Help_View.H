@@ -49,7 +49,7 @@
 //
 
 
-typedef const char *(Fl_Help_Func)(fltk::Widget *, const char *);
+typedef const char *(Fl_Help_Func)(Fl_Widget *, const char *);
 
 
 //
@@ -147,8 +147,68 @@ struct Fl_Help_Target
   The Fl_Help_View widget displays HTML text. Most HTML 2.0
   elements are supported, as well as a primitive implementation of tables.
   GIF, JPEG, and PNG images are displayed inline.
+
+  Supported HTML tags:
+     - A: HREF/NAME
+     - B
+     - BODY: BGCOLOR/TEXT/LINK
+     - BR
+     - CENTER
+     - CODE
+     - DD
+     - DL
+     - DT
+     - EM
+     - FONT: COLOR/SIZE/FACE=(helvetica/arial/sans/times/serif/symbol/courier)
+     - H1/H2/H3/H4/H5/H6
+     - HEAD
+     - HR
+     - I
+     - IMG: SRC/WIDTH/HEIGHT/ALT
+     - KBD
+     - LI
+     - OL
+     - P
+     - PRE
+     - STRONG
+     - TABLE: TH/TD/TR/BORDER/BGCOLOR/COLSPAN/ALIGN=CENTER|RIGHT|LEFT
+     - TITLE
+     - TT
+     - U
+     - UL
+     - VAR
+
+  Supported color names:
+     - black,red,green,yellow,blue,magenta,fuchsia,cyan,aqua,white,gray,grey,lime,maroon,navy,olive,purple,silver,teal.
+
+  Supported urls:
+     - Internal: file:
+     - External: http: ftp: https: ipp: mailto: news:
+
+  Quoted char names:
+     - Aacute aacute Acirc acirc acute AElig aelig Agrave agrave amp Aring aring Atilde atilde Auml auml
+     - brvbar bull
+     - Ccedil ccedil cedil cent copy curren
+     - deg divide
+     - Eacute eacute Ecirc ecirc Egrave egrave ETH eth Euml euml euro
+     - frac12 frac14 frac34
+     - gt
+     - Iacute iacute Icirc icirc iexcl Igrave igrave iquest Iuml iuml
+     - laquo lt
+     - macr micro middot
+     - nbsp not Ntilde ntilde
+     - Oacute oacute Ocirc ocirc Ograve ograve ordf ordm Oslash oslash Otilde otilde Ouml ouml
+     - para premil plusmn pound
+     - quot
+     - raquo reg
+     - sect shy sup1 sup2 sup3 szlig
+     - THORN thorn times trade
+     - Uacute uacute Ucirc ucirc Ugrave ugrave uml Uuml uuml
+     - Yacute yacute
+     - yen Yuml yuml
+
 */
-class FL_EXPORT Fl_Help_View : public fltk::Group	// Help viewer widget
+class FL_EXPORT Fl_Help_View : public Fl_Group	// Help viewer widget
 {
   enum { RIGHT = -1, CENTER, LEFT };	///< Alignments
 
@@ -218,7 +278,7 @@ class FL_EXPORT Fl_Help_View : public fltk::Group	// Help viewer widget
   int		get_align(const char *p, int a);
   const char	*get_attr(const char *p, const char *n, char *buf, int bufsize);
   Fl_Color	get_color(const char *n, Fl_Color c);
-  fltk::SharedImage *get_image(const char *name, int W, int H);
+  Fl_Shared_Image *get_image(const char *name, int W, int H);
   int		get_length(const char *l);
   int		handle(int);
 
@@ -251,7 +311,7 @@ public:
     It must return a pathname that can be opened as a local file or NULL:
     
     \code
-    const char *fn(fltk::Widget *w, const char *uri);
+    const char *fn(Fl_Widget *w, const char *uri);
     \endcode
     
     The link function can be used to retrieve remote or virtual
@@ -268,7 +328,7 @@ public:
   void		resize(int,int,int,int);
   /** Gets the size of the help view. */
   int		size() const { return (size_); }
-  void		size(int W, int H) { fltk::Widget::size(W, H); }
+  void		size(int W, int H) { Fl_Widget::size(W, H); }
   /** Sets the default text color. */
   void		textcolor(Fl_Color c) { if (textcolor_ == defcolor_) textcolor_ = c; defcolor_ = c; }
   /** Returns the current default text color. */
@@ -299,10 +359,10 @@ public:
     Gets the current size of the scrollbars' troughs, in pixels.
 
     If this value is zero (default), this widget will use the 
-    fltk::scrollbar_size() value as the scrollbar's width.
+    Fl::scrollbar_size() value as the scrollbar's width.
   
-    \returns Scrollbar size in pixels, or 0 if the global fltk::scrollbar_size() is being used.
-    \see fltk::scrollbar_size(int)
+    \returns Scrollbar size in pixels, or 0 if the global Fl::scrollbar_size() is being used.
+    \see Fl::scrollbar_size(int)
   */
   int scrollbar_size() const {
       return(scrollbar_size_);
@@ -311,7 +371,7 @@ public:
     Sets the pixel size of the scrollbars' troughs to the \p size, in pixels.
 
     Normally you should not need this method, and should use
-    fltk::scrollbar_size(int) instead to manage the size of ALL 
+    Fl::scrollbar_size(int) instead to manage the size of ALL 
     your widgets' scrollbars. This ensures your application 
     has a consistent UI, is the default behavior, and is normally
     what you want.
@@ -320,11 +380,11 @@ public:
     scrollbar size. The need for this should be rare.
     
     Setting \p size to the special value of 0 causes the widget to
-    track the global fltk::scrollbar_size(), which is the default.
+    track the global Fl::scrollbar_size(), which is the default.
     
     \param[in] size Sets the scrollbar size in pixels.\n
-                    If 0 (default), scrollbar size tracks the global fltk::scrollbar_size()
-    \see fltk::scrollbar_size()
+                    If 0 (default), scrollbar size tracks the global Fl::scrollbar_size()
+    \see Fl::scrollbar_size()
   */
   void scrollbar_size(int size) {
       scrollbar_size_ = size;

@@ -50,7 +50,7 @@ extern char fl_i_own_selection[2];
 extern char *fl_locale2utf8(const char *s, UINT codepage = 0);
 extern unsigned int fl_codepage;
 
-fltk::Window *fl_dnd_target_window = 0;
+Fl_Window *fl_dnd_target_window = 0;
 
 // All of the following code requires GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
@@ -93,19 +93,19 @@ public:
     // set e_modifiers here from grfKeyState, set e_x and e_root_x
     // check if FLTK handles this drag and return if it can't (i.e. BMP drag without filename)
     POINT ppt;
-    fltk::e_x_root = ppt.x = pt.x;
-    fltk::e_y_root = ppt.y = pt.y;
+    Fl::e_x_root = ppt.x = pt.x;
+    Fl::e_y_root = ppt.y = pt.y;
     HWND hWnd = WindowFromPoint( ppt );
-    fltk::Window *target = fl_find( hWnd );
+    Fl_Window *target = fl_find( hWnd );
     if (target) {
-      fltk::e_x = fltk::e_x_root-target->x();
-      fltk::e_y = fltk::e_y_root-target->y();
+      Fl::e_x = Fl::e_x_root-target->x();
+      Fl::e_y = Fl::e_y_root-target->y();
     }
     fl_dnd_target_window = target;
     px = pt.x; py = pt.y;
     if (fillCurrentDragData(pDataObj)) {
       // FLTK has no mechanism yet for the different drop effects, so we allow move and copy
-      if ( target && fltk::handle( FL_DND_ENTER, target ) )
+      if ( target && Fl::handle( FL_DND_ENTER, target ) )
         *pdwEffect = DROPEFFECT_MOVE|DROPEFFECT_COPY; //|DROPEFFECT_LINK;
       else
         *pdwEffect = DROPEFFECT_NONE;
@@ -127,15 +127,15 @@ public:
       return S_OK;
     }
     // set e_modifiers here from grfKeyState, set e_x and e_root_x
-    fltk::e_x_root = pt.x;
-    fltk::e_y_root = pt.y;
+    Fl::e_x_root = pt.x;
+    Fl::e_y_root = pt.y;
     if (fl_dnd_target_window) {
-      fltk::e_x = fltk::e_x_root-fl_dnd_target_window->x();
-      fltk::e_y = fltk::e_y_root-fl_dnd_target_window->y();
+      Fl::e_x = Fl::e_x_root-fl_dnd_target_window->x();
+      Fl::e_y = Fl::e_y_root-fl_dnd_target_window->y();
     }
     if (fillCurrentDragData(0)) {
-      // fltk::Group will change DND_DRAG into DND_ENTER and DND_LEAVE if needed
-      if ( fltk::handle( FL_DND_DRAG, fl_dnd_target_window ) )
+      // Fl_Group will change DND_DRAG into DND_ENTER and DND_LEAVE if needed
+      if ( Fl::handle( FL_DND_DRAG, fl_dnd_target_window ) )
         *pdwEffect = DROPEFFECT_MOVE|DROPEFFECT_COPY; //|DROPEFFECT_LINK;
       else
         *pdwEffect = DROPEFFECT_NONE;
@@ -149,7 +149,7 @@ public:
   HRESULT STDMETHODCALLTYPE DragLeave() {
     if ( fl_dnd_target_window && fillCurrentDragData(0))
     {
-      fltk::handle( FL_DND_LEAVE, fl_dnd_target_window );
+      Fl::handle( FL_DND_LEAVE, fl_dnd_target_window );
       fl_dnd_target_window = 0;
       clearCurrentDragData();
     }
@@ -158,25 +158,25 @@ public:
   HRESULT STDMETHODCALLTYPE Drop( IDataObject *data, DWORD /*grfKeyState*/, POINTL pt, DWORD* /*pdwEffect*/) {
     if ( !fl_dnd_target_window )
       return S_OK;
-    fltk::Window *target = fl_dnd_target_window;
+    Fl_Window *target = fl_dnd_target_window;
     fl_dnd_target_window = 0;
-    fltk::e_x_root = pt.x;
-    fltk::e_y_root = pt.y;
+    Fl::e_x_root = pt.x;
+    Fl::e_y_root = pt.y;
     if (target) {
-      fltk::e_x = fltk::e_x_root-target->x();
-      fltk::e_y = fltk::e_y_root-target->y();
+      Fl::e_x = Fl::e_x_root-target->x();
+      Fl::e_y = Fl::e_y_root-target->y();
     }
     // tell FLTK that the user released an object on this widget
-    if ( !fltk::handle( FL_DND_RELEASE, target ) )
+    if ( !Fl::handle( FL_DND_RELEASE, target ) )
       return S_OK;
 
-    fltk::Widget *w = target;
+    Fl_Widget *w = target;
     while (w->parent()) w = w->window();
-    HWND hwnd = fl_xid( (fltk::Window*)w );
+    HWND hwnd = fl_xid( (Fl_Window*)w );
     if (fillCurrentDragData(data)) {
-      int old_event = fltk::e_number;
-      fltk::belowmouse()->handle(fltk::e_number = FL_PASTE); // e_text will be invalid after this call
-      fltk::e_number = old_event;
+      int old_event = Fl::e_number;
+      Fl::belowmouse()->handle(Fl::e_number = FL_PASTE); // e_text will be invalid after this call
+      Fl::e_number = old_event;
       SetForegroundWindow( hwnd );
       clearCurrentDragData();
       return S_OK;
@@ -220,8 +220,8 @@ private:
     if ( data->GetData( &fmt, &medium )==S_OK )
     {
       void *stuff = GlobalLock( medium.hGlobal );
-      fltk::e_length = strlen((char*)stuff);
-      fltk::e_text = strdup((char*)stuff);
+      Fl::e_length = strlen((char*)stuff);
+      Fl::e_text = strdup((char*)stuff);
       GlobalUnlock( medium.hGlobal );
       ReleaseStgMedium( &medium );
       currDragResult = 1;
@@ -251,14 +251,14 @@ private:
         }
          *dst=0;
 
-      fltk::e_text = (char*) malloc(nn * 5 + 1);
-//      fltk::e_length = fl_unicode2utf(bu, nn, fltk::e_text);
-      fltk::e_length = fl_utf8fromwc(fltk::e_text, (nn*5+1), bu, nn);
-      fltk::e_text[fltk::e_length] = 0;
+        Fl::e_text = (char*) malloc(nn * 5 + 1);
+//      Fl::e_length = fl_unicode2utf(bu, nn, Fl::e_text);
+        Fl::e_length = fl_utf8fromwc(Fl::e_text, (nn*5+1), bu, nn);
+        Fl::e_text[Fl::e_length] = 0;
         free(bu);
 
-//    fltk::belowmouse()->handle(FL_DROP);
-//      free( fltk::e_text );
+//    Fl::belowmouse()->handle(FL_DROP);
+//      free( Fl::e_text );
       ReleaseStgMedium( &medium );
       currDragResult = 1;
       return currDragResult;
@@ -489,9 +489,9 @@ public:
 
    Create a selection first using:
 
-     fltk::copy(const char *stuff, int len, 0)
+     Fl::copy(const char *stuff, int len, 0)
 */
-int fltk::dnd()
+int Fl::dnd()
 {
   DWORD dropEffect;
   ReleaseCapture();
@@ -506,19 +506,19 @@ int fltk::dnd()
   fdo->Release();
   fds->Release();
 
-  fltk::Widget *w = fltk::pushed();
+  Fl_Widget *w = Fl::pushed();
   if ( w )
   {
-    int old_event = fltk::e_number;
-    w->handle(fltk::e_number = FL_RELEASE);
-    fltk::e_number = old_event;
-    fltk::pushed( 0 );
+    int old_event = Fl::e_number;
+    w->handle(Fl::e_number = FL_RELEASE);
+    Fl::e_number = old_event;
+    Fl::pushed( 0 );
   }
   if ( ret==DRAGDROP_S_DROP ) return 1; // or DD_S_CANCEL
   return 0;
 }
 #else
-int fltk::dnd()
+int Fl::dnd()
 {
   // Always indicate DnD failed when using GCC < 3...
   return 1;

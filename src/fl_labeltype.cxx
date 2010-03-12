@@ -30,7 +30,7 @@
 // to avoid linking if not used.
 
 #include <FL/Fl.H>
-#include <FL3/Widget.h>
+#include <FL/Fl_Widget.H>
 #include <FL/Fl_Group.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Image.H>
@@ -75,7 +75,7 @@ static Fl_Label_Draw_F* table[MAX_LABELTYPE] = {
 static Fl_Label_Measure_F* measure[MAX_LABELTYPE];
 
 /** Sets the functions to call to draw and measure a specific labeltype. */
-void fltk::set_labeltype(Fl_Labeltype t,Fl_Label_Draw_F* f,Fl_Label_Measure_F*m) 
+void Fl::set_labeltype(Fl_Labeltype t,Fl_Label_Draw_F* f,Fl_Label_Measure_F*m) 
 {
   table[t] = f; measure[t] = m;
 }
@@ -105,17 +105,17 @@ void Fl_Label::measure(int& W, int& H) const {
 /** Draws the widget's label at the defined label position.
     This is the normal call for a widget's draw() method.
  */
-void fltk::Widget::draw_label() const {
-  int X = x_+fltk::box_dx(box());
-  int W = w_-fltk::box_dw(box());
+void Fl_Widget::draw_label() const {
+  int X = x_+Fl::box_dx(box());
+  int W = w_-Fl::box_dw(box());
   if (W > 11 && align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {X += 3; W -= 6;}
-  draw_label(X, y_+fltk::box_dy(box()), W, h_-fltk::box_dh(box()));
+  draw_label(X, y_+Fl::box_dy(box()), W, h_-Fl::box_dh(box()));
 }
 
 /** Draws the label in an arbitrary bounding box.
     draw() can use this instead of draw_label(void) to change the bounding box
  */
-void fltk::Widget::draw_label(int X, int Y, int W, int H) const {
+void Fl_Widget::draw_label(int X, int Y, int W, int H) const {
   // quit if we are not drawing a label inside the widget:
   if ((align()&15) && !(align() & FL_ALIGN_INSIDE)) return;
   draw_label(X,Y,W,H,align());
@@ -124,7 +124,7 @@ void fltk::Widget::draw_label(int X, int Y, int W, int H) const {
 /** Draws the label in an arbitrary bounding box with an arbitrary alignment.
     Anybody can call this to force the label to draw anywhere.
  */
-void fltk::Widget::draw_label(int X, int Y, int W, int H, Fl_Align a) const {
+void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Align a) const {
   if (flags()&SHORTCUT_LABEL) fl_draw_shortcut = 1;
   Fl_Label l1 = label_;
   if (!active_r()) {

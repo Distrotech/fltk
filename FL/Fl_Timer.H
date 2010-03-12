@@ -45,9 +45,9 @@
   making a timeout callback every 1/5 second.  This is wasteful and
   inaccurate if you just want something to happen a fixed time in the
   future.  You should directly call 
-  fltk::add_timeout() instead.
+  Fl::add_timeout() instead.
 */
-class FL_EXPORT Fl_Timer : public fltk::Widget {
+class FL_EXPORT Fl_Timer : public Fl_Widget {
   static void stepcb(void *);
   void step();
   char on, direction_;

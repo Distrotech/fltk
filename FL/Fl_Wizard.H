@@ -45,11 +45,11 @@
     step a user through configuration or troubleshooting tasks.
 
     <P>As with Fl_Tabs, wizard panes are composed of child (usually
-    fltk::Group) widgets. Navigation buttons must be added separately.
+    Fl_Group) widgets. Navigation buttons must be added separately.
 */
-class FL_EXPORT Fl_Wizard : public fltk::Group
+class FL_EXPORT Fl_Wizard : public Fl_Group
 {
-  fltk::Widget *value_;
+  Fl_Widget *value_;
 
   void draw();
 
@@ -59,8 +59,8 @@ class FL_EXPORT Fl_Wizard : public fltk::Group
 
   void		next();
   void		prev();
-  fltk::Widget	*value();
-  void		value(fltk::Widget *);
+  Fl_Widget	*value();
+  void		value(Fl_Widget *);
 };
 
 #endif // !_Fl_Wizard_H_

@@ -25,6 +25,104 @@
 //     http://www.fltk.org/str.php
 //
 
+const char *default_menu[] = {
+  "# Menu description file for the generic demo program\n",
+  "#\n",
+  "# Each line consists of three fields, separated by :\n",
+  "#\n",
+  "# - menu name	: To which the item belongs (starts with @)\n",
+  "# - item name	: Placed on button. (use \\n for newline)\n",
+  "# - command name: To be executed. Use a menu name to define a submenu.\n",
+  "#\n",
+  "# @main indicates the main menu.\n",
+  "#\n",
+  "\n",
+  "@main:Widget\\nTests:@x\n",
+  "@x:Fl_Browser:browser browser.cxx\n",
+  "@x:Fl_Input:input\n",
+  "@x:Fl_Output:output\n",
+  "@x:Fl_Button:radio\n",
+  "@x:Fl_Tabs:tabs\n",
+  "@x:Fl_Tile:tile\n",
+  "@x:Fl_Scroll:scroll\n",
+  "@x:Fl_Pack:pack\n",
+  "@x:more...:@xm\n",
+  "@xm:Fl_Menu:menubar\n",
+  "@xm:Fl_Table:table\n",
+  "@xm:Fl_Tree:tree\n",
+  "\n",
+  "@main:Window\\nTests:@w\n",
+  "@w:overlay:overlay\n",
+  "@w:subwindow:subwindow\n",
+  "@w:double\\nbuffer:doublebuffer\n",
+  "@w:GL window:cube\n",
+  "@w:GL overlay:gl_overlay\n",
+  "@w:iconize:iconize\n",
+  "@w:fullscreen:fullscreen\n",
+  "@w:resizable:resizebox\n",
+  "@w:resize:resize\n",
+  "\n",
+  "@main:Drawing\\nTests:@d\n",
+  "@d:Images:@di\n",
+  "@di:Fl_Bitmap:bitmap\n",
+  "@di:Fl_Pixmap:pixmap\n",
+  "@di:Fl_RGB\\n_Image:image\n",
+  "@di:Fl_Shared\\n_Image:pixmap_browser\n",
+  "@di:Fl_Tiled\\n_Image:tiled_image\n",
+  "@d:cursor:cursor\n",
+  "@d:labels:label\n",
+  "@d:fl_arc:arc\n",
+  "@d:fl_curve:curve\n",
+  "@d:fl_line_style:line_style\n",
+  "\n",
+  "@main:Events:@u\n",
+  "@u:navigation:navigation\n",
+  "@u:minimum update:minimum\n",
+  "@u:keyboard:keyboard\n",
+  "@u:fast && slow widgets:fast_slow\n",
+  "@u:inactive:inactive\n",
+  "\n",
+  "@main:Fluid\\n(UI design tool):../fluid/fluid valuators.fl\n",
+  "\n",
+  "@main:Cool\\nDemos:@e\n",
+  "@e:X Color\\nBrowser:colbrowser\n",
+  "@e:Mandelbrot:mandelbrot\n",
+  "@e:Fractals:fractals\n",
+  "@e:Puzzle:glpuzzle\n",
+  "@e:Block\\nAttack!:blocks\n",
+  "@e:Checkers:checkers\n",
+  "@e:Sudoku:sudoku\n",
+  "\n",
+  "@main:Other\\nTests:@o\n",
+  "@o:Color Choosers:color_chooser\n",
+  "@o:File Chooser:file_chooser\n",
+  "@o:Native File Chooser:native-filechooser\n",
+  "@o:Font Tests:@of\n",
+  "@of:Fonts:fonts\n",
+  "@of:UTF-8:utf8\n",
+  "@o:HelpDialog:help\n",
+  "@o:Input Choice:input_choice\n",
+  "@o:Preferences:preferences\n",
+  "@o:Threading:threads\n",
+  "@o:XForms Emulation:forms\n",
+  "\n",
+  "@main:Tutorial\\nfrom\\nManual:@j\n",
+  "@j:ask\\n(modified):ask\n",
+  "@j:button:button\n",
+  "@j:CubeView:CubeView\n",
+  "@j:editor:editor editor.cxx\n",
+  "@j:hello:hello\n",
+  "@j:shape:shape\n",
+  "\n",
+  "@main:Images\\nfor\\nManual:@i\n",
+  "@i:valuators:valuators\n",
+  "@i:symbols:symbols\n",
+  "@i:buttons:buttons\n",
+  "@i:clock:clock\n",
+  "@i:popups:message\n",
+  "@i:boxtypes:boxtype\n",
+  0 };
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -154,7 +252,7 @@ int b2n[][9] = {
 	{  0, -1,  1,  2,  3,  4,  5, -1,  6},
 	{  0,  1,  2,  3, -1,  4,  5,  6,  7},
 	{  0,  1,  2,  3,  4,  5,  6,  7,  8}
-  };
+};
 int n2b[][9] = { 
 	{  4, -1, -1, -1, -1, -1, -1, -1, -1},
 	{  3,  5, -1, -1, -1, -1, -1, -1, -1},
@@ -165,17 +263,17 @@ int n2b[][9] = {
 	{  0,  2,  3,  4,  5,  6,  8, -1, -1},
 	{  0,  1,  2,  3,  5,  6,  7,  8, -1},
 	{  0,  1,  2,  3,  4,  5,  6,  7,  8}
-  };
+};
 
 int but2numb(int bnumb, int maxnumb)
 /* Transforms a button number to an item number when there are
-   maxnumb items in total. -1 if the button should not exist. */
- { return b2n[maxnumb][bnumb]; }
+ maxnumb items in total. -1 if the button should not exist. */
+{ return b2n[maxnumb][bnumb]; }
 
 int numb2but(int inumb, int maxnumb)
 /* Transforms an item number to a button number when there are
-   maxnumb items in total. -1 if the item should not exist. */
- { return n2b[maxnumb][inumb]; }
+ maxnumb items in total. -1 if the item should not exist. */
+{ return n2b[maxnumb][inumb]; }
 
 /* Pushing and Popping menus */
 
@@ -222,33 +320,33 @@ void dobut(Fl_Widget *, long arg)
   if (menus[men].icommand[bn][0] == '@')
     push_menu(menus[men].icommand[bn]);
   else {
-
+    
 #ifdef WIN32
     STARTUPINFO		suInfo;		// Process startup information
     PROCESS_INFORMATION	prInfo;		// Process information
-
+    
     memset(&suInfo, 0, sizeof(suInfo));
     suInfo.cb = sizeof(suInfo);
-
+    
     int icommand_length = strlen(menus[men].icommand[bn]);
-
+    
     char* copy_of_icommand = new char[icommand_length+1];
     strcpy(copy_of_icommand,menus[men].icommand[bn]);
-
+    
     // On WIN32 the .exe suffix needs to be appended to the command
     // whilst leaving any additional parameters unchanged - this
     // is required to handle the correct conversion of cases such as : 
     // `../fluid/fluid valuators.fl' to '../fluid/fluid.exe valuators.fl'.
-
+    
     // skip leading spaces.
     char* start_command = copy_of_icommand;
     while(*start_command == ' ') ++start_command;
-
+    
     // find the space between the command and parameters if one exists.
     char* start_parameters = strchr(start_command,' ');
-
+    
     char* command = new char[icommand_length+6]; // 6 for extra 'd.exe\0'
-
+    
     if (start_parameters==NULL) { // no parameters required.
 #  ifdef _DEBUG
       sprintf(command, "%sd.exe", start_command);
@@ -261,38 +359,64 @@ void dobut(Fl_Widget *, long arg)
       *start_parameters = 0;
       // move start_paremeters to skip over the intermediate space.
       ++start_parameters;
-
+      
 #  ifdef _DEBUG
       sprintf(command, "%sd.exe %s", start_command, start_parameters);
 #  else
       sprintf(command, "%s.exe %s", start_command, start_parameters);
 #  endif // _DEBUG
     }
-
+    
     CreateProcess(NULL, command, NULL, NULL, FALSE,
                   NORMAL_PRIORITY_CLASS, NULL, NULL, &suInfo, &prInfo);
-	
+    
     delete[] command;
     delete[] copy_of_icommand;
-
-#elif defined USING_XCODE
-
-    int icommand_length = strlen(menus[men].icommand[bn]);
-    char* command = new char[icommand_length+24]; // extraspace for  'open ../../(name).app &\0' 
     
-    sprintf(command, "open ../../../%s.app &", menus[men].icommand[bn]);
+#elif defined USING_XCODE
+    char *cmd = strdup(menus[men].icommand[bn]);
+    char *arg = strchr(cmd, ' ');
+    
+    char command[2048], path[2048], app_path[2048];
+    
+    // this neat litle block of cose ensures that the current directory is set 
+    // to the location of the Demo application.
+    CFBundleRef app = CFBundleGetMainBundle();
+    CFURLRef url = CFBundleCopyBundleURL(app);    
+    CFStringRef cc_app_path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+    CFStringGetCString(cc_app_path, app_path, 2048, kCFStringEncodingUTF8);
+    if (*app_path) {
+      char *n = strrchr(app_path, '/');
+      if (n) {
+        *n = 0;
+        chdir(app_path);
+      }
+    }
+    
+    if (arg) {
+      *arg = 0;
+      if (strcmp(cmd, "../fluid/fluid")==0) {
+        fl_filename_absolute(path, 2048, "../../../../test/");
+	sprintf(command, "open Fluid.app --args %s%s", path, arg+1);
+      } else {
+        fl_filename_absolute(path, 2048, "../../../../test/");
+	sprintf(command, "open %s.app --args %s%s", cmd, path, arg+1);
+      }
+    } else {
+      sprintf(command, "open %s.app", cmd);
+    }
+//    puts(command);    
     system(command);
     
-    delete[] command;
-
+    free(cmd);
 #else // NON WIN32 systems.
-
+    
     int icommand_length = strlen(menus[men].icommand[bn]);
     char* command = new char[icommand_length+5]; // 5 for extra './' and ' &\0' 
-
+    
     sprintf(command, "./%s &", menus[men].icommand[bn]);
     system(command);
-
+    
     delete[] command;
 #endif // WIN32
   }
@@ -305,27 +429,33 @@ void doexit(Fl_Widget *, void *) {exit(0);}
 int load_the_menu(const char* fname)
 /* Loads the menu file. Returns whether successful. */
 {
-  FILE *fin;
+  FILE *fin = 0;
   char line[256], mname[64],iname[64],cname[64];
-  int i,j;
+  int i,j, mi = 0;
   fin = fopen(fname,"r");
   if (fin == NULL)
   {
 #if defined ( __APPLE__ )
-	// mac os bundle menu detection:
-	  char* pos = strrchr(fname,'/');
-	  if (!pos) return 0;
-	  *pos='\0';
-	  pos = strrchr(fname,'/');
-	  if (!pos) return 0;
-	  strcpy(pos,"/Resources/demo.menu");
-	  fin  = fopen(fname,"r");
-	  if (fin == NULL)
+    // mac os bundle menu detection:
+    char* pos = strrchr(fname,'/');
+    if (!pos) return 0;
+    *pos='\0';
+    pos = strrchr(fname,'/');
+    if (!pos) return 0;
+    strcpy(pos,"/Resources/demo.menu");
+    fin  = fopen(fname,"r");
 #endif
-	  return 0;
   }
+  // if "fin" is still NULL, we will read the menu from the string array in the 
+  // beginning of the file.
   for (;;) {
-    if (fgets(line,256,fin) == NULL) break;
+    if (fin) {
+      if (fgets(line,256,fin) == NULL) break;
+    } else {
+      const char *m = default_menu[mi++];
+      if (!m) break;
+      strcpy(line, m);
+    }
     // remove all carriage returns that Cygwin may have inserted
     char *s = line, *d = line;
     for (;;++d) {
@@ -345,10 +475,10 @@ int load_the_menu(const char* fname)
     while (line[i] != ':' && line[i] != '\n')
     {
       if (line[i] == '\\') {
-	i++;
-	if (line[i] == 'n') iname[j++] = '\n';
-	else iname[j++] = line[i];
-	i++;
+        i++;
+        if (line[i] == 'n') iname[j++] = '\n';
+        else iname[j++] = line[i];
+        i++;
       } else
         iname[j++] = line[i++];
     }
@@ -359,7 +489,8 @@ int load_the_menu(const char* fname)
     cname[j] = '\0';
     addto_menu(mname,iname,cname);
   }
-  fclose(fin);
+  if (fin)
+    fclose(fin);
   return 1;
 }
 
@@ -378,9 +509,9 @@ int main(int argc, char **argv) {
   if (!Fl::args(argc,argv,i) || i < argc-1)
     Fl::fatal("Usage: %s <switches> <menufile>\n%s",argv[0],Fl::help);
   if (i < argc) fname = argv[i];
-
+  
   create_the_forms();
-
+  
   if (!load_the_menu(fname)) Fl::fatal("Can't open %s",fname);
   if (buf!=fname)
     strcpy(buf,fname);

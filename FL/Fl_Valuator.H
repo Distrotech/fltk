@@ -52,7 +52,7 @@
   The ones labelled "0" are the default versions with a type(0).  
   For consistency the symbol FL_VERTICAL is defined as zero.
 */
-class FL_EXPORT Fl_Valuator : public fltk::Widget {
+class FL_EXPORT Fl_Valuator : public Fl_Widget {
 
   double value_;
   double previous_value_;

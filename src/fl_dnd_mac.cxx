@@ -42,10 +42,15 @@ extern int fl_selection_length;
 /**
  * drag and drop whatever is in the cut-copy-paste buffer
  * - create a selection first using: 
- *     fltk::copy(const char *stuff, int len, 0)
+ *     Fl::copy(const char *stuff, int len, 0)
  */
-int fltk::dnd()
+int Fl::dnd()
 {
+#ifdef __APPLE_COCOA__
+  extern int MACpreparedrag(void);
+  return MACpreparedrag();
+#else
+
   OSErr result;
   DragReference dragRef;
   result = NewDrag( &dragRef );
@@ -68,13 +73,13 @@ int fltk::dnd()
   ConvertEventRefToEventRecord( fl_os_event, &event );
   result = TrackDrag( dragRef, &event, region );
 
-  fltk::Widget *w = fltk::pushed();
+  Fl_Widget *w = Fl::pushed();
   if ( w )
   {
-    int old_event = fltk::e_number;
-    w->handle(fltk::e_number = FL_RELEASE);
-    fltk::e_number = old_event;
-    fltk::pushed( 0 );
+    int old_event = Fl::e_number;
+    w->handle(Fl::e_number = FL_RELEASE);
+    Fl::e_number = old_event;
+    Fl::pushed( 0 );
   }
 
   if ( result != noErr ) { DisposeRgn( region ); DisposeDrag( dragRef ); return false; }
@@ -82,6 +87,7 @@ int fltk::dnd()
   DisposeRgn( region );
   DisposeDrag( dragRef );
   return true;
+#endif //__APPLE_COCOA__
 }
   
 

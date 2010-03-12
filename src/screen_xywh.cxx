@@ -107,7 +107,11 @@ static void screen_init() {
 #elif defined(__APPLE__)
 XRectangle screens[16];
 
+extern int MACscreen_init(XRectangle screens[]);
 static void screen_init() {
+#ifdef __APPLE_COCOA__
+	num_screens = MACscreen_init(screens);
+#else
   GDHandle gd;
 
   for (gd = GetDeviceList(), num_screens = 0; gd; gd = GetNextDevice(gd)) {
@@ -120,6 +124,7 @@ static void screen_init() {
     num_screens ++;
     if (num_screens >= 16) break;
   }
+#endif
 }
 #elif HAVE_XINERAMA
 #  include <X11/extensions/Xinerama.h>
@@ -144,7 +149,7 @@ static void screen_init() {
 /**
   Gets the number of available screens.
 */
-int fltk::screen_count() {
+int Fl::screen_count() {
   if (!num_screens) screen_init();
 
   return num_screens;
@@ -156,7 +161,7 @@ int fltk::screen_count() {
   \param[out]  X,Y,W,H the corresponding screen bounding box
   \param[in] mx, my the absolute screen position
 */
-void fltk::screen_xywh(int &X, int &Y, int &W, int &H, int mx, int my) {
+void Fl::screen_xywh(int &X, int &Y, int &W, int &H, int mx, int my) {
   if (!num_screens) screen_init();
 
 #ifdef WIN32
@@ -213,19 +218,19 @@ void fltk::screen_xywh(int &X, int &Y, int &W, int &H, int mx, int my) {
   (void)my;
 #endif // WIN32
 
-  X = fltk::x();
-  Y = fltk::y();
-  W = fltk::w();
-  H = fltk::h();
+  X = Fl::x();
+  Y = Fl::y();
+  W = Fl::w();
+  H = Fl::h();
 }
 
 /**
   Gets the screen bounding rect for the given screen. 
   \param[out]  X,Y,W,H the corresponding screen bounding box
-  \param[in] n the screen number (0 to fltk::screen_count() - 1)
+  \param[in] n the screen number (0 to Fl::screen_count() - 1)
   \see void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) 
 */
-void fltk::screen_xywh(int &X, int &Y, int &W, int &H, int n) {
+void Fl::screen_xywh(int &X, int &Y, int &W, int &H, int n) {
   if (!num_screens) screen_init();
 
 #ifdef WIN32
@@ -256,10 +261,10 @@ void fltk::screen_xywh(int &X, int &Y, int &W, int &H, int n) {
   (void)n;
 #endif // WIN32
 
-  X = fltk::x();
-  Y = fltk::y();
-  W = fltk::w();
-  H = fltk::h();
+  X = Fl::x();
+  Y = Fl::y();
+  W = Fl::w();
+  H = Fl::h();
 }
 
 

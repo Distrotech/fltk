@@ -25,9 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL3/Widget.h>
+#include <FL/Fl_Widget.H>
 #include <FL/Fl_Box.H>
-#include <FL3/InvisibleBox.h>
 
 void Fl_Box::draw() {
   draw_box();
@@ -38,37 +37,6 @@ int Fl_Box::handle(int event) {
   if (event == FL_ENTER || event == FL_LEAVE) return 1;
   else return 0;
 }
-
-
-using namespace fltk;
-
-InvisibleBox::InvisibleBox(int x, int y, int w, int h, const char *l)
-: Widget(x,y,w,h,l)
-{
-// FIXME  style(default_style);
-}
-
-InvisibleBox::InvisibleBox(Fl_Boxtype b, int x, int y, int w, int h, const char *l)
-: Widget(x,y,w,h,l)
-{
-//  style(default_style);
-  box(b);
-}
-
-void InvisibleBox::draw() {
-  Widget::draw();
-}
-
-int InvisibleBox::handle(int event) {
-  if (box()==NO_BOX) {
-    if (event == FL_ENTER && tooltip()) return 1;
-    return 0;
-  } else {
-    return Widget::handle(event);
-  }
-}
-
-
 
 
 //

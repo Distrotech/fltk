@@ -92,7 +92,7 @@
  *  window manager.
  * 
  *  Events are identified by the integer argument passed to the 
- *  fltk::Widget::handle() virtual method. Other information about the 
+ *  Fl_Widget::handle() virtual method. Other information about the 
  *  most recent event is stored in static locations and acquired  by 
  *  calling the Fl::event_*() methods. This static information remains 
  *  valid until the next event is read from the window system, so it 
@@ -110,9 +110,9 @@ enum Fl_Event {	// events
    *  Fl::event_y().
    *
    *  A widget indicates that it "wants" the mouse click by returning non-zero 
-   *  from its fltk::Widget::handle() method. It will then become the 
+   *  from its Fl_Widget::handle() method. It will then become the 
    *  Fl::pushed() widget and will get FL_DRAG and the matching FL_RELEASE events.  
-   *  If fltk::Widget::handle() returns zero then FLTK will try sending the FL_PUSH 
+   *  If Fl_Widget::handle() returns zero then FLTK will try sending the FL_PUSH 
    *  to another widget. 
    */
   FL_PUSH		= 1,
@@ -228,31 +228,31 @@ enum Fl_Event {	// events
    */
   FL_SHORTCUT		= 12,
 
-  /** This widget is no longer active, due to fltk::Widget::deactivate() 
-   *  being called on it or one of its parents. fltk::Widget::active() may 
-   *  still be true after this, the widget is only active if fltk::Widget::active()
-   *  is true on it and all its parents (use fltk::Widget::active_r() to check this).
+  /** This widget is no longer active, due to Fl_Widget::deactivate() 
+   *  being called on it or one of its parents. Fl_Widget::active() may 
+   *  still be true after this, the widget is only active if Fl_Widget::active()
+   *  is true on it and all its parents (use Fl_Widget::active_r() to check this).
    */
   FL_DEACTIVATE		= 13,
 
-  /** This widget is now active, due to fltk::Widget::activate() being 
+  /** This widget is now active, due to Fl_Widget::activate() being 
    *  called on it or one of its parents.
    */
   FL_ACTIVATE		= 14,
 
-  /** This widget is no longer visible, due to fltk::Widget::hide() being 
+  /** This widget is no longer visible, due to Fl_Widget::hide() being 
    *  called on it or one of its parents, or due to a parent window being 
-   *  minimized.  fltk::Widget::visible() may still be true after this, but the 
+   *  minimized.  Fl_Widget::visible() may still be true after this, but the 
    *  widget is visible only if visible() is true for it and all its 
-   *  parents (use fltk::Widget::visible_r() to check this).
+   *  parents (use Fl_Widget::visible_r() to check this).
    */
   FL_HIDE		= 15,
 
-  /** This widget is visible again, due to fltk::Widget::show() being called on 
+  /** This widget is visible again, due to Fl_Widget::show() being called on 
    *  it or one of its parents, or due to a parent window being restored. 
    *  Child Fl_Windows respond to this by actually creating the window if not 
    *  done already, so if you subclass a window, be sure to pass FL_SHOW 
-   *  to the base class fltk::Widget::handle() method!
+   *  to the base class Fl_Widget::handle() method!
    */
   FL_SHOW		= 16,
 
@@ -301,10 +301,10 @@ enum Fl_Event {	// events
 /*@{*/
 /** These constants determine when a callback is performed.
  *
- *  \sa fltk::Widget::when();
+ *  \sa Fl_Widget::when();
  *  \todo doxygen comments for values are incomplete and maybe wrong or unclear
  */
-enum Fl_When { // fltk::Widget::when():
+enum Fl_When { // Fl_Widget::when():
   FL_WHEN_NEVER		= 0,	///< Never call the callback
   FL_WHEN_CHANGED	= 1,	///< Do the callback only when the widget value changes
   FL_WHEN_NOT_CHANGED	= 2,	///< Do the callback whenever the user interacts with the widget
@@ -425,7 +425,6 @@ enum Fl_When { // fltk::Widget::when():
 
 /*@}*/		// group: Event States
 
-namespace fltk {
 /** \name Box Types
     \brief FLTK standard box types
     
@@ -443,112 +442,58 @@ namespace fltk {
 		\see src/Fl_get_system_colors.cxx
 */
 /*@{*/
-  enum Box { // boxtypes (if you change these you must fix fl_boxtype.C):
-    
-    NO_BOX = 0,		///< nothing is drawn at all, this box is invisible
-    FLAT_BOX,			///< a flat box
-    UP_BOX,			///< see figure 1
-    DOWN_BOX,			///< see figure 1
-    UP_FRAME,			///< see figure 1
-    DOWN_FRAME,		///< see figure 1
-    THIN_UP_BOX,		///< see figure 1
-    THIN_DOWN_BOX,		///< see figure 1
-    THIN_UP_FRAME,		///< see figure 1
-    THIN_DOWN_FRAME,		///< see figure 1
-    ENGRAVED_BOX,		///< see figure 1
-    EMBOSSED_BOX,		///< see figure 1
-    ENGRAVED_FRAME,		///< see figure 1
-    EMBOSSED_FRAME,		///< see figure 1
-    BORDER_BOX,		///< see figure 1
-    _SHADOW_BOX,		///< see figure 1
-    BORDER_FRAME,		///< see figure 1
-    _SHADOW_FRAME,		///< see figure 1
-    _ROUNDED_BOX,		///< see figure 1
-    _RSHADOW_BOX,		///< see figure 1
-    _ROUNDED_FRAME,		///< see figure 1
-    _RFLAT_BOX,		///< see figure 1
-    _ROUND_UP_BOX,		///< see figure 1
-    _ROUND_DOWN_BOX,		///< see figure 1
-    _DIAMOND_UP_BOX,		///< see figure 1
-    _DIAMOND_DOWN_BOX,		///< see figure 1
-    _OVAL_BOX,			///< see figure 1
-    _OSHADOW_BOX,		///< see figure 1
-    _OVAL_FRAME,		///< see figure 1
-    _OFLAT_BOX,		///< see figure 1
-    _PLASTIC_UP_BOX,		///< plastic version of UP_BOX
-    _PLASTIC_DOWN_BOX,		///< plastic version of DOWN_BOX
-    _PLASTIC_UP_FRAME,		///< plastic version of UP_FRAME
-    _PLASTIC_DOWN_FRAME,	///< plastic version of DOWN_FRAME
-    _PLASTIC_THIN_UP_BOX,	///< plastic version of THIN_UP_BOX
-    _PLASTIC_THIN_DOWN_BOX,	///< plastic version of THIN_DOWN_BOX
-    _PLASTIC_ROUND_UP_BOX,	///< plastic version of ROUND_UP_BOX
-    _PLASTIC_ROUND_DOWN_BOX,	///< plastic version of ROUND_DOWN_BOX
-    _GTK_UP_BOX,		///< gtk+ version of UP_BOX
-    _GTK_DOWN_BOX,		///< gtk+ version of DOWN_BOX
-    _GTK_UP_FRAME,		///< gtk+ version of UP_FRAME
-    _GTK_DOWN_FRAME,		///< gtk+ version of DOWN_RAME
-    _GTK_THIN_UP_BOX,		///< gtk+ version of THIN_UP_BOX
-    _GTK_THIN_DOWN_BOX,	///< gtk+ version of THIN_DOWN_BOX
-    _GTK_THIN_UP_FRAME,	///< gtk+ version of UP_FRAME
-    _GTK_THIN_DOWN_FRAME,	///< gtk+ version of THIN_DOWN_FRAME
-    _GTK_ROUND_UP_BOX,		///< gtk+ version of ROUND_UP_BOX
-    _GTK_ROUND_DOWN_BOX,	///< gtk+ version of ROUND_DOWN_BOX
-    FREE_BOXTYPE		///< the first free box type for creation of new box types
-  };
-}; // namespace fltk
+enum Fl_Boxtype { // boxtypes (if you change these you must fix fl_boxtype.C):
 
-#define Fl_Boxtype fltk::Box
-
-#define FL_NO_BOX fltk::NO_BOX
-#define FL_FLAT_BOX fltk::FLAT_BOX
-#define FL_UP_BOX fltk::UP_BOX
-#define FL_DOWN_BOX fltk::DOWN_BOX
-#define FL_UP_FRAME fltk::UP_FRAME
-#define FL_DOWN_FRAME fltk::DOWN_FRAME
-#define FL_THIN_UP_BOX fltk::THIN_UP_BOX
-#define FL_THIN_DOWN_BOX fltk::THIN_DOWN_BOX
-#define FL_THIN_UP_FRAME fltk::THIN_UP_FRAME
-#define FL_THIN_DOWN_FRAME fltk::THIN_DOWN_FRAME
-#define FL_ENGRAVED_BOX fltk::ENGRAVED_BOX
-#define FL_EMBOSSED_BOX fltk::EMBOSSED_BOX
-#define FL_ENGRAVED_FRAME fltk::ENGRAVED_FRAME
-#define FL_EMBOSSED_FRAME fltk::EMBOSSED_FRAME
-#define FL_BORDER_BOX fltk::BORDER_BOX
-#define _FL_SHADOW_BOX fltk::_SHADOW_BOX
-#define FL_BORDER_FRAME fltk::BORDER_FRAME
-#define _FL_SHADOW_FRAME fltk::_SHADOW_FRAME
-#define _FL_ROUNDED_BOX fltk::_ROUNDED_BOX
-#define _FL_RSHADOW_BOX fltk::_RSHADOW_BOX
-#define _FL_ROUNDED_FRAME fltk::_ROUNDED_FRAME
-#define _FL_RFLAT_BOX fltk::_RFLAT_BOX
-#define _FL_ROUND_UP_BOX fltk::_ROUND_UP_BOX
-#define _FL_ROUND_DOWN_BOX fltk::_ROUND_DOWN_BOX
-#define _FL_DIAMOND_UP_BOX fltk::_DIAMOND_UP_BOX
-#define _FL_DIAMOND_DOWN_BOX fltk::_DIAMOND_DOWN_BOX
-#define _FL_OVAL_BOX fltk::_OVAL_BOX
-#define _FL_OSHADOW_BOX fltk::_OSHADOW_BOX
-#define _FL_OVAL_FRAME fltk::_OVAL_FRAME
-#define _FL_OFLAT_BOX fltk::_OFLAT_BOX
-#define _FL_PLASTIC_UP_BOX fltk::_PLASTIC_UP_BOX
-#define _FL_PLASTIC_DOWN_BOX fltk::_PLASTIC_DOWN_BOX
-#define _FL_PLASTIC_UP_FRAME fltk::_PLASTIC_UP_FRAME
-#define _FL_PLASTIC_DOWN_FRAME fltk::_PLASTIC_DOWN_FRAME
-#define _FL_PLASTIC_THIN_UP_BOX fltk::_PLASTIC_THIN_UP_BOX
-#define _FL_PLASTIC_THIN_DOWN_BOX fltk::_PLASTIC_THIN_DOWN_BOX
-#define _FL_PLASTIC_ROUND_UP_BOX fltk::_PLASTIC_ROUND_UP_BOX
-#define _FL_PLASTIC_ROUND_DOWN_BOX fltk::_PLASTIC_ROUND_DOWN_BOX
-#define _FL_GTK_UP_BOX fltk::_GTK_UP_BOX
-#define _FL_GTK_DOWN_BOX fltk::_GTK_DOWN_BOX
-#define _FL_GTK_UP_FRAME fltk::_GTK_UP_FRAME
-#define _FL_GTK_DOWN_FRAME fltk::_GTK_DOWN_FRAME
-#define _FL_GTK_THIN_UP_BOX fltk::_GTK_THIN_UP_BOX
-#define _FL_GTK_THIN_DOWN_BOX fltk::_GTK_THIN_DOWN_BOX
-#define _FL_GTK_THIN_UP_FRAME fltk::_GTK_THIN_UP_FRAME
-#define _FL_GTK_THIN_DOWN_FRAME fltk::_GTK_THIN_DOWN_FRAME
-#define _FL_GTK_ROUND_UP_BOX fltk::_GTK_ROUND_UP_BOX
-#define _FL_GTK_ROUND_DOWN_BOX fltk::_GTK_ROUND_DOWN_BOX
-#define FL_FREE_BOXTYPE fltk::FREE_BOXTYPE
-
+  FL_NO_BOX = 0,		///< nothing is drawn at all, this box is invisible
+  FL_FLAT_BOX,			///< a flat box
+  FL_UP_BOX,			///< see figure 1
+  FL_DOWN_BOX,			///< see figure 1
+  FL_UP_FRAME,			///< see figure 1
+  FL_DOWN_FRAME,		///< see figure 1
+  FL_THIN_UP_BOX,		///< see figure 1
+  FL_THIN_DOWN_BOX,		///< see figure 1
+  FL_THIN_UP_FRAME,		///< see figure 1
+  FL_THIN_DOWN_FRAME,		///< see figure 1
+  FL_ENGRAVED_BOX,		///< see figure 1
+  FL_EMBOSSED_BOX,		///< see figure 1
+  FL_ENGRAVED_FRAME,		///< see figure 1
+  FL_EMBOSSED_FRAME,		///< see figure 1
+  FL_BORDER_BOX,		///< see figure 1
+  _FL_SHADOW_BOX,		///< see figure 1
+  FL_BORDER_FRAME,		///< see figure 1
+  _FL_SHADOW_FRAME,		///< see figure 1
+  _FL_ROUNDED_BOX,		///< see figure 1
+  _FL_RSHADOW_BOX,		///< see figure 1
+  _FL_ROUNDED_FRAME,		///< see figure 1
+  _FL_RFLAT_BOX,		///< see figure 1
+  _FL_ROUND_UP_BOX,		///< see figure 1
+  _FL_ROUND_DOWN_BOX,		///< see figure 1
+  _FL_DIAMOND_UP_BOX,		///< see figure 1
+  _FL_DIAMOND_DOWN_BOX,		///< see figure 1
+  _FL_OVAL_BOX,			///< see figure 1
+  _FL_OSHADOW_BOX,		///< see figure 1
+  _FL_OVAL_FRAME,		///< see figure 1
+  _FL_OFLAT_BOX,		///< see figure 1
+  _FL_PLASTIC_UP_BOX,		///< plastic version of FL_UP_BOX
+  _FL_PLASTIC_DOWN_BOX,		///< plastic version of FL_DOWN_BOX
+  _FL_PLASTIC_UP_FRAME,		///< plastic version of FL_UP_FRAME
+  _FL_PLASTIC_DOWN_FRAME,	///< plastic version of FL_DOWN_FRAME
+  _FL_PLASTIC_THIN_UP_BOX,	///< plastic version of FL_THIN_UP_BOX
+  _FL_PLASTIC_THIN_DOWN_BOX,	///< plastic version of FL_THIN_DOWN_BOX
+  _FL_PLASTIC_ROUND_UP_BOX,	///< plastic version of FL_ROUND_UP_BOX
+  _FL_PLASTIC_ROUND_DOWN_BOX,	///< plastic version of FL_ROUND_DOWN_BOX
+  _FL_GTK_UP_BOX,		///< gtk+ version of FL_UP_BOX
+  _FL_GTK_DOWN_BOX,		///< gtk+ version of FL_DOWN_BOX
+  _FL_GTK_UP_FRAME,		///< gtk+ version of FL_UP_FRAME
+  _FL_GTK_DOWN_FRAME,		///< gtk+ version of FL_DOWN_RAME
+  _FL_GTK_THIN_UP_BOX,		///< gtk+ version of FL_THIN_UP_BOX
+  _FL_GTK_THIN_DOWN_BOX,	///< gtk+ version of FL_THIN_DOWN_BOX
+  _FL_GTK_THIN_UP_FRAME,	///< gtk+ version of FL_UP_FRAME
+  _FL_GTK_THIN_DOWN_FRAME,	///< gtk+ version of FL_THIN_DOWN_FRAME
+  _FL_GTK_ROUND_UP_BOX,		///< gtk+ version of FL_ROUND_UP_BOX
+  _FL_GTK_ROUND_DOWN_BOX,	///< gtk+ version of FL_ROUND_DOWN_BOX
+  FL_FREE_BOXTYPE		///< the first free box type for creation of new box types
+};
 extern FL_EXPORT Fl_Boxtype fl_define_FL_ROUND_UP_BOX();
 #define FL_ROUND_UP_BOX fl_define_FL_ROUND_UP_BOX()
 #define FL_ROUND_DOWN_BOX (Fl_Boxtype)(fl_define_FL_ROUND_UP_BOX()+1)
@@ -627,7 +572,6 @@ inline Fl_Boxtype fl_frame(Fl_Boxtype b) {
 
 /*@}*/	// group: Box Types
 
-namespace fltk {
 /**
    The labeltype() method sets the type of the label.
    
@@ -640,30 +584,18 @@ namespace fltk {
 		  - fl_define_FL_ENGRAVED_LABEL()
 		  - fl_define_FL_EMBOSSED_LABEL()
 */
-  enum LabelType {	// labeltypes:
-    NORMAL_LABEL	= 0,	///< draws the text (0)
-    NO_LABEL,			///< does nothing
-    _SHADOW_LABEL,		///< draws a drop shadow under the text
-    _ENGRAVED_LABEL,		///< draws edges as though the text is engraved
-    _EMBOSSED_LABEL,		///< draws edges as thought the text is raised
-    _MULTI_LABEL,		///< ?
-    _ICON_LABEL,		///< draws the icon associated with the text
-    _IMAGE_LABEL,		///< ?
+enum Fl_Labeltype {	// labeltypes:
+  FL_NORMAL_LABEL	= 0,	///< draws the text (0)
+  FL_NO_LABEL,			///< does nothing
+  _FL_SHADOW_LABEL,		///< draws a drop shadow under the text
+  _FL_ENGRAVED_LABEL,		///< draws edges as though the text is engraved
+  _FL_EMBOSSED_LABEL,		///< draws edges as thought the text is raised
+  _FL_MULTI_LABEL,		///< ?
+  _FL_ICON_LABEL,		///< draws the icon associated with the text
+  _FL_IMAGE_LABEL,		///< ?
 
-    FREE_LABELTYPE		///< first free labeltype to use for creating own labeltypes
-  };
-}; // namespace
-
-#define Fl_Labeltype fltk::LabelType
-#define FL_NORMAL_LABEL	fltk::NORMAL_LABEL
-#define FL_NO_LABEL fltk::NO_LABEL
-#define _FL_SHADOW_LABEL fltk::_SHADOW_LABEL
-#define _FL_ENGRAVED_LABEL fltk::_ENGRAVED_LABEL
-#define _FL_EMBOSSED_LABEL fltk::_EMBOSSED_LABEL
-#define _FL_MULTI_LABEL fltk::_MULTI_LABEL
-#define _FL_ICON_LABEL fltk::_ICON_LABEL
-#define _FL_IMAGE_LABEL fltk::_IMAGE_LABEL
-#define FL_FREE_LABELTYPE fltk::FREE_LABEL_TYPE
+  FL_FREE_LABELTYPE		///< first free labeltype to use for creating own labeltypes
+};
 
 /** 
   Sets the current  label type end return its corresponding Fl_Labeltype value. 
@@ -677,12 +609,6 @@ extern Fl_Labeltype FL_EXPORT fl_define_FL_ENGRAVED_LABEL();
 extern Fl_Labeltype FL_EXPORT fl_define_FL_EMBOSSED_LABEL();
 #define FL_EMBOSSED_LABEL fl_define_FL_EMBOSSED_LABEL()
 /** @} */
-
-#define SHADOW_LABEL fl_define_FL_SHADOW_LABEL()
-
-namespace fltk {
-  inline LabelType fl_define_SHADOW_LABEL() { return ::fl_define_FL_SHADOW_LABEL(); }
-}
 
 /** \name Alignment Flags */
 /*@{*/
@@ -740,50 +666,27 @@ typedef int Fl_Font;
 
 // standard fonts
 
-namespace fltk {
-  const Fl_Font HELVETICA              = 0;	///< Helvetica (or Arial) normal (0)
-  const Fl_Font HELVETICA_BOLD         = 1;	///< Helvetica (or Arial) bold
-  const Fl_Font HELVETICA_ITALIC       = 2;	///< Helvetica (or Arial) oblique
-  const Fl_Font HELVETICA_BOLD_ITALIC  = 3;	///< Helvetica (or Arial) bold-oblique
-  const Fl_Font COURIER                = 4;	///< Courier normal
-  const Fl_Font COURIER_BOLD           = 5;	///< Courier bold 
-  const Fl_Font COURIER_ITALIC         = 6;	///< Courier italic
-  const Fl_Font COURIER_BOLD_ITALIC    = 7;	///< Courier bold-italic
-  const Fl_Font TIMES                  = 8;	///< Times roman
-  const Fl_Font TIMES_BOLD             = 9;	///< Times roman bold
-  const Fl_Font TIMES_ITALIC           = 10;	///< Times roman italic
-  const Fl_Font TIMES_BOLD_ITALIC      = 11;	///< Times roman bold-italic
-  const Fl_Font SYMBOL                 = 12;	///< Standard symbol font
-  const Fl_Font SCREEN                 = 13;	///< Default monospaced screen font
-  const Fl_Font SCREEN_BOLD            = 14;	///< Default monospaced bold screen font
-  const Fl_Font ZAPF_DINGBATS          = 15;	///< Zapf-dingbats font
+const Fl_Font FL_HELVETICA              = 0;	///< Helvetica (or Arial) normal (0)
+const Fl_Font FL_HELVETICA_BOLD         = 1;	///< Helvetica (or Arial) bold
+const Fl_Font FL_HELVETICA_ITALIC       = 2;	///< Helvetica (or Arial) oblique
+const Fl_Font FL_HELVETICA_BOLD_ITALIC  = 3;	///< Helvetica (or Arial) bold-oblique
+const Fl_Font FL_COURIER                = 4;	///< Courier normal
+const Fl_Font FL_COURIER_BOLD           = 5;	///< Courier bold 
+const Fl_Font FL_COURIER_ITALIC         = 6;	///< Courier italic
+const Fl_Font FL_COURIER_BOLD_ITALIC    = 7;	///< Courier bold-italic
+const Fl_Font FL_TIMES                  = 8;	///< Times roman
+const Fl_Font FL_TIMES_BOLD             = 9;	///< Times roman bold
+const Fl_Font FL_TIMES_ITALIC           = 10;	///< Times roman italic
+const Fl_Font FL_TIMES_BOLD_ITALIC      = 11;	///< Times roman bold-italic
+const Fl_Font FL_SYMBOL                 = 12;	///< Standard symbol font
+const Fl_Font FL_SCREEN                 = 13;	///< Default monospaced screen font
+const Fl_Font FL_SCREEN_BOLD            = 14;	///< Default monospaced bold screen font
+const Fl_Font FL_ZAPF_DINGBATS          = 15;	///< Zapf-dingbats font
 
-  const Fl_Font FREE_FONT              = 16;	///< first one to allocate
-  const Fl_Font BOLD                   = 1;	///< add this to helvetica, courier, or times
-  const Fl_Font ITALIC                 = 2;	///< add this to helvetica, courier, or times
-  const Fl_Font BOLD_ITALIC            = 3;	///< add this to helvetica, courier, or times
-};
-
-#define FL_HELVETICA              fltk::HELVETICA             
-#define FL_HELVETICA_BOLD         fltk::HELVETICA_BOLD        
-#define FL_HELVETICA_ITALIC       fltk::HELVETICA_ITALIC      
-#define FL_HELVETICA_BOLD_ITALIC  fltk::HELVETICA_BOLD_ITALIC 
-#define FL_COURIER                fltk::COURIER               
-#define FL_COURIER_BOLD           fltk::COURIER_BOLD          
-#define FL_COURIER_ITALIC         fltk::COURIER_ITALIC        
-#define FL_COURIER_BOLD_ITALIC    fltk::COURIER_BOLD_ITALIC   
-#define FL_TIMES                  fltk::TIMES                 
-#define FL_TIMES_BOLD             fltk::TIMES_BOLD            
-#define FL_TIMES_ITALIC           fltk::TIMES_ITALIC          
-#define FL_TIMES_BOLD_ITALIC      fltk::TIMES_BOLD_ITALIC     
-#define FL_SYMBOL                 fltk::SYMBOL                
-#define FL_SCREEN                 fltk::SCREEN                
-#define FL_SCREEN_BOLD            fltk::SCREEN_BOLD           
-#define FL_ZAPF_DINGBATS          fltk::ZAPF_DINGBATS         
-#define FL_FREE_FONT              fltk::FREE_FONT             
-#define FL_BOLD                   fltk::BOLD                  
-#define FL_ITALIC                 fltk::ITALIC                
-#define FL_BOLD_ITALIC            fltk::BOLD_ITALIC           
+const Fl_Font FL_FREE_FONT              = 16;	///< first one to allocate
+const Fl_Font FL_BOLD                   = 1;	///< add this to helvetica, courier, or times
+const Fl_Font FL_ITALIC                 = 2;	///< add this to helvetica, courier, or times
+const Fl_Font FL_BOLD_ITALIC            = 3;	///< add this to helvetica, courier, or times
 
 /*@}*/
 

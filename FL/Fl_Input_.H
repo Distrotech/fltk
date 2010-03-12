@@ -99,7 +99,7 @@
   None of these issues should be desasterous. Nevertheless, we should 
   discuss how FLTK should handle false UTF8 suequences and pointers.
 */
-class FL_EXPORT Fl_Input_ : public fltk::Widget {
+class FL_EXPORT Fl_Input_ : public Fl_Widget {
 
   /** \internal Storage for the text field. */
   const char* value_;
@@ -261,8 +261,8 @@ public:
 
   /** Sets the width and height of this widget.
     \param [in] W, H new width and height
-    \see fltk::Widget::size(int, int) */
-  void size(int W, int H) { fltk::Widget::size(W, H); }
+    \see Fl_Widget::size(int, int) */
+  void size(int W, int H) { Fl_Widget::size(W, H); }
 
   /** Gets the maximum length of the input field.  
     \todo It is not clear if this function is actually required */
@@ -366,14 +366,14 @@ public:
 
   /** Return the shortcut key associtaed with this widget.
     \return shortcut keystroke
-    \see fltk::Button::shortcut() */
+    \see Fl_Button::shortcut() */
   int shortcut() const {return shortcut_;}
 
   /** 
     Sets the shortcut key associtaed with this widget.
     Pressing the shortcut key gives text editing focus to this widget.
     \param [in] s new shortcut keystroke 
-    \see fltk::Button::shortcut() 
+    \see Fl_Button::shortcut() 
   */
   void shortcut(int s) {shortcut_ = s;}
 

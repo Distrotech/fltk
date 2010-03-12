@@ -36,7 +36,7 @@
 */
 Fl_FormsPixmap::Fl_FormsPixmap(
   Fl_Boxtype t, int X, int Y, int W, int H, const char* L)
-: fltk::Widget(X, Y, W, H, L) {
+: Fl_Widget(X, Y, W, H, L) {
   box(t);
   b = 0;
   color(FL_BLACK);

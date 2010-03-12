@@ -226,7 +226,7 @@ use it for any purpose you want.  Try to keep the value less than 100
 to not interfere with reserved values.
 
 \par
-FLTK does not use RTTI (Run Time Typing Infomation), to enhance
+FLTK does not use RTTI (Run Time Typing Information), to enhance
 portability.  But this may change in the near future if RTTI becomes
 standard everywhere. 
 
@@ -301,6 +301,16 @@ int MyClass::handle(int event) {
 You must return non-zero if your \p handle() method
 uses the event. If you return zero, the parent widget will try
 sending the event to another widget.
+
+For debugging purposes, event numbers can be printed as their actual event names 
+using the \ref fl_eventnames[] array, e.g.:
+\code
+  #include <FL/names.h>		// defines fl_eventnames[]
+  [..]
+  int MyClass::handle(int e) {
+      printf("Event was %s (%d)\n", fl_eventnames[e], e);     // e.g. "Event was FL_PUSH (1)"
+      [..]
+\endcode
 
 \section subclassing_drawing Drawing the Widget
 

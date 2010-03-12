@@ -69,37 +69,37 @@ static int dnd_aware(Window& window) {
 }
 
 static int grabfunc(int event) {
-  if (event == FL_RELEASE) fltk::pushed(0);
+  if (event == FL_RELEASE) Fl::pushed(0);
   return 0;
 }
 
 extern int (*fl_local_grab)(int); // in Fl.cxx
 
 // send an event to an fltk window belonging to this program:
-static int local_handle(int event, fltk::Window* window) {
+static int local_handle(int event, Fl_Window* window) {
   fl_local_grab = 0;
-  fltk::e_x = fltk::e_x_root-window->x();
-  fltk::e_y = fltk::e_y_root-window->y();
-  int ret = fltk::handle(event,window);
+  Fl::e_x = Fl::e_x_root-window->x();
+  Fl::e_y = Fl::e_y_root-window->y();
+  int ret = Fl::handle(event,window);
   fl_local_grab = grabfunc;
   return ret;
 }
 
-int fltk::dnd() {
-  fltk::Window *source_fl_win = fltk::first_window();
-  fltk::first_window()->cursor((Fl_Cursor)21);
-  Window source_window = fl_xid(fltk::first_window());
+int Fl::dnd() {
+  Fl_Window *source_fl_win = Fl::first_window();
+  Fl::first_window()->cursor((Fl_Cursor)21);
+  Window source_window = fl_xid(Fl::first_window());
   fl_local_grab = grabfunc;
   Window target_window = 0;
-  fltk::Window* local_window = 0;
+  Fl_Window* local_window = 0;
   int dndversion = 4; int dest_x, dest_y;
   XSetSelectionOwner(fl_display, fl_XdndSelection, fl_message_window, fl_event_time);
 
-  while (fltk::pushed()) {
+  while (Fl::pushed()) {
 
     // figure out what window we are pointing at:
     Window new_window = 0; int new_version = 0;
-    fltk::Window* new_local_window = 0;
+    Fl_Window* new_local_window = 0;
     for (Window child = RootWindow(fl_display, fl_screen);;) {
       Window root; unsigned int junk3;
       XQueryPointer(fl_display, child, &root, &child,
@@ -160,7 +160,7 @@ int fltk::dnd() {
 			   0, (e_x_root<<16)|e_y_root, fl_event_time,
 			   fl_XdndActionCopy);
     }
-    fltk::wait();
+    Fl::wait();
   }
 
   if (local_window) {
@@ -179,8 +179,8 @@ int fltk::dnd() {
     msg.time = fl_event_time+1;
     msg.x = dest_x;
     msg.y = dest_y;
-    msg.x_root = fltk::e_x_root;
-    msg.y_root = fltk::e_y_root;
+    msg.x_root = Fl::e_x_root;
+    msg.y_root = Fl::e_y_root;
     msg.state = 0x0;
     msg.button = Button2;
     XSendEvent(fl_display, target_window, False, 0L, (XEvent*)&msg);

@@ -55,16 +55,16 @@ void Fl_Return_Button::draw() {
   if (w()/3 < W) W = w()/3;
   fl_return_arrow(x()+w()-W-4, y(), W, h());
   draw_label(x(), y(), w()-W+4, h());
-  if (fltk::focus() == this) draw_focus();
+  if (Fl::focus() == this) draw_focus();
 }
 
 int Fl_Return_Button::handle(int event) {
   if (event == FL_SHORTCUT &&
-      (fltk::event_key() == FL_Enter || fltk::event_key() == FL_KP_Enter)) {
+      (Fl::event_key() == FL_Enter || Fl::event_key() == FL_KP_Enter)) {
     do_callback();
     return 1;
   } else
-    return fltk::Button::handle(event);
+    return Fl_Button::handle(event);
 }
 
 //

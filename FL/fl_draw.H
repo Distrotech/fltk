@@ -216,7 +216,7 @@ FL_EXPORT double fl_width(const char* txt, int n);
 /** Return the typographical width of a single character :
     \note if a valid fl_gc is NOT found then it uses the first window gc,
     or the screen gc if no fltk window is available when called. */
-FL_EXPORT double fl_width(Fl_Char);
+FL_EXPORT double fl_width(unsigned int);
 /** Determine the minimum pixel dimensions of a nul-terminated string.
 
 Usage: given a string "txt" drawn using fl_draw(txt, x, y) you would determine
@@ -341,7 +341,7 @@ typedef void (*Fl_Draw_Image_Cb)(void* data,int x,int y,int w,uchar* buf);
   first <tt>show()</tt> of \e any window in your program to get rid of
   the dithering if possible:
   \code
-  fltk::visual(FL_RGB);
+  Fl::visual(FL_RGB);
   \endcode
   Gray scale (1-channel) images may be drawn. This is done if
   <tt>abs(D)</tt> is less than 3, or by calling fl_draw_image_mono().
@@ -441,8 +441,8 @@ FL_EXPORT int fl_measure_pixmap(const char* const* cdata, int &w, int &h);
 // other:
 FL_EXPORT void fl_scroll(int X, int Y, int W, int H, int dx, int dy,
                          void (*draw_area)(void*, int,int,int,int), void* data);
-FL_EXPORT const char* fl_shortcut_label(Fl_Shortcut shortcut);
-FL_EXPORT const char* fl_shortcut_label(Fl_Shortcut shortcut, const char **eom);
+FL_EXPORT const char* fl_shortcut_label(unsigned int shortcut);
+FL_EXPORT const char* fl_shortcut_label(unsigned int shortcut, const char **eom);
 FL_EXPORT void fl_overlay_rect(int x,int y,int w,int h);
 FL_EXPORT void fl_overlay_clear();
 FL_EXPORT void fl_cursor(Fl_Cursor, Fl_Color fg=FL_BLACK, Fl_Color bg=FL_WHITE);
@@ -454,7 +454,7 @@ FL_EXPORT const char* fl_expand_text(const char* from, char* buf, int maxbuf,
 /** \todo provide user documentation for fl_set_status function */
 FL_EXPORT void fl_set_status(int X, int Y, int W, int H);
 /** \todo provide user documentation for fl_set_spot function */
-FL_EXPORT void fl_set_spot(int font, int size, int X, int Y, int W, int H, fltk::Window *win=0);
+FL_EXPORT void fl_set_spot(int font, int size, int X, int Y, int W, int H, Fl_Window *win=0);
 /** \todo provide user documentation for fl_reset_spot function*/
 FL_EXPORT void fl_reset_spot(void);
 

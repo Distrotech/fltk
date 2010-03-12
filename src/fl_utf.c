@@ -1,5 +1,8 @@
-/* This is the utf.c file from fltk2 adapted for use in my fltk1.1 port */
-
+/*
+ * "$Id$"
+ *
+ * This is the utf.c file from fltk2 adapted for use in my fltk1.1 port
+ */
 /* Copyright 2006-2009 by Bill Spitzak and others.
  *
  * This library is free software; you can redistribute it and/or
@@ -46,7 +49,7 @@
    \c NULL, only the length of the utf-8 sequence is calculated
    \return length of the sequence in bytes
    */
-  /* FL_EXPORT int fl_unichar_to_utf8(Fl_Char uc, char *text); */
+  /* FL_EXPORT int fl_unichar_to_utf8(unsigned int uc, char *text); */
   
   /** @} */  
   
@@ -60,7 +63,7 @@
    \param[in] uc Unicode character
    \return length of the sequence in bytes
    */
-  /* FL_EXPORT int fl_utf8_size(Fl_Char uc); */
+  /* FL_EXPORT int fl_utf8_size(unsigned int uc); */
   
   /** @} */  
 #endif /* 0 */
@@ -412,7 +415,7 @@ unsigned fl_utf8toUtf16(const char* src, unsigned srclen,
 unsigned fl_utf8towc(const char* src, unsigned srclen,
 		  wchar_t* dst, unsigned dstlen)
 {
-#ifdef _WIN32
+#ifdef WIN32
 	return fl_utf8toUtf16(src, srclen, (unsigned short*)dst, dstlen);
 #else
   const char* p = src;
@@ -538,7 +541,7 @@ unsigned fl_utf8fromwc(char* dst, unsigned dstlen,
       if (count+2 >= dstlen) {dst[count] = 0; count += 2; break;}
       dst[count++] = 0xc0 | (ucs >> 6);
       dst[count++] = 0x80 | (ucs & 0x3F);
-#ifdef _WIN32
+#ifdef WIN32
     } else if (ucs >= 0xd800 && ucs <= 0xdbff && i < srclen &&
 	       src[i] >= 0xdc00 && src[i] <= 0xdfff) {
       /* surrogate pair */
@@ -558,7 +561,7 @@ unsigned fl_utf8fromwc(char* dst, unsigned dstlen,
       dst[count++] = 0x80 | ((ucs >> 6) & 0x3F);
       dst[count++] = 0x80 | (ucs & 0x3F);
     } else {
-#ifndef _WIN32
+#ifndef WIN32
     J1:
 #endif
       /* all others are 3 bytes: */
@@ -575,7 +578,7 @@ unsigned fl_utf8fromwc(char* dst, unsigned dstlen,
       count++;
     } else if (ucs < 0x800U) { /* 2 bytes */
       count += 2;
-#ifdef _WIN32
+#ifdef WIN32
     } else if (ucs >= 0xd800 && ucs <= 0xdbff && i < srclen-1 &&
 	       src[i+1] >= 0xdc00 && src[i+1] <= 0xdfff) {
       /* surrogate pair */
@@ -641,7 +644,7 @@ unsigned fl_utf8froma(char* dst, unsigned dstlen,
   return count;
 }
 
-#ifdef _WIN32
+#ifdef WIN32
 # include <windows.h>
 #endif
 
@@ -660,7 +663,7 @@ unsigned fl_utf8froma(char* dst, unsigned dstlen,
 int fl_utf8locale(void) {
   static int ret = 2;
   if (ret == 2) {
-#ifdef _WIN32
+#ifdef WIN32
     ret = GetACP() == CP_UTF8;
 #else
     char* s;
@@ -696,7 +699,7 @@ unsigned fl_utf8to_mb(const char* src, unsigned srclen,
 		  char* dst, unsigned dstlen)
 {
   if (!fl_utf8locale()) {
-#ifdef _WIN32
+#ifdef WIN32
     wchar_t lbuf[1024];
     wchar_t* buf = lbuf;
     unsigned length = fl_utf8towc(src, srclen, buf, 1024);
@@ -772,14 +775,13 @@ unsigned fl_utf8from_mb(char* dst, unsigned dstlen,
 		    const char* src, unsigned srclen)
 {
   if (!fl_utf8locale()) {
-#ifdef _WIN32
+#ifdef WIN32
     wchar_t lbuf[1024];
     wchar_t* buf = lbuf;
     unsigned length;
     unsigned ret;
-    length =
-      MultiByteToWideChar(GetACP(), 0, src, srclen, buf, 1024);
-    if (length >= 1024) {
+    length = MultiByteToWideChar(GetACP(), 0, src, srclen, buf, 1024);
+    if ((length == 0)&&(GetLastError()==ERROR_INSUFFICIENT_BUFFER)) {
       length = MultiByteToWideChar(GetACP(), 0, src, srclen, 0, 0);
       buf = (wchar_t*)(malloc(length*sizeof(wchar_t)));
       MultiByteToWideChar(GetACP(), 0, src, srclen, buf, length);
@@ -795,7 +797,7 @@ unsigned fl_utf8from_mb(char* dst, unsigned dstlen,
     length = mbstowcs(buf, src, 1024);
     if (length >= 1024) {
       length = mbstowcs(0, src, 0)+1;
-      buf = (wchar_t*)(malloc(length*sizeof(unsigned short)));
+      buf = (wchar_t*)(malloc(length*sizeof(wchar_t)));
       mbstowcs(buf, src, length);
     }
     if (length >= 0) {
@@ -855,3 +857,7 @@ int fl_utf8test(const char* src, unsigned srclen) {
 }
 
 /** @} */
+
+/*
+ * End of "$Id$".
+ */

@@ -48,7 +48,7 @@
   widget and repeat buttons. The user can either type into the
   input area or use the buttons to change the value.
 */
-class Fl_Spinner : public fltk::Group
+class Fl_Spinner : public Fl_Group
 {
   double	value_;			// Current value
   double	minimum_;		// Minimum value
@@ -62,7 +62,7 @@ class Fl_Spinner : public fltk::Group
 		down_button_;		// Down button
 
 
-  static void	sb_cb(fltk::Widget *w, Fl_Spinner *sb) {
+  static void	sb_cb(Fl_Widget *w, Fl_Spinner *sb) {
 		  double v;		// New value
 
 		  if (w == &(sb->input_)) {
@@ -124,7 +124,7 @@ class Fl_Spinner : public fltk::Group
 		  <P>Inherited destructor Destroys the widget and any value associated with it.
 		*/
 		Fl_Spinner(int X, int Y, int W, int H, const char *L = 0)
-  : fltk::Group(X, Y, W, H, L),
+		  : Fl_Group(X, Y, W, H, L),
 		    input_(X, Y, W - H / 2 - 2, H),
 		    up_button_(X + W - H / 2 - 2, Y, H / 2 + 2, H / 2, "@-42<"),
 		    down_button_(X + W - H / 2 - 2, Y + H - H / 2,
@@ -142,11 +142,11 @@ class Fl_Spinner : public fltk::Group
 		  input_.value("1");
 		  input_.type(FL_INT_INPUT);
 		  input_.when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
-          input_.callback((fltk::Callback *)sb_cb, this);
+		  input_.callback((Fl_Callback *)sb_cb, this);
 
-          up_button_.callback((fltk::Callback *)sb_cb, this);
+		  up_button_.callback((Fl_Callback *)sb_cb, this);
 
-          down_button_.callback((fltk::Callback *)sb_cb, this);
+		  down_button_.callback((Fl_Callback *)sb_cb, this);
 		}
 
   /** Sets or returns the format string for the value. */
@@ -158,10 +158,10 @@ class Fl_Spinner : public fltk::Group
 		  switch (event) {
 		    case FL_KEYDOWN :
 		    case FL_SHORTCUT :
-		      if (fltk::event_key() == FL_Up) {
+		      if (Fl::event_key() == FL_Up) {
 			up_button_.do_callback();
 			return 1;
-		      } else if (fltk::event_key() == FL_Down) {
+		      } else if (Fl::event_key() == FL_Down) {
 			down_button_.do_callback();
 			return 1;
 		      } else return 0;
@@ -171,7 +171,7 @@ class Fl_Spinner : public fltk::Group
 		      else return 0;
 		  }
 
-    return fltk::Group::handle(event);
+		  return Fl_Group::handle(event);
 		}
 
   /** Speling mistakes retained for source compatibility \deprecated */
@@ -189,7 +189,7 @@ class Fl_Spinner : public fltk::Group
   /** Sets the minimum and maximum values for the widget. */
   void		range(double a, double b) { minimum_ = a; maximum_ = b; }
   void		resize(int X, int Y, int W, int H) {
-    fltk::Group::resize(X,Y,W,H);
+		  Fl_Group::resize(X,Y,W,H);
 
 		  input_.resize(X, Y, W - H / 2 - 2, H);
 		  up_button_.resize(X + W - H / 2 - 2, Y, H / 2 + 2, H / 2);

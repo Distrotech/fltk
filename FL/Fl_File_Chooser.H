@@ -59,7 +59,7 @@ private:
   char preview_text_[2048]; 
   int type_; 
   void favoritesButtonCB(); 
-  void favoritesCB(fltk::Widget *w); 
+  void favoritesCB(Fl_Widget *w); 
   void fileListCB(); 
   void fileNameCB(); 
   void newdir(); 
@@ -80,10 +80,10 @@ private:
   void cb_favoritesButton_i(Fl_Menu_Button*, void*);
   static void cb_favoritesButton(Fl_Menu_Button*, void*);
 public:
-  fltk::Button *newButton;
+  Fl_Button *newButton;
 private:
-  void cb_newButton_i(fltk::Button*, void*);
-  static void cb_newButton(fltk::Button*, void*);
+  void cb_newButton_i(Fl_Button*, void*);
+  static void cb_newButton(Fl_Button*, void*);
   void cb__i(Fl_Tile*, void*);
   static void cb_(Fl_Tile*, void*);
   Fl_File_Browser *fileList;
@@ -101,25 +101,25 @@ private:
   Fl_Return_Button *okButton;
   void cb_okButton_i(Fl_Return_Button*, void*);
   static void cb_okButton(Fl_Return_Button*, void*);
-  fltk::Button *cancelButton;
-  void cb_cancelButton_i(fltk::Button*, void*);
-  static void cb_cancelButton(fltk::Button*, void*);
+  Fl_Button *cancelButton;
+  void cb_cancelButton_i(Fl_Button*, void*);
+  static void cb_cancelButton(Fl_Button*, void*);
   Fl_Double_Window *favWindow;
   Fl_File_Browser *favList;
   void cb_favList_i(Fl_File_Browser*, void*);
   static void cb_favList(Fl_File_Browser*, void*);
-  fltk::Button *favUpButton;
-  void cb_favUpButton_i(fltk::Button*, void*);
-  static void cb_favUpButton(fltk::Button*, void*);
-  fltk::Button *favDeleteButton;
-  void cb_favDeleteButton_i(fltk::Button*, void*);
-  static void cb_favDeleteButton(fltk::Button*, void*);
-  fltk::Button *favDownButton;
-  void cb_favDownButton_i(fltk::Button*, void*);
-  static void cb_favDownButton(fltk::Button*, void*);
-  fltk::Button *favCancelButton;
-  void cb_favCancelButton_i(fltk::Button*, void*);
-  static void cb_favCancelButton(fltk::Button*, void*);
+  Fl_Button *favUpButton;
+  void cb_favUpButton_i(Fl_Button*, void*);
+  static void cb_favUpButton(Fl_Button*, void*);
+  Fl_Button *favDeleteButton;
+  void cb_favDeleteButton_i(Fl_Button*, void*);
+  static void cb_favDeleteButton(Fl_Button*, void*);
+  Fl_Button *favDownButton;
+  void cb_favDownButton_i(Fl_Button*, void*);
+  static void cb_favDownButton(Fl_Button*, void*);
+  Fl_Button *favCancelButton;
+  void cb_favCancelButton_i(Fl_Button*, void*);
+  static void cb_favCancelButton(Fl_Button*, void*);
   Fl_Return_Button *favOkButton;
   void cb_favOkButton_i(Fl_Return_Button*, void*);
   static void cb_favOkButton(Fl_Return_Button*, void*);
@@ -219,9 +219,10 @@ public:
   */
   static Fl_File_Sort_F *sort; 
 private:
-  fltk::Widget* ext_group; 
+  Fl_Widget* ext_group; 
 public:
-  fltk::Widget* add_extra(fltk::Widget* gr);
+  Fl_Widget* add_extra(Fl_Widget* gr);
+  Fl_File_Browser *browser(void) {return fileList; };
 };
 FL_EXPORT char *fl_dir_chooser(const char *message,const char *fname,int relative=0);
 FL_EXPORT char *fl_file_chooser(const char *message,const char *pat,const char *fname,int relative=0);

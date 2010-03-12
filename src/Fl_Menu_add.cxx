@@ -103,7 +103,7 @@ static int compare(const char* a, const char* b) {
 int Fl_Menu_Item::add(
   const char *mytext,
   int sc,
-                      fltk::Callback *cb,	
+  Fl_Callback *cb,	
   void *data,
   int myflags
 ) {
@@ -235,7 +235,7 @@ int Fl_Menu_Item::add(
    ^ - Control
   \endverbatim
   Text shortcuts are converted to integer shortcut by calling 
-  Fl_Shortcut fl_old_shortcut(const char*).
+  unsigned int fl_old_shortcut(const char*).
 
   \par callback
   The callback to invoke when this menu item is selected. 
@@ -265,7 +265,7 @@ int Fl_Menu_Item::add(
   \endcode
 
  */
-int Fl_Menu_::add(const char *label,int shortcut,fltk::Callback *callback,void *userdata,int flags) {
+int Fl_Menu_::add(const char *label,int shortcut,Fl_Callback *callback,void *userdata,int flags) {
   // make this widget own the local array:
   if (this != fl_menu_array_owner) {
     if (fl_menu_array_owner) {

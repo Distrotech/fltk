@@ -167,7 +167,7 @@ void Fl_Slider::draw(int X, int Y, int W, int H) {
     if (wsl>0 && hsl>0) draw_box(box1, xsl, ysl, wsl, hsl, selection_color());
 
     if (type()!=FL_HOR_FILL_SLIDER && type() != FL_VERT_FILL_SLIDER &&
-        fltk::scheme_ && !strcmp(fltk::scheme_, "gtk+")) {
+        Fl::scheme_ && !strcmp(Fl::scheme_, "gtk+")) {
       if (W>H && wsl>(hsl+8)) {
         // Draw horizontal grippers
 	int yy, hh;
@@ -207,7 +207,7 @@ void Fl_Slider::draw(int X, int Y, int W, int H) {
   }
 
   draw_label(xsl, ysl, wsl, hsl);
-  if (fltk::focus() == this) {
+  if (Fl::focus() == this) {
     if (type() == FL_HOR_FILL_SLIDER || type() == FL_VERT_FILL_SLIDER) draw_focus();
     else draw_focus(box1, xsl, ysl, wsl, hsl);
   }
@@ -215,17 +215,21 @@ void Fl_Slider::draw(int X, int Y, int W, int H) {
 
 void Fl_Slider::draw() {
   if (damage()&FL_DAMAGE_ALL) draw_box();
-  draw(x()+fltk::box_dx(box()),
-       y()+fltk::box_dy(box()),
-       w()-fltk::box_dw(box()),
-       h()-fltk::box_dh(box()));
+  draw(x()+Fl::box_dx(box()),
+       y()+Fl::box_dy(box()),
+       w()-Fl::box_dw(box()),
+       h()-Fl::box_dh(box()));
 }
 
 int Fl_Slider::handle(int event, int X, int Y, int W, int H) {
+  // Fl_Widget_Tracker wp(this);
   switch (event) {
-  case FL_PUSH:
-      if (!fltk::event_inside(X, Y, W, H)) return 0;
+  case FL_PUSH: {
+    Fl_Widget_Tracker wp(this);
+    if (!Fl::event_inside(X, Y, W, H)) return 0;
     handle_push();
+    if (wp.deleted()) return 1; }
+    // fall through ...
   case FL_DRAG: {
 
     double val;
@@ -238,7 +242,7 @@ int Fl_Slider::handle(int event, int X, int Y, int W, int H) {
     }
 
     int ww = (horizontal() ? W : H);
-    int mx = (horizontal() ? fltk::event_x()-X : fltk::event_y()-Y);
+    int mx = (horizontal() ? Fl::event_x()-X : Fl::event_y()-Y);
     int S;
     static int offcenter;
 
@@ -293,39 +297,49 @@ int Fl_Slider::handle(int event, int X, int Y, int W, int H) {
   case FL_RELEASE:
     handle_release();
     return 1;
-  case FL_KEYBOARD :
-      switch (fltk::event_key()) {
-      case FL_Up:
-        if (horizontal()) return 0;
-        handle_push();
-	handle_drag(clamp(increment(value(),-1)));
-	handle_release();
-	return 1;
-      case FL_Down:
-        if (horizontal()) return 0;
-        handle_push();
-	handle_drag(clamp(increment(value(),1)));
-	handle_release();
-	return 1;
-      case FL_Left:
-        if (!horizontal()) return 0;
-        handle_push();
-	handle_drag(clamp(increment(value(),-1)));
-	handle_release();
-	return 1;
-      case FL_Right:
-        if (!horizontal()) return 0;
-        handle_push();
-	handle_drag(clamp(increment(value(),1)));
-	handle_release();
-	return 1;
-      default:
-        return 0;
+  case FL_KEYBOARD:
+    { Fl_Widget_Tracker wp(this);
+      switch (Fl::event_key()) {
+	case FL_Up:
+	  if (horizontal()) return 0;
+	  handle_push();
+	  if (wp.deleted()) return 1;
+	  handle_drag(clamp(increment(value(),-1)));
+	  if (wp.deleted()) return 1;
+	  handle_release();
+	  return 1;
+	case FL_Down:
+	  if (horizontal()) return 0;
+	  handle_push();
+	  if (wp.deleted()) return 1;
+	  handle_drag(clamp(increment(value(),1)));
+	  if (wp.deleted()) return 1;
+	  handle_release();
+	  return 1;
+	case FL_Left:
+	  if (!horizontal()) return 0;
+	  handle_push();
+	  if (wp.deleted()) return 1;
+	  handle_drag(clamp(increment(value(),-1)));
+	  if (wp.deleted()) return 1;
+	  handle_release();
+	  return 1;
+	case FL_Right:
+	  if (!horizontal()) return 0;
+	  handle_push();
+	  if (wp.deleted()) return 1;
+	  handle_drag(clamp(increment(value(),1)));
+	  if (wp.deleted()) return 1;
+	  handle_release();
+	  return 1;
+	default:
+	  return 0;
+      }
     }
     // break not required because of switch...
   case FL_FOCUS :
   case FL_UNFOCUS :
-      if (fltk::visible_focus()) {
+    if (Fl::visible_focus()) {
       redraw();
       return 1;
     } else return 0;
@@ -338,16 +352,16 @@ int Fl_Slider::handle(int event, int X, int Y, int W, int H) {
 }
 
 int Fl_Slider::handle(int event) {
-  if (event == FL_PUSH && fltk::visible_focus()) {
-    fltk::focus(this);
+  if (event == FL_PUSH && Fl::visible_focus()) {
+    Fl::focus(this);
     redraw();
   }
 
   return handle(event,
-                x()+fltk::box_dx(box()),
-                y()+fltk::box_dy(box()),
-                w()-fltk::box_dw(box()),
-                h()-fltk::box_dh(box()));
+		x()+Fl::box_dx(box()),
+		y()+Fl::box_dy(box()),
+		w()-Fl::box_dw(box()),
+		h()-Fl::box_dh(box()));
 }
 
 //

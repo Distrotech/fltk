@@ -32,8 +32,8 @@
 #define REPEAT .1
 
 void Fl_Repeat_Button::repeat_callback(void *v) {
-  fltk::Button *b = (fltk::Button*)v;
-  fltk::add_timeout(REPEAT,repeat_callback,b);
+  Fl_Button *b = (Fl_Button*)v;
+  Fl::add_timeout(REPEAT,repeat_callback,b);
   b->do_callback();
 }
 
@@ -46,22 +46,22 @@ int Fl_Repeat_Button::handle(int event) {
     newval = 0; goto J1;
   case FL_PUSH:
   case FL_DRAG:
-      if (fltk::visible_focus()) fltk::focus(this);
-      newval = fltk::event_inside(this);
+    if (Fl::visible_focus()) Fl::focus(this);
+    newval = Fl::event_inside(this);
   J1:
     if (!active()) 
       newval = 0;
     if (value(newval)) {
       if (newval) {
-        fltk::add_timeout(INITIALREPEAT,repeat_callback,this);
+	Fl::add_timeout(INITIALREPEAT,repeat_callback,this);
 	do_callback();
       } else {
-        fltk::remove_timeout(repeat_callback,this);
+	Fl::remove_timeout(repeat_callback,this);
       }
     }
     return 1;
   default:
-      return fltk::Button::handle(event);
+    return Fl_Button::handle(event);
   }
 }
 

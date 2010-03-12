@@ -364,6 +364,7 @@ case $uname in
 # QD is not supported anymore since 1.3
 	AC_DEFINE(USE_QUARTZ, 1)
 	AC_DEFINE(__APPLE_QUARTZ__)
+	AC_DEFINE(__APPLE_COCOA__)
 	;;
 esac
 
@@ -827,8 +828,8 @@ case $uname_GUI in
 	;;
 
     Darwin*)
-        # MacOS X uses Carbon for graphics...
-        LIBS="$LIBS -framework Carbon -framework ApplicationServices"
+        # MacOS X uses Cocoa for graphics. There are still some Carbon leftovers.
+        LIBS="$LIBS -framework Carbon -framework Cocoa -framework ApplicationServices -framework AudioToolbox"
 
 	if test x$have_pthread = xyes; then
 	    AC_DEFINE(HAVE_PTHREAD)

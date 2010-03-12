@@ -46,7 +46,7 @@
   by the Fl_Text_Buffer
   class.
 */
-class FL_EXPORT Fl_Text_Display: public fltk::Group {
+class FL_EXPORT Fl_Text_Display: public Fl_Group {
   public:
     /** text display cursor shapes enumeration */
     enum {
@@ -58,7 +58,7 @@ class FL_EXPORT Fl_Text_Display: public fltk::Group {
       CURSOR_POS, CHARACTER_POS
     };
 
-    /** drag types- they match fltk::event_clicks() so that single clicking to
+    /** drag types- they match Fl::event_clicks() so that single clicking to
         start a collection selects by character, double clicking selects by
         word and triple clicking selects by line.
     */

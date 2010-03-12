@@ -188,14 +188,14 @@ void Fl_Menu_Item::draw(int x, int y, int w, int h, const Fl_Menu_* m,
     if (flags & FL_MENU_RADIO) {
       fl_draw_box(FL_ROUND_DOWN_BOX, x+2, y+d, W, W, FL_BACKGROUND2_COLOR);
       if (value()) {
-        int tW = (W - fltk::box_dw(FL_ROUND_DOWN_BOX)) / 2 + 1;
+	int tW = (W - Fl::box_dw(FL_ROUND_DOWN_BOX)) / 2 + 1;
 	if ((W - tW) & 1) tW++;	// Make sure difference is even to center
-        int td = fltk::box_dx(FL_ROUND_DOWN_BOX) + 1;
-        if (fltk::scheme()) {
+	int td = Fl::box_dx(FL_ROUND_DOWN_BOX) + 1;
+        if (Fl::scheme()) {
 	  // Offset the radio circle...
 	  td ++;
 
-          if (!strcmp(fltk::scheme(), "gtk+")) {
+	  if (!strcmp(Fl::scheme(), "gtk+")) {
 	    fl_color(FL_SELECTION_COLOR);
 	    tW --;
 	    fl_pie(x + td + 1, y + d + td - 1, tW + 3, tW + 3, 0.0, 360.0);
@@ -230,7 +230,7 @@ void Fl_Menu_Item::draw(int x, int y, int w, int h, const Fl_Menu_* m,
 	    break;
 	}
 
-        if (fltk::scheme() && !strcmp(fltk::scheme(), "gtk+")) {
+	if (Fl::scheme() && !strcmp(Fl::scheme(), "gtk+")) {
 	  fl_color(fl_color_average(FL_WHITE, FL_SELECTION_COLOR, 0.5));
 	  fl_arc(x + td + 2, y + d + td, tW + 1, tW + 1, 60.0, 180.0);
 	}
@@ -238,7 +238,7 @@ void Fl_Menu_Item::draw(int x, int y, int w, int h, const Fl_Menu_* m,
     } else {
       fl_draw_box(FL_DOWN_BOX, x+2, y+d, W, W, FL_BACKGROUND2_COLOR);
       if (value()) {
-        if (fltk::scheme() && !strcmp(fltk::scheme(), "gtk+")) {
+	if (Fl::scheme() && !strcmp(Fl::scheme(), "gtk+")) {
 	  fl_color(FL_SELECTION_COLOR);
 	} else {
 	  fl_color(labelcolor_);
@@ -270,7 +270,7 @@ menutitle::menutitle(int X, int Y, int W, int H, const Fl_Menu_Item* L) :
   clear_border();
   set_menu_window();
   menu = L;
-    if (L->labelcolor_ || fltk::scheme() || L->labeltype_ > FL_NO_LABEL) clear_overlay();
+  if (L->labelcolor_ || Fl::scheme() || L->labeltype_ > FL_NO_LABEL) clear_overlay();
 }
 
 menuwindow::menuwindow(const Fl_Menu_Item* m, int X, int Y, int Wp, int Hp,
@@ -281,7 +281,7 @@ menuwindow::menuwindow(const Fl_Menu_Item* m, int X, int Y, int Wp, int Hp,
   int scr_x, scr_y, scr_w, scr_h;
   int tx = X, ty = Y;
 
-  fltk::screen_xywh(scr_x, scr_y, scr_w, scr_h);
+  Fl::screen_xywh(scr_x, scr_y, scr_w, scr_h);
   if (!right_edge || right_edge > scr_x+scr_w) right_edge = scr_x+scr_w;
 
   end();
@@ -297,7 +297,7 @@ menuwindow::menuwindow(const Fl_Menu_Item* m, int X, int Y, int Wp, int Hp,
   } else {
     box(FL_UP_BOX);
   }
-  color(button && !fltk::scheme() ? button->color() : FL_GRAY);
+  color(button && !Fl::scheme() ? button->color() : FL_GRAY);
   selected = -1;
   {
     int j = 0;
@@ -330,18 +330,30 @@ menuwindow::menuwindow(const Fl_Menu_Item* m, int X, int Y, int Wp, int Hp,
     if (hh+LEADING>itemheight) itemheight = hh+LEADING;
     if (m->flags&(FL_SUBMENU|FL_SUBMENU_POINTER)) w1 += 14;
     if (w1 > W) W = w1;
+    // calculate the maximum width of all shortcuts
     if (m->shortcut_) {
+      // s is a pointerto the utf8 string for the entire shortcut
+      // k points only to the key part (minus the modifier keys)
       const char *k, *s = fl_shortcut_label(m->shortcut_, &k);
-      w1 = int(fl_width(s, k-s));
-      if (w1 > hotModsw) hotModsw = w1;
-      w1 = int(fl_width(k))+4;
-      if (w1 > hotKeysw) hotKeysw = w1;
+      if (fl_utf_nb_char((const unsigned char*)k, strlen(k))<=4) {
+        // a regular shortcut has a right-justified modifier followed by a left-justified key
+        w1 = int(fl_width(s, k-s));
+        if (w1 > hotModsw) hotModsw = w1;
+        w1 = int(fl_width(k))+4;
+        if (w1 > hotKeysw) hotKeysw = w1;
+      } else {
+        // a shortcut with a long modifier is right-justified to the menu
+        w1 = int(fl_width(s))+4;
+        if (w1 > (hotModsw+hotKeysw)) {
+          hotModsw = w1-hotKeysw;
+        }
+      }
     }
-    if (m->labelcolor_ || fltk::scheme() || m->labeltype_ > FL_NO_LABEL) clear_overlay();
+    if (m->labelcolor_ || Fl::scheme() || m->labeltype_ > FL_NO_LABEL) clear_overlay();
   }
   shortcutWidth = hotKeysw;
   if (selected >= 0 && !Wp) X -= W/2;
-  int BW = fltk::box_dx(box());
+  int BW = Fl::box_dx(box());
   W += hotKeysw+hotModsw+2*BW+7;
   if (Wp > W) W = Wp;
   if (Wtitle > W) W = Wtitle;
@@ -363,10 +375,10 @@ menuwindow::menuwindow(const Fl_Menu_Item* m, int X, int Y, int Wp, int Hp,
       } else if (t) {
         // assume that the menubar item height relates to the first
         // menuitem as well
-        Y = Y-itemheight-h()-fltk::box_dh(box());
+        Y = Y-itemheight-h()-Fl::box_dh(box());
       } else {
         // draw the menu to the right
-        Y = Y-h()+itemheight+fltk::box_dy(box());
+        Y = Y-h()+itemheight+Fl::box_dy(box());
       }
     }
   }
@@ -374,7 +386,7 @@ menuwindow::menuwindow(const Fl_Menu_Item* m, int X, int Y, int Wp, int Hp,
 
   if (t) {
     if (menubar_title) {
-      int dy = fltk::box_dy(button->box())+1;
+      int dy = Fl::box_dy(button->box())+1;
       int ht = button->h()-dy*2;
       title = new menutitle(tx, ty-ht-dy, Wtitle, ht, t);
     } else {
@@ -401,9 +413,9 @@ void menuwindow::position(int X, int Y) {
 // scroll so item i is visible on screen
 void menuwindow::autoscroll(int n) {
   int scr_x, scr_y, scr_w, scr_h;
-  int Y = y()+fltk::box_dx(box())+2+n*itemheight;
+  int Y = y()+Fl::box_dx(box())+2+n*itemheight;
 
-  fltk::screen_xywh(scr_x, scr_y, scr_w, scr_h);
+  Fl::screen_xywh(scr_x, scr_y, scr_w, scr_h);
   if (Y <= scr_y) Y = scr_y-Y+10;
   else {
     Y = Y+itemheight-scr_h-scr_y;
@@ -419,7 +431,7 @@ void menuwindow::autoscroll(int n) {
 void menuwindow::drawentry(const Fl_Menu_Item* m, int n, int eraseit) {
   if (!m) return; // this happens if -1 is selected item and redrawn
 
-  int BW = fltk::box_dx(box());
+  int BW = Fl::box_dx(box());
   int xx = BW;
   int W = w();
   int ww = W-2*BW-1;
@@ -446,9 +458,15 @@ void menuwindow::drawentry(const Fl_Menu_Item* m, int n, int eraseit) {
     fl_font(f, m->labelsize_ ? m->labelsize_ :
                    button ? button->textsize() : FL_NORMAL_SIZE);
     const char *k, *s = fl_shortcut_label(m->shortcut_, &k);
-    char buf[32]; strcpy(buf, s); buf[k-s] = 0;
-    fl_draw(buf, xx, yy, ww-shortcutWidth, hh, FL_ALIGN_RIGHT);
-    fl_draw(  k, xx+ww-shortcutWidth, yy, shortcutWidth, hh, FL_ALIGN_LEFT);
+    if (fl_utf_nb_char((const unsigned char*)k, strlen(k))<=4) {
+      // righ-align the modifiers and left-align the key
+      char buf[32]; strcpy(buf, s); buf[k-s] = 0;
+      fl_draw(buf, xx, yy, ww-shortcutWidth, hh, FL_ALIGN_RIGHT);
+      fl_draw(  k, xx+ww-shortcutWidth, yy, shortcutWidth, hh, FL_ALIGN_LEFT);
+    } else {
+      // right-align to the menu
+      fl_draw(s, xx, yy, ww-4, hh, FL_ALIGN_RIGHT);
+    }
   }
 
   if (m->flags & FL_MENU_DIVIDER) {
@@ -500,8 +518,8 @@ int menuwindow::find_selected(int mx, int my) {
     }
     return n;
   }
-  if (mx < fltk::box_dx(box()) || mx >= w()) return -1;
-  int n = (my-fltk::box_dx(box())-1)/itemheight;
+  if (mx < Fl::box_dx(box()) || mx >= w()) return -1;
+  int n = (my-Fl::box_dx(box())-1)/itemheight;
   if (n < 0 || n>=numitems) return -1;
   return n;
 }
@@ -526,7 +544,7 @@ int menuwindow::is_inside(int mx, int my) {
 ////////////////////////////////////////////////////////////////
 // Fl_Menu_Item::popup(...)
 
-// Because fltk::grab() is done, all events go to one of the menu windows.
+// Because Fl::grab() is done, all events go to one of the menu windows.
 // But the handle method needs to look at all of them to find out
 // what item the user is pointing at.  And it needs a whole lot
 // of other state variables to determine what is going on with
@@ -640,7 +658,7 @@ int menuwindow::early_hide_handle(int e) {
   menustate &pp = *p;
   switch (e) {
   case FL_KEYBOARD:
-      switch (fltk::event_key()) {
+    switch (Fl::event_key()) {
     case FL_BackSpace:
     case 0xFE20: // backtab
     BACKTAB:
@@ -656,10 +674,10 @@ int menuwindow::early_hide_handle(int e) {
       }
       return 1;
     case FL_Tab:
-          if (fltk::event_shift()) goto BACKTAB;
+      if (Fl::event_shift()) goto BACKTAB;
     case FL_Down:
       if (pp.menu_number || !pp.menubar) {
-        if (!forward(pp.menu_number) && fltk::event_key()==FL_Tab) {
+        if (!forward(pp.menu_number) && Fl::event_key()==FL_Tab) {
           pp.item_number = -1;
           forward(pp.menu_number);
         }
@@ -711,8 +729,8 @@ int menuwindow::early_hide_handle(int e) {
       // right after FL_RELEASE...
       if (pp.state == DONE_STATE) return 1;
 #endif // __QNX__
-      int mx = fltk::event_x_root();
-      int my = fltk::event_y_root();
+      int mx = Fl::event_x_root();
+      int my = Fl::event_y_root();
       int item=0; int mymenu = pp.nummenus-1;
       // Clicking or dragging outside menu cancels it...
       if ((!pp.menubar || mymenu) && !pp.is_inside(mx, my)) {
@@ -756,7 +774,7 @@ int menuwindow::early_hide_handle(int e) {
   case FL_RELEASE:
     // Mouse must either be held down/dragged some, or this must be
     // the second click (not the one that popped up the menu):
-      if (!fltk::event_is_click() || pp.state == PUSH_STATE ||
+    if (!Fl::event_is_click() || pp.state == PUSH_STATE ||
 	pp.menubar && pp.current_item && !pp.current_item->submenu() // button
 	) {
 #if 0 // makes the check/radio items leave the menu up
@@ -772,7 +790,7 @@ int menuwindow::early_hide_handle(int e) {
     }
     return 1;
   }
-  return fltk::Window::handle(e);
+  return Fl_Window::handle(e);
 }
 
 /**
@@ -791,20 +809,20 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
     const Fl_Menu_* pbutton,
     const Fl_Menu_Item* t,
     int menubar) const {
-  fltk::Group::current(0); // fix possible user error...
+  Fl_Group::current(0); // fix possible user error...
 
   button = pbutton;
   if (pbutton) {
-    for (fltk::Window* w = pbutton->window(); w; w = w->window()) {
+    for (Fl_Window* w = pbutton->window(); w; w = w->window()) {
       X += w->x();
       Y += w->y();
     }
   } else {
-    X += fltk::event_x_root()-fltk::event_x();
-    Y += fltk::event_y_root()-fltk::event_y();
+    X += Fl::event_x_root()-Fl::event_x();
+    Y += Fl::event_y_root()-Fl::event_y();
   }
   menuwindow mw(this, X, Y, W, H, initial_item, t, menubar);
-  fltk::grab(mw);
+  Fl::grab(mw);
   menustate pp; p = &pp;
   pp.p[0] = &mw;
   pp.nummenus = 1;
@@ -822,7 +840,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
   if (menubar) {
     // find the initial menu
     if (!mw.handle(FL_DRAG)) {
-      fltk::grab(0);
+      Fl::grab(0);
       return 0;
     }
   }
@@ -845,7 +863,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
     // get events:
     {
       const Fl_Menu_Item* oldi = pp.current_item;
-      fltk::wait();
+      Fl::wait();
       if (pp.state == DONE_STATE) break; // done.
       if (pp.current_item == oldi) continue;
     }
@@ -930,7 +948,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
     }
   }
   const Fl_Menu_Item* m = pp.current_item;
-  fltk::grab(0);
+  Fl::grab(0);
   delete pp.fakemenu;
   while (pp.nummenus>1) delete pp.p[--pp.nummenus];
   mw.hide();
@@ -944,7 +962,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
   callbacks or change the state of check or radio items.</I>
   <P>X,Y is the position of the mouse cursor, relative to the
   window that got the most recent event (usually you can pass 
-  fltk::event_x() and fltk::event_y() unchanged here). </P>
+  Fl::event_x() and Fl::event_y() unchanged here). </P>
   <P>title is a character string title for the menu.  If
   non-zero a small box appears above the menu with the title in it. </P>
   <P>The menu is positioned so the cursor is centered over the item 
@@ -974,8 +992,8 @@ const Fl_Menu_Item* Fl_Menu_Item::find_shortcut(int* ip) const {
   const Fl_Menu_Item* m = first();
   if (m) for (int ii = 0; m->text; m = m->next(), ii++) {
     if (m->activevisible()) {
-      if (fltk::test_shortcut(m->shortcut_)
-          || fltk::Widget::test_shortcut(m->text)) {
+      if (Fl::test_shortcut(m->shortcut_)
+	 || Fl_Widget::test_shortcut(m->text)) {
 	if (ip) *ip=ii;
 	return m;
       }
@@ -1000,8 +1018,8 @@ const Fl_Menu_Item* Fl_Menu_Item::test_shortcut() const {
   if (m) for (; m->text; m = m->next()) {
     if (m->activevisible()) {
       // return immediately any match of an item in top level menu:
-      if (fltk::test_shortcut(m->shortcut_)) return m;
-      // if (fltk::Widget::test_shortcut(m->text)) return m;
+      if (Fl::test_shortcut(m->shortcut_)) return m;
+      // if (Fl_Widget::test_shortcut(m->text)) return m;
       // only return matches from lower menu if nothing found in top menu:
       if (!ret && m->submenu()) {
 	const Fl_Menu_Item* s =

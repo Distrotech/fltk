@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-// Implementation of fltk::message, fl_ask, fltk::choice, fltk::input
+// Implementation of fl_message, fl_ask, fl_choice, fl_input
 // The three-message fl_show_x functions are for forms compatibility
 // mostly.  In most cases it is easier to get a multi-line message
 // by putting newlines in the message.
@@ -47,28 +47,34 @@
 #include <FL/x.H>
 #include <FL/fl_draw.H>
 
-static fltk::Window *message_form;
+#ifdef __APPLE__
+# if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+#  include <AudioToolbox/AudioServices.h>
+# endif
+#endif
+
+static Fl_Window *message_form;
 static Fl_Box *message;
 static Fl_Box *icon;
-static fltk::Button *button[3];
+static Fl_Button *button[3];
 static Fl_Input *input;
 static const char *iconlabel = "?";
-Fl_Font fltk::message_font_ = FL_HELVETICA;
-Fl_Fontsize fltk::message_size_ = 14;
+Fl_Font fl_message_font_ = FL_HELVETICA;
+Fl_Fontsize fl_message_size_ = 14;
 
 static char avoidRecursion = 0;
 
-static fltk::Window *makeform() {
+static Fl_Window *makeform() {
  if (message_form) {
    message_form->size(410,103);
    return message_form;
  }
  // make sure that the dialog does not become the child of some 
  // current group
-  fltk::Group *previously_current_group = fltk::Group::current();
-  fltk::Group::current(0);
+ Fl_Group *previously_current_group = Fl_Group::current();
+ Fl_Group::current(0);
  // create a new top level window
-  fltk::Window *w = message_form = new fltk::Window(410,103,"");
+ Fl_Window *w = message_form = new Fl_Window(410,103,"");
  // w->clear_border();
  // w->box(FL_UP_BOX);
  (message = new Fl_Box(60, 25, 340, 20))
@@ -81,17 +87,17 @@ static fltk::Window *makeform() {
   o->color(FL_WHITE);
   o->labelcolor(FL_BLUE);
  }
-  button[0] = new fltk::Button(310, 70, 90, 23);
+ button[0] = new Fl_Button(310, 70, 90, 23);
  button[0]->shortcut(FL_Escape);
  button[0]->align(FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
  button[1] = new Fl_Return_Button(210, 70, 90, 23);
  button[1]->align(FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
-  button[2] = new fltk::Button(110, 70, 90, 23);
+ button[2] = new Fl_Button(110, 70, 90, 23);
  button[2]->align(FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
  w->resizable(new Fl_Box(60,10,110-60,27));
  w->end();
  w->set_modal();
-  fltk::Group::current(previously_current_group);
+ Fl_Group::current(previously_current_group);
  return w;
 }
 
@@ -108,7 +114,7 @@ void resizeform() {
   int	x, w, h, max_w, max_h;
 	const int icon_size = 50;
 
-  fl_font(fltk::message_font_, fltk::message_size_);
+  fl_font(fl_message_font_, fl_message_size_);
   message_w = message_h = 0;
   fl_measure(message->label(), message_w, message_h);
 
@@ -178,7 +184,7 @@ static int innards(const char* fmt, va_list ap,
   const char *b1,
   const char *b2)
 {
-  fltk::pushed(0); // stop dragging (STR #2159)
+  Fl::pushed(0); // stop dragging (STR #2159)
 
   avoidRecursion = 1;
 
@@ -191,8 +197,8 @@ static int innards(const char* fmt, va_list ap,
     message->label(buffer);
   }
 
-  message->labelfont(fltk::message_font_);
-  message->labelsize(fltk::message_size_);
+  message->labelfont(fl_message_font_);
+  message->labelsize(fl_message_size_);
   if (b0) {button[0]->show(); button[0]->label(b0); button[1]->position(210,70);}
   else {button[0]->hide(); button[1]->position(310,70);}
   if (b1) {button[1]->show(); button[1]->label(b1);}
@@ -207,26 +213,26 @@ static int innards(const char* fmt, va_list ap,
   if (button[1]->visible() && !input->visible()) 
     button[1]->take_focus();
   message_form->hotspot(button[0]);
-  if (b0 && fltk::Widget::label_shortcut(b0))
+  if (b0 && Fl_Widget::label_shortcut(b0))
     button[0]->shortcut(0);
   else
     button[0]->shortcut(FL_Escape);
 
   message_form->show();
-  // deactivate fltk::grab(), because it is incompatible with fltk::readqueue()
-  fltk::Window* g = fltk::grab();
-  if (g) fltk::grab(0);
+  // deactivate Fl::grab(), because it is incompatible with Fl::readqueue()
+  Fl_Window* g = Fl::grab();
+  if (g) Fl::grab(0);
   int r = 0;
   for (;;) {
-    fltk::Widget *o = fltk::readqueue();
-    if (!o) fltk::wait();
+    Fl_Widget *o = Fl::readqueue();
+    if (!o) Fl::wait();
     else if (o == button[0]) {r = 0; break;}
     else if (o == button[1]) {r = 1; break;}
     else if (o == button[2]) {r = 2; break;}
     else if (o == message_form) {r = 0; break;}
   }
   if (g) // regrab the previous popup menu, if there was one
-    fltk::grab(g);
+    Fl::grab(g);
   message_form->hide();
   icon->label(prev_icon_label);
 
@@ -238,31 +244,31 @@ static int innards(const char* fmt, va_list ap,
     @{ */
  
 // pointers you can use to change FLTK to a foreign language:
-const char* fltk::no = "No";        ///< string pointer used in common dialogs, you can change it to a foreign language
-const char* fltk::yes= "Yes";       ///< string pointer used in common dialogs, you can change it to a foreign language
-const char* fltk::ok = "OK";        ///< string pointer used in common dialogs, you can change it to a foreign language
-const char* fltk::cancel= "Cancel"; ///< string pointer used in common dialogs, you can change it to a foreign language
-const char* fltk::close= "Close";   ///< string pointer used in common dialogs, you can change it to a foreign language
+const char* fl_no = "No";        ///< string pointer used in common dialogs, you can change it to a foreign language
+const char* fl_yes= "Yes";       ///< string pointer used in common dialogs, you can change it to a foreign language
+const char* fl_ok = "OK";        ///< string pointer used in common dialogs, you can change it to a foreign language
+const char* fl_cancel= "Cancel"; ///< string pointer used in common dialogs, you can change it to a foreign language
+const char* fl_close= "Close";   ///< string pointer used in common dialogs, you can change it to a foreign language
 
 // fltk functions:
 
 /**
    Emits a system beep message.
  */
-void fltk::beep(int type) {
+void fl_beep(int type) {
 #ifdef WIN32
   switch (type) {
-    case fltk::BEEP_QUESTION :
-    case fltk::BEEP_PASSWORD :
+    case FL_BEEP_QUESTION :
+    case FL_BEEP_PASSWORD :
       MessageBeep(MB_ICONQUESTION);
       break;
-    case fltk::BEEP_MESSAGE :
+    case FL_BEEP_MESSAGE :
       MessageBeep(MB_ICONASTERISK);
       break;
-    case fltk::BEEP_NOTIFICATION :
+    case FL_BEEP_NOTIFICATION :
       MessageBeep(MB_ICONASTERISK);
       break;
-    case fltk::BEEP_ERROR :
+    case FL_BEEP_ERROR :
       MessageBeep(MB_ICONERROR);
       break;
     default :
@@ -271,17 +277,36 @@ void fltk::beep(int type) {
   }
 #elif defined(__APPLE__)
   switch (type) {
-    case fltk::BEEP_DEFAULT :
-    case fltk::BEEP_ERROR :
-      SysBeep(30);
+    case FL_BEEP_DEFAULT :
+    case FL_BEEP_ERROR :
+      // How Apple is not any better than Microsoft:
+      /* MacOS 8 */   // SysBeep(30);
+      /* OS X 10.1 */ // AlertSoundPlay();
+      /* OS X 10.5 */ // AudioServicesPlayAlertSound(kUserPreferredAlert);
+      /* OS X 10.6 */ // AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
+# if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+      if (AudioServicesPlayAlertSound!=0L)
+#   if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+        AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
+#   else
+        AudioServicesPlayAlertSound(kUserPreferredAlert);
+#   endif
+      else
+# endif
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+        AlertSoundPlay();
+#else
+    {
+    }
+#endif
       break;
     default :
       break;
   }
 #else
   switch (type) {
-    case fltk::BEEP_DEFAULT :
-    case fltk::BEEP_ERROR :
+    case FL_BEEP_DEFAULT :
+    case FL_BEEP_ERROR :
       if (!fl_display) fl_open_display();
 
       XBell(fl_display, 100);
@@ -301,17 +326,17 @@ void fltk::beep(int type) {
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
  */
-void fltk::message(const char *fmt, ...) {
+void fl_message(const char *fmt, ...) {
 
   if (avoidRecursion) return;
 
   va_list ap;
 
-  fltk::beep(fltk::BEEP_MESSAGE);
+  fl_beep(FL_BEEP_MESSAGE);
 
   va_start(ap, fmt);
   iconlabel = "i";
-  innards(fmt, ap, 0, fltk::close, 0);
+  innards(fmt, ap, 0, fl_close, 0);
   va_end(ap);
   iconlabel = "?";
 }
@@ -323,17 +348,17 @@ void fltk::message(const char *fmt, ...) {
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
  */
-void fltk::alert(const char *fmt, ...) {
+void fl_alert(const char *fmt, ...) {
 
   if (avoidRecursion) return;
 
   va_list ap;
 
-  fltk::beep(fltk::BEEP_ERROR);
+  fl_beep(FL_BEEP_ERROR);
 
   va_start(ap, fmt);
   iconlabel = "!";
-  innards(fmt, ap, 0, fltk::close, 0);
+  innards(fmt, ap, 0, fl_close, 0);
   va_end(ap);
   iconlabel = "?";
 }
@@ -347,16 +372,16 @@ void fltk::alert(const char *fmt, ...) {
    \retval 0 if the no button is selected or another dialog box is still open
    \retval 1 if yes is selected
  */
-int fltk::ask(const char *fmt, ...) {
+int fl_ask(const char *fmt, ...) {
 
   if (avoidRecursion) return 0;
 
   va_list ap;
 
-  fltk::beep(fltk::BEEP_QUESTION);
+  fl_beep(FL_BEEP_QUESTION);
 
   va_start(ap, fmt);
-  int r = innards(fmt, ap, fltk::no, fltk::yes, 0);
+  int r = innards(fmt, ap, fl_no, fl_yes, 0);
   va_end(ap);
 
   return r;
@@ -376,13 +401,13 @@ int fltk::ask(const char *fmt, ...) {
    \retval 1 if the second button with \p b1 text is selected
    \retval 2 if the third button with \p b2 text is selected
  */
-int fltk::choice(const char*fmt,const char *b0,const char *b1,const char *b2,...){
+int fl_choice(const char*fmt,const char *b0,const char *b1,const char *b2,...){
 
   if (avoidRecursion) return 0;
 
   va_list ap;
 
-  fltk::beep(fltk::BEEP_QUESTION);
+  fl_beep(FL_BEEP_QUESTION);
 
   va_start(ap, b2);
   int r = innards(fmt, ap, b0, b1, b2);
@@ -390,10 +415,10 @@ int fltk::choice(const char*fmt,const char *b0,const char *b1,const char *b2,...
   return r;
 }
 /** Gets the Fl_Box icon container of the current default dialog used in 
-    many common dialogs like fltk::message(), fltk::alert(), 
-    fltk::ask(), fltk::choice(), fltk::input(), fltk::password() 
+    many common dialogs like fl_message(), fl_alert(), 
+    fl_ask(), fl_choice(), fl_input(), fl_password() 
 */ 
-fltk::Widget *fltk::message_icon() {makeform(); return icon;}
+Fl_Widget *fl_message_icon() {makeform(); return icon;}
 
 static const char* input_innards(const char* fmt, va_list ap,
 				 const char* defstr, uchar type) {
@@ -404,7 +429,7 @@ static const char* input_innards(const char* fmt, va_list ap,
   input->value(defstr);
   input->take_focus();
 
-  int r = innards(fmt, ap, fltk::cancel, fltk::ok, 0);
+  int r = innards(fmt, ap, fl_cancel, fl_ok, 0);
   input->hide();
   message->position(60,25);
   return r ? input->value() : 0;
@@ -419,11 +444,11 @@ static const char* input_innards(const char* fmt, va_list ap,
    \param[in] defstr defines the default returned string if no text is entered
    \return the user string input if OK was pushed, NULL if Cancel was pushed or another dialog box was still open
  */
-const char* fltk::input(const char *fmt, const char *defstr, ...) {
+const char* fl_input(const char *fmt, const char *defstr, ...) {
 
   if (avoidRecursion) return 0;
 
-  fltk::beep(fltk::BEEP_QUESTION);
+  fl_beep(FL_BEEP_QUESTION);
 
   va_list ap;
   va_start(ap, defstr);
@@ -434,7 +459,7 @@ const char* fltk::input(const char *fmt, const char *defstr, ...) {
 
 /** Shows an input dialog displaying the \p fmt message.
 
-    Like fltk::input() except the input text is not shown,
+    Like fl_input() except the input text is not shown,
     '*' characters are displayed instead.
 
    \note Common dialog boxes are application modal. No more than one common dialog box
@@ -444,11 +469,11 @@ const char* fltk::input(const char *fmt, const char *defstr, ...) {
    \param[in] defstr defines the default returned string if no text is entered
    \return the user string input if OK was pushed, NULL if Cancel was pushed or aother dialog box was still open
  */
-const char *fltk::password(const char *fmt, const char *defstr, ...) {
+const char *fl_password(const char *fmt, const char *defstr, ...) {
 
   if (avoidRecursion) return 0;
 
-  fltk::beep(fltk::BEEP_PASSWORD);
+  fl_beep(FL_BEEP_PASSWORD);
 
   va_list ap;
   va_start(ap, defstr);

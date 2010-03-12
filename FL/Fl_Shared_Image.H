@@ -33,13 +33,6 @@
 
 #  include "Fl_Image.H"
 
-#include "../FL3/SharedImage.h"
-
-#define Fl_Shared_Image fltk::SharedImage
-
-#define fl_register_images fltk::register_images
-
-#if 0
 
 // Test function for adding new formats
 typedef Fl_Image *(*Fl_Shared_Handler)(const char *name, uchar *header,
@@ -102,7 +95,13 @@ class FL_EXPORT Fl_Shared_Image : public Fl_Image {
   static void		remove_handler(Fl_Shared_Handler f);
 };
 
-#endif
+//
+// The following function is provided in the fltk_images library and
+// registers all of the "extra" image file formats that are not part
+// of the core FLTK library...
+//
+
+FL_EXPORT extern void fl_register_images();
 
 #endif // !Fl_Shared_Image_H
 

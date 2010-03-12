@@ -273,7 +273,7 @@ GLContext fl_create_gl_context(XVisualInfo* vis) {
 
 #elif defined(WIN32)
 
-GLContext fl_create_gl_context(fltk::Window* window, const Fl_Gl_Choice* g, int layer) {
+GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int layer) {
   Fl_X* i = Fl_X::i(window);
   HDC hdc = i->private_dc;
   if (!hdc) {
@@ -295,30 +295,44 @@ GLContext fl_create_gl_context(fltk::Window* window, const Fl_Gl_Choice* g, int 
 }
 
 #  elif defined(__APPLE_QUARTZ__)
-  // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
-GLContext fl_create_gl_context(fltk::Window* window, const Fl_Gl_Choice* g, int layer) {
-    GLContext context, shared_ctx = 0;
-    if (context_list && nContext) shared_ctx = context_list[0];
-    context = aglCreateContext( g->pixelformat, shared_ctx);
-    if (!context) return 0;
-    add_context((GLContext)context);
-    if ( window->parent() ) {
-      Rect wrect; GetWindowPortBounds( fl_xid(window), &wrect );
-      GLint rect[] = { window->x(), wrect.bottom-window->h()-window->y(), window->w(), window->h() };
-      aglSetInteger( (GLContext)context, AGL_BUFFER_RECT, rect );
-      aglEnable( (GLContext)context, AGL_BUFFER_RECT );
-    }
-    aglSetDrawable( context, GetWindowPort( fl_xid(window) ) );
-    return (context);
+// warning: the Quartz version should probably use Core GL (CGL) instead of AGL
+GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int layer) {
+  GLContext context, shared_ctx = 0;
+  if (context_list && nContext) shared_ctx = context_list[0];
+  context = aglCreateContext( g->pixelformat, shared_ctx);
+  if (!context) return 0;
+  add_context((GLContext)context);
+  if ( window->parent() ) {
+#ifdef __APPLE_COCOA__
+	int H = window->window()->h();
+	GLint rect[] = { window->x(), H-window->h()-window->y(), window->w(), window->h() };
+#else
+	Rect wrect; 
+	GetWindowPortBounds( fl_xid(window), &wrect );
+	GLint rect[] = { window->x(), wrect.bottom-window->h()-window->y(), window->w(), window->h() };
+#endif
+	aglSetInteger( (GLContext)context, AGL_BUFFER_RECT, rect );
+	aglEnable( (GLContext)context, AGL_BUFFER_RECT );
+  }
+#if defined(__APPLE_COCOA__) 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+  aglSetWindowRef(context, MACwindowRef(window) );
+#else
+  aglSetDrawable( context, GetWindowPort( MACwindowRef(window) ) );
+#endif
+#else
+  aglSetDrawable( context, GetWindowPort( fl_xid(window) ) );
+#endif
+  return (context);
 }
 #  else
 #    error unsupported platform
 #  endif
 
 static GLContext cached_context;
-static fltk::Window* cached_window;
+static Fl_Window* cached_window;
 
-void fl_set_gl_context(fltk::Window* w, GLContext context) {
+void fl_set_gl_context(Fl_Window* w, GLContext context) {
   if (context != cached_context || w != cached_window) {
     cached_context = context;
     cached_window = w;
@@ -329,12 +343,26 @@ void fl_set_gl_context(fltk::Window* w, GLContext context) {
 #  elif defined(__APPLE_QUARTZ__)
     // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
     if ( w->parent() ) { //: resize our GL buffer rectangle
-      Rect wrect; GetWindowPortBounds( fl_xid(w), &wrect );
+#ifdef __APPLE_COCOA__
+	  int H = w->window()->h();
+	  GLint rect[] = { w->x(), H-w->h()-w->y(), w->w(), w->h() };
+#else
+      Rect wrect; 
+	  GetWindowPortBounds( fl_xid(w), &wrect );
       GLint rect[] = { w->x(), wrect.bottom-w->h()-w->y(), w->w(), w->h() };
+#endif
       aglSetInteger( context, AGL_BUFFER_RECT, rect );
       aglEnable( context, AGL_BUFFER_RECT );
     }
-    aglSetDrawable(context, GetWindowPort( fl_xid(w) ) );
+#if defined(__APPLE_COCOA__) 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+  aglSetWindowRef(context, MACwindowRef(w) );
+#else
+  aglSetDrawable( context, GetWindowPort( MACwindowRef(w) ) );
+#endif
+#else
+  aglSetDrawable( context, GetWindowPort( fl_xid(w) ) );
+#endif
     aglSetCurrentContext(context);
 #  else
 #   error unsupported platform
@@ -352,7 +380,11 @@ void fl_no_gl_context() {
 #  elif defined(__APPLE_QUARTZ__)
   // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
   AGLContext ctx = aglGetCurrentContext();
+#   if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+  if (ctx) aglSetWindowRef(ctx, NULL);
+#    else
   if (ctx) aglSetDrawable(ctx, NULL);
+#    endif
   aglSetCurrentContext(0);
 #  else
 #    error unsupported platform

@@ -79,7 +79,7 @@ static int scroll_x = 0;
 
 /**  Creates a new text display widget.*/
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
-: fltk::Group(X, Y, W, H, l) {
+    : Fl_Group(X, Y, W, H, l) {
   int i;
 
   mMaxsize = 0;
@@ -102,14 +102,14 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
   text_area.h = 0;
 
   mVScrollBar = new Fl_Scrollbar(0,0,1,1);
-      mVScrollBar->callback((fltk::Callback*)v_scrollbar_cb, this);
+  mVScrollBar->callback((Fl_Callback*)v_scrollbar_cb, this);
   mHScrollBar = new Fl_Scrollbar(0,0,1,1);
-      mHScrollBar->callback((fltk::Callback*)h_scrollbar_cb, this);
+  mHScrollBar->callback((Fl_Callback*)h_scrollbar_cb, this);
   mHScrollBar->type(FL_HORIZONTAL);
 
   end();
 
-      scrollbar_width(fltk::scrollbar_size());
+  scrollbar_width(Fl::scrollbar_size());
   scrollbar_align(FL_ALIGN_BOTTOM_RIGHT);
 
   mCursorOn = 0;
@@ -158,7 +158,7 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
 */
 Fl_Text_Display::~Fl_Text_Display() {
   if (scroll_direction) {
-    fltk::remove_timeout(scroll_timer_cb, this);
+    Fl::remove_timeout(scroll_timer_cb, this);
     scroll_direction = 0;
   }
   if (mBuffer) {
@@ -369,12 +369,12 @@ void Fl_Text_Display::resize(int X, int Y, int W, int H) {
   printf("    oldWidth=%d, mContinuousWrap=%d, mWrapMargin=%d\n", oldWidth,
          mContinuousWrap, mWrapMargin);
 #endif // DEBUG
-  fltk::Widget::resize(X,Y,W,H);
+  Fl_Widget::resize(X,Y,W,H);
   if (!buffer()) return;
-  X += fltk::box_dx(box());
-  Y += fltk::box_dy(box());
-  W -= fltk::box_dw(box());
-  H -= fltk::box_dh(box());
+  X += Fl::box_dx(box());
+  Y += Fl::box_dy(box());
+  W -= Fl::box_dw(box());
+  H -= Fl::box_dh(box());
 
   text_area.x = X+LEFT_MARGIN;
   text_area.y = Y+TOP_MARGIN;
@@ -1500,7 +1500,7 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum ) const {
     if ( empty_vlines() ) {
       if ( mLastChar < mBuffer->length() ) {
         if ( !position_to_line( mLastChar, lineNum ) ) {
-          fltk::error("Fl_Text_Display::position_to_line(): Consistency check ptvl failed");
+          Fl::error("Fl_Text_Display::position_to_line(): Consistency check ptvl failed");
           return 0;
         }
         return ++( *lineNum ) <= mNVisibleLines - 1;
@@ -1569,7 +1569,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
      prevent a potential infinite loop if X does not advance */
   stdCharWidth = TMPFONTWIDTH;   //mFontStruct->max_bounds.width;
   if ( stdCharWidth <= 0 ) {
-    fltk::error("Fl_Text_Display::draw_vline(): bad font measurement");
+    Fl::error("Fl_Text_Display::draw_vline(): bad font measurement");
     if (lineStr) free((void *)lineStr);
     return;
   }
@@ -1793,19 +1793,19 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
     fsize = styleRec->size;
 
     if (style & PRIMARY_MASK) {
-      if (fltk::focus() == this) background = selection_color();
+      if (Fl::focus() == this) background = selection_color();
       else background = fl_color_average(color(), selection_color(), 0.4f);
     } else if (style & HIGHLIGHT_MASK) {
-      if (fltk::focus() == this) background = fl_color_average(color(), selection_color(), 0.5f);
+      if (Fl::focus() == this) background = fl_color_average(color(), selection_color(), 0.5f);
       else background = fl_color_average(color(), selection_color(), 0.6f);
     } else background = color();
     foreground = fl_contrast(styleRec->color, background);
   } else if (style & PRIMARY_MASK) {
-    if (fltk::focus() == this) background = selection_color();
+    if (Fl::focus() == this) background = selection_color();
     else background = fl_color_average(color(), selection_color(), 0.4f);
     foreground = fl_contrast(textcolor(), background);
   } else if (style & HIGHLIGHT_MASK) {
-    if (fltk::focus() == this) background = fl_color_average(color(), selection_color(), 0.5f);
+    if (Fl::focus() == this) background = fl_color_average(color(), selection_color(), 0.5f);
     else background = fl_color_average(color(), selection_color(), 0.6f);
     foreground = fl_contrast(textcolor(), background);
   } else {
@@ -1854,13 +1854,13 @@ void Fl_Text_Display::clear_rect( int style, int X, int Y,
     return;
 
   if (style & PRIMARY_MASK) {
-    if (fltk::focus()==this) {
+    if (Fl::focus()==this) {
       fl_color(selection_color());
     } else {
       fl_color(fl_color_average(color(), selection_color(), 0.4f));
     }
   } else if (style & HIGHLIGHT_MASK) {
-    if (fltk::focus()==this) {
+    if (Fl::focus()==this) {
       fl_color(fl_color_average(color(), selection_color(), 0.5f));
     } else {
       fl_color(fl_color_average(color(), selection_color(), 0.6f));
@@ -3153,7 +3153,7 @@ void Fl_Text_Display::draw(void) {
   // draw the text cursor
   if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_SCROLL | FL_DAMAGE_EXPOSE)
       && !buffer()->primary_selection()->selected() &&
-      mCursorOn && fltk::focus() == this ) {
+      mCursorOn && Fl::focus() == this ) {
     fl_push_clip(text_area.x-LEFT_MARGIN,
                  text_area.y,
                  text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
@@ -3228,25 +3228,25 @@ void Fl_Text_Display::scroll_timer_cb(void *user_data) {
     return;
   }
   fl_text_drag_me(pos, w);
-  fltk::repeat_timeout(.1, scroll_timer_cb, user_data);
+  Fl::repeat_timeout(.1, scroll_timer_cb, user_data);
 }
 
 
 int Fl_Text_Display::handle(int event) {
   if (!buffer()) return 0;
   // This isn't very elegant!
-  if (!fltk::event_inside(text_area.x, text_area.y, text_area.w, text_area.h) &&
+  if (!Fl::event_inside(text_area.x, text_area.y, text_area.w, text_area.h) &&
       !dragging && event != FL_LEAVE && event != FL_ENTER &&
       event != FL_MOVE && event != FL_FOCUS && event != FL_UNFOCUS &&
       event != FL_KEYBOARD && event != FL_KEYUP) {
-    return fltk::Group::handle(event);
+    return Fl_Group::handle(event);
   }
 
   switch (event) {
     case FL_ENTER:
     case FL_MOVE:
       if (active_r()) {
-        if (fltk::event_inside(text_area.x, text_area.y, text_area.w,
+        if (Fl::event_inside(text_area.x, text_area.y, text_area.w,
 	                     text_area.h)) window()->cursor(FL_CURSOR_INSERT);
 	else window()->cursor(FL_CURSOR_DEFAULT);
 	return 1;
@@ -3266,19 +3266,19 @@ int Fl_Text_Display::handle(int event) {
 
     case FL_PUSH: {
 	if (active_r() && window()) {
-	  if (fltk::event_inside(text_area.x, text_area.y, text_area.w,
+	  if (Fl::event_inside(text_area.x, text_area.y, text_area.w,
 	                       text_area.h)) window()->cursor(FL_CURSOR_INSERT);
 	  else window()->cursor(FL_CURSOR_DEFAULT);
 	}
 
-      if (fltk::focus() != this) {
-        fltk::focus(this);
+	if (Fl::focus() != this) {
+	  Fl::focus(this);
 	  handle(FL_FOCUS);
 	}
-      if (fltk::Group::handle(event)) return 1;
-      if (fltk::event_state()&FL_SHIFT) return handle(FL_DRAG);
+        if (Fl_Group::handle(event)) return 1;
+        if (Fl::event_state()&FL_SHIFT) return handle(FL_DRAG);
         dragging = 1;
-      int pos = xy_to_position(fltk::event_x(), fltk::event_y(), CURSOR_POS);
+        int pos = xy_to_position(Fl::event_x(), Fl::event_y(), CURSOR_POS);
         int ok = 0;
         while (!ok) {
           char c = buffer()->character( pos );
@@ -3288,7 +3288,7 @@ int Fl_Text_Display::handle(int event) {
             pos++;
           }
         }
-      dragType = fltk::event_clicks();
+        dragType = Fl::event_clicks();
         dragPos = pos;
         if (dragType == DRAG_CHAR)
           buffer()->unselect();
@@ -3307,40 +3307,40 @@ int Fl_Text_Display::handle(int event) {
 
     case FL_DRAG: {
         if (dragType < 0) return 1;
-      int X = fltk::event_x(), Y = fltk::event_y(), pos = 0;
+        int X = Fl::event_x(), Y = Fl::event_y(), pos = 0;
         // if we leave the text_area, we start a timer event
         // that will take care of scrolling and selecting
         if (Y < text_area.y) {
           scroll_x = X;
           scroll_amount = (Y - text_area.y) / 5 - 1;
           if (!scroll_direction) {
-            fltk::add_timeout(.01, scroll_timer_cb, this);
+            Fl::add_timeout(.01, scroll_timer_cb, this);
           }
           scroll_direction = 3;
         } else if (Y >= text_area.y+text_area.h) {
           scroll_x = X;
           scroll_amount = (Y - text_area.y - text_area.h) / 5 + 1;
           if (!scroll_direction) {
-            fltk::add_timeout(.01, scroll_timer_cb, this);
+            Fl::add_timeout(.01, scroll_timer_cb, this);
           }
           scroll_direction = 4;
         } else if (X < text_area.x) {
           scroll_y = Y;
           scroll_amount = (X - text_area.x) / 2 - 1;
           if (!scroll_direction) {
-            fltk::add_timeout(.01, scroll_timer_cb, this);
+            Fl::add_timeout(.01, scroll_timer_cb, this);
           }
           scroll_direction = 2;
         } else if (X >= text_area.x+text_area.w) {
           scroll_y = Y;
           scroll_amount = (X - text_area.x - text_area.w) / 2 + 1;
           if (!scroll_direction) {
-            fltk::add_timeout(.01, scroll_timer_cb, this);
+            Fl::add_timeout(.01, scroll_timer_cb, this);
           }
           scroll_direction = 1;
         } else {
           if (scroll_direction) {
-            fltk::remove_timeout(scroll_timer_cb, this);
+            Fl::remove_timeout(scroll_timer_cb, this);
             scroll_direction = 0;
           }
           pos = xy_to_position(X, Y, CURSOR_POS);
@@ -3361,7 +3361,7 @@ int Fl_Text_Display::handle(int event) {
     case FL_RELEASE: {
         dragging = 0;
         if (scroll_direction) {
-          fltk::remove_timeout(scroll_timer_cb, this);
+          Fl::remove_timeout(scroll_timer_cb, this);
           scroll_direction = 0;
         }
 
@@ -3373,13 +3373,13 @@ int Fl_Text_Display::handle(int event) {
         dragType = DRAG_CHAR;
 
         const char* copy = buffer()->selection_text();
-      if (*copy) fltk::copy(copy, strlen(copy), 0);
+        if (*copy) Fl::copy(copy, strlen(copy), 0);
         free((void*)copy);
         return 1;
       }
 
     case FL_MOUSEWHEEL:
-      if (fltk::event_dy()) return mVScrollBar->handle(event);
+      if (Fl::event_dy()) return mVScrollBar->handle(event);
       else return mHScrollBar->handle(event);
 
     case FL_UNFOCUS:
@@ -3404,16 +3404,16 @@ int Fl_Text_Display::handle(int event) {
 
     case FL_KEYBOARD:
       // Copy?
-      if ((fltk::event_state()&(FL_CTRL|FL_COMMAND)) && fltk::event_key()=='c') {
+      if ((Fl::event_state()&(FL_CTRL|FL_COMMAND)) && Fl::event_key()=='c') {
           if (!buffer()->selected()) return 1;
           const char *copy = buffer()->selection_text();
-        if (*copy) fltk::copy(copy, strlen(copy), 1);
+          if (*copy) Fl::copy(copy, strlen(copy), 1);
           free((void*)copy);
           return 1;
       }
 
       // Select all ?
-      if ((fltk::event_state()&(FL_CTRL|FL_COMMAND)) && fltk::event_key()=='a') {
+      if ((Fl::event_state()&(FL_CTRL|FL_COMMAND)) && Fl::event_key()=='a') {
           buffer()->select(0,buffer()->length());
           return 1;
       }
@@ -3424,10 +3424,10 @@ int Fl_Text_Display::handle(int event) {
       break;
 
     case FL_SHORTCUT:
-      if (!(shortcut() ? fltk::test_shortcut(shortcut()) : test_shortcut()))
+      if (!(shortcut() ? Fl::test_shortcut(shortcut()) : test_shortcut()))
         return 0;
-      if (fltk::visible_focus() && handle(FL_FOCUS)) {
-        fltk::focus(this);
+      if (Fl::visible_focus() && handle(FL_FOCUS)) {
+        Fl::focus(this);
         return 1;
       }
       break;

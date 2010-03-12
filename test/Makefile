@@ -74,6 +74,7 @@ CPPFILES =\
 	menubar.cxx \
 	message.cxx \
 	minimum.cxx \
+	native-filechooser.cxx \
 	navigation.cxx \
 	output.cxx \
 	overlay.cxx \
@@ -90,10 +91,12 @@ CPPFILES =\
 	subwindow.cxx \
 	sudoku.cxx \
 	symbols.cxx \
+	table.cxx \
 	tabs.cxx \
 	threads.cxx \
 	tile.cxx \
 	tiled_image.cxx \
+	tree.cxx \
 	valuators.cxx \
 	utf8.cxx
 
@@ -137,6 +140,7 @@ ALL =	\
 	menubar$(EXEEXT) \
 	message$(EXEEXT) \
 	minimum$(EXEEXT) \
+	native-filechooser$(EXEEXT) \
 	navigation$(EXEEXT) \
 	output$(EXEEXT) \
 	overlay$(EXEEXT) \
@@ -152,10 +156,12 @@ ALL =	\
 	subwindow$(EXEEXT) \
 	sudoku$(EXEEXT) \
 	symbols$(EXEEXT) \
+	table$(EXEEXT) \
 	tabs$(EXEEXT) \
 	$(THREADS) \
 	tile$(EXEEXT) \
 	tiled_image$(EXEEXT) \
+	tree$(EXEEXT) \
 	valuators$(EXEEXT) \
 	cairotest$(EXEEXT) \
 	utf8$(EXEEXT) 
@@ -373,6 +379,12 @@ message$(EXEEXT): message.o
 
 minimum$(EXEEXT): minimum.o
 
+native-filechooser$(EXEEXT): native-filechooser.o $(IMGLIBNAME)
+	echo Linking $@...
+	$(CXX) $(ARCHFLAGS) $(LDFLAGS) native-filechooser.o -o $@ $(LINKFLTKIMG) $(LDLIBS)
+
+native-filechooser.o: ../FL/Fl_Native_File_Chooser_WIN32.H ../FL/Fl_Native_File_Chooser_MAC.H
+
 navigation$(EXEEXT): navigation.o
 
 output$(EXEEXT): output.o $(FLLIBNAME)
@@ -418,6 +430,8 @@ sudoku.exe: sudoku.o sudoku.rc
 
 symbols$(EXEEXT): symbols.o
 
+table$(EXEEXT): table.o
+
 tabs$(EXEEXT): tabs.o
 tabs.cxx:	tabs.fl ../fluid/fluid$(EXEEXT)
 
@@ -429,6 +443,8 @@ threads.o:	threads.h
 tile$(EXEEXT): tile.o
 
 tiled_image$(EXEEXT): tiled_image.o
+
+tree$(EXEEXT): tree.o
 
 valuators$(EXEEXT): valuators.o
 valuators.cxx:	valuators.fl ../fluid/fluid$(EXEEXT)
