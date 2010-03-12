@@ -687,3 +687,17 @@ correspond, and how they could be implemented in FLTK 3.
 2: struct NamedStyle
 
 
+ CONVERTING A CLASS
+
+- find the matchin headers
+- copy the FLTK1 header to fltk3
+- append the same header agin
+- append the fltk2 header
+- fix the #ifdef's
+- put the main class into the new namespace and rename the class
+- write a new stub that is derived from the class above with the old class name
+- fix constructor and destructor 
+- fix the class part of all method implementations
+- do *not* change any parameters, variable types, or return types yet
+- compile. Wherever there is an illegal conversion error, simply insert a cast for now
+

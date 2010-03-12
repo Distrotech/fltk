@@ -1171,7 +1171,7 @@ int Fl::handle(int e, Fl_Window* window)
 extern void fl_destroy_xft_draw(Window);
 #endif
 
-void Fl_Window::hide() {
+void fltk::Window::hide() {
   clear_visible();
 
   if (!shown()) return;
@@ -1255,7 +1255,7 @@ void Fl_Window::hide() {
   }
   XDestroyWindow(fl_display, ip->xid);
 #elif defined(__APPLE_QUARTZ__)
-  MacDestroyWindow(this, ip->xid);
+  MacDestroyWindow((Fl_Window*)this, ip->xid);
 #else
 # error unsupported platform
 #endif
@@ -1268,7 +1268,7 @@ void Fl_Window::hide() {
   delete ip;
 }
 
-Fl_Window::~Fl_Window() {
+fltk::Window::~Window() {
   hide();
 }
 
@@ -1280,7 +1280,7 @@ Fl_Window::~Fl_Window() {
 // Fl_Window::show() or Fl_Window::hide() is called, or in response to
 // iconize/deiconize events from the system.
 
-int Fl_Window::handle(int ev)
+int fltk::Window::handle(int ev)
 {
   if (parent()) {
     switch (ev) {
@@ -1291,9 +1291,9 @@ int Fl_Window::handle(int ev)
         XMapWindow(fl_display, fl_xid(this)); // extra map calls are harmless
 #elif defined(__APPLE_QUARTZ__)
 #ifdef __APPLE_COCOA__
-		MacMapWindow(this, i->xid);
+		MacMapWindow((Fl_Window*)this, i->xid);
 #else
-		MacMapWindow(this, fl_xid(this));
+		MacMapWindow((Fl_Window*)this, fl_xid(this));
 #endif
 #else
 # error unsupported platform
@@ -1317,9 +1317,9 @@ int Fl_Window::handle(int ev)
 	XUnmapWindow(fl_display, fl_xid(this));
 #elif defined(__APPLE_QUARTZ__)
 #ifdef __APPLE_COCOA__
-	MacUnmapWindow(this, i->xid);
+	MacUnmapWindow((Fl_Window*)this, i->xid);
 #else
-	MacUnmapWindow(this, fl_xid(this));
+	MacUnmapWindow((Fl_Window*)this, fl_xid(this));
 #endif
 #else
 # error platform unsupported
@@ -1502,7 +1502,7 @@ void Fl_Widget::damage(uchar fl, int X, int Y, int W, int H) {
   }
   Fl::damage(FL_DAMAGE_CHILD);
 }
-void Fl_Window::flush() {
+void fltk::Window::flush() {
   make_current();
 //if (damage() == FL_DAMAGE_EXPOSE && can_boxcheat(box())) fl_boxcheat = this;
   fl_clip_region(i->region); i->region = 0;

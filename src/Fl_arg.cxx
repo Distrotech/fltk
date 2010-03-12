@@ -288,7 +288,7 @@ int Fl::args(int argc, char** argv, int& i, int (*cb)(int,char**,int&)) {
 }
 
 // show a main window, use any parsed arguments
-void Fl_Window::show(int argc, char **argv) {
+void fltk::Window::show(int argc, char **argv) {
   if (argc && !arg_called) Fl::args(argc,argv);
 
   Fl::get_system_colors();
