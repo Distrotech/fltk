@@ -661,6 +661,12 @@ int create_new_database(const char *filename)
     demo_db.depends_on(fluid_app); 
   }
   
+  { Fl_Target_Prefs db(tests_db.add_with_key("name", "hello_2"));
+    db.add_source(files_db, "test/hello_2.cxx");
+    db.add_lib(fltk_lib); 
+    demo_db.depends_on(db);
+  }  
+  
   { Fl_Target_Prefs db(tests_db.add_with_key("name", "adjuster"));
     db.add_source(files_db, "test/adjuster.cxx");
     db.add_lib(fltk_lib); 
@@ -1236,7 +1242,7 @@ void ui_load_database(const char *filename)
         Fl_Preferences srcDB(srcsDB, j);
         srcDB.get("refUUID", buf, "DBERROR", 1024);
         Fl_File_Prefs fileDB(filesDB, buf);
-        Fl_Tree_Item *tb = dbmanager_tree->add(ts, fileDB.fullName());
+        /*Fl_Tree_Item *tb =*/ dbmanager_tree->add(ts, fileDB.fullName());
       }
     }
     
