@@ -99,9 +99,9 @@ static void cb_print_copies(Fl_Spinner*, void*) {
     print_collate_group[0]->deactivate();
     print_collate_group[1]->deactivate();
   } else {
-    print_collate_button->activate();
+/*    print_collate_button->activate(); // TODO: manage collate options
     print_collate_group[0]->activate();
-    print_collate_group[1]->activate();
+    print_collate_group[1]->activate(); */
   };
 }
 

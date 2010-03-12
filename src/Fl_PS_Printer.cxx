@@ -1243,7 +1243,6 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   print_all->do_callback();
   print_from->value("1");
   { char tmp[10]; snprintf(tmp, sizeof(tmp), "%d", pages); print_to->value(tmp); }
-  print_copies->parent()->deactivate(); // TODO: manage copy # and collate options
   print_panel->show(); // this is modal
   while (print_panel->shown()) Fl::wait();
   
@@ -1284,8 +1283,8 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   // Print: pipe the output into the lp command...
 
   char command[1024];
-  snprintf(command, sizeof(command), "lp -s -d %s -n %.0f -t '%s' -o media=%s",
-             printer, print_collate_button->value() ? 1.0 : print_copies->value(),
+  snprintf(command, sizeof(command), "lp -s -d %s -n %d -t '%s' -o media=%s",
+             printer, print_collate_button->value() ? 1 : (int)(print_copies->value() + 0.5),
 	     "FLTK", media);
 
   output = popen(command, "w");
