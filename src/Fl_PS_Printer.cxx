@@ -221,6 +221,55 @@ static const char * prolog_2 =  // prolog relevant only if lang_level >1
 
 ;
 
+static const char * prolog_2_pixmap =  // prolog relevant only if lang_level == 2 for pixmaps
+"/pixmap_size { /pixmap_sy exch def /pixmap_sx exch def } bind def\n"
+
+"/pixmap_mat {[ pixmap_sx 0 0 pixmap_sy neg 0 pixmap_sy ]}  bind def\n"
+
+"/pixmap_dict {"
+"<< /PatternType 1 "
+"/PaintType 1 "
+"/TilingType 2 "
+"/BBox [0  0  pixmap_sx  pixmap_sy] "
+"/XStep pixmap_sx "
+"/YStep pixmap_sy\n"
+"/PaintProc "
+"{ begin "
+"pixmap_sx pixmap_sy scale "
+"pixmap_sx pixmap_sy 8 "
+"pixmap_mat "
+"pixmap_data "
+"false 3 "
+"colorimage "
+"end "
+"} bind "
+">>\n"
+"} bind def\n"
+
+"/pixmap_plot {"
+"GS "
+"/pixmap_y exch def /pixmap_x exch def\n"
+"pixmap_x pixmap_y translate\n"
+"pixmap_dict matrix makepattern setpattern\n"
+"pixmap_sx pixmap_sy scale\n"
+"pixmap_sx pixmap_sy\n"
+"true\n"
+"pixmap_mat\n"
+"pixmap_mask\n"
+"imagemask\n"
+"GR\n"
+"} bind def\n"
+
+"/pixmap_loaddata { /pixmap_data currentfile pixmap_sx pixmap_sy 3 mul mul string readhexstring "
+"} bind def\n"
+
+"/pixmap_loadmask { "
+"/pixmap_mask currentfile  pixmap_sx 8 div ceiling cvi pixmap_sy mul  string readhexstring "
+"} bind def\n"
+;
+
+
+
 static const char * prolog_3 = // prolog relevant only if lang_level >2
 
 // masked color images 
@@ -316,7 +365,6 @@ Fl_PSfile_Device::Fl_PSfile_Device(void)
   close_cmd_ = 0;
   //lang_level_ = 3;
   lang_level_ = 2;
-  //lang_level_ = 1;
   mask = 0;
   ps_filename_ = NULL;
   type_ = postscript_device;
@@ -353,22 +401,26 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format, 
   fputs("%%EndFeature\n", output);
   fputs("%%EndComments\n", output);
   fputs(prolog, output);
-  if(lang_level_ >1)
+  if (lang_level_ > 1) {
     fputs(prolog_2, output);
-  if(lang_level_ >2)
+    }
+  if (lang_level_ == 2) {
+    fputs(prolog_2_pixmap, output);
+    }
+  if (lang_level_ > 2)
     fputs(prolog_3, output);
-  if(lang_level_>=3){
+  if (lang_level_ >= 3) {
     fputs("/CS { clipsave } bind def\n", output);
     fputs("/CR { cliprestore } bind def\n", output);
-  }else{
+  } else {
     fputs("/CS { GS } bind def\n", output);
     fputs("/CR { GR } bind def\n", output);
   }
-  page_policy_=1;
+  page_policy_ = 1;
   
   
   fputs("%%EndProlog\n",output);
-  if(lang_level_>=2)
+  if (lang_level_ >= 2)
     fprintf(output,"<< /Policies << /Pagesize 1 >> >> setpagedevice\n");
   
   reset();
@@ -494,7 +546,6 @@ void Fl_PSfile_Device::rect(int x, int y, int w, int h) {
 
 void Fl_PSfile_Device::rectf(int x, int y, int w, int h) {
   fprintf(output, "%g %g %i %i FR\n", x-0.5, y-0.5, w, h);
-  Fl::get_color(color_, bg_r_, bg_g_, bg_b_);
 }
 
 void Fl_PSfile_Device::line(int x1, int y1, int x2, int y2) {

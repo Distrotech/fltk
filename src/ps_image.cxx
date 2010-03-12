@@ -273,52 +273,87 @@ void Fl_PSfile_Device::draw_scaled_image(const uchar *data, double x, double y, 
 
 void Fl_PSfile_Device::draw_scaled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D) {
 
-
+  int level2_mask = 0;
   fprintf(output,"save\n");
   int i,j,k;
   char * interpol;
-  if(lang_level_>1){
-    if(interpolate_) interpol="true";
+  if (lang_level_ > 1) {
+    if (interpolate_) interpol="true";
     else interpol="false";
-    if(mask && lang_level_>2)
+    if (mask && lang_level_ > 2) {
       fprintf(output, "%g %g %g %g %i %i %i %i %s CIM\n", x , y+h , w , -h , iw , ih, mx, my, interpol);
-    else
+      }
+    else if (mask && lang_level_ == 2) {
+      level2_mask = 1; // use method for drawing masked color image with PostScript level 2
+      fprintf(output, "%d %d pixmap_size\n pixmap_loadmask\n", iw, ih);
+    }
+    else {
       fprintf(output, "%g %g %g %g %i %i %s CII\n", x , y+h , w , -h , iw , ih, interpol);
-  }else
+      }
+  } else {
     fprintf(output , "%g %g %g %g %i %i CI", x , y+h , w , -h , iw , ih);
+    }
 
   int LD=iw*D;
   uchar *rgbdata=new uchar[LD];
   uchar *curmask=mask;
 
-  for (j=0; j<ih;j++){
-    if(mask && lang_level_>2){  // InterleaveType 2 mask data
-      for(k=0; k<my/ih;k++){ //for alpha pseudo-masking
-        for (i=0; i<((mx+7)/8);i++){
-          if (!(i%40)) fprintf(output, "\n");
-          fprintf(output, "%.2x",swap_byte(*curmask));
-          curmask++;
-        }
-        fprintf(output,"\n");
+  if(level2_mask) {
+    for (j = ih - 1; j >= 0; j--) {
+      curmask = mask + j * my/ih * ((mx+7)/8);
+	for(k=0; k < my/ih; k++) { // output mask data
+	  for (i=0; i < ((mx+7)/8); i++) {
+	    fprintf(output, "%.2x",swap_byte(*curmask));
+	    curmask++;
+	  }
+	  fprintf(output,"\n");
+	}
       }
+    fprintf(output,"pop def\n\npixmap_loaddata\n");
+    for (j = ih - 1; j >= 0; j--) { // output full image data
+      call(data,0,j,iw,rgbdata);
+      uchar *curdata=rgbdata;
+      for(i=0 ; i<iw ; i++) {
+	uchar r = curdata[0];
+	uchar g =  curdata[1];
+	uchar b =  curdata[2];
+	//if (!(i%40)) fprintf(output, "\n");
+	fprintf(output, "%.2x%.2x%.2x", r, g, b);
+	curdata += D;
+	}
+      fprintf(output,"\n");
+      }
+    fprintf(output,"pop def\n\n%g %g pixmap_plot\n", x, y); // draw the masked image
     }
-    call(data,0,j,iw,rgbdata);
-    uchar *curdata=rgbdata;
-    for(i=0 ; i<iw ; i++) {
-      uchar r = curdata[0];
-      uchar g =  curdata[1];
-      uchar b =  curdata[2];
+  else {
+    for (j=0; j<ih;j++) {
+      if(mask && lang_level_ > 2) {  // InterleaveType 2 mask data
+	for(k=0; k<my/ih;k++) { //for alpha pseudo-masking
+	  for (i=0; i<((mx+7)/8);i++) {
+	    if (!(i%40)) fprintf(output, "\n");
+	    fprintf(output, "%.2x",swap_byte(*curmask));
+	    curmask++;
+	  }
+	  fprintf(output,"\n");
+	}
+      }
+      call(data,0,j,iw,rgbdata);
+      uchar *curdata=rgbdata;
+      for(i=0 ; i<iw ; i++) {
+	uchar r = curdata[0];
+	uchar g =  curdata[1];
+	uchar b =  curdata[2];
 
+	if (!(i%40)) fprintf(output, "\n");
+	fprintf(output, "%.2x%.2x%.2x", r, g, b);
 
-      if (!(i%40)) fprintf(output, "\n");
-      fprintf(output, "%.2x%.2x%.2x", r, g, b);
+	curdata +=D;
+      }
+      fprintf(output,"\n");
 
-      curdata +=D;
     }
-    fprintf(output,"\n");
-
-  }
-  fprintf(output,">\n");
+    fprintf(output,">\n");
+    }
 
   fprintf(output,"restore\n");
   delete[] rgbdata;
@@ -443,7 +478,7 @@ void Fl_PSfile_Device::draw(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int 
   mx = WP;
   my = HP;
   push_clip(XP, YP, WP, HP);
-  fl_draw_pixmap(di,XP -cx, YP -cy, fl_rgb_color(bg_r_, bg_g_, bg_b_) ); //yes, it is dirty, but fl is dispatched, so it works!
+  fl_draw_pixmap(di,XP -cx, YP -cy, FL_BLACK );
   pop_clip();
   delete[] mask;
   mask=0;

@@ -48,7 +48,7 @@ protected:
   void *gc; // the printer's graphics context, if there's one, NULL otherwise
   void delete_image_list(); // deletes the page image list
 #ifndef FL_DOXYGEN
-     Fl_Virtual_Printer(void) { gc = NULL; };
+     Fl_Virtual_Printer(void) { gc = NULL; bg_r_ = bg_g_ = bg_b_ = 0; };
 #endif
 public:
 #ifdef FL_DOXYGEN
