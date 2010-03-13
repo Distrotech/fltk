@@ -390,9 +390,9 @@ extern int fl_wait(double time); // in Fl_<platform>.cxx
 /**
   See int wait()
 */
-double Fl::wait(double time_to_wait) {
+double fltk::wait(double time_to_wait) {
   // delete all widgets that were listed during callbacks
-  do_widget_deletion();
+  Fl::do_widget_deletion();
 
 #ifdef WIN32
 
@@ -482,7 +482,7 @@ double Fl::wait(double time_to_wait) {
   exit directly for these).  A normal program will end main()
   with return Fl::run();.
 */
-int Fl::run() {
+int fltk::run() {
   while (Fl_X::first) wait(FOREVER);
   return 0;
 }
@@ -668,7 +668,7 @@ void Fl::redraw() {
   it should instead call Fl::awake() to get the main thread to process the
   event queue.
 */
-void Fl::flush() {
+void fltk::flush() {
   if (damage()) {
     damage_ = 0;
     for (Fl_X* i = Fl_X::first; i; i = i->next) {
