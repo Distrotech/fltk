@@ -164,7 +164,7 @@ bool fl_show_iconic;                    // true if called from iconize() - shows
 int fl_disable_transient_for;           // secret method of removing TRANSIENT_FOR
 //const Fl_Window* fl_modal_for;        // parent of modal() window
 Window fl_window;
-Fl_Window *fltk::Window::current_;
+Fl_Window *Fl_Window::current_;
 //EventRef fl_os_event;		// last (mouse) event
 
 // forward declarations of variables in this file
@@ -2253,7 +2253,7 @@ void Fl_X::make(Fl_Window* w)
 /*
  * Tell the OS what window sizes we want to allow
  */
-void fltk::Window::size_range_() {
+void Fl_Window::size_range_() {
   int bx, by, bt;
   get_window_frame_sizes(bx, by, bt);
   size_range_set = 1;
@@ -2291,7 +2291,7 @@ const char *fl_filename_name( const char *name )
  * set the window title bar
  * \todo make the titlebar icon work!
  */
-void fltk::Window::label(const char *name,const char */*iname*/) {
+void Fl_Window::label(const char *name,const char */*iname*/) {
   Fl_Widget::label(name);
   if (shown() || i) {
     q_set_window_title((NSWindow*)i->xid, name);
@@ -2302,7 +2302,7 @@ void fltk::Window::label(const char *name,const char */*iname*/) {
 /*
  * make a window visible
  */
-void fltk::Window::show() {
+void Fl_Window::show() {
   image(Fl::scheme_bg_);
   if (Fl::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
@@ -2312,7 +2312,7 @@ void fltk::Window::show() {
   }
   Fl_Tooltip::exit(this);
   if (!shown() || !i) {
-    Fl_X::make((Fl_Window*)this);
+    Fl_X::make(this);
   } else {
     if ( !parent() ) {
       if ([(NSWindow*)i->xid isMiniaturized]) {
@@ -2330,14 +2330,14 @@ void fltk::Window::show() {
 /*
  * resize a window
  */
-void fltk::Window::resize(int X,int Y,int W,int H) {
+void Fl_Window::resize(int X,int Y,int W,int H) {
   int bx, by, bt;
   if ( ! this->border() ) bt = 0;
   else get_window_frame_sizes(bx, by, bt);
   if (W<=0) W = 1; // OS X does not like zero width windows
   if (H<=0) H = 1;
   int is_a_resize = (W != w() || H != h());
-  //  printf("fltk::Window::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
+  //  printf("Fl_Window::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
   //         X, Y, W, H, is_a_resize, resize_from_system, this);
   if (X != x() || Y != y()) set_flag(FORCE_POSITION);
   else if (!is_a_resize) return;
@@ -2380,14 +2380,14 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
 /*
  * make all drawing go into this window (called by subclass flush() impl.)
  */
-void fltk::Window::make_current() 
+void Fl_Window::make_current() 
 {
   Fl_X::q_release_context();
   fl_window = i->xid;
-  current_ = (Fl_Window*)this;
+  current_ = this;
   
   int xp = 0, yp = 0;
-  Fl_Window *win = (Fl_Window*)this;
+  Fl_Window *win = this;
   while ( win ) {
     if ( !win->window() )
       break;
@@ -2417,7 +2417,7 @@ void fltk::Window::make_current()
   CGFloat hgt = [[(NSWindow*)fl_window contentView] frame].size.height;
   CGContextTranslateCTM(fl_gc, 0.5, hgt-0.5f);
   CGContextScaleCTM(fl_gc, 1.0f, -1.0f); // now 0,0 is top-left point of the window
-  win = (Fl_Window*)this;
+  win = this;
   while(win && win->window()) { // translate to subwindow origin if this is a subwindow context
     CGContextTranslateCTM(fl_gc, win->x(), win->y());
     win = win->window();

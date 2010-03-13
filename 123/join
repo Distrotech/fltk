@@ -1,15 +1,14 @@
 
 # arguments: FLTK1 header file name, FLTK2 header file name
 
-# create the FLTK3 file
+# create required files if they don't exist yet
 
-rm -f fltk3/$2
 touch FL/$1
 touch fltk/$2
 
 #  write the header
 
-printf '//\n' >>fltk3/$2
+printf '//\n' > fltk3/$2
 printf '// "$Id$"\n' >>fltk3/$2
 printf '//\n' >>fltk3/$2
 echo "" >>fltk3/$2
@@ -37,12 +36,14 @@ f1name=${1/.*/}
 f2name=${2/.*/}
 
 printf '\n' >>fltk3/$2
+printf '/* suggested twin class\n' >>fltk3/$2
 printf '// This is the Twin Class to fltk::%s\n' $f2name >>fltk3/$2
 printf 'class %s : public fltk::%s {\n' $f1name $f2name >>fltk3/$2
 printf 'public:\n' >>fltk3/$2
 printf '  %s(int x, int t, int w, int h, const char *label=0)\n' $f1name >>fltk3/$2
 printf '  : fltk::%s(x, y, w, h, label), compat_(FLTK1) { }\n' $f2name  >>fltk3/$2
 printf '};\n' >>fltk3/$2
+printf '*/\n' >>fltk3/$2
 printf '\n' >>fltk3/$2
 
 #  add the FLTK1 file again for later reference
@@ -66,49 +67,26 @@ printf '//\n' >>fltk3/$2
 printf '// End of "$Id$"\n' >>fltk3/$2
 printf '//\n' >>fltk3/$2
 
-case $3 in
-  link1)
-    printf '//\n' >>FL/$1
-    printf '// "$Id$"\n' >>FL/$1
-    printf '//\n' >>FL/$1
-    printf '\n' >>FL/$1
-    printf '#include "../fltk3/%s"\n' $2 >>FL/$1
-    printf '\n' >>FL/$1
-    printf '//\n' >>FL/$1
-    printf '// End of "$Id$"\n' >>fltk3/$2
-    printf '//\n' >>fltk3/$2
-  ;;
-  link2)
-    printf '//\n' >>fltk/$2
-    printf '// "$Id$"\n' >>fltk/$2
-    printf '//\n' >>fltk/$2
-    printf '\n' >>fltk/$2
-    printf '#include "../fltk3/%s"\n' $2 >>fltk/$2
-    printf '\n' >>fltk/$2
-    printf '//\n' >>fltk/$2
-    printf '// End of "$Id$"\n' >>fltk/$2
-    printf '//\n' >>fltk/$2
-  ;;
- link)
-    printf '//\n' >>fltk/$2
-    printf '// "$Id$"\n' >>fltk/$2
-    printf '//\n' >>fltk/$2
-    printf '\n' >>fltk/$2
-    printf '#include "../fltk3/%s"\n' $2 >>fltk/$2
-    printf '\n' >>fltk/$2
-    printf '//\n' >>fltk/$2
-    printf '// End of "$Id$"\n' >>fltk/$2
-    printf '//\n' >>fltk/$2
-    printf '//\n' >>FL/$1
-    printf '// "$Id$"\n' >>FL/$1
-    printf '//\n' >>FL/$1
-    printf '\n' >>FL/$1
-    printf '#include "../fltk3/%s"\n' $2 >>FL/$1
-    printf '\n' >>FL/$1
-    printf '//\n' >>FL/$1
-    printf '// End of "$Id$"\n' >>fltk3/$2
-    printf '//\n' >>fltk3/$2
-  ;;
-esac
+# replace original files with links
+
+printf '//\n' >fltk/$2
+printf '// "$Id$"\n' >>fltk/$2
+printf '//\n' >>fltk/$2
+printf '\n' >>fltk/$2
+printf '#include "../fltk3/%s"\n' $2 >>fltk/$2
+printf '\n' >>fltk/$2
+printf '//\n' >>fltk/$2
+printf '// End of "$Id$"\n' >>fltk/$2
+printf '//\n' >>fltk/$2
+
+printf '//\n' >FL/$1
+printf '// "$Id$"\n' >>FL/$1
+printf '//\n' >>FL/$1
+printf '\n' >>FL/$1
+printf '#include "../fltk3/%s"\n' $2 >>FL/$1
+printf '\n' >>FL/$1
+printf '//\n' >>FL/$1
+printf '// End of "$Id$"\n' >>FL/$1
+printf '//\n' >>FL/$1
 
 
