@@ -126,7 +126,7 @@ static void tooltip_timeout(void*) {
   } else {
     //if (Fl::grab()) return;
     if (!window) window = new Fl_TooltipBox;
-    // this cast bypasses the normal fltk::Window label() code:
+    // this cast bypasses the normal Fl_Window label() code:
     ((Fl_Widget*)window)->label(tip);
     window->layout();
     window->redraw();

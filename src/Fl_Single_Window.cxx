@@ -33,8 +33,8 @@
 
 #include <FL/Fl_Single_Window.H>
 
-void Fl_Single_Window::show() {fltk::Window::show();}
-void Fl_Single_Window::flush() {fltk::Window::flush();}
+void Fl_Single_Window::show() {Fl_Window::show();}
+void Fl_Single_Window::flush() {Fl_Window::flush();}
 
 //
 // End of "$Id$".

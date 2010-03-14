@@ -170,8 +170,8 @@ void Fl::remove_fd(int n) {
 }
 
 #if CONSOLIDATE_MOTION
-static fltk::Window* send_motion;
-extern fltk::Window* fl_xmousewin;
+static Fl_Window* send_motion;
+extern Fl_Window* fl_xmousewin;
 #endif
 static bool in_a_window; // true if in any of our windows, even destroyed ones
 static void do_queued_events() {
@@ -425,7 +425,7 @@ void fl_reset_spot(void)
   //if (fl_xim_ic) XUnsetICFocus(fl_xim_ic);
 }
 
-void fl_set_spot(int font, int size, int X, int Y, int W, int H, fltk::Window *win)
+void fl_set_spot(int font, int size, int X, int Y, int W, int H, Fl_Window *win)
 {
   int change = 0;
   XVaNestedList preedit_attr;
@@ -778,7 +778,7 @@ static inline void checkdouble() {
   ptime = fl_event_time;
 }
 
-static fltk::Window* resize_bug_fix;
+static Fl_Window* resize_bug_fix;
 
 ////////////////////////////////////////////////////////////////
 
@@ -958,7 +958,7 @@ int fl_handle(const XEvent& thisevent)
   }
 
   int event = 0;
-  fltk::Window* window = fl_find(xid);
+  Fl_Window* window = fl_find(xid);
 
   if (window) switch (xevent.type) {
 
@@ -1333,7 +1333,7 @@ int fl_handle(const XEvent& thisevent)
     XTranslateCoordinates(fl_display, fl_xid(window), actual.root,
                           0, 0, &X, &Y, &cr);
 
-    // tell fltk::Window about it and set flag to prevent echoing:
+    // tell Fl_Window about it and set flag to prevent echoing:
     resize_bug_fix = window;
     window->resize(X, Y, W, H);
     break; // allow add_handler to do something too
@@ -1350,7 +1350,7 @@ int fl_handle(const XEvent& thisevent)
                           xevent.xreparent.x, xevent.xreparent.y,
                           &xpos, &ypos, &junk);
 
-    // tell fltk::Window about it and set flag to prevent echoing:
+    // tell Fl_Window about it and set flag to prevent echoing:
     resize_bug_fix = window;
     window->position(xpos, ypos);
     break;
@@ -1362,7 +1362,7 @@ int fl_handle(const XEvent& thisevent)
 
 ////////////////////////////////////////////////////////////////
 
-void fltk::Window::resize(int X,int Y,int W,int H) {
+void Fl_Window::resize(int X,int Y,int W,int H) {
   int is_a_move = (X != x() || Y != y());
   int is_a_resize = (W != w() || H != h());
   int resize_from_program = (this != resize_bug_fix);
@@ -1395,12 +1395,12 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
 
 ////////////////////////////////////////////////////////////////
 
-// A subclass of fltk::Window may call this to associate an X window it
-// creates with the fltk::Window:
+// A subclass of Fl_Window may call this to associate an X window it
+// creates with the Fl_Window:
 
 void fl_fix_focus(); // in Fl.cxx
 
-Fl_X* Fl_X::set_xid(fltk::Window* win, Window winxid) {
+Fl_X* Fl_X::set_xid(Fl_Window* win, Window winxid) {
   Fl_X* xp = new Fl_X;
   xp->xid = winxid;
   xp->other_xid = 0;
@@ -1432,7 +1432,7 @@ ExposureMask|StructureNotifyMask
 |EnterWindowMask|LeaveWindowMask
 |PointerMotionMask;
 
-void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
+void Fl_X::make_xid(Fl_Window* win, XVisualInfo *visual, Colormap colormap)
 {
   Fl_Group::current(0); // get rid of very common user bug: forgot end()
 
@@ -1546,7 +1546,7 @@ void Fl_X::make_xid(fltk::Window* win, XVisualInfo *visual, Colormap colormap)
 
     if (win->non_modal() && xp->next && !fl_disable_transient_for) {
       // find some other window to be "transient for":
-      fltk::Window* wp = xp->next->w;
+      Fl_Window* wp = xp->next->w;
       while (wp->parent()) wp = wp->window();
       XSetTransientForHint(fl_display, xp->xid, fl_xid(wp));
       if (!wp->visible()) showit = 0; // guess that wm will not show it
@@ -1669,7 +1669,7 @@ void Fl_X::sendxjunk() {
   XFree(hints);
 }
 
-void fltk::Window::size_range_() {
+void Fl_Window::size_range_() {
   size_range_set = 1;
   if (shown()) i->sendxjunk();
 }
@@ -1684,7 +1684,7 @@ const char *fl_filename_name(const char *name) {
   return q;
 }
 
-void fltk::Window::label(const char *name,const char *iname) {
+void Fl_Window::label(const char *name,const char *iname) {
   Fl_Widget::label(name);
   iconlabel_ = iname;
   if (shown() && !parent()) {
@@ -1698,7 +1698,7 @@ void fltk::Window::label(const char *name,const char *iname) {
 }
 
 ////////////////////////////////////////////////////////////////
-// Implement the virtual functions for the base fltk::Window class:
+// Implement the virtual functions for the base Fl_Window class:
 
 // If the box is a filled rectangle, we can make the redisplay *look*
 // faster by using X's background pixel erasing.  We can make it
@@ -1709,10 +1709,10 @@ void fltk::Window::label(const char *name,const char *iname) {
 // is resized while a save-behind window is atop it.  The previous
 // contents are restored to the area, but this assumes the area
 // is cleared to background color.  So this is disabled in this version.
-// fltk::Window *fl_boxcheat;
+// Fl_Window *fl_boxcheat;
 static inline int can_boxcheat(uchar b) {return (b==1 || (b&2) && b<=15);}
 
-void fltk::Window::show() {
+void Fl_Window::show() {
   image(Fl::scheme_bg_);
   if (Fl::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
@@ -1734,11 +1734,11 @@ void fltk::Window::show() {
 }
 
 Window fl_window;
-fltk::Window *fltk::Window::current_;
+Fl_Window *Fl_Window::current_;
 GC fl_gc;
 
 // make X drawing go into this window (called by subclass flush() impl.)
-void fltk::Window::make_current() {
+void Fl_Window::make_current() {
   static GC gc; // the GC used by all X windows
   if (!gc) gc = XCreateGC(fl_display, i->xid, 0, 0);
   fl_window = i->xid;

@@ -87,12 +87,12 @@ void Fl_Gl_Window::show() {
     Fl_X::make_xid(this, g->vis, g->colormap);
     if (overlay && overlay != this) ((Fl_Gl_Window*)overlay)->show();
 #elif defined(__APPLE__) && defined(__APPLE_COCOA__)
-    extern void MACsetContainsGLsubwindow(fltk::Window *);
+	extern void MACsetContainsGLsubwindow(Fl_Window *);
 	if( ! parent() ) need_redraw=1;
 	else MACsetContainsGLsubwindow( window() );
 #endif
   }
-  fltk::Window::show();
+  Fl_Window::show();
 
 #ifdef __APPLE__
   set_visible();
@@ -428,7 +428,7 @@ void Fl_Gl_Window::resize(int X,int Y,int W,int H) {
   }
 #endif
 
-  fltk::Window::resize(X,Y,W,H);
+  Fl_Window::resize(X,Y,W,H);
 }
 
 /**
@@ -460,7 +460,7 @@ void Fl_Gl_Window::hide() {
     overlay = 0;
   }
 #endif
-  fltk::Window::hide();
+  Fl_Window::hide();
 }
 
 /**

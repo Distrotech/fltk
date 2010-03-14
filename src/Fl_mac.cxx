@@ -82,7 +82,7 @@ extern "C" {
 #endif /*DEBUG_SELECT*/
 
 // external functions
-extern fltk::Window* fl_find(Window);
+extern Fl_Window* fl_find(Window);
 extern void fl_fix_focus();
 
 // forward definition of functions in this file
@@ -103,22 +103,22 @@ ulong fl_event_time;                 // the last timestamp from an x event
 char fl_key_vector[32];              // used by Fl::get_key()
 bool fl_show_iconic;                 // true if called from iconize() - shows the next created window in collapsed state
 int fl_disable_transient_for;        // secret method of removing TRANSIENT_FOR
-const fltk::Window* fl_modal_for;       // parent of modal() window
+const Fl_Window* fl_modal_for;       // parent of modal() window
 Fl_Region fl_window_region = 0;
 Window fl_window;
-fltk::Window *fltk::Window::current_;
+Fl_Window *Fl_Window::current_;
 EventRef fl_os_event;		// last (mouse) event
 
 // forward declarations of variables in this file
 static int got_events = 0;
-static fltk::Window* resize_from_system;
+static Fl_Window* resize_from_system;
 static CursPtr default_cursor_ptr;
 static Cursor default_cursor;
 static WindowRef fl_os_capture = 0; // the dispatch handler will redirect mose move and drag events to these windows
 
 #if CONSOLIDATE_MOTION
-static fltk::Window* send_motion;
-extern fltk::Window* fl_xmousewin;
+static Fl_Window* send_motion;
+extern Fl_Window* fl_xmousewin;
 #endif
 
 enum { kEventClassFLTK = 'fltk' };
@@ -129,7 +129,7 @@ void fl_reset_spot()
 {
 }
 
-void fl_set_spot(int font, int size, int X, int Y, int W, int H, fltk::Window *win)
+void fl_set_spot(int font, int size, int X, int Y, int W, int H, Fl_Window *win)
 {
 }
 
@@ -828,12 +828,12 @@ static pascal OSStatus carbonWindowHandler( EventHandlerCallRef nextHandler, Eve
 {
   UInt32 kind = GetEventKind( event );
   OSStatus ret = eventNotHandledErr;
-  fltk::Window *window = (fltk::Window*)userData;
+  Fl_Window *window = (Fl_Window*)userData;
   Fl::first_window(window);
 
   Rect currentBounds, originalBounds;
   WindowClass winClass;
-  static fltk::Window *activeWindow = 0;
+  static Fl_Window *activeWindow = 0;
   
   fl_lock_function();
   
@@ -925,7 +925,7 @@ static pascal OSStatus carbonMousewheelHandler( EventHandlerCallRef nextHandler,
   fl_lock_function();
 
   fl_os_event = event;
-  fltk::Window *window = (fltk::Window*)userData;
+  Fl_Window *window = (Fl_Window*)userData;
   if ( !window->shown() )
   {
     fl_unlock_function();
@@ -985,7 +985,7 @@ static pascal OSStatus carbonMouseHandler( EventHandlerCallRef nextHandler, Even
   fl_lock_function();
   
   fl_os_event = event;
-  fltk::Window *window = (fltk::Window*)userData;
+  Fl_Window *window = (Fl_Window*)userData;
   if ( !window->shown() )
   {
     fl_unlock_function();
@@ -1241,7 +1241,7 @@ static int (*keycode_function)(char*, int, EventKind, UInt32, UInt32, UInt32*, u
 pascal OSStatus carbonTextHandler( 
   EventHandlerCallRef nextHandler, EventRef event, void *userData )
 {
-  fltk::Window *window = (fltk::Window*)userData;
+  Fl_Window *window = (Fl_Window*)userData;
   Fl::first_window(window);
   fl_lock_function();
   //int kind = GetEventKind(event);
@@ -1276,7 +1276,7 @@ pascal OSStatus carbonKeyboardHandler(
 {
   static char buffer[32];
   int sendEvent = 0;
-  fltk::Window *window = (fltk::Window*)userData;
+  Fl_Window *window = (Fl_Window*)userData;
   Fl::first_window(window);
   UInt32 mods;
   static UInt32 prevMods = mods_to_e_state( GetCurrentKeyModifiers() );
@@ -1659,7 +1659,7 @@ void Fl_X::flush()
  */    
 void handleUpdateEvent( WindowPtr xid ) 
 {
-  fltk::Window *window = fl_find( xid );
+  Fl_Window *window = fl_find( xid );
   if ( !window ) return;
   GrafPtr oldPort;
   GetPort( &oldPort );
@@ -1731,7 +1731,7 @@ static void get_window_frame_sizes(int &bx, int &by, int &bt) {
 /**
  * \todo this is a leftover from OS9 times. Please check how much applies to Carbon!
  */
-int Fl_X::fake_X_wm(const fltk::Window* w,int &X,int &Y, int &bt,int &bx, int &by) {
+int Fl_X::fake_X_wm(const Fl_Window* w,int &X,int &Y, int &bt,int &bx, int &by) {
   int W, H, xoff, yoff, dx, dy;
   int ret = bx = by = bt = 0;
   if (w->border() && !w->parent()) {
@@ -1854,7 +1854,7 @@ static DragReference currDragRef = 0;
 static char *currDragData = 0L;
 static int currDragSize = 0; 
 static OSErr currDragErr = noErr;
-fltk::Window *fl_dnd_target_window = 0;
+Fl_Window *fl_dnd_target_window = 0;
 #include <FL/fl_draw.H>
 
 /**
@@ -1979,7 +1979,7 @@ static OSErr fillCurrentDragData(DragReference dragRef)
  */
 static pascal OSErr dndTrackingHandler( DragTrackingMessage msg, WindowPtr w, void *userData, DragReference dragRef )
 {
-  fltk::Window *target = (fltk::Window*)userData;
+  Fl_Window *target = (Fl_Window*)userData;
   Fl::first_window(target);
   Point mp;
   static int px, py;
@@ -2043,7 +2043,7 @@ static pascal OSErr dndReceiveHandler( WindowPtr w, void *userData, DragReferenc
   Point mp;
   OSErr ret;
   
-  fltk::Window *target = fl_dnd_target_window = (fltk::Window*)userData;
+  Fl_Window *target = fl_dnd_target_window = (Fl_Window*)userData;
   Fl::first_window(target);
   GetDragMouse( dragRef, &mp, 0 );
   Fl::e_x_root = mp.h;
@@ -2099,7 +2099,7 @@ static void  q_set_window_title(Window xid, const char * name ) {
  * go ahead, create that (sub)window
  * \todo we should make menu windows slightly transparent for the new Mac look
  */
-void Fl_X::make(fltk::Window* w)
+void Fl_X::make(Fl_Window* w)
 {
   static int xyPos = 100;
   if ( w->parent() ) // create a subwindow
@@ -2117,7 +2117,7 @@ void Fl_X::make(fltk::Window* w)
     x->subRegion = 0;
     x->cursor = fl_default_cursor;
     x->gc = 0; // stay 0 for Quickdraw; fill with CGContext for Quartz
-    fltk::Window *win = w->window();
+    Fl_Window *win = w->window();
     Fl_X *xo = Fl_X::i(win);
     if (xo) {
       x->xidNext = xo->xidChildren;
@@ -2194,7 +2194,7 @@ void Fl_X::make(fltk::Window* w)
 
     if (w->non_modal() && Fl_X::first && !fl_disable_transient_for) {
       // find some other window to be "transient for":
-      fltk::Window* w = Fl_X::first->w;
+      Fl_Window* w = Fl_X::first->w;
       while (w->parent()) w = w->window(); // todo: this code does not make any sense! (w!=w??)
     }
 
@@ -2324,7 +2324,7 @@ void Fl_X::make(fltk::Window* w)
 /**
  * Tell the OS what window sizes we want to allow
  */
-void fltk::Window::size_range_() {
+void Fl_Window::size_range_() {
   size_range_set = 1;
   HISize minSize = { minw, minh };
   HISize maxSize = { maxw?maxw:32000, maxh?maxh:32000 };
@@ -2359,7 +2359,7 @@ const char *fl_filename_name( const char *name )
  * set the window title bar
  * \todo make the titlebar icon work!
  */
-void fltk::Window::label(const char *name,const char */*iname*/) {
+void Fl_Window::label(const char *name,const char */*iname*/) {
   Fl_Widget::label(name);
 
   if (shown() || i) {
@@ -2371,7 +2371,7 @@ void fltk::Window::label(const char *name,const char */*iname*/) {
 /**
  * make a window visible
  */
-void fltk::Window::show() {
+void Fl_Window::show() {
   image(Fl::scheme_bg_);
   if (Fl::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
@@ -2398,7 +2398,7 @@ void fltk::Window::show() {
 /**
  * resize a window
  */
-void fltk::Window::resize(int X,int Y,int W,int H) {
+void Fl_Window::resize(int X,int Y,int W,int H) {
   if (W<=0) W = 1; // OS X does not like zero width windows
   if (H<=0) H = 1;
   int is_a_resize = (W != w() || H != h());
@@ -2440,7 +2440,7 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
 /**
  * make all drawing go into this window (called by subclass flush() impl.)
  */
-void fltk::Window::make_current() 
+void Fl_Window::make_current() 
 {
 #ifdef __APPLE_QUARTZ__
   OSStatus err;
@@ -2454,14 +2454,14 @@ void fltk::Window::make_current()
   SetPort( GetWindowPort(i->xid) ); // \todo check for the handling of doublebuffered windows
 
   int xp = 0, yp = 0;
-  fltk::Window *win = this;
+  Fl_Window *win = this;
   while ( win ) 
   {
     if ( !win->window() )
       break;
     xp += win->x();
     yp += win->y();
-    win = (fltk::Window*)win->window();
+    win = (Fl_Window*)win->window();
   }
   SetOrigin( -xp, -yp );
   
@@ -2470,7 +2470,7 @@ void fltk::Window::make_current()
   // \todo for performance reasons: we don't have to create this unless the child windows moved
   for ( Fl_X *cx = i->xidChildren; cx; cx = cx->xidNext )
   {
-    fltk::Window *cw = cx->w;
+    Fl_Window *cw = cx->w;
     if (!cw->visible_r()) continue;
     Fl_Region r = NewRgn();
     SetRectRgn( r, cw->x() - xp, cw->y() - yp, 
@@ -2546,7 +2546,7 @@ void Fl_X::q_release_context(Fl_X *x) {
   }
   fl_gc = 0;
 #if defined(USE_CAIRO) && defined (__APPLE_QUARTZ__)
-  if (Fl::cairo_autolink_context()) Fl::cairo_make_current((fltk::Window*) 0); // capture gc changes automatically to update the cairo context adequately
+  if (Fl::cairo_autolink_context()) Fl::cairo_make_current((Fl_Window*) 0); // capture gc changes automatically to update the cairo context adequately
 #endif
 }
 
@@ -2848,13 +2848,13 @@ static void MacRelinkWindow(Fl_X *x, Fl_X *p) {
   p->xidChildren = x;
 }
 
-void MacDestroyWindow(fltk::Window *w, WindowPtr p) {
+void MacDestroyWindow(Fl_Window *w, WindowPtr p) {
   MacUnmapWindow(w, p);
   if (w && !w->parent() && p)
     DisposeWindow(p);
 }
 
-void MacMapWindow(fltk::Window *w, WindowPtr p) {
+void MacMapWindow(Fl_Window *w, WindowPtr p) {
   if (w && p)
     ShowWindow(p);
   //+ link to window list
@@ -2864,7 +2864,7 @@ void MacMapWindow(fltk::Window *w, WindowPtr p) {
   }
 }
 
-void MacUnmapWindow(fltk::Window *w, WindowPtr p) {
+void MacUnmapWindow(Fl_Window *w, WindowPtr p) {
   if (w && !w->parent() && p) 
     HideWindow(p);
   if (w && Fl_X::i(w)) 

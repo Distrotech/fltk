@@ -27,7 +27,7 @@
 
 #include <config.h>
 #ifdef __APPLE_COCOA__
-extern unsigned char *MACbitmapFromRectOfWindow(fltk::Window *win, int x, int y, int w, int h, int *bytesPerPixel);
+extern unsigned char *MACbitmapFromRectOfWindow(Fl_Window *win, int x, int y, int w, int h, int *bytesPerPixel);
 #endif
 
 //
@@ -42,7 +42,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
 	      int   h,		// I - Height of area to read
 	      int   alpha) {	// I - Alpha value for image (0 for none)
 #if defined(__APPLE_COCOA__)
-  fltk::Window *window = fltk::Window::current();
+  Fl_Window *window = Fl_Window::current();
   while(window->window()) window = window->window();
   int delta;
   uchar *base = MACbitmapFromRectOfWindow(window,x,y,w,h,&delta);

@@ -162,19 +162,19 @@ void *fl_capture = 0;			// (NSWindow*) we need this to compensate for a missing(
 char fl_key_vector[32];                 // used by Fl::get_key()
 bool fl_show_iconic;                    // true if called from iconize() - shows the next created window in collapsed state
 int fl_disable_transient_for;           // secret method of removing TRANSIENT_FOR
-//const fltk::Window* fl_modal_for;        // parent of modal() window
+//const Fl_Window* fl_modal_for;        // parent of modal() window
 Window fl_window;
-fltk::Window *fltk::Window::current_;
+Fl_Window *Fl_Window::current_;
 //EventRef fl_os_event;		// last (mouse) event
 
 // forward declarations of variables in this file
 static int got_events = 0;
-static fltk::Window* resize_from_system;
+static Fl_Window* resize_from_system;
 static SInt32 MACsystemVersion;
 
 #if CONSOLIDATE_MOTION
-static fltk::Window* send_motion;
-extern fltk::Window* fl_xmousewin;
+static Fl_Window* send_motion;
+extern Fl_Window* fl_xmousewin;
 #endif
 
 enum { FLTKTimerEvent = 1, FLTKDataReadyEvent };
@@ -185,7 +185,7 @@ void fl_reset_spot()
 {
 }
 
-void fl_set_spot(int font, int size, int X, int Y, int W, int H, fltk::Window *win)
+void fl_set_spot(int font, int size, int X, int Y, int W, int H, Fl_Window *win)
 {
 }
 
@@ -636,10 +636,10 @@ static void do_timer(EventLoopTimerRef timer, void* data)
 }
 
 @interface FLWindow : NSWindow {
-  fltk::Window *w;
+  Fl_Window *w;
   BOOL containsGLsubwindow;
 }
-- (FLWindow*)initWithFl_W:(fltk::Window *)flw 
+- (FLWindow*)initWithFl_W:(Fl_Window *)flw 
 	      contentRect:(NSRect)rect 
 		styleMask:(NSUInteger)windowStyle 
 		  backing:(NSBackingStoreType)bufferingType 
@@ -651,7 +651,7 @@ static void do_timer(EventLoopTimerRef timer, void* data)
 @end
 
 @implementation FLWindow
-- (FLWindow*)initWithFl_W:(fltk::Window *)flw 
+- (FLWindow*)initWithFl_W:(Fl_Window *)flw 
 	      contentRect:(NSRect)rect 
 		styleMask:(NSUInteger)windowStyle 
 		  backing:(NSBackingStoreType)bufferingType 
@@ -666,13 +666,13 @@ static void do_timer(EventLoopTimerRef timer, void* data)
 }
 - (Fl_Window *)getFl_Window;
 {
-  return (Fl_Window*)w;
+  return w;
 }
 - (BOOL)windowShouldClose:(FLWindow *)fl
 {
   Fl::handle( FL_CLOSE, [fl getFl_Window] ); // this might or might not close the window
   if (!Fl_X::first) return YES;
-  fltk::Window *l = Fl::first_window();
+  Fl_Window *l = Fl::first_window();
   while( l != NULL && l != [fl getFl_Window]) l = Fl::next_window(l);
   return (l == NULL ? YES : NO);
 }
@@ -721,7 +721,7 @@ static double do_queued_events( double time = 0.0 )
   if (event != nil) {
     BOOL needSendEvent = YES;
     if ([event type] == NSLeftMouseDown) {
-      fltk::Window *grab = Fl::grab();
+      Fl_Window *grab = Fl::grab();
       if (grab && grab != [(FLWindow *)[event window] getFl_Window]) {
 	// a click event out of a menu window, so we should close this menu
 	// done here to catch also clicks on window title bar/resize box 
@@ -783,7 +783,7 @@ void cocoaMouseWheelHandler(NSEvent *theEvent)
   // supports two wheels just fine. Matthias,
   fl_lock_function();
   
-  fltk::Window *window = (fltk::Window*)[(FLWindow*)[theEvent window] getFl_Window];
+  Fl_Window *window = (Fl_Window*)[(FLWindow*)[theEvent window] getFl_Window];
   if ( !window->shown() ) {
     fl_unlock_function();
     return;
@@ -824,12 +824,12 @@ static void cocoaMouseHandler(NSEvent *theEvent)
   
   fl_lock_function();
   
-  fltk::Window *window = (fltk::Window*)[(FLWindow*)[theEvent window] getFl_Window];
+  Fl_Window *window = (Fl_Window*)[(FLWindow*)[theEvent window] getFl_Window];
   if ( !window->shown() ) {
     fl_unlock_function();
     return;
   }
-  fltk::Window *first = Fl::first_window();
+  Fl_Window *first = Fl::first_window();
   if (first != window && !(first->modal() || first->non_modal())) Fl::first_window(window);
   NSPoint pos = [theEvent locationInWindow];
   pos.y = window->h() - pos.y;
@@ -1051,7 +1051,7 @@ OSStatus carbonTextHandler( EventHandlerCallRef nextHandler, EventRef event, voi
   // but under 10.6 this gets also called by interpretKeyEvents 
   // during character composition when we don't want to run it
   if ([[NSApp currentEvent] type] != NSSystemDefined) return eventNotHandledErr;
-  fltk::Window *window = [(FLWindow*)keywindow getFl_Window];
+  Fl_Window *window = [(FLWindow*)keywindow getFl_Window];
   fl_lock_function();
   // int kind = GetEventKind(event);
   unsigned short buf[200];
@@ -1078,7 +1078,7 @@ OSStatus carbonTextHandler( EventHandlerCallRef nextHandler, EventRef event, voi
   return noErr;
 }
 
-static void processCompositionSequence(CFStringRef s, fltk::Window *window)
+static void processCompositionSequence(CFStringRef s, Fl_Window *window)
 // composed character sequences are sent here
 // they contain 2 unichars, the first comes from the deadkey and can be non ascii (e.g., diaeresis),
 // the second is the character to be modified (e.g., e to be accented)
@@ -1124,7 +1124,7 @@ OSStatus cocoaKeyboardHandler(NSEvent *theEvent)
 {
   static char buffer[32];
   int sendEvent = 0;
-  fltk::Window *window = (fltk::Window*)[(FLWindow*)[theEvent window] getFl_Window];
+  Fl_Window *window = (Fl_Window*)[(FLWindow*)[theEvent window] getFl_Window];
   Fl::first_window(window);
   NSUInteger mods;
   
@@ -1357,7 +1357,7 @@ extern "C" {
 - (void)windowDidMove:(NSNotification *)notif
 {
   FLWindow *nsw = (FLWindow*)[notif object];
-  fltk::Window *window = [nsw getFl_Window];
+  Fl_Window *window = [nsw getFl_Window];
   NSPoint pt, pt2; 
   pt.x = 0;
   pt.y = [[nsw contentView] frame].size.height;
@@ -1371,7 +1371,7 @@ extern "C" {
 - (void)windowDidResize:(NSNotification *)notif
 {
   FLWindow *nsw = (FLWindow*)[notif object];
-  fltk::Window *window = [nsw getFl_Window];
+  Fl_Window *window = [nsw getFl_Window];
   NSRect r = [[nsw contentView] frame];
   NSPoint pt, pt2; 
   pt.x = 0;
@@ -1387,32 +1387,32 @@ extern "C" {
 - (void)windowDidBecomeKey:(NSNotification *)notif
 {
   FLWindow *nsw = (FLWindow*)[notif object];
-  fltk::Window *window = [nsw getFl_Window];
+  Fl_Window *window = [nsw getFl_Window];
   Fl::handle( FL_FOCUS, window);
 }
 - (void)windowDidBecomeMain:(NSNotification *)notif
 {
   FLWindow *nsw = (FLWindow*)[notif object];
-  fltk::Window *window = [nsw getFl_Window];
+  Fl_Window *window = [nsw getFl_Window];
   Fl::first_window(window);
   update_e_xy_and_e_xy_root(nsw);
 }
 - (void)windowDidDeminiaturize:(NSNotification *)notif
 {
   FLWindow *nsw = (FLWindow*)[notif object];
-  fltk::Window *window = [nsw getFl_Window];
+  Fl_Window *window = [nsw getFl_Window];
   window->set_visible();
   update_e_xy_and_e_xy_root(nsw);
 }
 - (void)windowDidMiniaturize:(NSNotification *)notif
 {
   FLWindow *nsw = (FLWindow*)[notif object];
-  fltk::Window *window = [nsw getFl_Window];
+  Fl_Window *window = [nsw getFl_Window];
   window->clear_visible();
 }
 - (void)windowWillClose:(NSNotification *)notif
 {
-  fltk::Window *w = Fl::first_window();
+  Fl_Window *w = Fl::first_window();
   if (!w) return;
   NSWindow *cw = (NSWindow*)Fl_X::i(w)->xid;
   if ( ![cw isMiniaturized] && ([cw styleMask] & NSTitledWindowMask) ) {
@@ -1450,7 +1450,7 @@ extern "C" {
   FLWindow *top = 0, *topModal = 0, *topNonModal = 0;
   for (x = Fl_X::first;x;x = x->next) {
     FLWindow *cw = (FLWindow*)x->xid;
-    fltk::Window *win = x->w;
+    Fl_Window *win = x->w;
     if (win && cw) {
       if (win->modal()) {
         [cw setLevel:NSModalPanelWindowLevel];
@@ -1480,7 +1480,7 @@ extern "C" {
   // sort in all regular windows
   for (x = Fl_X::first;x;x = x->next) {
     FLWindow *cw = (FLWindow*)x->xid;
-    fltk::Window *win = x->w;
+    Fl_Window *win = x->w;
     if (win && cw) {
       if (win->modal()) {
       } else if (win->non_modal()) {
@@ -1492,7 +1492,7 @@ extern "C" {
   // now sort in all modals
   for (x = Fl_X::first;x;x = x->next) {
     FLWindow *cw = (FLWindow*)x->xid;
-    fltk::Window *win = x->w;
+    Fl_Window *win = x->w;
     if (win && cw) {
       if (win->modal()) {
         [cw setLevel:NSNormalWindowLevel];
@@ -1505,7 +1505,7 @@ extern "C" {
   // finally all non-modals
   for (x = Fl_X::first;x;x = x->next) {
     FLWindow *cw = (FLWindow*)x->xid;
-    fltk::Window *win = x->w;
+    Fl_Window *win = x->w;
     if (win && cw) {
       if (win->modal()) {
       } else if (win->non_modal()) {
@@ -1715,7 +1715,7 @@ void Fl_X::flush()
 /*
  * Gets called when a window is created, resized, or deminiaturized
  */    
-static void handleUpdateEvent( fltk::Window *window ) 
+static void handleUpdateEvent( Fl_Window *window ) 
 {
   if ( !window ) return;
   Fl_X *i = Fl_X::i( window );
@@ -1758,7 +1758,7 @@ static void handleUpdateEvent( fltk::Window *window )
   window->clear_damage();
 }     
 
-int Fl_X::fake_X_wm(const fltk::Window* w,int &X,int &Y, int &bt,int &bx, int &by) {
+int Fl_X::fake_X_wm(const Fl_Window* w,int &X,int &Y, int &bt,int &bx, int &by) {
   int W, H, xoff, yoff, dx, dy;
   int ret = bx = by = bt = 0;
   if (w->border() && !w->parent()) {
@@ -1862,7 +1862,7 @@ int Fl_X::fake_X_wm(const fltk::Window* w,int &X,int &Y, int &bt,int &bx, int &b
 }
 
 
-fltk::Window *fl_dnd_target_window = 0;
+Fl_Window *fl_dnd_target_window = 0;
 
 static void  q_set_window_title(NSWindow *nsw, const char * name ) {
   CFStringRef utf8_title = CFStringCreateWithCString(NULL, (name ? name : ""), kCFStringEncodingUTF8);
@@ -1901,7 +1901,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 - (void)drawRect:(NSRect)rect
 {
   FLWindow *cw = (FLWindow*)[self window];
-  fltk::Window *w = [cw getFl_Window];
+  Fl_Window *w = [cw getFl_Window];
   handleUpdateEvent(w);
 }
 
@@ -1916,8 +1916,8 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 }
 - (BOOL)acceptsFirstMouse:(NSEvent*)theEvent
 {   
-  fltk::Window *w = [(FLWindow*)[theEvent window] getFl_Window];
-  fltk::Window *first = Fl::first_window();
+  Fl_Window *w = [(FLWindow*)[theEvent window] getFl_Window];
+  Fl_Window *first = Fl::first_window();
   return (first == w || !first->modal());
 }
 - (void)mouseUp:(NSEvent *)theEvent {
@@ -1963,7 +1963,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
   fl_lock_function();
   static UInt32 prevMods = mods_to_e_state( GetCurrentKeyModifiers() );
   NSUInteger mods = [theEvent modifierFlags];
-  fltk::Window *window = (fltk::Window*)[(FLWindow*)[theEvent window] getFl_Window];
+  Fl_Window *window = (Fl_Window*)[(FLWindow*)[theEvent window] getFl_Window];
   UInt32 tMods = prevMods ^ mods;
   int sendEvent = 0;
   if ( tMods )
@@ -1982,7 +1982,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 }
 - (NSDragOperation)draggingEntered:(id < NSDraggingInfo >)sender
 {
-  fltk::Window *target = [(FLWindow*)[self window] getFl_Window];
+  Fl_Window *target = [(FLWindow*)[self window] getFl_Window];
   update_e_xy_and_e_xy_root([self window]);
   fl_dnd_target_window = target;
   int ret = Fl::handle( FL_DND_ENTER, target );
@@ -1991,7 +1991,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 }
 - (NSDragOperation)draggingUpdated:(id < NSDraggingInfo >)sender
 {
-  fltk::Window *target = [(FLWindow*)[self window] getFl_Window];
+  Fl_Window *target = [(FLWindow*)[self window] getFl_Window];
   update_e_xy_and_e_xy_root([self window]);
   fl_dnd_target_window = target;
   int ret = Fl::handle( FL_DND_DRAG, target );
@@ -2001,7 +2001,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender 
 {
   static char *DragData = NULL;
-  fltk::Window *target = [(FLWindow*)[self window] getFl_Window];
+  Fl_Window *target = [(FLWindow*)[self window] getFl_Window];
   if ( !Fl::handle( FL_DND_RELEASE, target ) ) { 
     breakMacEventLoop();
     return NO;
@@ -2061,7 +2061,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
  * go ahead, create that (sub)window
  * \todo we should make menu windows slightly transparent for the new Mac look
  */
-void Fl_X::make(fltk::Window* w)
+void Fl_X::make(Fl_Window* w)
 {
   static int xyPos = 100;
   if ( w->parent() ) {		// create a subwindow
@@ -2073,7 +2073,7 @@ void Fl_X::make(fltk::Window* w)
     x->subRegion = 0;
     x->cursor = fl_default_cursor;
     x->gc = 0;			// stay 0 for Quickdraw; fill with CGContext for Quartz
-    fltk::Window *win = w->window();
+    Fl_Window *win = w->window();
     Fl_X *xo = Fl_X::i(win);
     if (xo) {
       x->xidNext = xo->xidChildren;
@@ -2144,7 +2144,7 @@ void Fl_X::make(fltk::Window* w)
       wp += 2*bx;
       hp += 2*by+bt;
     }
-    if (!(w->flags() & fltk::Window::FORCE_POSITION)) {
+    if (!(w->flags() & Fl_Window::FORCE_POSITION)) {
       // use the Carbon functions below for default window positioning
       w->x(xyPos+Fl::x());
       w->y(xyPos+Fl::y());
@@ -2161,7 +2161,7 @@ void Fl_X::make(fltk::Window* w)
     
     if (w->non_modal() && Fl_X::first && !fl_disable_transient_for) {
       // find some other window to be "transient for":
-      fltk::Window* w = Fl_X::first->w;
+      Fl_Window* w = Fl_X::first->w;
       while (w->parent()) w = w->window(); // todo: this code does not make any sense! (w!=w??)
     }
     
@@ -2194,7 +2194,7 @@ void Fl_X::make(fltk::Window* w)
     [cw setLevel:winlevel];
     
     q_set_window_title(cw, name);
-    if (!(w->flags() & fltk::Window::FORCE_POSITION)) {
+    if (!(w->flags() & Fl_Window::FORCE_POSITION)) {
       if (w->modal()) {
         [cw center];
       } else if (w->non_modal()) {
@@ -2253,7 +2253,7 @@ void Fl_X::make(fltk::Window* w)
 /*
  * Tell the OS what window sizes we want to allow
  */
-void fltk::Window::size_range_() {
+void Fl_Window::size_range_() {
   int bx, by, bt;
   get_window_frame_sizes(bx, by, bt);
   size_range_set = 1;
@@ -2291,7 +2291,7 @@ const char *fl_filename_name( const char *name )
  * set the window title bar
  * \todo make the titlebar icon work!
  */
-void fltk::Window::label(const char *name,const char */*iname*/) {
+void Fl_Window::label(const char *name,const char */*iname*/) {
   Fl_Widget::label(name);
   if (shown() || i) {
     q_set_window_title((NSWindow*)i->xid, name);
@@ -2302,7 +2302,7 @@ void fltk::Window::label(const char *name,const char */*iname*/) {
 /*
  * make a window visible
  */
-void fltk::Window::show() {
+void Fl_Window::show() {
   image(Fl::scheme_bg_);
   if (Fl::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
@@ -2330,14 +2330,14 @@ void fltk::Window::show() {
 /*
  * resize a window
  */
-void fltk::Window::resize(int X,int Y,int W,int H) {
+void Fl_Window::resize(int X,int Y,int W,int H) {
   int bx, by, bt;
   if ( ! this->border() ) bt = 0;
   else get_window_frame_sizes(bx, by, bt);
   if (W<=0) W = 1; // OS X does not like zero width windows
   if (H<=0) H = 1;
   int is_a_resize = (W != w() || H != h());
-  //  printf("fltk::Window::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
+  //  printf("Fl_Window::resize(X=%d, Y=%d, W=%d, H=%d), is_a_resize=%d, resize_from_system=%p, this=%p\n",
   //         X, Y, W, H, is_a_resize, resize_from_system, this);
   if (X != x() || Y != y()) set_flag(FORCE_POSITION);
   else if (!is_a_resize) return;
@@ -2380,20 +2380,20 @@ void fltk::Window::resize(int X,int Y,int W,int H) {
 /*
  * make all drawing go into this window (called by subclass flush() impl.)
  */
-void fltk::Window::make_current() 
+void Fl_Window::make_current() 
 {
   Fl_X::q_release_context();
   fl_window = i->xid;
   current_ = this;
   
   int xp = 0, yp = 0;
-  Window *win = this;
+  Fl_Window *win = this;
   while ( win ) {
     if ( !win->window() )
       break;
     xp += win->x();
     yp += win->y();
-    win = (fltk::Window*)win->window();
+    win = (Fl_Window*)win->window();
   }
   
   [[NSView focusView] unlockFocus];
@@ -2403,7 +2403,7 @@ void fltk::Window::make_current()
   Fl_Region fl_window_region = XRectangleRegion(0,0,w(),h());
   if ( ! this->window() ) {
     for ( Fl_X *cx = i->xidChildren; cx; cx = cx->xidNext ) {	// clip-out all sub-windows
-      fltk::Window *cw = cx->w;
+      Fl_Window *cw = cx->w;
       Fl_Region from = fl_window_region;
       fl_window_region = MacRegionMinusRect(from, cw->x(), cw->y(), cw->w(), cw->h() );
       XDestroyRegion(from);
@@ -2473,7 +2473,7 @@ void Fl_X::q_release_context(Fl_X *x) {
   CGContextRestoreGState(fl_gc); // matches the CGContextSaveGState of make_current
   fl_gc = 0;
 #if defined(USE_CAIRO)
-  if (Fl::cairo_autolink_context()) Fl::cairo_make_current((fltk::Window*) 0); // capture gc changes automatically to update the cairo context adequately
+  if (Fl::cairo_autolink_context()) Fl::cairo_make_current((Fl_Window*) 0); // capture gc changes automatically to update the cairo context adequately
 #endif
 }
 
@@ -2757,14 +2757,14 @@ static void MacRelinkWindow(Fl_X *x, Fl_X *p) {
   p->xidChildren = x;
 }
 
-void MacDestroyWindow(fltk::Window *w, void *p) {
+void MacDestroyWindow(Fl_Window *w, void *p) {
   if (w && !w->parent() && p) {
     [[(NSWindow *)p contentView] release];
     [(NSWindow *)p close];
   }
 }
 
-void MacMapWindow(fltk::Window *w, void *p) {
+void MacMapWindow(Fl_Window *w, void *p) {
   if (w && p) {
     [(NSWindow *)p orderFront:nil];
   }
@@ -2775,7 +2775,7 @@ void MacMapWindow(fltk::Window *w, void *p) {
   }
 }
 
-void MacUnmapWindow(fltk::Window *w, void *p) {
+void MacUnmapWindow(Fl_Window *w, void *p) {
   if (w && !w->parent() && p) {
     [(NSWindow *)p orderOut:nil];
   }
@@ -3356,9 +3356,9 @@ int MACpreparedrag(void)
   [mypasteboard setData:(NSData*)text forType:@"public.utf8-plain-text"];
   CFRelease(text);
   Fl_Widget *w = Fl::pushed();
-  fltk::Window *win = w->window();
+  Fl_Window *win = w->window();
   if (win == NULL) {
-    win = (fltk::Window*)w;
+    win = (Fl_Window*)w;
   } else { 
     while(win->window()) win = win->window();
   }
@@ -3391,7 +3391,7 @@ int MACpreparedrag(void)
   return true;
 }
 
-unsigned char *MACbitmapFromRectOfWindow(fltk::Window *win, int x, int y, int w, int h, int *bytesPerPixel)
+unsigned char *MACbitmapFromRectOfWindow(Fl_Window *win, int x, int y, int w, int h, int *bytesPerPixel)
 // delete the returned pointer after use
 {
   while(win->window()) {
@@ -3432,7 +3432,7 @@ void imgProviderReleaseData (void *info, const void *data, size_t size)
   delete (unsigned char *)data;
 }
 
-CGImageRef MAC_CGImageFromRectOfWindow(fltk::Window *win, int x, int y, int w, int h)
+CGImageRef MAC_CGImageFromRectOfWindow(Fl_Window *win, int x, int y, int w, int h)
 // CFRelease the returned CGImageRef after use
 {
   int bpp;
@@ -3448,12 +3448,12 @@ CGImageRef MAC_CGImageFromRectOfWindow(fltk::Window *win, int x, int y, int w, i
   return img;
 }
 
-void MACsetContainsGLsubwindow(fltk::Window *w) 
+void MACsetContainsGLsubwindow(Fl_Window *w) 
 {
   [(FLWindow*)Fl_X::i(w)->xid setContainsGLsubwindow:YES];
 }
 
-WindowRef MACwindowRef(fltk::Window *w)
+WindowRef MACwindowRef(Fl_Window *w)
 {
   return (WindowRef)[(FLWindow*)Fl_X::i(w)->xid windowRef];
 }

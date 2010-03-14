@@ -293,7 +293,7 @@
 */
   /** \fn int Fl_File_Chooser::shown()
     Returns non-zero if the file chooser main window show() has been called (but not hide()
-    see fltk::Window::shown()
+    see Fl_Window::shown()
   */
 
   /** \fn void Fl_File_Chooser::callback(void (*cb)(Fl_File_Chooser *, void *), void *d = 0)

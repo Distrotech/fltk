@@ -243,7 +243,7 @@ int Fl::arg(int argc, char **argv, int &i) {
   
   	<LI>-iconic
   
-  	<P>Iconifies the window using fltk::Window::iconize().</LI>
+  	<P>Iconifies the window using Fl_Window::iconize().</LI>
   
   	<LI>-kbd and -nokbd
   
@@ -252,7 +252,7 @@ int Fl::arg(int argc, char **argv, int &i) {
   
   	<LI>-name string
   
-  	<P>Sets the window class using fltk::Window::xclass().</LI>
+  	<P>Sets the window class using Fl_Window::xclass().</LI>
   
   	<LI>-scheme string
   
@@ -260,7 +260,7 @@ int Fl::arg(int argc, char **argv, int &i) {
   
   	<LI>-title string
   
-  	<P>Sets the window title using fltk::Window::label().</LI>
+  	<P>Sets the window title using Fl_Window::label().</LI>
   
   	<LI>-tooltips and -notooltips
   
@@ -288,7 +288,7 @@ int Fl::args(int argc, char** argv, int& i, int (*cb)(int,char**,int&)) {
 }
 
 // show a main window, use any parsed arguments
-void fltk::Window::show(int argc, char **argv) {
+void Fl_Window::show(int argc, char **argv) {
   if (argc && !arg_called) Fl::args(argc,argv);
 
   Fl::get_system_colors();

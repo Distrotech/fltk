@@ -50,7 +50,7 @@ extern char fl_i_own_selection[2];
 extern char *fl_locale2utf8(const char *s, UINT codepage = 0);
 extern unsigned int fl_codepage;
 
-fltk::Window *fl_dnd_target_window = 0;
+Fl_Window *fl_dnd_target_window = 0;
 
 // All of the following code requires GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
@@ -96,7 +96,7 @@ public:
     Fl::e_x_root = ppt.x = pt.x;
     Fl::e_y_root = ppt.y = pt.y;
     HWND hWnd = WindowFromPoint( ppt );
-    fltk::Window *target = fl_find( hWnd );
+    Fl_Window *target = fl_find( hWnd );
     if (target) {
       Fl::e_x = Fl::e_x_root-target->x();
       Fl::e_y = Fl::e_y_root-target->y();
@@ -158,7 +158,7 @@ public:
   HRESULT STDMETHODCALLTYPE Drop( IDataObject *data, DWORD /*grfKeyState*/, POINTL pt, DWORD* /*pdwEffect*/) {
     if ( !fl_dnd_target_window )
       return S_OK;
-    fltk::Window *target = fl_dnd_target_window;
+    Fl_Window *target = fl_dnd_target_window;
     fl_dnd_target_window = 0;
     Fl::e_x_root = pt.x;
     Fl::e_y_root = pt.y;
@@ -172,7 +172,7 @@ public:
 
     Fl_Widget *w = target;
     while (w->parent()) w = w->window();
-    HWND hwnd = fl_xid( (fltk::Window*)w );
+    HWND hwnd = fl_xid( (Fl_Window*)w );
     if (fillCurrentDragData(data)) {
       int old_event = Fl::e_number;
       Fl::belowmouse()->handle(Fl::e_number = FL_PASTE); // e_text will be invalid after this call

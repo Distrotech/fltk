@@ -382,8 +382,8 @@ static void gl_draw_cocoa(const char* str, int n)
   glMatrixMode (GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity ();
-  float winw = fltk::Window::current()->w();
-  float winh = fltk::Window::current()->h();
+  float winw = Fl_Window::current()->w();
+  float winh = Fl_Window::current()->h();
   glScalef (2.0f / winw, 2.0f /  winh, 1.0f);
   glTranslatef (-winw / 2.0f, -winh / 2.0f, 0.0f);
 //write str to a bitmap just big enough  
