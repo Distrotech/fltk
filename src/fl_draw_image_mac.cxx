@@ -80,6 +80,13 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
     lut = CGColorSpaceCreateDeviceRGB();
   // a release callback is necessary when the fl_gc is a print context because the image data
   // must be kept until the page is closed. Thus tmpBuf can't be deleted here. It's too early.
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
+  typedef void (*CGDataProviderReleaseDataCallback) (
+						     void *info,
+						     const void *data,
+						     size_t size
+  );
+#endif  
   CGDataProviderReleaseDataCallback releaseCB = ( cb ? dataReleaseCB : NULL);
   CGDataProviderRef src = CGDataProviderCreateWithData( 0L, array, linedelta*H, releaseCB);
   CGImageRef        img = CGImageCreate( W, H, 8, 8*delta, linedelta,
