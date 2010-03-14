@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/tableRow.h"
+#include "../fltk3/TableRow.h"
 
 //
 // End of "$Id$"

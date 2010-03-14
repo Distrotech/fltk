@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/treePrefs.h"
+#include "../fltk3/TreePrefs.h"
 
 //
 // End of "$Id$"

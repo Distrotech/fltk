@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/formsBitmap.h"
+#include "../fltk3/FormsBitmap.h"
 
 //
 // End of "$Id$"

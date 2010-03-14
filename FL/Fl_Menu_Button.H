@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/menuButton.h"
+#include "../fltk3/MenuButton.h"
 
 //
 // End of "$Id$"

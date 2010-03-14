@@ -1,0 +1,5 @@
+#
+
+cp joinall fixnames.sed
+sed 's:join :s/":g;s:$:"/g:;s: :"/":g' <joinall >fixnames.sed
+

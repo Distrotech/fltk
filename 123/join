@@ -3,90 +3,90 @@
 
 # create required files if they don't exist yet
 
-touch FL/$1
-touch fltk/$2
+touch ../FL/$1
+touch ../fltk/$2
 
 #  write the header
 
-printf '//\n' > fltk3/$2
-printf '// "$Id$"\n' >>fltk3/$2
-printf '//\n' >>fltk3/$2
-echo "" >>fltk3/$2
-echo "// 123 TODO: remove stray comments" >>fltk3/$2
-echo "// 123 TODO: add namespace statements" >>fltk3/$2
-echo "// 123 TODO: replace class name, constructors and destructor" >>fltk3/$2
-echo "// 123 TODO: add friend statement for Twin Class" >>fltk3/$2
-echo "// 123 TODO: add 'compat(FLTK2)' to constructors" >>fltk3/$2
-echo "// 123 TODO: add twin class with all constructors" >>fltk3/$2
-echo "// 123 TODO: change all arguments to the FLTK2 class name" >>fltk3/$2
-echo "// 123 TODO: change the source code to use the new class names" >>fltk3/$2
-echo "// 123 TODO: add casting to return values" >>fltk3/$2
-echo "// 123 TODO: move all FLTK2-only functions to the FLTK3 section and implement them" >>fltk3/$2
-echo "// 123 TODO: remove the FLTK1 and FLTK2 sections in the headers" >>fltk3/$2
-echo "// 123 TODO: " >>fltk3/$2
-echo "" >>fltk3/$2
+printf '//\n' > ../fltk3/$2
+printf '// "$Id$"\n' >>../fltk3/$2
+printf '//\n' >>../fltk3/$2
+echo "" >>../fltk3/$2
+echo "// 123 TODO: remove stray comments" >>../fltk3/$2
+echo "// 123 TODO: add namespace statements" >>../fltk3/$2
+echo "// 123 TODO: replace class name, constructors and destructor" >>../fltk3/$2
+echo "// 123 TODO: add friend statement for Twin Class" >>../fltk3/$2
+echo "// 123 TODO: add 'compat(FLTK2)' to constructors" >>../fltk3/$2
+echo "// 123 TODO: add twin class with all constructors" >>../fltk3/$2
+echo "// 123 TODO: change all arguments to the FLTK2 class name" >>../fltk3/$2
+echo "// 123 TODO: change the source code to use the new class names" >>../fltk3/$2
+echo "// 123 TODO: add casting to return values" >>../fltk3/$2
+echo "// 123 TODO: move all FLTK2-only functions to the FLTK3 section and implement them" >>../fltk3/$2
+echo "// 123 TODO: remove the FLTK1 and FLTK2 sections in the headers" >>../fltk3/$2
+echo "// 123 TODO: " >>../fltk3/$2
+echo "" >>../fltk3/$2
 
 #  copy the FLTK1 file as a base
 
-cat FL/$1 >>fltk3/$2
+cat ../FL/$1 | sed -f fixnames.sed >>../fltk3/$2
 
 #  lame attempt at auto-creating what could be a twin class (probably quite useless)
 
 f1name=${1/.*/}
 f2name=${2/.*/}
 
-printf '\n' >>fltk3/$2
-printf '/* suggested twin class\n' >>fltk3/$2
-printf '// This is the Twin Class to fltk::%s\n' $f2name >>fltk3/$2
-printf 'class %s : public fltk::%s {\n' $f1name $f2name >>fltk3/$2
-printf 'public:\n' >>fltk3/$2
-printf '  %s(int x, int t, int w, int h, const char *label=0)\n' $f1name >>fltk3/$2
-printf '  : fltk::%s(x, y, w, h, label), compat_(FLTK1) { }\n' $f2name  >>fltk3/$2
-printf '};\n' >>fltk3/$2
-printf '*/\n' >>fltk3/$2
-printf '\n' >>fltk3/$2
+printf '\n' >>../fltk3/$2
+printf '/* suggested twin class\n' >>../fltk3/$2
+printf '// This is the Twin Class to fltk::%s\n' $f2name >>../fltk3/$2
+printf 'class %s : public fltk::%s {\n' $f1name $f2name >>../fltk3/$2
+printf 'public:\n' >>../fltk3/$2
+printf '  %s(int x, int y, int w, int h, const char *label=0)\n' $f1name >>../fltk3/$2
+printf '  : fltk::%s(x, y, w, h, label), compat_(FLTK1) { }\n' $f2name  >>../fltk3/$2
+printf '};\n' >>../fltk3/$2
+printf '*/\n' >>../fltk3/$2
+printf '\n' >>../fltk3/$2
 
 #  add the FLTK1 file again for later reference
 
-echo "// ----- FLTK1 -----------------------------------------------------------------" >>fltk3/$2
-echo "#if 0" >>fltk3/$2
-cat FL/$1 >>fltk3/$2
-echo "#endif" >>fltk3/$2
+echo "// ----- FLTK1 -----------------------------------------------------------------" >>../fltk3/$2
+echo "#if 0" >>../fltk3/$2
+cat ../FL/$1 >>../fltk3/$2
+echo "#endif" >>../fltk3/$2
 
 #  add the FLTK2 file again for later reference
 
-echo "// ----- FLTK2 -----------------------------------------------------------------" >>fltk3/$2
-echo "#if 0" >>fltk3/$2
-cat fltk/$2 >>fltk3/$2
-echo "#endif" >>fltk3/$2
+echo "// ----- FLTK2 -----------------------------------------------------------------" >>../fltk3/$2
+echo "#if 0" >>../fltk3/$2
+cat ../fltk/$2 >>../fltk3/$2
+echo "#endif" >>../fltk3/$2
 
 #  add the ending comments
 
-echo "// ----- END -------------------------------------------------------------------" >>fltk3/$2
-printf '//\n' >>fltk3/$2
-printf '// End of "$Id$"\n' >>fltk3/$2
-printf '//\n' >>fltk3/$2
+echo "// ----- END -------------------------------------------------------------------" >>../fltk3/$2
+printf '//\n' >>../fltk3/$2
+printf '// End of "$Id$"\n' >>../fltk3/$2
+printf '//\n' >>../fltk3/$2
 
 # replace original files with links
 
-printf '//\n' >fltk/$2
-printf '// "$Id$"\n' >>fltk/$2
-printf '//\n' >>fltk/$2
-printf '\n' >>fltk/$2
-printf '#include "../fltk3/%s"\n' $2 >>fltk/$2
-printf '\n' >>fltk/$2
-printf '//\n' >>fltk/$2
-printf '// End of "$Id$"\n' >>fltk/$2
-printf '//\n' >>fltk/$2
+printf '//\n' >../fltk/$2
+printf '// "$Id$"\n' >>../fltk/$2
+printf '//\n' >>../fltk/$2
+printf '\n' >>../fltk/$2
+printf '#include "../fltk3/%s"\n' $2 >>../fltk/$2
+printf '\n' >>../fltk/$2
+printf '//\n' >>../fltk/$2
+printf '// End of "$Id$"\n' >>../fltk/$2
+printf '//\n' >>../fltk/$2
 
-printf '//\n' >FL/$1
-printf '// "$Id$"\n' >>FL/$1
-printf '//\n' >>FL/$1
-printf '\n' >>FL/$1
-printf '#include "../fltk3/%s"\n' $2 >>FL/$1
-printf '\n' >>FL/$1
-printf '//\n' >>FL/$1
-printf '// End of "$Id$"\n' >>FL/$1
-printf '//\n' >>FL/$1
+printf '//\n' >../FL/$1
+printf '// "$Id$"\n' >>../FL/$1
+printf '//\n' >>../FL/$1
+printf '\n' >>../FL/$1
+printf '#include "../fltk3/%s"\n' $2 >>../FL/$1
+printf '\n' >>../FL/$1
+printf '//\n' >>../FL/$1
+printf '// End of "$Id$"\n' >>../FL/$1
+printf '//\n' >>../FL/$1
 
 

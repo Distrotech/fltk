@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/hodBrowser.h"
+#include "../fltk3/HoldBrowser.h"
 
 //
 // End of "$Id$"

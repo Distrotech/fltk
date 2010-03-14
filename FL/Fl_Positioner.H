@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/positioner.h"
+#include "../fltk3/Positioner.h"
 
 //
 // End of "$Id$"

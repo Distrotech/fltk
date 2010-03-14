@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/horNicesSlide.h"
+#include "../fltk3/HorNiceSlider.h"
 
 //
 // End of "$Id$"

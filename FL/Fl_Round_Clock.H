@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/roundClock.h"
+#include "../fltk3/RoundClock.h"
 
 //
 // End of "$Id$"

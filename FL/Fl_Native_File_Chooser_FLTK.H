@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/nativeFileChooserFLTK.h"
+#include "../fltk3/NativeFileChooserFLTK.h"
 
 //
 // End of "$Id$"

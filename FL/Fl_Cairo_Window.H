@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/cairo_window.h"
+#include "../fltk3/CairoWindow.h"
 
 //
 // End of "$Id$"

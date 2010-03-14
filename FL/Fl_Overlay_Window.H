@@ -2,7 +2,7 @@
 // "$Id$"
 //
 
-#include "../fltk3/overlayWindow.h"
+#include "../fltk3/OverlayWindow.h"
 
 //
 // End of "$Id$"
