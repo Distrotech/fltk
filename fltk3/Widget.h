@@ -50,6 +50,14 @@
 
 #include "Enumerations.H"
 
+#define FLTK1 1
+#define FLTK2 2
+#define FLTK3 3
+
+namespace fltk {
+  class Window;
+}
+
 class Fl_Widget;
 class Fl_Window;
 class Fl_Group;
@@ -131,6 +139,8 @@ class FL_EXPORT Fl_Widget {
   Fl_Widget& operator=(const Fl_Widget &);
 
 protected:
+  
+  uchar compat_:2;
 
   /** Creates a widget at the given position and size.
 
@@ -165,18 +175,18 @@ protected:
         INACTIVE        = 1<<0,   ///< the widget can't receive focus, and is disabled but potentially visible
         INVISIBLE       = 1<<1,   ///< the widget is not drawn but can receive events
         OUTPUT          = 1<<2,   ///< for output only
-        NOBORDER        = 1<<3,   ///< don't draw a decoration (Fl_Window)
-        FORCE_POSITION  = 1<<4,   ///< don't let the window manager position the window (Fl_Window)
-        NON_MODAL       = 1<<5,   ///< thisis a hovering toolbar window (Fl_Window)
+        NOBORDER        = 1<<3,   ///< don't draw a decoration (fltk::Window)
+        FORCE_POSITION  = 1<<4,   ///< don't let the window manager position the window (fltk::Window)
+        NON_MODAL       = 1<<5,   ///< thisis a hovering toolbar window (fltk::Window)
         SHORTCUT_LABEL  = 1<<6,   ///< the label contains a shortcut we need to draw
         CHANGED         = 1<<7,   ///< the widget value changed
-        OVERRIDE        = 1<<8,   ///< position window on top (Fl_Window)
+        OVERRIDE        = 1<<8,   ///< position window on top (fltk::Window)
         VISIBLE_FOCUS   = 1<<9,   ///< accepts keyboard focus navigation if the widget can have the focus
         COPIED_LABEL    = 1<<10,  ///< the widget label is internally copied, its destruction is handled by the widget
         CLIP_CHILDREN   = 1<<11,  ///< all drawing within this widget will be clipped (Fl_Group)
-        MENU_WINDOW     = 1<<12,  ///< a temporary popup window, dismissed by clicking outside (Fl_Window)
-        TOOLTIP_WINDOW  = 1<<13,  ///< a temporary popup, transparent to events, and dismissed easily (Fl_Window)
-        MODAL           = 1<<14,  ///< a window blocking input to all other winows (Fl_Window)
+        MENU_WINDOW     = 1<<12,  ///< a temporary popup window, dismissed by clicking outside (fltk::Window)
+        TOOLTIP_WINDOW  = 1<<13,  ///< a temporary popup, transparent to events, and dismissed easily (fltk::Window)
+        MODAL           = 1<<14,  ///< a window blocking input to all other winows (fltk::Window)
         NO_OVERLAY      = 1<<15,  ///< window not using a hardware overlay plane (Fl_Menu_Window)
         GROUP_RELATIVE  = 1<<16,  ///< position this idget relative to the parent group, not to the window
         // (space for more flags)
@@ -242,7 +252,7 @@ public:
   virtual int handle(int event);
 
   /** Returns a pointer to the parent widget.  
-      Usually this is a Fl_Group or Fl_Window. 
+      Usually this is a Fl_Group or fltk::Window. 
       \retval NULL if the widget has no parent
       \see Fl_Group::add(Fl_Widget*)
    */
@@ -735,7 +745,7 @@ public:
       Changing this value will send FL_DEACTIVATE to the widget if 
       active_r() is true.
     
-      Currently you cannot deactivate Fl_Window widgets.
+      Currently you cannot deactivate fltk::Window widgets.
 
       \see activate(), active(), active_r()
    */
@@ -934,9 +944,9 @@ public:
    */
   void measure_label(int& ww, int& hh) {label_.measure(ww, hh);}
 
-  /** Returns a pointer to the primary Fl_Window widget.
+  /** Returns a pointer to the primary fltk::Window widget.
       \retval  NULL if no window is associated with this widget.  
-      \note for an Fl_Window widget, this returns its <I>parent</I> window 
+      \note for an fltk::Window widget, this returns its <I>parent</I> window 
             (if any), not <I>this</I> window.
    */
   Fl_Window* window() const ;
@@ -949,9 +959,9 @@ public:
    */
   virtual Fl_Group* as_group() const {return 0;}
 
-  /** Returns an Fl_Window pointer if this widget is an Fl_Window.
+  /** Returns an fltk::Window pointer if this widget is an fltk::Window.
   
-      \retval NULL if this widget is not derived from Fl_Window.
+      \retval NULL if this widget is not derived from fltk::Window.
       \note This method is provided to avoid dynamic_cast.
       \todo More documentation ...
    */

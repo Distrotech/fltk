@@ -131,7 +131,7 @@ fl_read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
     // fetch absolute coordinates
     int dx, dy, sx, sy, sw, sh;
     Window child_win;
-    Fl_Window *win = fl_find(fl_window);
+    fltk::Window *win = fl_find(fl_window);
     if (win) {
       XTranslateCoordinates(fl_display, fl_window,
           RootWindow(fl_display, fl_screen), X, Y, &dx, &dy, &child_win);

@@ -55,6 +55,8 @@
 
 class Fl_X;
 
+namespace fltk {
+
 /**
   This widget produces an actual window.  This can either be a main
   window, with a border and title and all the window management controls,
@@ -65,16 +67,16 @@ class Fl_X;
   's to it by using window->add(child) for each new widget.
   See Fl_Group for more information on how to add and remove children.
 
-  There are several subclasses of Fl_Window that provide
+  There are several subclasses of fltk::Window that provide
   double-buffering, overlay, menu, and OpenGL support.
 
   The window's callback is done if the user tries to close a window
   using the window manager and Fl::modal() is zero or equal to the
-  window. Fl_Window has a default callback that calls Fl_Window::hide().
+  window. fltk::Window has a default callback that calls fltk::Window::hide().
 */
-class FL_EXPORT Fl_Window : public Fl_Group {
-
-  friend class Fl_X;
+  class FL_EXPORT Window : public Fl_Group {
+  friend class ::Fl_Window;
+  friend class ::Fl_X;
   Fl_X *i; // points at the system-specific stuff
 
   const char* iconlabel_;
@@ -88,16 +90,16 @@ class FL_EXPORT Fl_Window : public Fl_Group {
   Fl_Cursor cursor_default;
   Fl_Color cursor_fg, cursor_bg;
   void size_range_();
-  void _Fl_Window(); // constructor innards
+  void _Window(); // constructor innards
 
   // unimplemented copy ctor and assignment operator
-  Fl_Window(const Fl_Window&);
-  Fl_Window& operator=(const Fl_Window&);
+  Window(const Window&);
+  Window& operator=(const Window&);
 
 protected:
 
   /** Stores the last window that was made current. See current() const */
-  static Fl_Window *current_;
+  static Window *current_;
   virtual void draw();
   /** Forces the window to be drawn, this window is also made current and calls draw(). */
   virtual void flush();
@@ -139,7 +141,7 @@ public:
     window, the window manager will pick a place to show the window
     or allow the user to pick a location. Use position(x,y)
     or hotspot() before calling show() to request a
-    position on the screen. See Fl_Window::resize() 
+    position on the screen. See fltk::Window::resize() 
     for some more details on positioning windows.
     
     Top-level windows initially have visible() set to 0
@@ -152,23 +154,23 @@ public:
     change this to FL_NO_BOX. If you turn the window border off
     you may want to change this to FL_UP_BOX.
 
-    \see Fl_Window(int x, int y, int w, int h, const char* title = 0)
+    \see fltk::Window(int x, int y, int w, int h, const char* title = 0)
   */
-    Fl_Window(int w, int h, const char* title= 0);
+    Window(int w, int h, const char* title= 0);
   /** Creates a window from the given position, size and title.
 
-    \see Fl_Window::Fl_Window(int w, int h, const char *title = 0)
+    \see fltk::Window(int w, int h, const char *title = 0)
   */
-    Fl_Window(int x, int y, int w, int h, const char* title = 0);
+    Window(int x, int y, int w, int h, const char* title = 0);
   /**
     The destructor <I>also deletes all the children</I>. This allows a
     whole tree to be deleted at once, without having to keep a pointer to
     all the children in the user code. A kludge has been done so the 
-    Fl_Window and all of its children can be automatic (local)
-    variables, but you must declare the Fl_Window <I>first</I> so
+    fltk::Window and all of its children can be automatic (local)
+    variables, but you must declare the fltk::Window <I>first</I> so
     that it is destroyed last.
   */
-    virtual ~Fl_Window();
+    virtual ~Window();
 
   virtual int handle(int);
 
@@ -202,7 +204,7 @@ public:
     off. It only works before show() is called.
   */
   void clear_border()	{set_flag(NOBORDER);}
-  /** See void Fl_Window::border(int) */
+  /** See void fltk::Window::border(int) */
   unsigned int border() const	{return !(flags() & NOBORDER);}
   /** Activates the flags NOBORDER|FL_OVERRIDE */
   void set_override()	{set_flag(NOBORDER|OVERRIDE);}
@@ -276,9 +278,9 @@ public:
     does not work with some X window managers). \see position()
   */
   void hotspot(int x, int y, int offscreen = 0);
-  /** See void Fl_Window::hotspot(int x, int y, int offscreen = 0) */
+  /** See void fltk::Window::hotspot(int x, int y, int offscreen = 0) */
   void hotspot(const Fl_Widget*, int offscreen = 0);
-  /** See void Fl_Window::hotspot(int x, int y, int offscreen = 0) */
+  /** See void fltk::Window::hotspot(int x, int y, int offscreen = 0) */
   void hotspot(const Fl_Widget& p, int offscreen = 0) {hotspot(&p,offscreen);}
 
   /**
@@ -329,9 +331,9 @@ public:
   void size_range(int a, int b, int c=0, int d=0, int e=0, int f=0, int g=0) {
     minw=a; minh=b; maxw=c; maxh=d; dw=e; dh=f; aspect=g; size_range_();}
 
-  /** See void Fl_Window::label(const char*)   */
+  /** See void fltk::Window::label(const char*)   */
   const char* label() const	{return Fl_Widget::label();}
-  /**  See void Fl_Window::iconlabel(const char*)   */
+  /**  See void fltk::Window::iconlabel(const char*)   */
   const char* iconlabel() const	{return iconlabel_;}
   /** Sets the window title bar label. */
   void label(const char*);
@@ -340,7 +342,7 @@ public:
   /** Sets the icon label. */
   void label(const char* label, const char* iconlabel); // platform dependent 
   void copy_label(const char* a);
-  /** See void Fl_Window::xclass(const char*) */
+  /** See void fltk::Window::xclass(const char*) */
   const char* xclass() const	{return xclass_;}
   /**
     A string used to tell the system what type of window this is. Mostly
@@ -386,7 +388,7 @@ public:
   */
   virtual void hide();
   /**
-    See virtual void Fl_Window::show() 
+    See virtual void fltk::Window::show() 
   */
   void show(int, char**);
   /**
@@ -412,7 +414,7 @@ public:
     FL_SHOW events and visible() is turned on and off.
 
     There is no way to control what is drawn in the icon except with the
-    string passed to Fl_Window::xclass().  You should not rely on
+    string passed to fltk::Window::xclass().  You should not rely on
     window managers displaying the icons.
   */
   void iconize();
@@ -428,13 +430,13 @@ public:
     if it draws a slow graphic. <B>Danger: incremental update is very hard to
     debug and maintain!</B>
 
-    This method only works for the Fl_Window and Fl_Gl_Window derived classes.
+    This method only works for the fltk::Window and Fl_Gl_Window derived classes.
   */
   void make_current();
 
-  /** Returns an Fl_Window pointer if this widget is an Fl_Window.
+  /** Returns an fltk::Window pointer if this widget is an fltk::Window.
   
-      \retval NULL if this widget is not derived from Fl_Window.
+      \retval NULL if this widget is not derived from fltk::Window.
       \note This method is provided to avoid dynamic_cast.
       \todo More documentation ...
    */
@@ -456,24 +458,22 @@ public:
   */
   void cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE); // platform dependent
   void default_cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
-  static void default_callback(Fl_Window*, void* v);
+  static void default_callback(Window*, void* v);
 
 };
+  
+} // namespace fltk
 
-#endif
-
-//
-// End of "$Id: Fl_Window.H 7255 2010-03-13 22:03:10Z matt $".
-//
-
-/* suggested twin class
 // This is the Twin Class to fltk::Window
 class Fl_Window : public fltk::Window {
 public:
-  Fl_Window(int x, int t, int w, int h, const char *label=0)
-  : fltk::Window(x, y, w, h, label), compat_(FLTK1) { }
+  Fl_Window(int x, int y, int w, int h, const char *label=0)
+  : fltk::Window(x, y, w, h, label) { compat_ = FLTK1; }
+  Fl_Window(int w, int h, const char *label=0)
+  : fltk::Window(w, h, label) { compat_ = FLTK1; }
 };
-*/
+
+#endif
 
 // ----- FLTK1 -----------------------------------------------------------------
 #if 0

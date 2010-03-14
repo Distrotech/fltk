@@ -146,7 +146,7 @@ class Fl_X
 public:
   Window xid;              // Cocoa: FLWindow* ; Carbon: WindowRef
   Fl_Offscreen other_xid;  // pointer for offscreen bitmaps (doublebuffer)
-  Fl_Window *w;            // FLTK window for 
+  fltk::Window *w;            // FLTK window for 
   Fl_Region region;
   Fl_Region subRegion;     // region for this specific subwindow
   Fl_X *next;              // linked tree to support subwindows
@@ -158,9 +158,9 @@ public:
   CursHandle cursor;
 #endif
   static Fl_X* first;
-  static Fl_X* i(const Fl_Window* w) {return w->i;}
-  static int fake_X_wm(const Fl_Window*,int&,int&,int&,int&,int&);
-  static void make(Fl_Window*);
+  static Fl_X* i(const fltk::Window* w) {return w->i;}
+  static int fake_X_wm(const fltk::Window*,int&,int&,int&,int&,int&);
+  static void make(fltk::Window*);
   void flush();
   // Quartz additions:
   CGContextRef gc;                 // graphics context (NULL when using QD)
@@ -172,23 +172,23 @@ public:
 };
 
 #ifdef __APPLE_COCOA__
-extern void MacDestroyWindow(Fl_Window*,void *);
-extern void MacMapWindow(Fl_Window*,void *);
-extern void MacUnmapWindow(Fl_Window*,void *);
-extern WindowRef MACwindowRef(Fl_Window *w);
+extern void MacDestroyWindow(fltk::Window*,void *);
+extern void MacMapWindow(fltk::Window*,void *);
+extern void MacUnmapWindow(fltk::Window*,void *);
+extern WindowRef MACwindowRef(fltk::Window *w);
 extern Fl_Region MacRectRegionIntersect(Fl_Region current, int x,int y,int w, int h);
-extern void MacCollapseWindow(Window w);
+extern void MacCollapseWindow(::Window w);
 extern void fl_mac_set_about( Fl_Callback *cb, void *user_data, int shortcut = 0);
 #else
-extern void MacDestroyWindow(Fl_Window*,WindowPtr);
-extern void MacMapWindow(Fl_Window*,WindowPtr);
-extern void MacUnmapWindow(Fl_Window*,WindowPtr);
+extern void MacDestroyWindow(fltk::Window*,WindowPtr);
+extern void MacMapWindow(fltk::Window*,WindowPtr);
+extern void MacUnmapWindow(fltk::Window*,WindowPtr);
 #endif
 
 extern int MacUnlinkWindow(Fl_X*,Fl_X*start=0L);
 extern void fl_open_callback(void (*cb)(const char *));
 
-inline Window fl_xid(const Fl_Window*w) 
+inline Window fl_xid(const fltk::Window*w) 
 {
   return Fl_X::i(w)->xid;
 }
@@ -369,7 +369,7 @@ class Fl_X
 public:
   Window xid;              // Cocoa: FLWindow* ; Carbon: WindowRef
   Fl_Offscreen other_xid;  // pointer for offscreen bitmaps (doublebuffer)
-  Fl_Window *w;            // FLTK window for 
+  fltk::Window *w;            // FLTK window for 
   Fl_Region region;
   Fl_Region subRegion;     // region for this specific subwindow
   Fl_X *next;              // linked tree to support subwindows
@@ -381,9 +381,9 @@ public:
   CursHandle cursor;
 #endif
   static Fl_X* first;
-  static Fl_X* i(const Fl_Window* w) {return w->i;}
-  static int fake_X_wm(const Fl_Window*,int&,int&,int&,int&,int&);
-  static void make(Fl_Window*);
+  static Fl_X* i(const fltk::Window* w) {return w->i;}
+  static int fake_X_wm(const fltk::Window*,int&,int&,int&,int&,int&);
+  static void make(fltk::Window*);
   void flush();
   // Quartz additions:
   CGContextRef gc;                 // graphics context (NULL when using QD)
@@ -395,23 +395,23 @@ public:
 };
 
 #ifdef __APPLE_COCOA__
-extern void MacDestroyWindow(Fl_Window*,void *);
-extern void MacMapWindow(Fl_Window*,void *);
-extern void MacUnmapWindow(Fl_Window*,void *);
-extern WindowRef MACwindowRef(Fl_Window *w);
+extern void MacDestroyWindow(fltk::Window*,void *);
+extern void MacMapWindow(fltk::Window*,void *);
+extern void MacUnmapWindow(fltk::Window*,void *);
+extern WindowRef MACwindowRef(fltk::Window *w);
 extern Fl_Region MacRectRegionIntersect(Fl_Region current, int x,int y,int w, int h);
 extern void MacCollapseWindow(Window w);
 extern void fl_mac_set_about( Fl_Callback *cb, void *user_data, int shortcut = 0);
 #else
-extern void MacDestroyWindow(Fl_Window*,WindowPtr);
-extern void MacMapWindow(Fl_Window*,WindowPtr);
-extern void MacUnmapWindow(Fl_Window*,WindowPtr);
+extern void MacDestroyWindow(fltk::Window*,WindowPtr);
+extern void MacMapWindow(fltk::Window*,WindowPtr);
+extern void MacUnmapWindow(fltk::Window*,WindowPtr);
 #endif
 
 extern int MacUnlinkWindow(Fl_X*,Fl_X*start=0L);
 extern void fl_open_callback(void (*cb)(const char *));
 
-inline Window fl_xid(const Fl_Window*w) 
+inline Window fl_xid(const fltk::Window*w) 
 {
   return Fl_X::i(w)->xid;
 }

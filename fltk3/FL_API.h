@@ -59,20 +59,53 @@
 #    define FL_EXPORT
 #  endif /* FL_DLL */
 
+
+#if _MSC_VER > 1000
+# pragma once
+// suppress vc2005 warnings: 
+// C4312 because we have no problem to cast a smaller type to a greater (potentially 64bit) one
+// and C4996 (deprecated C-lib calls like strcpy that should be _strcpy, etc ...)
+# pragma warning(disable:4312 4996)
+#endif
+
+#if !defined(DOXYGEN) && defined(_WIN32) && defined(FL_SHARED)
+#  ifdef FL_LIBRARY
+#    define FL_API	__declspec(dllexport)
+#  else
+#    define FL_API	__declspec(dllimport)
+#  endif
+#  ifdef FL_IMAGES_LIBRARY
+#    define FL_IMAGES_API	__declspec(dllexport)
+#  else
+#    define FL_IMAGES_API	__declspec(dllimport)
+#  endif
+#  ifdef FL_GLUT_LIBRARY
+#    define FL_GLUT_API		__declspec(dllexport)
+#  else
+#    define FL_GLUT_API		__declspec(dllimport)
+#  endif
+#  ifdef FL_FORMS_LIBRARY
+#    define FL_FORMS_API	__declspec(dllexport)
+#  else
+#    define FL_FORMS_API	__declspec(dllimport)
+#  endif
+#  ifdef FL_GL_LIBRARY
+#    define FL_GL_API		__declspec(dllexport)
+#  else
+#    define FL_GL_API		__declspec(dllimport)
+#  endif
+#else
+#  define FL_API
+#  define FL_IMAGES_API
+#  define FL_GLUT_API
+#  define FL_FORMS_API
+#  define FL_GL_API
+#endif
+
+// typedef unsigned char uchar;
+
 #endif /* !Fl_Export_H */
 
-/*
- * End of "$Id: Fl_Export.H 6614 2009-01-01 16:11:32Z matt $".
- */
-
-/* suggested twin class
-// This is the Twin Class to fltk::FL_API
-class Fl_Export : public fltk::FL_API {
-public:
-  Fl_Export(int x, int t, int w, int h, const char *label=0)
-  : fltk::FL_API(x, y, w, h, label), compat_(FLTK1) { }
-};
-*/
 
 // ----- FLTK1 -----------------------------------------------------------------
 #if 0

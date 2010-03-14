@@ -53,7 +53,7 @@
 # endif
 #endif
 
-static Fl_Window *message_form;
+static fltk::Window *message_form;
 static Fl_Box *message;
 static Fl_Box *icon;
 static Fl_Button *button[3];
@@ -67,14 +67,14 @@ static char avoidRecursion = 0;
 static Fl_Window *makeform() {
  if (message_form) {
    message_form->size(410,103);
-   return message_form;
+   return (Fl_Window*)message_form;
  }
  // make sure that the dialog does not become the child of some 
  // current group
  Fl_Group *previously_current_group = Fl_Group::current();
  Fl_Group::current(0);
  // create a new top level window
- Fl_Window *w = message_form = new Fl_Window(410,103,"");
+  fltk::Window *w = message_form = new fltk::Window(410,103,"");
  // w->clear_border();
  // w->box(FL_UP_BOX);
  (message = new Fl_Box(60, 25, 340, 20))
@@ -98,7 +98,7 @@ static Fl_Window *makeform() {
  w->end();
  w->set_modal();
  Fl_Group::current(previously_current_group);
- return w;
+ return (Fl_Window*)w;
 }
 
 /*
@@ -220,7 +220,7 @@ static int innards(const char* fmt, va_list ap,
 
   message_form->show();
   // deactivate Fl::grab(), because it is incompatible with Fl::readqueue()
-  Fl_Window* g = Fl::grab();
+  fltk::Window* g = Fl::grab();
   if (g) Fl::grab(0);
   int r = 0;
   for (;;) {

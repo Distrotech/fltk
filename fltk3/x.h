@@ -129,25 +129,25 @@ class FL_EXPORT Fl_X {
 public:
   Window xid;
   Window other_xid;
-  Fl_Window *w;
+  fltk::Window *w;
   Fl_Region region;
   Fl_X *next;
   char wait_for_expose;
   char backbuffer_bad; // used for XDBE
   static Fl_X* first;
-  static Fl_X* i(const Fl_Window* wi) {return wi->i;}
-  void setwindow(Fl_Window* wi) {w=wi; wi->i=this;}
+  static Fl_X* i(const fltk::Window* wi) {return wi->i;}
+  void setwindow(fltk::Window* wi) {w=wi; wi->i=this;}
   void sendxjunk();
-  static void make_xid(Fl_Window*,XVisualInfo* =fl_visual, Colormap=fl_colormap);
-  static Fl_X* set_xid(Fl_Window*, Window);
+  static void make_xid(fltk::Window*,XVisualInfo* =fl_visual, Colormap=fl_colormap);
+  static Fl_X* set_xid(fltk::Window*, Window);
   // kludges to get around protection:
   void flush() {w->flush();}
-  static void x(Fl_Window* wi, int X) {wi->x(X);}
-  static void y(Fl_Window* wi, int Y) {wi->y(Y);}
+  static void x(fltk::Window* wi, int X) {wi->x(X);}
+  static void y(fltk::Window* wi, int Y) {wi->y(Y);}
 };
 
-// convert xid <-> Fl_Window:
-inline Window fl_xid(const Fl_Window*w) {return Fl_X::i(w)->xid;}
+// convert xid <-> fltk::Window:
+inline Window fl_xid(const fltk::Window*w) {return Fl_X::i(w)->xid;}
 FL_EXPORT Fl_Window* fl_find(Window xid);
 
 extern FL_EXPORT char fl_override_redirect; // hack into Fl_X::make_xid()

@@ -91,7 +91,7 @@ public:
   // member variables - add new variables only at the end of this block
   Window xid;
   HBITMAP other_xid; // for double-buffered windows
-  Fl_Window* w;
+  fltk::Window* w;
   Fl_Region region;
   Fl_X *next;
   int wait_for_expose;
@@ -100,21 +100,21 @@ public:
   HDC saved_hdc;  // saves the handle of the DC currently loaded
   // static variables, static functions and member functions
   static Fl_X* first;
-  static Fl_X* i(const Fl_Window* w) {return w->i;}
-  static int fake_X_wm(const Fl_Window* w,int &X, int &Y,
+  static Fl_X* i(const fltk::Window* w) {return w->i;}
+  static int fake_X_wm(const fltk::Window* w,int &X, int &Y,
 		                 int &bt,int &bx,int &by);
-  void setwindow(Fl_Window* wi) {w=wi; wi->i=this;}
+  void setwindow(fltk::Window* wi) {w=wi; wi->i=this;}
   void flush() {w->flush();}
   void set_minmax(LPMINMAXINFO minmax);
   void mapraise();
-  static Fl_X* make(Fl_Window*);
+  static Fl_X* make(fltk::Window*);
 };
 extern FL_EXPORT HCURSOR fl_default_cursor;
 extern FL_EXPORT UINT fl_wake_msg;
-inline Window fl_xid(const Fl_Window*w) {Fl_X *temp = Fl_X::i(w); return temp ? temp->xid : 0;}
+inline Window fl_xid(const fltk::Window*w) {Fl_X *temp = Fl_X::i(w); return temp ? temp->xid : 0;}
 FL_EXPORT Fl_Window* fl_find(Window xid);
-extern FL_EXPORT char fl_override_redirect; // hack into Fl_Window::make_xid()
-extern FL_EXPORT int fl_background_pixel;  // hack into Fl_Window::make_xid()
+extern FL_EXPORT char fl_override_redirect; // hack into fltk::Window::make_xid()
+extern FL_EXPORT int fl_background_pixel;  // hack into fltk::Window::make_xid()
 
 // most recent fl_color() or fl_rgbcolor() points at one of these:
 extern FL_EXPORT struct Fl_XMap {
@@ -256,7 +256,7 @@ public:
   // member variables - add new variables only at the end of this block
   Window xid;
   HBITMAP other_xid; // for double-buffered windows
-  Fl_Window* w;
+  fltk::Window* w;
   Fl_Region region;
   Fl_X *next;
   int wait_for_expose;
@@ -265,18 +265,18 @@ public:
   HDC saved_hdc;  // saves the handle of the DC currently loaded
   // static variables, static functions and member functions
   static Fl_X* first;
-  static Fl_X* i(const Fl_Window* w) {return w->i;}
-  static int fake_X_wm(const Fl_Window* w,int &X, int &Y,
+  static Fl_X* i(const fltk::Window* w) {return w->i;}
+  static int fake_X_wm(const fltk::Window* w,int &X, int &Y,
 		                 int &bt,int &bx,int &by);
-  void setwindow(Fl_Window* wi) {w=wi; wi->i=this;}
+  void setwindow(fltk::Window* wi) {w=wi; wi->i=this;}
   void flush() {w->flush();}
   void set_minmax(LPMINMAXINFO minmax);
   void mapraise();
-  static Fl_X* make(Fl_Window*);
+  static Fl_X* make(fltk::Window*);
 };
 extern FL_EXPORT HCURSOR fl_default_cursor;
 extern FL_EXPORT UINT fl_wake_msg;
-inline Window fl_xid(const Fl_Window*w) {Fl_X *temp = Fl_X::i(w); return temp ? temp->xid : 0;}
+inline Window fl_xid(const fltk::Window*w) {Fl_X *temp = Fl_X::i(w); return temp ? temp->xid : 0;}
 FL_EXPORT Fl_Window* fl_find(Window xid);
 extern FL_EXPORT char fl_override_redirect; // hack into Fl_Window::make_xid()
 extern FL_EXPORT int fl_background_pixel;  // hack into Fl_Window::make_xid()

@@ -64,6 +64,10 @@
 #  endif
 
 
+namespace fltk {
+  class Window;
+}
+
 class Fl_Widget;
 class Fl_Window;
 class Fl_Image;
@@ -111,8 +115,8 @@ public: // should be private!
   static Fl_Widget* focus_;
   static int damage_;
   static Fl_Widget* selection_owner_;
-  static Fl_Window* modal_;
-  static Fl_Window* grab_;
+  static fltk::Window* modal_;
+  static fltk::Window* grab_;
   static int compose_state;
   static int visible_focus_;
   static int dnd_text_ops_;
@@ -345,8 +349,8 @@ public:
       Windows and standard dialogs handling
     @{ */
   static Fl_Window* first_window();
-  static void first_window(Fl_Window*);
-  static Fl_Window* next_window(const Fl_Window*);
+  static void first_window(fltk::Window*);
+  static Fl_Window* next_window(const fltk::Window*);
 
   /**
     Returns the top-most modal() window currently shown.
@@ -357,7 +361,7 @@ public:
     for all events, and no other windows will have handle()
     called (grab() overrides this).
   */
-  static Fl_Window* modal() {return modal_;}
+  static Fl_Window* modal() {return (Fl_Window*)modal_;}
   /**
     This is used when pop-up menu systems are active.
     
@@ -382,9 +386,9 @@ public:
     limit mouse pointer grabbing to the time during which a mouse button 
     is held down. Some OS's may not support grabbing at all.
   */
-  static Fl_Window* grab() {return grab_;}
+  static Fl_Window* grab() {return (Fl_Window*)grab_;}
   /** Selects the window to grab. See Fl_Window* Fl::grab() */
-  static void grab(Fl_Window*); // platform dependent
+  static void grab(fltk::Window*); // platform dependent
   /** @} */
 
   /** \defgroup fl_events Events handling functions
@@ -399,25 +403,25 @@ public:
   */
   static int event()		{return e_number;}
   /**
-    Returns the mouse position of the event relative to the Fl_Window
+    Returns the mouse position of the event relative to the fltk::Window
     it was passed to.
   */
   static int event_x()	{return e_x;}
   /**
-    Returns the mouse position of the event relative to the Fl_Window
+    Returns the mouse position of the event relative to the fltk::Window
     it was passed to.
   */
   static int event_y()	{return e_y;}
   /**
     Returns the mouse position on the screen of the event.  To find the
-    absolute position of an Fl_Window on the screen, use the
+    absolute position of an fltk::Window on the screen, use the
     difference between event_x_root(),event_y_root() and 
     event_x(),event_y().
   */
   static int event_x_root()	{return e_x_root;}
   /**
     Returns the mouse position on the screen of the event.  To find the
-    absolute position of an Fl_Window on the screen, use the
+    absolute position of an fltk::Window on the screen, use the
     difference between event_x_root(),event_y_root() and 
     event_x(),event_y().
   */
@@ -608,7 +612,7 @@ public:
   static int test_shortcut(Fl_Shortcut);
 
   // event destinations:
-  static int handle(int, Fl_Window*);
+  static int handle(int, fltk::Window*);
   /**  Gets the widget that is below the mouse. 
        \see  belowmouse(Fl_Widget*) */
   static Fl_Widget* belowmouse() {return belowmouse_;}
@@ -782,12 +786,12 @@ public:
     @{ */
   /** For back compatibility, sets the void Fl::fatal handler callback */
   static void set_abort(void (*f)(const char*,...)) {fatal = f;}
-  static void (*atclose)(Fl_Window*,void*);
-  static void default_atclose(Fl_Window*,void*);
+  static void (*atclose)(fltk::Window*,void*);
+  static void default_atclose(fltk::Window*,void*);
   /** For back compatibility, sets the Fl::atclose handler callback. You
       can now simply change the callback for the window instead.
-      \see Fl_Window::callback(Fl_Callback*) */
-  static void set_atclose(void (*f)(Fl_Window*,void*)) {atclose = f;}
+      \see fltk::Window::callback(Fl_Callback*) */
+  static void set_atclose(void (*f)(fltk::Window*,void*)) {atclose = f;}
   /**   @} */
 
   /** \addtogroup fl_events 
@@ -832,11 +836,11 @@ public:
     \deprecated This method is obsolete - use the add_idle() method instead.
   */
   static void set_idle(void (*cb)()) {idle = cb;}
-  /** See Fl_Window* grab() */
-  static void grab(Fl_Window&win) {grab(&win);}
+  /** See fltk::Window* grab() */
+  static void grab(fltk::Window&win) {grab(&win);}
   /** Releases the current grabbed window, equals grab(0).
   \deprecated Use Fl::grab(0) instead.
-  \see Fl_Window* grab() */
+  \see fltk::Window* grab() */
   static void release() {grab(0);}
 
   // Visible focus methods...
@@ -892,7 +896,7 @@ public:
     These functions support deletion of widgets inside callbacks.
 
     Fl::delete_widget() should be called when deleting widgets
-    or complete widget trees (Fl_Group, Fl_Window, ...) inside
+    or complete widget trees (Fl_Group, fltk::Window, ...) inside
     callbacks.
 
     The other functions are intended for internal use. The preferred
@@ -930,14 +934,14 @@ public:
   */
 public:
   // Cairo support API
-  static cairo_t * cairo_make_current(Fl_Window* w);
+  static cairo_t * cairo_make_current(fltk::Window* w);
    /** when HAVE_CAIRO is defined and cairo_autolink_context() is true, 
       any current window dc is linked to a current context.
       This is not the default, because it may not be necessary
       to add cairo support to all fltk supported windows.
       When you wish to associate a cairo context in this mode,
       you need to call explicitly in your draw() overridden method,
-      FL::cairo_make_current(Fl_Window*). This will create a cairo context
+      FL::cairo_make_current(fltk::Window*). This will create a cairo context
       but only for this Window. 
       Still in custom cairo application it is possible to handle 
       completely this process automatically by setting \p alink to true.
@@ -1058,20 +1062,17 @@ public:
      @{ */
  /** @} */
 
+
+
+namespace fltk {
+  
+  FL_API int run();
+
+}
+
+
 #endif // !Fl_H
 
-//
-// End of "$Id: Fl.H 7255 2010-03-13 22:03:10Z matt $".
-//
-
-/* suggested twin class
-// This is the Twin Class to fltk::run
-class Fl : public fltk::run {
-public:
-  Fl(int x, int t, int w, int h, const char *label=0)
-  : fltk::run(x, y, w, h, label), compat_(FLTK1) { }
-};
-*/
 
 // ----- FLTK1 -----------------------------------------------------------------
 #if 0

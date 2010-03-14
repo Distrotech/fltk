@@ -273,7 +273,7 @@ GLContext fl_create_gl_context(XVisualInfo* vis) {
 
 #elif defined(WIN32)
 
-GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int layer) {
+GLContext fl_create_gl_context(fltk::Window* window, const Fl_Gl_Choice* g, int layer) {
   Fl_X* i = Fl_X::i(window);
   HDC hdc = i->private_dc;
   if (!hdc) {
@@ -296,7 +296,7 @@ GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int lay
 
 #  elif defined(__APPLE_QUARTZ__)
 // warning: the Quartz version should probably use Core GL (CGL) instead of AGL
-GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int layer) {
+GLContext fl_create_gl_context(fltk::Window* window, const Fl_Gl_Choice* g, int layer) {
   GLContext context, shared_ctx = 0;
   if (context_list && nContext) shared_ctx = context_list[0];
   context = aglCreateContext( g->pixelformat, shared_ctx);
@@ -330,9 +330,9 @@ GLContext fl_create_gl_context(Fl_Window* window, const Fl_Gl_Choice* g, int lay
 #  endif
 
 static GLContext cached_context;
-static Fl_Window* cached_window;
+static fltk::Window* cached_window;
 
-void fl_set_gl_context(Fl_Window* w, GLContext context) {
+void fl_set_gl_context(fltk::Window* w, GLContext context) {
   if (context != cached_context || w != cached_window) {
     cached_context = context;
     cached_window = w;

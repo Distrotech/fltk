@@ -541,7 +541,7 @@ extern const char* fl_cancel;
   \relates Fl_Color_Chooser
  */
 int fl_color_chooser(const char* name, double& r, double& g, double& b) {
-  Fl_Window window(215,200,name);
+  fltk::Window window(215,200,name);
   Fl_Color_Chooser chooser(10, 10, 195, 115);
   ColorChip ok_color(10, 130, 95, 25);
   Fl_Return_Button ok_button(10, 165, 95, 25, fl_ok);

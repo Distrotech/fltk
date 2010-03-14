@@ -29,7 +29,7 @@
 
 extern char fl_show_iconic; // in Fl_x.cxx
 
-void Fl_Window::iconize() {
+void fltk::Window::iconize() {
   if (!shown()) {
     fl_show_iconic = 1;
     show();
@@ -38,7 +38,7 @@ void Fl_Window::iconize() {
     ShowWindow(i->xid, SW_SHOWMINNOACTIVE);
 #elif defined(__APPLE__)
 #ifdef __APPLE_COCOA__
-	MacCollapseWindow((Window)i->xid);
+    MacCollapseWindow((::Window)i->xid);
 #else
     CollapseWindow( i->xid, true );
 #endif

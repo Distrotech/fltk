@@ -218,8 +218,8 @@ enum Fl_Event {	// events
 
   /** The user clicked the close button of a window.
    *  This event is used internally only to trigger the callback of
-   *  Fl_Window derived classed. The default callback closes the 
-   *  window calling Fl_Window::hide().
+   *  fltk::Window derived classed. The default callback closes the 
+   *  window calling fltk::Window::hide().
    */
   FL_CLOSE		= 10,
 
@@ -1120,8 +1120,8 @@ enum Fl_Event {	// events
 
   /** The user clicked the close button of a window.
    *  This event is used internally only to trigger the callback of
-   *  Fl_Window derived classed. The default callback closes the 
-   *  window calling Fl_Window::hide().
+   *  fltk::Window derived classed. The default callback closes the 
+   *  window calling fltk::Window::hide().
    */
   FL_CLOSE		= 10,
 

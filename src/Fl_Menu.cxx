@@ -790,7 +790,7 @@ int menuwindow::early_hide_handle(int e) {
     }
     return 1;
   }
-  return Fl_Window::handle(e);
+  return fltk::Window::handle(e);
 }
 
 /**
@@ -813,7 +813,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
 
   button = pbutton;
   if (pbutton) {
-    for (Fl_Window* w = pbutton->window(); w; w = w->window()) {
+    for (fltk::Window* w = pbutton->window(); w; w = w->window()) {
       X += w->x();
       Y += w->y();
     }

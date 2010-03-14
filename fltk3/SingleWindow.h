@@ -51,7 +51,7 @@
 #include "Window.h"
 
 /**
-  This is the same as Fl_Window.  However, it is possible that
+  This is the same as fltk::Window.  However, it is possible that
   some implementations will provide double-buffered windows by default.
   This subcan be used to force single-buffering.  This may be
   useful for modifying existing programs that use incremental update, or
