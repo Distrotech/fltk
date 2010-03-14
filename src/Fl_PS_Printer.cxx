@@ -173,6 +173,14 @@ static const char * prolog =
 "/SC { scale } bind def\n"
 //"/GPD { currentpagedevice /PageSize get} def\n"
 
+// show at position with desired width
+// usage:
+// width (string) x y show_pos_width
+"/show_pos_width {GS moveto dup stringwidth pop 3 2 roll exch div -1 matrix scale concat "
+"show GR } bind def\n"
+//"/show_pos_width {GS moveto dup stringwidth pop 3 2 roll exch div dup /sx exch def -1 matrix scale concat "
+//"show 6 FS sx 10 string cvs show GR } bind def\n" // displays also scaling value
+
 ;
 
 
@@ -368,6 +376,9 @@ Fl_PSfile_Device::Fl_PSfile_Device(void)
   mask = 0;
   ps_filename_ = NULL;
   type_ = postscript_device;
+#ifdef __APPLE__
+  gc = fl_gc; // the display context is used by fl_text_extents()
+#endif
 }
 
 int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format, enum Page_Layout layout)
@@ -771,32 +782,15 @@ static const char *_fontNames[] = {
 "CourierBold",
 "ZapfDingbats"
 };
-// TODO RK: CRITICAL: this is hacky/temporary implementation of fonts. All below should be replaced.
 
 void Fl_PSfile_Device::font(int f, int s) {
-  
-  //fonted_=1;
   if (f >= FL_FREE_FONT)
     f = FL_COURIER;
   fprintf(output, "/%s SF\n" , _fontNames[f]);
   fprintf(output,"%i FS\n", s);
-  Fl_Device::display_device()->font(f,s); //Dirty hack for font measurement ;-(
-  font_=f; size_=s;
+  Fl_Device::display_device()->font(f,s); // Use display fonts for font measurement
+  font_ = f; size_ = s;
 };
-
-/*double Fl_PSfile_Device::width(unsigned c){
-  return Fl_Device::display_device()->width(c); //Dirty...
-}
-
-double Fl_PSfile_Device::width(const char* s, int n){;
-  return Fl_Device::display_device()->width(s,n); //Very Dirty...
-}
-int Fl_PSfile_Device::descent(){
-  return Fl_Device::display_device()->descent(); //A bit Dirty...
-}
-int Fl_PSfile_Device::height(){
-  return Fl_Device::display_device()->height(); //Still Dirty...
-}*/
 
 void Fl_PSfile_Device::color(Fl_Color c) {
   //colored_=1;
@@ -816,7 +810,6 @@ void Fl_PSfile_Device::color(Fl_Color c) {
 }
 
 void Fl_PSfile_Device::color(unsigned char r, unsigned char g, unsigned char b) {
-  
   //colored_=1;
   cr_=r;cg_=g;cb_=b;
   if (r==g && g==b) {
@@ -839,17 +832,12 @@ void Fl_PSfile_Device::draw(int angle, const char *str, int n, int x, int y)
 }
 
 void Fl_PSfile_Device::transformed_draw(const char* str, int n, double x, double y){
-  
-  if (!n||!str||!*str)return;
-  fprintf(output, "GS\n");
-  fprintf(output,"%g %g moveto\n", x , y);
-  fprintf(output, "[1 0 0 -1 0 0] concat\n");
+  if (!n || !str || !*str)return;
+  fprintf(output,"%g (", fl_width(str, n));
   int i=1;
-  fprintf(output, "\n(");
-  for(int j=0;j<n;j++){
-    if(i>240){
+  for (int j=0;j<n;j++){
+    if (i>240){
       fprintf(output, "\\\n");
-      
       i=0;
     }
     i++;
@@ -862,8 +850,7 @@ void Fl_PSfile_Device::transformed_draw(const char* str, int n, double x, double
     }
     str++;
   }
-  fprintf(output, ") show\n");
-  fprintf(output, "GR\n");
+  fprintf(output, ") %g %g show_pos_width\n", x, y);
 }
 
 struct matrix {double a, b, c, d, x, y;};
