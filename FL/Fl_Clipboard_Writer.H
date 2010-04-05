@@ -60,7 +60,7 @@ public:
   int start(int w, int h);
   /** \brief Copies a widget of any kind to the clipboard */
   inline void copy_widget(Fl_Widget* widget) { copy_widget(widget, 0, 0); };
-  /** \brief To be called after all graphics request were done */
+  /** \brief To be called after all graphics requests were done */
   int stop(void);
   Fl_Device *set_current(void);
 };
