@@ -38,7 +38,7 @@
 
 #if !HAVE_GL
 class cube_box : public Fl_Box {
-public:	
+public:
   double lasttime;
   int wire;
   double size;
@@ -159,39 +159,38 @@ void makeform(const char *name) {
 
 // added to demo printing
 #include <FL/Fl_Sys_Menu_Bar.H>
-#include <FL/Fl_Gl_Printer.H>
+#include <FL/Fl_Printer.H>
 
 void print_cb(Fl_Widget *w, void *data)
 {
-  Fl_Gl_Printer printer;
+  Fl_Printer printer;
   Fl_Window *win = Fl::first_window();
   if(!win) return;
   if( printer.start_job(1) ) return;
   if( printer.start_page() ) return;
-  printer.scale(0.68,0.68);
+  printer.scale(0.5,0.5);
   printer.print_widget( win );
-  printer.print_gl_window( cube, cube->x(), cube->y() );
-  printer.print_gl_window( cube2, cube2->x(), cube2->y() );
   printer.end_page();
   printer.end_job();
 }
-// end of printing demo 
+// end of printing demo
 
 int main(int argc, char **argv) {
   makeform(argv[0]);
   // added to demo printing
   form->begin();
   static Fl_Menu_Item	items[] = {
-    { "Menu", 0, 0, 0, FL_SUBMENU },
-    { "Print", 0, print_cb, 0, 0 },
+    { "Print", 0, 0, 0, FL_SUBMENU },
+    { "Print window", 0, print_cb, 0, 0 },
     { 0 },
     { 0 }
   };
   Fl_Sys_Menu_Bar *menubar_;
-  menubar_ = new Fl_Sys_Menu_Bar(0, 0, 40, 25);
+  menubar_ = new Fl_Sys_Menu_Bar(0, 0, 60, 20);
+  menubar_->box(FL_FLAT_BOX);
   menubar_->menu(items);
   form->end();
-  // end of printing demo 
+  // end of printing demo
   speed->bounds(4,0);
   speed->value(cube->speed = cube2->speed = 1.0);
   size->bounds(4,0.01);
