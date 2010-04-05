@@ -172,7 +172,7 @@ protected:
     fl_xyline(x()+5,y()+61,x()+48);
     fl_line_style(FL_DASHDOTDOT);
     fl_xyline(x()+5,y()+64,x()+48);
-    fl_line_style(0,0,"\7\3\7\2");
+    fl_line_style(0,0,(char*)"\7\3\7\2");
     fl_xyline(x()+5,y()+67,x()+48);
 
 
@@ -358,7 +358,7 @@ protected:
     fl_line_style(0);
 
     fl_color(FL_BLACK);
-    fl_line_style(FL_DASH , 5);
+    fl_line_style(FL_DASH , 1);
     fl_begin_line();
     fl_vertex(10, 120);
     fl_vertex(80, 120);
@@ -460,7 +460,7 @@ protected:
 
 
     fl_color(FL_BLUE);
-    fl_line_style(0, 5, "\12\3\4\2\2\1");
+    fl_line_style(0, 5, (char*)"\12\3\4\2\2\1");
     fl_begin_line();
     fl_vertex(10, 10);
     fl_vertex(190, 10);
@@ -598,7 +598,6 @@ void make_image() {
 void print(Fl_Widget *, void *w) {
     Fl_Widget * g = (Fl_Widget *)w;
  
-  //Fl_Printer * p = new Fl_PS_Printer(f, 3);
   Fl_Printer * p = new Fl_Printer();
     //p->page(Fl_Printer::A4);
     //p->place(g, 70, 70, p->page_width() - 140, p->page_height() - 140,  FL_ALIGN_CENTER);
