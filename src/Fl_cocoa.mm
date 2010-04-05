@@ -3003,7 +3003,6 @@ int MACscreen_init(XRectangle screens[])
 - (void)copyPanel
 {
   Fl_Clipboard_Writer printer;
-  int w, h;
   Fl_Window *win = Fl::first_window();
   if(!win) return;
   if( printer.start(win->w(), win->h()) ) return;
