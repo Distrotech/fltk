@@ -25,7 +25,7 @@
  *
  *     http://www.fltk.org/str.php
  */
-
+#define USE_PRINT_BUTTON 1
 /*
  * Where to find files...
  */
