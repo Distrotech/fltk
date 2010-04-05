@@ -38,7 +38,6 @@
 #include <Carbon/Carbon.h>
 #include <config.h>
 
-#ifdef __APPLE_COCOA__
 #ifndef MAC_OS_X_VERSION_10_3
 #define MAC_OS_X_VERSION_10_3 1030
 #endif
@@ -54,7 +53,6 @@
 #ifndef MAC_OS_X_VERSION_MAX_ALLOWED
 #define MAC_OS_X_VERSION_MAX_ALLOWED MAC_OS_X_VERSION_10_3
 #endif
-#endif // __APPLE_COCOA__
 
 #ifndef CGFLOAT_DEFINED //appears with 10.5 in CGBase.h
 #if defined(__LP64__) && __LP64__
@@ -71,8 +69,6 @@ typedef float CGFloat;
 // Some random X equivalents
 struct XPoint { int x, y; };
 struct XRectangle {int x, y, width, height;};
-
-#ifdef __APPLE_COCOA__
 
 typedef void *Window; // this is really a pter to the subclass FLWindow of NSWindow
 typedef struct flCocoaRegion {
@@ -99,25 +95,6 @@ extern void *fl_system_menu;
 typedef CGContextRef Fl_Offscreen;
 typedef CGImageRef Fl_Bitmask;
 
-#else
-
-typedef WindowRef Window;
-typedef RgnHandle Fl_Region;
-inline Fl_Region XRectangleRegion(int x, int y, int w, int h) {
-  Fl_Region R = NewRgn();
-  SetRectRgn(R, x, y, x+w, y+h);
-  return R;
-}
-inline void XDestroyRegion(Fl_Region r) {
-  DisposeRgn(r);
-}
-extern CursHandle fl_default_cursor;
-extern Handle fl_system_menu;
-typedef GWorldPtr Fl_Offscreen;
-typedef GWorldPtr Fl_Bitmask; // Carbon requires a 1-bit GWorld instead of a BitMap
-
-#endif
-
 void fl_clip_region(Fl_Region);
 
 #  include "Fl_Window.H"
@@ -135,11 +112,7 @@ public:
   Fl_X *next;              // linked tree to support subwindows
   Fl_X *xidChildren, *xidNext; // more subwindow tree
   int wait_for_expose;
-#ifdef __APPLE_COCOA__
   void *cursor;			  // is really NSCursor*
-#else
-  CursHandle cursor;
-#endif
   static Fl_X* first;
   static Fl_X* i(const Fl_Window* w) {return w->i;}
   static int fake_X_wm(const Fl_Window*,int&,int&,int&,int&,int&);
@@ -154,22 +127,14 @@ public:
   static void q_end_image();
 };
 
-#ifdef __APPLE_COCOA__
 extern void MacDestroyWindow(Fl_Window*,void *);
 extern void MacMapWindow(Fl_Window*,void *);
 extern void MacUnmapWindow(Fl_Window*,void *);
 extern WindowRef MACwindowRef(Fl_Window *w);
 extern Fl_Region MacRectRegionIntersect(Fl_Region current, int x,int y,int w, int h);
 extern void MacCollapseWindow(Window w);
-extern void fl_mac_set_about( Fl_Callback *cb, void *user_data, int shortcut = 0);
-#else
-extern void MacDestroyWindow(Fl_Window*,WindowPtr);
-extern void MacMapWindow(Fl_Window*,WindowPtr);
-extern void MacUnmapWindow(Fl_Window*,WindowPtr);
-#endif
 
 extern int MacUnlinkWindow(Fl_X*,Fl_X*start=0L);
-extern void fl_open_callback(void (*cb)(const char *));
 
 inline Window fl_xid(const Fl_Window*w) 
 {
@@ -205,6 +170,22 @@ extern void fl_open_callback(void (*cb)(const char *));
 
 extern FL_EXPORT int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b);
 #endif // FL_DOXYGEN
+
+/** \defgroup group_macosx Mac OS X-specific functions
+ @{ */
+
+/** 
+ * \brief Mac OS X: attaches a callback to the "About myprog" item of the system application menu.
+ * \note  #include <FL/x.H>
+ *
+ * \param cb   a callback that will be called by "About myprog" menu item
+ *		   with NULL 1st argument.
+ * \param user_data   a pointer transmitted as 2nd argument to the callback.
+ * \param shortcut    optional shortcut to attach to the "About myprog" menu item (e.g., FL_META+'a')
+ */
+extern void fl_mac_set_about( Fl_Callback *cb, void *user_data, int shortcut = 0);
+/** @} */
+
 //
 // End of "$Id$".
 //

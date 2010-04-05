@@ -45,14 +45,8 @@
  "_GetKeys", referenced from:
  Fl::get_key(int)  in Fl_get_key.o
  
- "_GetCurrentEventQueue", referenced from:
- do_queued_events(double)in Fl.o
- 
  "_InstallEventLoopTimer", referenced from:
  Fl::add_timeout(double, void (*)(void*), void*)in Fl.o
- 
- "_FlushEvents", referenced from:
- fl_open_display()     in Fl.o
  
  "_GetEventParameter", referenced from:
  carbonTextHandler(OpaqueEventHandlerCallRef*, OpaqueEventRef*, void*) in Fl.o
@@ -73,15 +67,8 @@
  "_GetMainEventLoop", referenced from:
  Fl::add_timeout(double, void (*)(void*), void*)in Fl.o
  
- "_GetCurrentKeyModifiers", referenced from:
- -[FLView flagsChanged:] in Fl.o
- 
  */
 
-
-// we don't need the following definition because we deliver only
-// true mouse moves.  On very slow systems however, this flag may
-// still be useful.
 #ifndef FL_DOXYGEN
 
 #define CONSOLIDATE_MOTION 0
@@ -90,20 +77,13 @@ extern "C" {
 }
 
 
-#include <FL/Fl_Device.H>
 #include <FL/Fl.H>
 #include <FL/x.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Tooltip.H>
-#if __GNUC__ == 3 
-// because Fl_Image.H, included by Fl_Sys_Menu_Bar.H, uses a private variable name id 
-// that's illegal under GCC 3 -x -objective-c++
-#define id id_
-#endif
 #include <FL/Fl_Sys_Menu_Bar.H>
-#ifdef id
-#undef id
-#endif
+#include <FL/Fl_Printer.H>
+#include <FL/Fl_Clipboard_Writer.H>
 #include <FL/Fl_Input_.H>
 #include <stdio.h>
 #include <stdlib.h>
@@ -301,7 +281,6 @@ class DataReady
   fd_set _fdsets[3];		// r/w/x sets user wants to monitor
   int _maxfd;			// max fd count to monitor
   int _cancelpipe[2];		// pipe used to help cancel thread
-  void *_userdata;		// thread's userdata
   
 public:
   DataReady()
@@ -314,7 +293,6 @@ public:
     pthread_mutex_init(&_datalock, NULL);
     FD_ZERO(&_fdsets[0]); FD_ZERO(&_fdsets[1]); FD_ZERO(&_fdsets[2]);
     _cancelpipe[0] = _cancelpipe[1] = 0;
-    _userdata = 0;
     _maxfd = 0;
   }
   
@@ -345,7 +323,7 @@ public:
   int CheckData(fd_set& r, fd_set& w, fd_set& x);
   void HandleData(fd_set& r, fd_set& w, fd_set& x);
   static void* DataReadyThread(void *self);
-  void StartThread(void *userdata);
+  void StartThread(void);
   void CancelThread(const char *reason);
 };
 
@@ -449,7 +427,6 @@ void* DataReady::DataReadyThread(void *o)
     /*LOCK*/  fd_set r = self->GetFdset(0);
     /*LOCK*/  fd_set w = self->GetFdset(1);
     /*LOCK*/  fd_set x = self->GetFdset(2);
-    //    /*LOCK*/  void *userdata = self->_userdata;
     /*LOCK*/  int cancelpipe = self->GetCancelPipe(0);
     /*LOCK*/  if ( cancelpipe > maxfd ) maxfd = cancelpipe;
     /*LOCK*/  FD_SET(cancelpipe, &r);		// add cancelpipe to fd's to watch
@@ -486,12 +463,11 @@ void* DataReady::DataReadyThread(void *o)
 }
 
 // START 'DATA READY' THREAD RUNNING, CREATE INTER-THREAD PIPE
-void DataReady::StartThread(void *new_userdata)
+void DataReady::StartThread(void)
 {
   CancelThread(DEBUGTEXT("STARTING NEW THREAD\n"));
   DataLock();
   /*LOCK*/  pipe(_cancelpipe);	// pipe for sending cancel msg to thread
-  /*LOCK*/  _userdata = new_userdata;
   DataUnlock();
   DEBUGMSG("*** START THREAD\n");
   pthread_create(&tid, NULL, DataReadyThread, (void*)this);
@@ -707,7 +683,7 @@ static double do_queued_events( double time = 0.0 )
   
   // Start thread to watch for data ready
   if ( dataready.GetNfds() ) {
-    dataready.StartThread((void*)GetCurrentEventQueue());
+    dataready.StartThread();
   }
   
   fl_unlock_function();
@@ -1151,6 +1127,9 @@ OSStatus cocoaKeyboardHandler(NSEvent *theEvent)
   static NSText *edit;
   static int countevents;
   static CFMutableStringRef sequence;	// will contain the two characters of the composition sequence
+  if ( (mods & NSShiftKeyMask) && (mods & NSCommandKeyMask) ) {
+    s = [s uppercaseString]; // US keyboards return lowercase letter in s if cmd-shift-key is hit
+  }
   if (compose) {	// we are in a composition sequence
     // the only benefit of sending events to the NSText object edit is that the deadkey becomes visible
     // at its keyUp event; without this, the deadkey remains invisible
@@ -1306,7 +1285,6 @@ static void	(*open_cb)(const char *) = 0;
       (*open_cb)(filename);
     }
   }
-  
   // Unlock access to FLTK for all threads...
   fl_unlock_function();
 }
@@ -1560,7 +1538,13 @@ void fl_open_display() {
     [NSApp setDelegate:mydelegate];
     [NSApp finishLaunching];
 		
-    FlushEvents(everyEvent,0);
+    // empty the event queue but keep system events for drag&drop of files at launch
+    NSEvent *ign_event;
+    do ign_event = [NSApp nextEventMatchingMask:(NSAnyEventMask & ~NSSystemDefinedMask)
+					untilDate:[NSDate dateWithTimeIntervalSinceNow:0] 
+					   inMode:NSDefaultRunLoopMode 
+					  dequeue:YES];
+    while (ign_event);
     
     fl_default_cursor = [NSCursor arrowCursor];
     Gestalt(gestaltSystemVersion, &MACsystemVersion);
@@ -1966,7 +1950,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 }
 - (void)flagsChanged:(NSEvent *)theEvent {
   fl_lock_function();
-  static UInt32 prevMods = mods_to_e_state( GetCurrentKeyModifiers() );
+  static UInt32 prevMods = 0;
   NSUInteger mods = [theEvent modifierFlags];
   Fl_Window *window = (Fl_Window*)[(FLWindow*)[theEvent window] getFl_Window];
   UInt32 tMods = prevMods ^ mods;
@@ -2974,6 +2958,7 @@ int MACscreen_init(XRectangle screens[])
 }
 - (void)showPanel;
 - (void)printPanel;
+- (void)copyPanel;
 @end
 @implementation FLaboutItemTarget
 - (void)showPanel
@@ -2985,11 +2970,10 @@ int MACscreen_init(XRectangle screens[])
                 	     nil];
     [NSApp  orderFrontStandardAboutPanelWithOptions:options];
   }
-#include <FL/Fl_Printer.H>
 - (void)printPanel
 {
   Fl_Printer printer;
-//  Fl_PSfile_Device printer;
+  //Fl_PSfile_Device printer;
   int w, h;
   Fl_Window *win = Fl::first_window();
   if(!win) return;
@@ -3016,6 +3000,17 @@ int MACscreen_init(XRectangle screens[])
   printer.end_page();
   printer.end_job();
 }
+- (void)copyPanel
+{
+  Fl_Clipboard_Writer printer;
+  int w, h;
+  Fl_Window *win = Fl::first_window();
+  if(!win) return;
+  if( printer.start(win->w(), win->h()) ) return;
+  printer.copy_widget(win);
+  printer.stop();
+}
+
 @end
 
 static NSMenu *appleMenu;
@@ -3040,12 +3035,18 @@ static void createAppleMenu(void)
   [menuItem setTarget:about];
   [appleMenu addItem:[NSMenuItem separatorItem]];
 // temporary for testing Fl_Printer. Contains also printPanel of class FLaboutItemTarget.
-  menuItem = [appleMenu addItemWithTitle:@"Print front window" action:@selector(printPanel) keyEquivalent:@"p"];
+  menuItem = [appleMenu addItemWithTitle:@"Print front window" action:@selector(printPanel) keyEquivalent:@""];
+  [menuItem setTarget:about];
+  [appleMenu setAutoenablesItems:NO];
+  [menuItem setEnabled:YES];
+// end of temporary for testing Fl_Printer  
+  // temporary for testing Fl_Clipboard_Writer. Contains also copyPanel of class FLaboutItemTarget.
+  menuItem = [appleMenu addItemWithTitle:@"Copy front window" action:@selector(copyPanel) keyEquivalent:@""];
   [menuItem setTarget:about];
   [appleMenu setAutoenablesItems:NO];
   [menuItem setEnabled:YES];
   [appleMenu addItem:[NSMenuItem separatorItem]];
-// end of temporary for testing Fl_Printer  
+  // end of temporary for testing Fl_Clipboard_Writer  
   // Services Menu
   services = [[NSMenu alloc] init];
   [appleMenu addItemWithTitle:@"Services" action:nil keyEquivalent:@""];
@@ -3127,18 +3128,6 @@ static void createAppleMenu(void)
 }
 @end
 
-
-/** 
- * Mac OS: attaches a callback to the "About myprog" item of the system application menu.
- * \note  #include <FL/x.H>
- *
- * \author Manolo Gouy
- *
- * \param[in] cb   a callback that will be called by "About myprog" menu item
- *		   with NULL 1st argument.
- * \param[in] user_data   a pointer transmitted as 2nd argument to the callback.
- * \param[in] shortcut    optional shortcut to attach to the "About myprog" menu item (e.g., FL_META+'a')
- */
 void fl_mac_set_about( Fl_Callback *cb, void *user_data, int shortcut) 
 {
   NSAutoreleasePool *localPool;

@@ -1,21 +1,113 @@
-/*
- *  Fl_PS_Printer.cxx
- *
- */
-#include <FL/Fl_Device.H>
+//
+// "$Id: Fl_PS_Printer.cxx 7375 2010-03-31 06:21:09Z manolo $"
+//
+// PostScript device support for the Fast Light Tool Kit (FLTK).
+//
+// Copyright 2010 by Bill Spitzak and others.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA.
+//
+// Please report all bugs and problems to:
+//
+//     http://www.fltk.org/str.php
+//
 
 #include <FL/Fl.H>
 #include <FL/fl_ask.H>
 #include <FL/fl_draw.H>
-#include <FL/Fl_Native_File_Chooser.H>
 #include <stdio.h>
-#include <math.h>
+#include <FL/Fl_PSfile_Device.H>
+#include <FL/Fl_Native_File_Chooser.H>
+
+const char *Fl_PSfile_Device::file_chooser_title = "Select a .ps file";
+
+/**
+ @brief The constructor.
+ */
+Fl_PSfile_Device::Fl_PSfile_Device(void)
+{
+  close_cmd_ = 0;
+  //lang_level_ = 3;
+  lang_level_ = 2;
+  mask = 0;
+  ps_filename_ = NULL;
+  type_ = postscript_device;
+  scale_x = scale_y = 1.;
+#ifdef __APPLE__
+  gc = fl_gc; // the display context is used by fl_text_extents()
+#endif
+}
+
+/**
+ @brief Begins the session where all graphics requests will go to a local PostScript file.
+ *
+ Opens a file dialog entitled with Fl_PSfile_Device::file_chooser_title to select an output PostScript file.
+ @param pagecount The total number of pages to be created.
+ @param format Desired page format.
+ @param layout Desired page layout.
+ @return 0 iff OK, 1 if user cancelled the file dialog, 2 if fopen failed on user-selected output file.
+ */
+int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, enum Page_Layout layout)
+{
+  Fl_Native_File_Chooser fnfc;
+  fnfc.title(Fl_PSfile_Device::file_chooser_title);
+  fnfc.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
+  fnfc.options(Fl_Native_File_Chooser::SAVEAS_CONFIRM);
+  fnfc.filter("PostScript\t*.ps\n");
+  // Show native chooser
+  if ( fnfc.show() ) return 1;
+  output = fopen(fnfc.filename(), "w");
+  if(output == NULL) return 2;
+  ps_filename_ = strdup(fnfc.filename());
+  start_postscript(pagecount, format, layout);
+  return 0;
+}
+
+/**
+ @brief Begins the session where all graphics requests will go to FILE pointer.
+ *
+ @param ps_output A writable FILE pointer that will receive PostScript output and that will be closed
+ when end_job() will be called.
+ @param pagecount The total number of pages to be created.
+ @param format Desired page format.
+ @param layout Desired page layout.
+ @return always 0.
+ */
+int Fl_PSfile_Device::start_job (FILE *ps_output, int pagecount, enum Page_Format format, enum Page_Layout layout)
+{
+  output = ps_output;
+  ps_filename_ = NULL;
+  start_postscript(pagecount, format, layout);
+  return 0;
+}
+
+/**
+ @brief The destructor.
+ */
+Fl_PSfile_Device::~Fl_PSfile_Device() {
+  if (ps_filename_) free(ps_filename_);
+}
+
+#ifndef FL_DOXYGEN
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
   #include "print_panel.cxx"
 #endif
 
-const struct Fl_PSfile_Device::page_format Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS] = { // order of enum Page_Format
+const Fl_PSfile_Device::page_format Fl_PSfile_Device::page_formats[NO_PAGE_FORMATS] = { // order of enum Page_Format
 // comes from appendix B of 5003.PPD_Spec_v4.3.pdf
 
   // A* // index(Ai) = i
@@ -43,7 +135,7 @@ const struct Fl_PSfile_Device::page_format Fl_PSfile_Device::page_formats[NO_PAG
   { 127,  181, "B9"},
   {  91,  127, "B10"},
 
-  // others (look at Fl_Printer.H} //
+  // others
   { 459,  649, "EnvC5"}, // envelope
   { 312,  624, "EnvDL"}, // envelope
   { 522,  756, "Executive"},
@@ -176,10 +268,10 @@ static const char * prolog =
 // show at position with desired width
 // usage:
 // width (string) x y show_pos_width
-"/show_pos_width {GS moveto dup stringwidth pop 3 2 roll exch div -1 matrix scale concat "
-"show GR } bind def\n"
-//"/show_pos_width {GS moveto dup stringwidth pop 3 2 roll exch div dup /sx exch def -1 matrix scale concat "
-//"show 6 FS sx 10 string cvs show GR } bind def\n" // displays also scaling value
+"/show_pos_width {GS moveto dup dup stringwidth pop exch length exch 3 index exch sub exch "
+"div 0 2 index 1 -1 scale ashow pop pop GR} bind def\n" // spacing altered to match desired width
+//"/show_pos_width {GS moveto dup stringwidth pop 3 2 roll exch div -1 matrix scale concat "
+//"show GR } bind def\n" // horizontally scaled text to match desired width
 
 ;
 
@@ -367,20 +459,6 @@ static const char * prolog_3 = // prolog relevant only if lang_level >2
 
 // end prolog 
 
-
-Fl_PSfile_Device::Fl_PSfile_Device(void)
-{
-  close_cmd_ = 0;
-  //lang_level_ = 3;
-  lang_level_ = 2;
-  mask = 0;
-  ps_filename_ = NULL;
-  type_ = postscript_device;
-#ifdef __APPLE__
-  gc = fl_gc; // the display context is used by fl_text_extents()
-#endif
-}
-
 int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format, enum Page_Layout layout)
 //returns 0 iff OK
 {
@@ -437,10 +515,6 @@ int Fl_PSfile_Device::start_postscript (int pagecount, enum Page_Format format, 
   reset();
   nPages=0;
   return 0;
-}
-
-Fl_PSfile_Device::~Fl_PSfile_Device() {
-  if (ps_filename_) free(ps_filename_);
 }
 
 void Fl_PSfile_Device::recover(){
@@ -779,7 +853,7 @@ static const char *_fontNames[] = {
 "Times-BoldItalic",
 "Symbol",
 "Courier",
-"CourierBold",
+"Courier-Bold",
 "ZapfDingbats"
 };
 
@@ -842,11 +916,11 @@ void Fl_PSfile_Device::transformed_draw(const char* str, int n, double x, double
     }
     i++;
     switch (*str) {
-      case '(': case ')':
-        fprintf(output, "\\%c" , *str);
-        break;
+      case '(': case ')': case '\\' :
+        putc('\\' , output);
+	/* fallthrough */
       default:
-        fprintf(output, "%c", *str);
+        putc(*str , output);
     }
     str++;
   }
@@ -1171,21 +1245,6 @@ int Fl_PSfile_Device::end_page (void)
   return 0;
 }
 
-int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, enum Page_Layout layout)
-{
-  Fl_Native_File_Chooser fnfc;
-  fnfc.title("Create a .ps file");
-  fnfc.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
-  fnfc.options(Fl_Native_File_Chooser::SAVEAS_CONFIRM);
-  fnfc.filter("PostScript\t*.ps\n");
-  // Show native chooser
-  if ( fnfc.show() ) return 1;
-  output = fopen(fnfc.filename(), "w");
-  if(output == NULL) return 1;
-  ps_filename_ = strdup(fnfc.filename());
-  return start_postscript(pagecount, format, layout);
-}
-
 void Fl_PSfile_Device::end_job (void)
 // finishes PostScript & closes file
 {
@@ -1199,6 +1258,10 @@ void Fl_PSfile_Device::end_job (void)
     fprintf(output, "GR\n restore\n");
   fputs("%%EOF",output);
   reset();
+  fflush(output);
+  if(ferror(output)) {
+    fl_alert ("Error during PostScript data output.");
+    }
 #if ! (defined(__APPLE__) || defined(WIN32) )
   if (print_pipe)
     pclose(output);
@@ -1217,12 +1280,11 @@ void Fl_PSfile_Device::end_job (void)
 }
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
-int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
+int Fl_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   enum Page_Format format;
   enum Page_Layout layout;
 
   // first test version for print dialog
-
   if (!print_panel) make_print_panel();
   print_load();
   print_selection->deactivate();
@@ -1283,13 +1345,10 @@ int Fl_PS_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   return Fl_PSfile_Device::start_postscript(pages, format, layout); // start printing
 }
 
-/*
-void print_cb(Fl_Return_Button *, void *) {
-  printf ("print_cb called\n"); fflush(stdout);
-  print_panel->hide();
-  // return Fl_PSfile_Device::start_postscript(pages, format); // temporary
-}
-*/
+#endif // ! (defined(__APPLE__) || defined(WIN32) )
 
-#endif
+#endif // FL_DOXYGEN
 
+//
+// End of "$Id: Fl_PS_Printer.cxx 7375 2010-03-31 06:21:09Z manolo $".
+//

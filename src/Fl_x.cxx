@@ -1735,8 +1735,10 @@ void Fl_Window::show() {
   } else {
     XMapRaised(fl_display, i->xid);
   }
+#ifdef USE_PRINT_BUTTON
 void preparePrintFront(void);
 preparePrintFront();
+#endif
 }
 
 Window fl_window;
@@ -1759,7 +1761,8 @@ void Fl_Window::make_current() {
 
 }
 
-// temporary for testing purposes of the Fl_Printer class
+#ifdef USE_PRINT_BUTTON
+// to test the Fl_Printer class creating a "Print front window" button in a separate window
 // contains also preparePrintFront call above
 #include <FL/Fl_Printer.H>
 #include <FL/Fl_Button.H>
@@ -1788,11 +1791,12 @@ void printFront(Fl_Widget *o, void *data)
   printer.origin(w/2, h/2 );
   printer.rotate(ROTATE);
   printer.print_widget( win, - win->w()/2, - win->h()/2 );
+  //printer.print_window_part( win, 0,0, win->w(), win->h(), - win->w()/2, - win->h()/2 );
 #else
   printer.print_widget( win );
+  //printer.print_window_part( win, 0,0,win->w(), win->h() );
 #endif
 
-  //printer.print_window_part( win, 0,0,win->w(), win->h() );
   printer.end_page();
   printer.end_job();
   o->window()->show();
@@ -1809,6 +1813,7 @@ void preparePrintFront(void)
   w.end();
   w.show();
 }
+#endif // USE_PRINT_BUTTON
 
 #endif
 

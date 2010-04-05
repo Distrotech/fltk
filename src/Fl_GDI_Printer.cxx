@@ -1,17 +1,40 @@
-/*
- *  Fl_GDI_Printer.cxx
- */
+//
+// "$Id: Fl_GDI_Printer.cxx 7382 2010-03-31 16:21:56Z manolo $"
+//
+// Support for WIN32 printing for the Fast Light Tool Kit (FLTK).
+//
+// Copyright 2010 by Bill Spitzak and others.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA.
+//
+// Please report all bugs and problems on the following page:
+//
+//     http://www.fltk.org/str.php
+//
 
 #ifdef WIN32
 #include <FL/Fl_Printer.H>
 
 
 #include <FL/fl_ask.H>
-#include <math.h>
+#include <FL/math.h>
 
 extern HWND fl_window;
 
-Fl_GDI_Printer::Fl_GDI_Printer(void) : Fl_Virtual_Printer() {
+Fl_Printer::Fl_Printer(void) : Fl_Abstract_Printer() {
   hPr = NULL;
   type_ = gdi_printer;
 }
@@ -33,7 +56,7 @@ static void WIN_SetupPrinterDeviceContext(HDC prHDC)
 }
 
 
-int Fl_GDI_Printer::start_job (int pagecount, int *frompage, int *topage)
+int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
 // returns 0 iff OK
 {
   DWORD       commdlgerr;
@@ -81,12 +104,14 @@ int Fl_GDI_Printer::start_job (int pagecount, int *frompage, int *topage)
     }
     x_offset = 0;
     y_offset = 0;
+    WIN_SetupPrinterDeviceContext (hPr);
+    gc = (void *)fl_gc;
     this->set_current();
   }
   return err;
 }
 
-void Fl_GDI_Printer::end_job (void)
+void Fl_Printer::end_job (void)
 {
   Fl_Device::display_device()->set_current();
   if (hPr != NULL) {
@@ -106,7 +131,7 @@ void Fl_GDI_Printer::end_job (void)
   }
 }
 
-void Fl_GDI_Printer::absolute_printable_rect(int *x, int *y, int *w, int *h)
+void Fl_Printer::absolute_printable_rect(int *x, int *y, int *w, int *h)
 {
   POINT         physPageSize;
   POINT         pixelsPerInch;
@@ -132,7 +157,7 @@ void Fl_GDI_Printer::absolute_printable_rect(int *x, int *y, int *w, int *h)
   origin(x_offset, y_offset);
 }
 
-void Fl_GDI_Printer::margins(int *left, int *top, int *right, int *bottom)
+void Fl_Printer::margins(int *left, int *top, int *right, int *bottom)
 {
   int x, y, w, h;
   absolute_printable_rect(&x, &y, &w, &h);
@@ -142,14 +167,14 @@ void Fl_GDI_Printer::margins(int *left, int *top, int *right, int *bottom)
   if (bottom) *bottom = y;
 }
 
-int Fl_GDI_Printer::printable_rect(int *w, int *h)
+int Fl_Printer::printable_rect(int *w, int *h)
 {
   int x, y;
   absolute_printable_rect(&x, &y, w, h);
   return 0;
 }
 
-int Fl_GDI_Printer::start_page (void)
+int Fl_Printer::start_page (void)
 {
   int  rsult, w, h;
   
@@ -170,14 +195,14 @@ int Fl_GDI_Printer::start_page (void)
   return rsult;
 }
 
-void Fl_GDI_Printer::origin (int deltax, int deltay)
+void Fl_Printer::origin (int deltax, int deltay)
 {
   SetWindowOrgEx(fl_gc, - left_margin - deltax, - top_margin - deltay, NULL);
   x_offset = deltax;
   y_offset = deltay;
 }
 
-void Fl_GDI_Printer::scale (float scalex, float scaley)
+void Fl_Printer::scale (float scalex, float scaley)
 {
   int w, h;
   SetWindowExtEx(fl_gc, (int)(720 / scalex + 0.5), (int)(720 / scaley + 0.5), NULL);
@@ -185,7 +210,7 @@ void Fl_GDI_Printer::scale (float scalex, float scaley)
   origin(0, 0);
 }
 
-void Fl_GDI_Printer::rotate (float rot_angle)
+void Fl_Printer::rotate (float rot_angle)
 {
   XFORM mat;
   float angle;
@@ -198,7 +223,7 @@ void Fl_GDI_Printer::rotate (float rot_angle)
   SetWorldTransform(fl_gc, &mat);
 }
 
-int Fl_GDI_Printer::end_page (void)
+int Fl_Printer::end_page (void)
 {
   int  rsult;
   
@@ -211,7 +236,6 @@ int Fl_GDI_Printer::end_page (void)
       rsult = 1;
     }
   }
-  delete_image_list();
   gc = NULL;
   return rsult;
 }
@@ -231,7 +255,7 @@ static void do_translate(int x, int y)
   ModifyWorldTransform(fl_gc, &tr, MWT_LEFTMULTIPLY);
 }
 
-void Fl_GDI_Printer::translate (int x, int y)
+void Fl_Printer::translate (int x, int y)
 {
   do_translate(x, y);
   if (translate_stack_depth < translate_stack_max) {
@@ -241,7 +265,7 @@ void Fl_GDI_Printer::translate (int x, int y)
     }
 }
 
-void Fl_GDI_Printer::untranslate (void)
+void Fl_Printer::untranslate (void)
 {
   if (translate_stack_depth > 0) {
     translate_stack_depth--;
@@ -251,3 +275,6 @@ void Fl_GDI_Printer::untranslate (void)
 
 #endif // WIN32
 
+//
+// End of "$Id: Fl_GDI_Printer.cxx 7382 2010-03-31 16:21:56Z manolo $".
+//

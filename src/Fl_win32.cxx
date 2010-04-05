@@ -1781,8 +1781,10 @@ void Fl_Window::show() {
     if (!fl_capture) BringWindowToTop(i->xid);
     //ShowWindow(i->xid,fl_capture?SW_SHOWNOACTIVATE:SW_RESTORE);
   }
+#ifdef USE_PRINT_BUTTON
 void preparePrintFront(void);
 preparePrintFront();
+#endif
 }
 
 Fl_Window *Fl_Window::current_;
@@ -1930,7 +1932,8 @@ Fl_Region XRectangleRegion(int x, int y, int w, int h) {
   return CreatePolygonRgn(pt, 4, ALTERNATE);
 }
 
-// temporary for testing purposes of the Fl_Printer class
+#ifdef USE_PRINT_BUTTON
+// to test the Fl_Printer class creating a "Print front window" button in a separate window
 // contains also preparePrintFront call above
 #include <FL/Fl_Printer.H>
 #include <FL/Fl_Button.H>
@@ -1958,26 +1961,45 @@ void printFront(Fl_Widget *o, void *data)
   printer.origin(w/2, h/2 );
   printer.rotate(ROTATE);
   printer.print_widget( win, - win->w()/2, - win->h()/2 );
+  //printer.print_window_part( win, 0,0, win->w(), win->h(), - win->w()/2, - win->h()/2 );
 #else
   printer.print_widget( win );
+  //printer.print_window_part( win, 0,0, win->w(), win->h() );
 #endif
-  //printer.print_window_part( win, 0,0, win->w(), win->h(), - win->w()/2, - win->h()/2 );
   printer.end_page();
   printer.end_job();
   o->window()->show();
 }
+
+#include <FL/Fl_Clipboard_Writer.H>
+void copyFront(Fl_Widget *o, void *data)
+{
+  Fl_Clipboard_Writer writer;
+  o->window()->hide();
+  Fl_Window *win = Fl::first_window();
+  if(win && ! writer.start(win->w(), win->h()) ) {
+    writer.copy_widget(win);
+    writer.stop();
+    }
+  o->window()->show();
+}
+
 
 void preparePrintFront(void)
 {
   static BOOL first=TRUE;
   if(!first) return;
   first=FALSE;
-  static Fl_Window w(0,0,120,30);
-  static Fl_Button b(0,0,w.w(),w.h(), "Print front window");
+  static Fl_Window w(0,0,120,60);
+  static Fl_Button b(0,0,w.w(),30, "Print front window");
+  static Fl_Button bc(0,30,w.w(),30, "Copy front window");
   b.callback(printFront);
+  bc.callback(copyFront);
   w.end();
   w.show();
 }
+#endif // USE_PRINT_BUTTON
+
 #endif // FL_DOXYGEN
 
 //

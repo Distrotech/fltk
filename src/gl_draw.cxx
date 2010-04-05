@@ -110,7 +110,7 @@ void  gl_font(int fontid, int size) {
     wglUseFontBitmaps(fl_gc, base, count, fl_fontsize->listbase+base);
     SelectObject(fl_gc, oldFid);
 # elif defined(__APPLE_QUARTZ__)
-#if ! defined(__APPLE_COCOA__)
+    /* FIXME: no OpenGL Font Selection in Cocoa!
 //AGL is not supported for use in 64-bit applications:
 //http://developer.apple.com/mac/library/documentation/Carbon/Conceptual/Carbon64BitGuide/OtherAPIChanges/OtherAPIChanges.html
     short font, face, size;
@@ -123,7 +123,7 @@ void  gl_font(int fontid, int size) {
     fl_fontsize->listbase = glGenLists(256);
 	aglUseFont(aglGetCurrentContext(), font, face,
                size, 0, 256, fl_fontsize->listbase);
-#endif
+     */
 # else 
 #   error unsupported platform
 # endif
@@ -132,7 +132,7 @@ void  gl_font(int fontid, int size) {
 
   }
   gl_fontsize = fl_fontsize;
-#if !( defined(__APPLE__) &&  defined(__APPLE_COCOA__) )
+#ifndef __APPLE_QUARTZ__
   glListBase(fl_fontsize->listbase);
 #endif
 }
@@ -160,7 +160,7 @@ static void get_list(int r) {
   wglUseFontBitmapsW(fl_gc, ii, ii + 0x03ff, gl_fontsize->listbase+ii);
   SelectObject(fl_gc, oldFid);
 #elif defined(__APPLE_QUARTZ__)
-// FIXME
+// FIXME:
 #else
 #  error unsupported platform
 #endif
@@ -210,20 +210,13 @@ void gl_remove_displaylist_fonts()
   Draws an array of n characters of the string in the current font
   at the current position.
   */
-#if defined(__APPLE__) && defined(__APPLE_COCOA__)
+#ifdef __APPLE__
 static void gl_draw_cocoa(const char* str, int n);
 #endif
 
 void gl_draw(const char* str, int n) {
-#ifdef __APPLE__
-  
-#if defined(__APPLE_COCOA__)
-  gl_draw_cocoa(str, n);
-#else
-// Should be converting the text here, as for other platforms???
-  glCallLists(n, GL_UNSIGNED_BYTE, str);
-#endif
-  
+#ifdef __APPLE__  
+  gl_draw_cocoa(str, n);  
 #else
   static xchar *buf = NULL;
   static int l = 0;
@@ -367,13 +360,21 @@ void gl_draw_image(const uchar* b, int x, int y, int w, int h, int d, int ld) {
   glDrawPixels(w,h,d<4?GL_RGB:GL_RGBA,GL_UNSIGNED_BYTE,(const ulong*)b);
 }
 
-#if defined(__APPLE__) && defined(__APPLE_COCOA__)
+#ifdef __APPLE__
 
 #include <FL/glu.h>
 
-static void gl_draw_cocoa(const char* str, int n) 
+static int texture_count = 0;
+static const int texture_total = 50;
+static GLuint texName[texture_total];
+static char *string_table[texture_total];
+static int length_table[texture_total];
+static int width_table[texture_total];
+static int height_table[texture_total];
+
+static void display_texture(int rank)
 {
-//setup matrices
+  //setup matrices
   GLint matrixMode;
   glGetIntegerv (GL_MATRIX_MODE, &matrixMode);
   glMatrixMode (GL_PROJECTION);
@@ -386,64 +387,41 @@ static void gl_draw_cocoa(const char* str, int n)
   float winh = Fl_Window::current()->h();
   glScalef (2.0f / winw, 2.0f /  winh, 1.0f);
   glTranslatef (-winw / 2.0f, -winh / 2.0f, 0.0f);
-//write str to a bitmap just big enough  
-  int w = 0, h = 0;
-  fl_measure(str, w, h, 0);
-  CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
-  void *base = calloc(4*w, h);
-  if(base == NULL) return;
-  fl_gc = CGBitmapContextCreate(base, w, h, 8, w*4, lut, kCGImageAlphaPremultipliedLast);
-  CGColorSpaceRelease(lut);
-  fl_fontsize = gl_fontsize;
-  fl_draw(str, 0, h - fl_descent());
-//put this bitmap in a texture  
-  static GLuint texName = 0;
-  glPushAttrib(GL_TEXTURE_BIT);
-  if (0 == texName) glGenTextures (1, &texName);
-  glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-  glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, w, h, 0,  GL_RGBA, GL_UNSIGNED_BYTE, base);
-  glPopAttrib();
-  CGContextRelease(fl_gc);
-  fl_gc = NULL;
-  free(base);
+  //write the texture on screen
   GLfloat pos[4];
   glGetFloatv(GL_CURRENT_RASTER_POSITION, pos);
-  if (texName) {//write the texture on screen
-	CGRect bounds = CGRectMake (pos[0], pos[1] - fl_descent(), w, h);
-	glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
-	
-	glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
-	glEnable (GL_BLEND); // for text fading
-	glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
-	glEnable (GL_TEXTURE_RECTANGLE_EXT);	
-	
-	glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-	glBegin (GL_QUADS);
-	glTexCoord2f (0.0f, 0.0f); // draw lower left in world coordinates
-	glVertex2f (bounds.origin.x, bounds.origin.y);
-	
-	glTexCoord2f (0.0f, h); // draw upper left in world coordinates
-	glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
-	
-	glTexCoord2f (w, h); // draw upper right in world coordinates
-	glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
-	
-	glTexCoord2f (w, 0.0f); // draw lower right in world coordinates
-	glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
-	glEnd ();
-	
-	glPopAttrib();
-	glDeleteTextures(1, &texName);
-  }
+  CGRect bounds = CGRectMake (pos[0], pos[1] - fl_descent(), width_table[rank], height_table[rank]);
+  glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
+  
+  glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
+  glEnable (GL_BLEND); // for text fading
+  glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
+  glEnable (GL_TEXTURE_RECTANGLE_EXT);	
+  
+  glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName[rank]);
+  glBegin (GL_QUADS);
+  glTexCoord2f (0.0f, 0.0f); // draw lower left in world coordinates
+  glVertex2f (bounds.origin.x, bounds.origin.y);
+  
+  glTexCoord2f (0.0f, height_table[rank]); // draw upper left in world coordinates
+  glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
+  
+  glTexCoord2f (width_table[rank], height_table[rank]); // draw upper right in world coordinates
+  glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
+  
+  glTexCoord2f (width_table[rank], 0.0f); // draw lower right in world coordinates
+  glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+  glEnd ();
+  
+  glPopAttrib();
   // reset original matrices
   glPopMatrix(); // GL_MODELVIEW
   glMatrixMode (GL_PROJECTION);
   glPopMatrix();
   glMatrixMode (matrixMode);
-//set the raster position to end of string
-  pos[0] += w;
+  
+  //set the raster position to end of string
+  pos[0] += width_table[rank];
   GLdouble modelmat[16];
   glGetDoublev (GL_MODELVIEW_MATRIX, modelmat);
   GLdouble projmat[16];
@@ -454,9 +432,74 @@ static void gl_draw_cocoa(const char* str, int n)
   gluUnProject(pos[0], pos[1], pos[2], modelmat, projmat, viewport, &objX, &objY, &objZ);
   glRasterPos2d(objX, objY);
 }
-#endif
+  
+int compute_texture(const char* str, int n)
+{
+  int rank;
+  if (texture_count == texture_total) {
+    glDeleteTextures(1, texName);
+    free(string_table[0]);
+    memmove(texName, texName + 1, (texture_total-1)*sizeof(GLuint));
+    memmove(length_table, length_table + 1, (texture_total-1)*sizeof(int));
+    memmove(string_table, string_table + 1, (texture_total-1)*sizeof(char *));
+    rank = texture_count - 1;
+    }
+  else {
+    rank = texture_count++;
+    }
+//write str to a bitmap just big enough  
+  width_table[rank] = 0, height_table[rank] = 0;
+  fl_measure(str, width_table[rank], height_table[rank], 0);
+  CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
+  void *base = calloc(4*width_table[rank], height_table[rank]);
+  if(base == NULL) return -1;
+  fl_gc = CGBitmapContextCreate(base, width_table[rank], height_table[rank], 8, width_table[rank]*4, lut, kCGImageAlphaPremultipliedLast);
+  CGColorSpaceRelease(lut);
+  fl_fontsize = gl_fontsize;
+  fl_draw(str, 0, height_table[rank] - fl_descent());
+//put this bitmap in a texture  
+  glPushAttrib(GL_TEXTURE_BIT);
+  glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName[rank]);
+  glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, width_table[rank], height_table[rank], 0,  GL_RGBA, GL_UNSIGNED_BYTE, base);
+  glPopAttrib();
+  CGContextRelease(fl_gc);
+  fl_gc = NULL;
+  free(base);
+  string_table[rank] = (char *)malloc(n);
+  memcpy(string_table[rank], str, n);
+  length_table[rank] = n;
+  return rank;
+}
 
-#endif
+static int already_known(const char *str, int n)
+{
+  int rank;
+  for ( rank = 0; rank < texture_count; rank++) {
+    if(n == length_table[rank] && memcmp(str, string_table[rank], n) == 0) return rank;
+    }
+  return -1;
+}
+
+static void gl_draw_cocoa(const char* str, int n) 
+{
+  static int first = true;
+  if(first) {
+    first = false;
+    glGenTextures (texture_total, texName);
+    texture_count = 0;
+  }
+  int rank = already_known(str, n);
+  if(rank == -1) {
+    rank = compute_texture(str, n);
+  }
+  display_texture(rank);
+}
+
+#endif // __APPLE__
+
+#endif // HAVE_GL
 
 //
 // End of "$Id$".

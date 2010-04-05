@@ -1,33 +1,55 @@
-/*
- *  Fl_Quartz_Printer.mm
- *
- */
+//
+// "$Id: Fl_Quartz_Printer.mm 7374 2010-03-30 21:43:48Z manolo $"
+//
+// Mac OS X-specific printing support (objective-c++) for the Fast Light Tool Kit (FLTK).
+//
+// Copyright 2010 by Bill Spitzak and others.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA.
+//
+// Please report all bugs and problems to:
+//
+//     http://www.fltk.org/str.php
+//
+
 #ifdef __APPLE__
 #include <FL/Fl_Printer.H>
 
 #include <FL/Fl.H>
 #include <FL/fl_ask.H>
 #include <FL/fl_draw.H>
-#ifdef __APPLE_COCOA__
 #import <Cocoa/Cocoa.h>
-#endif
 
 extern void fl_quartz_restore_line_style_();
 
-Fl_Quartz_Printer::Fl_Quartz_Printer(void)
+Fl_Printer::Fl_Printer(void)
 {
   x_offset = 0;
   y_offset = 0;
+  scale_x = scale_y = 1.;
   type_ = quartz_printer;
 }
 
-int Fl_Quartz_Printer::start_job (int pagecount, int *frompage, int *topage)
+int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
 //printing using a Quartz graphics context
 //returns 0 iff OK
 {
   OSStatus status;
   Fl_X::q_release_context();
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5 && defined(__APPLE_COCOA__)
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
   if( [NSPrintPanel instancesRespondToSelector:@selector(runModalWithPrintInfo:)] &&
      [NSPrintInfo instancesRespondToSelector:@selector(PMPrintSession)] ) {
     NSAutoreleasePool *localPool;
@@ -96,7 +118,7 @@ int Fl_Quartz_Printer::start_job (int pagecount, int *frompage, int *topage)
     status = PMSessionBeginDocumentNoDialog(printSession, printSettings, pageFormat);
 #endif //__LP64__
     
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5 && defined(__APPLE_COCOA__)
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
   }
 #endif
   if (status != noErr) return 1;
@@ -105,7 +127,7 @@ int Fl_Quartz_Printer::start_job (int pagecount, int *frompage, int *topage)
   return 0;
 }
 
-void Fl_Quartz_Printer::margins(int *left, int *top, int *right, int *bottom)
+void Fl_Printer::margins(int *left, int *top, int *right, int *bottom)
 {
   PMPaper paper;
   PMGetPageFormatPaper(pageFormat, &paper);
@@ -127,7 +149,7 @@ void Fl_Quartz_Printer::margins(int *left, int *top, int *right, int *bottom)
   }
 }
 
-int Fl_Quartz_Printer::printable_rect(int *w, int *h)
+int Fl_Printer::printable_rect(int *w, int *h)
 //returns 0 iff OK
 {
   OSStatus status;
@@ -144,7 +166,7 @@ int Fl_Quartz_Printer::printable_rect(int *w, int *h)
   return 0;
 }
 
-void Fl_Quartz_Printer::origin(int x, int y)
+void Fl_Printer::origin(int x, int y)
 {
   x_offset = x;
   y_offset = y;
@@ -157,7 +179,7 @@ void Fl_Quartz_Printer::origin(int x, int y)
   CGContextSaveGState(fl_gc);
 }
 
-void Fl_Quartz_Printer::scale (float s_x, float s_y)
+void Fl_Printer::scale (float s_x, float s_y)
 {
   scale_x = s_x;
   scale_y = s_y;
@@ -170,7 +192,7 @@ void Fl_Quartz_Printer::scale (float s_x, float s_y)
   CGContextSaveGState(fl_gc);
 }
 
-void Fl_Quartz_Printer::rotate (float rot_angle)
+void Fl_Printer::rotate (float rot_angle)
 {
   angle = - rot_angle * M_PI / 180.;
   CGContextRestoreGState(fl_gc);
@@ -182,20 +204,20 @@ void Fl_Quartz_Printer::rotate (float rot_angle)
   CGContextSaveGState(fl_gc);
 }
 
-void Fl_Quartz_Printer::translate(int x, int y)
+void Fl_Printer::translate(int x, int y)
 {
   CGContextSaveGState(fl_gc);
   CGContextTranslateCTM(fl_gc, x, y );
   CGContextSaveGState(fl_gc);
 }
 
-void Fl_Quartz_Printer::untranslate(void)
+void Fl_Printer::untranslate(void)
 {
   CGContextRestoreGState(fl_gc);
   CGContextRestoreGState(fl_gc);
 }
 
-int Fl_Quartz_Printer::start_page (void)
+int Fl_Printer::start_page (void)
 {	
   OSStatus status = PMSessionBeginPageNoDialog(printSession, pageFormat, NULL);
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
@@ -244,7 +266,7 @@ int Fl_Quartz_Printer::start_page (void)
   return status != noErr;
 }
 
-int Fl_Quartz_Printer::end_page (void)
+int Fl_Printer::end_page (void)
 {	
   CGContextFlush(fl_gc);
   CGContextRestoreGState(fl_gc);
@@ -255,7 +277,7 @@ int Fl_Quartz_Printer::end_page (void)
   return status != noErr;
 }
 
-void Fl_Quartz_Printer::end_job (void)
+void Fl_Printer::end_job (void)
 {
   OSStatus status;
   
@@ -271,3 +293,6 @@ void Fl_Quartz_Printer::end_job (void)
 
 #endif // __APPLE__
 
+//
+// End of "$Id: Fl_Quartz_Printer.mm 7374 2010-03-30 21:43:48Z manolo $".
+//

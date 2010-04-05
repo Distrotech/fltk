@@ -27,6 +27,7 @@
 
 CPPFILES = \
 	Fl.cxx \
+	Fl_Abstract_Printer.cxx \
 	Fl_Adjuster.cxx \
 	Fl_Bitmap.cxx \
 	Fl_Browser.cxx \
@@ -177,8 +178,8 @@ FLCPPFILES = \
 GLCPPFILES = \
 	Fl_Gl_Choice.cxx \
 	Fl_Gl_Overlay.cxx \
+	Fl_Gl_Device_Plugin.cxx \
 	Fl_Gl_Window.cxx \
-	Fl_Gl_Printer.cxx \
 	freeglut_geometry.cxx \
 	freeglut_stroke_mono_roman.cxx \
 	freeglut_stroke_roman.cxx \

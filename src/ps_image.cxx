@@ -23,19 +23,17 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-
+#ifndef FL_DOXYGEN
 
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 
-#include <FL/Fl_Printer.H>
+#include <FL/Fl_PSfile_Device.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Pixmap.H>
 #include <FL/Fl_Bitmap.H>
  
-
-
 int Fl_PSfile_Device::alpha_mask(const uchar * data, int w, int h, int D, int LD){
 
   mask = 0;
@@ -217,7 +215,7 @@ void Fl_PSfile_Device::draw_scaled_image(const uchar *data, double x, double y, 
 
   fprintf(output,"save\n");
 
-  char * interpol;
+  const char * interpol;
   if(lang_level_>1){
     if(interpolate_)
       interpol="true";
@@ -276,7 +274,7 @@ void Fl_PSfile_Device::draw_scaled_image(Fl_Draw_Image_Cb call, void *data, doub
   int level2_mask = 0;
   fprintf(output,"save\n");
   int i,j,k;
-  char * interpol;
+  const char * interpol;
   if (lang_level_ > 1) {
     if (interpolate_) interpol="true";
     else interpol="false";
@@ -365,7 +363,7 @@ void Fl_PSfile_Device::draw_scaled_image_mono(const uchar *data, double x, doubl
 
   int i,j, k;
 
-  char * interpol;
+  const char * interpol;
   if(lang_level_>1){
     if(interpolate_)
       interpol="true";
@@ -424,7 +422,7 @@ void Fl_PSfile_Device::draw_scaled_image_mono(Fl_Draw_Image_Cb call, void *data,
 
   fprintf(output,"save\n");
   int i,j,k;
-  char * interpol;
+  const char * interpol;
   if(lang_level_>1){
     if(interpolate_) interpol="true";
     else interpol="false";
@@ -536,6 +534,7 @@ void Fl_PSfile_Device::draw(Fl_Bitmap * bitmap,int XP, int YP, int WP, int HP, i
   pop_clip();
 };
 
+#endif // FL_DOXYGEN
 
 //
 // End of "$Id: image.cxx 4324 2005-05-09 21:47:22Z rokan $"
