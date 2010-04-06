@@ -41,14 +41,13 @@ Inherits <a class="el" href="class_fl___device.html">Fl_Device</a>.
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___clipboard___writer.html#fdb7b83b3b71b23570397364aed4bf6e">start</a> (int w, int h)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">To be called before any graphics request.  <a href="#fdb7b83b3b71b23570397364aed4bf6e"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="05fb786e9d2eb0732f220eac80f48787"></a><!-- doxytag: member="Fl_Clipboard_Writer::copy_widget" ref="05fb786e9d2eb0732f220eac80f48787" args="(Fl_Widget *widget)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___clipboard___writer.html#05fb786e9d2eb0732f220eac80f48787">copy_widget</a> (Fl_Widget *widget)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___clipboard___writer.html#e9c9f9a8bb02ee48d3a582deed7e44a9">copy_widget</a> (Fl_Widget *widget, int delta_x=0, int delta_y=0)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Copies a widget of any kind to the clipboard. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Copies a widget to the clipboard.  <a href="#e9c9f9a8bb02ee48d3a582deed7e44a9"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="24c04aa072b4ca9ae1aa743252f0f5f3"></a><!-- doxytag: member="Fl_Clipboard_Writer::stop" ref="24c04aa072b4ca9ae1aa743252f0f5f3" args="(void)" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___clipboard___writer.html#24c04aa072b4ca9ae1aa743252f0f5f3">stop</a> (void)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">To be called after all graphics request were done. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">To be called after all graphics requests were done. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="class_fl___device.html">Fl_Device</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fl___clipboard___writer.html#bc88ee247bded0f6d74e35eb6465f2a1">set_current</a> (void)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Sets this device (display, printer, local file) as the target of future graphics calls.  <a href="#bc88ee247bded0f6d74e35eb6465f2a1"></a><br></td></tr>
@@ -57,6 +56,50 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 Sends all graphics requests to the clipboard. 
 <p>
 Presently implemented for the MSWindows and Mac OS X platforms only. <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="e9c9f9a8bb02ee48d3a582deed7e44a9"></a><!-- doxytag: member="Fl_Clipboard_Writer::copy_widget" ref="e9c9f9a8bb02ee48d3a582deed7e44a9" args="(Fl_Widget *widget, int delta_x=0, int delta_y=0)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Fl_Clipboard_Writer::copy_widget           </td>
+          <td>(</td>
+          <td class="paramtype">Fl_Widget *&nbsp;</td>
+          <td class="paramname"> <em>widget</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>delta_x</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>delta_y</em> = <code>0</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Copies a widget to the clipboard. 
+<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>widget</em>&nbsp;</td><td>A FLTK widget of any kind </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>delta_x</em>&nbsp;</td><td>Horizontal offset for position of the widget top-left angle. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>delta_y</em>&nbsp;</td><td>Vertical offset for position of the widget top-left angle. </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="bc88ee247bded0f6d74e35eb6465f2a1"></a><!-- doxytag: member="Fl_Clipboard_Writer::set_current" ref="bc88ee247bded0f6d74e35eb6465f2a1" args="(void)" -->
 <div class="memitem">
 <div class="memproto">
@@ -122,7 +165,7 @@ To be called before any graphics request.
 <hr>The documentation for this class was generated from the following files:<ul>
 <li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/FL/<a class="el" href="_fl___clipboard___writer_8_h_source.html">Fl_Clipboard_Writer.H</a><li>/Users/mgouy/Documents/fltk/COCOA/Fl_Printer/src/Fl_Clipboard_Writer.cxx</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Apr 5 23:03:41 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Tue Apr 6 18:27:44 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

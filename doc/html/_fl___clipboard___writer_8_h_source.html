@@ -62,26 +62,25 @@
 <a name="l00046"></a>00046   <span class="keywordtype">void</span> traverse(Fl_Widget *widget);
 <a name="l00047"></a>00047   <span class="keywordtype">void</span> translate(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y);
 <a name="l00048"></a>00048   <span class="keywordtype">void</span> untranslate(<span class="keywordtype">void</span>);
-<a name="l00049"></a>00049   <span class="keywordtype">void</span> copy_widget(Fl_Widget* widget, <span class="keywordtype">int</span> delta_x, <span class="keywordtype">int</span> delta_y);
-<a name="l00050"></a>00050 <span class="keyword">public</span>:
-<a name="l00051"></a>00051 <span class="preprocessor">#ifdef __APPLE__</span>
-<a name="l00052"></a>00052 <span class="preprocessor"></span>  <span class="keyword">inline</span> <span class="keywordtype">void</span> bounds(<span class="keywordtype">int</span> *pwidth, <span class="keywordtype">int</span> *pheight) {*pwidth = width; *pheight = height; }
-<a name="l00053"></a>00053 <span class="preprocessor">#endif</span>
-<a name="l00054"></a>00054 <span class="preprocessor"></span>
-<a name="l00055"></a><a class="code" href="class_fl___clipboard___writer.html#77d87f9a226216df33591cec9ccac0b4">00055</a>   <a class="code" href="class_fl___clipboard___writer.html#77d87f9a226216df33591cec9ccac0b4" title="The constructor.">Fl_Clipboard_Writer</a>() {<a class="code" href="class_fl___device.html#fb7cf774b8c77be6d92dafad6c40fada" title="The device type.">type_</a> = <a class="code" href="class_fl___device.html#b5acf62a08a588319760acfc38a0dfa8bde9ff65f879b42827e3612aaa93246b">clipboard</a>;};
-<a name="l00060"></a>00060   <span class="keywordtype">int</span> <a class="code" href="class_fl___clipboard___writer.html#fdb7b83b3b71b23570397364aed4bf6e" title="To be called before any graphics request.">start</a>(<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);
-<a name="l00062"></a><a class="code" href="class_fl___clipboard___writer.html#05fb786e9d2eb0732f220eac80f48787">00062</a>   <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_fl___clipboard___writer.html#05fb786e9d2eb0732f220eac80f48787" title="Copies a widget of any kind to the clipboard.">copy_widget</a>(Fl_Widget* widget) { <a class="code" href="class_fl___clipboard___writer.html#05fb786e9d2eb0732f220eac80f48787" title="Copies a widget of any kind to the clipboard.">copy_widget</a>(widget, 0, 0); };
-<a name="l00064"></a>00064   <span class="keywordtype">int</span> <a class="code" href="class_fl___clipboard___writer.html#24c04aa072b4ca9ae1aa743252f0f5f3" title="To be called after all graphics request were done.">stop</a>(<span class="keywordtype">void</span>);
-<a name="l00065"></a>00065   <a class="code" href="class_fl___device.html" title="A pure virtual class subclassed to send the output of drawing functions to display...">Fl_Device</a> *<a class="code" href="class_fl___clipboard___writer.html#bc88ee247bded0f6d74e35eb6465f2a1" title="Sets this device (display, printer, local file) as the target of future graphics...">set_current</a>(<span class="keywordtype">void</span>);
-<a name="l00066"></a>00066 };
-<a name="l00067"></a>00067 
-<a name="l00068"></a>00068 <span class="preprocessor">#endif // FL_CLIPBOARD_WRITER_H</span>
-<a name="l00069"></a>00069 <span class="preprocessor"></span>
-<a name="l00070"></a>00070 <span class="comment">//</span>
-<a name="l00071"></a>00071 <span class="comment">// End of "$Id$".</span>
-<a name="l00072"></a>00072 <span class="comment">//</span>
+<a name="l00049"></a>00049 <span class="keyword">public</span>:
+<a name="l00050"></a>00050 <span class="preprocessor">#ifdef __APPLE__</span>
+<a name="l00051"></a>00051 <span class="preprocessor"></span>  <span class="keyword">inline</span> <span class="keywordtype">void</span> bounds(<span class="keywordtype">int</span> *pwidth, <span class="keywordtype">int</span> *pheight) {*pwidth = width; *pheight = height; }
+<a name="l00052"></a>00052 <span class="preprocessor">#endif</span>
+<a name="l00053"></a>00053 <span class="preprocessor"></span>
+<a name="l00054"></a><a class="code" href="class_fl___clipboard___writer.html#77d87f9a226216df33591cec9ccac0b4">00054</a>   <a class="code" href="class_fl___clipboard___writer.html#77d87f9a226216df33591cec9ccac0b4" title="The constructor.">Fl_Clipboard_Writer</a>() {<a class="code" href="class_fl___device.html#fb7cf774b8c77be6d92dafad6c40fada" title="The device type.">type_</a> = <a class="code" href="class_fl___device.html#b5acf62a08a588319760acfc38a0dfa8bde9ff65f879b42827e3612aaa93246b">clipboard</a>;};
+<a name="l00059"></a>00059   <span class="keywordtype">int</span> <a class="code" href="class_fl___clipboard___writer.html#fdb7b83b3b71b23570397364aed4bf6e" title="To be called before any graphics request.">start</a>(<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);
+<a name="l00065"></a>00065   <span class="keywordtype">void</span> <a class="code" href="class_fl___clipboard___writer.html#e9c9f9a8bb02ee48d3a582deed7e44a9" title="Copies a widget to the clipboard.">copy_widget</a>(Fl_Widget* widget, <span class="keywordtype">int</span> delta_x = 0, <span class="keywordtype">int</span> delta_y = 0);
+<a name="l00067"></a>00067   <span class="keywordtype">int</span> <a class="code" href="class_fl___clipboard___writer.html#24c04aa072b4ca9ae1aa743252f0f5f3" title="To be called after all graphics requests were done.">stop</a>(<span class="keywordtype">void</span>);
+<a name="l00068"></a>00068   <a class="code" href="class_fl___device.html" title="A pure virtual class subclassed to send the output of drawing functions to display...">Fl_Device</a> *<a class="code" href="class_fl___clipboard___writer.html#bc88ee247bded0f6d74e35eb6465f2a1" title="Sets this device (display, printer, local file) as the target of future graphics...">set_current</a>(<span class="keywordtype">void</span>);
+<a name="l00069"></a>00069 };
+<a name="l00070"></a>00070 
+<a name="l00071"></a>00071 <span class="preprocessor">#endif // FL_CLIPBOARD_WRITER_H</span>
+<a name="l00072"></a>00072 <span class="preprocessor"></span>
+<a name="l00073"></a>00073 <span class="comment">//</span>
+<a name="l00074"></a>00074 <span class="comment">// End of "$Id$".</span>
+<a name="l00075"></a>00075 <span class="comment">//</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Apr 5 23:03:41 2010 for Fl_Printer by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Tue Apr 6 18:27:44 2010 for Fl_Printer by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
