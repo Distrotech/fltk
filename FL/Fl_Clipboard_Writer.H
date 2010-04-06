@@ -46,7 +46,6 @@ private:
   void traverse(Fl_Widget *widget);
   void translate(int x, int y);
   void untranslate(void);
-  void copy_widget(Fl_Widget* widget, int delta_x, int delta_y);
 public:
 #ifdef __APPLE__
   inline void bounds(int *pwidth, int *pheight) {*pwidth = width; *pheight = height; }
@@ -58,8 +57,12 @@ public:
    \param h The height in pixels of the clipboard drawing surface
    */
   int start(int w, int h);
-  /** \brief Copies a widget of any kind to the clipboard */
-  inline void copy_widget(Fl_Widget* widget) { copy_widget(widget, 0, 0); };
+  /** \brief Copies a widget to the clipboard 
+   \param widget A FLTK widget of any kind
+   \param delta_x Horizontal offset for position of the widget top-left angle.
+   \param delta_y Vertical offset for position of the widget top-left angle.
+   */
+  void copy_widget(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
   /** \brief To be called after all graphics requests were done */
   int stop(void);
   Fl_Device *set_current(void);
