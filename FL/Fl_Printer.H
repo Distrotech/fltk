@@ -196,7 +196,6 @@ public:
  window or screen types. It is currently used to provide an automated printing
  service for OpenGL windows, if linked with fltk_gl.
  */
-class Fl_Clipboard_Writer;
 class Fl_Device_Plugin : public Fl_Plugin {
 public:
   /** \brief The constructor */
@@ -207,17 +206,11 @@ public:
   /** \brief Returns the plugin name */
   virtual const char *name() = 0;
   /** \brief Prints a widget 
-   \param p the printer
    \param w the widget
    \param x,y offsets where to print relatively to coordinates origin
+   \param height height of the current drawing area
    */
-  virtual int print(Fl_Abstract_Printer* p, Fl_Widget* w, int x, int y) { return 0; }
-  /** \brief copies a widget to the clipboard
-   \param c the clipboard writer
-   \param w the widget
-   \param x,y offsets where to print relatively to coordinates origin
-   */
-  virtual int copy(Fl_Clipboard_Writer* c, Fl_Widget* w, int x, int y) { return 0; }
+  virtual int print(Fl_Widget* w, int x, int y, int height) { return 0; }
 };
 
 #endif // Fl_Printer_H

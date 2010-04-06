@@ -78,7 +78,11 @@ void Fl_Clipboard_Writer::copy_widget(Fl_Widget* widget, int delta_x, int delta_
   if (widget->as_gl_window()) {
      Fl_Plugin_Manager pm("fltk:device");  
      Fl_Device_Plugin *pi = (Fl_Device_Plugin*)pm.plugin("opengl.device.fltk.org");
-     if (pi) drawn_by_plugin = pi->copy(this, widget, 0, 0);
+     if (pi) {
+       int width, height;
+       this->bounds(&width, &height);
+       drawn_by_plugin = pi->print(widget, 0, 0, height);
+       }
   }
   if (!drawn_by_plugin) {
     widget->draw();

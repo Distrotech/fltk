@@ -41,7 +41,7 @@ static void imgProviderReleaseData (void *info, const void *data, size_t size)
 }
 #endif
 
-static void print_gl_window(Fl_Abstract_Printer *printer, Fl_Clipboard_Writer *clipboard, Fl_Gl_Window *glw, int x, int y)
+static void print_gl_window(Fl_Gl_Window *glw, int x, int y, int height)
 {
 #ifdef WIN32
   HDC save_gc = fl_gc;
@@ -106,12 +106,9 @@ static void print_gl_window(Fl_Abstract_Printer *printer, Fl_Clipboard_Writer *c
    , provider, NULL, false, kCGRenderingIntentDefault);
   if(image == NULL) return;
   CGContextSaveGState(fl_gc);
-  int w, h;
-  if(printer) printer->printable_rect(&w, &h);
-  else clipboard->bounds(&w, &h);
-  CGContextTranslateCTM(fl_gc, 0, h);
+  CGContextTranslateCTM(fl_gc, 0, height);
   CGContextScaleCTM(fl_gc, 1.0f, -1.0f);
-  CGRect rect = { { x, h - y - glw->h() }, { glw->w(), glw->h() } };
+  CGRect rect = { { x, height - y - glw->h() }, { glw->w(), glw->h() } };
   Fl_X::q_begin_image(rect, 0, 0, glw->w(), glw->h());
   CGContextDrawImage(fl_gc, rect, image);
   Fl_X::q_end_image();
@@ -132,23 +129,11 @@ static void print_gl_window(Fl_Abstract_Printer *printer, Fl_Clipboard_Writer *c
 class Fl_Gl_Device_Plugin : public Fl_Device_Plugin {
 public:
   Fl_Gl_Device_Plugin() : Fl_Device_Plugin(name()) { }
-  /** \brief Returns the plugin name */
   virtual const char *name() { return "opengl.device.fltk.org"; }
-  /** \brief Prints a widget 
-   \param p the printer
-   \param w the widget
-   \param x,y offsets where to print relatively to coordinates origin
-   */
-  virtual int print(Fl_Abstract_Printer *p, Fl_Widget *w, int x, int y) {
+  virtual int print(Fl_Widget *w, int x, int y, int height) {
     Fl_Gl_Window *glw = w->as_gl_window();
     if (!glw) return 0;
-    print_gl_window(p, NULL, glw, x, y);
-    return 1; 
-  }
-  virtual int copy(Fl_Clipboard_Writer *c, Fl_Widget *w, int x, int y) {
-    Fl_Gl_Window *glw = w->as_gl_window();
-    if (!glw) return 0;
-    print_gl_window(NULL, c, glw, x, y);
+    print_gl_window(glw, x, y, height);
     return 1; 
   }
 };
