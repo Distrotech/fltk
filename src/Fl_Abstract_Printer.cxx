@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Abstract_Printer.cxx 7364 2010-03-30 12:09:09Z manolo $"
+// "$Id$"
 //
 // implementation of Fl_Abstract_Printer class for the Fast Light Tool Kit (FLTK).
 //
@@ -290,6 +290,6 @@ void Fl_Abstract_Printer::translate(int x, int y) {}
 void Fl_Abstract_Printer::untranslate(void) {}
 
 //
-// End of "$Id: Fl_Abstract_Printer.cxx 7364 2010-03-30 12:09:09Z manolo $".
+// End of "$Id$".
 //
 
