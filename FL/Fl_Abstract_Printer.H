@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Abstract_Printer.H 7337 2010-03-25 16:05:00Z manolo $"
+// "$Id$"
 //
 // Printing support for the Fast Light Tool Kit (FLTK).
 //
@@ -89,6 +89,6 @@ public:
 #endif // Fl_Abstract_Printer_H
 
 //
-// End of "$Id: Fl_Abstract_Printer.H 7337 2010-03-25 16:05:00Z manolo $"
+// End of "$Id$"
 //
 

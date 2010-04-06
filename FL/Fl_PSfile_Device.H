@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_PSfile_Device.H 7356 2010-03-29 12:52:28Z manolo $"
+// "$Id$"
 //
 // Support for graphics output to PostScript file for the Fast Light Tool Kit (FLTK).
 //
@@ -265,5 +265,5 @@ FL_EXPORT class Fl_PSfile_Device : public  Fl_Abstract_Printer {
 #endif // Fl_PSfile_Device_H
 
 //
-// End of "$Id: Fl_PSfile_Device.H 7356 2010-03-29 12:52:28Z manolo $"
+// End of "$Id$"
 //
