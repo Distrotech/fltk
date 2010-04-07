@@ -79,15 +79,20 @@ void Fl_Clipboard_Writer::copy_widget(Fl_Widget* widget, int delta_x, int delta_
      Fl_Plugin_Manager pm("fltk:device");  
      Fl_Device_Plugin *pi = (Fl_Device_Plugin*)pm.plugin("opengl.device.fltk.org");
      if (pi) {
-       int width, height;
+       int height = 0;
+#ifdef __APPLE__
+       int width;
        this->bounds(&width, &height);
+#endif
        drawn_by_plugin = pi->print(widget, 0, 0, height);
        }
   }
   if (!drawn_by_plugin) {
     widget->draw();
   }
+#ifndef WIN32
   if (is_window) fl_pop_clip();
+#endif
   // find subwindows of widget and print them
   traverse(widget);
   // reset origin to where it was
