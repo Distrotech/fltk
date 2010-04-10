@@ -29,7 +29,7 @@
 // See also Fl_Gl_Window and gl_start.cxx
 
 #include "flstring.h"
-#if HAVE_GL
+#if HAVE_GL || defined(FL_DOXYGEN)
 
 #include <FL/Fl.H>
 #include <FL/gl.h>
@@ -189,7 +189,7 @@ void gl_remove_displaylist_fonts()
           past->next = f->next;
         }
 
-        // It would be nice if this next line was in a desctructor somewhere
+        // It would be nice if this next line was in a destructor somewhere
         glDeleteLists(f->listbase, 256);
 
         Fl_Font_Descriptor* tmp = f;
@@ -360,19 +360,54 @@ void gl_draw_image(const uchar* b, int x, int y, int w, int h, int d, int ld) {
   glDrawPixels(w,h,d<4?GL_RGB:GL_RGBA,GL_UNSIGNED_BYTE,(const ulong*)b);
 }
 
-#ifdef __APPLE__
+#if defined( __APPLE__) || defined(FL_DOXYGEN)
 
 #include <FL/glu.h>
 
-static int texture_count = 0;
-static const int texture_total = 50;
-static GLuint texName[texture_total];
-static char *string_table[texture_total];
-static int length_table[texture_total];
-static int width_table[texture_total];
-static int height_table[texture_total];
+// manages a fifo pile of pre-computed string textures
+class gl_texture_fifo {
+  friend void gl_draw_cocoa(const char *, int);
+private:
+  typedef struct { // information for a pre-computed texture
+    GLuint texName; // its name
+    char *utf8; //its text
+    Fl_Font_Descriptor *fdesc; // its font
+    int width; // its width
+    int height; // its height
+  } data;
+  data *fifo; // array of pile elements
+  int size_; // pile height
+  int current; // the oldest texture to have entered the pile
+  int last; // pile top
+  int textures_generated; // true iff glGenTextures has been called
+  void display_texture(int rank);
+  int compute_texture(const char* str, int n);
+  int already_known(const char *str, int n);
+public:
+  gl_texture_fifo(int max = 100); // 100 = default height of texture pile
+  inline int size(void) {return size_; };
+  ~gl_texture_fifo(void);
+};
 
-static void display_texture(int rank)
+gl_texture_fifo::gl_texture_fifo(int max)
+{
+  size_ = max;
+  last = current = -1;
+  textures_generated = 0;
+  fifo = (data*)calloc(size_, sizeof(data));
+}
+
+gl_texture_fifo::~gl_texture_fifo()
+{
+  for (int i = 0; i < size_; i++) {
+    if (fifo[i].utf8) free(fifo[i].utf8);
+    if (textures_generated) glDeleteTextures(1, &fifo[i].texName);
+    }
+  free(fifo);
+}
+
+// displays a pre-computed texture on the GL scene
+void gl_texture_fifo::display_texture(int rank)
 {
   //setup matrices
   GLint matrixMode;
@@ -390,7 +425,7 @@ static void display_texture(int rank)
   //write the texture on screen
   GLfloat pos[4];
   glGetFloatv(GL_CURRENT_RASTER_POSITION, pos);
-  CGRect bounds = CGRectMake (pos[0], pos[1] - fl_descent(), width_table[rank], height_table[rank]);
+  CGRect bounds = CGRectMake (pos[0], pos[1] - fl_descent(), fifo[rank].width, fifo[rank].height);
   glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
   
   glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
@@ -398,18 +433,18 @@ static void display_texture(int rank)
   glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
   glEnable (GL_TEXTURE_RECTANGLE_EXT);	
   
-  glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName[rank]);
+  glBindTexture (GL_TEXTURE_RECTANGLE_EXT, fifo[rank].texName);
   glBegin (GL_QUADS);
   glTexCoord2f (0.0f, 0.0f); // draw lower left in world coordinates
   glVertex2f (bounds.origin.x, bounds.origin.y);
   
-  glTexCoord2f (0.0f, height_table[rank]); // draw upper left in world coordinates
+  glTexCoord2f (0.0f, fifo[rank].height); // draw upper left in world coordinates
   glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
   
-  glTexCoord2f (width_table[rank], height_table[rank]); // draw upper right in world coordinates
+  glTexCoord2f (fifo[rank].width, fifo[rank].height); // draw upper right in world coordinates
   glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
   
-  glTexCoord2f (width_table[rank], 0.0f); // draw lower right in world coordinates
+  glTexCoord2f (fifo[rank].width, 0.0f); // draw lower right in world coordinates
   glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
   glEnd ();
   
@@ -421,7 +456,7 @@ static void display_texture(int rank)
   glMatrixMode (matrixMode);
   
   //set the raster position to end of string
-  pos[0] += width_table[rank];
+  pos[0] += fifo[rank].width;
   GLdouble modelmat[16];
   glGetDoublev (GL_MODELVIEW_MATRIX, modelmat);
   GLdouble projmat[16];
@@ -432,70 +467,96 @@ static void display_texture(int rank)
   gluUnProject(pos[0], pos[1], pos[2], modelmat, projmat, viewport, &objX, &objY, &objZ);
   glRasterPos2d(objX, objY);
 }
-  
-int compute_texture(const char* str, int n)
+
+// pre-computes a string texture
+int gl_texture_fifo::compute_texture(const char* str, int n)
 {
-  int rank;
-  if (texture_count == texture_total) {
-    glDeleteTextures(1, texName);
-    free(string_table[0]);
-    memmove(texName, texName + 1, (texture_total-1)*sizeof(GLuint));
-    memmove(length_table, length_table + 1, (texture_total-1)*sizeof(int));
-    memmove(string_table, string_table + 1, (texture_total-1)*sizeof(char *));
-    rank = texture_count - 1;
-    }
-  else {
-    rank = texture_count++;
-    }
-//write str to a bitmap just big enough  
-  width_table[rank] = 0, height_table[rank] = 0;
-  fl_measure(str, width_table[rank], height_table[rank], 0);
+  current = (current + 1) % size_;
+  if (current > last) last = current;
+  //write str to a bitmap just big enough  
+  fifo[current].width = 0, fifo[current].height = 0;
+  fl_measure(str, fifo[current].width, fifo[current].height, 0);
   CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
-  void *base = calloc(4*width_table[rank], height_table[rank]);
-  if(base == NULL) return -1;
-  fl_gc = CGBitmapContextCreate(base, width_table[rank], height_table[rank], 8, width_table[rank]*4, lut, kCGImageAlphaPremultipliedLast);
+  void *base = calloc(4*fifo[current].width, fifo[current].height);
+  if (base == NULL) return -1;
+  fl_gc = CGBitmapContextCreate(base, fifo[current].width, fifo[current].height, 8, fifo[current].width*4, lut, kCGImageAlphaPremultipliedLast);
   CGColorSpaceRelease(lut);
   fl_fontsize = gl_fontsize;
-  fl_draw(str, 0, height_table[rank] - fl_descent());
-//put this bitmap in a texture  
+  fl_draw(str, 0, fifo[current].height - fl_descent());
+  //put this bitmap in a texture  
   glPushAttrib(GL_TEXTURE_BIT);
-  glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName[rank]);
+  glBindTexture (GL_TEXTURE_RECTANGLE_EXT, fifo[current].texName);
   glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, width_table[rank], height_table[rank], 0,  GL_RGBA, GL_UNSIGNED_BYTE, base);
+  glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, fifo[current].width, fifo[current].height, 0,  GL_RGBA, GL_UNSIGNED_BYTE, base);
   glPopAttrib();
   CGContextRelease(fl_gc);
   fl_gc = NULL;
   free(base);
-  string_table[rank] = (char *)malloc(n);
-  memcpy(string_table[rank], str, n);
-  length_table[rank] = n;
-  return rank;
+  if ( fifo[current].utf8 ) free(fifo[current].utf8);
+  fifo[current].utf8 = (char *)malloc(n + 1);
+  memcpy(fifo[current].utf8, str, n);
+  fifo[current].utf8[n] = 0;
+  fifo[current].fdesc = gl_fontsize;
+  return current;
 }
 
-static int already_known(const char *str, int n)
+// returns rank of pre-computed texture for a string if it exists
+int gl_texture_fifo::already_known(const char *str, int n)
 {
   int rank;
-  for ( rank = 0; rank < texture_count; rank++) {
-    if(n == length_table[rank] && memcmp(str, string_table[rank], n) == 0) return rank;
-    }
+  for ( rank = 0; rank <= last; rank++) {
+    if ( memcmp(str, fifo[rank].utf8, n) == 0 && fifo[rank].utf8[n] == 0 &&
+      fifo[rank].fdesc == gl_fontsize) return rank;
+  }
   return -1;
 }
 
+static gl_texture_fifo *gl_fifo = NULL; // points to the texture pile class instance
+
+// draws a utf8 string using pre-computed texture if available
 static void gl_draw_cocoa(const char* str, int n) 
 {
-  static int first = true;
-  if(first) {
-    first = false;
-    glGenTextures (texture_total, texName);
-    texture_count = 0;
+  if (! gl_fifo) gl_fifo = new gl_texture_fifo();
+  if (!gl_fifo->textures_generated) {
+    for (int i = 0; i < gl_fifo->size_; i++) glGenTextures (1, &(gl_fifo->fifo[i].texName));
+    gl_fifo->textures_generated = 1;
   }
-  int rank = already_known(str, n);
-  if(rank == -1) {
-    rank = compute_texture(str, n);
+  int rank = gl_fifo->already_known(str, n);
+  if (rank == -1) {
+    rank = gl_fifo->compute_texture(str, n);
   }
-  display_texture(rank);
+  gl_fifo->display_texture(rank);
 }
+
+/** \addtogroup group_macosx
+ @{ */
+
+/**
+ \brief Returns the current height of the pile of pre-computed string textures
+ *
+ The default value is 100.
+ */
+int gl_texture_pile_height(void)
+{
+  if (! gl_fifo) gl_fifo = new gl_texture_fifo();
+  return gl_fifo->size();
+}
+
+/**
+ \brief Changes the height of the pile of pre-computed string textures
+ *
+ Strings that are often re-displayed can be processed much faster if
+ this pile is set high enough to hold all of them.
+ \param max Height of the texture pile
+ */
+void gl_texture_pile_height(int max)
+{
+  if (gl_fifo) delete gl_fifo;
+  gl_fifo = new gl_texture_fifo(max);
+}
+
+/** @} */
 
 #endif // __APPLE__
 
