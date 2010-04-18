@@ -24,6 +24,7 @@
 //
 //     http://www.fltk.org/str.php
 //
+#if defined(WIN32) || defined(__APPLE__)
 
 #ifdef __APPLE__
 #include "Fl_Clipboard_Writer_mac.cxx"
@@ -32,6 +33,8 @@
 #endif
 
 #include <FL/Fl_Printer.H>
+
+const char *Fl_Clipboard_Writer::device_type = "Fl_Clipboard_Writer";
 
 #if !(defined(WIN32) || defined(__APPLE__))
 // not implemented yet
@@ -115,6 +118,8 @@ void Fl_Clipboard_Writer::traverse(Fl_Widget *widget)
     else traverse(c);
   }
 }
+
+#endif
 
 //
 // End of "$Id$".

@@ -34,7 +34,7 @@
 #include <FL/Fl_Pixmap.H>
 #include <FL/Fl_Bitmap.H>
  
-int Fl_PSfile_Device::alpha_mask(const uchar * data, int w, int h, int D, int LD){
+int Fl_PS_Device::alpha_mask(const uchar * data, int w, int h, int D, int LD){
 
   mask = 0;
   if((D/2)*2 != D){ //no mask info
@@ -202,7 +202,7 @@ static inline uchar swap_byte(const uchar i){
 extern uchar **fl_mask_bitmap;
 
 
-void Fl_PSfile_Device::draw_scaled_image(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D, int LD) {
+void Fl_PS_Device::draw_scaled_image(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D, int LD) {
 
 
   if(D<3){ //mono
@@ -269,7 +269,7 @@ void Fl_PSfile_Device::draw_scaled_image(const uchar *data, double x, double y, 
 
 };
 
-void Fl_PSfile_Device::draw_scaled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D) {
+void Fl_PS_Device::draw_scaled_image(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D) {
 
   int level2_mask = 0;
   fprintf(output,"save\n");
@@ -357,7 +357,7 @@ void Fl_PSfile_Device::draw_scaled_image(Fl_Draw_Image_Cb call, void *data, doub
   delete[] rgbdata;
 }
 
-void Fl_PSfile_Device::draw_scaled_image_mono(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D, int LD) {
+void Fl_PS_Device::draw_scaled_image_mono(const uchar *data, double x, double y, double w, double h, int iw, int ih, int D, int LD) {
 
   fprintf(output,"save\n");
 
@@ -418,7 +418,7 @@ void Fl_PSfile_Device::draw_scaled_image_mono(const uchar *data, double x, doubl
 
 
 
-void Fl_PSfile_Device::draw_scaled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D) {
+void Fl_PS_Device::draw_scaled_image_mono(Fl_Draw_Image_Cb call, void *data, double x, double y, double w, double h, int iw, int ih, int D) {
 
   fprintf(output,"save\n");
   int i,j,k;
@@ -467,7 +467,7 @@ void Fl_PSfile_Device::draw_scaled_image_mono(Fl_Draw_Image_Cb call, void *data,
 ////////////////////////////// Image classes //////////////////////
 
 
-void Fl_PSfile_Device::draw(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int cx, int cy){
+void Fl_PS_Device::draw(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int cx, int cy){
   const char * const * di =pxm->data();
   int w,h;
   if (!fl_measure_pixmap(di, w, h)) return;
@@ -483,7 +483,7 @@ void Fl_PSfile_Device::draw(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int 
   fl_mask_bitmap=0;
 };
 
-void Fl_PSfile_Device::draw(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, int cx, int cy){
+void Fl_PS_Device::draw(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, int cx, int cy){
   const uchar  * di = rgb->array;
   int w = rgb->w();
   int h = rgb->h();
@@ -497,7 +497,7 @@ void Fl_PSfile_Device::draw(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, i
   mask=0;
 };
 
-void Fl_PSfile_Device::draw(Fl_Bitmap * bitmap,int XP, int YP, int WP, int HP, int cx, int cy){
+void Fl_PS_Device::draw(Fl_Bitmap * bitmap,int XP, int YP, int WP, int HP, int cx, int cy){
   const uchar  * di = bitmap->array;
   int w,h;
   int LD=(bitmap->w()+7)/8;

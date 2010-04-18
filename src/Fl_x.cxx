@@ -51,9 +51,9 @@
 #  include <X11/Xlocale.h>
 #  include <X11/Xlib.h>
 
-static Fl_Xlib_Display fl_xlib_device;
-FL_EXPORT Fl_Display *fl_display_device = (Fl_Display*)&fl_xlib_device; // does not change
-FL_EXPORT Fl_Device *fl_device = (Fl_Device*)&fl_xlib_device; // the current target device of graphics operations
+static Fl_Display_Device fl_xlib_display;
+FL_EXPORT Fl_Display_Device *fl_display_device = (Fl_Display_Device*)&fl_xlib_display; // does not change
+FL_EXPORT Fl_Device *fl_device = (Fl_Device*)&fl_xlib_display; // the current target device of graphics operations
 
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:

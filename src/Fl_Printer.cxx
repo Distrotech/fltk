@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Printer.cxx 7299 2010-03-18 16:08:35Z manolo $"
+// "$Id: Fl_Printer.cxx 7520 2010-04-16 20:19:09Z manolo $"
 //
 // Encompasses platform-specific printing-support code and 
 // PostScript output code for the Fast Light Tool Kit (FLTK).
@@ -36,6 +36,42 @@
 
 #include <src/Fl_PS_Printer.cxx>
 
+// print dialog customization strings
+
+const char *Fl_Printer::dialog_title = "Print";
+const char *Fl_Printer::dialog_printer = "Printer:";
+const char *Fl_Printer::dialog_range = "Print Range";
+const char *Fl_Printer::dialog_copies = "Copies";
+const char *Fl_Printer::dialog_all = "All";
+const char *Fl_Printer::dialog_pages = "Pages";
+const char *Fl_Printer::dialog_from = "From:";
+const char *Fl_Printer::dialog_to = "To:";
+const char *Fl_Printer::dialog_properties = "Properties...";
+const char *Fl_Printer::dialog_copyNo = "# Copies:";
+const char *Fl_Printer::dialog_print_button = "Print";
+const char *Fl_Printer::dialog_cancel_button = "Cancel";
+const char *Fl_Printer::dialog_print_to_file = "Print To File";
+const char *Fl_Printer::property_title = "Printer Properties";
+const char *Fl_Printer::property_pagesize = "Page Size:";
+const char *Fl_Printer::property_mode = "Output Mode:";
+const char *Fl_Printer::property_use = "Use";
+const char *Fl_Printer::property_save = "Save";
+const char *Fl_Printer::property_cancel = "Cancel";
+
+const char *Fl_Printer::device_type = "Fl_Printer";
+
+Fl_Device *Fl_Printer::set_current(void)
+{
+#ifdef __APPLE__
+  fl_gc = (CGContextRef)gc;
+#elif defined(WIN32)
+  fl_gc = (HDC)gc;
+#else
+  fl_gc = (_XGC*)gc;
+#endif
+  return this->Fl_Device::set_current();
+}
+
 //
-// End of "$Id: Fl_Printer.cxx 7299 2010-03-18 16:08:35Z manolo $".
+// End of "$Id: Fl_Printer.cxx 7520 2010-04-16 20:19:09Z manolo $".
 //

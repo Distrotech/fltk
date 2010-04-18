@@ -50,7 +50,7 @@ int Fl_Clipboard_Writer::start(int w, int h)
   fl_clip_region(0);
   fl_color(FL_BLACK);
   fl_line_style(FL_SOLID);
-SelectObject(fl_gc, (HGDIOBJ)(fl_current_xmap->pen));
+  SelectObject(fl_gc, (HGDIOBJ)(fl_current_xmap->pen));
   gc = fl_gc;
   this->set_current();
   return 0;

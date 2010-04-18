@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Quartz_Printer.mm 7374 2010-03-30 21:43:48Z manolo $"
+// "$Id: Fl_Quartz_Printer.mm 7520 2010-04-16 20:19:09Z manolo $"
 //
 // Mac OS X-specific printing support (objective-c++) for the Fast Light Tool Kit (FLTK).
 //
@@ -40,14 +40,16 @@ Fl_Printer::Fl_Printer(void)
   x_offset = 0;
   y_offset = 0;
   scale_x = scale_y = 1.;
-  type_ = quartz_printer;
+  type_ = device_type;
 }
+
+Fl_Printer::~Fl_Printer(void) {}
 
 int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
 //printing using a Quartz graphics context
 //returns 0 iff OK
 {
-  OSStatus status;
+  OSStatus status = 0;
   Fl_X::q_release_context();
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
   if( [NSPrintPanel instancesRespondToSelector:@selector(runModalWithPrintInfo:)] &&
@@ -294,5 +296,5 @@ void Fl_Printer::end_job (void)
 #endif // __APPLE__
 
 //
-// End of "$Id: Fl_Quartz_Printer.mm 7374 2010-03-30 21:43:48Z manolo $".
+// End of "$Id: Fl_Quartz_Printer.mm 7520 2010-04-16 20:19:09Z manolo $".
 //

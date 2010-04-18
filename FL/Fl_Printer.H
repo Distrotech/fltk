@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Printer.H 7379 2010-03-31 11:02:58Z manolo $"
+// "$Id: Fl_Printer.H 7520 2010-04-16 20:19:09Z manolo $"
 //
 // Printing support for the Fast Light Tool Kit (FLTK).
 //
@@ -65,14 +65,14 @@
  \endcode
  Use Fl_PSfile_Device::file_chooser_title to customize the title of the file chooser dialog that opens
  when using the "Print To File" option of the print dialog. 
- Class Fl_RGB_Image prints but looses its transparency if it has one.
+ Class Fl_RGB_Image prints but loses its transparency if it has one.
  <li>MSWindows platform: Transparent Fl_RGB_Image 's don't print with exact transparency on most printers.
  Fl_RGB_Image 's don't rotate() well.
  A workaround is to use the print_window_part() call. 
  <li>Mac OS X platform: all graphics requests print as on display.
  </ul>
  */
-class Fl_Printer : public Fl_Abstract_Printer {
+class Fl_Printer : public Fl_Graphics_Device , public Fl_Abstract_Printer {
 private:
 #ifdef __APPLE__
   float scale_x;
@@ -113,7 +113,31 @@ public:
 #endif  
   int end_page (void);
   void end_job (void);
-#ifdef FL_DOXYGEN
+
+  /** 
+   @brief The destructor.
+   */
+  ~Fl_Printer(void);
+
+#else // Xlib (Linux/Unix)
+
+#include <FL/Fl_PSfile_Device.H>
+
+class Fl_Printer : public Fl_PSfile_Device {
+
+public:
+  Fl_Printer(void) { gc = NULL; bg_r_ = bg_g_ = bg_b_ = 0; };
+  ~Fl_Printer(void) {};
+  int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
+
+#endif	// Fl_Printer (platform-dependent)
+
+  // Fl_Printer:: common for all platforms
+  Fl_Device *set_current(void);
+  static const char *device_type;
+
+public:	// just to be sure ...
+
   /** \name These attributes apply to the Xlib platform only.
    \{
    */  
@@ -156,40 +180,8 @@ public:
   /** [this text may be customized at run-time] */
   static const char *property_cancel;
   /** \} */
-#endif
-};
 
-#else
-
-#include <FL/Fl_PSfile_Device.H>
-
-class Fl_Printer : public Fl_PSfile_Device {
-public:
-  static const char *dialog_title; // all of this must be duplicated above for correct documentation
-  static const char *dialog_printer; 
-  static const char *dialog_range; 
-  static const char *dialog_copies; 
-  static const char *dialog_all; 
-  static const char *dialog_pages;
-  static const char *dialog_from;
-  static const char *dialog_to;
-  static const char *dialog_properties;
-  static const char *dialog_copyNo;
-  static const char *dialog_print_button;
-  static const char *dialog_cancel_button;
-  static const char *dialog_print_to_file;
-  static const char *property_title;
-  static const char *property_pagesize;
-  static const char *property_mode;
-  static const char *property_use;
-  static const char *property_save;
-  static const char *property_cancel;
-
-  Fl_Printer(void) {};
-  ~Fl_Printer(void) {};
-  int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
-};
-#endif  
+}; // class Fl_Printer
 
 /**
  This plugin socket allows the integration of new device drivers for special
@@ -216,5 +208,5 @@ public:
 #endif // Fl_Printer_H
 
 //
-// End of "$Id: Fl_Printer.H 7379 2010-03-31 11:02:58Z manolo $"
+// End of "$Id: Fl_Printer.H 7520 2010-04-16 20:19:09Z manolo $"
 //

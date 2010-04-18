@@ -35,7 +35,7 @@
  
  Presently implemented for the MSWindows and Mac OS X platforms only.
  */
-class Fl_Clipboard_Writer : public Fl_Device {
+class Fl_Clipboard_Writer : public Fl_Graphics_Device {
 private:
 #ifdef __APPLE__
   int width, height;
@@ -47,11 +47,12 @@ private:
   void translate(int x, int y);
   void untranslate(void);
 public:
+  static const char *device_type;
 #ifdef __APPLE__
   inline void bounds(int *pwidth, int *pheight) {*pwidth = width; *pheight = height; }
 #endif
   /** \brief The constructor */
-  Fl_Clipboard_Writer() {type_ = clipboard;};
+  Fl_Clipboard_Writer() {type_ = device_type;};
   /** \brief To be called before any graphics request.
    \param w The width in pixels of the clipboard drawing surface
    \param h The height in pixels of the clipboard drawing surface

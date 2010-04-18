@@ -57,17 +57,17 @@ int Fl_Clipboard_Writer::start(int w, int h)
     static CGDataConsumerCallbacks callbacks = { MyPutBytes, NULL };
     myconsumer = CGDataConsumerCreate ((void*) pdfdata_, &callbacks);
     }
-  fl_gc = CGPDFContextCreate (myconsumer, &bounds, NULL);
+  gc = CGPDFContextCreate (myconsumer, &bounds, NULL);
   CGDataConsumerRelease (myconsumer);
-  if (fl_gc == NULL) return 1;
-  CGContextBeginPage (fl_gc, NULL);
-  CGContextTranslateCTM(fl_gc, 0, h);
-  CGContextScaleCTM(fl_gc, 1.0f, -1.0f);
-  CGContextSaveGState(fl_gc);
+  if (gc == NULL) return 1;
+  CGContextBeginPage ((CGContextRef)gc, NULL);
+  CGContextTranslateCTM((CGContextRef)gc, 0, h);
+  CGContextScaleCTM((CGContextRef)gc, 1.0f, -1.0f);
+  CGContextSaveGState((CGContextRef)gc);
   fl_window = (void *)1; // TODO: something better
+  this->set_current();
   fl_clip_region(0);
   fl_line_style(FL_SOLID);
-  gc = fl_gc;
   return 0;
 }
 
@@ -152,6 +152,7 @@ int Fl_Clipboard_Writer::stop(void)
   CGContextRelease(fl_gc);
   fl_gc = NULL;
   free(mem);
+  Fl_Device::display_device()->set_current();
   return 0;
 }
 

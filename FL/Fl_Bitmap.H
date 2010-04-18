@@ -40,7 +40,8 @@ struct Fl_Menu_Item;
   (bitmap) images. Images are drawn using the current color.
 */
 class FL_EXPORT Fl_Bitmap : public Fl_Image {
-  public:
+  friend class Fl_Graphics_Device;
+public:
 
   /** pointer to raw bitmap data */
   const uchar *array;

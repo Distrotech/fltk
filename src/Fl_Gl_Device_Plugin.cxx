@@ -26,7 +26,6 @@
 //
 
 #include <FL/Fl_Printer.H>
-#include <FL/Fl_Clipboard_Writer.H>
 #include <FL/Fl_Gl_Window.H>
 #include "Fl_Gl_Choice.H"
 #include "FL/Fl.H"

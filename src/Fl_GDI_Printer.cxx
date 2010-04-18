@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_GDI_Printer.cxx 7382 2010-03-31 16:21:56Z manolo $"
+// "$Id: Fl_GDI_Printer.cxx 7520 2010-04-16 20:19:09Z manolo $"
 //
 // Support for WIN32 printing for the Fast Light Tool Kit (FLTK).
 //
@@ -36,7 +36,11 @@ extern HWND fl_window;
 
 Fl_Printer::Fl_Printer(void) : Fl_Abstract_Printer() {
   hPr = NULL;
-  type_ = gdi_printer;
+  type_ = device_type;
+}
+
+Fl_Printer::~Fl_Printer(void) {
+  if (hPr) end_job();
 }
 
 static void WIN_SetupPrinterDeviceContext(HDC prHDC)
@@ -81,7 +85,7 @@ int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
       prerr = StartDoc (hPr, &di);
       if (prerr < 1) {
 	abortPrint = TRUE;
-	fl_alert ("StartDoc error %d", prerr);
+	//fl_alert ("StartDoc error %d", prerr);
 	err = 1;
       }
     } else {
@@ -129,6 +133,7 @@ void Fl_Printer::end_job (void)
       GlobalFree (pd.hDevNames);
     }
   }
+  hPr = NULL;
 }
 
 void Fl_Printer::absolute_printable_rect(int *x, int *y, int *w, int *h)
@@ -276,5 +281,5 @@ void Fl_Printer::untranslate (void)
 #endif // WIN32
 
 //
-// End of "$Id: Fl_GDI_Printer.cxx 7382 2010-03-31 16:21:56Z manolo $".
+// End of "$Id: Fl_GDI_Printer.cxx 7520 2010-04-16 20:19:09Z manolo $".
 //

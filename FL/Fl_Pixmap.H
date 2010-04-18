@@ -45,6 +45,7 @@ struct Fl_Menu_Item;
   (pixmap) images, including transparency.
 */
 class FL_EXPORT Fl_Pixmap : public Fl_Image {
+  friend class Fl_Graphics_Device;
   void copy_data();
   void delete_data();
   void set_data(const char * const *p);

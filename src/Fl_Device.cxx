@@ -1,5 +1,5 @@
 //
-// "$Id: Fl_Device.cxx 7362 2010-03-30 11:11:53Z manolo $"
+// "$Id: Fl_Device.cxx 7520 2010-04-16 20:19:09Z manolo $"
 //
 // implementation of Fl_Device class for the Fast Light Tool Kit (FLTK).
 //
@@ -27,41 +27,15 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Device.H>
-//#include <FL/fl_draw.H>
 #include <FL/Fl_Image.H>
 
-/** \brief Draws an Fl_Pixmap object to the device. 
- *
- Specifies a bounding box for the image, with the origin (upper left-hand corner) of 
- the image offset by the cx and cy arguments.
- */
-void Fl_Device::draw(Fl_Pixmap *pxm,int XP, int YP, int WP, int HP, int cx, int cy)
-{
-  pxm->draw(XP, YP, WP, HP, cx, cy);
-}
+const char *Fl_Device::device_type = "Fl_Device";
+const char *Fl_Display_Device::device_type = "Fl_Display_Device";
+const char *Fl_Graphics_Device::device_type = "Fl_Graphics_Device";
 
-/** \brief Draws an Fl_Bitmap object to the device. 
- *
- Specifies a bounding box for the image, with the origin (upper left-hand corner) of 
- the image offset by the cx and cy arguments.
- */
-void Fl_Device::draw(Fl_Bitmap *bm,int XP, int YP, int WP, int HP, int cx, int cy)
-{
-  bm->draw(XP, YP, WP, HP, cx, cy);
-}
-
-/** \brief Draws an Fl_RGB_Image object to the device. 
- *
- Specifies a bounding box for the image, with the origin (upper left-hand corner) of 
- the image offset by the cx and cy arguments.
- */
-void Fl_Device::draw(Fl_RGB_Image *rgb,int XP, int YP, int WP, int HP, int cx, int cy)
-{
-  rgb->draw(XP, YP, WP, HP, cx, cy);
-}
 
 /**
- \brief Sets this device (display, printer, local file) as the target of future graphics calls.
+ @brief Sets this device (display, printer, local file) as the target of future graphics calls.
  *
  @return  The current target device of graphics calls.
  */
@@ -73,7 +47,7 @@ Fl_Device *Fl_Device::set_current(void)
 }
 
 /**
- \brief    Returns the current target device of graphics calls.
+ @brief    Returns the current target device of graphics calls.
  */
 Fl_Device *Fl_Device::current(void)
 {
@@ -81,5 +55,5 @@ Fl_Device *Fl_Device::current(void)
 }
 
 //
-// End of "$Id: Fl_Device.cxx 7362 2010-03-30 11:11:53Z manolo $".
+// End of "$Id: Fl_Device.cxx 7520 2010-04-16 20:19:09Z manolo $".
 //
