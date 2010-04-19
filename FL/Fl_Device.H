@@ -292,6 +292,8 @@ public:
 #if defined(__APPLE__) || defined(FL_DOXYGEN)
 /**
  \brief The Mac OS X-specific graphics class.
+ *
+ This class is implemented only on the Mac OS X platform.
  */
 class Fl_Quartz_Graphics_Driver : public Fl_Graphics_Driver {
 public:
@@ -305,6 +307,8 @@ public:
 #if defined(WIN32) || defined(FL_DOXYGEN)
 /**
  \brief The MSWindows-specific graphics class.
+ *
+ This class is implemented only on the MSWindows platform.
  */
 class Fl_GDI_Graphics_Driver : public Fl_Graphics_Driver {
 public:
@@ -318,6 +322,8 @@ public:
 #if !(defined(__APPLE__) || defined(WIN32))
 /**
  \brief The Xlib-specific graphics class.
+ *
+ This class is implemented only on the Xlib platform.
  */
 class Fl_Xlib_Graphics_Driver : public Fl_Graphics_Driver {
 public:
