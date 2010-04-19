@@ -63,7 +63,7 @@
  Fl_Printer myprinter;
  myprinter.start_job();
  \endcode
- Use Fl_PSfile_Device::file_chooser_title to customize the title of the file chooser dialog that opens
+ Use Fl_PostScript_File_Device::file_chooser_title to customize the title of the file chooser dialog that opens
  when using the "Print To File" option of the print dialog. 
  Class Fl_RGB_Image prints but loses its transparency if it has one.
  <li>MSWindows platform: Transparent Fl_RGB_Image 's don't print with exact transparency on most printers.
@@ -100,17 +100,10 @@ public:
   int printable_rect(int *w, int *h);
   void margins(int *left, int *top, int *right, int *bottom);
   void origin(int x, int y);
-#ifdef FL_DOXYGEN  
-  void origin(int *x, int *y);
-#endif
   void scale (float scale_x, float scale_y);
   void rotate(float angle);
   void translate(int x, int y);
   void untranslate(void);
-#ifdef FL_DOXYGEN  
-  void print_widget(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
-  void print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x = 0, int delta_y = 0);
-#endif  
   int end_page (void);
   void end_job (void);
 
@@ -133,7 +126,7 @@ public:
 #endif	// Fl_Printer (platform-dependent)
 
   // Fl_Printer:: common for all platforms
-  Fl_Graphics_Driver *set_current(void);
+  void set_current();
   static const char *device_type;
 
 public:	// just to be sure ...

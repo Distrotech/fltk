@@ -129,7 +129,8 @@ void Fl_Paged_Device::origin(int *x, int *y)
 void Fl_Paged_Device::print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
 {
   int slice, width, offset, count = 0;
-  Fl_Graphics_Driver *current = Fl_Display_Device::display_device()->set_current();
+  Fl_Surface_Device *current = Fl_Surface_Device::surface();
+  Fl_Display_Device::display_device()->set_current();
   Fl_Window *save_front = Fl::first_window();
   win->show();
   fl_gc = NULL;
@@ -147,8 +148,7 @@ void Fl_Paged_Device::print_window_part(Fl_Window *win, int x, int y, int w, int
     image_data[count++] = fl_read_image(NULL, x + offset, y, width, h);
   }  
   save_front->show();
-  //current->set_current();
-  fl_device = current;
+  current->set_current();
   for ( int i = 0, offset = 0; i < count; i++, offset += slice) {
     width = slice; 
     if (offset + width > w) width = w - offset;

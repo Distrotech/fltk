@@ -72,6 +72,10 @@ class Fl_Device {
 protected:
   /** \brief The device type */
   const char *type_; 
+  /** \brief A string that identifies each subclass of Fl_Device.
+   *
+  Function type() applied to a device of this class returns this string.
+   */
   static const char *device_type;
 public:
   /** 
@@ -86,7 +90,7 @@ public:
 };
 
 /**
- \brief A virtual class subclassed so that FLTK drawing functions use various graphics drivers.
+ \brief A virtual class subclassed for each graphics driver FLTK uses.
  *
  The protected virtual methods of this class are those that a graphics driver should implement to
  support all of FLTK drawing functions.
@@ -279,7 +283,6 @@ protected:
   virtual void draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {};
     
 public:
-  /** A name that identifies each subclass of Fl_Device */
   static const char *device_type;
 
   Fl_Graphics_Driver() {};
@@ -331,15 +334,18 @@ public:
  */
 class Fl_Surface_Device : public Fl_Device {
 protected:
+  /** \brief The graphics driver in use by this surface. */
   Fl_Graphics_Driver *driver;
+  /** \brief Constructor that sets the graphics driver to use for the created surface. */
   Fl_Surface_Device(Fl_Graphics_Driver *graphics_driver) {driver = graphics_driver; };
 public:
   /** \brief the surface's graphics context, if there's one, NULL otherwise */
   void *gc; 
   static const char *device_type;
-  static Fl_Graphics_Driver *current();
-  virtual Fl_Graphics_Driver *set_current(void);
-  void set_driver(Fl_Graphics_Driver *graphics_driver) {driver = graphics_driver;};
+  virtual void set_current(void);
+  /** \brief Sets the graphics driver of this drawing surface. */
+  inline void set_driver(Fl_Graphics_Driver *graphics_driver) {driver = graphics_driver;};
+  /** \brief Returns the graphics driver of this drawing surface. */
   inline Fl_Graphics_Driver *get_driver() {return driver; };
   /** \brief the surface that currently receives graphics output */
   static Fl_Surface_Device *surface() {return fl_surface; }; 

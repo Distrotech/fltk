@@ -33,33 +33,22 @@ const char *Fl_Device::device_type = "Fl_Device";
 const char *Fl_Surface_Device::device_type = "Fl_Surface_Device";
 const char *Fl_Display_Device::device_type = "Fl_Display_Device";
 const char *Fl_Graphics_Driver::device_type = "Fl_Graphics_Driver";
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(FL_DOXYGEN)
 const char *Fl_Quartz_Graphics_Driver::device_type = "Fl_Quartz_Graphics_Driver";
-#elif defined(WIN32)
+#endif
+#if defined(WIN32) || defined(FL_DOXYGEN)
 const char *Fl_GDI_Graphics_Driver::device_type = "Fl_GDI_Graphics_Driver";
-#else
+#endif
+#if !(defined(__APPLE__) || defined(WIN32))
 const char *Fl_Xlib_Graphics_Driver::device_type = "Fl_Xlib_Graphics_Driver";
 #endif
 
 
-/**
- @brief Sets this device (display, printer, local file) as the target of future graphics calls.
- *
- @return  The current target device of graphics calls.
- */
-Fl_Graphics_Driver *Fl_Surface_Device::set_current(void)
+/** \brief Use this drawing surface for future graphics requests. */
+void Fl_Surface_Device::set_current(void)
 {
-  Fl_Graphics_Driver *current = fl_device;
   fl_device = driver;
-  return current;
-}
-
-/**
- @brief    Returns the current target device of graphics calls.
- */
-Fl_Graphics_Driver *Fl_Surface_Device::current(void)
-{
-  return fl_device;
+  fl_surface = this;
 }
 
 //

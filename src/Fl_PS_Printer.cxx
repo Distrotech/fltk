@@ -34,6 +34,7 @@
 
 const char *Fl_PostScript_Graphics_Driver::device_type = "Fl_PostScript_Graphics_Driver";
 const char *Fl_PostScript_File_Device::device_type = "Fl_PostScript_File_Device";
+/** \brief Label of the PostScript file chooser window */
 const char *Fl_PostScript_File_Device::file_chooser_title = "Select a .ps file";
 
 /**
@@ -59,10 +60,19 @@ Fl_PostScript_File_Device::Fl_PostScript_File_Device(void)
   type_ = device_type;
 #ifdef __APPLE__
   gc = fl_gc; // the display context is used by fl_text_extents()
-#elif !defined(WIN32)
-  driver = new Fl_PostScript_Graphics_Driver();
 #endif
+  driver = new Fl_PostScript_Graphics_Driver();
 }
+
+/**
+ \brief Returns the PostScript driver of this drawing surface.
+ */
+Fl_PostScript_Graphics_Driver *Fl_PostScript_File_Device::get_driver(void)
+{
+  return (Fl_PostScript_Graphics_Driver*)driver;
+}
+
+
 /**
  @brief Begins the session where all graphics requests will go to a local PostScript file.
  *
@@ -81,12 +91,12 @@ int Fl_PostScript_File_Device::start_job (int pagecount, enum Fl_PostScript_Grap
   fnfc.filter("PostScript\t*.ps\n");
   // Show native chooser
   if ( fnfc.show() ) return 1;
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   ps->output = fopen(fnfc.filename(), "w");
   if(ps->output == NULL) return 2;
   ps->ps_filename_ = strdup(fnfc.filename());
   ps->start_postscript(pagecount, format, layout);
-  fl_surface = this;
+  this->set_current();
   return 0;
 }
 
@@ -102,11 +112,11 @@ int Fl_PostScript_File_Device::start_job (int pagecount, enum Fl_PostScript_Grap
  */
 int Fl_PostScript_File_Device::start_job (FILE *ps_output, int pagecount, enum Fl_PostScript_Graphics_Driver::Page_Format format, enum Fl_PostScript_Graphics_Driver::Page_Layout layout)
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   ps->output = ps_output;
   ps->ps_filename_ = NULL;
   ps->start_postscript(pagecount, format, layout);
-  fl_surface = this;
+  this->set_current();
   return 0;
 }
 
@@ -114,7 +124,7 @@ int Fl_PostScript_File_Device::start_job (FILE *ps_output, int pagecount, enum F
  @brief The destructor.
  */
 Fl_PostScript_File_Device::~Fl_PostScript_File_Device() {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   if (ps->ps_filename_) free(ps->ps_filename_);
   if (driver) delete driver;
 }
@@ -481,7 +491,6 @@ int Fl_PostScript_Graphics_Driver::start_postscript (int pagecount, enum Fl_Post
 //returns 0 iff OK
 {
   int w, h, x;
-  //this->set_current(); ???
   if (format == A4) {
     left_margin = 18;
     top_margin = 18;
@@ -1200,7 +1209,7 @@ int Fl_PostScript_Graphics_Driver::not_clipped(int x, int y, int w, int h){
 
 void Fl_PostScript_File_Device::margins(int *left, int *top, int *right, int *bottom) // to implement
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   if(left) *left = (int)(ps->left_margin / ps->scale_x + .5);
   if(right) *right = (int)(ps->left_margin / ps->scale_x + .5);
   if(top) *top = (int)(ps->top_margin / ps->scale_y + .5);
@@ -1210,7 +1219,7 @@ void Fl_PostScript_File_Device::margins(int *left, int *top, int *right, int *bo
 int Fl_PostScript_File_Device::printable_rect(int *w, int *h)
 //returns 0 iff OK
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   if(w) *w = (int)((ps->pw_ - 2 * ps->left_margin) / ps->scale_x + .5);
   if(h) *h = (int)((ps->ph_ - 2 * ps->top_margin) / ps->scale_y + .5);
   return 0;
@@ -1220,14 +1229,14 @@ void Fl_PostScript_File_Device::origin(int x, int y)
 {
   x_offset = x;
   y_offset = y;
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   fprintf(ps->output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
 	  ps->left_margin, ps->top_margin, ps->scale_x, ps->scale_y, x, y, ps->angle);
 }
 
 void Fl_PostScript_File_Device::scale (float s_x, float s_y)
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   ps->scale_x = s_x;
   ps->scale_y = s_y;
   fprintf(ps->output, "GR GR GS %d %d TR  %f %f SC %f rotate GS\n", 
@@ -1236,7 +1245,7 @@ void Fl_PostScript_File_Device::scale (float s_x, float s_y)
 
 void Fl_PostScript_File_Device::rotate (float rot_angle)
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   ps->angle = - rot_angle;
   fprintf(ps->output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
 	  ps->left_margin, ps->top_margin, ps->scale_x, ps->scale_y, x_offset, y_offset, ps->angle);
@@ -1244,20 +1253,17 @@ void Fl_PostScript_File_Device::rotate (float rot_angle)
 
 void Fl_PostScript_File_Device::translate(int x, int y)
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
-  fprintf(ps->output, "GS %d %d translate GS\n", x, y);
+  fprintf(get_driver()->output, "GS %d %d translate GS\n", x, y);
 }
 
 void Fl_PostScript_File_Device::untranslate(void)
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
-  fprintf(ps->output, "GR GR\n");
+  fprintf(get_driver()->output, "GR GR\n");
 }
 
 int Fl_PostScript_File_Device::start_page (void)
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
-  fl_device = driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   ps->page(ps->page_format_);
   x_offset = 0;
   y_offset = 0;
@@ -1275,7 +1281,7 @@ int Fl_PostScript_File_Device::end_page (void)
 void Fl_PostScript_File_Device::end_job (void)
 // finishes PostScript & closes file
 {
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   if (ps->nPages) {  // for eps nPages is 0 so it is fine ....
     fprintf(ps->output, "CR\nGR\nGR\nGR\nSP\n restore\n");
     if (!ps->pages_){
@@ -1305,7 +1311,6 @@ void Fl_PostScript_File_Device::end_job (void)
   }
   if (ps->close_cmd_) (*ps->close_cmd_)(ps->output);
   Fl_Display_Device::display_device()->set_current();
-  fl_surface = Fl_Display_Device::display_device();
 }
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
@@ -1365,13 +1370,13 @@ int Fl_Printer::start_job(int pages, int *firstpage, int *lastpage) {
              printer, print_collate_button->value() ? 1 : (int)(print_copies->value() + 0.5),
 	     "FLTK", media);
 
-  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  Fl_PostScript_Graphics_Driver *ps = get_driver();
   ps->output = popen(command, "w");
   if (!ps->output) {
     fl_alert("could not run command: %s\n",command);
     return 1;
   }
-  fl_surface = this;
+  this->set_current();
   return ps->start_postscript(pages, format, layout); // start printing
 }
 

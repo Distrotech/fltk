@@ -250,6 +250,8 @@ public:
  \brief To send graphical output to a PostScript file.
  */
 class Fl_PostScript_File_Device : public Fl_Paged_Device {
+protected:
+  Fl_PostScript_Graphics_Driver *get_driver();
 public:
   static const char *device_type;
   Fl_PostScript_File_Device();

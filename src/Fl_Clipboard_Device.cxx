@@ -24,7 +24,7 @@
 //
 //     http://www.fltk.org/str.php
 //
-#if defined(WIN32) || defined(__APPLE__)
+#if defined(WIN32) || defined(__APPLE__) || defined(FL_DOXYGEN)
 
 #ifdef __APPLE__
 #include "Fl_Clipboard_Device_mac.cxx"
