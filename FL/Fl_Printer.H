@@ -55,7 +55,7 @@
  <p><b>Platform specifics</b>
  <ul>
  <li>Xlib-based platforms (<i>e.g.</i>, Linux, Unix): this class is implemented as
- a subclass of Fl_PSfile_Device.
+ a subclass of Fl_PostScript_File_Device.
  Use the static public attributes of this class to set the print dialog to other languages 
  than English. For example, the "Printer:" dialog item Fl_Printer::dialog_printer can be set to French with:
  \code
@@ -72,7 +72,7 @@
  <li>Mac OS X platform: all graphics requests print as on display.
  </ul>
  */
-class Fl_Printer : public Fl_Graphics_Device , public Fl_Abstract_Printer {
+class Fl_Printer : public Fl_Paged_Device {
 private:
 #ifdef __APPLE__
   float scale_x;
@@ -123,17 +123,17 @@ public:
 
 #include <FL/Fl_PSfile_Device.H>
 
-class Fl_Printer : public Fl_PSfile_Device {
+class Fl_Printer : public Fl_PostScript_File_Device {
 
 public:
-  Fl_Printer(void) { gc = NULL; bg_r_ = bg_g_ = bg_b_ = 0; };
+  Fl_Printer(void) { gc = NULL; };
   ~Fl_Printer(void) {};
   int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
 
 #endif	// Fl_Printer (platform-dependent)
 
   // Fl_Printer:: common for all platforms
-  Fl_Device *set_current(void);
+  Fl_Graphics_Driver *set_current(void);
   static const char *device_type;
 
 public:	// just to be sure ...

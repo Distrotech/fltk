@@ -34,17 +34,17 @@
 
 #include <FL/Fl_Printer.H>
 
-const char *Fl_Clipboard_Writer::device_type = "Fl_Clipboard_Writer";
+const char *Fl_Clipboard_Device::device_type = "Fl_Clipboard_Device";
 
 #if !(defined(WIN32) || defined(__APPLE__))
 // not implemented yet
-int Fl_Clipboard_Writer::start(int w, int h) {}
-int Fl_Clipboard_Writer::stop(void) {}
-void Fl_Clipboard_Writer::translate(int x, int y) {}
-void Fl_Clipboard_Writer::untranslate(void) {}
+int Fl_Clipboard_Device::start(int w, int h) {}
+int Fl_Clipboard_Device::stop(void) {}
+void Fl_Clipboard_Device::translate(int x, int y) {}
+void Fl_Clipboard_Device::untranslate(void) {}
 #endif
 
-Fl_Device *Fl_Clipboard_Writer::set_current(void)
+Fl_Graphics_Driver *Fl_Clipboard_Device::set_current(void)
 {
 #ifdef __APPLE__
   fl_gc = (CGContextRef)gc;
@@ -53,10 +53,10 @@ Fl_Device *Fl_Clipboard_Writer::set_current(void)
 #else
   fl_gc = (_XGC*)0;
 #endif
-  return this->Fl_Device::set_current();
+  return this->Fl_Surface_Device::set_current();
 }
 
-void Fl_Clipboard_Writer::copy_widget(Fl_Widget* widget, int delta_x, int delta_y) 
+void Fl_Clipboard_Device::copy_widget(Fl_Widget* widget, int delta_x, int delta_y) 
 { 
   int new_x, new_y, is_window;
   if ( ! widget->visible() ) return;
@@ -104,7 +104,7 @@ void Fl_Clipboard_Writer::copy_widget(Fl_Widget* widget, int delta_x, int delta_
   }
 }
 
-void Fl_Clipboard_Writer::traverse(Fl_Widget *widget)
+void Fl_Clipboard_Device::traverse(Fl_Widget *widget)
 {
   Fl_Group *g = widget->as_group();
   if (!g) return;

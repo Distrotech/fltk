@@ -1,7 +1,7 @@
 //
 // "$Id: Fl_Device.H 7520 2010-04-16 20:19:09Z manolo $"
 //
-// Definition of classes Fl_Device, Fl_Display_Device, Fl_Graphics_Device
+// Definition of classes Fl_Device, Fl_Graphics_Driver, Fl_Surface_Device, Fl_Display_Device
 // for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 2010 by Bill Spitzak and others.
@@ -26,7 +26,7 @@
 //     http://www.fltk.org/str.php
 //
 /** \file Fl_Device.H 
- \brief declaration of classes Fl_Device, Fl_Display_Device.
+ \brief declaration of classes Fl_Device, Fl_Graphics_Driver, Fl_Surface_Device, Fl_Display_Device.
 */
 
 #ifndef Fl_Device_H
@@ -45,11 +45,14 @@
 #include <stdio.h>
 #endif
 
-class Fl_Device;
+class Fl_Graphics_Driver;
 class Fl_Display_Device;
-/** \brief Points to the device that currently receives all graphics requests */
-extern Fl_Device *fl_device;
-/** \brief Points to the platform's display device */
+class Fl_Surface_Device;
+/** \brief Points to the driver that currently receives all graphics requests */
+extern Fl_Graphics_Driver *fl_device;
+/** \brief Points to the surface that currently receives all graphics requests */
+extern Fl_Surface_Device *fl_surface;
+/** \brief Points to the platform's display */
 extern Fl_Display_Device *fl_display_device;
 
 /**
@@ -63,34 +66,52 @@ extern Fl_Display_Device *fl_display_device;
 typedef void (*Fl_Draw_Image_Cb)(void* data,int x,int y,int w,uchar* buf);
 
 /**
- \brief A pure virtual class subclassed to send the output of drawing functions to display, printers, or local files.
- *
- The protected virtual methods of this class are those that a device should implement to
- support all of FLTK drawing functions.
- <br> The preferred FLTK API for drawing operations is the function collection of the 
- \ref fl_drawings and \ref fl_attributes modules. 
- <br> Alternatively, methods of the Fl_Device class can be called
- using the global variable Fl_Device * \ref fl_device that points at all time to the single device 
- (an instance of an Fl_Device subclass) that's currently receiving graphics requests:
- \code fl_device->rect(x, y, w, h); \endcode
- <br>Each protected method of the Fl_Device class has the same effect as the
- function of the \ref fl_drawings and \ref fl_attributes modules which bears the same name
- prefixed with fl_ and has the same parameter list.
-  */
+ \brief All graphical output devices and all graphics systems.
+ */
 class Fl_Device {
 protected:
   /** \brief The device type */
   const char *type_; 
-  /** \brief red color for background and/or mixing if device does not support masking or alpha */
+  static const char *device_type;
+public:
+  /** 
+   @brief An RTTI emulation of device classes. 
+   *
+   The type of an instance of an Fl_Device subclass can be checked with code such as:
+   \code
+   if ( instance->type() == Fl_Printer::device_type ) { ... }
+   \endcode
+   */
+  inline const char *type() {return type_;};
+};
+
+/**
+ \brief A virtual class subclassed so that FLTK drawing functions use various graphics drivers.
+ *
+ The protected virtual methods of this class are those that a graphics driver should implement to
+ support all of FLTK drawing functions.
+ <br> The preferred FLTK API for drawing operations is the function collection of the 
+ \ref fl_drawings and \ref fl_attributes modules. 
+ <br> Alternatively, methods of the Fl_Graphics_Driver class can be called
+ using the global variable Fl_Graphics_Driver * \ref fl_device that points at all time to the single driver 
+ (an instance of an Fl_Graphics_Driver subclass) that's currently receiving graphics requests:
+ \code fl_device->rect(x, y, w, h); \endcode
+ <br>Each protected method of the Fl_Graphics_Driver class has the same effect as the
+ function of the \ref fl_drawings and \ref fl_attributes modules which bears the same name
+ prefixed with fl_ and has the same parameter list.
+  */
+class Fl_Graphics_Driver : public Fl_Device {
+protected:
+/*  ** \brief red color for background and/or mixing if device does not support masking or alpha *
   uchar bg_r_; 
-  /** \brief green color for background and/or mixing if device does not support masking or alpha */
+  ** \brief green color for background and/or mixing if device does not support masking or alpha *
   uchar bg_g_; 
-  /** \brief blue color for background and/or mixing if device does not support masking or alpha */
-  uchar bg_b_; 
+  ** \brief blue color for background and/or mixing if device does not support masking or alpha *
+  uchar bg_b_; */
   friend class Fl_Pixmap;
   friend class Fl_Bitmap;
   friend class Fl_RGB_Image;
-  friend class Fl_PS_Device;
+  friend class Fl_PostScript_Graphics_Driver;
   friend void fl_rect(int x, int y, int w, int h);
   friend void fl_rectf(int x, int y, int w, int h);
   friend void fl_line_style(int style, int width, char* dashes);
@@ -260,81 +281,82 @@ protected:
 public:
   /** A name that identifies each subclass of Fl_Device */
   static const char *device_type;
-  /** 
-   @brief An RTTI emulation of device classes. 
-   *
-   The type of an instance of an Fl_Device subclass can be checked with code such as:
-   \code
-   if ( fl_device->type() == Fl_Printer::device_type ) { ... }
-   \endcode
-   */
-  inline const char *type() {return type_;};
-  virtual Fl_Device *set_current(void);
 
-  virtual ~Fl_Device() {};
-  static Fl_Device *current();
-  
+  Fl_Graphics_Driver() {};
+    
+};
+
+#if defined(__APPLE__) || defined(FL_DOXYGEN)
+/**
+ \brief The Mac OS X-specific graphics class.
+ */
+class Fl_Quartz_Graphics_Driver : public Fl_Graphics_Driver {
+public:
+  Fl_Quartz_Graphics_Driver() { type_ = device_type; };
+  static const char *device_type;
+  void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
+};
+#endif
+#if defined(WIN32) || defined(FL_DOXYGEN)
+/**
+ \brief The MSWindows-specific graphics class.
+ */
+class Fl_GDI_Graphics_Driver : public Fl_Graphics_Driver {
+public:
+  Fl_GDI_Graphics_Driver() { type_ = device_type; };
+  static const char *device_type;
+  void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
+};
+#endif
+#if !(defined(__APPLE__) || defined(WIN32))
+/**
+ \brief The Xlib-specific graphics class.
+ */
+class Fl_Xlib_Graphics_Driver : public Fl_Graphics_Driver {
+public:
+  Fl_Xlib_Graphics_Driver() { type_ = device_type; };
+  static const char *device_type;
+  void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
+  void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
+};
+#endif
+
+/**
+ \brief A surface that's susceptible to receive graphical output.
+ */
+class Fl_Surface_Device : public Fl_Device {
+protected:
+  Fl_Graphics_Driver *driver;
+  Fl_Surface_Device(Fl_Graphics_Driver *graphics_driver) {driver = graphics_driver; };
+public:
+  /** \brief the surface's graphics context, if there's one, NULL otherwise */
+  void *gc; 
+  static const char *device_type;
+  static Fl_Graphics_Driver *current();
+  virtual Fl_Graphics_Driver *set_current(void);
+  void set_driver(Fl_Graphics_Driver *graphics_driver) {driver = graphics_driver;};
+  inline Fl_Graphics_Driver *get_driver() {return driver; };
+  /** \brief the surface that currently receives graphics output */
+  static Fl_Surface_Device *surface() {return fl_surface; }; 
+};
+
+/**
+ \brief A display to which the computer can draw.
+ */
+class Fl_Display_Device : public Fl_Surface_Device {
+public:
+  static const char *device_type;
+  Fl_Display_Device(Fl_Graphics_Driver *graphics_driver) : Fl_Surface_Device( graphics_driver) { type_ = device_type; };
   /**
    @brief    Returns the platform's display device.
    */
   static Fl_Display_Device *display_device() { return fl_display_device; };
-  
 };
-
-#if defined(__APPLE__) 
-// The Mac OS X-specific graphics class.
-class Fl_Graphics_Device : public Fl_Device {
-protected:
-  Fl_Graphics_Device() { type_ = device_type; };
-public:
-  static const char *device_type;
-  void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
-  void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
-  void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
-};
-typedef Fl_Graphics_Device Fl_Quartz_Device;
-
-#elif defined(WIN32) 
-// The MSWindows-specific graphics class.
-class Fl_Graphics_Device : public Fl_Device {
-protected:
-  Fl_Graphics_Device() { type_ = device_type; };
-public:
-  static const char *device_type;
-  void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
-  void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
-  void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
-};
-typedef  Fl_Graphics_Device Fl_GDI_Device;
-
-#else
-/**
- @brief A class representing OS-specific graphics system.
- *
- This class is also named Fl_Quartz_Device on Mac OS X, Fl_GDI_Device on MS-Win, Fl_Xlib_Device on X11.
- A graphics system can be shared by various devices (e.g., display, printer, clipboard).
- */
-class Fl_Graphics_Device : public Fl_Device {
-protected:
-  Fl_Graphics_Device() { type_ = device_type; };
-public:
-  static const char *device_type;
-  void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
-  void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
-  void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
-};
-typedef  Fl_Graphics_Device Fl_Xlib_Device;
-#endif
-
-/**
- @brief The platform's display.
-*/
-class Fl_Display_Device : public Fl_Graphics_Device {
-public:
-  static const char *device_type;
-  Fl_Display_Device() { type_ = device_type; };
-};
-
 
 #endif // Fl_Device_H
 

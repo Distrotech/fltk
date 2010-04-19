@@ -561,7 +561,7 @@ static int start(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int w, int h
 }
 
 #ifdef __APPLE__
-void Fl_Quartz_Device::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Quartz_Graphics_Driver::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   // Don't draw an empty image...
   if (!img->d() || !img->array) {
@@ -593,7 +593,7 @@ void Fl_Quartz_Device::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, i
 }
 
 #elif defined(WIN32)
-void Fl_GDI_Device::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_GDI_Graphics_Driver::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   // Don't draw an empty image...
   if (!img->d() || !img->array) {
@@ -635,7 +635,7 @@ void Fl_GDI_Device::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int 
 }
 
 #else
-void Fl_Xlib_Device::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Xlib_Graphics_Driver::draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   // Don't draw an empty image...
   if (!img->d() || !img->array) {

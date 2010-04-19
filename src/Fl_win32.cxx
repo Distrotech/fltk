@@ -95,9 +95,11 @@
   for async mode proper operation, not mentioning the side effects...
 */
 
-static Fl_Display_Device fl_gdi_display;
+static Fl_GDI_Graphics_Driver fl_gdi_driver;
+static Fl_Display_Device fl_gdi_display(&fl_gdi_driver);
 FL_EXPORT Fl_Display_Device *fl_display_device = (Fl_Display_Device*)&fl_gdi_display; // does not change
-FL_EXPORT Fl_Device *fl_device = (Fl_Device*)&fl_gdi_display; // the current target device of graphics operations
+FL_EXPORT Fl_Graphics_Driver *fl_device = (Fl_Graphics_Driver*)&fl_gdi_driver; // the current target driver of graphics operations
+FL_EXPORT Fl_Surface_Device *fl_surface = (Fl_Surface_Device*)fl_display_device; // the current target surface of graphics operations
 
 // dynamic wsock dll handling api:
 #if defined(__CYGWIN__) && !defined(SOCKET)
@@ -1925,7 +1927,7 @@ void fl_cleanup_dc_list(void) {          // clean up the list
 }
 
 Fl_Region XRectangleRegion(int x, int y, int w, int h) {
-  if (Fl_Device::current()->type() == Fl_Display_Device::device_type) return CreateRectRgn(x,y,x+w,y+h);
+  if (Fl_Surface_Device::surface()->type() == Fl_Display_Device::device_type) return CreateRectRgn(x,y,x+w,y+h);
   // because rotation may apply, the rectangle becomes a polygon in device coords
   POINT pt[4] = { {x, y}, {x + w, y}, {x + w, y + h}, {x, y + h} };
   LPtoDP(fl_gc, pt, 4);
@@ -1974,7 +1976,7 @@ void printFront(Fl_Widget *o, void *data)
 #include <FL/Fl_Clipboard_Writer.H>
 void copyFront(Fl_Widget *o, void *data)
 {
-  Fl_Clipboard_Writer writer;
+  Fl_Clipboard_Device writer;
   o->window()->hide();
   Fl_Window *win = Fl::first_window();
   if(win && ! writer.start(win->w(), win->h()) ) {

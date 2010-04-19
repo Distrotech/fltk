@@ -33,13 +33,13 @@
 #define NO_PAGE_FORMATS 30 /* MSVC6 compilation fix */
 
 /**
- \brief Sends all graphics to PostScript.
+ \brief PostScript graphical backend.
  *
  PostScript text output is presently implemented only for the latin character set.
  FLTK's standard fonts are output using PostScript's standard fonts: Helvetica, Courier, 
  Times (and their bold, oblique, italic variants), Symbol, ZapfDingbats.
  */
-FL_EXPORT class Fl_PS_Device : public  Fl_Device {
+class Fl_PostScript_Graphics_Driver : public Fl_Graphics_Driver {
 public: 
   static const char *device_type;
   /**
@@ -85,7 +85,7 @@ public:
   enum Page_Layout {PORTRAIT = 0, LANDSCAPE = 0x100, REVERSED = 0x200, ORIENTATION = 0x300};
     
 #ifndef FL_DOXYGEN
-protected:
+public:
   enum SHAPE{NONE=0, LINE, LOOP, POLYGON, POINTS};
   
 typedef struct page_format {
@@ -142,8 +142,7 @@ class Clip {
   static const page_format page_formats[NO_PAGE_FORMATS];
   
   uchar bg_r, bg_g, bg_b;
-  Fl_PS_Device(void);
-  int start_postscript (int pagecount, enum Page_Format format, enum Page_Layout layout);
+  int start_postscript (int pagecount, enum Fl_PostScript_Graphics_Driver::Page_Format format, enum Fl_PostScript_Graphics_Driver::Page_Layout layout);
   /*  int alpha_mask(const uchar * data, int w, int h, int D, int LD=0);
    */
   void draw(const char* s, int n, int x, int y) {transformed_draw(s,n,x,y); };
@@ -229,6 +228,7 @@ class Clip {
   void draw(Fl_Bitmap * bitmap,int XP, int YP, int WP, int HP, int cx, int cy);
     
 public:
+  Fl_PostScript_Graphics_Driver();
   void page_policy(int p);
   int page_policy(){return page_policy_;};
   void close_command( int (*cmd)(FILE *)){close_cmd_=cmd;};
@@ -247,14 +247,17 @@ public:
 };
 
 /**
- \brief Sends graphics output to a local PostScript file.
+ \brief To send graphical output to a PostScript file.
  */
-class Fl_PSfile_Device : public Fl_PS_Device , public Fl_Abstract_Printer {
+class Fl_PostScript_File_Device : public Fl_Paged_Device {
 public:
   static const char *device_type;
-  Fl_PSfile_Device(void);
-  int start_job(int pagecount, enum Page_Format format = A4, enum Page_Layout layout = PORTRAIT);
-  int start_job(FILE *ps_output, int pagecount, enum Page_Format format = A4, enum Page_Layout layout = PORTRAIT);
+  Fl_PostScript_File_Device();
+  ~Fl_PostScript_File_Device();
+  int start_job(int pagecount, enum Fl_PostScript_Graphics_Driver::Page_Format format = Fl_PostScript_Graphics_Driver::A4, 
+		enum Fl_PostScript_Graphics_Driver::Page_Layout layout = Fl_PostScript_Graphics_Driver::PORTRAIT);
+  int start_job(FILE *ps_output, int pagecount, enum Fl_PostScript_Graphics_Driver::Page_Format format = Fl_PostScript_Graphics_Driver::A4, 
+		enum Fl_PostScript_Graphics_Driver::Page_Layout layout = Fl_PostScript_Graphics_Driver::PORTRAIT);
   int start_page (void);
   int printable_rect(int *w, int *h);
   void margins(int *left, int *top, int *right, int *bottom);
@@ -265,9 +268,7 @@ public:
   void untranslate(void);
   int end_page (void);    
   void end_job(void);
-  virtual ~Fl_PSfile_Device();
   
-  /** [this text may be customized at run-time] */
   static const char *file_chooser_title; 
 };
 

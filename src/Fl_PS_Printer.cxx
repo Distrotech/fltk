@@ -32,14 +32,14 @@
 #include <FL/Fl_PSfile_Device.H>
 #include <FL/Fl_Native_File_Chooser.H>
 
-const char *Fl_PS_Device::device_type = "Fl_PS_Device";
-const char *Fl_PSfile_Device::device_type = "Fl_PSfile_Device";
-const char *Fl_PSfile_Device::file_chooser_title = "Select a .ps file";
+const char *Fl_PostScript_Graphics_Driver::device_type = "Fl_PostScript_Graphics_Driver";
+const char *Fl_PostScript_File_Device::device_type = "Fl_PostScript_File_Device";
+const char *Fl_PostScript_File_Device::file_chooser_title = "Select a .ps file";
 
 /**
  @brief The constructor.
  */
-Fl_PS_Device::Fl_PS_Device(void)
+Fl_PostScript_Graphics_Driver::Fl_PostScript_Graphics_Driver(void)
 {
   close_cmd_ = 0;
   //lang_level_ = 3;
@@ -48,40 +48,45 @@ Fl_PS_Device::Fl_PS_Device(void)
   ps_filename_ = NULL;
   type_ = device_type;
   scale_x = scale_y = 1.;
+  bg_r = bg_g = bg_b = 255;
 }
 
 /**
  @brief The constructor.
  */
-Fl_PSfile_Device::Fl_PSfile_Device(void)
+Fl_PostScript_File_Device::Fl_PostScript_File_Device(void)
 {
   type_ = device_type;
 #ifdef __APPLE__
   gc = fl_gc; // the display context is used by fl_text_extents()
+#elif !defined(WIN32)
+  driver = new Fl_PostScript_Graphics_Driver();
 #endif
 }
 /**
  @brief Begins the session where all graphics requests will go to a local PostScript file.
  *
- Opens a file dialog entitled with Fl_PSfile_Device::file_chooser_title to select an output PostScript file.
+ Opens a file dialog entitled with Fl_PostScript_File_Device::file_chooser_title to select an output PostScript file.
  @param pagecount The total number of pages to be created.
  @param format Desired page format.
  @param layout Desired page layout.
  @return 0 iff OK, 1 if user cancelled the file dialog, 2 if fopen failed on user-selected output file.
  */
-int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, enum Page_Layout layout)
+int Fl_PostScript_File_Device::start_job (int pagecount, enum Fl_PostScript_Graphics_Driver::Page_Format format, enum Fl_PostScript_Graphics_Driver::Page_Layout layout)
 {
   Fl_Native_File_Chooser fnfc;
-  fnfc.title(Fl_PSfile_Device::file_chooser_title);
+  fnfc.title(Fl_PostScript_File_Device::file_chooser_title);
   fnfc.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
   fnfc.options(Fl_Native_File_Chooser::SAVEAS_CONFIRM);
   fnfc.filter("PostScript\t*.ps\n");
   // Show native chooser
   if ( fnfc.show() ) return 1;
-  output = fopen(fnfc.filename(), "w");
-  if(output == NULL) return 2;
-  ps_filename_ = strdup(fnfc.filename());
-  start_postscript(pagecount, format, layout);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  ps->output = fopen(fnfc.filename(), "w");
+  if(ps->output == NULL) return 2;
+  ps->ps_filename_ = strdup(fnfc.filename());
+  ps->start_postscript(pagecount, format, layout);
+  fl_surface = this;
   return 0;
 }
 
@@ -95,19 +100,23 @@ int Fl_PSfile_Device::start_job (int pagecount, enum Page_Format format, enum Pa
  @param layout Desired page layout.
  @return always 0.
  */
-int Fl_PSfile_Device::start_job (FILE *ps_output, int pagecount, enum Page_Format format, enum Page_Layout layout)
+int Fl_PostScript_File_Device::start_job (FILE *ps_output, int pagecount, enum Fl_PostScript_Graphics_Driver::Page_Format format, enum Fl_PostScript_Graphics_Driver::Page_Layout layout)
 {
-  output = ps_output;
-  ps_filename_ = NULL;
-  start_postscript(pagecount, format, layout);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  ps->output = ps_output;
+  ps->ps_filename_ = NULL;
+  ps->start_postscript(pagecount, format, layout);
+  fl_surface = this;
   return 0;
 }
 
 /**
  @brief The destructor.
  */
-Fl_PSfile_Device::~Fl_PSfile_Device() {
-  if (ps_filename_) free(ps_filename_);
+Fl_PostScript_File_Device::~Fl_PostScript_File_Device() {
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  if (ps->ps_filename_) free(ps->ps_filename_);
+  if (driver) delete driver;
 }
 
 #ifndef FL_DOXYGEN
@@ -116,7 +125,7 @@ Fl_PSfile_Device::~Fl_PSfile_Device() {
   #include "print_panel.cxx"
 #endif
 
-const Fl_PS_Device::page_format Fl_PS_Device::page_formats[NO_PAGE_FORMATS] = { // order of enum Page_Format
+const Fl_PostScript_Graphics_Driver::page_format Fl_PostScript_Graphics_Driver::page_formats[NO_PAGE_FORMATS] = { // order of enum Page_Format
 // comes from appendix B of 5003.PPD_Spec_v4.3.pdf
 
   // A* // index(Ai) = i
@@ -468,11 +477,11 @@ static const char * prolog_3 = // prolog relevant only if lang_level >2
 
 // end prolog 
 
-int Fl_PS_Device::start_postscript (int pagecount, enum Page_Format format, enum Page_Layout layout)
+int Fl_PostScript_Graphics_Driver::start_postscript (int pagecount, enum Fl_PostScript_Graphics_Driver::Page_Format format, enum Fl_PostScript_Graphics_Driver::Page_Layout layout)
 //returns 0 iff OK
 {
   int w, h, x;
-  this->set_current();
+  //this->set_current(); ???
   if (format == A4) {
     left_margin = 18;
     top_margin = 18;
@@ -526,13 +535,13 @@ int Fl_PS_Device::start_postscript (int pagecount, enum Page_Format format, enum
   return 0;
 }
 
-void Fl_PS_Device::recover(){
+void Fl_PostScript_Graphics_Driver::recover(){
   color(cr_,cg_,cb_);
   line_style(linestyle_,linewidth_,linedash_);
   font(font_,size_);
 }
 
-void Fl_PS_Device::reset(){
+void Fl_PostScript_Graphics_Driver::reset(){
   gap_=1;
   clip_=0;
   cr_=cg_=cb_=0;
@@ -551,7 +560,7 @@ void Fl_PS_Device::reset(){
   
 }
 
-void Fl_PS_Device::page_policy(int p){
+void Fl_PostScript_Graphics_Driver::page_policy(int p){
   page_policy_ = p;
   if(lang_level_>=2)
     fprintf(output,"<< /Policies << /Pagesize %i >> >> setpagedevice\n", p);
@@ -561,7 +570,7 @@ void Fl_PS_Device::page_policy(int p){
 
 
 
-void Fl_PS_Device::page(double pw, double ph, int media) {
+void Fl_PostScript_Graphics_Driver::page(double pw, double ph, int media) {
   
   if (nPages){
     fprintf(output, "CR\nGR\nGR\nGR\nSP\nrestore\n");
@@ -610,20 +619,20 @@ void Fl_PS_Device::page(double pw, double ph, int media) {
   fprintf(output, "GS\nCS\n");
 };
 
-void Fl_PS_Device::page(int format){
+void Fl_PostScript_Graphics_Driver::page(int format){
   
   
   if(format &  LANDSCAPE){
-    ph_=Fl_PS_Device::page_formats[format & 0xFF].width;
-    pw_=Fl_PS_Device::page_formats[format & 0xFF].height;
+    ph_=Fl_PostScript_Graphics_Driver::page_formats[format & 0xFF].width;
+    pw_=Fl_PostScript_Graphics_Driver::page_formats[format & 0xFF].height;
   }else{
-    pw_=Fl_PS_Device::page_formats[format & 0xFF].width;
-    ph_=Fl_PS_Device::page_formats[format & 0xFF].height;
+    pw_=Fl_PostScript_Graphics_Driver::page_formats[format & 0xFF].width;
+    ph_=Fl_PostScript_Graphics_Driver::page_formats[format & 0xFF].height;
   }
   page(pw_,ph_,format & 0xFF00);//,orientation only;
 };
 
-void Fl_PS_Device::rect(int x, int y, int w, int h) {
+void Fl_PostScript_Graphics_Driver::rect(int x, int y, int w, int h) {
   // Commented code does not work, i can't find the bug ;-(
   // fprintf(output, "GS\n");
   //  fprintf(output, "%i, %i, %i, %i R\n", x , y , w, h);
@@ -638,17 +647,17 @@ void Fl_PS_Device::rect(int x, int y, int w, int h) {
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::rectf(int x, int y, int w, int h) {
+void Fl_PostScript_Graphics_Driver::rectf(int x, int y, int w, int h) {
   fprintf(output, "%g %g %i %i FR\n", x-0.5, y-0.5, w, h);
 }
 
-void Fl_PS_Device::line(int x1, int y1, int x2, int y2) {
+void Fl_PostScript_Graphics_Driver::line(int x1, int y1, int x2, int y2) {
   fprintf(output, "GS\n");
   fprintf(output, "%i %i %i %i L\n", x1 , y1, x2 ,y2);
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::line(int x0, int y0, int x1, int y1, int x2, int y2) {
+void Fl_PostScript_Graphics_Driver::line(int x0, int y0, int x1, int y1, int x2, int y2) {
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x0 , y0);
@@ -658,7 +667,7 @@ void Fl_PS_Device::line(int x0, int y0, int x1, int y1, int x2, int y2) {
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::xyline(int x, int y, int x1, int y2, int x3){
+void Fl_PostScript_Graphics_Driver::xyline(int x, int y, int x1, int y2, int x3){
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x , y );
@@ -670,7 +679,7 @@ void Fl_PS_Device::xyline(int x, int y, int x1, int y2, int x3){
 };
 
 
-void Fl_PS_Device::xyline(int x, int y, int x1, int y2){
+void Fl_PostScript_Graphics_Driver::xyline(int x, int y, int x1, int y2){
   
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
@@ -681,7 +690,7 @@ void Fl_PS_Device::xyline(int x, int y, int x1, int y2){
   fprintf(output, "GR\n");
 };
 
-void Fl_PS_Device::xyline(int x, int y, int x1){
+void Fl_PostScript_Graphics_Driver::xyline(int x, int y, int x1){
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x , y);
@@ -691,7 +700,7 @@ void Fl_PS_Device::xyline(int x, int y, int x1){
   fprintf(output, "GR\n");
 };
 
-void Fl_PS_Device::yxline(int x, int y, int y1, int x2, int y3){
+void Fl_PostScript_Graphics_Driver::yxline(int x, int y, int y1, int x2, int y3){
   fprintf(output, "GS\n");
   
   fprintf(output,"BP\n");
@@ -703,7 +712,7 @@ void Fl_PS_Device::yxline(int x, int y, int y1, int x2, int y3){
   fprintf(output, "GR\n");
 };
 
-void Fl_PS_Device::yxline(int x, int y, int y1, int x2){
+void Fl_PostScript_Graphics_Driver::yxline(int x, int y, int y1, int x2){
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x , y);
@@ -713,7 +722,7 @@ void Fl_PS_Device::yxline(int x, int y, int y1, int x2){
   fprintf(output, "GR\n");
 };
 
-void Fl_PS_Device::yxline(int x, int y, int y1){
+void Fl_PostScript_Graphics_Driver::yxline(int x, int y, int y1){
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x , y);
@@ -722,7 +731,7 @@ void Fl_PS_Device::yxline(int x, int y, int y1){
   fprintf(output, "GR\n");
 };
 
-void Fl_PS_Device::loop(int x0, int y0, int x1, int y1, int x2, int y2) {
+void Fl_PostScript_Graphics_Driver::loop(int x0, int y0, int x1, int y1, int x2, int y2) {
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x0 , y0);
@@ -732,7 +741,7 @@ void Fl_PS_Device::loop(int x0, int y0, int x1, int y1, int x2, int y2) {
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::loop(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) {
+void Fl_PostScript_Graphics_Driver::loop(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) {
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x0 , y0);
@@ -743,7 +752,7 @@ void Fl_PS_Device::loop(int x0, int y0, int x1, int y1, int x2, int y2, int x3, 
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::polygon(int x0, int y0, int x1, int y1, int x2, int y2) {
+void Fl_PostScript_Graphics_Driver::polygon(int x0, int y0, int x1, int y1, int x2, int y2) {
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x0 , y0);
@@ -753,7 +762,7 @@ void Fl_PS_Device::polygon(int x0, int y0, int x1, int y1, int x2, int y2) {
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::polygon(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) {
+void Fl_PostScript_Graphics_Driver::polygon(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) {
   fprintf(output, "GS\n");
   fprintf(output,"BP\n");
   fprintf(output, "%i %i MT\n", x0 , y0 );
@@ -765,7 +774,7 @@ void Fl_PS_Device::polygon(int x0, int y0, int x1, int y1, int x2, int y2, int x
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::point(int x, int y){
+void Fl_PostScript_Graphics_Driver::point(int x, int y){
   rectf(x,y,1,1);
 }
 
@@ -788,7 +797,7 @@ static double dashes_cap[5][7]={
 };
 
 
-void Fl_PS_Device::line_style(int style, int width, char* dashes){
+void Fl_PostScript_Graphics_Driver::line_style(int style, int width, char* dashes){
   //line_styled_=1;
   
   linewidth_=width;
@@ -866,16 +875,16 @@ static const char *_fontNames[] = {
 "ZapfDingbats"
 };
 
-void Fl_PS_Device::font(int f, int s) {
+void Fl_PostScript_Graphics_Driver::font(int f, int s) {
   if (f >= FL_FREE_FONT)
     f = FL_COURIER;
   fprintf(output, "/%s SF\n" , _fontNames[f]);
   fprintf(output,"%i FS\n", s);
-  display_device()->font(f,s); // Use display fonts for font measurement
+  Fl_Display_Device::display_device()->get_driver()->font(f,s); // Use display fonts for font measurement
   font_ = f; size_ = s;
 };
 
-void Fl_PS_Device::color(Fl_Color c) {
+void Fl_PostScript_Graphics_Driver::color(Fl_Color c) {
   //colored_=1;
   color_=c;
   Fl::get_color(c, cr_, cg_, cb_);
@@ -892,7 +901,7 @@ void Fl_PS_Device::color(Fl_Color c) {
   }
 }
 
-void Fl_PS_Device::color(unsigned char r, unsigned char g, unsigned char b) {
+void Fl_PostScript_Graphics_Driver::color(unsigned char r, unsigned char g, unsigned char b) {
   //colored_=1;
   cr_=r;cg_=g;cb_=b;
   if (r==g && g==b) {
@@ -907,14 +916,14 @@ void Fl_PS_Device::color(unsigned char r, unsigned char g, unsigned char b) {
   }
 }
 
-void Fl_PS_Device::draw(int angle, const char *str, int n, int x, int y)
+void Fl_PostScript_Graphics_Driver::draw(int angle, const char *str, int n, int x, int y)
 {
   fprintf(output, "GS %d %d translate %d rotate\n", x, y, - angle);
   this->transformed_draw(str, n, 0, 0);
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::transformed_draw(const char* str, int n, double x, double y){
+void Fl_PostScript_Graphics_Driver::transformed_draw(const char* str, int n, double x, double y){
   if (!n || !str || !*str)return;
   fprintf(output,"%g (", fl_width(str, n));
   int i=1;
@@ -939,18 +948,18 @@ void Fl_PS_Device::transformed_draw(const char* str, int n, double x, double y){
 struct matrix {double a, b, c, d, x, y;};
 extern matrix * fl_matrix;
 
-void Fl_PS_Device::concat(){
+void Fl_PostScript_Graphics_Driver::concat(){
   fprintf(output,"[%g %g %g %g %g %g] CT\n", fl_matrix->a , fl_matrix->b , fl_matrix->c , fl_matrix->d , fl_matrix->x , fl_matrix->y);
 }
 
-void Fl_PS_Device::reconcat(){
+void Fl_PostScript_Graphics_Driver::reconcat(){
   fprintf(output, "[%g %g %g %g %g %g] RCT\n" , fl_matrix->a , fl_matrix->b , fl_matrix->c , fl_matrix->d , fl_matrix->x , fl_matrix->y);
 }
 
 /////////////////  transformed (double) drawings ////////////////////////////////
 
 
-void Fl_PS_Device::begin_points(){
+void Fl_PostScript_Graphics_Driver::begin_points(){
   fprintf(output, "GS\n");
   concat();
   
@@ -959,7 +968,7 @@ void Fl_PS_Device::begin_points(){
   shape_=POINTS;
 };
 
-void Fl_PS_Device::begin_line(){
+void Fl_PostScript_Graphics_Driver::begin_line(){
   fprintf(output, "GS\n");
   concat();
   fprintf(output, "BP\n");
@@ -967,7 +976,7 @@ void Fl_PS_Device::begin_line(){
   shape_=LINE;
 };
 
-void Fl_PS_Device::begin_loop(){
+void Fl_PostScript_Graphics_Driver::begin_loop(){
   fprintf(output, "GS\n");
   concat();
   fprintf(output, "BP\n");
@@ -975,7 +984,7 @@ void Fl_PS_Device::begin_loop(){
   shape_=LOOP;
 };
 
-void Fl_PS_Device::begin_polygon(){
+void Fl_PostScript_Graphics_Driver::begin_polygon(){
   fprintf(output, "GS\n");
   concat();
   fprintf(output, "BP\n");
@@ -983,7 +992,7 @@ void Fl_PS_Device::begin_polygon(){
   shape_=POLYGON;
 };
 
-void Fl_PS_Device::vertex(double x, double y){
+void Fl_PostScript_Graphics_Driver::vertex(double x, double y){
   if(shape_==POINTS){
     fprintf(output,"%g %g MT\n", x , y);
     gap_=1;
@@ -996,7 +1005,7 @@ void Fl_PS_Device::vertex(double x, double y){
     fprintf(output, "%g %g LT\n", x , y);
 };
 
-void Fl_PS_Device::curve(double x, double y, double x1, double y1, double x2, double y2, double x3, double y3){
+void Fl_PostScript_Graphics_Driver::curve(double x, double y, double x1, double y1, double x2, double y2, double x3, double y3){
   if(shape_==NONE) return;
   if(gap_)
     fprintf(output,"%g %g MT\n", x , y);
@@ -1008,7 +1017,7 @@ void Fl_PS_Device::curve(double x, double y, double x1, double y1, double x2, do
 };
 
 
-void Fl_PS_Device::circle(double x, double y, double r){
+void Fl_PostScript_Graphics_Driver::circle(double x, double y, double r){
   if(shape_==NONE){
     fprintf(output, "GS\n");
     concat();
@@ -1023,7 +1032,7 @@ void Fl_PS_Device::circle(double x, double y, double r){
   
 };
 
-void Fl_PS_Device::arc(double x, double y, double r, double start, double a){
+void Fl_PostScript_Graphics_Driver::arc(double x, double y, double r, double start, double a){
   if(shape_==NONE) return;
   gap_=0;
   if(start>a)
@@ -1033,7 +1042,7 @@ void Fl_PS_Device::arc(double x, double y, double r, double start, double a){
   
 };
 
-void Fl_PS_Device::arc(int x, int y, int w, int h, double a1, double a2) {
+void Fl_PostScript_Graphics_Driver::arc(int x, int y, int w, int h, double a1, double a2) {
   fprintf(output, "GS\n");
   //fprintf(output, "BP\n");
   begin_line();
@@ -1052,7 +1061,7 @@ void Fl_PS_Device::arc(int x, int y, int w, int h, double a1, double a2) {
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::pie(int x, int y, int w, int h, double a1, double a2) {
+void Fl_PostScript_Graphics_Driver::pie(int x, int y, int w, int h, double a1, double a2) {
   
   fprintf(output, "GS\n");
   fprintf(output, "%g %g TR\n", x + w/2.0 -0.5 , y + h/2.0 - 0.5);
@@ -1064,7 +1073,7 @@ void Fl_PS_Device::pie(int x, int y, int w, int h, double a1, double a2) {
   fprintf(output, "GR\n");
 }
 
-void Fl_PS_Device::end_points(){
+void Fl_PostScript_Graphics_Driver::end_points(){
   gap_=1;
   reconcat();
   fprintf(output, "ELP\n"); //??
@@ -1072,14 +1081,14 @@ void Fl_PS_Device::end_points(){
   shape_=NONE;
 }
 
-void Fl_PS_Device::end_line(){
+void Fl_PostScript_Graphics_Driver::end_line(){
   gap_=1;
   reconcat();
   fprintf(output, "ELP\n");
   fprintf(output, "GR\n");
   shape_=NONE;
 }
-void Fl_PS_Device::end_loop(){
+void Fl_PostScript_Graphics_Driver::end_loop(){
   gap_=1;
   reconcat();
   fprintf(output, "ECP\n");
@@ -1087,7 +1096,7 @@ void Fl_PS_Device::end_loop(){
   shape_=NONE;
 }
 
-void Fl_PS_Device::end_polygon(){
+void Fl_PostScript_Graphics_Driver::end_polygon(){
   
   gap_=1;
   reconcat();
@@ -1096,7 +1105,7 @@ void Fl_PS_Device::end_polygon(){
   shape_=NONE;
 }
 
-void Fl_PS_Device::transformed_vertex(double x, double y){
+void Fl_PostScript_Graphics_Driver::transformed_vertex(double x, double y){
   reconcat();
   if(gap_){
     fprintf(output, "%g %g MT\n", x , y);
@@ -1108,7 +1117,7 @@ void Fl_PS_Device::transformed_vertex(double x, double y){
 
 /////////////////////////////   Clipping /////////////////////////////////////////////
 
-void Fl_PS_Device::push_clip(int x, int y, int w, int h) {
+void Fl_PostScript_Graphics_Driver::push_clip(int x, int y, int w, int h) {
   Clip * c=new Clip();
   clip_box(x,y,w,h,c->x,c->y,c->w,c->h);
   c->prev=clip_;
@@ -1120,7 +1129,7 @@ void Fl_PS_Device::push_clip(int x, int y, int w, int h) {
   
 }
 
-void Fl_PS_Device::push_no_clip() {
+void Fl_PostScript_Graphics_Driver::push_no_clip() {
   Clip * c = new Clip();
   c->prev=clip_;
   clip_=c;
@@ -1130,7 +1139,7 @@ void Fl_PS_Device::push_no_clip() {
     recover();
 }
 
-void Fl_PS_Device::pop_clip() {
+void Fl_PostScript_Graphics_Driver::pop_clip() {
   if(!clip_)return;
   Clip * c=clip_;
   clip_=clip_->prev;
@@ -1143,7 +1152,7 @@ void Fl_PS_Device::pop_clip() {
     recover();
 }
 
-int Fl_PS_Device::clip_box(int x, int y, int w, int h, int &X, int &Y, int &W, int &H){
+int Fl_PostScript_Graphics_Driver::clip_box(int x, int y, int w, int h, int &X, int &Y, int &W, int &H){
   if(!clip_){
     X=x;Y=y;W=w;H=h;
     return 1;
@@ -1179,7 +1188,7 @@ int Fl_PS_Device::clip_box(int x, int y, int w, int h, int &X, int &Y, int &W, i
   return ret;
 };
 
-int Fl_PS_Device::not_clipped(int x, int y, int w, int h){
+int Fl_PostScript_Graphics_Driver::not_clipped(int x, int y, int w, int h){
   if(!clip_) return 1;
   if(clip_->w < 0) return 1;
   int X, Y, W, H;
@@ -1189,109 +1198,120 @@ int Fl_PS_Device::not_clipped(int x, int y, int w, int h){
 };
 
 
-void Fl_PSfile_Device::margins(int *left, int *top, int *right, int *bottom) // to implement
+void Fl_PostScript_File_Device::margins(int *left, int *top, int *right, int *bottom) // to implement
 {
-  if(left) *left = (int)(left_margin / scale_x + .5);
-  if(right) *right = (int)(left_margin / scale_x + .5);
-  if(top) *top = (int)(top_margin / scale_y + .5);
-  if(bottom) *bottom = (int)(top_margin / scale_y + .5);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  if(left) *left = (int)(ps->left_margin / ps->scale_x + .5);
+  if(right) *right = (int)(ps->left_margin / ps->scale_x + .5);
+  if(top) *top = (int)(ps->top_margin / ps->scale_y + .5);
+  if(bottom) *bottom = (int)(ps->top_margin / ps->scale_y + .5);
 }
 
-int Fl_PSfile_Device::printable_rect(int *w, int *h)
+int Fl_PostScript_File_Device::printable_rect(int *w, int *h)
 //returns 0 iff OK
 {
-  if(w) *w = (int)((pw_ - 2 * left_margin) / scale_x + .5);
-  if(h) *h = (int)((ph_ - 2 * top_margin) / scale_y + .5);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  if(w) *w = (int)((ps->pw_ - 2 * ps->left_margin) / ps->scale_x + .5);
+  if(h) *h = (int)((ps->ph_ - 2 * ps->top_margin) / ps->scale_y + .5);
   return 0;
 }
 
-void Fl_PSfile_Device::origin(int x, int y)
+void Fl_PostScript_File_Device::origin(int x, int y)
 {
   x_offset = x;
   y_offset = y;
-  fprintf(output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
-	  left_margin, top_margin, scale_x, scale_y, x, y, angle);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  fprintf(ps->output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
+	  ps->left_margin, ps->top_margin, ps->scale_x, ps->scale_y, x, y, ps->angle);
 }
 
-void Fl_PSfile_Device::scale (float s_x, float s_y)
+void Fl_PostScript_File_Device::scale (float s_x, float s_y)
 {
-  scale_x = s_x;
-  scale_y = s_y;
-  fprintf(output, "GR GR GS %d %d TR  %f %f SC %f rotate GS\n", 
-	  left_margin, top_margin, scale_x, scale_y, angle);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  ps->scale_x = s_x;
+  ps->scale_y = s_y;
+  fprintf(ps->output, "GR GR GS %d %d TR  %f %f SC %f rotate GS\n", 
+	  ps->left_margin, ps->top_margin, ps->scale_x, ps->scale_y, ps->angle);
 }
 
-void Fl_PSfile_Device::rotate (float rot_angle)
+void Fl_PostScript_File_Device::rotate (float rot_angle)
 {
-  angle = - rot_angle;
-  fprintf(output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
-	  left_margin, top_margin, scale_x, scale_y, x_offset, y_offset, angle);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  ps->angle = - rot_angle;
+  fprintf(ps->output, "GR GR GS %d %d TR  %f %f SC %d %d TR %f rotate GS\n", 
+	  ps->left_margin, ps->top_margin, ps->scale_x, ps->scale_y, x_offset, y_offset, ps->angle);
 }
 
-void Fl_PSfile_Device::translate(int x, int y)
+void Fl_PostScript_File_Device::translate(int x, int y)
 {
-  fprintf(output, "GS %d %d translate GS\n", x, y);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  fprintf(ps->output, "GS %d %d translate GS\n", x, y);
 }
 
-void Fl_PSfile_Device::untranslate(void)
+void Fl_PostScript_File_Device::untranslate(void)
 {
-  fprintf(output, "GR GR\n");
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  fprintf(ps->output, "GR GR\n");
 }
 
-int Fl_PSfile_Device::start_page (void)
+int Fl_PostScript_File_Device::start_page (void)
 {
-  page(page_format_);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  fl_device = driver;
+  ps->page(ps->page_format_);
   x_offset = 0;
   y_offset = 0;
-  scale_x = scale_y = 1.;
-  angle = 0;
-  fprintf(output, "GR GR GS %d %d translate GS\n", left_margin, top_margin);
+  ps->scale_x = ps->scale_y = 1.;
+  ps->angle = 0;
+  fprintf(ps->output, "GR GR GS %d %d translate GS\n", ps->left_margin, ps->top_margin);
   return 0;
 }
 
-int Fl_PSfile_Device::end_page (void)
+int Fl_PostScript_File_Device::end_page (void)
 {
   return 0;
 }
 
-void Fl_PSfile_Device::end_job (void)
+void Fl_PostScript_File_Device::end_job (void)
 // finishes PostScript & closes file
 {
-  if (nPages) {  // for eps nPages is 0 so it is fine ....
-    fprintf(output, "CR\nGR\nGR\nGR\nSP\n restore\n");
-    if (!pages_){
-      fprintf(output, "%%%%Trailer\n");
-      fprintf(output, "%%%%Pages: %i\n" , nPages);
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  if (ps->nPages) {  // for eps nPages is 0 so it is fine ....
+    fprintf(ps->output, "CR\nGR\nGR\nGR\nSP\n restore\n");
+    if (!ps->pages_){
+      fprintf(ps->output, "%%%%Trailer\n");
+      fprintf(ps->output, "%%%%Pages: %i\n" , ps->nPages);
     };
   } else
-    fprintf(output, "GR\n restore\n");
-  fputs("%%EOF",output);
-  reset();
-  fflush(output);
-  if(ferror(output)) {
+    fprintf(ps->output, "GR\n restore\n");
+  fputs("%%EOF",ps->output);
+  ps->reset();
+  fflush(ps->output);
+  if(ferror(ps->output)) {
     fl_alert ("Error during PostScript data output.");
     }
 #if ! (defined(__APPLE__) || defined(WIN32) )
   if (print_pipe)
-    pclose(output);
+    pclose(ps->output);
   else
-    fclose(output);
+    fclose(ps->output);
 #else
-  fclose(output);
+  fclose(ps->output);
 #endif
-  while (clip_){
-    Clip * c= clip_;
-    clip_= clip_->prev;
+  while (ps->clip_){
+    Fl_PostScript_Graphics_Driver::Clip * c= ps->clip_;
+    ps->clip_= ps->clip_->prev;
     delete c;
   }
-  if (close_cmd_) (*close_cmd_)(output);
-  Fl_Device::display_device()->set_current();
+  if (ps->close_cmd_) (*ps->close_cmd_)(ps->output);
+  Fl_Display_Device::display_device()->set_current();
+  fl_surface = Fl_Display_Device::display_device();
 }
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
 int Fl_Printer::start_job(int pages, int *firstpage, int *lastpage) {
-  enum Page_Format format;
-  enum Page_Layout layout;
+  enum Fl_PostScript_Graphics_Driver::Page_Format format;
+  enum Fl_PostScript_Graphics_Driver::Page_Layout layout;
 
   // first test version for print dialog
   if (!print_panel) make_print_panel();
@@ -1309,7 +1329,7 @@ int Fl_Printer::start_job(int pages, int *firstpage, int *lastpage) {
 
   // get options
 
-  format = print_page_size->value() ? A4 : LETTER;
+  format = print_page_size->value() ? Fl_PostScript_Graphics_Driver::A4 : Fl_PostScript_Graphics_Driver::LETTER;
   { // page range choice
     int from = 1, to = pages;
     if (print_pages->value()) {
@@ -1324,10 +1344,10 @@ int Fl_Printer::start_job(int pages, int *firstpage, int *lastpage) {
     pages = to - from + 1;
   }
   
-  if (print_output_mode[0]->value()) layout = PORTRAIT;
-  else if (print_output_mode[1]->value()) layout = LANDSCAPE;
-  else if (print_output_mode[2]->value()) layout = PORTRAIT;
-  else layout = LANDSCAPE;
+  if (print_output_mode[0]->value()) layout = Fl_PostScript_Graphics_Driver::PORTRAIT;
+  else if (print_output_mode[1]->value()) layout = Fl_PostScript_Graphics_Driver::LANDSCAPE;
+  else if (print_output_mode[2]->value()) layout = Fl_PostScript_Graphics_Driver::PORTRAIT;
+  else layout = Fl_PostScript_Graphics_Driver::LANDSCAPE;
 
   print_pipe = print_choice->value();	// 0 = print to file, >0 = printer (pipe)
 
@@ -1336,7 +1356,7 @@ int Fl_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   if (!print_pipe) printer = "<File>";
 
   if (!print_pipe) // fall back to file printing
-    return Fl_PSfile_Device::start_job (pages, format, layout);
+    return Fl_PostScript_File_Device::start_job (pages, format, layout);
 
   // Print: pipe the output into the lp command...
 
@@ -1345,13 +1365,14 @@ int Fl_Printer::start_job(int pages, int *firstpage, int *lastpage) {
              printer, print_collate_button->value() ? 1 : (int)(print_copies->value() + 0.5),
 	     "FLTK", media);
 
-  output = popen(command, "w");
-  if (!output) {
+  Fl_PostScript_Graphics_Driver *ps = (Fl_PostScript_Graphics_Driver*)driver;
+  ps->output = popen(command, "w");
+  if (!ps->output) {
     fl_alert("could not run command: %s\n",command);
     return 1;
   }
-
-  return Fl_PS_Device::start_postscript(pages, format, layout); // start printing
+  fl_surface = this;
+  return ps->start_postscript(pages, format, layout); // start printing
 }
 
 #endif // ! (defined(__APPLE__) || defined(WIN32) )

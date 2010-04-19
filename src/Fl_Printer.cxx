@@ -60,7 +60,7 @@ const char *Fl_Printer::property_cancel = "Cancel";
 
 const char *Fl_Printer::device_type = "Fl_Printer";
 
-Fl_Device *Fl_Printer::set_current(void)
+Fl_Graphics_Driver *Fl_Printer::set_current(void)
 {
 #ifdef __APPLE__
   fl_gc = (CGContextRef)gc;
@@ -69,7 +69,7 @@ Fl_Device *Fl_Printer::set_current(void)
 #else
   fl_gc = (_XGC*)gc;
 #endif
-  return this->Fl_Device::set_current();
+  return this->Fl_Surface_Device::set_current();
 }
 
 //

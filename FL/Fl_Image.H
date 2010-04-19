@@ -188,8 +188,10 @@ class FL_EXPORT Fl_Image {
   &lt;FL/Fl_RGB_Image.H&gt; should be included.
 */
 class FL_EXPORT Fl_RGB_Image : public Fl_Image {
-  friend class Fl_Graphics_Device;
-  public:
+  friend class Fl_Quartz_Graphics_Driver;
+  friend class Fl_GDI_Graphics_Driver;
+  friend class Fl_Xlib_Graphics_Driver;
+public:
 
   const uchar *array;
   int alloc_array; // Non-zero if array was allocated

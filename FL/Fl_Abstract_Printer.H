@@ -26,7 +26,7 @@
 //
 
 /** \file Fl_Abstract_Printer.H 
- \brief declaration of class Fl_Abstract_Printer.
+ \brief declaration of class Fl_Paged_Device.
  */
 
 #ifndef Fl_Abstract_Printer_H
@@ -35,11 +35,12 @@
 #include <FL/Fl_Device.H>
 
 /**
- \brief A virtual class for print support with several platform-specific implementations.
+ \brief Represents page-structured drawing surfaces.
  *
- This class has no public constructor: don't instantiate it; use Fl_Printer or Fl_PSfile_Device instead.
+ This class has no public constructor: don't instantiate it; use Fl_Printer 
+ or Fl_PostScript_File_Device instead.
  */
-class Fl_Abstract_Printer {
+class Fl_Paged_Device : public Fl_Surface_Device {
 private:
 #ifdef __APPLE__
   struct chain_elt {
@@ -57,13 +58,13 @@ protected:
   int y_offset;
   /** \brief chained list of Fl_Image's used in this page */
   struct chain_elt *image_list_; 
-  /** \brief the printer's graphics context, if there's one, NULL otherwise */
-  void *gc; 
 #ifdef __APPLE__
   /** \brief deletes the page image list */
   void delete_image_list(); 
 #endif
+  Fl_Paged_Device() : Fl_Surface_Device(NULL) {type_ = device_type;};
 public:
+  static const char *device_type;
   virtual int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);
   virtual int start_page(void);
   virtual int printable_rect(int *w, int *h);

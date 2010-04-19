@@ -106,7 +106,7 @@ static int start(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int w, int h, i
 }
 
 #ifdef __APPLE__
-void Fl_Quartz_Device::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Quartz_Graphics_Driver::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (pxm->w() < 0) pxm->measure();
   int code = start(pxm, XP, YP, WP, HP, pxm->w(), pxm->h(), cx, cy, X, Y, W, H);
@@ -124,7 +124,7 @@ void Fl_Quartz_Device::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int 
 }
 
 #elif defined(WIN32)
-void Fl_GDI_Device::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_GDI_Graphics_Driver::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (pxm->w() < 0) pxm->measure();
   int code = start(pxm, XP, YP, WP, HP, pxm->w(), pxm->h(), cx, cy, X, Y, W, H);
@@ -145,7 +145,7 @@ void Fl_GDI_Device::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx,
     }
     fl_end_offscreen();
   }
-  if (fl_device->type() == Fl_Printer::device_type) {
+  if (fl_surface->type() == Fl_Printer::device_type) {
     typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
     static HMODULE hMod = NULL;
     static fl_transp_func fl_TransparentBlt = NULL;
@@ -190,7 +190,7 @@ void Fl_GDI_Device::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx,
 }
 
 #else // Xlib
-void Fl_Xlib_Device::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Xlib_Graphics_Driver::draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (pxm->w() < 0) pxm->measure();
   int code = start(pxm, XP, YP, WP, HP, pxm->w(), pxm->h(), cx, cy, X, Y, W, H);

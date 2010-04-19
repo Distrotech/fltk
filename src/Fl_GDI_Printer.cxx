@@ -34,9 +34,10 @@
 
 extern HWND fl_window;
 
-Fl_Printer::Fl_Printer(void) : Fl_Abstract_Printer() {
+Fl_Printer::Fl_Printer(void) : Fl_Paged_Device() {
   hPr = NULL;
   type_ = device_type;
+  driver = Fl_Surface_Device::current();
 }
 
 Fl_Printer::~Fl_Printer(void) {
@@ -111,13 +112,14 @@ int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
     WIN_SetupPrinterDeviceContext (hPr);
     gc = (void *)fl_gc;
     this->set_current();
+    fl_surface = this;
   }
   return err;
 }
 
 void Fl_Printer::end_job (void)
 {
-  Fl_Device::display_device()->set_current();
+  Fl_Display_Device::display_device()->set_current();
   if (hPr != NULL) {
     if (! abortPrint) {
       prerr = EndDoc (hPr);
@@ -134,6 +136,7 @@ void Fl_Printer::end_job (void)
     }
   }
   hPr = NULL;
+  fl_surface = Fl_Display_Device::display_device();
 }
 
 void Fl_Printer::absolute_printable_rect(int *x, int *y, int *w, int *h)

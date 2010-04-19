@@ -31,6 +31,9 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Printer.H>
 
+const char *Fl_Paged_Device::device_type = "Fl_Paged_Device";
+
+
 /**
  @brief Draws the widget on the printed page.
  *
@@ -42,7 +45,7 @@
  to the current origin of graphics functions.
  @param[in] delta_y Same as above, vertically.
  */
-void Fl_Abstract_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta_y) 
+void Fl_Paged_Device::print_widget(Fl_Widget* widget, int delta_x, int delta_y) 
 { 
   int old_x, old_y, new_x, new_y, is_window;
   if ( ! widget->visible() ) return;
@@ -85,7 +88,7 @@ void Fl_Abstract_Printer::print_widget(Fl_Widget* widget, int delta_x, int delta
 }
 
 
-void Fl_Abstract_Printer::traverse(Fl_Widget *widget)
+void Fl_Paged_Device::traverse(Fl_Widget *widget)
 {
   Fl_Group *g = widget->as_group();
   if (!g) return;
@@ -106,7 +109,7 @@ void Fl_Abstract_Printer::traverse(Fl_Widget *widget)
  @param[out] x If non-null, *x is set to the horizontal page offset of graphics origin.
  @param[out] y Same as above, vertically.
  */
-void Fl_Abstract_Printer::origin(int *x, int *y)
+void Fl_Paged_Device::origin(int *x, int *y)
 {
   if (x) *x = x_offset;
   if (y) *y = y_offset;
@@ -123,10 +126,10 @@ void Fl_Abstract_Printer::origin(int *x, int *y)
  @param delta_x Optional horizontal offset from current graphics origin where to print the captured rectangle.
  @param delta_y As above, vertically.
  */
-void Fl_Abstract_Printer::print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
+void Fl_Paged_Device::print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
 {
   int slice, width, offset, count = 0;
-  Fl_Device *current = Fl_Device::display_device()->set_current();
+  Fl_Graphics_Driver *current = Fl_Display_Device::display_device()->set_current();
   Fl_Window *save_front = Fl::first_window();
   win->show();
   fl_gc = NULL;
@@ -144,7 +147,8 @@ void Fl_Abstract_Printer::print_window_part(Fl_Window *win, int x, int y, int w,
     image_data[count++] = fl_read_image(NULL, x + offset, y, width, h);
   }  
   save_front->show();
-  current->set_current();
+  //current->set_current();
+  fl_device = current;
   for ( int i = 0, offset = 0; i < count; i++, offset += slice) {
     width = slice; 
     if (offset + width > w) width = w - offset;
@@ -158,7 +162,7 @@ void Fl_Abstract_Printer::print_window_part(Fl_Window *win, int x, int y, int w,
 }
 
 #ifdef __APPLE__
-void Fl_Abstract_Printer::add_image(Fl_Image *image, const uchar *data)
+void Fl_Paged_Device::add_image(Fl_Image *image, const uchar *data)
 {
   struct chain_elt *elt =  (struct chain_elt *)calloc(sizeof(struct chain_elt), 1);
   elt->image = image;
@@ -167,7 +171,7 @@ void Fl_Abstract_Printer::add_image(Fl_Image *image, const uchar *data)
   image_list_ = elt;
 }
 
-void Fl_Abstract_Printer::delete_image_list()
+void Fl_Paged_Device::delete_image_list()
 {
   while(image_list_) {
     struct chain_elt *next = image_list_->next;
@@ -188,7 +192,7 @@ void Fl_Abstract_Printer::delete_image_list()
  @param[out] topage if non-null, *topage is set to the last page the user wants printed
  @return 0 iff OK
  */
-int Fl_Abstract_Printer::start_job(int pagecount, int *frompage, int *topage) {return 1;}
+int Fl_Paged_Device::start_job(int pagecount, int *frompage, int *topage) {return 1;}
 
 /**
  @brief Starts a new printed page
@@ -197,7 +201,7 @@ int Fl_Abstract_Printer::start_job(int pagecount, int *frompage, int *topage) {r
  and with origin at the top left of the printable page area.
  @return 0 iff OK
  */
-int Fl_Abstract_Printer::start_page (void) {return 1;}
+int Fl_Paged_Device::start_page (void) {return 1;}
 
 /**
  @brief Computes the width and height of the printable area of the page.
@@ -207,7 +211,7 @@ int Fl_Abstract_Printer::start_page (void) {return 1;}
  Values account for the user-selected paper type and print orientation.
  @return 0 iff OK.
  */
-int Fl_Abstract_Printer::printable_rect(int *w, int *h) {return 1;}
+int Fl_Paged_Device::printable_rect(int *w, int *h) {return 1;}
 
 /**
  @brief Computes the dimensions of margins that lie between the printable page area and
@@ -220,7 +224,7 @@ int Fl_Abstract_Printer::printable_rect(int *w, int *h) {return 1;}
  @param[out] right If non-null, *right is set to the right margin size.
  @param[out] bottom If non-null, *bottom is set to the bottom margin size.
  */
-void Fl_Abstract_Printer::margins(int *left, int *top, int *right, int *bottom) {}
+void Fl_Paged_Device::margins(int *left, int *top, int *right, int *bottom) {}
 
 /**
  @brief Sets the position in page coordinates of the origin of graphics functions.
@@ -233,7 +237,7 @@ void Fl_Abstract_Printer::margins(int *left, int *top, int *right, int *bottom) 
  @param[in] x Horizontal position in page coordinates of the desired origin of graphics functions.
  @param[in] y Same as above, vertically.
  */
-void Fl_Abstract_Printer::origin(int x, int y) {}
+void Fl_Paged_Device::origin(int x, int y) {}
 
 /**
  @brief Changes the scaling of page coordinates.
@@ -244,7 +248,7 @@ void Fl_Abstract_Printer::origin(int x, int y) {}
  @param scale_x Horizontal dimensions of plot are multiplied by this quantity.
  @param scale_y Same as above, vertically.
  */
-void Fl_Abstract_Printer::scale (float scale_x, float scale_y) {}
+void Fl_Paged_Device::scale (float scale_x, float scale_y) {}
 
 /**
  @brief Rotates the graphics operations relatively to paper.
@@ -253,19 +257,19 @@ void Fl_Abstract_Printer::scale (float scale_x, float scale_y) {}
  Successive rotate() calls don't combine their effects.
  @param angle Rotation angle in counterclockwise degrees.
  */
-void Fl_Abstract_Printer::rotate(float angle) {}
+void Fl_Paged_Device::rotate(float angle) {}
 
 /**
  @brief To be called at the end of each page.
  *
  @return 0 iff OK.
  */
-int Fl_Abstract_Printer::end_page (void) {return 1;}
+int Fl_Paged_Device::end_page (void) {return 1;}
 
 /**
  @brief To be called at the end of a print job.
  */
-void Fl_Abstract_Printer::end_job (void) {}
+void Fl_Paged_Device::end_job (void) {}
 
 /**
  @brief Translates the current graphics origin accounting for the current rotation.
@@ -274,12 +278,12 @@ void Fl_Abstract_Printer::end_job (void) {}
  Each translate() call must be matched by an untranslate() call.
  Successive translate() calls add up their effects.
  */
-void Fl_Abstract_Printer::translate(int x, int y) {}
+void Fl_Paged_Device::translate(int x, int y) {}
 
 /**
  @brief Undoes the effect of a previous translate() call.
  */
-void Fl_Abstract_Printer::untranslate(void) {}
+void Fl_Paged_Device::untranslate(void) {}
 
 //
 // End of "$Id$".

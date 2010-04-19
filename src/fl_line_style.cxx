@@ -52,7 +52,7 @@ void fl_quartz_restore_line_style_() {
 }
 #endif
 
-void Fl_Device::line_style(int style, int width, char* dashes) {
+void Fl_Graphics_Driver::line_style(int style, int width, char* dashes) {
 
 #if defined(USE_X11)
   int ndashes = dashes ? strlen(dashes) : 0;
@@ -119,7 +119,7 @@ void Fl_Device::line_style(int style, int width, char* dashes) {
   fl_quartz_line_width_ = (float)width; 
   fl_quartz_line_cap_ = Cap[(style>>8)&3];
   // when printing kCGLineCapSquare seems better for solid lines
-  if ( Fl_Device::current()->type() == Fl_Printer::device_type && style == FL_SOLID && dashes == NULL ) {
+  if ( Fl_Surface_Device::surface()->type() == Fl_Printer::device_type && style == FL_SOLID && dashes == NULL ) {
     fl_quartz_line_cap_ = kCGLineCapSquare;
     }
   fl_quartz_line_join_ = Join[(style>>12)&3];

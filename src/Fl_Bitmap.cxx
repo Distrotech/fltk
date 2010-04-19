@@ -269,7 +269,7 @@ static int start(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int w, int h, in
 }
 
 #ifdef __APPLE__
-void Fl_Quartz_Device::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Quartz_Graphics_Driver::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (!bm->array) {
     bm->draw_empty(XP, YP);
@@ -288,7 +288,7 @@ void Fl_Quartz_Device::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int c
 }
 
 #elif defined(WIN32)
-void Fl_GDI_Device::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_GDI_Graphics_Driver::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (!bm->array) {
     bm->draw_empty(XP, YP);
@@ -304,7 +304,7 @@ void Fl_GDI_Device::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, 
   HDC tempdc;
   int save;
   BOOL use_print_algo = false;
-  if (fl_device->type() == Fl_Printer::device_type) {
+  if (fl_surface->type() == Fl_Printer::device_type) {
     static HMODULE hMod = NULL;
     if (!hMod) {
       hMod = LoadLibrary("MSIMG32.DLL");
@@ -349,7 +349,7 @@ void Fl_GDI_Device::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, 
 }  
 
 #else // Xlib
-void Fl_Xlib_Device::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
+void Fl_Xlib_Graphics_Driver::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (!bm->array) {
     bm->draw_empty(XP, YP);

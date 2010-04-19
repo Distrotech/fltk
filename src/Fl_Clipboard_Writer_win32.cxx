@@ -32,7 +32,7 @@
 #include <FL/fl_draw.H>
 
 
-int Fl_Clipboard_Writer::start(int w, int h)
+int Fl_Clipboard_Device::start(int w, int h)
 {
   HDC oldflgc = fl_gc;
   int factor = 32; // empirically set
@@ -56,7 +56,7 @@ int Fl_Clipboard_Writer::start(int w, int h)
   return 0;
 }
 
-int Fl_Clipboard_Writer::stop(void)
+int Fl_Clipboard_Device::stop(void)
 {
   int w, h;
   HENHMETAFILE hmf = CloseEnhMetaFile (fl_gc);
@@ -69,7 +69,7 @@ int Fl_Clipboard_Writer::stop(void)
     DeleteEnhMetaFile(hmf);
   }
   DeleteDC(fl_gc);
-  Fl_Device::display_device()->set_current();
+  Fl_Display_Device::display_device()->set_current();
   fl_gc = NULL;
   return 0;
 }
@@ -89,7 +89,7 @@ static void do_translate(int x, int y)
   ModifyWorldTransform(fl_gc, &tr, MWT_LEFTMULTIPLY);
 }
 
-void Fl_Clipboard_Writer::translate(int x, int y)
+void Fl_Clipboard_Device::translate(int x, int y)
 {
   do_translate(x, y);
   if (translate_stack_depth < translate_stack_max) {
@@ -99,7 +99,7 @@ void Fl_Clipboard_Writer::translate(int x, int y)
   }
 }
 
-void Fl_Clipboard_Writer::untranslate(void)
+void Fl_Clipboard_Device::untranslate(void)
 {
   if (translate_stack_depth > 0) {
     translate_stack_depth--;

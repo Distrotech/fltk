@@ -41,6 +41,7 @@ Fl_Printer::Fl_Printer(void)
   y_offset = 0;
   scale_x = scale_y = 1.;
   type_ = device_type;
+  driver = Fl_Surface_Device::current();
 }
 
 Fl_Printer::~Fl_Printer(void) {}
@@ -126,6 +127,7 @@ int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
   if (status != noErr) return 1;
   y_offset = x_offset = 0;
   this->set_current();
+  fl_surface = this;
   return 0;
 }
 
@@ -288,7 +290,8 @@ void Fl_Printer::end_job (void)
     fl_alert ("PM Session error %d", (int)status);
   }
   PMSessionEndDocumentNoDialog(printSession);
-  Fl_Device::display_device()->set_current();
+  Fl_Display_Device::display_device()->set_current();
+  fl_surface = Fl_Display_Device::display_device();
   fl_gc = 0;
   Fl::first_window()->show();
 }

@@ -38,7 +38,7 @@ static size_t MyPutBytes (void* info, const void* buffer, size_t count)
   return count;
 }
 
-int Fl_Clipboard_Writer::start(int w, int h)
+int Fl_Clipboard_Device::start(int w, int h)
 {
   Fl_X::q_release_context();
   width = w;
@@ -71,7 +71,7 @@ int Fl_Clipboard_Writer::start(int w, int h)
   return 0;
 }
 
-int Fl_Clipboard_Writer::stop(void)
+int Fl_Clipboard_Device::stop(void)
 {
   int w, h;
   CGContextRestoreGState(fl_gc);
@@ -152,18 +152,18 @@ int Fl_Clipboard_Writer::stop(void)
   CGContextRelease(fl_gc);
   fl_gc = NULL;
   free(mem);
-  Fl_Device::display_device()->set_current();
+  Fl_Display_Device::display_device()->set_current();
   return 0;
 }
 
-void Fl_Clipboard_Writer::translate(int x, int y)
+void Fl_Clipboard_Device::translate(int x, int y)
 {
   CGContextSaveGState(fl_gc);
   CGContextTranslateCTM(fl_gc, x, y );
   CGContextSaveGState(fl_gc);
 }
 
-void Fl_Clipboard_Writer::untranslate(void)
+void Fl_Clipboard_Device::untranslate(void)
 {
   CGContextRestoreGState(fl_gc);
   CGContextRestoreGState(fl_gc);
