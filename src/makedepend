@@ -92,8 +92,8 @@ Fl_Choice.o: ../FL/fl_draw.H ../FL/Fl_Window.H ../FL/Fl_Device.H ../FL/x.H
 Fl_Choice.o: ../FL/Fl_Plugin.H ../FL/Fl_Preferences.H ../FL/Fl_Image.H
 Fl_Choice.o: ../FL/Fl_Bitmap.H ../FL/Fl_Pixmap.H ../FL/Fl_RGB_Image.H
 Fl_Choice.o: flstring.h ../config.h
-Fl_Clipboard_Writer.o: ../FL/Fl_Clipboard_Writer.H ../FL/Fl_Printer.H
-Fl_Clipboard_Writer.o: ../FL/x.H ../FL/fl_draw.H
+Fl_Clipboard_Device.o: ../FL/Fl_Clipboard_Device.H ../FL/Fl_Printer.H
+Fl_Clipboard_Device.o: ../FL/x.H ../FL/fl_draw.H
 Fl_Clock.o: ../FL/Fl.H ../FL/fl_utf8.h ../FL/Fl_Export.H ../FL/fl_types.h
 Fl_Clock.o: ../FL/Xutf8.h ../FL/Enumerations.H ../FL/Fl_Export.H
 Fl_Clock.o: ../FL/fl_types.h ../FL/Fl_Clock.H ../FL/Fl_Widget.H

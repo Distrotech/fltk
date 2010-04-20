@@ -39,7 +39,7 @@ CPPFILES = \
 	Fl_Check_Browser.cxx \
 	Fl_Check_Button.cxx \
 	Fl_Choice.cxx \
-	Fl_Clipboard_Writer.cxx \
+	Fl_Clipboard_Device.cxx \
 	Fl_Clock.cxx \
 	Fl_Color_Chooser.cxx \
 	Fl_Counter.cxx \
@@ -495,7 +495,7 @@ fl_read_image.o: fl_read_image_mac.cxx fl_read_image_win32.cxx
 fl_set_fonts.o:	fl_set_fonts_mac.cxx fl_set_fonts_x.cxx \
 		fl_set_fonts_xft.cxx fl_set_fonts_win32.cxx
 Fl_Printer.o:	Fl_Quartz_Printer.mm Fl_GDI_Printer.cxx Fl_PS_Printer.cxx
-Fl_Clipboard_Writer.o:  Fl_Clipboard_Writer.cxx Fl_Clipboard_Writer_mac.cxx Fl_Clipboard_Writer_win32.cxx
+Fl_Clipboard_Device.o:  Fl_Clipboard_Device.cxx Fl_Clipboard_Device_mac.cxx Fl_Clipboard_Device_win32.cxx
 
 fl_arci.o:	../FL/mac.H ../FL/win32.H
 Fl_arg.o:	../FL/mac.H ../FL/win32.H
