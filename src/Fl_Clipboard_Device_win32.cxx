@@ -58,7 +58,6 @@ int Fl_Clipboard_Device::start(int w, int h)
 
 int Fl_Clipboard_Device::stop(void)
 {
-  int w, h;
   HENHMETAFILE hmf = CloseEnhMetaFile (fl_gc);
   if ( hmf != NULL ) {
     if ( OpenClipboard (NULL) ){

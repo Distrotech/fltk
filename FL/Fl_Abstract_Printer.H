@@ -64,6 +64,8 @@ protected:
 #endif
   /** \brief The constructor */
   Fl_Paged_Device() : Fl_Surface_Device(NULL) {type_ = device_type;};
+  /** \brief The destructor */
+  virtual ~Fl_Paged_Device() {};
 public:
   static const char *device_type;
   virtual int start_job(int pagecount, int *frompage = NULL, int *topage = NULL);

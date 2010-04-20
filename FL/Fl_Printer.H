@@ -125,8 +125,9 @@ public:
 #endif	// Fl_Printer (platform-dependent)
 
   // Fl_Printer:: common for all platforms
-public:	// just to be sure ...
+private:
   void set_current();
+public:
   static const char *device_type;
 
 
