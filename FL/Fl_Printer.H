@@ -120,8 +120,6 @@ public:
 
 class Fl_Printer : public Fl_PostScript_File_Device {
 public:
-  Fl_Printer(void) { /*gc = NULL;*/ };
-  ~Fl_Printer(void) {};
   int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
 
 #endif	// Fl_Printer (platform-dependent)
