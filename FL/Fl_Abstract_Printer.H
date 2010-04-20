@@ -62,6 +62,7 @@ protected:
   /** \brief deletes the page image list */
   void delete_image_list(); 
 #endif
+  /** \brief The constructor */
   Fl_Paged_Device() : Fl_Surface_Device(NULL) {type_ = device_type;};
 public:
   static const char *device_type;
