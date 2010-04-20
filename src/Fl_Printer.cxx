@@ -66,8 +66,6 @@ void Fl_Printer::set_current()
   fl_gc = (CGContextRef)gc;
 #elif defined(WIN32)
   fl_gc = (HDC)gc;
-#else
-  fl_gc = (_XGC*)gc;
 #endif
   this->Fl_Surface_Device::set_current();
 }

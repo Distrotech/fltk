@@ -2972,10 +2972,11 @@ int MACscreen_init(XRectangle screens[])
                 	     nil];
     [NSApp  orderFrontStandardAboutPanelWithOptions:options];
   }
+//#include <FL/Fl_PSfile_Device.H>
 - (void)printPanel
 {
   Fl_Printer printer;
-  //Fl_PSfile_Device printer;
+  //Fl_PostScript_File_Device printer;
   int w, h;
   Fl_Window *win = Fl::first_window();
   if(!win) return;

@@ -345,8 +345,6 @@ protected:
   /** \brief Constructor that sets the graphics driver to use for the created surface. */
   Fl_Surface_Device(Fl_Graphics_Driver *graphics_driver) {_driver = graphics_driver; };
 public:
-  /** \brief the surface's graphics context, if there's one, NULL otherwise */
-  void *gc; 
   static const char *device_type;
   virtual void set_current(void);
   /** \brief Sets the graphics driver of this drawing surface. */

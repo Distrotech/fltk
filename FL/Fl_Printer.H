@@ -74,6 +74,8 @@
  */
 class Fl_Printer : public Fl_Paged_Device {
 private:
+  /** \brief the printer's graphics context, if there's one, NULL otherwise */
+  void *gc; 
 #ifdef __APPLE__
   float scale_x;
   float scale_y;
@@ -117,19 +119,18 @@ public:
 #include <FL/Fl_PSfile_Device.H>
 
 class Fl_Printer : public Fl_PostScript_File_Device {
-
 public:
-  Fl_Printer(void) { gc = NULL; };
+  Fl_Printer(void) { /*gc = NULL;*/ };
   ~Fl_Printer(void) {};
   int start_job(int pages, int *firstpage = NULL, int *lastpage = NULL);
 
 #endif	// Fl_Printer (platform-dependent)
 
   // Fl_Printer:: common for all platforms
+public:	// just to be sure ...
   void set_current();
   static const char *device_type;
 
-public:	// just to be sure ...
 
   /** \name These attributes apply to the Xlib platform only.
    \{

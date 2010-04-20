@@ -250,6 +250,9 @@ public:
  \brief To send graphical output to a PostScript file.
  */
 class Fl_PostScript_File_Device : public Fl_Paged_Device {
+#ifdef __APPLE__
+  CGContextRef gc;
+#endif
 protected:
   Fl_PostScript_Graphics_Driver *driver();
 public:
@@ -270,6 +273,9 @@ public:
   void untranslate(void);
   int end_page (void);    
   void end_job(void);
+#ifdef __APPLE__
+  void set_current() { fl_gc = gc; Fl_Paged_Device::set_current(); }
+#endif
   
   static const char *file_chooser_title; 
 };

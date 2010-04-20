@@ -42,7 +42,7 @@ private:
   CFMutableDataRef pdfdata_;
 #endif
   /** \brief the clipboard's graphics context, if there's one, NULL otherwise */
-//  void *gc;
+  void *gc;
   void traverse(Fl_Widget *widget);
   void translate(int x, int y);
   void untranslate(void);
