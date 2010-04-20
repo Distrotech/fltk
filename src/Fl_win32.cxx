@@ -1973,7 +1973,7 @@ void printFront(Fl_Widget *o, void *data)
   o->window()->show();
 }
 
-#include <FL/Fl_Clipboard_Writer.H>
+#include <FL/Fl_Clipboard_Device.H>
 void copyFront(Fl_Widget *o, void *data)
 {
   Fl_Clipboard_Device writer;
