@@ -83,7 +83,7 @@ extern "C" {
 #include <FL/Fl_Tooltip.H>
 #include <FL/Fl_Sys_Menu_Bar.H>
 #include <FL/Fl_Printer.H>
-#include <FL/Fl_Clipboard_Writer.H>
+#include <FL/Fl_Clipboard_Device.H>
 #include <FL/Fl_Input_.H>
 #include <stdio.h>
 #include <stdlib.h>

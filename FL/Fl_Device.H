@@ -339,20 +339,20 @@ public:
  \brief A surface that's susceptible to receive graphical output.
  */
 class Fl_Surface_Device : public Fl_Device {
-protected:
   /** \brief The graphics driver in use by this surface. */
-  Fl_Graphics_Driver *driver;
+  Fl_Graphics_Driver *_driver;
+protected:
   /** \brief Constructor that sets the graphics driver to use for the created surface. */
-  Fl_Surface_Device(Fl_Graphics_Driver *graphics_driver) {driver = graphics_driver; };
+  Fl_Surface_Device(Fl_Graphics_Driver *graphics_driver) {_driver = graphics_driver; };
 public:
   /** \brief the surface's graphics context, if there's one, NULL otherwise */
   void *gc; 
   static const char *device_type;
   virtual void set_current(void);
   /** \brief Sets the graphics driver of this drawing surface. */
-  inline void set_driver(Fl_Graphics_Driver *graphics_driver) {driver = graphics_driver;};
+  inline void driver(Fl_Graphics_Driver *graphics_driver) {_driver = graphics_driver;};
   /** \brief Returns the graphics driver of this drawing surface. */
-  inline Fl_Graphics_Driver *get_driver() {return driver; };
+  inline Fl_Graphics_Driver *driver() {return _driver; };
   /** \brief the surface that currently receives graphics output */
   static Fl_Surface_Device *surface() {return fl_surface; }; 
 };
