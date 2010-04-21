@@ -35,7 +35,7 @@
 
 extern void fl_quartz_restore_line_style_();
 
-Fl_Printer::Fl_Printer(void)
+Fl_System_Printer::Fl_System_Printer(void)
 {
   x_offset = 0;
   y_offset = 0;
@@ -44,7 +44,7 @@ Fl_Printer::Fl_Printer(void)
   driver(fl_device);
 }
 
-Fl_Printer::~Fl_Printer(void) {}
+Fl_System_Printer::~Fl_System_Printer(void) {}
 
 int Fl_Printer::start_job (int pagecount, int *frompage, int *topage)
 //printing using a Quartz graphics context

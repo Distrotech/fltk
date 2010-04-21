@@ -364,6 +364,7 @@ public:
 class Fl_Display_Device : public Fl_Surface_Device {
 public:
   static const char *device_type;
+  /** \brief A constructor that sets the graphics driver used by the display */
   Fl_Display_Device(Fl_Graphics_Driver *graphics_driver) : Fl_Surface_Device( graphics_driver) { type_ = device_type; };
   /**
    @brief    Returns the platform's display device.

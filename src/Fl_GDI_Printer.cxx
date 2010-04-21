@@ -34,13 +34,13 @@
 
 extern HWND fl_window;
 
-Fl_Printer::Fl_Printer(void) : Fl_Paged_Device() {
+Fl_Printer::Fl_System_Printer(void) : Fl_Paged_Device() {
   hPr = NULL;
   type_ = device_type;
   driver(fl_device);
 }
 
-Fl_Printer::~Fl_Printer(void) {
+Fl_Printer::~Fl_System_Printer(void) {
   if (hPr) end_job();
 }
 
