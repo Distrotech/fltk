@@ -354,6 +354,8 @@ public:
   inline Fl_Graphics_Driver *driver() {return _driver; };
   /** \brief the surface that currently receives graphics output */
   static Fl_Surface_Device *surface() {return fl_surface; }; 
+  /** \brief The destructor. */
+  virtual ~Fl_Surface_Device() {}
 };
 
 /**
