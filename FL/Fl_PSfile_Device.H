@@ -228,7 +228,6 @@ class Clip {
   void draw(Fl_Bitmap * bitmap,int XP, int YP, int WP, int HP, int cx, int cy);
     
 public:
-  Fl_PostScript_Graphics_Driver();
   void page_policy(int p);
   int page_policy(){return page_policy_;};
   void close_command( int (*cmd)(FILE *)){close_cmd_=cmd;};
@@ -244,6 +243,8 @@ public:
   
   void place(double x, double y, double tx, double ty, double scale = 1);
 #endif // FL_DOXYGEN
+  Fl_PostScript_Graphics_Driver();
+  ~Fl_PostScript_Graphics_Driver();
 };
 
 /**

@@ -165,6 +165,8 @@ protected:
   friend void fl_draw_image(Fl_Draw_Image_Cb cb, void* data, int X,int Y,int W,int H, int D);
   friend FL_EXPORT void fl_draw_image_mono(Fl_Draw_Image_Cb cb, void* data, int X,int Y,int W,int H, int D);
   
+  /** \brief The constructor. */
+  Fl_Graphics_Driver() {};
   /** \brief see fl_rect(int x, int y, int w, int h). */
   virtual void rect(int x, int y, int w, int h);
   /** \brief see fl_rectf(int x, int y, int w, int h). */
@@ -284,9 +286,8 @@ protected:
     
 public:
   static const char *device_type;
-
-  Fl_Graphics_Driver() {};
-    
+  /** \brief The destructor */
+  virtual ~Fl_Graphics_Driver() {};
 };
 
 #if defined(__APPLE__) || defined(FL_DOXYGEN)

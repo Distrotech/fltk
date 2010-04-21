@@ -52,6 +52,11 @@ Fl_PostScript_Graphics_Driver::Fl_PostScript_Graphics_Driver(void)
   bg_r = bg_g = bg_b = 255;
 }
 
+/** \brief The destructor. */
+Fl_PostScript_Graphics_Driver::~Fl_PostScript_Graphics_Driver() {
+  if(ps_filename_) free(ps_filename_);
+}
+
 /**
  @brief The constructor.
  */
@@ -125,9 +130,7 @@ int Fl_PostScript_File_Device::start_job (FILE *ps_output, int pagecount, enum F
  */
 Fl_PostScript_File_Device::~Fl_PostScript_File_Device() {
   Fl_PostScript_Graphics_Driver *ps = driver();
-  if (ps->ps_filename_) free(ps->ps_filename_);
-  Fl_Graphics_Driver *gd = driver();
-  if (gd) delete gd;
+  if (ps) delete ps;
 }
 
 #ifndef FL_DOXYGEN
