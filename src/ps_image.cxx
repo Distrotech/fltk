@@ -29,7 +29,7 @@
 #include <math.h>
 #include <string.h>
 
-#include <FL/Fl_PSfile_Device.H>
+#include <FL/Fl_PostScript.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Pixmap.H>
 #include <FL/Fl_Bitmap.H>

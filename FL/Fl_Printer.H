@@ -25,28 +25,28 @@
 //     http://www.fltk.org/str.php
 //
 /** \file Fl_Printer.H 
- \brief declaration of classes Fl_Printer,  Fl_Device_Plugin.
+ \brief declaration of classes Fl_System_Printer, Fl_PostScript_Printer, Fl_Printer, Fl_Device_Plugin.
  */
 
 #ifndef Fl_Printer_H
 #define Fl_Printer_H
 
-#include <FL/Fl_Abstract_Printer.H>
+#include <FL/Fl_Paged_Device.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Pixmap.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Bitmap.H>
 #include <stdio.h>
 #if !(defined(__APPLE__) || defined(WIN32))
-#include <FL/Fl_PSfile_Device.H>
+#include <FL/Fl_PostScript.H>
 #endif
 
 #if defined(__APPLE__) || defined(WIN32) || defined(FL_DOXYGEN)
 /**
- \brief A synonym of Fl_Printer under MSWindows and Mac OS X
- *
- This class is implemented under MSWindows and Mac OS X only. Use Fl_Printer instead that is cross-platform
- and has the same API.
+ \brief Print support under MSWindows and Mac OS X.
+*
+ Use Fl_Printer instead that is cross-platform and has the same API.
+ Fl_Printer is typedef'ed to Fl_System_Printer under MSWindows and Mac OS X. 
  */
 class Fl_System_Printer : public Fl_Paged_Device {
 private:
@@ -121,10 +121,10 @@ typedef Fl_System_Printer Fl_Printer;
   
 #if !(defined(__APPLE__) || defined(WIN32))
 /**
- \brief A synonym of Fl_Printer for the X11 platform
+ \brief Print support under Unix/Linux.
  *
- This class is implemented for the X11 platform only. Use Fl_Printer instead that is cross-platform
- and has the same API.
+ Use Fl_Printer instead that is cross-platform and has the same API.
+ Fl_Printer is typedef'ed to Fl_PostScript_Printer under Unix/Linux. 
  */
 class Fl_PostScript_Printer : public Fl_PostScript_File_Device {
 private:
@@ -160,11 +160,10 @@ public:
 typedef Fl_PostScript_Printer Fl_Printer;
 #endif
 
-#ifdef FL_DOXYGEN
 /**
- * @brief Provides an OS-independent interface to printing.
+ * @brief OS-independent print support.
  *
- It allows to use all FLTK drawing, color, text, and clip functions, and to have them operate
+ Fl_Printer allows to use all FLTK drawing, color, text, and clip functions, and to have them operate
  on printed page(s). There are two main, non exclusive, ways to use it.
  <ul><li>Print any widget (standard, custom, Fl_Window, Fl_Gl_Window) as it appears 
  on screen, with optional translation and scaling. This is done by calling print_widget() 
@@ -175,10 +174,10 @@ typedef Fl_PostScript_Printer Fl_Printer;
  In both cases, begin by start_job(), start_page(), printable_rect() and origin() calls
  and finish by end_page() and end_job() calls.
  <p><b>Platform specifics</b>
- <br>Class Fl_Printer is a synonym of Fl_PostScript_Printer under the X11 platform 
- and of Fl_System_Printer otherwise.
+ <br>Fl_Printer is typedef'ed to Fl_PostScript_Printer under Unix/Linux 
+ and to Fl_System_Printer otherwise. Both classes have the same API.
  <ul>
- <li>Xlib-based platforms (<i>e.g.</i>, Linux, Unix):
+ <li>Unix/Linux platforms:
  Use the static public attributes of this class to set the print dialog to other languages 
  than English. For example, the "Printer:" dialog item Fl_Printer::dialog_printer can be set to French with:
  \code
@@ -195,7 +194,8 @@ typedef Fl_PostScript_Printer Fl_Printer;
  <li>Mac OS X platform: all graphics requests print as on display.
  </ul>
  */
-// this pseudo-class is for Doxygen documentation purpose only
+#ifdef FL_DOXYGEN
+// this class is NOT compiled. It's here for Doxygen documentation purpose only
 class Fl_Printer : public Fl_System_Printer, Fl_PostScript_Printer {
 public:
   static const char *device_type;
