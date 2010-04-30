@@ -70,12 +70,6 @@ static int min(int i1, int i2)
 
 #endif
 
-static const char *ControlCodeTable[32] = {
-  "nul", "soh", "stx", "etx", "eot", "enq", "ack", "bel",
-  "bs", "ht", "nl", "vt", "np", "cr", "so", "si",
-  "dle", "dc1", "dc2", "dc3", "dc4", "nak", "syn", "etb",
-  "can", "em", "sub", "esc", "fs", "gs", "rs", "us"
-};
 
 static char *undobuffer;
 static int undobufferlength;
@@ -679,57 +673,6 @@ int Fl_Text_Buffer::word_end(int pos) const {
 }
 
 
-// Expand from the byte representation into some readable text.
-// Under unicode, this is not really needed because all characters should
-// be prinatble one way or the other. But since we use this to (badly) simulate
-// tabs, we can leave this here anyway.
-// - unicode ok
-int Fl_Text_Buffer::expand_character(int pos, int indent, char *outStr) const {
-  const char *src = address(pos);
-  return expand_character(src, indent, outStr, mTabDist);
-}
-
-
-// static function and counterpart to "character_width"
-// - unicode ok
-// FIXME: harmonise with new character_width(char*...) version
-//
-int Fl_Text_Buffer::expand_character(const char *src, int indent, char *outStr, int tabDist)
-{
-  char c = *src;
-  /* Convert tabs to spaces */
-  if (c == '\t') {
-    int nSpaces = tabDist - (indent % tabDist);
-    for (int i = 0; i < nSpaces; i++)
-      outStr[i] = ' ';
-    return nSpaces;
-  }
-  
-  /* Convert control codes to readable character sequences */
-  if (((unsigned char) c) <= 31) {
-    sprintf(outStr, "<%s>", ControlCodeTable[(unsigned char) c]);
-    return strlen(outStr);
-  } else if (c == 127) {
-    sprintf(outStr, "<del>");
-    return 5;
-  } else if ((c & 0x80) && !(c & 0x40)) {
-#ifdef DEBUG
-    fprintf(stderr, "%s:%d - Error in UTF-8 encoding!\n", __FILE__, __LINE__);
-#endif
-    *outStr = c;
-    return 1;
-  } else if (c & 0x80) {
-    int i, n = fl_utf8len(c);
-    for (i=0; i<n; i++) *outStr++ = *src++;
-    return n;
-  }
-  
-  /* Otherwise, just return the character */
-  *outStr = c;
-  return 1;
-}
-
-
 // This function takes a character and optionally converts it into a little
 // string which will replace the character on screen. This function returns
 // the number of bytes in the replacement string, but *not* the number of 
@@ -779,15 +722,18 @@ int Fl_Text_Buffer::character_width(const char    c, int indent, int tabDist)
 }
 #endif
 
+// FIXME: is this funciton still needed?
 int Fl_Text_Buffer::count_displayed_characters(int lineStartPos,
 					       int targetPos) const
 {
   int charCount = 0;
-  char expandedChar[FL_TEXT_MAX_EXP_CHAR_LEN];
   
   int pos = lineStartPos;
-  while (pos < targetPos)
-    charCount += expand_character(pos++, charCount, expandedChar);
+  while (pos < targetPos) {
+    int len = fl_utf8len(*address(pos));
+    charCount += 1;
+    pos += len;
+  }
   return charCount;
 } 
 

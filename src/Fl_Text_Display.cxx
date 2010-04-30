@@ -1928,20 +1928,19 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType ) const {
      to find the character position corresponding to the X coordinate */
   xStep = text_area.x - mHorizOffset;
   outIndex = 0;
-  for (charIndex = 0;
-       charIndex < lineLen;
-       charIndex += fl_utf8len(lineStr[charIndex]) ) 
+  for (charIndex = 0; charIndex < lineLen; ) 
   {
-    charLen = Fl_Text_Buffer::expand_character( lineStr+charIndex, outIndex, expandedChar,
-              mBuffer->tab_distance());
+    // FIXME: use a unified function for this
+    charLen = fl_utf8len(lineStr[charIndex]);    
     charStyle = position_style( lineStart, lineLen, charIndex );
-    charWidth = string_width( expandedChar, charLen, charStyle );
+    charWidth = string_width( lineStr+charIndex, charLen, charStyle );
     if ( X < xStep + ( posType == CURSOR_POS ? charWidth / 2 : charWidth ) ) {
       free((char *)lineStr);
       return lineStart + charIndex;
     }
     xStep += charWidth;
     outIndex += charLen;
+    charIndex += charLen;
   }
 
   /* If the X position was beyond the end of the line, return the position
@@ -2359,6 +2358,8 @@ static int countlines( const char *string ) {
 int Fl_Text_Display::measure_vline( int visLineNum ) const {
   
   return 1024; // FIXME: time waster!
+  
+#if 0
   /* The line above helps us clean up this widget.
    
    The original code measures each individual character. That is not only 
@@ -2404,6 +2405,7 @@ int Fl_Text_Display::measure_vline( int visLineNum ) const {
     }
   }
   return width;
+#endif
 }
 
 /**
@@ -2828,26 +2830,13 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
    insertion/deletion, though static display and wrapping and resizing
    should now be solid because they are now used for online help display.
 */
-
 int Fl_Text_Display::measure_proportional_character(const char *s, int colNum, int pos) const {
-    int charLen, style;
-    char expChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
-    Fl_Text_Buffer *styleBuf = mStyleBuffer;
-    
-  charLen = Fl_Text_Buffer::expand_character(s, colNum, expChar, buffer()->tab_distance()); // FIXME: unicode
-    if (styleBuf == 0) {
-	style = 0;
-    } else {
-      // FIXME: character is ucs-4
-	style = (unsigned char)styleBuf->at(pos);
-	if (style == mUnfinishedStyle && mUnfinishedHighlightCB) {
-    	    /* encountered "unfinished" style, trigger parsing */
-    	    (mUnfinishedHighlightCB)(pos, mHighlightCBArg);
-          // FIXME: character is ucs-4
-    	    style = (unsigned char)styleBuf->at(pos);
-	}
-    }
-    return string_width(expChar, charLen, style);
+  int charLen = fl_utf8len(*s), style = 0;
+  if (mStyleBuffer) {
+    const char *b = mStyleBuffer->address(pos);
+    style = *b;
+  }
+  return string_width(s, charLen, style);
 }
 
 /**

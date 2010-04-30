@@ -537,35 +537,6 @@ public:
   int word_end(int pos) const;
   
   /**
-   Expands the given character to a displayable format. Tabs and
-   other control characters are given special treatment.
-   Get a character from the text buffer expanded into its screen
-   representation (which may be several characters for a tab or a
-   control code).  Returns the number of characters written to \p outStr.
-   \p indent is the number of characters from the start of the line
-   for figuring tabs.  Output string is guranteed to be shorter or
-   equal in length to FL_TEXT_MAX_EXP_CHAR_LEN
-   \todo unicode check
-   */
-  int expand_character(int pos, int indent, char *outStr) const;
-  
-  /**
-   Expand a single character \p c from the text buffer into it's displayable
-   screen representation (which may be several characters for a tab or a
-   control code).  Returns the number of characters added to \p outStr.
-   \p indent is the number of characters from the start of the line
-   for figuring tabs of length \p tabDist.  Output string is guaranteed 
-   to be shorter or equal in length to FL_TEXT_MAX_EXP_CHAR_LEN
-   Tabs and  other control characters are given special treatment.
-   \param src address of utf-8 text
-   \param indent 
-   \param[out] outStr write substitution here
-   \param tabDist
-   \return number of byte in substitution
-   */
-  static int expand_character(const char *src, int indent, char* outStr, int tabDist);
-  
-  /**
    Return the length in displayed characters of character \p c expanded
    for display (as discussed above in expand_character() ).  
    \param src address of utf-8 text
@@ -574,7 +545,6 @@ public:
    \return number of byte in substitution
    */
   static int character_width(const char *src, int indent, int tabDist);
-  //static int character_width(const char    c, int indent, int tabDist);
 
   /**
    Count the number of displayed characters between buffer position
