@@ -681,7 +681,6 @@ void Fl_Text_Display::overstrike(const char* text) {
 int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
   int charIndex, lineStartPos, fontHeight, lineLen;
   int visLineNum, charLen, outIndex, xStep, charStyle;
-  char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
   const char *lineStr;
 
 //  printf("position_to_xy(pos=%d, X=%p, Y=%p)\n", pos, X, Y);
@@ -724,17 +723,16 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
 
   /* Step through character positions from the beginning of the line
      to "pos" to calculate the X coordinate */
+  // FIXME: use the text expander in draw_vline to calculate this!
   xStep = text_area.x - mHorizOffset;
   outIndex = 0;
-  for (charIndex = 0; 
-       charIndex < lineLen && charIndex < pos - lineStartPos; 
-       charIndex += fl_utf8len(lineStr[charIndex]) ) 
+  for (charIndex = 0; charIndex < lineLen && charIndex < pos - lineStartPos; ) 
   {
-    charLen = Fl_Text_Buffer::expand_character( lineStr+charIndex, outIndex, expandedChar,
-              mBuffer->tab_distance());
+    charLen = fl_utf8len(lineStr[charIndex]);
     charStyle = position_style( lineStartPos, lineLen, charIndex);
-    xStep += string_width( expandedChar, charLen, charStyle );
+    xStep += string_width( lineStr+charIndex, charLen, charStyle );
     outIndex += charLen;
+    charIndex += charLen;
   }
   *X = xStep;
   free((char *)lineStr);
@@ -1455,6 +1453,8 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   
   
   // FIXME: simplified line drawing - quite OK so far, but no line wrapping or tab expansion
+  // we should use this function for calculating the line width as well to avoid code doubeling!
+  // it would also be needed to convert the character index to a horizontal pixel position and back!
   X = text_area.x - mHorizOffset;
   startX = X;
   startIndex = 0;
@@ -1463,11 +1463,15 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     style = position_style(lineStartPos, lineLen, -1);
     draw_string( style|BG_ONLY_MASK, text_area.x, Y, text_area.x+text_area.w, lineStr, lineLen );
   }
+  // draw the line
   style = position_style(lineStartPos, lineLen, i);
   for (i=0; i<lineLen; ) {
     int len = fl_utf8len(lineStr[i]);
     charStyle = position_style(lineStartPos, lineLen, i);
+    // FIXME: if the character is a tab, we need to do the correct indenting
+    // FIXME: if the character is an optional hyphen, we need to ignore it unless we wrap the text
     if (charStyle!=style) {
+      // draw a segment whenever the style changes
       int w = string_width( lineStr+startIndex, i-startIndex, style );
       draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
       style = charStyle;
@@ -1478,14 +1482,19 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   }
   int w = string_width( lineStr+startIndex, i-startIndex, style );
   draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
-  
   // clear the rest of the line
   startX += w;
   style = position_style(lineStartPos, lineLen, i);
   draw_string( style|BG_ONLY_MASK, startX, Y, text_area.x+text_area.w, lineStr, lineLen );
+  // free the line
+  if ( lineStr != NULL )
+    free((void *)lineStr);
   return;
   
   
+  
+  
+#if 0
   
   /* Step through character positions from the beginning of the line (even if
      that's off the left edge of the displayed area) to find the first
@@ -1621,6 +1630,9 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   */
   if ( lineStr != NULL )
     free((void *)lineStr);
+  
+#endif
+  
 }
 
 /**
