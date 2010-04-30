@@ -427,7 +427,7 @@ void Fl_Text_Display::redisplay_range(int startpos, int endpos) {
   int ok = 0;
   while (!ok && startpos > 0) {
     // FIXME: character is ucs-4
-    char c = buffer()->character( startpos );
+    char c = buffer()->at( startpos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -436,7 +436,7 @@ void Fl_Text_Display::redisplay_range(int startpos, int endpos) {
   }
   while (!ok && endpos < buffer()->length()) {
     // FIXME: character is ucs-4
-    char c = buffer()->character( endpos );
+    char c = buffer()->at( endpos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -641,7 +641,7 @@ void Fl_Text_Display::overstrike(const char* text) {
     if ( p == buf->length() )
       break;
     // FIXME: character is ucs-4
-    ch = buf->character( p );
+    ch = buf->at( p );
     if ( ch == '\n' )
       break;
     const char *s = buf->address(p);
@@ -886,7 +886,7 @@ int Fl_Text_Display::move_right() {
   insert_position( mCursorPos + 1 );
     int pos = insert_position();
     // FIXME: character is ucs-4
-    char c = buffer()->character( pos );
+    char c = buffer()->at( pos );
     if (!((c & 0x80) && !(c & 0x40))) ok = 1;
   }
   return 1;
@@ -900,7 +900,7 @@ int Fl_Text_Display::move_left() {
   insert_position( mCursorPos - 1 );
     int pos = insert_position();
     // FIXME: character is ucs-4
-    char c = buffer()->character( pos );
+    char c = buffer()->at( pos );
     if (!((c & 0x80) && !(c & 0x40))) ok = 1;
   }
   return 1;
@@ -941,7 +941,7 @@ int Fl_Text_Display::move_up() {
   while (!ok) {
     int pos = insert_position();
     // FIXME: character is ucs-4
-    char c = buffer()->character( pos );
+    char c = buffer()->at( pos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -978,7 +978,7 @@ int Fl_Text_Display::move_down() {
   while (!ok) {
     int pos = insert_position();
     // FIXME: character is ucs-4
-    char c = buffer()->character( pos );
+    char c = buffer()->at( pos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -1128,11 +1128,11 @@ static inline int fl_isseparator(int c) {
 void Fl_Text_Display::next_word() {
   int pos = insert_position();
   // FIXME: character is ucs-4
-  while (pos < buffer()->length() && !fl_isseparator(buffer()->character(pos))) {
+  while (pos < buffer()->length() && !fl_isseparator(buffer()->at(pos))) {
     pos++;
   }
   // FIXME: character is ucs-4
-  while (pos < buffer()->length() && fl_isseparator(buffer()->character(pos))) {
+  while (pos < buffer()->length() && fl_isseparator(buffer()->at(pos))) {
     pos++;
   }
 
@@ -1145,15 +1145,15 @@ void Fl_Text_Display::previous_word() {
   if (pos==0) return;
   pos--;
   // FIXME: character is ucs-4
-  while (pos && fl_isseparator(buffer()->character(pos))) {
+  while (pos && fl_isseparator(buffer()->at(pos))) {
     pos--;
   }
   // FIXME: character is ucs-4
-  while (pos && !fl_isseparator(buffer()->character(pos))) {
+  while (pos && !fl_isseparator(buffer()->at(pos))) {
     pos--;
   }
   // FIXME: character is ucs-4
-  if (fl_isseparator(buffer()->character(pos))) pos++;
+  if (fl_isseparator(buffer()->at(pos))) pos++;
 
   insert_position( pos );
 }
@@ -1807,12 +1807,12 @@ int Fl_Text_Display::position_style( int lineStartPos,
     style = FILL_MASK;
   else if ( styleBuf != NULL ) {
     // FIXME: character is ucs-4
-    style = ( unsigned char ) styleBuf->character( pos );
+    style = ( unsigned char ) styleBuf->at( pos );
     if (style == mUnfinishedStyle && mUnfinishedHighlightCB) {
         /* encountered "unfinished" style, trigger parsing */
         (mUnfinishedHighlightCB)( pos, mHighlightCBArg);
         // FIXME: character is ucs-4
-        style = (unsigned char) styleBuf->character( pos);
+        style = (unsigned char) styleBuf->at( pos);
     }
   }
   if (buf->primary_selection()->includes(pos))
@@ -2333,7 +2333,7 @@ int Fl_Text_Display::measure_vline( int visLineNum ) const {
       len = mBuffer->expand_character( lineStartPos + i,
                                        charCount, expandedChar );
       // FIXME: character is ucs-4
-      style = ( unsigned char ) mStyleBuffer->character(
+      style = ( unsigned char ) mStyleBuffer->at(
                 lineStartPos + i ) - 'A';
 
       if (style < 0) style = 0;
@@ -2442,7 +2442,7 @@ void Fl_Text_Display::find_wrap_range(const char *deletedText, int pos,
     	nLines++;
     	if (lineStart > pos + nInserted &&
             // FIXME: character is ucs-4
-    	    	buf->character(lineStart-1) == '\n') {
+    	    	buf->at(lineStart-1) == '\n') {
     	    countTo = lineStart;
     	    *modRangeEnd = lineStart;
     	    break;
@@ -2588,7 +2588,7 @@ void Fl_Text_Display::measure_deleted_lines(int pos, int nDeleted) {
     	nLines++;
     	if (lineStart > pos + nDeleted &&
             // FIXME: character is ucs-4
-    	    	buf->character(lineStart-1) == '\n') {
+    	    	buf->at(lineStart-1) == '\n') {
     	    break;
     	}
 	
@@ -2666,7 +2666,7 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
     width = 0;
     for (p=lineStart; p<buf->length(); p++) {
       // FIXME: character is ucs-4
-    	c = (unsigned char)buf->character(p);
+    	c = (unsigned char)buf->at(p);
 
     	/* If the character was a newline, count the line and start over,
     	   otherwise, add it to the width and column counts */
@@ -2702,7 +2702,7 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
     	    foundBreak = false;
     	    for (b=p; b>=lineStart; b--) {
               // FIXME: character is ucs-4
-    	    	c = (unsigned char)buf->character(b);
+    	    	c = (unsigned char)buf->at(b);
     	    	if (c == '\t' || c == ' ') {
     	    	    newLineStart = b + 1;
     	    	    if (countPixels) {
@@ -2782,12 +2782,12 @@ int Fl_Text_Display::measure_proportional_character(const char *s, int colNum, i
 	style = 0;
     } else {
       // FIXME: character is ucs-4
-	style = (unsigned char)styleBuf->character(pos);
+	style = (unsigned char)styleBuf->at(pos);
 	if (style == mUnfinishedStyle && mUnfinishedHighlightCB) {
     	    /* encountered "unfinished" style, trigger parsing */
     	    (mUnfinishedHighlightCB)(pos, mHighlightCBArg);
           // FIXME: character is ucs-4
-    	    style = (unsigned char)styleBuf->character(pos);
+    	    style = (unsigned char)styleBuf->at(pos);
 	}
     }
     return string_width(expChar, charLen, style);
@@ -2844,7 +2844,7 @@ int Fl_Text_Display::wrap_uses_character(int lineEndPos) const {
     	return 1;
     
   // FIXME: character is ucs-4
-    c = buffer()->character(lineEndPos);
+    c = buffer()->at(lineEndPos);
     return c == '\n' || ((c == '\t' || c == ' ') &&
     	    lineEndPos + 1 != buffer()->length());
 }
@@ -3114,7 +3114,7 @@ int Fl_Text_Display::handle(int event) {
         int ok = 0;
         while (!ok) {
           // FIXME: character is ucs-4
-          char c = buffer()->character( pos );
+          char c = buffer()->at( pos );
           if (!((c & 0x80) && !(c & 0x40))) {
             ok = 1;
           } else {
@@ -3180,7 +3180,7 @@ int Fl_Text_Display::handle(int event) {
          int ok = 0;
           while (!ok) {
             // FIXME: character is ucs-4
-            char c = buffer()->character( pos );
+            char c = buffer()->at( pos );
             if (!((c & 0x80) && !(c & 0x40))) {
               ok = 1;
             } else {

@@ -236,7 +236,7 @@ char *Fl_Text_Buffer::text_range(int start, int end) const {
 
 // TODO: we will need the same signature function to get bytes (style buffer)
 // unicode ok
-unsigned int Fl_Text_Buffer::character(int pos) const {
+unsigned int Fl_Text_Buffer::at(int pos) const {
   if (pos < 0 || pos >= mLength)
     return '\0';
   const char *src = address(pos);
@@ -661,18 +661,18 @@ int Fl_Text_Buffer::line_end(int pos) const {
 
 int Fl_Text_Buffer::word_start(int pos) const {
   // FIXME: character is ucs-4
-  while (pos && (isalnum(character(pos)) || character(pos) == '_')) {
+  while (pos && (isalnum(at(pos)) || at(pos) == '_')) {
     pos--;
   } 
   // FIXME: character is ucs-4
-  if (!(isalnum(character(pos)) || character(pos) == '_'))
+  if (!(isalnum(at(pos)) || at(pos) == '_'))
     pos++;
   return pos;
 }
 
 int Fl_Text_Buffer::word_end(int pos) const {
   // FIXME: character is ucs-4
-  while (pos < length() && (isalnum(character(pos)) || character(pos) == '_'))
+  while (pos < length() && (isalnum(at(pos)) || at(pos) == '_'))
   {
     pos++;
   } return pos;
@@ -749,9 +749,11 @@ int Fl_Text_Buffer::character_width(const char *src, int indent, int tabDist)
   if ((c & 0x80) && !(c & 0x40)) {      // other byte of UTF-8 sequence
     return 0;
   }
-  return character_width(c, indent, tabDist);
+  return 1; // FIXME: ouch!
+  //return character_width(c, indent, tabDist);
 }
 
+#if 0
 // FIXME: merge the following with the char* version above.
 // but the question then is: how to reorganise expand_character()?
 //
@@ -775,6 +777,7 @@ int Fl_Text_Buffer::character_width(const char    c, int indent, int tabDist)
   }
   return 1;
 }
+#endif
 
 int Fl_Text_Buffer::count_displayed_characters(int lineStartPos,
 					       int targetPos) const
@@ -893,8 +896,8 @@ int Fl_Text_Buffer::search_forward(int startPos, const char *searchString,
         return 1;
       }
       // FIXME: character is ucs-4
-    } while ((matchCase ? character(bp++) == *sp++ :
-              toupper(character(bp++)) == toupper(*sp++))
+    } while ((matchCase ? at(bp++) == *sp++ :
+              toupper(at(bp++)) == toupper(*sp++))
              && bp < length());
     startPos++;
   }
@@ -918,8 +921,8 @@ int Fl_Text_Buffer::search_backward(int startPos, const char *searchString,
         return 1;
       }
       // FIXME: character is ucs-4
-    } while ((matchCase ? character(bp--) == *sp-- :
-              toupper(character(bp--)) == toupper(*sp--))
+    } while ((matchCase ? at(bp--) == *sp-- :
+              toupper(at(bp--)) == toupper(*sp--))
              && bp >= 0);
     startPos--;
   }
@@ -1285,7 +1288,7 @@ void Fl_Text_Selection::update(int pos, int nDeleted, int nInserted)
   }
 }
 
-int Fl_Text_Buffer::findchar_forward(int startPos, char searchChar,
+int Fl_Text_Buffer::findchar_forward(int startPos, unsigned searchChar,
 				     int *foundPos) const {
   if (startPos < 0 || startPos >= mLength)
   {
@@ -1312,7 +1315,7 @@ int Fl_Text_Buffer::findchar_forward(int startPos, char searchChar,
   return 0;
 }
 
-int Fl_Text_Buffer::findchar_backward(int startPos, char searchChar,
+int Fl_Text_Buffer::findchar_backward(int startPos, unsigned searchChar,
 				      int *foundPos) const {
   
   if (startPos <= 0 || startPos > mLength)

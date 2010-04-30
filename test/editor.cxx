@@ -791,7 +791,40 @@ Fl_Window* new_view() {
 
 int main(int argc, char **argv) {
   textbuf = new Fl_Text_Buffer;
-  textbuf->text("Rügenwälder Ruß.");
+  textbuf->text(
+                "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg\n"
+                "(= Wrongful practicing of xylophone music tortures every larger dwarf)\n"
+                "\n"
+                "Zwölf Boxkämpfer jagten Eva quer über den Sylter Deich\n"
+                "(= Twelve boxing fighters hunted Eva across the dike of Sylt)\n"
+                "\n"
+                "Heizölrückstoßabdämpfung\n"
+                "(= fuel oil recoil absorber)\n"
+                "\n"
+                "Hiragana: (Iroha)\n"
+                "\n"
+                "いろはにほへとちりぬるを\n"
+                "わかよたれそつねならむ\n"
+                "うゐのおくやまけふこえて\n"
+                "あさきゆめみしゑひもせす\n"
+                "\n"
+                "Katakana:\n"
+                "\n"
+                "イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム\n"
+                "ウヰノオクヤマ ケフコエテ アサキユメミシ ヱヒモセスン\n"
+                "\n"
+                "? דג סקרן שט בים מאוכזב ולפתע מצא לו חברה איך הקליטה\n"
+                "\n"
+                "いろはにほへと ちりぬるを わかよ\n"
+                "たれそ つねならむ うゐのおくやま\n"
+                "けふこえて あさきゆめみし ゑひも\n"
+                "せす\n"
+                "Even colours and sweet perfume / Will eventually fade /\n"
+                "Even our world / Is not eternal /\n"
+                "The deep mountains of vanity / Cross them today /\n"
+                "And superficial dreams / Shall no longer delude you.\n"
+                "(from Iroha-uta)"
+                );
   style_init();
 
   Fl_Window* window = new_view();

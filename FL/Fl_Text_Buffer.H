@@ -105,13 +105,13 @@ public:
    \return a non-zero number if any text has been selected, or 0
    if no text is selected.
    */
-  char selected() const { return mSelected; }
+  bool selected() const { return mSelected; }
   
   /**
    \brief Modify the 'selected' flag.
    \param b new flag
    */
-  void selected(char b) { mSelected = b; }
+  void selected(bool b) { mSelected = b; }
   
   /**
    Return true if position \p pos with indentation \p dispIndex is in
@@ -129,14 +129,16 @@ public:
   
 protected:
   
-  char mSelected;     ///< this flag is set if any text is selected  
   int mStart;         ///< byte offset to the first selected character
   int mEnd;           ///< byte offset to the character after the last selected character
+  bool mSelected;     ///< this flag is set if any text is selected  
 };
+
 
 typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
                                   int nRestyled, const char* deletedText,
                                   void* cbArg);
+
 
 typedef void (*Fl_Text_Predelete_Cb)(int pos, int nDeleted, void* cbArg);
 
@@ -177,12 +179,13 @@ public:
    \brief Get a copy of the entire contents of the text buffer.
    Memory is allocated to contain the returned string, which the caller 
    must free.
-   \return newly allocated text buffer - must be free'd
+   \return newly allocated text buffer - must be free'd, text is utf8
    */  
   char* text() const;
   
   /**  
-   Replaces the entire contents of the text buffer 
+   Replaces the entire contents of the text buffer.
+   Text must be valid utf8.
    \todo unicode check
    */
   void text(const char* text);
@@ -195,7 +198,7 @@ public:
    When you are done with the text, free it using the free() function.
    \param start byte offset to first character
    \param end byte offset after last character in range
-   \return newly allocated text buffer - must be free'd
+   \return newly allocated text buffer - must be free'd, text is utf8
    */
   char* text_range(int start, int end) const;
   
@@ -205,7 +208,7 @@ public:
    \param pos byte offset into buffer
    \return Unicode UCS-4 encoded character
    */
-  unsigned int character(int pos) const;
+  unsigned int at(int pos) const;
   
   /**
    Convert a byte offset in buffer into a memory address.
@@ -228,6 +231,7 @@ public:
   
   /**
    Appends the text string to the end of the buffer.  
+   \param t utf-8 encoded and nul terminated text
    \todo unicode check
    */
   void append(const char* t) { insert(length(), t); }
@@ -248,8 +252,11 @@ public:
   void replace(int start, int end, const char *text);
   
   /**
-   Copies text from one buffer to this one; fromBuf may
-   be the same as this.
+   Copies text from one buffer to this one.
+   \param fromBuf source text buffer may be the same as this
+   \param fromStart byte offset into buffer
+   \param fromEnd byte offset into buffer
+   \param toPos destination byte offset into buffer
    \todo unicode check
    */
   void copy(Fl_Text_Buffer* fromBuf, int fromStart, int fromEnd, int toPos);
@@ -489,12 +496,16 @@ public:
    Returns the text from the entire line containing the specified
    character position. When you are done with the text, free it
    using the free() function.
+   \param pos byte index into buffer
+   \return copy of utf8 text, must be free'd
    \todo unicode check
    */
   char* line_text(int pos) const;
   
   /** 
    Returns the position of the start of the line containing position \p pos. 
+   \param pos byte index into buffer
+   \return byte offset to line start
    \todo unicode check
    */
   int line_start(int pos) const;
@@ -503,18 +514,24 @@ public:
    Finds and returns the position of the end of the line containing position \p pos
    (which is either a pointer to the newline character ending the line,
    or a pointer to one character beyond the end of the buffer)
+   \param pos byte index into buffer
+   \return byte offset to line end
    \todo unicode check
    */
   int line_end(int pos) const;
 
   /** 
    Returns the position corresponding to the start of the word 
+   \param pos byte index into buffer
+   \return byte offset to word start
    \todo unicode check
    */
   int word_start(int pos) const;
 
   /**  
    Returns the position corresponding to the end of the word.
+   \param pos byte index into buffer
+   \return byte offset to word end
    \todo unicode check
    */
   int word_end(int pos) const;
@@ -557,7 +574,7 @@ public:
    \return number of byte in substitution
    */
   static int character_width(const char *src, int indent, int tabDist);
-  static int character_width(const char    c, int indent, int tabDist);
+  //static int character_width(const char    c, int indent, int tabDist);
 
   /**
    Count the number of displayed characters between buffer position
@@ -609,9 +626,13 @@ public:
    BufSearchForward is that it's optimized for single characters.  The
    overall performance of the text widget is dependent on its ability to
    count lines quickly, hence searching for a single character: newline)
+   \param startPos byte offset to start position
+   \param searchChar UCS4 character that we want to find
+   \param foundPos byte offset where the character was found
+   \return 1 if found, 0 if not
    \todo unicode check
    */
-  int findchar_forward(int startPos, char searchChar, int* foundPos) const;
+  int findchar_forward(int startPos, unsigned searchChar, int* foundPos) const;
   
   /**
    Search backwards in buffer \p buf for character \p searchChar, starting
@@ -620,15 +641,23 @@ public:
    BufSearchBackward is that it's optimized for single characters.  The
    overall performance of the text widget is dependent on its ability to
    count lines quickly, hence searching for a single character: newline)
+   \param startPos byte offset to start position
+   \param searchChar UCS4 character that we want to find
+   \param foundPos byte offset where the character was found
+   \return 1 if found, 0 if not
    \todo unicode check
    */
-  int findchar_backward(int startPos, char searchChar, int* foundPos) const;
+  int findchar_backward(int startPos, unsigned searchChar, int* foundPos) const;
   
   /**
    Finds the next occurrence of the specified characters.
    Search forwards in buffer for characters in \p searchChars, starting
    with the character \p startPos, and returning the result in \p foundPos
    returns 1 if found, 0 if not.
+   \param startPos byte offset to start position
+   \param searchChars utf8 string that we want to find
+   \param foundPos byte offset where the string was found
+   \return 1 if found, 0 if not
    \todo unicode check
    */
   int findchars_forward(int startPos, const char* searchChars, int* foundPos) const;
@@ -638,6 +667,10 @@ public:
    Search backwards in buffer for characters in \p searchChars, starting
    with the character BEFORE \p startPos, returning the result in \p foundPos
    returns 1 if found, 0 if not.
+   \param startPos byte offset to start position
+   \param searchChars utf8 string that we want to find
+   \param foundPos byte offset where the string was found
+   \return 1 if found, 0 if not
    \todo unicode check
    */
   int findchars_backward(int startPos, const char* searchChars, int* foundPos) const;
@@ -646,6 +679,11 @@ public:
    Search forwards in buffer for string \p searchString, starting with the
    character \p startPos, and returning the result in \p foundPos
    returns 1 if found, 0 if not.
+   \param startPos byte offset to start position
+   \param searchString utf8 string that we want to find
+   \param foundPos byte offset where the string was found
+   \param matchCase if set, match character case
+   \return 1 if found, 0 if not
    \todo unicode check
    */
   int search_forward(int startPos, const char* searchString, int* foundPos,
@@ -655,6 +693,11 @@ public:
    Search backwards in buffer for string <i>searchCharssearchString</i>, starting with the
    character BEFORE \p startPos, returning the result in \p foundPos
    returns 1 if found, 0 if not.
+   \param startPos byte offset to start position
+   \param searchString utf8 string that we want to find
+   \param foundPos byte offset where the string was found
+   \param matchCase if set, match character case
+   \return 1 if found, 0 if not
    \todo unicode check
    */
   int search_backward(int startPos, const char* searchString, int* foundPos,
@@ -770,12 +813,12 @@ protected:
   int mUseTabs;                   /**< True if buffer routines are allowed to use
                                    tabs for padding in rectangular operations */
   int mNModifyProcs;              /**< number of modify-redisplay procs attached */
-  Fl_Text_Modify_Cb*              /**< procedures to call when buffer is */
-  mModifyProcs;                   /**< modified to redisplay contents */
+  Fl_Text_Modify_Cb *mModifyProcs;/**< procedures to call when buffer is 
+                                   modified to redisplay contents */
   void** mCbArgs;                 /**< caller arguments for modifyProcs above */
   int mNPredeleteProcs;           /**< number of pre-delete procs attached */
-  Fl_Text_Predelete_Cb*           /**< procedure to call before text is deleted */
-  mPredeleteProcs;                /**< from the buffer; at most one is supported. */
+  Fl_Text_Predelete_Cb *mPredeleteProcs; /**< procedure to call before text is deleted
+                                   from the buffer; at most one is supported. */
   void **mPredeleteCbArgs;        /**< caller argument for pre-delete proc above */
   int mCursorPosHint;             /**< hint for reasonable cursor position after
                                    a buffer modification operation */
