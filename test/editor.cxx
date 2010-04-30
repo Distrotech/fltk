@@ -792,7 +792,7 @@ Fl_Window* new_view() {
 int main(int argc, char **argv) {
   textbuf = new Fl_Text_Buffer;
   textbuf->text(
-#if 1
+#if 0
                 "void saveas_cb() {\n"
                 "  Fl_Native_File_Chooser fnfc;\n"
                 "  fnfc.title(\"Save File As?\");\n"

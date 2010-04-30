@@ -2320,6 +2320,9 @@ static int countlines( const char *string ) {
    Return the width in pixels of the displayed line pointed to by "visLineNum"
 */
 int Fl_Text_Display::measure_vline( int visLineNum ) const {
+  
+  return 1024; // FIXME: time waster?
+  
   int i, width = 0, len, style, lineLen = vline_length( visLineNum );
   int charCount = 0, lineStartPos = mLineStarts[ visLineNum ];
   char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
