@@ -877,32 +877,34 @@ void Fl_Text_Display::show_insert_position() {
 /*
    Cursor movement functions
 */
-/**  Moves the current insert position right one character.*/
+
+/**  
+ Moves the current insert position right one character.
+ \return 1 if the cursor moved, 0 if the end of the text was reached
+ */
 int Fl_Text_Display::move_right() {
-  int ok = 0;
-  while (!ok) {
   if ( mCursorPos >= mBuffer->length() )
     return 0;
-  insert_position( mCursorPos + 1 );
-    int pos = insert_position();
-    // FIXME: character is ucs-4
-    char c = buffer()->at( pos );
-    if (!((c & 0x80) && !(c & 0x40))) ok = 1;
-  }
+  int p = insert_position();
+  const char *a = buffer()->address(p);
+  int o = fl_utf8len(*a);
+  if (o==-1)
+    return 0;
+  insert_position(p+o);
   return 1;
 }
-/**  Moves the current insert position left one character.*/
+
+/**  
+ Moves the current insert position left one character.
+ \return 1 if the cursor moved, 0 if the beginning of the text was reached
+ */
 int Fl_Text_Display::move_left() {
-  int ok = 0;
-  while (!ok) {
   if ( mCursorPos <= 0 )
     return 0;
-  insert_position( mCursorPos - 1 );
-    int pos = insert_position();
-    // FIXME: character is ucs-4
-    char c = buffer()->at( pos );
-    if (!((c & 0x80) && !(c & 0x40))) ok = 1;
-  }
+  int p = insert_position();
+  const char *a = buffer()->address(p-1); // avoid falling into gap
+  const char *b = a; while (((*b) & 0xc0)==0x80) b--; // FIXME: fl_utf8_back( 
+  insert_position(p+(b-a)-1);
   return 1;
 }
 
@@ -1852,6 +1854,7 @@ int Fl_Text_Display::string_width( const char *string, int length, int style ) c
   }
   fl_font( font, fsize );
 
+  // FIXME: how often is this called? Will we have to optimize the code?
   return ( int ) ( fl_width( string, length ) );
 }
 
@@ -2321,7 +2324,16 @@ static int countlines( const char *string ) {
 */
 int Fl_Text_Display::measure_vline( int visLineNum ) const {
   
-  return 1024; // FIXME: time waster?
+  return 1024; // FIXME: time waster!
+  /* The line above helps us clean up this widget.
+   
+   The original code measures each individual character. That is not only 
+   horribly inefficient but also quite wrong, because a good text rendering 
+   engine may concatenate and overlap consecutive characters.
+   
+   The correct and fastest solution is to measure text segments that are as long
+   as possible. A new segment begins only when the style changes.
+   */
   
   int i, width = 0, len, style, lineLen = vline_length( visLineNum );
   int charCount = 0, lineStartPos = mLineStarts[ visLineNum ];
