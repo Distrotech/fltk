@@ -779,23 +779,9 @@ int Fl_Text_Display::position_to_linecol( int pos, int* lineNum, int* column ) c
    Return 1 if position (X, Y) is inside of the primary Fl_Text_Selection
 */
 int Fl_Text_Display::in_selection( int X, int Y ) const {
-  int row, column, pos = xy_to_position( X, Y, CHARACTER_POS );
+  int pos = xy_to_position( X, Y, CHARACTER_POS );
   Fl_Text_Buffer *buf = mBuffer;
-  int ok = 0;
-  while (!ok) {
-    // FIXME: character is ucs-4
-    char c = buffer()->character( pos );
-    if (!((c & 0x80) && !(c & 0x40))) {
-      ok = 1;
-    } else {
-      pos++;
-    }
-  }
-
-  xy_to_rowcol( X, Y, &row, &column, CHARACTER_POS );
-  if (range_touches_selection(buf->primary_selection(), mFirstChar, mLastChar))
-    column = wrapped_column(row, column);
-  return buf->primary_selection()->includes(pos, buf->line_start( pos ), column);
+  return buf->primary_selection()->includes(pos);
 }
 
 /**
@@ -1462,20 +1448,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   leftClip = max( text_area.x, leftClip );
   rightClip = min( rightClip, text_area.x + text_area.w );
 
-  /* Rectangular Fl_Text_Selections are based on "real" line starts (after
-	  a newline or start of buffer).  Calculate the difference between the
-	  last newline position and the line start we're using.  Since scanning
-	  back to find a newline is expensive, only do so if there's actually a
-	  rectangular Fl_Text_Selection which needs it */
-    if (mContinuousWrap && (range_touches_selection(buf->primary_selection(),
-    	    lineStartPos, lineStartPos + lineLen) || range_touches_selection(
-    	    buf->secondary_selection(), lineStartPos, lineStartPos + lineLen) ||
-    	    range_touches_selection(buf->highlight_selection(), lineStartPos,
-    	    lineStartPos + lineLen))) {
-    	dispIndexOffset = buf->count_displayed_characters(
-    	    	buf->line_start(lineStartPos), lineStartPos);
-    } else
-    	dispIndexOffset = 0;
+  dispIndexOffset = 0;
 
   /* Step through character positions from the beginning of the line (even if
      that's off the left edge of the displayed area) to find the first
@@ -1842,11 +1815,11 @@ int Fl_Text_Display::position_style( int lineStartPos,
         style = (unsigned char) styleBuf->character( pos);
     }
   }
-  if (buf->primary_selection()->includes(pos, lineStartPos, dispIndex))
+  if (buf->primary_selection()->includes(pos))
     style |= PRIMARY_MASK;
-  if (buf->highlight_selection()->includes(pos, lineStartPos, dispIndex))
+  if (buf->highlight_selection()->includes(pos))
     style |= HIGHLIGHT_MASK;
-  if (buf->secondary_selection()->includes(pos, lineStartPos, dispIndex))
+  if (buf->secondary_selection()->includes(pos))
     style |= SECONDARY_MASK;
   return style;
 }
@@ -2874,16 +2847,6 @@ int Fl_Text_Display::wrap_uses_character(int lineEndPos) const {
     c = buffer()->character(lineEndPos);
     return c == '\n' || ((c == '\t' || c == ' ') &&
     	    lineEndPos + 1 != buffer()->length());
-}
-
-/**
-   Return true if the selection "sel" is rectangular, and touches a
-   buffer position withing "rangeStart" to "rangeEnd"
-*/
-int Fl_Text_Display::range_touches_selection(const Fl_Text_Selection *sel,
-   int rangeStart, int rangeEnd) const {
-    return sel->selected() && sel->rectangular() && sel->end() >= rangeStart &&
-    	    sel->start() <= rangeEnd;
 }
 
 /**

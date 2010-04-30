@@ -80,15 +80,6 @@ public:
   void set(int start, int end);
   
   /**
-   \brief Set a regtangular selection range.
-   \param start byte offset to first selected character
-   \param end byte offset pointing after last selected character
-   \param rectStart first selected column
-   \param rectEnd last selected column +1
-   */
-  void set_rectangular(int start, int end, int rectStart, int rectEnd);
-  
-  /**
    \brief Updates a selection afer text was modified.
    Updates an individual selection for changes in the corresponding text
    \param pos byte offset into text buffer at which the change occured
@@ -96,12 +87,6 @@ public:
    \param nInserted number of bytes inserted into the buffer
    */
   void update(int pos, int nDeleted, int nInserted);
-  
-  /**
-   \brief Returns true if the selection is rectangular.
-   \return flag
-   */
-  char rectangular() const { return mRectangular; }
   
   /**
    \brief Return the byte offset to the first selected character.
@@ -114,18 +99,6 @@ public:
    \return byte offset
    */
   int end() const { return mEnd; }
-  
-  /**
-   \brief Return the first column of the rectangular selection.
-   \return first column of rectangular selection
-   */
-  int rect_start() const { return mRectStart; }
-  
-  /**
-   \brief Return the last column of the rectangular selection + 1.
-   \return last column of rectangular selection +1
-   */
-  int rect_end() const { return mRectEnd; }
   
   /**
    \brief Returns true if any text is selected.
@@ -144,7 +117,7 @@ public:
    Return true if position \p pos with indentation \p dispIndex is in
    the Fl_Text_Selection.
    */
-  int includes(int pos, int lineStartPos, int dispIndex) const;
+  int includes(int pos) const;
   
   /**
    \brief Return the positions of this selection.
@@ -154,25 +127,11 @@ public:
    */
   int position(int* start, int* end) const;
   
-  /**
-   \brief Return the positions of this rectangular selection.
-   \param start return byte offset to first selected character
-   \param end return byte offset pointing after last selected character
-   \param isRect return if the selection is rectangular
-   \param rectStart return first selected column
-   \param rectEnd return last selected column +1
-   \return true if selected
-   */
-  int position(int* start, int* end, int* isRect, int* rectStart, int* rectEnd) const;
-  
 protected:
   
   char mSelected;     ///< this flag is set if any text is selected  
-  char mRectangular;  ///< this flag is set if the selection is rectangular
   int mStart;         ///< byte offset to the first selected character
   int mEnd;           ///< byte offset to the character after the last selected character
-  int mRectStart;     ///< first selected column (see "column")
-  int mRectEnd;       ///< last selected column +1 (see "column")
 };
 
 typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
@@ -259,13 +218,6 @@ public:
    */
   char *address(int pos)
   { return (pos < mGapStart) ? mBuf+pos : mBuf+pos+mGapEnd-mGapStart; }
-  
-  /** 
-   Returns the text from the given rectangle. When you are done
-   with the text, free it using the free() function.
-   \todo unicode check
-   */
-  char* text_in_rectangle(int start, int end, int rectStart, int rectEnd) const;
   
   /** 
    Inserts null-terminated string \p text at position \p pos. 
@@ -356,54 +308,6 @@ public:
   int savefile(const char *file, int buflen = 128*1024)
   { return outputfile(file, 0, length(), buflen); }
   
-  /**
-   Insert \p s columnwise into buffer starting at displayed character
-   position \p column on the line beginning at \p startPos. Opens a rectangular
-   space the width and height of \p s, by moving all text to the right of
-   \p column right.  If \p charsInserted and \p charsDeleted are not NULL, the
-   number of characters inserted and deleted in the operation (beginning
-   at \p startPos) are returned in these arguments.
-   \todo unicode check
-   */
-  void insert_column(int column, int startPos, const char* text,
-                     int* charsInserted, int* charsDeleted);
-  
-  /**
-   Replaces a rectangular area in the buffer, given by \p start, \p end,
-   \p rectStart, and \p rectEnd, with \p text.  If \p text is vertically
-   longer than the rectangle, add extra lines to make room for it.
-   \todo unicode check
-   */
-  void replace_rectangular(int start, int end, int rectStart, int rectEnd,
-                           const char* text);
-  
-  /**
-   Overlay \p text between displayed character positions \p rectStart and
-   \p rectEnd on the line beginning at \p startPos.  If \p charsInserted and
-   \p charsDeleted are not NULL, the number of characters inserted and deleted
-   in the operation (beginning at \p startPos) are returned in these arguments.
-   \todo unicode check
-   */
-  void overlay_rectangular(int startPos, int rectStart, int rectEnd,
-                           const char* text, int* charsInserted,
-                           int* charsDeleted);
-  
-  /**
-   Removes a rectangular swath of characters between character positions start
-   and end and horizontal displayed-character offsets rectStart and rectEnd.
-   \todo unicode check
-   */
-  void remove_rectangular(int start, int end, int rectStart, int rectEnd);
-  
-  /**
-   Clears text in the specified area.
-   It clears a rectangular "hole" out of the buffer between character positions
-   start and end and horizontal displayed-character offsets rectStart and
-   rectEnd.
-   \todo unicode check
-   */
-  void clear_rectangular(int start, int end, int rectStart, int rectEnd);
-  
   /** 
    Gets the tab width.  
    \todo unicode check
@@ -435,23 +339,10 @@ public:
   void unselect();
   
   /** 
-   Achieves a rectangular selection on the primary text selection object 
-   \todo unicode check
-   */
-  void select_rectangular(int start, int end, int rectStart, int rectEnd);
-  
-  /** 
    Gets the selection position 
    \todo unicode check
    */
   int selection_position(int* start, int* end);
-  
-  /** 
-   Gets the selection position, and rectangular selection info 
-   \todo unicode check
-   */
-  int selection_position(int* start, int* end, int* isRect, int* rectStart,
-                         int* rectEnd);
   
   /**
    Returns the currently selected text. When you are done with
@@ -490,25 +381,11 @@ public:
    */
   void secondary_unselect();
   
-  /** 
-   Achieves a rectangular selection on the secondary text selection object 
-   \todo unicode check
-   */
-  void secondary_select_rectangular(int start, int end, int rectStart,
-                                    int rectEnd);
-  
   /**  
    Returns the current selection in the secondary text selection object.
    \todo unicode check
    */
   int secondary_selection_position(int* start, int* end);
-  
-  /** 
-   Returns the current selection in the secondary text selection object.
-   \todo unicode check
-   */
-  int secondary_selection_position(int* start, int* end, int* isRect,
-                                   int* rectStart, int* rectEnd);
   
   /**
    Returns the text in the secondary selection. When you are
@@ -549,23 +426,10 @@ public:
   void unhighlight();
 
   /** 
-   Highlights a rectangular selection in the buffer 
-   \todo unicode check
-   */
-  void highlight_rectangular(int start, int end, int rectStart, int rectEnd);
-  
-  /** 
    Highlights the specified text between \p start and \p end within the buffer.
    \todo unicode check
    */
   int highlight_position(int* start, int* end);
-  
-  /** 
-   Highlights the specified rectangle of text within the buffer.
-   \todo unicode check
-   */
-  int highlight_position(int* start, int* end, int* isRect, int* rectStart,
-                         int* rectEnd);
   
   /**
    Returns the highlighted text. When you are done with the
@@ -852,43 +716,6 @@ protected:
   void remove_(int start, int end);
   
   /**
-   Deletes a rectangle of text without calling the modify callbacks. Returns
-   the number of characters replacing those between \p start and \p end. Note that
-   in some pathological cases, deleting can actually increase the size of
-   the buffer because of tab expansions. \p endPos returns the buffer position
-   of the point in the last line where the text was removed (as a hint for
-   routines which need to position the cursor after a delete operation)
-   \todo unicode check
-   */
-  void remove_rectangular_(int start, int end, int rectStart, int rectEnd,
-                           int* replaceLen, int* endPos);
-  
-  /**
-   Inserts a column of text without calling the modify callbacks.  Note that
-   in some pathological cases, inserting can actually decrease the size of
-   the buffer because of spaces being coalesced into tabs.  \p nDeleted and
-   \p nInserted return the number of characters deleted and inserted beginning
-   at the start of the line containing \p startPos.  \p endPos returns buffer
-   position of the lower left edge of the inserted column (as a hint for
-   routines which need to set a cursor position).
-   \todo unicode check
-   */
-  void insert_column_(int column, int startPos, const char* insText,
-                      int* nDeleted, int* nInserted, int* endPos);
-  
-  /**
-   Overlay a rectangular area of text without calling the modify callbacks.
-   \p nDeleted and \p nInserted return the number of characters deleted and
-   inserted beginning at the start of the line containing \p startPos.
-   \p endPos returns buffer position of the lower left edge of the inserted
-   column (as a hint for routines which need to set a cursor position).
-   \todo unicode check
-   */
-  void overlay_rectangular_(int startPos, int rectStart, int rectEnd,
-                            const char* insText, int* nDeleted,
-                            int* nInserted, int* endPos);
-  
-  /**
    Calls the stored redisplay procedure(s) for this buffer to update the
    screen for a change in a selection.
    \todo unicode check
@@ -921,25 +748,6 @@ protected:
    \todo unicode check
    */
   void replace_selection_(Fl_Text_Selection* sel, const char* text);
-  
-  /**
-   Finds the first and last character position in a line within a rectangular
-   selection (for copying).  Includes tabs which cross rectStart, but not
-   control characters which do so.  Leaves off tabs which cross rectEnd.
-   
-   Technically, the calling routine should convert tab characters which
-   cross the right boundary of the selection to spaces which line up with
-   the edge of the selection.  Unfortunately, the additional memory
-   management required in the parent routine to allow for the changes
-   in string size is not worth all the extra work just for a couple of
-   shifted characters, so if a tab protrudes, just lop it off and hope
-   that there are other characters in the selection to establish the right
-   margin for subsequent columnar pastes of this data.
-   \todo unicode check
-   */
-  void rectangular_selection_boundaries(int lineStartPos, int rectStart,
-                                        int rectEnd, int* selStart,
-                                        int* selEnd) const;
   
   /**
    Updates all of the selections in the buffer for changes in the buffer's text

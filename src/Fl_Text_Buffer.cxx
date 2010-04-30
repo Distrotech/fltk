@@ -56,67 +56,6 @@
  */
 
 
-/*
- \todo unicode check
- */
-static void insertColInLine(const char *line, char *insLine, int column,
-			    int insWidth, int tabDist, int useTabs,
-			    char *outStr, int *outLen,
-			    int *endOffset);
-
-/*
- \todo unicode check
- */
-static void deleteRectFromLine(const char *line, int rectStart,
-			       int rectEnd, int tabDist, int useTabs,
-			       char *outStr,
-			       int *outLen, int *endOffset);
-
-/*
- \todo unicode check
- */
-static void overlayRectInLine(const char *line, char *insLine,
-			      int rectStart, int rectEnd, int tabDist,
-			      int useTabs, char *outStr,
-			      int *outLen, int *endOffset);
-
-/*
- \todo unicode check
- */
-static void addPadding(char *string, int startIndent, int toIndent,
-		       int tabDist, int useTabs, int *charsAdded);
-
-/*
- \todo unicode check
- */
-static char *copyLine(const char *text, int *lineLen);
-
-/*
- unicode tested
- */
-static int countLines(const char *string);
-
-/*
- \todo unicode check
- */
-static int textWidth(const char *text, int tabDist);
-
-/*
- \todo unicode check
- */
-static char *realignTabs(const char *text, int origIndent, int newIndent,
-			 int tabDist, int useTabs, int *newLength);
-
-/*
- \todo unicode check
- */
-static char *expandTabs(const char *text, int startIndent, int tabDist, int *newLen);
-
-/*
- \todo unicode check
- */
-static char *unexpandTabs(char *text, int startIndent, int tabDist, int *newLen);
-
 #ifndef min
 
 static int max(int i1, int i2)
@@ -173,14 +112,11 @@ Fl_Text_Buffer::Fl_Text_Buffer(int requestedSize, int preferredGapSize)
   mTabDist = 8;
   mUseTabs = 1;
   mPrimary.mSelected = 0;
-  mPrimary.mRectangular = 0;
   mPrimary.mStart = mPrimary.mEnd = 0;
   mSecondary.mSelected = 0;
   mSecondary.mStart = mSecondary.mEnd = 0;
-  mSecondary.mRectangular = 0;
   mHighlight.mSelected = 0;
   mHighlight.mStart = mHighlight.mEnd = 0;
-  mHighlight.mRectangular = 0;
   mModifyProcs = NULL;
   mCbArgs = NULL;
   mNModifyProcs = 0;
@@ -456,175 +392,6 @@ void Fl_Text_Buffer::canUndo(char flag)
   mCanUndo = flag;
 }
 
-void Fl_Text_Buffer::insert_column(int column, int startPos,
-				   const char *text, int *charsInserted,
-				   int *charsDeleted)
-{
-  int nLines = countLines(text);
-  int lineStartPos = line_start(startPos);
-  int nDeleted = line_end(skip_lines(startPos, nLines)) - lineStartPos;
-  call_predelete_callbacks(lineStartPos, nDeleted);
-  const char *deletedText =
-  text_range(lineStartPos, lineStartPos + nDeleted);
-  int insertDeleted, nInserted;
-  insert_column_(column, lineStartPos, text, &insertDeleted, &nInserted,
-		 &mCursorPosHint);
-  if (nDeleted != insertDeleted)
-    Fl::error
-    ("Fl_Text_Buffer::insert_column(): internal consistency check ins1 failed");
-  call_modify_callbacks(lineStartPos, nDeleted, nInserted, 0, deletedText);
-  free((void *) deletedText);
-  if (charsInserted != NULL)
-    *charsInserted = nInserted;
-  if (charsDeleted != NULL)
-    *charsDeleted = nDeleted;
-}
-
-void Fl_Text_Buffer::overlay_rectangular(int startPos, int rectStart,
-					 int rectEnd, const char *text,
-					 int *charsInserted,
-					 int *charsDeleted)
-{
-  
-  int nLines = countLines(text);
-  int lineStartPos = line_start(startPos);
-  int nDeleted = line_end(skip_lines(startPos, nLines)) - lineStartPos;
-  call_predelete_callbacks(lineStartPos, nDeleted);
-  const char *deletedText =
-  text_range(lineStartPos, lineStartPos + nDeleted);
-  int insertDeleted, nInserted;
-  overlay_rectangular_(lineStartPos, rectStart, rectEnd, text,
-		       &insertDeleted, &nInserted, &mCursorPosHint);
-  if (nDeleted != insertDeleted)
-    Fl::error
-    ("Fl_Text_Buffer::overlay_rectangle(): internal consistency check ovly1 failed");
-  call_modify_callbacks(lineStartPos, nDeleted, nInserted, 0, deletedText);
-  free((void *) deletedText);
-  if (charsInserted != NULL)
-    *charsInserted = nInserted;
-  if (charsDeleted != NULL)
-    *charsDeleted = nDeleted;
-}
-
-void Fl_Text_Buffer::replace_rectangular(int start, int end, int rectStart,
-					 int rectEnd, const char *text)
-{
-  char *insText = (char *) "";
-  int linesPadded = 0;
-  
-  /* Make sure start and end refer to complete lines, since the
-   columnar delete and insert operations will replace whole lines */
-  start = line_start(start);
-  end = line_end(end);
-  
-  call_predelete_callbacks(start, end - start);
-  
-  /* If more lines will be deleted than inserted, pad the inserted text
-   with newlines to make it as long as the number of deleted lines.  This
-   will indent all of the text to the right of the rectangle to the same
-   column.  If more lines will be inserted than deleted, insert extra
-   lines in the buffer at the end of the rectangle to make room for the
-   additional lines in "text" */
-  int nInsertedLines = countLines(text);
-  int nDeletedLines = count_lines(start, end);
-  if (nInsertedLines < nDeletedLines) {
-    int insLen = strlen(text);
-    insText = (char *) malloc(insLen + nDeletedLines - nInsertedLines + 1);
-    strcpy(insText, text);
-    char *insPtr = insText + insLen;
-    for (int i = 0; i < nDeletedLines - nInsertedLines; i++)
-      *insPtr++ = '\n';
-    *insPtr = '\0';
-  } else if (nDeletedLines < nInsertedLines) {
-    linesPadded = nInsertedLines - nDeletedLines;
-    for (int i = 0; i < linesPadded; i++)
-      insert_(end, "\n");
-  }
-  
-  /* else nDeletedLines == nInsertedLines; */
-  /* Save a copy of the text which will be modified for the modify CBs */
-  const char *deletedText = text_range(start, end);
-  
-  /* Delete then insert */
-  int insertDeleted, insertInserted, deleteInserted, hint;
-  remove_rectangular_(start, end, rectStart, rectEnd, &deleteInserted,
-		      &hint);
-  insert_column_(rectStart, start, insText, &insertDeleted,
-		 &insertInserted, &mCursorPosHint);
-  
-  /* Figure out how many chars were inserted and call modify callbacks */
-  if (insertDeleted != deleteInserted + linesPadded)
-    Fl::error
-    ("Fl_Text_Buffer::replace_rectangular(): internal consistency check repl1 failed");
-  call_modify_callbacks(start, end - start, insertInserted, 0,
-			deletedText);
-  free((void *) deletedText);
-  if (nInsertedLines < nDeletedLines)
-    free((void *) insText);
-}
-
-void Fl_Text_Buffer::remove_rectangular(int start, int end, int rectStart,
-					int rectEnd)
-{
-  
-  start = line_start(start);
-  end = line_end(end);
-  call_predelete_callbacks(start, end - start);
-  const char *deletedText = text_range(start, end);
-  int nInserted;
-  remove_rectangular_(start, end, rectStart, rectEnd, &nInserted,
-		      &mCursorPosHint);
-  call_modify_callbacks(start, end - start, nInserted, 0, deletedText);
-  free((void *) deletedText);
-}
-
-void Fl_Text_Buffer::clear_rectangular(int start, int end, int rectStart,
-				       int rectEnd)
-{
-  int nLines = count_lines(start, end);
-  char *newlineString = (char *) malloc(nLines + 1);
-  int i;
-  for (i = 0; i < nLines; i++)
-    newlineString[i] = '\n';
-  newlineString[i] = '\0';
-  overlay_rectangular(start, rectStart, rectEnd, newlineString,
-		      NULL, NULL);
-  free((void *) newlineString);
-}
-
-char *Fl_Text_Buffer::text_in_rectangle(int start, int end,
-					int rectStart,
-					int rectEnd) const {
-  start = line_start(start);
-  end = line_end(end);
-  char *textOut = (char *) malloc((end - start) + 1);
-  int lineStart = start;
-  char *outPtr = textOut;
-  int selLeft, selRight;
-  while (lineStart <= end)
-  {
-    rectangular_selection_boundaries(lineStart, rectStart, rectEnd,
-                                     &selLeft, &selRight);
-    const char *textIn = text_range(selLeft, selRight);
-    int len = selRight - selLeft;
-    memcpy(outPtr, textIn, len);
-    free((void *) textIn);
-    outPtr += len;
-    lineStart = line_end(selRight) + 1;
-    *outPtr++ = '\n';
-  } if (outPtr != textOut)
-    outPtr--;			/* don't leave trailing newline */
-  *outPtr = '\0';
-  
-  /* If necessary, realign the tabs in the selection as if the text were
-   positioned at the left margin */
-  int len;
-  char *retabbedStr = realignTabs(textOut, rectStart, 0, mTabDist,
-				  mUseTabs, &len);
-  free((void *) textOut);
-  return retabbedStr;
-}
-
 void Fl_Text_Buffer::tab_distance(int tabDist)
 {
   /* First call the pre-delete callbacks with the previous tab setting 
@@ -657,25 +424,9 @@ void Fl_Text_Buffer::unselect()
   redisplay_selection(&oldSelection, &mPrimary);
 }
 
-void Fl_Text_Buffer::select_rectangular(int start, int end, int rectStart,
-					int rectEnd)
-{
-  Fl_Text_Selection oldSelection = mPrimary;
-  
-  mPrimary.set_rectangular(start, end, rectStart, rectEnd);
-  redisplay_selection(&oldSelection, &mPrimary);
-}
-
 int Fl_Text_Buffer::selection_position(int *start, int *end)
 {
   return mPrimary.position(start, end);
-}
-
-int Fl_Text_Buffer::selection_position(int *start, int *end,
-				       int *isRect, int *rectStart,
-				       int *rectEnd)
-{
-  return mPrimary.position(start, end, isRect, rectStart, rectEnd);
 }
 
 char *Fl_Text_Buffer::selection_text()
@@ -709,27 +460,9 @@ void Fl_Text_Buffer::secondary_unselect()
   redisplay_selection(&oldSelection, &mSecondary);
 }
 
-void Fl_Text_Buffer::secondary_select_rectangular(int start, int end,
-						  int rectStart,
-						  int rectEnd)
-{
-  Fl_Text_Selection oldSelection = mSecondary;
-  
-  mSecondary.set_rectangular(start, end, rectStart, rectEnd);
-  redisplay_selection(&oldSelection, &mSecondary);
-}
-
 int Fl_Text_Buffer::secondary_selection_position(int *start, int *end)
 {
   return mSecondary.position(start, end);
-}
-
-int Fl_Text_Buffer::secondary_selection_position(int *start, int *end,
-						 int *isRect,
-						 int *rectStart,
-						 int *rectEnd)
-{
-  return mSecondary.position(start, end, isRect, rectStart, rectEnd);
 }
 
 char *Fl_Text_Buffer::secondary_selection_text()
@@ -763,25 +496,9 @@ void Fl_Text_Buffer::unhighlight()
   redisplay_selection(&oldSelection, &mHighlight);
 }
 
-void Fl_Text_Buffer::highlight_rectangular(int start, int end,
-					   int rectStart, int rectEnd)
-{
-  Fl_Text_Selection oldSelection = mHighlight;
-  
-  mHighlight.set_rectangular(start, end, rectStart, rectEnd);
-  redisplay_selection(&oldSelection, &mHighlight);
-}
-
 int Fl_Text_Buffer::highlight_position(int *start, int *end)
 {
   return mHighlight.position(start, end);
-}
-
-int Fl_Text_Buffer::highlight_position(int *start, int *end,
-				       int *isRect, int *rectStart,
-				       int *rectEnd)
-{
-  return mHighlight.position(start, end, isRect, rectStart, rectEnd);
 }
 
 char *Fl_Text_Buffer::highlight_text()
@@ -1354,453 +1071,14 @@ void Fl_Text_Buffer::remove_(int start, int end)
   update_selections(start, end - start, 0);
 }
 
-void Fl_Text_Buffer::insert_column_(int column, int startPos,
-				    const char *insText, int *nDeleted,
-				    int *nInserted, int *endPos)
-{
-  if (column < 0)
-    column = 0;
-  
-  /* Allocate a buffer for the replacement string large enough to hold
-   possibly expanded tabs in both the inserted text and the replaced
-   area, as well as per line: 1) an additional 2*FL_TEXT_MAX_EXP_CHAR_LEN
-   characters for padding where tabs and control characters cross the
-   column of the selection, 2) up to "column" additional spaces per
-   line for padding out to the position of "column", 3) padding up
-   to the width of the inserted text if that must be padded to align
-   the text beyond the inserted column.  (Space for additional
-   newlines if the inserted text extends beyond the end of the buffer
-   is counted with the length of insText) */
-  int start = line_start(startPos);
-  int nLines = countLines(insText) + 1;
-  int insWidth = textWidth(insText, mTabDist); // this function probably returns a useless value
-  int end = line_end(skip_lines(start, nLines - 1));
-  int expReplLen, expInsLen, len, endOffset;
-  const char *replText = text_range(start, end);
-  char *expText = expandTabs(replText, 0, mTabDist, &expReplLen);
-  free((void *) replText);
-  free((void *) expText);
-  expText = expandTabs(insText, 0, mTabDist, &expInsLen);
-  free((void *) expText);
-  char *outStr = (char *) malloc(expReplLen + expInsLen +
-				 nLines * (column + insWidth +
-					   FL_TEXT_MAX_EXP_CHAR_LEN) + 1);
-  
-  /* Loop over all lines in the buffer between start and end removing the
-   text between rectStart and rectEnd and padding appropriately.  Trim
-   trailing space from line (whitespace at the ends of lines otherwise
-   tends to multiply, since additional padding is added to maintain it */
-  char *outPtr = outStr, *insLine;
-  const char *insPtr = insText, *line;
-  for (int lineStart = start, lineEnd;;) {
-    lineEnd = line_end(lineStart);
-    line = text_range(lineStart, lineEnd);
-    insLine = copyLine(insPtr, &len);
-    insPtr += len;
-    insertColInLine(line, insLine, column, insWidth, mTabDist,
-		    mUseTabs, outPtr, &len, &endOffset);
-    free((void *) line);
-    free((void *) insLine);
-    for (const char *c = outPtr + len - 1; c > outPtr && isspace(*c); c--)
-      len--;
-    outPtr += len;
-    *outPtr++ = '\n';
-    lineStart = lineEnd < mLength ? lineEnd + 1 : mLength;
-    if (*insPtr == '\0')
-      break;
-    insPtr++;
-  }
-  if (outPtr != outStr)
-    outPtr--;			/* trim back off extra newline */
-  *outPtr = '\0';
-  
-  /* replace the text between start and end with the new stuff */
-  remove_(start, end);
-  insert_(start, outStr);
-  *nInserted = outPtr - outStr;
-  *nDeleted = end - start;
-  *endPos = start + (outPtr - outStr) - len + endOffset;
-  free((void *) outStr);
-}
-
-void Fl_Text_Buffer::remove_rectangular_(int start, int end, int rectStart,
-					 int rectEnd, int *replaceLen,
-					 int *endPos)
-{
-  /* allocate a buffer for the replacement string large enough to hold
-   possibly expanded tabs as well as an additional  FL_TEXT_MAX_EXP_CHAR_LEN * 2
-   characters per line for padding where tabs and control characters cross
-   the edges of the selection */
-  start = line_start(start);
-  end = line_end(end);
-  int nLines = count_lines(start, end) + 1;
-  const char *s = text_range(start, end);
-  int len;
-  char *expText = expandTabs(s, 0, mTabDist, &len);
-  free((void *) s);
-  free((void *) expText);
-  char *outStr =
-  (char *) malloc(len + nLines * FL_TEXT_MAX_EXP_CHAR_LEN * 2 + 1);
-  
-  /* loop over all lines in the buffer between start and end removing
-   the text between rectStart and rectEnd and padding appropriately */
-  int endOffset = 0;
-  char *outPtr = outStr;
-  const char *line;
-  for (int lineStart = start, lineEnd;
-       lineStart <= mLength && lineStart <= end;) {
-    lineEnd = line_end(lineStart);
-    line = text_range(lineStart, lineEnd);
-    deleteRectFromLine(line, rectStart, rectEnd, mTabDist,
-		       mUseTabs, outPtr, &len, &endOffset);
-    free((void *) line);
-    outPtr += len;
-    *outPtr++ = '\n';
-    lineStart = lineEnd + 1;
-  }
-  if (outPtr != outStr)
-    outPtr--;			/* trim back off extra newline */
-  *outPtr = '\0';
-  
-  /* replace the text between start and end with the newly created string */
-  remove_(start, end);
-  insert_(start, outStr);
-  *replaceLen = outPtr - outStr;
-  *endPos = start + (outPtr - outStr) - len + endOffset;
-  free((void *) outStr);
-}
-
-void Fl_Text_Buffer::overlay_rectangular_(int startPos, int rectStart,
-					  int rectEnd, const char *insText,
-					  int *nDeleted, int *nInserted,
-					  int *endPos)
-{
-  
-  /* Allocate a buffer for the replacement string large enough to hold
-   possibly expanded tabs in the inserted text, as well as per line: 1)
-   an additional 2*FL_TEXT_MAX_EXP_CHAR_LEN characters for padding where tabs
-   and control characters cross the column of the selection, 2) up to
-   "column" additional spaces per line for padding out to the position
-   of "column", 3) padding up to the width of the inserted text if that
-   must be padded to align the text beyond the inserted column.  (Space
-   for additional newlines if the inserted text extends beyond the end
-   of the buffer is counted with the length of insText) */
-  int start = line_start(startPos);
-  int nLines = countLines(insText) + 1;
-  int end = line_end(skip_lines(start, nLines - 1)), expInsLen;
-  char *expText = expandTabs(insText, 0, mTabDist, &expInsLen);
-  free((void *) expText);
-  char *outStr = (char *) malloc(end - start + expInsLen +
-				 nLines * (rectEnd +
-					   FL_TEXT_MAX_EXP_CHAR_LEN) + 1);
-  
-  /* Loop over all lines in the buffer between start and end overlaying the
-   text between rectStart and rectEnd and padding appropriately.  Trim
-   trailing space from line (whitespace at the ends of lines otherwise
-   tends to multiply, since additional padding is added to maintain it */
-  int len, endOffset;
-  char *outPtr = outStr, *insLine;
-  const char *insPtr = insText, *line;
-  for (int lineStart = start, lineEnd;;) {
-    lineEnd = line_end(lineStart);
-    line = text_range(lineStart, lineEnd);
-    insLine = copyLine(insPtr, &len);
-    insPtr += len;
-    overlayRectInLine(line, insLine, rectStart, rectEnd, mTabDist,
-		      mUseTabs, outPtr, &len, &endOffset);
-    free((void *) line);
-    free((void *) insLine);
-    for (const char *c = outPtr + len - 1; c > outPtr && isspace(*c); c--)
-      len--;
-    outPtr += len;
-    *outPtr++ = '\n';
-    lineStart = lineEnd < mLength ? lineEnd + 1 : mLength;
-    if (*insPtr == '\0')
-      break;
-    insPtr++;
-  }
-  if (outPtr != outStr)
-    outPtr--;			/* trim back off extra newline */
-  *outPtr = '\0';
-  
-  /* replace the text between start and end with the new stuff */
-  remove_(start, end);
-  insert_(start, outStr);
-  *nInserted = outPtr - outStr;
-  *nDeleted = end - start;
-  *endPos = start + (outPtr - outStr) - len + endOffset;
-  free((void *) outStr);
-}
-
-/*
- Inserts characters from single-line string \p insLine in single-line string
- \p line at \p column, leaving \p insWidth space before continuing line.
- \p outLen returns the number of characters written to \p outStr, \p endOffset
- returns the number of characters from the beginning of the string to
- the right edge of the inserted text (as a hint for routines which need
- to position the cursor).
- */
-static void insertColInLine(const char *line, char *insLine, int column,
-			    int insWidth, int tabDist, int useTabs,
-			    char *outStr, int *outLen,
-			    int *endOffset)
-{
-  /* copy the line up to "column" */
-  char *outPtr = outStr;
-  int indent = 0, len;
-  const char *linePtr;
-  
-  for (linePtr = line; *linePtr != '\0'; linePtr++) {
-    len = Fl_Text_Buffer::character_width(linePtr, indent, tabDist);
-    if (indent + len > column)
-      break;
-    indent += len;
-    *outPtr++ = *linePtr;
-  }
-  
-  /* If "column" falls in the middle of a character, and the character is a
-   tab, leave it off and leave the indent short and it will get padded
-   later.  If it's a control character, insert it and adjust indent
-   accordingly. */
-  int postColIndent;
-  if (indent < column && *linePtr != '\0') {
-    postColIndent = indent + len;
-    if (*linePtr == '\t')
-      linePtr++;
-    else {
-      *outPtr++ = *linePtr++;
-      indent += len;
-    }
-  } else
-    postColIndent = indent;
-  
-  /* If there's no text after the column and no text to insert, that's all */
-  if (*insLine == '\0' && *linePtr == '\0') {
-    *outLen = *endOffset = outPtr - outStr;
-    return;
-  }
-  
-  /* pad out to column if text is too short */
-  if (indent < column) {
-    addPadding(outPtr, indent, column, tabDist, useTabs, &len);
-    outPtr += len;
-    indent = column;
-  }
-  
-  /* Copy the text from "insLine" (if any), recalculating the tabs as if
-   the inserted string began at column 0 to its new column destination */
-  if (*insLine != '\0') {
-    char *retabbedStr = realignTabs(insLine, 0, indent, tabDist, useTabs,
-				   &len);
-    for (const char *c = retabbedStr; *c != '\0'; c++) {
-      *outPtr++ = *c;
-      len = Fl_Text_Buffer::character_width(c, indent, tabDist);
-      indent += len;
-    }
-    free((void *) retabbedStr);
-  }
-  
-  /* If the original line did not extend past "column", that's all */
-  if (*linePtr == '\0') {
-    *outLen = *endOffset = outPtr - outStr;
-    return;
-  }
-  
-  /* Pad out to column + width of inserted text + (additional original
-   offset due to non-breaking character at column) */
-  int toIndent = column + insWidth + postColIndent - column;
-  addPadding(outPtr, indent, toIndent, tabDist, useTabs, &len);
-  outPtr += len;
-  indent = toIndent;
-  
-  /* realign tabs for text beyond "column" and write it out */
-  char *retabbedStr = realignTabs(linePtr, postColIndent, indent, tabDist,
-				  useTabs, &len);
-  strcpy(outPtr, retabbedStr);
-  free((void *) retabbedStr);
-  *endOffset = outPtr - outStr;
-  *outLen = (outPtr - outStr) + len;
-}
-
-/**
- Removes characters in single-line string \p line between displayed positions
- \p rectStart and \p rectEnd, and write the result to \p outStr, which is
- assumed to be large enough to hold the returned string.  Note that in
- certain cases, it is possible for the string to get longer due to
- expansion of tabs.  \p endOffset returns the number of characters from
- the beginning of the string to the point where the characters were
- deleted (as a hint for routines which need to position the cursor).
- */
-static void deleteRectFromLine(const char *line, int rectStart,
-			       int rectEnd, int tabDist, int useTabs,
-			       char *outStr,
-			       int *outLen, int *endOffset)
-{
-  
-  /* copy the line up to rectStart */
-  char *outPtr = outStr;
-  int indent = 0, len;
-  const char *c;
-  for (c = line; *c != '\0'; c++) {
-    if (indent > rectStart)
-      break;
-    len = Fl_Text_Buffer::character_width(c, indent, tabDist);
-    if (indent + len > rectStart && (indent == rectStart || *c == '\t'))
-      break;
-    indent += len;
-    *outPtr++ = *c;
-  }
-  int preRectIndent = indent;
-  
-  /* skip the characters between rectStart and rectEnd */
-  for (; *c != '\0' && indent < rectEnd; c++)
-    indent += Fl_Text_Buffer::character_width(c, indent, tabDist);
-  int postRectIndent = indent;
-  
-  /* If the line ended before rectEnd, there's nothing more to do */
-  if (*c == '\0') {
-    *outPtr = '\0';
-    *outLen = *endOffset = outPtr - outStr;
-    return;
-  }
-  
-  /* fill in any space left by removed tabs or control characters
-   which straddled the boundaries */
-  indent = max(rectStart + postRectIndent - rectEnd, preRectIndent);
-  addPadding(outPtr, preRectIndent, indent, tabDist, useTabs, &len);
-  outPtr += len;
-  
-  /* Copy the rest of the line.  If the indentation has changed, preserve
-   the position of non-whitespace characters by converting tabs to
-   spaces, then back to tabs with the correct offset */
-  char *retabbedStr =
-  realignTabs(c, postRectIndent, indent, tabDist, useTabs, &len);
-  strcpy(outPtr, retabbedStr);
-  free((void *) retabbedStr);
-  *endOffset = outPtr - outStr;
-  *outLen = (outPtr - outStr) + len;
-}
-
-/**
- Overlay characters from single-line string \p insLine on single-line string
- \p line between displayed character offsets \p rectStart and \p rectEnd.
- \p outLen returns the number of characters written to \p outStr, \p endOffset
- returns the number of characters from the beginning of the string to
- the right edge of the inserted text (as a hint for routines which need
- to position the cursor).
- */
-static void overlayRectInLine(const char *line, char *insLine,
-			      int rectStart, int rectEnd, int tabDist,
-			      int useTabs, char *outStr,
-			      int *outLen, int *endOffset)
-{
-  /* copy the line up to "rectStart" */
-  char *outPtr = outStr;
-  int inIndent = 0, outIndent = 0, len;
-  const char *linePtr = line;
-  
-  for (; *linePtr != '\0'; linePtr++) {
-    len = Fl_Text_Buffer::character_width(linePtr, inIndent, tabDist);
-    if (inIndent + len > rectStart)
-      break;
-    inIndent += len;
-    outIndent += len;
-    *outPtr++ = *linePtr;
-  }
-  
-  /* If "rectStart" falls in the middle of a character, and the character
-   is a tab, leave it off and leave the outIndent short and it will get
-   padded later.  If it's a control character, insert it and adjust
-   outIndent accordingly. */
-  if (inIndent < rectStart && *linePtr != '\0') {
-    if (*linePtr == '\t') {
-      linePtr++;
-      inIndent += len;
-    } else {
-      *outPtr++ = *linePtr++;
-      outIndent += len;
-      inIndent += len;
-    }
-  }
-  
-  /* skip the characters between rectStart and rectEnd */
-  int postRectIndent = rectEnd;
-  for (; *linePtr != '\0'; linePtr++) {
-    inIndent += Fl_Text_Buffer::character_width(linePtr, inIndent, tabDist);
-    if (inIndent >= rectEnd) {
-      linePtr++;
-      postRectIndent = inIndent;
-      break;
-    }
-  }
-  
-  /* If there's no text after rectStart and no text to insert, that's all */
-  if (*insLine == '\0' && *linePtr == '\0') {
-    *outLen = *endOffset = outPtr - outStr;
-    return;
-  }
-  
-  /* pad out to rectStart if text is too short */
-  if (outIndent < rectStart) {
-    addPadding(outPtr, outIndent, rectStart, tabDist, useTabs, &len);
-    outPtr += len;
-  }
-  outIndent = rectStart;
-  
-  /* Copy the text from "insLine" (if any), recalculating the tabs as if
-   the inserted string began at column 0 to its new column destination */
-  if (*insLine != '\0') {
-    char *retabbedStr =
-    realignTabs(insLine, 0, rectStart, tabDist, useTabs, &len);
-    for (const char *c = retabbedStr; *c != '\0'; c++) {
-      *outPtr++ = *c;
-      len = Fl_Text_Buffer::character_width(c, outIndent, tabDist);
-      outIndent += len;
-    }
-    free((void *) retabbedStr);
-  }
-  
-  /* If the original line did not extend past "rectStart", that's all */
-  if (*linePtr == '\0') {
-    *outLen = *endOffset = outPtr - outStr;
-    return;
-  }
-  
-  /* Pad out to rectEnd + (additional original offset
-   due to non-breaking character at right boundary) */
-  addPadding(outPtr, outIndent, postRectIndent, tabDist, useTabs, &len);
-  outPtr += len;
-  outIndent = postRectIndent;
-  
-  /* copy the text beyond "rectEnd" */
-  strcpy(outPtr, linePtr);
-  *endOffset = outPtr - outStr;
-  *outLen = (outPtr - outStr) + strlen(linePtr);
-}
-
 
 // simple setter
 // Unicode safe
 void Fl_Text_Selection::set(int startpos, int endpos)
 {
   mSelected = startpos != endpos;
-  mRectangular = 0;
   mStart = min(startpos, endpos);
   mEnd = max(startpos, endpos);
-}
-
-
-// simple setter
-// Unicode safe
-void Fl_Text_Selection::set_rectangular(int startpos, int endpos,
-					int rectStart, int rectEnd)
-{
-  mSelected = rectStart < rectEnd;
-  mRectangular = 1;
-  mStart = startpos;
-  mEnd = endpos;
-  mRectStart = rectStart;
-  mRectEnd = rectEnd;
 }
 
 
@@ -1816,41 +1094,16 @@ int Fl_Text_Selection::position(int *startpos, int *endpos) const {
 } 
 
 
-// simple getter
-// Unicode safe
-int Fl_Text_Selection::position(int *startpos, int *endpos,
-				  int *isRect, int *rectStart,
-				  int *rectEnd) const {
-  if (!mSelected)
-    return 0;
-  *isRect = mRectangular;
-  *startpos = mStart;
-  *endpos = mEnd;
-  if (mRectangular)
-  {
-    *rectStart = mRectStart;
-    *rectEnd = mRectEnd;
-  }
-  return 1;
-}
-
-
 // unicode safe
-int Fl_Text_Selection::includes(int pos, int lineStartPos, int dispIndex) const {
-  return (selected() 
-          && ( (!rectangular() && pos >= start() && pos < end()) 
-              || (rectangular() && pos >= start() && lineStartPos <= end() 
-                  && dispIndex >= rect_start() && dispIndex < rect_end()
-                  )
-              )
-          );
+int Fl_Text_Selection::includes(int pos) const {
+  return (selected() && pos >= start() && pos < end() );
 } 
 
 char *Fl_Text_Buffer::selection_text_(Fl_Text_Selection * sel) const {
-  int start, end, isRect, rectStart, rectEnd;
+  int start, end;
   
   /* If there's no selection, return an allocated empty string */
-  if (!sel->position(&start, &end, &isRect, &rectStart, &rectEnd))
+  if (!sel->position(&start, &end))
   {
     char *s = (char *) malloc(1);
     *s = '\0';
@@ -1858,24 +1111,17 @@ char *Fl_Text_Buffer::selection_text_(Fl_Text_Selection * sel) const {
   }
   
   /* If the selection is not rectangular, return the selected range */
-  if (isRect)
-    return text_in_rectangle(start, end, rectStart, rectEnd);
-  else
-    return text_range(start, end);
+  return text_range(start, end);
 }
 
 void Fl_Text_Buffer::remove_selection_(Fl_Text_Selection * sel)
 {
-  int start, end, isRect, rectStart, rectEnd;
+  int start, end;
   
-  if (!sel->position(&start, &end, &isRect, &rectStart, &rectEnd))
+  if (!sel->position(&start, &end))
     return;
-  if (isRect)
-    remove_rectangular(start, end, rectStart, rectEnd);
-  else {
-    remove(start, end);
-    //undoyankcut = undocut;
-  }
+  remove(start, end);
+  //undoyankcut = undocut;
 }
 
 
@@ -1885,15 +1131,12 @@ void Fl_Text_Buffer::replace_selection_(Fl_Text_Selection * sel,
   Fl_Text_Selection oldSelection = *sel;
   
   /* If there's no selection, return */
-  int start, end, isRect, rectStart, rectEnd;
-  if (!sel->position(&start, &end, &isRect, &rectStart, &rectEnd))
+  int start, end;
+  if (!sel->position(&start, &end))
     return;
   
   /* Do the appropriate type of replace */
-  if (isRect)
-    replace_rectangular(start, end, rectStart, rectEnd, text);
-  else
-    replace(start, end, text);
+  replace(start, end, text);
   
   /* Unselect (happens automatically in BufReplace, but BufReplaceRect
    can't detect when the contents of a selection goes away) */
@@ -1901,32 +1144,6 @@ void Fl_Text_Buffer::replace_selection_(Fl_Text_Selection * sel,
   redisplay_selection(&oldSelection, sel);
 }
 
-static void addPadding(char *string, int startIndent, int toIndent,
-		       int tabDist, int useTabs, int *charsAdded)
-{
-  int indent = startIndent, len;
-  char *outPtr = string;
-  
-  if (useTabs) {
-    while (indent < toIndent) {
-      static char t = '\t';
-      len = Fl_Text_Buffer::character_width("\t", indent, tabDist);
-      if (len > 1 && indent + len <= toIndent) {
-	*outPtr++ = '\t';
-	indent += len;
-      } else {
-	*outPtr++ = ' ';
-	indent++;
-      }
-    }
-  } else {
-    while (indent < toIndent) {
-      *outPtr++ = ' ';
-      indent++;
-    }
-  }
-  *charsAdded = outPtr - string;
-}
 
 void Fl_Text_Buffer::call_modify_callbacks(int pos, int nDeleted,
 					   int nInserted, int nRestyled,
@@ -1934,10 +1151,16 @@ void Fl_Text_Buffer::call_modify_callbacks(int pos, int nDeleted,
   for (int i = 0; i < mNModifyProcs; i++)
     (*mModifyProcs[i]) (pos, nInserted, nDeleted, nRestyled,
 			deletedText, mCbArgs[i]);
-} void Fl_Text_Buffer::call_predelete_callbacks(int pos, int nDeleted) const {
+} 
+
+
+void Fl_Text_Buffer::call_predelete_callbacks(int pos, int nDeleted) const {
   for (int i = 0; i < mNPredeleteProcs; i++)
     (*mPredeleteProcs[i]) (pos, nDeleted, mPredeleteCbArgs[i]);
-} void Fl_Text_Buffer::redisplay_selection(Fl_Text_Selection *
+} 
+
+
+void Fl_Text_Buffer::redisplay_selection(Fl_Text_Selection *
 					   oldSelection,
 					   Fl_Text_Selection *
 					   newSelection) const
@@ -1952,10 +1175,6 @@ void Fl_Text_Buffer::call_modify_callbacks(int pos, int nDeleted,
   newStart = newSelection->mStart;
   oldEnd = oldSelection->mEnd;
   newEnd = newSelection->mEnd;
-  if (oldSelection->mRectangular)
-    oldEnd++;
-  if (newSelection->mRectangular)
-    newEnd++;
   
   /* If the old or new selection is unselected, just redisplay the
    single area that is (was) selected and return */
@@ -1970,20 +1189,6 @@ void Fl_Text_Buffer::call_modify_callbacks(int pos, int nDeleted,
     call_modify_callbacks(oldStart, 0, 0, oldEnd - oldStart, NULL);
     return;
   }
-  
-  /* If the selection changed from normal to rectangular or visa versa, or
-   if a rectangular selection changed boundaries, redisplay everything */
-  if ((oldSelection->mRectangular && !newSelection->mRectangular) ||
-      (!oldSelection->mRectangular && newSelection->mRectangular) ||
-      (oldSelection->mRectangular && ((oldSelection->mRectStart !=
-				       newSelection->mRectStart)
-				      || (oldSelection->mRectEnd !=
-					  newSelection->mRectEnd)))) {
-                                        call_modify_callbacks(min(oldStart, newStart), 0, 0,
-                                                              max(oldEnd, newEnd) - min(oldStart,
-                                                                                        newStart), NULL);
-                                        return;
-                                      }
   
   /* If the selections are non-contiguous, do two separate updates
    and return */
@@ -2134,228 +1339,6 @@ int Fl_Text_Buffer::findchar_backward(int startPos, char searchChar,
   return 0;
 }
 
-/*
- Copies from \p text to end up to but not including newline (or end of \p text)
- and return the copy as the function value, and the length of the line in
- \p lineLen
- */
-static char *copyLine(const char *text, int *lineLen)
-{
-  int len = 0;
-  
-  for (const char *c = text; *c != '\0' && *c != '\n'; c++)
-    len++;
-  char *outStr = (char *) malloc(len + 1);
-  strlcpy(outStr, text, len + 1);
-  *lineLen = len;
-  return outStr;
-}
-
-/*
- Counts the number of newlines in a null-terminated text string.
- Unicode tested.
- */
-static int countLines(const char *string)
-{
-  int lineCount = 0;
-  
-  for (const char *c = string; *c != '\0'; c++)
-    if (*c == '\n')
-      lineCount++;
-  return lineCount;
-}
-
-/*
- Measures the width in displayed characters of string \p text
- */
-static int textWidth(const char *text, int tabDist)
-{
-  int width = 0, maxWidth = 0;
-  
-  // HUH? Why is "c" incremented? Shouldn't "text" be incrmented?
-  // FIXME: increment is wrong!
-  for (const char *c = text; *c != '\0'; c++) {
-    if (*c == '\n') {
-      if (width > maxWidth)
-	maxWidth = width;
-      width = 0;
-    } else
-      width += Fl_Text_Buffer::character_width(c, width, tabDist);
-  }
-  if (width > maxWidth)
-    return width;
-  return maxWidth;
-}
-
-void Fl_Text_Buffer::rectangular_selection_boundaries(int lineStartPos,
-						      int rectStart,
-						      int rectEnd,
-						      int *selStart,
-						      int *selEnd) const
-{
-  int pos, width, indent = 0;
-  char c;
-  
-  /* find the start of the selection */
-  for (pos = lineStartPos; pos < mLength; pos++)
-  {
-    // FIXME: character is ucs-4
-    c = character(pos);
-    if (c == '\n')
-      break;
-    width =
-    Fl_Text_Buffer::character_width(&c, indent, mTabDist); // FIXME: c is not unicode
-    if (indent + width > rectStart) {
-      if (indent != rectStart && c != '\t') {
-        pos++;
-        indent += width;
-      }
-      break;
-    }
-    indent += width;
-  }
-  *selStart = pos;
-  
-  /* find the end */
-  for (; pos < mLength; pos++) {
-    // FIXME: character is ucs-4
-    c = character(pos);
-    if (c == '\n')
-      break;
-    width =
-    Fl_Text_Buffer::character_width(&c, indent, mTabDist); // FIXME: c is not unicode
-    indent += width;
-    if (indent > rectEnd) {
-      if (indent - width != rectEnd && c != '\t')
-	pos++;
-      break;
-    }
-  }
-  *selEnd = pos;
-}
-
-/*
- Adjust the space and tab characters from string \p text so that non-white
- characters remain stationary when the text is shifted from starting at
- \p origIndent to starting at \p newIndent.  Returns an allocated string
- which must be freed by the caller with XtFree.
- */
-static char *realignTabs(const char *text, int origIndent, int newIndent,
-			 int tabDist, int useTabs, int *newLength)
-{
-  /* If the tabs settings are the same, retain original tabs */
-  int len;
-  char *outStr;
-  if (origIndent % tabDist == newIndent % tabDist) {
-    len = strlen(text);
-    outStr = (char *) malloc(len + 1);
-    strcpy(outStr, text);
-    *newLength = len;
-    return outStr;
-  }
-  
-  /* If the tab settings are not the same, brutally convert tabs to
-   spaces, then back to tabs in the new position */
-  char *expStr = expandTabs(text, origIndent, tabDist, &len);
-  if (!useTabs) {
-    *newLength = len;
-    return expStr;
-  }
-  outStr =
-  unexpandTabs(expStr, newIndent, tabDist, newLength);
-  free((void *) expStr);
-  return outStr;
-}
-
-/*
- Expand tabs to spaces for a block of text.  The additional parameter
- \p startIndent if nonzero, indicates that the text is a rectangular selection
- beginning at column \p startIndent
- */
-static char *expandTabs(const char *text, int startIndent, int tabDist, int *newLen)
-{
-  /* rehearse the expansion to figure out length for output string */
-  int indent = startIndent, len, outLen = 0;
-  const char *c;
-  for (c = text; *c != '\0'; c++) {
-    if (*c == '\t') {
-      len =
-      Fl_Text_Buffer::character_width(c, indent, tabDist);
-      outLen += len;
-      indent += len;
-    } else if (*c == '\n') {
-      indent = startIndent;
-      outLen++;
-    } else {
-      // FIXME: character_width does not return number of bytes for UTF-8!
-      indent +=
-      Fl_Text_Buffer::character_width(c, indent, tabDist);
-      outLen++;
-    }
-  }
-  
-  /* do the expansion */
-  char *outStr = (char *) malloc(outLen + 1);
-  char *outPtr = outStr;
-  indent = startIndent;
-  for (c = text; *c != '\0'; c++) {
-    if (*c == '\t') {
-      len =
-      Fl_Text_Buffer::expand_character(c, indent, outPtr, tabDist);
-      outPtr += len;
-      indent += len;
-    } else if (*c == '\n') {
-      indent = startIndent;
-      *outPtr++ = *c;
-    } else {
-      // FIXME: character_width does not return number of bytes for UTF-8!
-      indent +=
-      Fl_Text_Buffer::character_width(c, indent, tabDist);
-      *outPtr++ = *c;
-    }
-  }
-  outStr[outLen] = '\0';
-  *newLen = outLen;
-  return outStr;
-}
-
-/*
- Convert sequences of spaces into tabs.  The threshold for conversion is
- when 3 or more spaces can be converted into a single tab, this avoids
- converting double spaces after a period withing a block of text.
- */
-static char *unexpandTabs(char *text, int startIndent, int tabDist, int *newLen)
-{
-  char expandedChar[FL_TEXT_MAX_EXP_CHAR_LEN];
-  char *outStr = (char *) malloc(strlen(text) + 1);
-  char *outPtr = outStr;
-  int indent = startIndent, len;
-  
-  for (const char *c = text; *c != '\0';) {
-    if (*c == ' ') {
-      static char tab = '\t';
-      len =
-      Fl_Text_Buffer::expand_character(&tab, indent, expandedChar, tabDist);
-      if (len >= 3 && !strncmp(c, expandedChar, len)) {
-	c += len;
-	*outPtr++ = '\t';
-	indent += len;
-      } else {
-	*outPtr++ = *c++;
-	indent++;
-      }
-    } else if (*c == '\n') {
-      indent = startIndent;
-      *outPtr++ = *c++;
-    } else {
-      *outPtr++ = *c++;
-      indent++;
-    }
-  }
-  *outPtr = '\0';
-  *newLen = outPtr - outStr;
-  return outStr;
-}
 
 int Fl_Text_Buffer::insertfile(const char *file, int pos, int buflen)
 {
