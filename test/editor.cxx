@@ -792,6 +792,15 @@ Fl_Window* new_view() {
 int main(int argc, char **argv) {
   textbuf = new Fl_Text_Buffer;
   textbuf->text(
+#if 1
+                "void saveas_cb() {\n"
+                "  Fl_Native_File_Chooser fnfc;\n"
+                "  fnfc.title(\"Save File As?\");\n"
+                "  fnfc.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);\n"
+                "  if ( fnfc.show() ) return;\n"
+                "  save_file(fnfc.filename());\n"
+                "}\n\n"
+#else                
                 "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg\n"
                 "(= Wrongful practicing of xylophone music tortures every larger dwarf)\n"
                 "\n"
@@ -819,6 +828,7 @@ int main(int argc, char **argv) {
                 "たれそ つねならむ うゐのおくやま\n"
                 "けふこえて あさきゆめみし ゑひも\n"
                 "せす\n"
+#endif
                 "Even colours and sweet perfume / Will eventually fade /\n"
                 "Even our world / Is not eternal /\n"
                 "The deep mountains of vanity / Cross them today /\n"

@@ -1450,6 +1450,14 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
 
   dispIndexOffset = 0;
 
+  // FIXME: quick out to avoid insane calculations of line width
+  X = text_area.x - mHorizOffset;
+  startX = X;
+  draw_string( 0, startX, Y, text_area.x+text_area.w, lineStr, lineLen );
+  return;
+  
+  
+  
   /* Step through character positions from the beginning of the line (even if
      that's off the left edge of the displayed area) to find the first
      character position that's not clipped, and the X coordinate for drawing
