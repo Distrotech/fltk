@@ -147,8 +147,7 @@ class FL_EXPORT Fl_Text_Display: public Fl_Group {
                         Unfinished_Style_Cb unfinishedHighlightCB,
                         void *cbArg);
 
-    int position_style(int lineStartPos, int lineLen, int lineIndex,
-                       int dispIndex) const;
+    int position_style(int lineStartPos, int lineLen, int lineIndex) const;
     /** \todo FIXME : get set methods pointing on shortcut_ 
      have no effects as shortcut_ is unused in this class and derived! */
     int shortcut() const {return shortcut_;}

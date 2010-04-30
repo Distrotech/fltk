@@ -732,8 +732,7 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
   {
     charLen = Fl_Text_Buffer::expand_character( lineStr+charIndex, outIndex, expandedChar,
               mBuffer->tab_distance());
-    charStyle = position_style( lineStartPos, lineLen, charIndex,
-                                outIndex );
+    charStyle = position_style( lineStartPos, lineLen, charIndex);
     xStep += string_width( expandedChar, charLen, charStyle );
     outIndex += charLen;
   }
@@ -1452,10 +1451,38 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
 
   dispIndexOffset = 0;
 
-  // FIXME: quick out to avoid insane calculations of line width
+  
+  
+  
+  // FIXME: simplified line drawing - quite OK so far, but no line wrapping or tab expansion
   X = text_area.x - mHorizOffset;
   startX = X;
-  draw_string( 0, startX, Y, text_area.x+text_area.w, lineStr, lineLen );
+  startIndex = 0;
+  if (!lineStr) {
+    // just clear the background
+    style = position_style(lineStartPos, lineLen, -1);
+    draw_string( style|BG_ONLY_MASK, text_area.x, Y, text_area.x+text_area.w, lineStr, lineLen );
+  }
+  style = position_style(lineStartPos, lineLen, i);
+  for (i=0; i<lineLen; ) {
+    int len = fl_utf8len(lineStr[i]);
+    charStyle = position_style(lineStartPos, lineLen, i);
+    if (charStyle!=style) {
+      int w = string_width( lineStr+startIndex, i-startIndex, style );
+      draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
+      style = charStyle;
+      startX += w;
+      startIndex = i;
+    }
+    i += len;
+  }
+  int w = string_width( lineStr+startIndex, i-startIndex, style );
+  draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
+  
+  // clear the rest of the line
+  startX += w;
+  style = position_style(lineStartPos, lineLen, i);
+  draw_string( style|BG_ONLY_MASK, startX, Y, text_area.x+text_area.w, lineStr, lineLen );
   return;
   
   
@@ -1470,8 +1497,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     charLen = charIndex >= lineLen ? 1 :
               Fl_Text_Buffer::expand_character( lineStr+charIndex, outIndex,
                                                 expandedChar, buf->tab_distance());
-    style = position_style( lineStartPos, lineLen, charIndex,
-                            outIndex + dispIndexOffset );
+    style = position_style( lineStartPos, lineLen, charIndex);
     charWidth = charIndex >= lineLen ? stdCharWidth :
                 string_width( expandedChar, charLen, style );
     if ( X + charWidth >= leftClip && charIndex >= leftCharIndex ) {
@@ -1501,12 +1527,10 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     charLen = charIndex >= lineLen ? 1 :
               Fl_Text_Buffer::expand_character( lineStr+charIndex, outIndex, expandedChar,
                                                 buf->tab_distance());
-    charStyle = position_style( lineStartPos, lineLen, charIndex,
-                                outIndex + dispIndexOffset );
+    charStyle = position_style( lineStartPos, lineLen, charIndex);
     for ( i = 0; i < charLen; i++ ) { // FIXME: this rips apart the utf-8 sequneces
       if ( i != 0 && charIndex < lineLen && lineStr[ charIndex ] == '\t' )
-        charStyle = position_style( lineStartPos, lineLen,
-                                    charIndex, outIndex + dispIndexOffset );
+        charStyle = position_style( lineStartPos, lineLen, charIndex);
       if ( charStyle != style ) {
         draw_string( style|BG_ONLY_MASK, sX, Y, X, outStr, outPtr - outStr );
         outPtr = outStr;
@@ -1543,12 +1567,10 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     charLen = charIndex >= lineLen ? 1 :
               Fl_Text_Buffer::expand_character( lineStr+charIndex, outIndex, expandedChar,
                                                 buf->tab_distance());
-    charStyle = position_style( lineStartPos, lineLen, charIndex,
-                                outIndex + dispIndexOffset );
+    charStyle = position_style( lineStartPos, lineLen, charIndex );
     for ( i = 0; i < charLen; i++ ) { // FIXME: this rips apart the utf-8 sequneces
       if ( i != 0 && charIndex < lineLen && lineStr[ charIndex ] == '\t' )
-        charStyle = position_style( lineStartPos, lineLen,
-                                    charIndex, outIndex + dispIndexOffset );
+        charStyle = position_style( lineStartPos, lineLen, charIndex );
       if ( charStyle != style ) {
         draw_string( style|TEXT_ONLY_MASK, startX, Y, X, outStr, outPtr - outStr );
         outPtr = outStr;
@@ -1802,8 +1824,8 @@ void Fl_Text_Display::draw_cursor( int X, int Y ) {
    Note that style is a somewhat incorrect name, drawing method would
    be more appropriate.
 */
-int Fl_Text_Display::position_style( int lineStartPos,
-                                     int lineLen, int lineIndex, int dispIndex ) const {
+int Fl_Text_Display::position_style( int lineStartPos, int lineLen, int lineIndex) const 
+{
   Fl_Text_Buffer * buf = mBuffer;
   Fl_Text_Buffer *styleBuf = mStyleBuffer;
   int pos, style = 0;
@@ -1900,7 +1922,7 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType ) const {
   {
     charLen = Fl_Text_Buffer::expand_character( lineStr+charIndex, outIndex, expandedChar,
               mBuffer->tab_distance());
-    charStyle = position_style( lineStart, lineLen, charIndex, outIndex );
+    charStyle = position_style( lineStart, lineLen, charIndex );
     charWidth = string_width( expandedChar, charLen, charStyle );
     if ( X < xStep + ( posType == CURSOR_POS ? charWidth / 2 : charWidth ) ) {
       free((char *)lineStr);
