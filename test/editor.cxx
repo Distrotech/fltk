@@ -70,7 +70,8 @@ Fl_Text_Display::Style_Table_Entry
 		     { FL_BLUE,       FL_COURIER,        14 }, // D - Strings
 		     { FL_DARK_RED,   FL_COURIER,        14 }, // E - Directives
 		     { FL_DARK_RED,   FL_COURIER_BOLD,   14 }, // F - Types
-		     { FL_BLUE,       FL_COURIER_BOLD,   14 }  // G - Keywords
+		     { FL_BLUE,       FL_COURIER_BOLD,   14 }, // G - Keywords
+		     { FL_MAGENTA,    FL_HELVETICA,      12 }  // H - Font height test
 		   };
 const char         *code_keywords[] = {	// List of known C/C++ keywords...
 		     "and",
@@ -199,6 +200,8 @@ style_parse(const char *text,
         if (length == 0) break;
       } else if (strncmp(text, "/*", 2) == 0) {
         current = 'C';
+      } else if (strncmp(text, "[", 1) == 0) {
+        current = 'H';
       } else if (strncmp(text, "\\\"", 2) == 0) {
         // Quoted quote...
 	*style++ = current;
@@ -259,6 +262,14 @@ style_parse(const char *text,
       length --;
       current = 'A';
       col += 2;
+      continue;
+    } else if (current == 'H' && strncmp(text, "]", 1) == 0) {
+      // Close a font test style
+      *style++ = current;
+      text ++;
+      length --;
+      current = 'A';
+      col += 1;
       continue;
     } else if (current == 'D') {
       // Continuing in string...
@@ -826,7 +837,7 @@ int main(int argc, char **argv) {
                 "/* たれそ つねならむ うゐのおくやま */\n"
                 "けふこえて あさきゆめみし ゑひも\n"
                 "せす\n\n"
-                "Even colours and sweet perfume / Will eventually fade /\n"
+                "Even colours and [sweet perfume] / Will eventually fade /\n"
                 "Even our world / Is not eternal /\n"
                 "The deep mountains of vanity / Cross them today /\n"
                 "And superficial dreams / Shall no longer delude you.\n"

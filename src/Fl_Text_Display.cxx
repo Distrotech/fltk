@@ -757,15 +757,13 @@ int Fl_Text_Display::position_to_linecol( int pos, int* lineNum, int* column ) c
        pos < mFirstChar || pos > mLastChar)
 	    return 0;
 	*lineNum = mAbsTopLineNum + buffer()->count_lines(mFirstChar, pos);
-	*column
-     = buffer()->count_displayed_characters(buffer()->line_start(pos), pos);
+	*column = buffer()->count_displayed_characters(buffer()->line_start(pos), pos);
 	return 1;
     }
 
   retVal = position_to_line( pos, lineNum );
   if ( retVal ) {
-    *column = mBuffer->count_displayed_characters(
-                mLineStarts[ *lineNum ], pos );
+    *column = mBuffer->count_displayed_characters(mLineStarts[ *lineNum ], pos );
     *lineNum += mTopLineNum;
   }
   return retVal;
@@ -799,8 +797,7 @@ int Fl_Text_Display::wrapped_column(int row, int column) const {
     if (dispLineStart == -1)
     	return column;
     lineStart = buffer()->line_start(dispLineStart);
-    return column
-		 + buffer()->count_displayed_characters(lineStart, dispLineStart);
+    return column + buffer()->count_displayed_characters(lineStart, dispLineStart);
 }
 
 /**
