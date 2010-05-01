@@ -65,7 +65,7 @@ Fl_Text_Buffer     *stylebuf = 0;
 Fl_Text_Display::Style_Table_Entry
                    styletable[] = {	// Style table
 		     { FL_BLACK,      FL_COURIER,        14 }, // A - Plain
-		     { FL_DARK_GREEN, FL_COURIER_ITALIC, 14 }, // B - Line comments
+		     { FL_DARK_GREEN, FL_HELVETICA_ITALIC, 14 }, // B - Line comments
 		     { FL_DARK_GREEN, FL_COURIER_ITALIC, 14 }, // C - Block comments
 		     { FL_BLUE,       FL_COURIER,        14 }, // D - Strings
 		     { FL_DARK_RED,   FL_COURIER,        14 }, // E - Directives
@@ -799,16 +799,16 @@ int main(int argc, char **argv) {
                 "  if ( fnfc.show() ) return;\n"
                 "  save_file(fnfc.filename());\n"
                 "}\n\n"
-                "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg\n"
-                "(= Wrongful practicing of xylophone music tortures every larger dwarf)\n"
+                "// Falsches Üben von Xylophonmusik quält jeden größeren Zwerg\n"
+                "// (= Wrongful practicing of xylophone music tortures every larger dwarf)\n"
                 "\n"
-                "Zwölf Boxkämpfer jagten Eva quer über den Sylter Deich\n"
-                "(= Twelve boxing fighters hunted Eva across the dike of Sylt)\n"
+                "// Zwölf Boxkämpfer jagten Eva quer über den Sylter Deich\n"
+                "// (= Twelve boxing fighters hunted Eva across the dike of Sylt)\n"
                 "\n"
-                "Heizölrückstoßabdämpfung\n"
+                "Heizöl/*rückstoß*/abdämpfung\n"
                 "(= fuel oil recoil absorber)\n"
                 "\n"
-                "Hiragana: (Iroha)\n"
+                "Hiragana: //(Iroha)\n"
                 "\n"
                 "いろはにほへとちりぬるを\n"
                 "わかよたれそつねならむ\n"
@@ -817,13 +817,13 @@ int main(int argc, char **argv) {
                 "\n"
                 "Katakana:\n"
                 "\n"
-                "イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム\n"
+                "イロハニホヘト チ/*リヌルヲ ワカヨタ*/レソ ツネナラム\n"
                 "ウヰノオクヤマ ケフコエテ アサキユメミシ ヱヒモセスン\n"
                 "\n"
                 "? דג סקרן שט בים מאוכזב ולפתע מצא לו חברה איך הקליטה\n"
                 "\n"
-                "いろはにほへと ちりぬるを わかよ\n"
-                "たれそ つねならむ うゐのおくやま\n"
+                "// いろはにほへと ちりぬるを わかよ\n"
+                "/* たれそ つねならむ うゐのおくやま */\n"
                 "けふこえて あさきゆめみし ゑひも\n"
                 "せす\n\n"
                 "Even colours and sweet perfume / Will eventually fade /\n"

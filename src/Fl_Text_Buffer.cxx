@@ -680,6 +680,7 @@ int Fl_Text_Buffer::word_end(int pos) const {
 // - unicode ok
 int Fl_Text_Buffer::character_width(const char *src, int indent, int tabDist)
 {
+  return 1;
   // FIXME: this is only useful if all characters have the same pixel width. This function must be replaced.
   char c = *src;
   if ((c & 0x80) && (c & 0x40)) {       // first byte of UTF-8 sequence
