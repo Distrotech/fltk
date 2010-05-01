@@ -680,6 +680,7 @@ int Fl_Text_Buffer::word_end(int pos) const {
 // - unicode ok
 int Fl_Text_Buffer::character_width(const char *src, int indent, int tabDist)
 {
+  // FIXME: this is only useful if all characters have the same pixel width. This function must be replaced.
   char c = *src;
   if ((c & 0x80) && (c & 0x40)) {       // first byte of UTF-8 sequence
     int len = fl_utf8len(c);
@@ -696,36 +697,11 @@ int Fl_Text_Buffer::character_width(const char *src, int indent, int tabDist)
   //return character_width(c, indent, tabDist);
 }
 
-#if 0
-// FIXME: merge the following with the char* version above.
-// but the question then is: how to reorganise expand_character()?
-//
-int Fl_Text_Buffer::character_width(const char    c, int indent, int tabDist)
-{
-  /* Note, this code must parallel that in Fl_Text_Buffer::ExpandCharacter */
-  if (c == '\t') {
-    return tabDist - (indent % tabDist);
-  } else if (((unsigned char) c) <= 31) {
-    return strlen(ControlCodeTable[(unsigned char) c]) + 2;
-  } else if (c == 127) {
-    return 5;
-  } else if ((c & 0x80) && !(c & 0x40)) {
-#ifdef DEBUG
-    fprintf(stderr, "%s:%d - Error in UTF-8 encoding!\n", __FILE__, __LINE__);
-#endif
-    return 1;
-  } else if (c & 0x80) {
-    // return fl_utf8len(c);
-    return 1;
-  }
-  return 1;
-}
-#endif
 
-// FIXME: is this funciton still needed?
 int Fl_Text_Buffer::count_displayed_characters(int lineStartPos,
 					       int targetPos) const
 {
+  // FIXME: is this function still needed?
   int charCount = 0;
   
   int pos = lineStartPos;
@@ -826,8 +802,7 @@ int Fl_Text_Buffer::rewind_lines(int startPos, int nLines)
 }
 
 int Fl_Text_Buffer::search_forward(int startPos, const char *searchString,
-				   int *foundPos,
-				   int matchCase) const 
+				   int *foundPos, int matchCase) const 
 {
   if (!searchString)
     return 0;
@@ -851,8 +826,7 @@ int Fl_Text_Buffer::search_forward(int startPos, const char *searchString,
 }
 
 int Fl_Text_Buffer::search_backward(int startPos, const char *searchString,
-				    int *foundPos,
-				    int matchCase) const {
+				    int *foundPos, int matchCase) const {
   if (!searchString)
     return 0;
   int bp;
@@ -875,8 +849,7 @@ int Fl_Text_Buffer::search_backward(int startPos, const char *searchString,
   return 0;
 }
 
-int Fl_Text_Buffer::findchars_forward(int startPos,
-				      const char *searchChars,
+int Fl_Text_Buffer::findchars_forward(int startPos, const char *searchChars,
 				      int *foundPos) const {
   int gapLen = mGapEnd - mGapStart;
   const char *c;
@@ -904,8 +877,7 @@ int Fl_Text_Buffer::findchars_forward(int startPos,
   return 0;
 }
 
-int Fl_Text_Buffer::findchars_backward(int startPos,
-				       const char *searchChars,
+int Fl_Text_Buffer::findchars_backward(int startPos, const char *searchChars,
 				       int *foundPos) const {
   int gapLen = mGapEnd - mGapStart;
   const char *c;
