@@ -537,16 +537,6 @@ public:
   int word_end(int pos) const;
   
   /**
-   Return the length in displayed characters of character \p c expanded
-   for display (as discussed above in expand_character() ).  
-   \param src address of utf-8 text
-   \param indent 
-   \param tabDist
-   \return number of byte in substitution
-   */
-  static int character_width(const char *src, int indent, int tabDist);
-
-  /**
    Count the number of displayed characters between buffer position
    \p lineStartPos and \p targetPos. (displayed characters are the characters
    shown on the screen to represent characters in the buffer, where tabs and

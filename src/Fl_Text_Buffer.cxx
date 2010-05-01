@@ -673,32 +673,6 @@ int Fl_Text_Buffer::word_end(int pos) const {
 }
 
 
-// This function takes a character and optionally converts it into a little
-// string which will replace the character on screen. This function returns
-// the number of bytes in the replacement string, but *not* the number of 
-// bytes in the original character!
-// - unicode ok
-int Fl_Text_Buffer::character_width(const char *src, int indent, int tabDist)
-{
-  return 1;
-  // FIXME: this is only useful if all characters have the same pixel width. This function must be replaced.
-  char c = *src;
-  if ((c & 0x80) && (c & 0x40)) {       // first byte of UTF-8 sequence
-    int len = fl_utf8len(c);
-    int ret = 0;
-    unsigned int ucs = fl_utf8decode(src, src+len, &ret);
-    int width = fl_wcwidth_(ucs);       // FIXME
-    // fprintf(stderr, "mk_wcwidth(%x) -> %d (%d, %d, %s)\n", ucs, width, len, ret, src);
-    return width;
-  }
-  if ((c & 0x80) && !(c & 0x40)) {      // other byte of UTF-8 sequence
-    return 0;
-  }
-  return 1; // FIXME: ouch!
-  //return character_width(c, indent, tabDist);
-}
-
-
 int Fl_Text_Buffer::count_displayed_characters(int lineStartPos,
 					       int targetPos) const
 {
@@ -726,7 +700,7 @@ int Fl_Text_Buffer::skip_displayed_characters(int lineStartPos, int nChars)
     char c = *src;
     if (c == '\n')
       return pos;
-    charCount += character_width(src, charCount, mTabDist);
+    charCount++;
     pos += fl_utf8len(c);
   }
   return pos;

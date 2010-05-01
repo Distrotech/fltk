@@ -631,7 +631,7 @@ void Fl_Text_Display::overstrike(const char* text) {
   startIndent = mBuffer->count_displayed_characters( lineStart, startPos );
   indent = startIndent;
   for ( c = text; *c != '\0'; c++ )
-    indent += Fl_Text_Buffer::character_width( c, indent, buf->tab_distance() );
+    indent++;
   endIndent = indent;
 
   /* find which characters to remove, and if necessary generate additional
@@ -644,8 +644,7 @@ void Fl_Text_Display::overstrike(const char* text) {
     ch = buf->at( p );
     if ( ch == '\n' )
       break;
-    const char *s = buf->address(p);
-    indent += Fl_Text_Buffer::character_width(s, indent, buf->tab_distance() ); // FIXME: not unicode
+    indent++;
     if ( indent == endIndent ) {
       p++;
       break;
@@ -2545,7 +2544,7 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
     int lineStart, newLineStart = 0, b, p, colNum, wrapMargin;
     int maxWidth, i, foundBreak, width;
 	 bool countPixels;
-    int nLines = 0, tabDist = buffer()->tab_distance();
+    int nLines = 0;
     unsigned char c;
     
     /* If the font is fixed, or there's a wrap margin set, it's more efficient
@@ -2603,7 +2602,7 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
     	    width = 0;
     	} else {
           const char *s = buf->address(p);
-          colNum += Fl_Text_Buffer::character_width(s, colNum, tabDist); // FIXME: unicode
+          colNum++;
     	    if (countPixels)
     	    	width += measure_proportional_character(s, colNum, p+styleBufOffset);
     	}
@@ -2636,7 +2635,7 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
     	    if (!foundBreak) { /* no whitespace, just break at margin */
     	    	newLineStart = max(p, lineStart+1);
               const char *s = buf->address(b);
-              colNum = Fl_Text_Buffer::character_width(s, colNum, tabDist); // FIXME: unicode
+              colNum++;
     	    	if (countPixels)
    	    	    width = measure_proportional_character(s, colNum, p+styleBufOffset);
     	    }
