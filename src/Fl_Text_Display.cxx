@@ -678,9 +678,8 @@ void Fl_Text_Display::overstrike(const char* text) {
 */
 
 int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
-  int charIndex, lineStartPos, fontHeight, lineLen;
-  int visLineNum, charLen, outIndex, xStep, charStyle;
-  const char *lineStr;
+  int lineStartPos, fontHeight, lineLen;
+  int visLineNum;
 
 //  printf("position_to_xy(pos=%d, X=%p, Y=%p)\n", pos, X, Y);
 
@@ -718,6 +717,11 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
     return 1;
   }
   lineLen = vline_length( visLineNum );
+#if 1
+  Fl_Text_Display *d = (Fl_Text_Display*)this;
+  *X = d->handle_vline(GET_WIDTH, lineStartPos, pos-lineStartPos, 0, 0, 0, 0, 0, 0);
+  return 1;
+#else
   lineStr = mBuffer->text_range( lineStartPos, lineStartPos + lineLen );
 
   /* Step through character positions from the beginning of the line
@@ -735,6 +739,7 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
   }
   *X = xStep;
   free((char *)lineStr);
+#endif
   return 1;
 }
 
@@ -1406,6 +1411,10 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum ) const {
 // index of last character that fits into the box
 //
 //   enum { DRAW_LINE, FIND_INDEX, GET_WIDTH };
+//
+// FIXME: we need to allow two modes for FIND_INDEX: one on the edge of the 
+// character for selection, and one on the character center for cursors.
+//
 int Fl_Text_Display::handle_vline(
   int mode, 
   int lineStartPos, int lineLen, int leftChar, int rightChar,
@@ -1426,10 +1435,11 @@ int Fl_Text_Display::handle_vline(
   startIndex = 0;
   if (!lineStr) {
     // just clear the background
-    style = position_style(lineStartPos, lineLen, -1);
-    draw_string( style|BG_ONLY_MASK, text_area.x, Y, text_area.x+text_area.w, lineStr, lineLen );
-    free(lineStr);
-    return 0;
+    if (mode==DRAW_LINE) {
+      style = position_style(lineStartPos, lineLen, -1);
+      draw_string( style|BG_ONLY_MASK, text_area.x, Y, text_area.x+text_area.w, lineStr, lineLen );
+    }
+    return lineStartPos;
   }
   
   // draw the line
@@ -1442,7 +1452,14 @@ int Fl_Text_Display::handle_vline(
     if (charStyle!=style) {
       // draw a segment whenever the style changes
       int w = string_width( lineStr+startIndex, i-startIndex, style );
-      draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
+      if (mode==DRAW_LINE)
+        draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
+      if (mode==FIND_INDEX && startX+w>rightClip) {
+        // find x pos inside block
+        int di = find_x(lineStr+startIndex, i-startIndex, style, rightClip-startX);
+        free(lineStr);
+        return lineStartPos + startIndex + di;
+      }
       style = charStyle;
       startX += w;
       startIndex = i;
@@ -1450,17 +1467,39 @@ int Fl_Text_Display::handle_vline(
     i += len;
   }
   int w = string_width( lineStr+startIndex, i-startIndex, style );
-  draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
-  
+  if (mode==DRAW_LINE)
+    draw_string( style, startX, Y, startX+w, lineStr+startIndex, i-startIndex );
+  if (mode==FIND_INDEX) {
+    // find x pos inside block
+    int di = find_x(lineStr+startIndex, i-startIndex, style, rightClip-startX);
+    free(lineStr);
+    return lineStartPos + startIndex + di;
+  }
+  if (mode==GET_WIDTH) {
+    return startX+w;
+  }
+    
   // clear the rest of the line
   startX += w;
   style = position_style(lineStartPos, lineLen, i);
-  draw_string( style|BG_ONLY_MASK, startX, Y, text_area.x+text_area.w, lineStr, lineLen );
+  if (mode==DRAW_LINE)
+    draw_string( style|BG_ONLY_MASK, startX, Y, text_area.x+text_area.w, lineStr, lineLen );
 
   free(lineStr);
-  return 0;
+  return lineStartPos + lineLen;
 }
 
+int Fl_Text_Display::find_x(char *s, int len, int style, int x) {
+  int i = 0;
+  while (i<len) {
+    int cl = fl_utf8len(s[i]);
+    int w = string_width(s, i+cl, style);
+    if (w>x) 
+      return i;
+    i += cl;
+  }  
+  return len;
+}
 
 
 /**
@@ -1782,9 +1821,8 @@ int Fl_Text_Display::string_width( const char *string, int length, int style ) c
    closest to (X, Y).
 */
 int Fl_Text_Display::xy_to_position( int X, int Y, int posType ) const {
-  int charIndex, lineStart, lineLen, fontHeight;
-  int charWidth, charLen, charStyle, visLineNum, xStep, outIndex;
-  const char *lineStr;
+  int lineStart, lineLen, fontHeight;
+  int visLineNum;
 
   /* Find the visible line number corresponding to the Y coordinate */
   fontHeight = mMaxsize;
@@ -1803,31 +1841,12 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType ) const {
 
   /* Get the line text and its length */
   lineLen = vline_length( visLineNum );
-  lineStr = mBuffer->text_range( lineStart, lineStart + lineLen );
-
-  /* Step through character positions from the beginning of the line
-     to find the character position corresponding to the X coordinate */
-  xStep = text_area.x - mHorizOffset;
-  outIndex = 0;
-  for (charIndex = 0; charIndex < lineLen; ) 
-  {
-    // FIXME: use a unified function for this
-    charLen = fl_utf8len(lineStr[charIndex]);    
-    charStyle = position_style( lineStart, lineLen, charIndex );
-    charWidth = string_width( lineStr+charIndex, charLen, charStyle );
-    if ( X < xStep + ( posType == CURSOR_POS ? charWidth / 2 : charWidth ) ) {
-      free((char *)lineStr);
-      return lineStart + charIndex;
-    }
-    xStep += charWidth;
-    outIndex += charLen;
-    charIndex += charLen;
-  }
-
-  /* If the X position was beyond the end of the line, return the position
-     of the newline at the end of the line */
-  free((char *)lineStr);
-  return lineStart + lineLen;
+  
+  Fl_Text_Display *d = (Fl_Text_Display*)this;
+  return d->handle_vline(FIND_INDEX, 
+                         lineStart, lineLen, 0, 0, 
+                         0, 0,
+                         text_area.x, X);
 }
 
 /**

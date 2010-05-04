@@ -260,6 +260,7 @@ protected:
   void draw_vline(int visLineNum, int leftClip, int rightClip,
                   int leftCharIndex, int rightCharIndex);
 
+  int find_x(char *s, int len, int style, int x);
   enum { DRAW_LINE, FIND_INDEX, GET_WIDTH };
   int handle_vline(
                    int mode, 
