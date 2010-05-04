@@ -1386,65 +1386,41 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum ) const {
   return 0;   /* probably never be reached */
 }
 
-/**
-   Draw the text on a single line represented by "visLineNum" (the
-   number of lines down from the top of the display), limited by
-   "leftClip" and "rightClip" window coordinates and "leftCharIndex" and
-   "rightCharIndex" character positions (not including the character at
-   position "rightCharIndex").
-*/
-void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
-                                 int leftCharIndex, int rightCharIndex) {
-  Fl_Text_Buffer * buf = mBuffer;
-  int i, X, Y, startX, lineStartPos, lineLen, fontHeight;
-  int stdCharWidth, startIndex, charStyle, style;
-  int dispIndexOffset;
-  const char *lineStr;
-
-//  printf("draw_vline(visLineNum=%d, leftClip=%d, rightClip=%d, leftCharIndex=%d, rightCharIndex=%d)\n",
-//         visLineNum, leftClip, rightClip, leftCharIndex, rightCharIndex);
-//  printf("nNVisibleLines=%d\n", mNVisibleLines);
-
-  /* If line is not displayed, skip it */
-  if ( visLineNum < 0 || visLineNum >= mNVisibleLines )
-    return;
-
-  /* Calculate Y coordinate of the string to draw */
-  fontHeight = mMaxsize;
-  Y = text_area.y + visLineNum * fontHeight;
-
-  /* Get the text, length, and  buffer position of the line to display */
-  lineStartPos = mLineStarts[ visLineNum ];
-//  printf("lineStartPos=%d\n", lineStartPos);
+// FIXME: we need a single function that handles all line layout, measuring, and drawing
+// - draw a text range
+// - return the width of a text range in pixels
+// - return the index of a char that is at a pixel position
+// 
+// - we need to handle hidden hyphens and tabs here!
+// - we handle all styles and selections
+//
+//   needs:
+// mode: draw, find width, find index
+// index of first character
+// size of string in bytes
+// x and y drawing position
+// width and height of drawing rectangle
+//
+//   returns:
+// width of drawing in pixels
+// index of last character that fits into the box
+//
+//   enum { DRAW_LINE, FIND_INDEX, GET_WIDTH };
+int Fl_Text_Display::handle_vline(
+  int mode, 
+  int lineStartPos, int lineLen, int leftChar, int rightChar,
+  int Y, int bottomClip,
+  int leftClip, int rightClip)
+{
+  int i, X, startX, startIndex, style, charStyle;
+  char *lineStr;
+  
   if ( lineStartPos == -1 ) {
-    lineLen = 0;
     lineStr = NULL;
   } else {
-    lineLen = vline_length( visLineNum );
-    lineStr = buf->text_range( lineStartPos, lineStartPos + lineLen );
+    lineStr = mBuffer->text_range( lineStartPos, lineStartPos + lineLen );
   }
-
-  /* Space beyond the end of the line is still counted in units of characters
-     of a standardized character width (this is done mostly because style
-     changes based on character position can still occur in this region due
-	  to rectangular Fl_Text_Selections).  stdCharWidth must be non-zero to
-     prevent a potential infinite loop if X does not advance */
-  stdCharWidth = TMPFONTWIDTH;   //mFontStruct->max_bounds.width;
-  if ( stdCharWidth <= 0 ) {
-    Fl::error("Fl_Text_Display::draw_vline(): bad font measurement");
-    if (lineStr) free((void *)lineStr);
-    return;
-  }
-
-  /* Shrink the clipping range to the active display area */
-  leftClip = max( text_area.x, leftClip );
-  rightClip = min( rightClip, text_area.x + text_area.w );
-
-  dispIndexOffset = 0;
   
-  // FIXME: simplified line drawing - quite OK so far, but no line wrapping or tab expansion
-  // we should use this function for calculating the line width as well to avoid code doubeling!
-  // it would also be needed to convert the character index to a horizontal pixel position and back!
   X = text_area.x - mHorizOffset;
   startX = X;
   startIndex = 0;
@@ -1452,6 +1428,8 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     // just clear the background
     style = position_style(lineStartPos, lineLen, -1);
     draw_string( style|BG_ONLY_MASK, text_area.x, Y, text_area.x+text_area.w, lineStr, lineLen );
+    free(lineStr);
+    return 0;
   }
   
   // draw the line
@@ -1478,10 +1456,64 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   startX += w;
   style = position_style(lineStartPos, lineLen, i);
   draw_string( style|BG_ONLY_MASK, startX, Y, text_area.x+text_area.w, lineStr, lineLen );
-  
-  // free the line
-  if ( lineStr != NULL )
-    free((void *)lineStr);
+
+  free(lineStr);
+  return 0;
+}
+
+
+
+/**
+   Draw the text on a single line represented by "visLineNum" (the
+   number of lines down from the top of the display), limited by
+   "leftClip" and "rightClip" window coordinates and "leftCharIndex" and
+   "rightCharIndex" character positions (not including the character at
+   position "rightCharIndex").
+*/
+void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
+                                 int leftCharIndex, int rightCharIndex) {
+  int Y, lineStartPos, lineLen, fontHeight;
+  int stdCharWidth;
+
+//  printf("draw_vline(visLineNum=%d, leftClip=%d, rightClip=%d, leftCharIndex=%d, rightCharIndex=%d)\n",
+//         visLineNum, leftClip, rightClip, leftCharIndex, rightCharIndex);
+//  printf("nNVisibleLines=%d\n", mNVisibleLines);
+
+  /* If line is not displayed, skip it */
+  if ( visLineNum < 0 || visLineNum >= mNVisibleLines )
+    return;
+
+  /* Calculate Y coordinate of the string to draw */
+  fontHeight = mMaxsize;
+  Y = text_area.y + visLineNum * fontHeight;
+
+  /* Get the text, length, and  buffer position of the line to display */
+  lineStartPos = mLineStarts[ visLineNum ];
+//  printf("lineStartPos=%d\n", lineStartPos);
+  if ( lineStartPos == -1 ) {
+    lineLen = 0;
+  } else {
+    lineLen = vline_length( visLineNum );
+  }
+
+  /* Space beyond the end of the line is still counted in units of characters
+     of a standardized character width (this is done mostly because style
+     changes based on character position can still occur in this region due
+	  to rectangular Fl_Text_Selections).  stdCharWidth must be non-zero to
+     prevent a potential infinite loop if X does not advance */
+  stdCharWidth = TMPFONTWIDTH;   //mFontStruct->max_bounds.width;
+  if ( stdCharWidth <= 0 ) {
+    Fl::error("Fl_Text_Display::draw_vline(): bad font measurement");
+    return;
+  }
+
+  /* Shrink the clipping range to the active display area */
+  leftClip = max( text_area.x, leftClip );
+  rightClip = min( rightClip, text_area.x + text_area.w );
+
+  handle_vline(DRAW_LINE, 
+               lineStartPos, lineLen, leftCharIndex, rightCharIndex,
+               Y, Y+fontHeight, leftClip, rightClip);
   return;
 }
 
