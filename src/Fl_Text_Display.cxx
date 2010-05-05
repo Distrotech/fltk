@@ -681,27 +681,16 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
   int lineStartPos, fontHeight, lineLen;
   int visLineNum;
 
-//  printf("position_to_xy(pos=%d, X=%p, Y=%p)\n", pos, X, Y);
-
   /* If position is not displayed, return false */
   if (pos < mFirstChar || (pos > mLastChar && !empty_vlines())) {
-//    printf("    returning 0\n"
-//           "    mFirstChar=%d, mLastChar=%d, empty_vlines()=0\n",
-//	   mFirstChar, mLastChar);
     return 0;
   }
 
   /* Calculate Y coordinate */
   if (!position_to_line(pos, &visLineNum)) {
-//    puts("    returning 0\n"
-//         "    position_to_line()=0");
     return 0;
   }
-
   if (visLineNum < 0 || visLineNum > mNBufferLines) {
-//    printf("    returning 0\n"
-//           "    visLineNum=%d, mNBufferLines=%d\n",
-//	   visLineNum, mNBufferLines);
     return 0;
   }
 
@@ -717,29 +706,7 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
     return 1;
   }
   lineLen = vline_length( visLineNum );
-#if 1
-  Fl_Text_Display *d = (Fl_Text_Display*)this;
-  *X = d->handle_vline(GET_WIDTH, lineStartPos, pos-lineStartPos, 0, 0, 0, 0, 0, 0);
-  return 1;
-#else
-  lineStr = mBuffer->text_range( lineStartPos, lineStartPos + lineLen );
-
-  /* Step through character positions from the beginning of the line
-     to "pos" to calculate the X coordinate */
-  // FIXME: use the text expander in draw_vline to calculate this!
-  xStep = text_area.x - mHorizOffset;
-  outIndex = 0;
-  for (charIndex = 0; charIndex < lineLen && charIndex < pos - lineStartPos; ) 
-  {
-    charLen = fl_utf8len(lineStr[charIndex]);
-    charStyle = position_style( lineStartPos, lineLen, charIndex);
-    xStep += string_width( lineStr+charIndex, charLen, charStyle );
-    outIndex += charLen;
-    charIndex += charLen;
-  }
-  *X = xStep;
-  free((char *)lineStr);
-#endif
+  *X = handle_vline(GET_WIDTH, lineStartPos, pos-lineStartPos, 0, 0, 0, 0, 0, 0);
   return 1;
 }
 
@@ -1391,7 +1358,7 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum ) const {
   return 0;   /* probably never be reached */
 }
 
-// FIXME: we need a single function that handles all line layout, measuring, and drawing
+// We use a single function that handles all line layout, measuring, and drawing
 // - draw a text range
 // - return the width of a text range in pixels
 // - return the index of a char that is at a pixel position
@@ -1412,15 +1379,15 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum ) const {
 //
 //   enum { DRAW_LINE, FIND_INDEX, GET_WIDTH };
 //
-// FIXME: we need to allow two modes for FIND_INDEX: one on the edge of the 
-// character for selection, and one on the character center for cursors.
 //
 int Fl_Text_Display::handle_vline(
   int mode, 
   int lineStartPos, int lineLen, int leftChar, int rightChar,
   int Y, int bottomClip,
-  int leftClip, int rightClip)
+  int leftClip, int rightClip) const
 {
+  // FIXME: we need to allow two modes for FIND_INDEX: one on the edge of the 
+  // FIXME: character for selection, and one on the character center for cursors.
   int i, X, startX, startIndex, style, charStyle;
   char *lineStr;
   
@@ -1489,7 +1456,8 @@ int Fl_Text_Display::handle_vline(
   return lineStartPos + lineLen;
 }
 
-int Fl_Text_Display::find_x(char *s, int len, int style, int x) {
+int Fl_Text_Display::find_x(const char *s, int len, int style, int x) const {
+  // FIXME: use banary search which is much quicker!
   int i = 0;
   while (i<len) {
     int cl = fl_utf8len(s[i]);
@@ -1564,8 +1532,9 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
    rectangle where text would have drawn from X to toX and from Y to
    the maximum Y extent of the current font(s).
 */
-void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
-                                   const char *string, int nChars ) {
+void Fl_Text_Display::draw_string(int style, 
+                                  int X, int Y, int toX,
+                                  const char *string, int nChars) const {
   const Style_Table_Entry * styleRec;
 
   /* Draw blank area rather than text, if that was the request */
@@ -1648,8 +1617,9 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
 /**
    Clear a rectangle with the appropriate background color for "style"
 */
-void Fl_Text_Display::clear_rect( int style, int X, int Y,
-                                  int width, int height ) {
+void Fl_Text_Display::clear_rect(int style, 
+                                 int X, int Y,
+                                 int width, int height) const {
   /* A width of zero means "clear to end of window" to XClearArea */
   if ( width == 0 )
     return;
@@ -1809,7 +1779,6 @@ int Fl_Text_Display::string_width( const char *string, int length, int style ) c
   }
   fl_font( font, fsize );
 
-  // FIXME: how often is this called? Will we have to optimize the code?
   return ( int ) ( fl_width( string, length ) );
 }
 
@@ -1842,8 +1811,7 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType ) const {
   /* Get the line text and its length */
   lineLen = vline_length( visLineNum );
   
-  Fl_Text_Display *d = (Fl_Text_Display*)this;
-  return d->handle_vline(FIND_INDEX, 
+  return handle_vline(FIND_INDEX, 
                          lineStart, lineLen, 0, 0, 
                          0, 0,
                          text_area.x, X);
@@ -2256,56 +2224,12 @@ static int countlines( const char *string ) {
    Return the width in pixels of the displayed line pointed to by "visLineNum"
 */
 int Fl_Text_Display::measure_vline( int visLineNum ) const {
-  
-  return 1024; // FIXME: time waster!
-  
-#if 0
-  /* The line above helps us clean up this widget.
-   
-   The original code measures each individual character. That is not only 
-   horribly inefficient but also quite wrong, because a good text rendering 
-   engine may concatenate and overlap consecutive characters.
-   
-   The correct and fastest solution is to measure text segments that are as long
-   as possible. A new segment begins only when the style changes.
-   */
-  
-  int i, width = 0, len, style, lineLen = vline_length( visLineNum );
-  int charCount = 0, lineStartPos = mLineStarts[ visLineNum ];
-  char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
-
+  // FIXME: the horizontal scroll bar is still messed up. Clicking the right container is not possible.
+  int lineLen = vline_length( visLineNum );
+  int lineStartPos = mLineStarts[ visLineNum ];
   if (lineStartPos < 0 || lineLen == 0) return 0;
-  if ( mStyleBuffer == NULL ) {
-    for ( i = 0; i < lineLen; i++ ) {
-      len = mBuffer->expand_character( lineStartPos + i,
-                                       charCount, expandedChar );
-
-      fl_font( textfont(), textsize() );
-
-      width += ( int ) fl_width( expandedChar, len );
-
-      charCount += len;
-    }
-  } else {
-    for ( i = 0; i < lineLen; i++ ) {
-      len = mBuffer->expand_character( lineStartPos + i,
-                                       charCount, expandedChar );
-      // FIXME: character is ucs-4
-      style = ( unsigned char ) mStyleBuffer->at(
-                lineStartPos + i ) - 'A';
-
-      if (style < 0) style = 0;
-      else if (style >= mNStyles) style = mNStyles - 1;
-
-      fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
-
-      width += ( int ) fl_width( expandedChar, len );
-
-      charCount += len;
-    }
-  }
-  return width;
-#endif
+  
+  return handle_vline(GET_WIDTH, lineStartPos, lineLen, 0, 0, 0, 0, 0, 0);
 }
 
 /**

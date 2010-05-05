@@ -255,22 +255,21 @@ protected:
   void draw_cursor(int, int);
   
   void draw_string(int style, int x, int y, int toX, const char *string,
-                   int nChars);
+                   int nChars) const;
   
   void draw_vline(int visLineNum, int leftClip, int rightClip,
                   int leftCharIndex, int rightCharIndex);
 
-  int find_x(char *s, int len, int style, int x);
+  int find_x(const char *s, int len, int style, int x) const;
   enum { DRAW_LINE, FIND_INDEX, GET_WIDTH };
-  int handle_vline(
-                   int mode, 
+  int handle_vline(int mode, 
                    int lineStart, int lineLen, int leftChar, int rightChar,
                    int topClip, int bottomClip,
-                   int leftClip, int rightClip);
+                   int leftClip, int rightClip) const;
   
   void draw_line_numbers(bool clearAll);
   
-  void clear_rect(int style, int x, int y, int width, int height);
+  void clear_rect(int style, int x, int y, int width, int height) const;
   void display_insert();
   
   void offset_line_starts(int newTopLineNum);
