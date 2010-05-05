@@ -230,7 +230,6 @@ int Fl_Text_Display::longest_vline() const {
   int longest = 0;
   for (int i = 0; i < mNVisibleLines; i++)
     longest = max(longest, measure_vline(i));
-  printf("== %d =============================================================\n", longest);
   return longest;
 }
 
@@ -2231,12 +2230,7 @@ int Fl_Text_Display::measure_vline( int visLineNum ) const {
   // FIXME: the horizontal scroll bar is still messed up. Clicking the right container is not possible.
   int lineLen = vline_length( visLineNum );
   int lineStartPos = mLineStarts[ visLineNum ];
-  if (lineStartPos < 0 || lineLen == 0) return 0;
-  
-  char *s = mBuffer->text_range(lineStartPos, lineStartPos+lineLen);
-  printf("%s\n", s);
-  free(s);
-  
+  if (lineStartPos < 0 || lineLen == 0) return 0;  
   return handle_vline(GET_WIDTH, lineStartPos, lineLen, 0, 0, 0, 0, 0, 0);
 }
 
