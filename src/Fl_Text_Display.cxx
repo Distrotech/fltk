@@ -706,7 +706,7 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y ) const {
     return 1;
   }
   lineLen = vline_length( visLineNum );
-  *X = handle_vline(GET_WIDTH, lineStartPos, pos-lineStartPos, 0, 0, 0, 0, 0, 0);
+  *X = text_area.x + handle_vline(GET_WIDTH, lineStartPos, pos-lineStartPos, 0, 0, 0, 0, 0, 0) - mHorizOffset;
   return 1;
 }
 
@@ -1401,6 +1401,7 @@ int Fl_Text_Display::handle_vline(
     X = 0;
   else 
     X = text_area.x - mHorizOffset;
+  
   startX = X;
   startIndex = 0;
   if (!lineStr) {
@@ -1409,7 +1410,9 @@ int Fl_Text_Display::handle_vline(
       style = position_style(lineStartPos, lineLen, -1);
       draw_string( style|BG_ONLY_MASK, text_area.x, Y, text_area.x+text_area.w, lineStr, lineLen );
     }
-    return lineStartPos;
+    if (mode==FIND_INDEX)
+      return lineStartPos;
+    return 0;
   }
   
   // draw the line
@@ -1446,6 +1449,7 @@ int Fl_Text_Display::handle_vline(
     return lineStartPos + startIndex + di;
   }
   if (mode==GET_WIDTH) {
+    free(lineStr);
     return startX+w;
   }
     
@@ -1460,7 +1464,7 @@ int Fl_Text_Display::handle_vline(
 }
 
 int Fl_Text_Display::find_x(const char *s, int len, int style, int x) const {
-  // FIXME: use banary search which is much quicker!
+  // FIXME: use binary search which is much quicker!
   int i = 0;
   while (i<len) {
     int cl = fl_utf8len(s[i]);
