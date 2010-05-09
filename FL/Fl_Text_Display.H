@@ -376,8 +376,6 @@ protected:
   
   int mMaxsize;
   
-  int mFixedFontWidth;        /* Font width if all current fonts are
-                               fixed and match in width, else -1 */
   int mSuppressResync;		/* Suppress resynchronization of line
                                  starts during buffer updates */
   int mNLinesDeleted;			/* Number of lines deleted during

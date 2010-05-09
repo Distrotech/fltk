@@ -129,7 +129,6 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
   
   mCursor_color = FL_FOREGROUND_COLOR;
   
-  mFixedFontWidth = -1;
   mStyleBuffer = 0;
   mStyleTable = 0;
   mNStyles = 0;
@@ -1130,8 +1129,7 @@ void Fl_Text_Display::previous_word() {
  */
 void Fl_Text_Display::buffer_predelete_cb(int pos, int nDeleted, void *cbArg) {
   Fl_Text_Display *textD = (Fl_Text_Display *)cbArg;
-  if (textD->mContinuousWrap &&
-      (textD->mFixedFontWidth == -1 || textD->mModifyingTabDistance))
+  if (textD->mContinuousWrap)
   /* Note: we must perform this measurement, even if there is not a
    single character deleted; the number of "deleted" lines is the
    number of visual lines spanned by the real line in which the 
@@ -2526,9 +2524,10 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
    to measure in columns, than to count pixels.  Determine if we can count
    in columns (countPixels == False) or must count pixels (countPixels ==
    True), and set the wrap target for either pixels or columns */
-  if (mFixedFontWidth != -1 || mWrapMargin != 0) {
+  if (mWrapMargin != 0) {
+    // FIXME: the warp margin is actually a pixel boundary, so we have to measure nevertheless!
     countPixels = false;
-    wrapMargin = mWrapMargin ? mWrapMargin : text_area.w / (mFixedFontWidth + 1);
+    wrapMargin = mWrapMargin;
     maxWidth = INT_MAX;
   } else {
     countPixels = true;
@@ -2755,7 +2754,7 @@ void Fl_Text_Display::extend_range_for_styles( int *startpos, int *endpos ) {
   /* If the Fl_Text_Selection was extended due to a style change, and some of the
    fonts don't match in spacing, extend redraw area to end of line to
    redraw characters exposed by possible font size changes */
-  if ( mFixedFontWidth == -1 && extended )
+  if ( extended )
     *endpos = mBuffer->line_end( *endpos ) + 1;
 }
 
