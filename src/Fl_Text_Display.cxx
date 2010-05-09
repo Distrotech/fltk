@@ -209,6 +209,8 @@ void Fl_Text_Display::buffer( Fl_Text_Buffer *buf ) {
    (see extendRangeForStyleMods for more information on this protocol).
 
    Style buffers, tables and their associated memory are managed by the caller.
+ 
+ Styles are ranged from 65 ('A') to 126.
 */
 void Fl_Text_Display::highlight_data(Fl_Text_Buffer *styleBuffer,
                                 const Style_Table_Entry *styleTable,
@@ -427,7 +429,7 @@ void Fl_Text_Display::redisplay_range(int startpos, int endpos) {
   int ok = 0;
   while (!ok && startpos > 0) {
     // FIXME: character is ucs-4
-    char c = buffer()->at( startpos );
+    char c = buffer()->char_at( startpos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -436,7 +438,7 @@ void Fl_Text_Display::redisplay_range(int startpos, int endpos) {
   }
   while (!ok && endpos < buffer()->length()) {
     // FIXME: character is ucs-4
-    char c = buffer()->at( endpos );
+    char c = buffer()->char_at( endpos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -574,6 +576,7 @@ void Fl_Text_Display::cursor_style(int style) {
   Word-wrapping does not change the text buffer itself, only the way that the text is displayed.
 */
 void Fl_Text_Display::wrap_mode(int wrap, int wrapMargin) {
+  // FIXME: fix the commentary
   mWrapMargin = wrapMargin;
   mContinuousWrap = wrap;
 
@@ -641,7 +644,7 @@ void Fl_Text_Display::overstrike(const char* text) {
     if ( p == buf->length() )
       break;
     // FIXME: character is ucs-4
-    ch = buf->at( p );
+    ch = buf->char_at( p );
     if ( ch == '\n' )
       break;
     indent++;
@@ -851,11 +854,8 @@ int Fl_Text_Display::move_right() {
   if ( mCursorPos >= mBuffer->length() )
     return 0;
   int p = insert_position();
-  const char *a = buffer()->address(p);
-  int o = fl_utf8len(*a);
-  if (o==-1)
-    return 0;
-  insert_position(p+o);
+  int q = buffer()->next_char(p);
+  insert_position(q);
   return 1;
 }
 
@@ -867,9 +867,8 @@ int Fl_Text_Display::move_left() {
   if ( mCursorPos <= 0 )
     return 0;
   int p = insert_position();
-  const char *a = buffer()->address(p-1); // avoid falling into gap
-  const char *b = a; while (((*b) & 0xc0)==0x80) b--; // FIXME: fl_utf8_back( 
-  insert_position(p+(b-a)-1);
+  int q = buffer()->prev_char(p);
+  insert_position(q);
   return 1;
 }
 
@@ -908,7 +907,7 @@ int Fl_Text_Display::move_up() {
   while (!ok) {
     int pos = insert_position();
     // FIXME: character is ucs-4
-    char c = buffer()->at( pos );
+    char c = buffer()->char_at( pos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -945,7 +944,7 @@ int Fl_Text_Display::move_down() {
   while (!ok) {
     int pos = insert_position();
     // FIXME: character is ucs-4
-    char c = buffer()->at( pos );
+    char c = buffer()->char_at( pos );
     if (!((c & 0x80) && !(c & 0x40))) {
       ok = 1;
     } else {
@@ -1095,11 +1094,11 @@ static inline int fl_isseparator(int c) {
 void Fl_Text_Display::next_word() {
   int pos = insert_position();
   // FIXME: character is ucs-4
-  while (pos < buffer()->length() && !fl_isseparator(buffer()->at(pos))) {
+  while (pos < buffer()->length() && !fl_isseparator(buffer()->char_at(pos))) {
     pos++;
   }
   // FIXME: character is ucs-4
-  while (pos < buffer()->length() && fl_isseparator(buffer()->at(pos))) {
+  while (pos < buffer()->length() && fl_isseparator(buffer()->char_at(pos))) {
     pos++;
   }
 
@@ -1112,15 +1111,15 @@ void Fl_Text_Display::previous_word() {
   if (pos==0) return;
   pos--;
   // FIXME: character is ucs-4
-  while (pos && fl_isseparator(buffer()->at(pos))) {
+  while (pos && fl_isseparator(buffer()->char_at(pos))) {
     pos--;
   }
   // FIXME: character is ucs-4
-  while (pos && !fl_isseparator(buffer()->at(pos))) {
+  while (pos && !fl_isseparator(buffer()->char_at(pos))) {
     pos--;
   }
   // FIXME: character is ucs-4
-  if (fl_isseparator(buffer()->at(pos))) pos++;
+  if (fl_isseparator(buffer()->char_at(pos))) pos++;
 
   insert_position( pos );
 }
@@ -1748,13 +1747,11 @@ int Fl_Text_Display::position_style( int lineStartPos, int lineLen, int lineInde
   if ( lineIndex >= lineLen )
     style = FILL_MASK;
   else if ( styleBuf != NULL ) {
-    // FIXME: character is ucs-4
-    style = ( unsigned char ) styleBuf->at( pos );
+    style = ( unsigned char ) styleBuf->byte_at( pos );
     if (style == mUnfinishedStyle && mUnfinishedHighlightCB) {
         /* encountered "unfinished" style, trigger parsing */
         (mUnfinishedHighlightCB)( pos, mHighlightCBArg);
-        // FIXME: character is ucs-4
-        style = (unsigned char) styleBuf->at( pos);
+        style = (unsigned char) styleBuf->byte_at( pos);
     }
   }
   if (buf->primary_selection()->includes(pos))
@@ -2331,7 +2328,7 @@ void Fl_Text_Display::find_wrap_range(const char *deletedText, int pos,
     	nLines++;
     	if (lineStart > pos + nInserted &&
             // FIXME: character is ucs-4
-    	    	buf->at(lineStart-1) == '\n') {
+    	    	buf->char_at(lineStart-1) == '\n') {
     	    countTo = lineStart;
     	    *modRangeEnd = lineStart;
     	    break;
@@ -2477,7 +2474,7 @@ void Fl_Text_Display::measure_deleted_lines(int pos, int nDeleted) {
     	nLines++;
     	if (lineStart > pos + nDeleted &&
             // FIXME: character is ucs-4
-    	    	buf->at(lineStart-1) == '\n') {
+    	    	buf->char_at(lineStart-1) == '\n') {
     	    break;
     	}
 	
@@ -2548,14 +2545,14 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
     
     /*
     ** Loop until position exceeds maxPos or line count exceeds maxLines.
-    ** (actually, contines beyond maxPos to end of line containing maxPos,
+    ** (actually, continues beyond maxPos to end of line containing maxPos,
     ** in case later characters cause a word wrap back before maxPos)
     */
     colNum = 0;
     width = 0;
     for (p=lineStart; p<buf->length(); p++) {
       // FIXME: character is ucs-4
-    	c = (unsigned char)buf->at(p);
+    	c = (unsigned char)buf->char_at(p);
 
     	/* If the character was a newline, count the line and start over,
     	   otherwise, add it to the width and column counts */
@@ -2591,7 +2588,7 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
     	    foundBreak = false;
     	    for (b=p; b>=lineStart; b--) {
               // FIXME: character is ucs-4
-    	    	c = (unsigned char)buf->at(b);
+    	    	c = (unsigned char)buf->char_at(b);
     	    	if (c == '\t' || c == ' ') {
     	    	    newLineStart = b + 1;
     	    	    if (countPixels) {
@@ -2720,7 +2717,7 @@ int Fl_Text_Display::wrap_uses_character(int lineEndPos) const {
     	return 1;
     
   // FIXME: character is ucs-4
-    c = buffer()->at(lineEndPos);
+    c = buffer()->char_at(lineEndPos);
     return c == '\n' || ((c == '\t' || c == ' ') &&
     	    lineEndPos + 1 != buffer()->length());
 }
@@ -2990,7 +2987,7 @@ int Fl_Text_Display::handle(int event) {
         int ok = 0;
         while (!ok) {
           // FIXME: character is ucs-4
-          char c = buffer()->at( pos );
+          char c = buffer()->char_at( pos );
           if (!((c & 0x80) && !(c & 0x40))) {
             ok = 1;
           } else {
@@ -3056,7 +3053,7 @@ int Fl_Text_Display::handle(int event) {
          int ok = 0;
           while (!ok) {
             // FIXME: character is ucs-4
-            char c = buffer()->at( pos );
+            char c = buffer()->char_at( pos );
             if (!((c & 0x80) && !(c & 0x40))) {
               ok = 1;
             } else {

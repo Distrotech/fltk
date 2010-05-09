@@ -33,36 +33,47 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Text_Buffer.H>
 
+
 /*
  This file is based on a port of NEdit to FLTK many years ago. NEdit at that
  point was already stretched beyond the task it was designed for which explains
- why the source code is sometimes pretty convoluted. It still is a nice widget
- for FLTK.
+ why the source code is sometimes pretty convoluted. It still is a very useful
+ widget for FLTK, and we are thankful that the nedit team allowed us to 
+ integrate their code.
 
  With the introduction of Unicode and UTF-8, Fl_Text_... has to go into a whole
  new generation of code. Originally designed for monspaced fonts only, many
  features make les sense in the multibyte and multiwdth world of UTF-8.
  
- Columns are a good example. There is simply no such thing.
+ Columns are a good example. There is simply no such thing. The new Fl_Text_...
+ widget converts columns to pixels by multiplying them with the average 
+ character width for a given font 
  
- Rectangular selections pose a real problem.
+ Rectangular selections were rearely used (if at all) and make little sense when
+ using variable width fonts. They have been removed.
  
- Using multiple spaces to emulate tab stops will no longer work.
+ Using multiple spaces to emulate tab stops has been replaced by pixel counting
+ routines. They are slower, but give the expected result for proportional fonts.
  
- And constantly recalculating character widths is just much too expensive.
- 
- But nevertheless, we will get ths widget rolling again ;-)
- 
+ And constantly recalculating character widths is just much too expensive. Lines
+ of text are now subdivided into blocks of text which are measured at once 
+ instead of individual characters. 
  */
 
 
 #ifndef min
 
+/*
+ Unicode safe.
+ */
 static int max(int i1, int i2)
 {
   return i1 >= i2 ? i1 : i2;
 }
 
+/*
+ Unicode safe.
+ */
 static int min(int i1, int i2)
 {
   return i1 <= i2 ? i1 : i2;
@@ -79,6 +90,10 @@ static int undocut;		// number of characters deleted there
 static int undoinsert;		// number of characters inserted
 static int undoyankcut;		// length of valid contents of buffer, even if undocut=0
 
+/*
+ Resize the undo buffer to match at least the requested size.
+ Unicode safe.
+ */
 static void undobuffersize(int n)
 {
   if (n > undobufferlength) {
@@ -95,7 +110,10 @@ static void undobuffersize(int n)
 }
 
 
-// unicode ok
+/*
+ Initialize all variables.
+ Unicode safe.
+ */
 Fl_Text_Buffer::Fl_Text_Buffer(int requestedSize, int preferredGapSize)
 {
   mLength = 0;
@@ -104,7 +122,6 @@ Fl_Text_Buffer::Fl_Text_Buffer(int requestedSize, int preferredGapSize)
   mGapStart = 0;
   mGapEnd = mPreferredGapSize;
   mTabDist = 8;
-  mUseTabs = 1;
   mPrimary.mSelected = 0;
   mPrimary.mStart = mPrimary.mEnd = 0;
   mSecondary.mSelected = 0;
@@ -119,17 +136,13 @@ Fl_Text_Buffer::Fl_Text_Buffer(int requestedSize, int preferredGapSize)
   mPredeleteCbArgs = NULL;
   mCursorPosHint = 0;
   mCanUndo = 1;
-#ifdef PURIFY
-  {
-    int i;
-    for (i = mGapStart; i < mGapEnd; i++)
-      mBuf[i] = '.';
-  }
-#endif
 }
 
 
-// unicode ok
+/*
+ Free all resources.
+ Unicode safe.
+ */
 Fl_Text_Buffer::~Fl_Text_Buffer()
 {
   free(mBuf);
@@ -144,19 +157,24 @@ Fl_Text_Buffer::~Fl_Text_Buffer()
 }
 
 
-// This function copies verbose whatever is in front and after the gap into a
-// single buffer.
-// - unicode ok
+/*
+ This function copies verbose whatever is in front and after the gap into a
+ single buffer.
+ Unicode safe.
+ */
 char *Fl_Text_Buffer::text() const {
   char *t = (char *) malloc(mLength + 1);
   memcpy(t, mBuf, mGapStart);
-  memcpy(&t[mGapStart], &mBuf[mGapEnd], mLength - mGapStart);
+  memcpy(t+mGapStart, mBuf+mGapEnd, mLength - mGapStart);
   t[mLength] = '\0';
   return t;
 } 
 
 
-// unicode ok, functions called have not been verified yet
+/*
+ Set the text buffer to a new string.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::text(const char *t)
 {
   call_predelete_callbacks(0, length());
@@ -173,13 +191,6 @@ void Fl_Text_Buffer::text(const char *t)
   mGapStart = insertedLength;
   mGapEnd = mGapStart + mPreferredGapSize;
   memcpy(mBuf, t, insertedLength);
-#ifdef PURIFY
-  {
-    int i;
-    for (i = mGapStart; i < mGapEnd; i++)
-      mBuf[i] = '.';
-  }
-#endif
   
   /* Zero all of the existing selections */
   update_selections(0, deletedLength, 0);
@@ -190,8 +201,10 @@ void Fl_Text_Buffer::text(const char *t)
 }
 
 
-// Creates a new buffer and copies verbose from around the gap.
-// - unicode ok
+/*
+ Creates a range of text to a new buffer and copies verbose from around the gap.
+ Unicode safe.
+ */
 char *Fl_Text_Buffer::text_range(int start, int end) const {
   char *s = NULL;
   
@@ -215,22 +228,23 @@ char *Fl_Text_Buffer::text_range(int start, int end) const {
   
   /* Copy the text from the buffer to the returned string */
   if (end <= mGapStart) {
-    memcpy(s, &mBuf[start], copiedLength);
+    memcpy(s, mBuf + start, copiedLength);
   } else if (start >= mGapStart) {
-    memcpy(s, &mBuf[start + (mGapEnd - mGapStart)], copiedLength);
+    memcpy(s, mBuf + start + (mGapEnd - mGapStart), copiedLength);
   } else {
     int part1Length = mGapStart - start;
-    memcpy(s, &mBuf[start], part1Length);
-    memcpy(&s[part1Length], &mBuf[mGapEnd], copiedLength - part1Length);
+    memcpy(s, mBuf + start, part1Length);
+    memcpy(s + part1Length, mBuf + mGapEnd, copiedLength - part1Length);
   }
   s[copiedLength] = '\0';
   return s;
 }
 
-
-// TODO: we will need the same signature function to get bytes (style buffer)
-// unicode ok
-unsigned int Fl_Text_Buffer::at(int pos) const {
+/*
+ Return a UCS-4 character at the given index.
+ Unicode safe. Pos must be at a character boundary.
+ */
+unsigned int Fl_Text_Buffer::char_at(int pos) const {
   if (pos < 0 || pos >= mLength)
     return '\0';
   const char *src = address(pos);
@@ -238,7 +252,22 @@ unsigned int Fl_Text_Buffer::at(int pos) const {
 } 
 
 
-// unicode ok, dependents not tested
+/*
+ Return the raw byte at the given index.
+ This function ignores all unicode encoding.
+ */
+char Fl_Text_Buffer::byte_at(int pos) const {
+  if (pos < 0 || pos >= mLength)
+    return '\0';
+  const char *src = address(pos);
+  return *src;
+} 
+
+
+/*
+ Insert some text at the given index.
+ Unicode safe. Pos must be at a character boundary.
+*/
 void Fl_Text_Buffer::insert(int pos, const char *text)
 {
   /* if pos is not contiguous to existing text, make it */
@@ -257,7 +286,10 @@ void Fl_Text_Buffer::insert(int pos, const char *text)
 }
 
 
-// unicode ok, dependents not tested
+/*
+ Replace a range of text with new text.
+ Unicode safe. Start and end must be at a character boundary.
+*/
 void Fl_Text_Buffer::replace(int start, int end, const char *text)
 {
   // Range check...
@@ -278,7 +310,10 @@ void Fl_Text_Buffer::replace(int start, int end, const char *text)
 }
 
 
-// unicode ok, dependents not tested
+/*
+ Remove a range of text.
+ Unicode safe. Start and End must be at a character boundary.
+*/
 void Fl_Text_Buffer::remove(int start, int end)
 {
   /* Make sure the arguments make sense */
@@ -308,6 +343,11 @@ void Fl_Text_Buffer::remove(int start, int end)
   free((void *) deletedText);
 }
 
+
+/*
+ Copy a range of text from another text buffer.
+ Unicode safe. FromDtart, fromEnd, and toPos must be at a character boundary.
+ */
 void Fl_Text_Buffer::copy(Fl_Text_Buffer * fromBuf, int fromStart,
 			  int fromEnd, int toPos)
 {
@@ -328,8 +368,7 @@ void Fl_Text_Buffer::copy(Fl_Text_Buffer * fromBuf, int fromStart,
     memcpy(&mBuf[toPos], &fromBuf->mBuf[fromStart], copiedLength);
   } else if (fromStart >= fromBuf->mGapStart) {
     memcpy(&mBuf[toPos],
-	   &fromBuf->mBuf[fromStart +
-			  (fromBuf->mGapEnd - fromBuf->mGapStart)],
+	   &fromBuf->mBuf[fromStart + (fromBuf->mGapEnd - fromBuf->mGapStart)],
 	   copiedLength);
   } else {
     int part1Length = fromBuf->mGapStart - fromStart;
@@ -342,6 +381,12 @@ void Fl_Text_Buffer::copy(Fl_Text_Buffer * fromBuf, int fromStart,
   update_selections(toPos, 0, copiedLength);
 }
 
+
+/*
+ Take the previous changes and undo them. Return the previous
+ cursor position in cursorPos. Returns 1 if the undo was applied.
+ Unicode safe. CursorPos will be at a character boundary.
+ */ 
 int Fl_Text_Buffer::undo(int *cursorPos)
 {
   if (undowidget != this || !undocut && !undoinsert && !mCanUndo)
@@ -380,12 +425,27 @@ int Fl_Text_Buffer::undo(int *cursorPos)
 }
 
 
-// unicode ok
+/*
+ Set a flag is undo function will work.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::canUndo(char flag)
 {
   mCanUndo = flag;
+  // disabeling undo also clears the last undo operation!
+  if (!mCanUndo && undowidget==this) 
+    undowidget = 0;
 }
 
+
+/*
+ Change the tab width. This will cause a couple of callbacks and a complete 
+ redisplay. 
+ Matt: I am not entirely sure why we need to trigger callbacks because
+ tabs are only a graphical hint, not changing any text at all, but I leave
+ this in here for back compatibility. 
+ Unicode safe.
+ */
 void Fl_Text_Buffer::tab_distance(int tabDist)
 {
   /* First call the pre-delete callbacks with the previous tab setting 
@@ -402,6 +462,11 @@ void Fl_Text_Buffer::tab_distance(int tabDist)
   free((void *) deletedText);
 }
 
+
+/*
+ Select a range of text.
+ Unicode safe. Start and End must be at a character boundary.
+ */
 void Fl_Text_Buffer::select(int start, int end)
 {
   Fl_Text_Selection oldSelection = mPrimary;
@@ -410,6 +475,11 @@ void Fl_Text_Buffer::select(int start, int end)
   redisplay_selection(&oldSelection, &mPrimary);
 }
 
+
+/*
+ Clear the primary selection.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::unselect()
 {
   Fl_Text_Selection oldSelection = mPrimary;
@@ -418,26 +488,51 @@ void Fl_Text_Buffer::unselect()
   redisplay_selection(&oldSelection, &mPrimary);
 }
 
+
+/*
+ Return the primary selection range.
+ Unicode safe.
+ */
 int Fl_Text_Buffer::selection_position(int *start, int *end)
 {
   return mPrimary.position(start, end);
 }
 
+
+/*
+ Return a copy of the selected text.
+ Unicode safe.
+ */
 char *Fl_Text_Buffer::selection_text()
 {
   return selection_text_(&mPrimary);
 }
 
+
+/*
+ Remove the selected text.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::remove_selection()
 {
   remove_selection_(&mPrimary);
 }
 
+
+/*
+ Replace the selected text.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::replace_selection(const char *text)
 {
   replace_selection_(&mPrimary, text);
 }
 
+
+/*
+ Select text.
+ Unicode safe. Start and End must be at a character boundary.
+ */
 void Fl_Text_Buffer::secondary_select(int start, int end)
 {
   Fl_Text_Selection oldSelection = mSecondary;
@@ -446,6 +541,11 @@ void Fl_Text_Buffer::secondary_select(int start, int end)
   redisplay_selection(&oldSelection, &mSecondary);
 }
 
+
+/*
+ Deselect text.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::secondary_unselect()
 {
   Fl_Text_Selection oldSelection = mSecondary;
@@ -454,26 +554,51 @@ void Fl_Text_Buffer::secondary_unselect()
   redisplay_selection(&oldSelection, &mSecondary);
 }
 
+
+/*
+ Return the selected range.
+ Unicode safe.
+ */
 int Fl_Text_Buffer::secondary_selection_position(int *start, int *end)
 {
   return mSecondary.position(start, end);
 }
 
+
+/*
+ Return a copy of the text in this selection.
+ Unicode safe.
+ */
 char *Fl_Text_Buffer::secondary_selection_text()
 {
   return selection_text_(&mSecondary);
 }
 
+
+/*
+ Remove the selected text.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::remove_secondary_selection()
 {
   remove_selection_(&mSecondary);
 }
 
+
+/*
+ Replace selected text.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::replace_secondary_selection(const char *text)
 {
   replace_selection_(&mSecondary, text);
 }
 
+
+/*
+ Highlight a range of text.
+ Unicode safe. Start and End must be at a character boundary.
+ */
 void Fl_Text_Buffer::highlight(int start, int end)
 {
   Fl_Text_Selection oldSelection = mHighlight;
@@ -482,6 +607,11 @@ void Fl_Text_Buffer::highlight(int start, int end)
   redisplay_selection(&oldSelection, &mHighlight);
 }
 
+
+/*
+ Remove text highlighting.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::unhighlight()
 {
   Fl_Text_Selection oldSelection = mHighlight;
@@ -490,16 +620,31 @@ void Fl_Text_Buffer::unhighlight()
   redisplay_selection(&oldSelection, &mHighlight);
 }
 
+
+/*
+ Return position of highlight.
+ Unicode safe.
+ */
 int Fl_Text_Buffer::highlight_position(int *start, int *end)
 {
   return mHighlight.position(start, end);
 }
 
+
+/*
+ Return a copy of highlighted text.
+ Unicode safe.
+ */
 char *Fl_Text_Buffer::highlight_text()
 {
   return selection_text_(&mHighlight);
 }
 
+
+/*
+ Add a callback that is called whenever text is modified.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::add_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
 					 void *cbArg)
 {
@@ -521,8 +666,13 @@ void Fl_Text_Buffer::add_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
   mCbArgs = newCBArgs;
 }
 
-void Fl_Text_Buffer::
-remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, void *cbArg)
+
+/*
+ Remove a callback.
+ Unicode safe.
+ */
+void Fl_Text_Buffer::remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, 
+                                            void *cbArg)
 {
   int i, toRemove = -1;
   
@@ -568,8 +718,13 @@ remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, void *cbArg)
   mCbArgs = newCBArgs;
 }
 
-void Fl_Text_Buffer::
-add_predelete_callback(Fl_Text_Predelete_Cb bufPreDeleteCB, void *cbArg)
+
+/*
+ Add a callback that is called before deleting text.
+ Unicode safe.
+ */
+void Fl_Text_Buffer::add_predelete_callback(Fl_Text_Predelete_Cb bufPreDeleteCB, 
+                                            void *cbArg)
 {
   Fl_Text_Predelete_Cb *newPreDeleteProcs =
   new Fl_Text_Predelete_Cb[mNPredeleteProcs + 1];
@@ -589,8 +744,12 @@ add_predelete_callback(Fl_Text_Predelete_Cb bufPreDeleteCB, void *cbArg)
   mPredeleteCbArgs = newCBArgs;
 }
 
-void Fl_Text_Buffer::
-remove_predelete_callback(Fl_Text_Predelete_Cb bufPreDeleteCB, void *cbArg)
+
+/*
+ Remove a callback.
+ Unicode safe.
+ */
+void Fl_Text_Buffer::remove_predelete_callback(Fl_Text_Predelete_Cb bufPreDeleteCB, void *cbArg)
 {
   int i, toRemove = -1;
   /* find the matching callback to remove */
@@ -637,46 +796,78 @@ remove_predelete_callback(Fl_Text_Predelete_Cb bufPreDeleteCB, void *cbArg)
   mPredeleteCbArgs = newCBArgs;
 }
 
+
+/*
+ Return a copy of the line that contains a given index.
+ Unicode safe. Pos must be at a character boundary.
+ */
 char *Fl_Text_Buffer::line_text(int pos) const {
   return text_range(line_start(pos), line_end(pos));
 } 
 
-int Fl_Text_Buffer::line_start(int pos) const {
+
+/*
+ Find the beginning of the line.
+ NOT UNICODE SAFE.
+ */
+int Fl_Text_Buffer::line_start(int pos) const 
+{
+  // FIXME: this currently works for unicode, but will be very inefficent when findchar_backward is fixed.
   if (!findchar_backward(pos, '\n', &pos))
     return 0;
   return pos + 1;
 } 
 
+
+/*
+ Find the end of the line.
+ NOT UNICODE SAFE.
+ */
 int Fl_Text_Buffer::line_end(int pos) const {
+  // FIXME: this currently works for unicode, but will be very inefficent when findchar_forward is fixed.
   if (!findchar_forward(pos, '\n', &pos))
     pos = mLength;
   return pos;
 } 
 
+
+/*
+ Find the beginning of a word.
+ NOT UNICODE SAFE.
+ */
 int Fl_Text_Buffer::word_start(int pos) const {
   // FIXME: character is ucs-4
-  while (pos && (isalnum(at(pos)) || at(pos) == '_')) {
+  while (pos && (isalnum(char_at(pos)) || char_at(pos) == '_')) {
     pos--;
   } 
   // FIXME: character is ucs-4
-  if (!(isalnum(at(pos)) || at(pos) == '_'))
+  if (!(isalnum(char_at(pos)) || char_at(pos) == '_'))
     pos++;
   return pos;
 }
 
+
+/*
+ Find the end of a word.
+ NOT UNICODE SAFE.
+ */
 int Fl_Text_Buffer::word_end(int pos) const {
   // FIXME: character is ucs-4
-  while (pos < length() && (isalnum(at(pos)) || at(pos) == '_'))
+  while (pos < length() && (isalnum(char_at(pos)) || char_at(pos) == '_'))
   {
     pos++;
   } return pos;
 }
 
 
+/*
+ Matt: I am not sure why we need this function. Does it still make sense in
+ the world of proportional characters?
+ */
 int Fl_Text_Buffer::count_displayed_characters(int lineStartPos,
 					       int targetPos) const
 {
-  // FIXME: is this function still needed?
+  // TODO: is this function still needed? If it is, put this functionality in handle_vline?
   int charCount = 0;
   
   int pos = lineStartPos;
@@ -689,10 +880,15 @@ int Fl_Text_Buffer::count_displayed_characters(int lineStartPos,
 } 
 
 
+/*
+ Matt: I am not sure why we need this function. Does it still make sense in
+ the world of proportional characters?
+ */
 // All values are number of bytes. 
-// - unicode ok
+// - unicode ok?
 int Fl_Text_Buffer::skip_displayed_characters(int lineStartPos, int nChars)
 {
+  // FIXME: is this function still needed?
   int pos = lineStartPos;
   
   for (int charCount = 0; charCount < nChars && pos < mLength;) {
@@ -706,6 +902,11 @@ int Fl_Text_Buffer::skip_displayed_characters(int lineStartPos, int nChars)
   return pos;
 }
 
+
+/*
+ Count the number of newline characters between start and end.
+ Unicode safe. StartPos and endPos must be at a character boundary.
+ */
 int Fl_Text_Buffer::count_lines(int startPos, int endPos) const {
   int gapLen = mGapEnd - mGapStart;
   int lineCount = 0;
@@ -717,7 +918,8 @@ int Fl_Text_Buffer::count_lines(int startPos, int endPos) const {
       return lineCount;
     if (mBuf[pos++] == '\n')
       lineCount++;
-  } while (pos < mLength) {
+  } 
+  while (pos < mLength) {
     if (pos == endPos)
       return lineCount;
     if (mBuf[pos++ + gapLen] == '\n')
@@ -726,6 +928,11 @@ int Fl_Text_Buffer::count_lines(int startPos, int endPos) const {
   return lineCount;
 }
 
+
+/*
+ Skip to the first character, n lines ahead.
+ Unicode safe. StartPos must be at a character boundary.
+ */
 int Fl_Text_Buffer::skip_lines(int startPos, int nLines)
 {
   if (nLines == 0)
@@ -751,6 +958,11 @@ int Fl_Text_Buffer::skip_lines(int startPos, int nLines)
   return pos;
 }
 
+
+/*
+ Skip to the first character, n lines back.
+ Unicode safe. StartPos must be at a character boundary.
+ */
 int Fl_Text_Buffer::rewind_lines(int startPos, int nLines)
 {
   int pos = startPos - 1;
@@ -776,9 +988,15 @@ int Fl_Text_Buffer::rewind_lines(int startPos, int nLines)
   return 0;
 }
 
+
+/*
+ Find a matching string in the buffer.
+ NOT TESTED FOR UNICODE.
+ */
 int Fl_Text_Buffer::search_forward(int startPos, const char *searchString,
 				   int *foundPos, int matchCase) const 
 {
+  // FIXME: Unicode?
   if (!searchString)
     return 0;
   int bp;
@@ -792,16 +1010,22 @@ int Fl_Text_Buffer::search_forward(int startPos, const char *searchString,
         return 1;
       }
       // FIXME: character is ucs-4
-    } while ((matchCase ? at(bp++) == *sp++ :
-              toupper(at(bp++)) == toupper(*sp++))
+    } while ((matchCase ? char_at(bp++) == *sp++ :
+              toupper(char_at(bp++)) == toupper(*sp++))
              && bp < length());
     startPos++;
   }
   return 0;
 }
 
+
+/*
+ Find a matching string in the buffer.
+ NOT TESTED FOR UNICODE.
+ */
 int Fl_Text_Buffer::search_backward(int startPos, const char *searchString,
 				    int *foundPos, int matchCase) const {
+  // FIXME: Unicode?
   if (!searchString)
     return 0;
   int bp;
@@ -816,16 +1040,22 @@ int Fl_Text_Buffer::search_backward(int startPos, const char *searchString,
         return 1;
       }
       // FIXME: character is ucs-4
-    } while ((matchCase ? at(bp--) == *sp-- :
-              toupper(at(bp--)) == toupper(*sp--))
+    } while ((matchCase ? char_at(bp--) == *sp-- :
+              toupper(char_at(bp--)) == toupper(*sp--))
              && bp >= 0);
     startPos--;
   }
   return 0;
 }
 
+
+/*
+ Find a matching string in the buffer.
+ NOT TESTED FOR UNICODE.
+ */
 int Fl_Text_Buffer::findchars_forward(int startPos, const char *searchChars,
 				      int *foundPos) const {
+  // FIXME: unicode?
   int gapLen = mGapEnd - mGapStart;
   const char *c;
   
@@ -852,8 +1082,14 @@ int Fl_Text_Buffer::findchars_forward(int startPos, const char *searchChars,
   return 0;
 }
 
+
+/*
+ Find a matching string in the buffer.
+ NOT TESTED FOR UNICODE.
+ */
 int Fl_Text_Buffer::findchars_backward(int startPos, const char *searchChars,
 				       int *foundPos) const {
+  // FIXME: Unicode
   int gapLen = mGapEnd - mGapStart;
   const char *c;
   
@@ -885,6 +1121,11 @@ int Fl_Text_Buffer::findchars_backward(int startPos, const char *searchChars,
   return 0;
 }
 
+
+/*
+ Insert a string into the buffer.
+ Unicode safe. Pos must be at a character boundary. Text must be a correct utf8 string.
+ */
 int Fl_Text_Buffer::insert_(int pos, const char *text)
 {
   int insertedLength = strlen(text);
@@ -920,6 +1161,11 @@ int Fl_Text_Buffer::insert_(int pos, const char *text)
   return insertedLength;
 }
 
+
+/*
+ Remove a string from the buffer.
+ Unicode safe. Start and end must be at a character boundary.
+ */
 void Fl_Text_Buffer::remove_(int start, int end)
 {
   /* if the gap is not contiguous to the area to remove, move it there */
@@ -968,8 +1214,10 @@ void Fl_Text_Buffer::remove_(int start, int end)
 }
 
 
-// simple setter
-// Unicode safe
+/*
+ simple setter.
+ Unicode safe. Start and end must be at a character boundary.
+ */
 void Fl_Text_Selection::set(int startpos, int endpos)
 {
   mSelected = startpos != endpos;
@@ -978,8 +1226,10 @@ void Fl_Text_Selection::set(int startpos, int endpos)
 }
 
 
-// simple getter
-// Unicode safe
+/*
+ simple getter.
+ Unicode safe. Start and end will be at a character boundary.
+ */
 int Fl_Text_Selection::position(int *startpos, int *endpos) const {
   if (!mSelected)
     return 0;
@@ -990,11 +1240,19 @@ int Fl_Text_Selection::position(int *startpos, int *endpos) const {
 } 
 
 
-// unicode safe
+/*
+ Return if a position is inside the eselected area.
+ Unicode safe. Pos must be at a character boundary.
+ */
 int Fl_Text_Selection::includes(int pos) const {
   return (selected() && pos >= start() && pos < end() );
 } 
 
+
+/*
+ Return a duplicate of the selected text, or an empty string.
+ Unicode safe.
+ */
 char *Fl_Text_Buffer::selection_text_(Fl_Text_Selection * sel) const {
   int start, end;
   
@@ -1006,10 +1264,15 @@ char *Fl_Text_Buffer::selection_text_(Fl_Text_Selection * sel) const {
     return s;
   }
   
-  /* If the selection is not rectangular, return the selected range */
+  /* Return the selected range */
   return text_range(start, end);
 }
 
+
+/*
+ Remove the selected text.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::remove_selection_(Fl_Text_Selection * sel)
 {
   int start, end;
@@ -1021,6 +1284,10 @@ void Fl_Text_Buffer::remove_selection_(Fl_Text_Selection * sel)
 }
 
 
+/*
+ Replace selection with text.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::replace_selection_(Fl_Text_Selection * sel,
 					const char *text)
 {
@@ -1041,6 +1308,10 @@ void Fl_Text_Buffer::replace_selection_(Fl_Text_Selection * sel,
 }
 
 
+/*
+ Call all callbacks.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::call_modify_callbacks(int pos, int nDeleted,
 					   int nInserted, int nRestyled,
 					   const char *deletedText) const {
@@ -1050,12 +1321,20 @@ void Fl_Text_Buffer::call_modify_callbacks(int pos, int nDeleted,
 } 
 
 
+/*
+ Call all callbacks.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::call_predelete_callbacks(int pos, int nDeleted) const {
   for (int i = 0; i < mNPredeleteProcs; i++)
     (*mPredeleteProcs[i]) (pos, nDeleted, mPredeleteCbArgs[i]);
 } 
 
 
+/*
+ Redisplay a new selected area.
+ Unicode safe.
+ */
 void Fl_Text_Buffer::redisplay_selection(Fl_Text_Selection *
 					   oldSelection,
 					   Fl_Text_Selection *
@@ -1107,6 +1386,11 @@ void Fl_Text_Buffer::redisplay_selection(Fl_Text_Selection *
     call_modify_callbacks(ch2Start, 0, 0, ch2End - ch2Start, NULL);
 }
 
+
+/*
+ Move the gap around without changing buffer content.
+ Unicode safe. Pos must be at a character boundary.
+ */
 void Fl_Text_Buffer::move_gap(int pos)
 {
   int gapLen = mGapEnd - mGapStart;
@@ -1119,6 +1403,11 @@ void Fl_Text_Buffer::move_gap(int pos)
   mGapStart += pos - mGapStart;
 }
 
+
+/*
+ Create a larger gap.
+ Unicode safe. Start must be at a character boundary.
+ */
 void Fl_Text_Buffer::reallocate_with_gap(int newGapStart, int newGapLen)
 {
   char *newBuf = (char *) malloc(mLength + newGapLen);
@@ -1141,15 +1430,13 @@ void Fl_Text_Buffer::reallocate_with_gap(int newGapStart, int newGapLen)
   mBuf = newBuf;
   mGapStart = newGapStart;
   mGapEnd = newGapEnd;
-#ifdef PURIFY
-  {
-    int i;
-    for (i = mGapStart; i < mGapEnd; i++)
-      mBuf[i] = '.';
-  }
-#endif
 }
 
+
+/*
+ Update selection range if characers were inserted.
+ Unicode safe. Pos must be at a character boundary.
+ */
 void Fl_Text_Buffer::update_selections(int pos, int nDeleted,
 				       int nInserted)
 {
@@ -1162,6 +1449,7 @@ void Fl_Text_Buffer::update_selections(int pos, int nDeleted,
 // unicode safe, assuming the arguments are on character boundaries
 void Fl_Text_Selection::update(int pos, int nDeleted, int nInserted)
 {
+  // FIXME: check if this is safe when seletion crosses selction boundaries
   if (!mSelected || pos > mEnd)
     return;
   if (pos + nDeleted <= mStart) {
@@ -1181,61 +1469,69 @@ void Fl_Text_Selection::update(int pos, int nDeleted, int nInserted)
   }
 }
 
+
+/*
+ Find a UCS-4 character.
+ Unicode safe. StartPos must be at a charcter boundary, searchChar is UCS-4 encoded.
+ */
 int Fl_Text_Buffer::findchar_forward(int startPos, unsigned searchChar,
-				     int *foundPos) const {
-  if (startPos < 0 || startPos >= mLength)
+				     int *foundPos) const 
+{
+  if (startPos >= mLength)
   {
     *foundPos = mLength;
     return 0;
   }
   
-  int pos = startPos;
-  while (pos < mGapStart) {
-    if (mBuf[pos] == searchChar) {
-      *foundPos = pos;
+  if (startPos<0)
+    startPos = 0;
+  
+  // TODO: for performance reasons, we can re-insert the ASCII search here which is about three times as fast if searchChar is <128
+  
+  for ( ; startPos<mLength; startPos = next_char(startPos)) {
+    if (searchChar == char_at(startPos)) {
+      *foundPos = startPos;
       return 1;
     }
-    pos++;
   }
   
-  for (int gapLen = mGapEnd - mGapStart; pos < mLength; pos++) {
-    if (mBuf[pos + gapLen] == searchChar) {
-      *foundPos = pos;
-      return 1;
-    }
-  }
   *foundPos = mLength;
   return 0;
 }
 
+
+/*
+ Find a UCS-4 character.
+ Unicode safe. StartPos must be at a charcter boundary, searchChar is UCS-4 encoded.
+ */
 int Fl_Text_Buffer::findchar_backward(int startPos, unsigned searchChar,
 				      int *foundPos) const {
-  
-  if (startPos <= 0 || startPos > mLength)
-  {
+  if (startPos <= 0) {
     *foundPos = 0;
     return 0;
   }
   
-  int pos = startPos - 1;
-  for (int gapLen = mGapEnd - mGapStart; pos >= mGapStart; pos--) {
-    if (mBuf[pos + gapLen] == searchChar) {
-      *foundPos = pos;
+  if (startPos > mLength)
+    startPos = mLength;
+  
+  // TODO: for performance reasons, we can re-insert the ASCII search here which is about three times as fast if searchChar is <128
+  
+  for (startPos = prev_char(startPos); startPos>=0; startPos = prev_char(startPos)) {
+    if (searchChar == char_at(startPos)) {
+      *foundPos = startPos;
       return 1;
     }
   }
   
-  for (; pos >= 0; pos--) {
-    if (mBuf[pos] == searchChar) {
-      *foundPos = pos;
-      return 1;
-    }
-  }
   *foundPos = 0;
   return 0;
 }
 
 
+/*
+ Insert text from a file.
+ Unicode safe. Inout must be correct utf8!
+ */
 int Fl_Text_Buffer::insertfile(const char *file, int pos, int buflen)
 {
   FILE *fp;
@@ -1253,6 +1549,11 @@ int Fl_Text_Buffer::insertfile(const char *file, int pos, int buflen)
   return e;
 }
 
+
+/*
+ Write text to file,
+ Unicode safe.
+ */
 int Fl_Text_Buffer::outputfile(const char *file, int start, int end,
 			       int buflen)
 {
@@ -1272,6 +1573,39 @@ int Fl_Text_Buffer::outputfile(const char *file, int start, int end,
   return e;
 }
 
+
+/*
+ Return the previous character position.
+ Uncode safe.
+ */
+int Fl_Text_Buffer::prev_char(int pos) const
+{
+  if (pos<=0)
+    return 0;
+
+  char c;
+  do {
+    pos--;
+    if (pos==0)
+      return 0;
+    c = byte_at(pos);
+  } while ( (c&0xc0) == 0x80);
+  
+  return pos;
+}
+
+/*
+ Return the next character position.
+ Uncode safe.
+ */
+int Fl_Text_Buffer::next_char(int pos) const
+{
+  int n = fl_utf8len(byte_at(pos));
+  pos += n;
+  if (pos>=mLength)
+    return mLength;
+  return pos;
+}
 
 //
 // End of "$Id$".

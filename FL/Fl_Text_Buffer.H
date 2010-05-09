@@ -205,10 +205,18 @@ public:
   /**
    Returns the character at the specified position pos in the buffer.
    Positions start at 0 
-   \param pos byte offset into buffer
+   \param pos byte offset into buffer, pos must be at acharacter boundary
    \return Unicode UCS-4 encoded character
    */
-  unsigned int at(int pos) const;
+  unsigned int char_at(int pos) const;
+  
+  /**
+   Returns the raw byte at the specified position pos in the buffer.
+   Positions start at 0 
+   \param pos byte offset into buffer
+   \return unencoded raw byte
+   */
+  char byte_at(int pos) const;
   
   /**
    Convert a byte offset in buffer into a memory address.
@@ -587,7 +595,7 @@ public:
    overall performance of the text widget is dependent on its ability to
    count lines quickly, hence searching for a single character: newline)
    \param startPos byte offset to start position
-   \param searchChar UCS4 character that we want to find
+   \param searchChar UCS-4 character that we want to find
    \param foundPos byte offset where the character was found
    \return 1 if found, 0 if not
    \todo unicode check
@@ -602,7 +610,7 @@ public:
    overall performance of the text widget is dependent on its ability to
    count lines quickly, hence searching for a single character: newline)
    \param startPos byte offset to start position
-   \param searchChar UCS4 character that we want to find
+   \param searchChar UCS-4 character that we want to find
    \param foundPos byte offset where the character was found
    \return 1 if found, 0 if not
    \todo unicode check
@@ -682,6 +690,32 @@ public:
    Returns the current highlight selection.
    */
   const Fl_Text_Selection* highlight_selection() const { return &mHighlight; }
+  
+  /**
+   Returns the index of the previous character.
+   \param ix index to the current char
+   */
+  int prev_char(int ix) const;
+  
+  /**
+   Returns a pointer to the previous character.
+   \param c pointer to the current char
+   */
+  char *prev_char(char *c) const;
+  const char *prev_char(const char *c) const;
+  
+  /**
+   Returns the index of the next character.
+   \param ix index to the current char
+   */
+  int next_char(int ix) const;
+  
+  /**
+   Returns a pointer to the next character.
+   \param c pointer to the current char
+   */
+  char *next_char(char *c) const;
+  const char *next_char(const char *c) const;
   
 protected:
 
@@ -770,8 +804,6 @@ protected:
   // The hardware tab distance used by all displays for this buffer,
   // and used in computing offsets for rectangular selection operations.
   int mTabDist;                   /**< equiv. number of characters in a tab */
-  int mUseTabs;                   /**< True if buffer routines are allowed to use
-                                   tabs for padding in rectangular operations */
   int mNModifyProcs;              /**< number of modify-redisplay procs attached */
   Fl_Text_Modify_Cb *mModifyProcs;/**< procedures to call when buffer is 
                                    modified to redisplay contents */

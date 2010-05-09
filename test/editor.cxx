@@ -789,6 +789,7 @@ Fl_Window* new_view() {
                               sizeof(styletable) / sizeof(styletable[0]),
 			      'A', style_unfinished_cb, 0);
     w->editor->textfont(FL_COURIER);
+  //w->editor->wrap_mode(1, 0); // FIXME: test wrap modes
   w->end();
   w->resizable(w->editor);
   w->callback((Fl_Callback *)close_cb, w);
