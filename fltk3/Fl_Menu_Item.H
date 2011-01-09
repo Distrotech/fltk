@@ -157,7 +157,7 @@ struct FL_EXPORT Fl_Menu_Item {
   void label(const char* a) {text=a;}
 
   /**    See const char* Fl_Menu_Item::label() const   */
-  void label(Fl_Labeltype a,const char* b) {labeltype_ = a; text = b;}
+  void label(fltk3::Labeltype a,const char* b) {labeltype_ = a; text = b;}
 
   /**
     Returns the menu item's labeltype.
@@ -166,7 +166,7 @@ struct FL_EXPORT Fl_Menu_Item {
     the label() pointer as another form of data such as a bitmap.
     The value FL_NORMAL_LABEL prints the label as text.
   */
-  Fl_Labeltype labeltype() const {return (Fl_Labeltype)labeltype_;}
+  fltk3::Labeltype labeltype() const {return (fltk3::Labeltype)labeltype_;}
 
   /**
     Sets the menu item's labeltype.
@@ -175,7 +175,7 @@ struct FL_EXPORT Fl_Menu_Item {
     the label() pointer as another form of data such as a bitmap.
     The value FL_NORMAL_LABEL prints the label as text.
   */
-  void labeltype(Fl_Labeltype a) {labeltype_ = a;}
+  void labeltype(fltk3::Labeltype a) {labeltype_ = a;}
 
   /**
     Gets the menu item's label color.
@@ -195,7 +195,7 @@ struct FL_EXPORT Fl_Menu_Item {
     Gets the menu item's label font.
     Fonts are identified by small 8-bit indexes into a table. See the
     enumeration list for predefined fonts. The default value is a
-    Helvetica font. The function Fl::set_font() can define new fonts.
+    Helvetica font. The function fltk3::set_font() can define new fonts.
   */
   Fl_Font labelfont() const {return labelfont_;}
 
@@ -203,7 +203,7 @@ struct FL_EXPORT Fl_Menu_Item {
     Sets the menu item's label font.
     Fonts are identified by small 8-bit indexes into a table. See the
     enumeration list for predefined fonts. The default value is a
-    Helvetica font.  The function Fl::set_font() can define new fonts.
+    Helvetica font.  The function fltk3::set_font() can define new fonts.
   */
   void labelfont(Fl_Font a) {labelfont_ = a;}
 
@@ -284,11 +284,11 @@ struct FL_EXPORT Fl_Menu_Item {
     FL_ALT+'a' or FL_ALT+FL_F+10 or just 'a'.  A value of
     zero disables the shortcut.
 
-    The key can be any value returned by Fl::event_key(), but will usually 
+    The key can be any value returned by fltk3::event_key(), but will usually 
     be an ASCII letter. Use a lower-case letter unless you require the shift 
     key to be held down.
 
-    The shift flags can be any set of values accepted by Fl::event_state().
+    The shift flags can be any set of values accepted by fltk3::event_state().
     If the bit is on that shift key must be pushed.  Meta, Alt, Ctrl, 
     and Shift must be off if they are not in the shift flags (zero for the 
     other bits indicates a "don't care" setting).

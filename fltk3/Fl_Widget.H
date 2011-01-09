@@ -50,9 +50,12 @@ typedef unsigned long fl_uintptr_t;
 #endif
 
 class Fl_Widget;
-class Fl_Window;
 class Fl_Group;
 class Fl_Image;
+
+namespace fltk3 {
+  class Window;
+}
 
 /** Default callback type definition for all fltk widgets (by far the most used) */
 typedef void (Fl_Callback )(Fl_Widget*, void*);
@@ -85,7 +88,7 @@ struct FL_EXPORT Fl_Label {
   Fl_Color color;
   /** alignment of label */
   Fl_Align align_;
-  /** type of label. \see Fl_Labeltype */
+  /** type of label. \see fltk3::Labeltype */
   uchar type;
 
   /** Draws the label aligned to the given box */
@@ -164,18 +167,18 @@ protected:
         INACTIVE        = 1<<0,   ///< the widget can't receive focus, and is disabled but potentially visible
         INVISIBLE       = 1<<1,   ///< the widget is not drawn but can receive events
         OUTPUT          = 1<<2,   ///< for output only
-        NOBORDER        = 1<<3,   ///< don't draw a decoration (Fl_Window)
-        FORCE_POSITION  = 1<<4,   ///< don't let the window manager position the window (Fl_Window)
-        NON_MODAL       = 1<<5,   ///< thisis a hovering toolbar window (Fl_Window)
+        NOBORDER        = 1<<3,   ///< don't draw a decoration (fltk3::Window)
+        FORCE_POSITION  = 1<<4,   ///< don't let the window manager position the window (fltk3::Window)
+        NON_MODAL       = 1<<5,   ///< thisis a hovering toolbar window (fltk3::Window)
         SHORTCUT_LABEL  = 1<<6,   ///< the label contains a shortcut we need to draw
         CHANGED         = 1<<7,   ///< the widget value changed
-        OVERRIDE        = 1<<8,   ///< position window on top (Fl_Window)
+        OVERRIDE        = 1<<8,   ///< position window on top (fltk3::Window)
         VISIBLE_FOCUS   = 1<<9,   ///< accepts keyboard focus navigation if the widget can have the focus
         COPIED_LABEL    = 1<<10,  ///< the widget label is internally copied, its destruction is handled by the widget
         CLIP_CHILDREN   = 1<<11,  ///< all drawing within this widget will be clipped (Fl_Group)
-        MENU_WINDOW     = 1<<12,  ///< a temporary popup window, dismissed by clicking outside (Fl_Window)
-        TOOLTIP_WINDOW  = 1<<13,  ///< a temporary popup, transparent to events, and dismissed easily (Fl_Window)
-        MODAL           = 1<<14,  ///< a window blocking input to all other winows (Fl_Window)
+        MENU_WINDOW     = 1<<12,  ///< a temporary popup window, dismissed by clicking outside (fltk3::Window)
+        TOOLTIP_WINDOW  = 1<<13,  ///< a temporary popup, transparent to events, and dismissed easily (fltk3::Window)
+        MODAL           = 1<<14,  ///< a window blocking input to all other winows (fltk3::Window)
         NO_OVERLAY      = 1<<15,  ///< window not using a hardware overlay plane (Fl_Menu_Window)
         GROUP_RELATIVE  = 1<<16,  ///< position this idget relative to the parent group, not to the window
         COPIED_TOOLTIP  = 1<<17,  ///< the widget tooltip is internally copied, its destruction is handled by the widget
@@ -185,12 +188,12 @@ protected:
         USERFLAG1       = 1<<31   ///< reserved for 3rd party extensions
   };
   void draw_box() const;
-  void draw_box(Fl_Boxtype t, Fl_Color c) const;
-  void draw_box(Fl_Boxtype t, int x,int y,int w,int h, Fl_Color c) const;
+  void draw_box(fltk3::Boxtype t, Fl_Color c) const;
+  void draw_box(fltk3::Boxtype t, int x,int y,int w,int h, Fl_Color c) const;
   void draw_backdrop() const;
   /** draws a focus rectangle around the widget */
   void draw_focus() {draw_focus(box(),x(),y(),w(),h());}
-  void draw_focus(Fl_Boxtype t, int x,int y,int w,int h) const;
+  void draw_focus(fltk3::Boxtype t, int x,int y,int w,int h) const;
   void draw_label() const;
   void draw_label(int, int, int, int) const;
 
@@ -243,7 +246,7 @@ public:
   virtual int handle(int event);
 
   /** Returns a pointer to the parent widget.  
-      Usually this is a Fl_Group or Fl_Window. 
+      Usually this is a Fl_Group or fltk3::Window. 
       \retval NULL if the widget has no parent
       \see Fl_Group::add(Fl_Widget*)
    */
@@ -354,18 +357,18 @@ public:
 
   /** Gets the box type of the widget.
       \return the current box type
-      \see box(Fl_Boxtype), Fl_Boxtype
+      \see box(fltk3::Boxtype), fltk3::Boxtype
    */
-  Fl_Boxtype box() const {return (Fl_Boxtype)box_;}
+  fltk3::Boxtype box() const {return (fltk3::Boxtype)box_;}
   
   /** Sets the box type for the widget. 
       This identifies a routine that draws the background of the widget.
-      See Fl_Boxtype for the available types. The default depends on the 
-      widget, but is usually FL_NO_BOX or FL_UP_BOX.
+      See fltk3::Boxtype for the available types. The default depends on the 
+      widget, but is usually fltk3::NO_BOX or fltk3::UP_BOX.
       \param[in] new_box the new box type
-      \see box(), Fl_Boxtype
+      \see box(), fltk3::Boxtype
    */
-  void box(Fl_Boxtype new_box) {box_ = new_box;}
+  void box(fltk3::Boxtype new_box) {box_ = new_box;}
 
   /** Gets the background color of the widget.
       \return current background color
@@ -378,7 +381,7 @@ public:
       an internal table of RGB colors or an RGB color value generated using 
       fl_rgb_color().
       
-      The default for most widgets is FL_BACKGROUND_COLOR. Use Fl::set_color()
+      The default for most widgets is FL_BACKGROUND_COLOR. Use fltk3::set_color()
       to redefine colors in the color map.
       \param[in] bg background color
       \see color(), color(Fl_Color, Fl_Color), selection_color(Fl_Color)
@@ -441,15 +444,15 @@ public:
   void copy_label(const char *new_label);
 
   /** Shortcut to set the label text and type in one call.
-      \see label(const char *), labeltype(Fl_Labeltype)
+      \see label(const char *), labeltype(fltk3::Labeltype)
    */
-  void label(Fl_Labeltype a, const char* b) {label_.type = a; label_.value = b;}
+  void label(fltk3::Labeltype a, const char* b) {label_.type = a; label_.value = b;}
 
   /** Gets the label type.
       \return the current label type.
-      \see Fl_Labeltype
+      \see fltk3::Labeltype
    */
-  Fl_Labeltype labeltype() const {return (Fl_Labeltype)label_.type;}
+  fltk3::Labeltype labeltype() const {return (fltk3::Labeltype)label_.type;}
 
   /** Sets the label type. 
       The label type identifies the function that draws the label of the widget. 
@@ -457,9 +460,9 @@ public:
       the label() pointer as another form of data such as an icon. The value 
       FL_NORMAL_LABEL prints the label as plain text.
       \param[in] a new label type
-      \see Fl_Labeltype
+      \see fltk3::Labeltype
    */
-  void labeltype(Fl_Labeltype a) {label_.type = a;}
+  void labeltype(fltk3::Labeltype a) {label_.type = a;}
 
   /** Gets the label color. 
       The default color is FL_FOREGROUND_COLOR. 
@@ -476,7 +479,7 @@ public:
   /** Gets the font to use. 
       Fonts are identified by indexes into a table. The default value
       uses a Helvetica typeface (Arial for Microsoft&reg; Windows&reg;).
-      The function Fl::set_font() can define new typefaces.
+      The function fltk3::set_font() can define new typefaces.
       \return current font used by the label
       \see Fl_Font
    */
@@ -485,7 +488,7 @@ public:
   /** Sets the font to use. 
       Fonts are identified by indexes into a table. The default value
       uses a Helvetica typeface (Arial for Microsoft&reg; Windows&reg;).
-      The function Fl::set_font() can define new typefaces.
+      The function fltk3::set_font() can define new typefaces.
       \param[in] f the new font for the label
       \see Fl_Font
    */
@@ -721,7 +724,7 @@ public:
       Changing this value will send FL_DEACTIVATE to the widget if 
       active_r() is true.
     
-      Currently you cannot deactivate Fl_Window widgets.
+      Currently you cannot deactivate fltk3::Window widgets.
 
       \see activate(), active(), active_r()
    */
@@ -784,9 +787,9 @@ public:
   void clear_changed() {flags_ &= ~CHANGED;}
 
   /** Gives the widget the keyboard focus.
-      Tries to make this widget be the Fl::focus() widget, by first sending 
+      Tries to make this widget be the fltk3::focus() widget, by first sending 
       it an FL_FOCUS event, and if it returns non-zero, setting 
-      Fl::focus() to this widget. You should use this method to 
+      fltk3::focus() to this widget. You should use this method to 
       assign the focus to a widget.  
       \return true if the widget accepted the focus.
    */
@@ -820,10 +823,10 @@ public:
 
   /** Sets the default callback for all widgets.
       Sets the default callback, which puts a pointer to the widget on the queue 
-      returned by Fl::readqueue(). You may want to call this from your own callback.
+      returned by fltk3::readqueue(). You may want to call this from your own callback.
       \param[in] cb the new callback
       \param[in] d user data associated with that callback
-      \see callback(), do_callback(), Fl::readqueue()
+      \see callback(), do_callback(), fltk3::readqueue()
    */
   static void default_callback(Fl_Widget *cb, void *d);
 
@@ -922,12 +925,12 @@ public:
    */
   void measure_label(int& ww, int& hh) const {label_.measure(ww, hh);}
 
-  /** Returns a pointer to the primary Fl_Window widget.
+  /** Returns a pointer to the primary fltk3::Window widget.
       \retval  NULL if no window is associated with this widget.  
-      \note for an Fl_Window widget, this returns its <I>parent</I> window 
+      \note for an fltk3::Window widget, this returns its <I>parent</I> window 
             (if any), not <I>this</I> window.
    */
-  Fl_Window* window() const ;
+  fltk3::Window* window() const ;
 
   /** Returns an Fl_Group pointer if this widget is an Fl_Group.
 
@@ -954,19 +957,19 @@ public:
    */
   virtual Fl_Group* as_group() {return 0;}
 
-  /** Returns an Fl_Window pointer if this widget is an Fl_Window.
+  /** Returns an fltk3::Window pointer if this widget is an fltk3::Window.
 
       Use this method if you have a widget (pointer) and need to
-      know whether this widget is derived from Fl_Window. If it returns
-      non-NULL, then the widget in question is derived from Fl_Window,
+      know whether this widget is derived from fltk3::Window. If it returns
+      non-NULL, then the widget in question is derived from fltk3::Window,
       and you can use the returned pointer to access its children
-      or other Fl_Window-specific methods.
+      or other fltk3::Window-specific methods.
 
-      \retval NULL if this widget is not derived from Fl_Window.
+      \retval NULL if this widget is not derived from fltk3::Window.
       \note This method is provided to avoid dynamic_cast.
       \see Fl_Widget::as_group(), Fl_Widget::as_gl_window()
    */
-  virtual Fl_Window* as_window() {return 0;}
+  virtual fltk3::Window* as_window() {return 0;}
 
   /** Returns an Fl_Gl_Window pointer if this widget is an Fl_Gl_Window.
 

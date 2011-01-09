@@ -29,7 +29,7 @@
 #include <fltk3/Fl_Printer.H>
 #include <fltk3/Fl_Gl_Window.H>
 #include "Fl_Gl_Choice.H"
-#include "fltk3/Fl.H"
+#include "fltk3/run.h"
 #ifndef __APPLE__
 #include "fltk3/fl_draw.H"
 #endif
@@ -55,17 +55,17 @@ static void print_gl_window(Fl_Gl_Window *glw, int x, int y, int height)
 #endif
   fl_gc = NULL;
 #ifdef WIN32
-  Fl::check();
-  Fl_Window *win = (Fl_Window*)glw;
+  fltk3::check();
+  fltk3::Window *win = (fltk3::Window*)glw;
   while( win->window() ) win = win->window();
   win->redraw();
-  Fl::check();
+  fltk3::check();
   glw->make_current();
 #else
   glw->make_current();
   glw->redraw();
   glFlush();
-  Fl::check();
+  fltk3::check();
   glFinish();
 #endif
   // Read OpenGL context pixels directly.

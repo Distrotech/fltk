@@ -29,7 +29,7 @@
 // Less-used box types are in separate files so they are not linked
 // in if not used.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
 static void fl_oval_flat_box(int x, int y, int w, int h, Fl_Color c) {
@@ -52,13 +52,13 @@ static void fl_oval_shadow_box(int x, int y, int w, int h, Fl_Color c) {
   fl_oval_box(x,y,w,h,c);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
-Fl_Boxtype fl_define_FL_OVAL_BOX() {
-  fl_internal_boxtype(_FL_OSHADOW_BOX,fl_oval_shadow_box);
-  fl_internal_boxtype(_FL_OVAL_FRAME,fl_oval_frame);
-  fl_internal_boxtype(_FL_OFLAT_BOX,fl_oval_flat_box);
-  fl_internal_boxtype(_FL_OVAL_BOX,fl_oval_box);
-  return _FL_OVAL_BOX;
+extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
+fltk3::Boxtype fl_define_FL_OVAL_BOX() {
+  fl_internal_boxtype(fltk3::OSHADOW_BOX,fl_oval_shadow_box);
+  fl_internal_boxtype(fltk3::OVAL_FRAME,fl_oval_frame);
+  fl_internal_boxtype(fltk3::OFLAT_BOX,fl_oval_flat_box);
+  fl_internal_boxtype(fltk3::OVAL_BOX,fl_oval_box);
+  return fltk3::OVAL_BOX;
 }
 
 //

@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Adjuster.H>
 #include <fltk3/Fl_Bitmap.H>
 #include <fltk3/fl_draw.H>
@@ -49,9 +49,9 @@ void Fl_Adjuster::draw() {
     dx = 0; W = w();
     dy = H = h()/3;
   }
-  draw_box(drag==1?FL_DOWN_BOX:box(), x(),  y()+2*dy, W, H, color());
-  draw_box(drag==2?FL_DOWN_BOX:box(), x()+dx, y()+dy, W, H, color());
-  draw_box(drag==3?FL_DOWN_BOX:box(), x()+2*dx,  y(), W, H, color());
+  draw_box(drag==1?fltk3::DOWN_BOX:box(), x(),  y()+2*dy, W, H, color());
+  draw_box(drag==2?fltk3::DOWN_BOX:box(), x()+dx, y()+dy, W, H, color());
+  draw_box(drag==3?fltk3::DOWN_BOX:box(), x()+2*dx,  y(), W, H, color());
   if (active_r())
     fl_color(selection_color());
   else
@@ -62,22 +62,22 @@ void Fl_Adjuster::draw() {
 		   y()+dy+(H-mediumarrow_height)/2, W, H);
   slowarrow.draw(x()+2*dx+(W-slowarrow_width)/2,
 		 y()+(H-slowarrow_width)/2, W, H);
-  if (Fl::focus() == this) draw_focus();
+  if (fltk3::focus() == this) draw_focus();
 }
 
 int Fl_Adjuster::handle(int event) {
   double v;
   int delta;
-  int mx = Fl::event_x();
+  int mx = fltk3::event_x();
   // Fl_Widget_Tracker wp(this);
   switch (event) {
     case FL_PUSH:
-      if (Fl::visible_focus()) Fl::focus(this);
+      if (fltk3::visible_focus()) fltk3::focus(this);
       ix = mx;
       if (w()>=h())
 	drag = 3*(mx-x())/w() + 1;
       else
-	drag = 3-3*(Fl::event_y()-y()-1)/h();
+	drag = 3-3*(fltk3::event_y()-y()-1)/h();
       { Fl_Widget_Tracker wp(this);
 	handle_push();
 	if (wp.deleted()) return 1;
@@ -109,8 +109,8 @@ int Fl_Adjuster::handle(int event) {
       handle_drag(soft() ? softclamp(v) : clamp(v));
       return 1;
     case FL_RELEASE:
-      if (Fl::event_is_click()) { // detect click but no drag
-	if (Fl::event_state()&0xF0000) delta = -10;
+      if (fltk3::event_is_click()) { // detect click but no drag
+	if (fltk3::event_state()&0xF0000) delta = -10;
 	else delta = 10;
 	switch (drag) {
 	  case 3: v = increment(previous_value(), delta); break;
@@ -126,7 +126,7 @@ int Fl_Adjuster::handle(int event) {
       handle_release();
       return 1;
     case FL_KEYBOARD :
-      switch (Fl::event_key()) {
+      switch (fltk3::event_key()) {
 	case FL_Up:
           if (w() > h()) return 0;
 	  handle_drag(clamp(increment(value(),-1)));
@@ -150,7 +150,7 @@ int Fl_Adjuster::handle(int event) {
 
     case FL_FOCUS:
     case FL_UNFOCUS:
-      if (Fl::visible_focus()) {
+      if (fltk3::visible_focus()) {
         redraw();
         return 1;
       } else return 0;
@@ -170,7 +170,7 @@ int Fl_Adjuster::handle(int event) {
 */
 Fl_Adjuster::Fl_Adjuster(int X, int Y, int W, int H, const char* l)
   : Fl_Valuator(X, Y, W, H, l) {
-  box(FL_UP_BOX);
+  box(fltk3::UP_BOX);
   step(1, 10000);
   selection_color(FL_SELECTION_COLOR);
   drag = 0;

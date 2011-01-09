@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
 #define RN	5
@@ -76,22 +76,22 @@ static void fl_rshadow_box(int x, int y, int w, int h, Fl_Color c) {
   fl_rounded_box(x, y, w, h, c);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
+extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
 
-Fl_Boxtype fl_define_FL_ROUNDED_BOX() {
-  fl_internal_boxtype(_FL_ROUNDED_FRAME, fl_rounded_frame);
-  fl_internal_boxtype(_FL_ROUNDED_BOX, fl_rounded_box);
-  return _FL_ROUNDED_BOX;
+fltk3::Boxtype fl_define_FL_ROUNDED_BOX() {
+  fl_internal_boxtype(fltk3::ROUNDED_FRAME, fl_rounded_frame);
+  fl_internal_boxtype(fltk3::ROUNDED_BOX, fl_rounded_box);
+  return fltk3::ROUNDED_BOX;
 }
 
-Fl_Boxtype fl_define_FL_RFLAT_BOX() {
-  fl_internal_boxtype(_FL_RFLAT_BOX, fl_rflat_box);
-  return _FL_RFLAT_BOX;
+fltk3::Boxtype fl_define_FL_RFLAT_BOX() {
+  fl_internal_boxtype(fltk3::RFLAT_BOX, fl_rflat_box);
+  return fltk3::RFLAT_BOX;
 }
 
-Fl_Boxtype fl_define_FL_RSHADOW_BOX() {
-  fl_internal_boxtype(_FL_RSHADOW_BOX, fl_rshadow_box);
-  return _FL_RSHADOW_BOX;
+fltk3::Boxtype fl_define_FL_RSHADOW_BOX() {
+  fl_internal_boxtype(fltk3::RSHADOW_BOX, fl_rshadow_box);
+  return fltk3::RSHADOW_BOX;
 }
 
 //

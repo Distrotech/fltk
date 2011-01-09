@@ -29,7 +29,7 @@
 // Warning: this works by making a child Fl_Input object, even
 // though this object is *not* an Fl_Group.  May be a kludge?
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Value_Input.H>
 #include <fltk3/Fl_Group.H>
 #include <stdlib.h>
@@ -71,14 +71,14 @@ void Fl_Value_Input::value_damage() {
 int Fl_Value_Input::handle(int event) {
   double v;
   int delta;
-  int mx = Fl::event_x_root();
+  int mx = fltk3::event_x_root();
   static int ix, drag;
   input.when(when());
   switch (event) {
   case FL_PUSH:
     if (!step()) goto DEFAULT;
     ix = mx;
-    drag = Fl::event_button();
+    drag = fltk3::event_button();
     handle_push();
     return 1;
   case FL_DRAG:
@@ -97,7 +97,7 @@ int Fl_Value_Input::handle(int event) {
     return 1;
   case FL_RELEASE:
     if (!step()) goto DEFAULT;
-    if (value() != previous_value() || !Fl::event_is_click())
+    if (value() != previous_value() || !fltk3::event_is_click())
       handle_release();
     else {
       Fl_Widget_Tracker wp(&input);
@@ -120,7 +120,7 @@ int Fl_Value_Input::handle(int event) {
 /**
   Creates a new Fl_Value_Input widget using the given
   position, size, and label string. The default boxtype is
-  FL_DOWN_BOX.
+  fltk3::DOWN_BOX.
 */
 Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
 : Fl_Valuator(X, Y, W, H, l), input(X, Y, W, H, 0) {

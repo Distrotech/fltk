@@ -25,9 +25,9 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Input_.H>
-#include <fltk3/Fl_Window.H>
+#include <fltk3/Window.h>
 #include <fltk3/fl_draw.H>
 #include <fltk3/fl_ask.H>
 #include <math.h>
@@ -73,7 +73,7 @@ const char* Fl_Input_::expand(const char* p, char* buf) const {
 
   } else while (o<e) {
     if (wrap() && (p >= value_+size_ || isspace(*p & 255))) {
-      word_wrap = w() - Fl::box_dw(box()) - 2;
+      word_wrap = w() - fltk3::box_dw(box()) - 2;
       width_to_lastspace += (int)fl_width(lastspace_out, o-lastspace_out);
       if (p > lastspace+1) {
 	if (word_count && width_to_lastspace > word_wrap) {
@@ -215,16 +215,16 @@ void Fl_Input_::setfont() const {
 void Fl_Input_::drawtext(int X, int Y, int W, int H) {
   int do_mu = !(damage()&FL_DAMAGE_ALL);
 
-  if (Fl::focus()!=this && !size()) {
+  if (fltk3::focus()!=this && !size()) {
     if (do_mu) { // we have to erase it if cursor was there
-      draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
-               W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
+      draw_box(box(), X-fltk3::box_dx(box()), Y-fltk3::box_dy(box()),
+               W+fltk3::box_dw(box()), H+fltk3::box_dh(box()), color());
     }
     return;
   }
 
   int selstart, selend;
-  if (Fl::focus()!=this && /*Fl::selection_owner()!=this &&*/ Fl::pushed()!=this)
+  if (fltk3::focus()!=this && /*fltk3::selection_owner()!=this &&*/ fltk3::pushed()!=this)
     selstart = selend = 0;
   else if (position() <= mark()) {
     selstart = position(); selend = mark();
@@ -246,7 +246,7 @@ void Fl_Input_::drawtext(int X, int Y, int W, int H) {
     e = expand(p, buf);
     if (position() >= p-value() && position() <= e-value()) {
       curx = int(expandpos(p, value()+position(), buf, 0)+.5);
-      if (Fl::focus()==this && !was_up_down) up_down_pos = curx;
+      if (fltk3::focus()==this && !was_up_down) up_down_pos = curx;
       cury = lines*height;
       int newscroll = xscroll_;
       if (curx > newscroll+W-threshold) {
@@ -315,8 +315,8 @@ void Fl_Input_::drawtext(int X, int Y, int W, int H) {
       }
       // clip to and erase it:
       fl_push_clip((int)xx-1-height/8, Y+ypos, (int)(r-xx+2+height/4), height);
-      draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
-               W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
+      draw_box(box(), X-fltk3::box_dx(box()), Y-fltk3::box_dy(box()),
+               W+fltk3::box_dw(box()), H+fltk3::box_dh(box()), color());
       // it now draws entire line over it
       // this should not draw letters to left of erased area, but
       // that is nyi.
@@ -355,7 +355,7 @@ void Fl_Input_::drawtext(int X, int Y, int W, int H) {
 
   CONTINUE2:
     // draw the cursor:
-    if (Fl::focus() == this && selstart == selend &&
+    if (fltk3::focus() == this && selstart == selend &&
 	position() >= p-value() && position() <= e-value()) {
       fl_color(cursor_color());
       // cursor position may need to be recomputed (see STR #2486)
@@ -381,13 +381,13 @@ void Fl_Input_::drawtext(int X, int Y, int W, int H) {
       && (!erase_cursor_only || p <= value()+mu_p)) {
     if (ypos < 0) ypos = 0;
     fl_push_clip(X, Y+ypos, W, H-ypos);
-    draw_box(box(), X-Fl::box_dx(box()), Y-Fl::box_dy(box()),
-             W+Fl::box_dw(box()), H+Fl::box_dh(box()), color());
+    draw_box(box(), X-fltk3::box_dx(box()), Y-fltk3::box_dy(box()),
+             W+fltk3::box_dw(box()), H+fltk3::box_dh(box()), color());
     fl_pop_clip();
   }
 
   fl_pop_clip();
-  if (Fl::focus() == this) {
+  if (fltk3::focus() == this) {
        fl_set_spot(textfont(), textsize(),
                (int)xpos+curx, Y+ypos-fl_descent(), W, H, window());
   }
@@ -506,7 +506,7 @@ void Fl_Input_::handle_mouse(int X, int Y, int /*W*/, int /*H*/, int drag) {
   char buf[MAXBUF];
 
   int theline = (input_type()==FL_MULTILINE_INPUT) ?
-    (Fl::event_y()-Y+yscroll_)/fl_height() : 0;
+    (fltk3::event_y()-Y+yscroll_)/fl_height() : 0;
 
   int newpos = 0;
   for (p=value();; ) {
@@ -515,34 +515,34 @@ void Fl_Input_::handle_mouse(int X, int Y, int /*W*/, int /*H*/, int drag) {
     if (e >= value_+size_) break;
     p = e+1;
   }
-  const char *l, *r, *t; double f0 = Fl::event_x()-X+xscroll_;
+  const char *l, *r, *t; double f0 = fltk3::event_x()-X+xscroll_;
   for (l = p, r = e; l<r; ) {
     double f;
     int cw = fl_utf8len((char)l[0]);
     if (cw < 1) cw = 1;
     t = l+cw;
     f = X-xscroll_+expandpos(p, t, buf, 0);
-    if (f <= Fl::event_x()) {l = t; f0 = Fl::event_x()-f;}
+    if (f <= fltk3::event_x()) {l = t; f0 = fltk3::event_x()-f;}
     else r = t-cw;
   }
   if (l < e) { // see if closer to character on right:
     double f1;
     int cw = fl_utf8len((char)l[0]);
     if (cw > 0) {
-      f1 = X-xscroll_+expandpos(p, l + cw, buf, 0) - Fl::event_x();
+      f1 = X-xscroll_+expandpos(p, l + cw, buf, 0) - fltk3::event_x();
       if (f1 < f0) l = l+cw;
     }
   }
   newpos = l-value();
 
   int newmark = drag ? mark() : newpos;
-  if (Fl::event_clicks()) {
+  if (fltk3::event_clicks()) {
     if (newpos >= newmark) {
       if (newpos == newmark) {
 	if (newpos < size()) newpos++;
 	else newmark--;
       }
-      if (Fl::event_clicks() > 1) {
+      if (fltk3::event_clicks() > 1) {
 	newpos = line_end(newpos);
 	newmark = line_start(newmark);
       } else {
@@ -550,7 +550,7 @@ void Fl_Input_::handle_mouse(int X, int Y, int /*W*/, int /*H*/, int drag) {
 	newmark = word_start(newmark);
       }
     } else {
-      if (Fl::event_clicks() > 1) {
+      if (fltk3::event_clicks() > 1) {
 	newpos = line_start(newpos);
 	newmark = line_end(newmark);
       } else {
@@ -563,7 +563,7 @@ void Fl_Input_::handle_mouse(int X, int Y, int /*W*/, int /*H*/, int drag) {
     if (!drag && (mark() > position() ?
                   (newmark >= position() && newpos <= mark()) :
                   (newmark >= mark() && newpos <= position()))) {
-      Fl::event_clicks(0);
+      fltk3::event_clicks(0);
       newmark = newpos = l-value();
     }
   }
@@ -615,7 +615,7 @@ int Fl_Input_::position(int p, int m) {
   if (p == position_ && m == mark_) return 0;
 
 
-  //if (Fl::selection_owner() == this) Fl::selection_owner(0);
+  //if (fltk3::selection_owner() == this) fltk3::selection_owner(0);
   if (p != m) {
     if (p != position_) minimal_update(position_, p);
     if (m != mark_) minimal_update(mark_, m);
@@ -623,7 +623,7 @@ int Fl_Input_::position(int p, int m) {
     // new position is a cursor
     if (position_ == mark_) {
       // old position was just a cursor
-      if (Fl::focus() == this && !(damage()&FL_DAMAGE_EXPOSE)) {
+      if (fltk3::focus() == this && !(damage()&FL_DAMAGE_EXPOSE)) {
 	minimal_update(position_); erase_cursor_only = 1;
       }
     } else { // old position was a selection
@@ -677,7 +677,7 @@ int Fl_Input_::up_down_position(int i, int keepmark) {
 
   \param clipboard the clipboard destination 0 or 1
   \return 0 if no text is selected, 1 if the selection was copied
-  \see Fl::copy(const char *, int, int)
+  \see fltk3::copy(const char *, int, int)
 */
 int Fl_Input_::copy(int clipboard) {
   int b = position();
@@ -685,7 +685,7 @@ int Fl_Input_::copy(int clipboard) {
   if (b != e) {
     if (b > e) {b = mark(); e = position();}
     if (input_type() == FL_SECRET_INPUT) e = b;
-    Fl::copy(value()+b, e-b, clipboard);
+    fltk3::copy(value()+b, e-b, clipboard);
     return 1;
   }
   return 0;
@@ -897,7 +897,7 @@ int Fl_Input_::undo() {
 int Fl_Input_::copy_cuts() {
   // put the yank buffer into the X clipboard
   if (!yankcut || input_type()==FL_SECRET_INPUT) return 0;
-  Fl::copy(undobuffer, yankcut, 1);
+  fltk3::copy(undobuffer, yankcut, 1);
   return 1;
 }
 
@@ -932,7 +932,7 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
     fl_set_spot(textfont(), textsize(), x(), y(), w(), h(), window());
     if (mark_ == position_) {
       minimal_update(size()+1);
-    } else //if (Fl::selection_owner() != this)
+    } else //if (fltk3::selection_owner() != this)
       minimal_update(mark_, position_);
     return 1;
 
@@ -940,7 +940,7 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
     if (active_r() && window()) window()->cursor(FL_CURSOR_DEFAULT);
     if (mark_ == position_) {
       if (!(damage()&FL_DAMAGE_EXPOSE)) {minimal_update(position_); erase_cursor_only = 1;}
-    } else //if (Fl::selection_owner() != this)
+    } else //if (fltk3::selection_owner() != this)
       minimal_update(mark_, position_);
   case FL_HIDE:
     fl_reset_spot();
@@ -951,10 +951,10 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
   case FL_PUSH:
     if (active_r() && window()) window()->cursor(FL_CURSOR_INSERT);
 
-    handle_mouse(X, Y, W, H, Fl::event_state(FL_SHIFT));
+    handle_mouse(X, Y, W, H, fltk3::event_state(FL_SHIFT));
 
-    if (Fl::focus() != this) {
-      Fl::focus(this);
+    if (fltk3::focus() != this) {
+      fltk3::focus(this);
       handle(FL_FOCUS);
     }
     return 1;
@@ -975,11 +975,11 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
     }
 
     // See if we have anything to paste...
-    if (!Fl::event_text() || !Fl::event_length()) return 1;
+    if (!fltk3::event_text() || !fltk3::event_length()) return 1;
 
     // strip trailing control characters and spaces before pasting:
-    const char* t = Fl::event_text();
-    const char* e = t+Fl::event_length();
+    const char* t = fltk3::event_text();
+    const char* e = t+fltk3::event_length();
     if (input_type() != FL_MULTILINE_INPUT) while (e > t && isspace(*(e-1) & 255)) e--;
     if (!t || e <= t) return 1; // Int/float stuff will crash without this test
     if (input_type() == FL_INT_INPUT) {
@@ -1018,10 +1018,10 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
     return replace(position(), mark(), t, e-t);}
 
   case FL_SHORTCUT:
-    if (!(shortcut() ? Fl::test_shortcut(shortcut()) : test_shortcut())) 
+    if (!(shortcut() ? fltk3::test_shortcut(shortcut()) : test_shortcut())) 
       return 0;
-    if (Fl::visible_focus() && handle(FL_FOCUS)) {
-      Fl::focus(this);
+    if (fltk3::visible_focus() && handle(FL_FOCUS)) {
+      fltk3::focus(this);
       return 1;
     } // else fall through
 
@@ -1037,14 +1037,14 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
 
   This function creates a new Fl_Input_ widget and adds it to the current
   Fl_Group. The value() is set to \c NULL.
-  The default boxtype is \c FL_DOWN_BOX.
+  The default boxtype is \c fltk3::DOWN_BOX.
 
   \param X, Y, W, H the dimensions of the new widget
   \param l an optional label text
 */
 Fl_Input_::Fl_Input_(int X, int Y, int W, int H, const char* l)
 : Fl_Widget(X, Y, W, H, l) {
-  box(FL_DOWN_BOX);
+  box(fltk3::DOWN_BOX);
   color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
   align(FL_ALIGN_LEFT);
   textsize_ = FL_NORMAL_SIZE;

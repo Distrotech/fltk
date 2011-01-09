@@ -35,14 +35,14 @@
 // keys (mostly) by the X keysym.  So this turns the keysym into a keycode
 // and looks it up in the X key bit vector, which Fl_x.cxx keeps track of.
 
-#  include <fltk3/Fl.H>
+#  include <fltk3/run.h>
 #  include <fltk3/x.H>
 
 extern char fl_key_vector[32]; // in Fl_x.cxx
 
-int Fl::event_key(int k) {
+int fltk3::event_key(int k) {
   if (k > FL_Button && k <= FL_Button+8)
-    return Fl::event_state(8<<(k-FL_Button));
+    return fltk3::event_state(8<<(k-FL_Button));
   int i;
 #  ifdef __sgi
   // get some missing PC keyboard keys:
@@ -56,7 +56,7 @@ int Fl::event_key(int k) {
   return fl_key_vector[i/8] & (1 << (i%8));
 }
 
-int Fl::get_key(int k) {
+int fltk3::get_key(int k) {
   fl_open_display();
   XQueryKeymap(fl_display, fl_key_vector);
   return event_key(k);

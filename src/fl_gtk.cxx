@@ -32,14 +32,14 @@
 // These box types are in separate files so they are not linked
 // in if not used.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
+extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
 
 
 static void gtk_color(Fl_Color c) {
-  if (Fl::draw_box_active()) fl_color(c);
+  if (fltk3::draw_box_active()) fl_color(c);
   else fl_color(fl_inactive(c));
 }
 
@@ -283,19 +283,19 @@ static void gtk_round_down_box(int x, int y, int w, int h, Fl_Color c) {
 
 #endif
 
-Fl_Boxtype fl_define_FL_GTK_UP_BOX() {
-  fl_internal_boxtype(_FL_GTK_UP_BOX, gtk_up_box);
-  fl_internal_boxtype(_FL_GTK_DOWN_BOX, gtk_down_box);
-  fl_internal_boxtype(_FL_GTK_UP_FRAME, gtk_up_frame);
-  fl_internal_boxtype(_FL_GTK_DOWN_FRAME, gtk_down_frame);
-  fl_internal_boxtype(_FL_GTK_THIN_UP_BOX, gtk_thin_up_box);
-  fl_internal_boxtype(_FL_GTK_THIN_DOWN_BOX, gtk_thin_down_box);
-  fl_internal_boxtype(_FL_GTK_THIN_UP_FRAME, gtk_thin_up_frame);
-  fl_internal_boxtype(_FL_GTK_THIN_DOWN_FRAME, gtk_thin_down_frame);
-  fl_internal_boxtype(_FL_GTK_ROUND_UP_BOX, gtk_round_up_box);
-  fl_internal_boxtype(_FL_GTK_ROUND_DOWN_BOX, gtk_round_down_box);
+fltk3::Boxtype fl_define_FL_GTK_UP_BOX() {
+  fl_internal_boxtype(fltk3::GTK_UP_BOX, gtk_up_box);
+  fl_internal_boxtype(fltk3::GTK_DOWN_BOX, gtk_down_box);
+  fl_internal_boxtype(fltk3::GTK_UP_FRAME, gtk_up_frame);
+  fl_internal_boxtype(fltk3::GTK_DOWN_FRAME, gtk_down_frame);
+  fl_internal_boxtype(fltk3::GTK_THIN_UP_BOX, gtk_thin_up_box);
+  fl_internal_boxtype(fltk3::GTK_THIN_DOWN_BOX, gtk_thin_down_box);
+  fl_internal_boxtype(fltk3::GTK_THIN_UP_FRAME, gtk_thin_up_frame);
+  fl_internal_boxtype(fltk3::GTK_THIN_DOWN_FRAME, gtk_thin_down_frame);
+  fl_internal_boxtype(fltk3::GTK_ROUND_UP_BOX, gtk_round_up_box);
+  fl_internal_boxtype(fltk3::GTK_ROUND_DOWN_BOX, gtk_round_down_box);
 
-  return _FL_GTK_UP_BOX;
+  return fltk3::GTK_UP_BOX;
 }
 
 

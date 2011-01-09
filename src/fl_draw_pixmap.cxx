@@ -35,7 +35,7 @@
 // as I want to discourage programs that require support files to work.
 // All data needed by a program ui should be compiled in!!!
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 #include <fltk3/x.H>
 #include <stdio.h>
@@ -238,7 +238,7 @@ int fl_draw_pixmap(const char*const* cdata, int x, int y, Fl_Color bg) {
 #  endif
 #endif
       transparent_index = ' ';
-      Fl::get_color(bg, c[0], c[1], c[2]); c[3] = 0;
+      fltk3::get_color(bg, c[0], c[1], c[2]); c[3] = 0;
       transparent_c = c;
       p += 4;
       ncolors--;
@@ -320,7 +320,7 @@ int fl_draw_pixmap(const char*const* cdata, int x, int y, Fl_Color bg) {
       else {
         // assume "None" or "#transparent" for any errors
 	// "bg" should be transparent...
-	Fl::get_color(bg, c[0], c[1], c[2]);
+	fltk3::get_color(bg, c[0], c[1], c[2]);
 #ifdef __APPLE_QUARTZ__
         c[3] = 0;
 #endif

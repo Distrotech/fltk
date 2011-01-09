@@ -31,7 +31,7 @@
 
 // The diamond box draws best if the area is square!
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
 extern uchar* fl_gray_ramp();
@@ -68,11 +68,11 @@ static void fl_diamond_down_box(int x,int y,int w,int h,Fl_Color bgcolor) {
   fl_color(g['A']); fl_loop(x+3, y1, x1, y+3, x+w-3, y1, x1, y+h-3);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
-Fl_Boxtype fl_define_FL_DIAMOND_BOX() {
-  fl_internal_boxtype(_FL_DIAMOND_DOWN_BOX, fl_diamond_down_box);
-  fl_internal_boxtype(_FL_DIAMOND_UP_BOX,fl_diamond_up_box);
-  return _FL_DIAMOND_UP_BOX;
+extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
+fltk3::Boxtype fl_define_FL_DIAMOND_BOX() {
+  fl_internal_boxtype(fltk3::DIAMOND_DOWN_BOX, fl_diamond_down_box);
+  fl_internal_boxtype(fltk3::DIAMOND_UP_BOX,fl_diamond_up_box);
+  return fltk3::DIAMOND_UP_BOX;
 }
 
 //

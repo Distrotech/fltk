@@ -28,7 +28,7 @@
 // Startup method to set what display to use.
 // Using setenv makes programs that are exec'd use the same display.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <stdlib.h>
 #include "flstring.h"
 
@@ -38,7 +38,7 @@
     works before you show() the first window or otherwise open the display,
     and does nothing useful under WIN32.
 */
-void Fl::display(const char *d) {
+void fltk3::display(const char *d) {
 #if defined(__APPLE__) || defined(WIN32)
   (void)d;
 #else

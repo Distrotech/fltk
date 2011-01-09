@@ -39,10 +39,10 @@
 #include <stdlib.h>		// UNIX: malloc/realloc
 #endif /*WIN32*/
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Group.H>
 #include <fltk3/Fl_Scroll.H>
-#include <fltk3/Fl_Box.H>
+#include <fltk3/Box.h>
 #include <fltk3/Fl_Scrollbar.H>
 
 /**
@@ -95,7 +95,7 @@
  
  <tr><td>wix/wiy/wiw/wih</td>
  <td>Fl_Table widget's inner dimension. The inner edge of the border of the 
- Fl_Table. eg. if the Fl_Table's box() is FL_NO_BOX, these values are the same 
+ Fl_Table. eg. if the Fl_Table's box() is fltk3::NO_BOX, these values are the same 
  as x()/y()/w()/h(). (Yellow in the diagram above)</td></tr>
  
  <tr><td>tox/toy/tow/toh</td>
@@ -106,7 +106,7 @@
  <tr><td>tix/tiy/tiw/tih</td>
  <td>The table's inner dimension. The inner edge of the border around the cells,
  but inside the row/col headings and scrollbars. AKA the table's clip region. 
- eg. if the table_box() is FL_NO_BOX, these values are the same as
+ eg. if the table_box() is fltk3::NO_BOX, these values are the same as
  tox/toyy/tow/toh. (Blue in the diagram above)
  </td></tr></table>
  
@@ -496,10 +496,10 @@ public:
   
   /**
    Sets the kind of box drawn around the data table,
-   the default being FL_NO_BOX. Changing this value will cause the table
+   the default being fltk3::NO_BOX. Changing this value will cause the table
    to redraw.
    */
-  inline void table_box(Fl_Boxtype val) {
+  inline void table_box(fltk3::Boxtype val) {
     table->box(val);
     table_resized();
   }
@@ -507,7 +507,7 @@ public:
   /**
    Returns the current box type used for the data table.
    */
-  inline Fl_Boxtype table_box( void ) {
+  inline fltk3::Boxtype table_box( void ) {
     return(table->box());
   }
   
@@ -840,13 +840,13 @@ public:
   void draw(void);				// fltk draw() override
   
   // This crashes sortapp() during init.
-  //  void box(Fl_Boxtype val) {
+  //  void box(fltk3::Boxtype val) {
   //    Fl_Group::box(val);
   //    if ( table ) {
   //      resize(x(), y(), w(), h());
   //    }
   //  }
-  //  Fl_Boxtype box(void) const {
+  //  fltk3::Boxtype box(void) const {
   //    return(Fl_Group::box());
   //  }
   
@@ -876,7 +876,7 @@ public:
   void end() {
     table->end();
     // HACK: Avoid showing Fl_Scroll; seems to erase screen
-    //       causing unnecessary flicker, even if its box() is FL_NO_BOX.
+    //       causing unnecessary flicker, even if its box() is fltk3::NO_BOX.
     //
     if ( table->children() > 2 ) {
       table->show();
@@ -986,7 +986,7 @@ public:
    event occurred in, such as in a cell, in a header, or elsewhere on the table.  
    When an event occurs in a cell or header, callback_row() and 
    callback_col() can be used to determine the row and column. The callback can 
-   also look at the regular fltk event values (ie. Fl::event() and Fl::button()) 
+   also look at the regular fltk event values (ie. fltk3::event() and fltk3::button()) 
    to determine what kind of event is occurring.
    */
   void when(Fl_When flags);
@@ -1051,7 +1051,7 @@ public:
        C = callback_col();                             // column where event occurred
        TableContext context = callback_context();      // which part of table
        fprintf(stderr, "callback: Row=%d Col=%d Context=%d Event=%d\n",
-               R, C, (int)context, (int)Fl::event());
+               R, C, (int)context, (int)fltk3::event());
      }
    
      // Actual static callback

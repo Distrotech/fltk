@@ -30,7 +30,7 @@
 
 #ifndef Fl_Repeat_Button_H
 #define Fl_Repeat_Button_H
-#include "Fl.H"
+#include "run.h"
 #include "Fl_Button.H"
 
 /**
@@ -45,13 +45,13 @@ public:
   int handle(int);
   /**
     Creates a new Fl_Repeat_Button widget using the given
-    position, size, and label string. The default boxtype is FL_UP_BOX.
+    position, size, and label string. The default boxtype is fltk3::UP_BOX.
     Deletes the button.
   */
   Fl_Repeat_Button(int X,int Y,int W,int H,const char *l=0)
     : Fl_Button(X,Y,W,H,l) {}
   void deactivate() {
-    Fl::remove_timeout(repeat_callback,this);
+    fltk3::remove_timeout(repeat_callback,this);
     Fl_Button::deactivate();
   }
 };

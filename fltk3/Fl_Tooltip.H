@@ -31,7 +31,7 @@
 #ifndef Fl_Tooltip_H
 #define Fl_Tooltip_H
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Widget.H>
 
 /**
@@ -55,9 +55,9 @@ public:
   */
   static void hoverdelay(float f) { hoverdelay_ = f; }
   /**    Returns non-zero if tooltips are enabled.  */
-  static int enabled() { return Fl::option(Fl::OPTION_SHOW_TOOLTIPS); }
+  static int enabled() { return fltk3::option(fltk3::OPTION_SHOW_TOOLTIPS); }
   /**    Enables tooltips on all widgets (or disables if <i>b</i> is false).  */
-  static void enable(int b = 1) { Fl::option(Fl::OPTION_SHOW_TOOLTIPS, b);}
+  static void enable(int b = 1) { fltk3::option(fltk3::OPTION_SHOW_TOOLTIPS, b);}
   /**    Same as enable(0), disables tooltips on all widgets.  */
   static void disable() { enable(0); }
   static void (*enter)(Fl_Widget* w);
@@ -85,7 +85,7 @@ public:
   static void textcolor(Fl_Color c) { textcolor_ = c; }
 #ifdef __APPLE__
   // the unique tooltip window
-  static Fl_Window* current_window(void);
+  static fltk3::Window* current_window(void);
 #endif
 
   // These should not be public, but Fl_Widget::tooltip() needs them...

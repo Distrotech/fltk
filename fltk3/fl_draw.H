@@ -35,7 +35,7 @@
 
 #include <fltk3/x.H>	      // for Fl_Region
 #include <fltk3/Enumerations.H>  // for the color names
-#include <fltk3/Fl_Window.H>     // for fl_set_spot()
+#include <fltk3/Window.h>     // for fl_set_spot()
 #include <fltk3/Fl_Device.H>     // for fl_graphics_driver
 
 // Image class...
@@ -578,7 +578,7 @@ FL_EXPORT void fl_draw(const char* str, int x, int y, int w, int h,
 // boxtypes:
 FL_EXPORT void fl_frame(const char* s, int x, int y, int w, int h);
 FL_EXPORT void fl_frame2(const char* s, int x, int y, int w, int h);
-FL_EXPORT void fl_draw_box(Fl_Boxtype, int x, int y, int w, int h, Fl_Color);
+FL_EXPORT void fl_draw_box(fltk3::Boxtype, int x, int y, int w, int h, Fl_Color);
 
 // images:
 
@@ -600,7 +600,7 @@ FL_EXPORT void fl_draw_box(Fl_Boxtype, int x, int y, int w, int h, Fl_Color);
   first <tt>show()</tt> of \e any window in your program to get rid of
   the dithering if possible:
   \code
-  Fl::visual(FL_RGB);
+  fltk3::visual(FL_RGB);
   \endcode
   Gray scale (1-channel) images may be drawn. This is done if
   <tt>abs(D)</tt> is less than 3, or by calling fl_draw_image_mono().
@@ -717,7 +717,7 @@ FL_EXPORT const char* fl_expand_text(const char* from, char* buf, int maxbuf,
 /** \todo provide user documentation for fl_set_status function */
 FL_EXPORT void fl_set_status(int X, int Y, int W, int H);
 /** \todo provide user documentation for fl_set_spot function */
-FL_EXPORT void fl_set_spot(int font, int size, int X, int Y, int W, int H, Fl_Window *win=0);
+FL_EXPORT void fl_set_spot(int font, int size, int X, int Y, int W, int H, fltk3::Window *win=0);
 /** \todo provide user documentation for fl_reset_spot function*/
 FL_EXPORT void fl_reset_spot(void);
 

@@ -40,7 +40,7 @@
 //
 
 #include <fltk3/Fl_Wizard.H>
-#include <fltk3/Fl_Window.H>
+#include <fltk3/Window.h>
 #include <fltk3/fl_draw.H>
 
 
@@ -60,7 +60,7 @@ Fl_Wizard::Fl_Wizard(int        xx,	// I - Lefthand position
 		     const char *l) :	// I - Label
     Fl_Group(xx, yy, ww, hh, l)
 {
-  box(FL_THIN_UP_BOX);
+  box(fltk3::THIN_UP_BOX);
 
   value_ = (Fl_Widget *)0;
 }

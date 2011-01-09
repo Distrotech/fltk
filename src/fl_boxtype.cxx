@@ -34,7 +34,7 @@
 // boxtypes.  Other box types are in separate files so they are not
 // linked in if not used.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Widget.H>
 #include <fltk3/fl_draw.H>
 #include <config.h>
@@ -61,7 +61,7 @@ static int draw_it_active = 1;
   Determines if the current draw box is active or inactive. 
   If inactive, the box color is changed by the inactive color.
 */
-int Fl::draw_box_active() { return draw_it_active; }
+int fltk3::draw_box_active() { return draw_it_active; }
 
 uchar *fl_gray_ramp() {return (draw_it_active?active_ramp:inactive_ramp)-'A';}
 
@@ -133,10 +133,10 @@ void fl_frame2(const char* s, int x, int y, int w, int h) {
   }
 }
 
-/** Draws a box of type FL_NO_BOX */
+/** Draws a box of type fltk3::NO_BOX */
 void fl_no_box(int, int, int, int, Fl_Color) {}
 
-/** Draws a frame of type FL_THIN_DOWN_FRAME */
+/** Draws a frame of type fltk3::THIN_DOWN_FRAME */
 void fl_thin_down_frame(int x, int y, int w, int h, Fl_Color) {
   fl_frame2("WWHH",x,y,w,h);
 }
@@ -148,7 +148,7 @@ void fl_thin_down_box(int x, int y, int w, int h, Fl_Color c) {
   fl_rectf(x+1, y+1, w-2, h-2);
 }
 
-/** Draws a frame of type FL_THIN_UP_FRAME */
+/** Draws a frame of type fltk3::THIN_UP_FRAME */
 void fl_thin_up_frame(int x, int y, int w, int h, Fl_Color) {
   fl_frame2("HHWW",x,y,w,h);
 }
@@ -160,7 +160,7 @@ void fl_thin_up_box(int x, int y, int w, int h, Fl_Color c) {
   fl_rectf(x+1, y+1, w-2, h-2);
 }
 
-/** Draws a frame of type FL_UP_FRAME */
+/** Draws a frame of type fltk3::UP_FRAME */
 void fl_up_frame(int x, int y, int w, int h, Fl_Color) {
 #if BORDER_WIDTH == 1
   fl_frame2("HHWW",x,y,w,h);
@@ -176,14 +176,14 @@ void fl_up_frame(int x, int y, int w, int h, Fl_Color) {
 #define D1 BORDER_WIDTH
 #define D2 (BORDER_WIDTH+BORDER_WIDTH)
 
-/** Draws a box of type FL_UP_BOX */
+/** Draws a box of type fltk3::UP_BOX */
 void fl_up_box(int x, int y, int w, int h, Fl_Color c) {
   fl_up_frame(x,y,w,h,c);
   fl_color(draw_it_active ? c : fl_inactive(c));
   fl_rectf(x+D1, y+D1, w-D2, h-D2);
 }
 
-/** Draws a frame of type FL_DOWN_FRAME */
+/** Draws a frame of type fltk3::DOWN_FRAME */
 void fl_down_frame(int x, int y, int w, int h, Fl_Color) {
 #if BORDER_WIDTH == 1
   fl_frame2("WWHH",x,y,w,h);
@@ -196,7 +196,7 @@ void fl_down_frame(int x, int y, int w, int h, Fl_Color) {
 #endif
 }
 
-/** Draws a box of type FL_DOWN_BOX */
+/** Draws a box of type fltk3::DOWN_BOX */
 void fl_down_box(int x, int y, int w, int h, Fl_Color c) {
   fl_down_frame(x,y,w,h,c);
   fl_color(c); fl_rectf(x+D1, y+D1, w-D2, h-D2);
@@ -248,6 +248,12 @@ void fl_border_frame(int x, int y, int w, int h, Fl_Color c) {
 
 ////////////////////////////////////////////////////////////////
 
+
+// TODO: FLTK123 - add all the correct functions for all boxtypes.
+// The original idea to avoid certain boxtypes when linking code that did
+// not use that type was great, but since the introduction of themes, it
+// no longer works. We should avaoid all the hassle and just link everything
+// right from the beginning.
 static struct {
   Fl_Box_Draw_F *f;
   uchar dx, dy, dw, dh;
@@ -255,7 +261,7 @@ static struct {
 } fl_box_table[256] = {
 // must match list in Enumerations.H!!!
   {fl_no_box,		0,0,0,0,1},		
-  {fl_rectf,		0,0,0,0,1}, // FL_FLAT_BOX
+  {fl_rectf,		0,0,0,0,1}, // fltk3::FLAT_BOX
   {fl_up_box,		D1,D1,D2,D2,1},
   {fl_down_box,		D1,D1,D2,D2,1},
   {fl_up_frame,		D1,D1,D2,D2,1},
@@ -316,7 +322,7 @@ static struct {
   Returns the X offset for the given boxtype.
   \see box_dy()
 */
-int Fl::box_dx(Fl_Boxtype t) {return fl_box_table[t].dx;}
+int fltk3::box_dx(fltk3::Boxtype t) {return fl_box_table[t].dx;}
 
 /**
     Returns the Y offset for the given boxtype.
@@ -325,42 +331,42 @@ int Fl::box_dx(Fl_Boxtype t) {return fl_box_table[t].dx;}
     boxtype, useful for computing the area inside a box's borders, to
     prevent overdrawing the borders.
 
-    For instance, in the case of a boxtype like FL_DOWN_BOX
+    For instance, in the case of a boxtype like fltk3::DOWN_BOX
     where the border width might be 2 pixels all around, the above 
     functions would return 2, 2, 4, and 4 for box_dx, 
     box_dy, box_dw, and box_dh respectively.
 
     An example to compute the area inside a widget's box():
     \code
-         int X = yourwidget->x() + Fl::box_dx(yourwidget->box());
-         int Y = yourwidget->y() + Fl::box_dy(yourwidget->box());
-         int W = yourwidget->w() - Fl::box_dw(yourwidget->box());
-         int H = yourwidget->h() - Fl::box_dh(yourwidget->box());
+         int X = yourwidget->x() + fltk3::box_dx(yourwidget->box());
+         int Y = yourwidget->y() + fltk3::box_dy(yourwidget->box());
+         int W = yourwidget->w() - fltk3::box_dw(yourwidget->box());
+         int H = yourwidget->h() - fltk3::box_dh(yourwidget->box());
     \endcode
     These functions are mainly useful in the draw() code 
     for deriving custom widgets, where one wants to avoid drawing 
     over the widget's own border box().
 */
-int Fl::box_dy(Fl_Boxtype t) {return fl_box_table[t].dy;}
+int fltk3::box_dy(fltk3::Boxtype t) {return fl_box_table[t].dy;}
 
 /**
   Returns the width offset for the given boxtype.
   \see box_dy().
 */
-int Fl::box_dw(Fl_Boxtype t) {return fl_box_table[t].dw;}
+int fltk3::box_dw(fltk3::Boxtype t) {return fl_box_table[t].dw;}
 
 /**
   Returns the height offset for the given boxtype.
   \see box_dy().
 */
-int Fl::box_dh(Fl_Boxtype t) {return fl_box_table[t].dh;}
+int fltk3::box_dh(fltk3::Boxtype t) {return fl_box_table[t].dh;}
 
 /**
   Sets the drawing function for a given box type.
   \param[in] t box type
   \param[in] f box drawing function
 */
-void fl_internal_boxtype(Fl_Boxtype t, Fl_Box_Draw_F* f) {
+void fl_internal_boxtype(fltk3::Boxtype t, Fl_Box_Draw_F* f) {
   if (!fl_box_table[t].set) {
     fl_box_table[t].f   = f;
     fl_box_table[t].set = 1;
@@ -368,11 +374,11 @@ void fl_internal_boxtype(Fl_Boxtype t, Fl_Box_Draw_F* f) {
 }
 
 /** Gets the current box drawing function for the specified box type. */
-Fl_Box_Draw_F *Fl::get_boxtype(Fl_Boxtype t) {
+Fl_Box_Draw_F *fltk3::get_boxtype(fltk3::Boxtype t) {
   return fl_box_table[t].f;
 }
 /** Sets the function to call to draw a specific boxtype. */
-void Fl::set_boxtype(Fl_Boxtype t, Fl_Box_Draw_F* f,
+void fltk3::set_boxtype(fltk3::Boxtype t, Fl_Box_Draw_F* f,
 		      uchar a, uchar b, uchar c, uchar d) {
   fl_box_table[t].f   = f;
   fl_box_table[t].set = 1;
@@ -382,7 +388,7 @@ void Fl::set_boxtype(Fl_Boxtype t, Fl_Box_Draw_F* f,
   fl_box_table[t].dh  = d;
 }
 /** Copies the from boxtype. */
-void Fl::set_boxtype(Fl_Boxtype to, Fl_Boxtype from) {
+void fltk3::set_boxtype(fltk3::Boxtype to, fltk3::Boxtype from) {
   fl_box_table[to] = fl_box_table[from];
 }
 
@@ -392,14 +398,14 @@ void Fl::set_boxtype(Fl_Boxtype to, Fl_Boxtype from) {
   \param[in] x, y, w, h position and size
   \param[in] c color
 */
-void fl_draw_box(Fl_Boxtype t, int x, int y, int w, int h, Fl_Color c) {
+void fl_draw_box(fltk3::Boxtype t, int x, int y, int w, int h, Fl_Color c) {
   if (t && fl_box_table[t].f) fl_box_table[t].f(x,y,w,h,c);
 }
 
-//extern Fl_Widget *fl_boxcheat; // hack set by Fl_Window.cxx
+//extern Fl_Widget *fl_boxcheat; // hack set by fltk3::Window.cxx
 /** Draws the widget box according its box style */
 void Fl_Widget::draw_box() const {
-  if (box_) draw_box((Fl_Boxtype)box_, x_, y_, w_, h_, color_);
+  if (box_) draw_box((fltk3::Boxtype)box_, x_, y_, w_, h_, color_);
   draw_backdrop();
 }
 /** If FL_ALIGN_IMAGE_BACKDROP is set, the image or deimage will be drawn */
@@ -414,11 +420,11 @@ void Fl_Widget::draw_backdrop() const {
   }
 }
 /** Draws a box of type t, of color c at the widget's position and size. */
-void Fl_Widget::draw_box(Fl_Boxtype t, Fl_Color c) const {
+void Fl_Widget::draw_box(fltk3::Boxtype t, Fl_Color c) const {
   draw_box(t, x_, y_, w_, h_, c);
 }
 /** Draws a box of type t, of color c at the position X,Y and size W,H. */
-void Fl_Widget::draw_box(Fl_Boxtype t, int X, int Y, int W, int H, Fl_Color c) const {
+void Fl_Widget::draw_box(fltk3::Boxtype t, int X, int Y, int W, int H, Fl_Color c) const {
   draw_it_active = active_r();
   fl_box_table[t].f(X, Y, W, H, c);
   draw_it_active = 1;

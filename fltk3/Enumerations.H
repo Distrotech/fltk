@@ -29,11 +29,12 @@
  *  This file contains type definitions and general enumerations.
  */
 
-#ifndef Fl_Enumerations_H
-#define Fl_Enumerations_H
+#ifndef FLTK3_Enumerations_H
+#define FLTK3_Enumerations_H
 
 #  include "Fl_Export.H"
 #  include "fl_types.h"
+
 
 /** \name Version Numbers
 
@@ -94,31 +95,31 @@
  *  Events are identified by the integer argument passed to the 
  *  Fl_Widget::handle() virtual method. Other information about the 
  *  most recent event is stored in static locations and acquired  by 
- *  calling the Fl::event_*() methods. This static information remains 
+ *  calling the fltk3::event_*() methods. This static information remains 
  *  valid until the next event is read from the window system, so it 
  *  is ok to look at it outside of the handle() method.
  *
- *  \sa Fl::event_text(), Fl::event_key(), class Fl::
+ *  \sa fltk3::event_text(), fltk3::event_key(), class fltk3::
  */
 enum Fl_Event {	// events
   /** No event. */
   FL_NO_EVENT		= 0,
 
   /** A mouse button has gone down with the mouse pointing at this
-   *  widget. You can find out what button by calling Fl::event_button(). 
-   *  You find out the mouse position by calling Fl::event_x() and
-   *  Fl::event_y().
+   *  widget. You can find out what button by calling fltk3::event_button(). 
+   *  You find out the mouse position by calling fltk3::event_x() and
+   *  fltk3::event_y().
    *
    *  A widget indicates that it "wants" the mouse click by returning non-zero 
    *  from its Fl_Widget::handle() method. It will then become the 
-   *  Fl::pushed() widget and will get FL_DRAG and the matching FL_RELEASE events.  
+   *  fltk3::pushed() widget and will get FL_DRAG and the matching FL_RELEASE events.  
    *  If Fl_Widget::handle() returns zero then FLTK will try sending the FL_PUSH 
    *  to another widget. 
    */
   FL_PUSH		= 1,
 
   /** A mouse button has been released. You can find out what button by 
-   *  calling Fl::event_button().
+   *  calling fltk3::event_button().
    *
    *  In order to receive the FL_RELEASE event, the widget must return 
    *  non-zero when handling FL_PUSH.
@@ -129,7 +130,7 @@ enum Fl_Event {	// events
    *  be used for highlighting feedback.  If a widget wants to
    *  highlight or otherwise track the mouse, it indicates this by
    *  returning non-zero from its handle() method. It then
-   *  becomes the Fl::belowmouse() widget and will receive 
+   *  becomes the fltk3::belowmouse() widget and will receive 
    *  FL_MOVE and FL_LEAVE events.
    */
   FL_ENTER		= 3,
@@ -141,8 +142,8 @@ enum Fl_Event {	// events
   FL_LEAVE		= 4,
 
   /** The mouse has moved with a button held down. The current button state 
-   *  is in Fl::event_state(). The mouse position is in Fl::event_x() and 
-   *  Fl::event_y().
+   *  is in fltk3::event_state(). The mouse position is in fltk3::event_x() and 
+   *  fltk3::event_y().
    *
    *  In order to receive FL_DRAG events, the widget must return non-zero 
    *  when handling FL_PUSH.
@@ -153,25 +154,25 @@ enum Fl_Event {	// events
    *
    *  If a widget wants the focus, it should change itself to display the 
    *  fact that it has the focus, and return non-zero from its handle() method.
-   *  It then becomes the Fl::focus() widget and gets FL_KEYDOWN, FL_KEYUP, 
+   *  It then becomes the fltk3::focus() widget and gets FL_KEYDOWN, FL_KEYUP, 
    *  and FL_UNFOCUS events.
    *
    *  The focus will change either because the window manager changed which 
    *  window gets the focus, or because the user tried to navigate using tab, 
-   *  arrows, or other keys. You can check Fl::event_key() to figure out why 
+   *  arrows, or other keys. You can check fltk3::event_key() to figure out why 
    *  it moved. For navigation it will be the key pressed and interaction 
    *  with the window manager it will be zero.
    */
   FL_FOCUS		= 6,
   
-  /** This event is sent to the previous Fl::focus() widget when another 
+  /** This event is sent to the previous fltk3::focus() widget when another 
    *  widget gets the focus or the window loses focus.
    */
   FL_UNFOCUS		= 7,
 
-  /** A key was pressed or released. The key can be found in Fl::event_key().
-   *  The text that the key should insert can be found with Fl::event_text() 
-   *  and its length is in Fl::event_length(). If you use the key handle()
+  /** A key was pressed or released. The key can be found in fltk3::event_key().
+   *  The text that the key should insert can be found with fltk3::event_text() 
+   *  and its length is in fltk3::event_length(). If you use the key handle()
    *  should return 1. If you return zero then FLTK assumes you ignored the 
    *  key and will then attempt to send it to a parent widget. If none of 
    *  them want it, it will change the event into a FL_SHORTCUT event.
@@ -180,7 +181,7 @@ enum Fl_Event {	// events
    *  and FL_UNFOCUS events.
    *
    *  If you are writing a text-editing widget you may also want to call 
-   *  the Fl::compose() function to translate individual keystrokes into 
+   *  the fltk3::compose() function to translate individual keystrokes into 
    *  foreign characters.
    *
    *  FL_KEYUP events are sent to the widget that currently has focus. This 
@@ -201,28 +202,28 @@ enum Fl_Event {	// events
 
   /** The user clicked the close button of a window.
    *  This event is used internally only to trigger the callback of
-   *  Fl_Window derived classed. The default callback closes the 
-   *  window calling Fl_Window::hide().
+   *  fltk3::Window derived classed. The default callback closes the 
+   *  window calling fltk3::Window::hide().
    */
   FL_CLOSE		= 10,
 
   /** The mouse has moved without any mouse buttons held down. 
-   *  This event is sent to the Fl::belowmouse() widget.
+   *  This event is sent to the fltk3::belowmouse() widget.
    *
    *  In order to receive FL_MOVE events, the widget must return 
    *  non-zero when handling FL_ENTER.
    */
   FL_MOVE		= 11,
 
-  /** If the Fl::focus() widget is zero or ignores an FL_KEYBOARD
+  /** If the fltk3::focus() widget is zero or ignores an FL_KEYBOARD
    *  event then FLTK tries sending this event to every widget it 
    *  can, until one of them returns non-zero. FL_SHORTCUT is first 
-   *  sent to the Fl::belowmouse() widget, then its parents and siblings, 
+   *  sent to the fltk3::belowmouse() widget, then its parents and siblings, 
    *  and eventually to every widget in the window, trying to find an 
    *  object that returns non-zero. FLTK tries really hard to not to ignore 
    *  any keystrokes!
    *
-   *  You can also make "global" shortcuts by using Fl::add_handler(). A 
+   *  You can also make "global" shortcuts by using fltk3::add_handler(). A 
    *  global shortcut will work no matter what windows are displayed or 
    *  which one has the focus.
    */
@@ -250,26 +251,26 @@ enum Fl_Event {	// events
 
   /** This widget is visible again, due to Fl_Widget::show() being called on 
    *  it or one of its parents, or due to a parent window being restored. 
-   *  Child Fl_Windows respond to this by actually creating the window if not 
+   *  Child fltk3::Windows respond to this by actually creating the window if not 
    *  done already, so if you subclass a window, be sure to pass FL_SHOW 
    *  to the base class Fl_Widget::handle() method!
    */
   FL_SHOW		= 16,
 
-  /** You should get this event some time after you call Fl::paste(). 
-   *  The contents of Fl::event_text() is the text to insert and the number 
-   *  of characters is in Fl::event_length().
+  /** You should get this event some time after you call fltk3::paste(). 
+   *  The contents of fltk3::event_text() is the text to insert and the number 
+   *  of characters is in fltk3::event_length().
    */
   FL_PASTE		= 17,
 
-  /** The Fl::selection_owner() will get this event before the selection is 
+  /** The fltk3::selection_owner() will get this event before the selection is 
    *  moved to another widget. This indicates that some other widget or program 
    *  has claimed the selection. Motif programs used this to clear the selection 
    *  indication. Most modern programs ignore this.
    */
   FL_SELECTIONCLEAR	= 18,
 
-  /** The user has moved the mouse wheel. The Fl::event_dx() and Fl::event_dy()
+  /** The user has moved the mouse wheel. The fltk3::event_dx() and fltk3::event_dy()
    *  methods can be used to find the amount to scroll horizontally and vertically.
    */
   FL_MOUSEWHEEL		= 19,
@@ -325,7 +326,7 @@ enum Fl_When { // Fl_Widget::when():
 	\todo	FL_Button and FL_key... constants could be structured better
 		(use an enum or some doxygen grouping ?)
   
-	\sa	Fl::event_key() and Fl::get_key(int) (use ascii letters for all other keys):
+	\sa	fltk3::event_key() and fltk3::get_key(int) (use ascii letters for all other keys):
  */
 
 /*@{*/
@@ -374,7 +375,7 @@ enum Fl_When { // Fl_Widget::when():
 
 	These constants define the button numbers for FL_PUSH and FL_RELEASE events.
 	
-	\sa Fl::event_button()
+	\sa fltk3::event_button()
 */
 
 /*@{*/
@@ -388,7 +389,7 @@ enum Fl_When { // Fl_Widget::when():
 
 /** \name	Event States
 
-	The following constants define bits in the Fl::event_state() value.
+	The following constants define bits in the fltk3::event_state() value.
 */
 
 /*@{*/		// group: Event States
@@ -430,7 +431,7 @@ enum Fl_When { // Fl_Widget::when():
     
     This enum defines the standard box types included with FLTK.
     
-    FL_NO_BOX means nothing is drawn at all, so whatever is already 
+    fltk3::NO_BOX means nothing is drawn at all, so whatever is already 
     on the screen remains. The FL_..._FRAME types only draw their edges, 
     leaving the interior unchanged. The blue color in Figure 1 
     is the area that is not drawn by the frame types.
@@ -438,130 +439,91 @@ enum Fl_When { // Fl_Widget::when():
     \image html boxtypes.png "Figure 1: FLTK standard box types"
     \image latex boxtypes.png "FLTK standard box types" width=10cm
     \todo	Description of boxtypes is incomplete.
-    		See below for the defined enum Fl_Boxtype.
+    		See below for the defined enum fltk3::Boxtype.
 		\see src/Fl_get_system_colors.cxx
 */
 /*@{*/
-enum Fl_Boxtype { // boxtypes (if you change these you must fix fl_boxtype.C):
+namespace fltk3 {
 
-  FL_NO_BOX = 0,		///< nothing is drawn at all, this box is invisible
-  FL_FLAT_BOX,			///< a flat box
-  FL_UP_BOX,			///< see figure 1
-  FL_DOWN_BOX,			///< see figure 1
-  FL_UP_FRAME,			///< see figure 1
-  FL_DOWN_FRAME,		///< see figure 1
-  FL_THIN_UP_BOX,		///< see figure 1
-  FL_THIN_DOWN_BOX,		///< see figure 1
-  FL_THIN_UP_FRAME,		///< see figure 1
-  FL_THIN_DOWN_FRAME,		///< see figure 1
-  FL_ENGRAVED_BOX,		///< see figure 1
-  FL_EMBOSSED_BOX,		///< see figure 1
-  FL_ENGRAVED_FRAME,		///< see figure 1
-  FL_EMBOSSED_FRAME,		///< see figure 1
-  FL_BORDER_BOX,		///< see figure 1
-  _FL_SHADOW_BOX,		///< see figure 1
-  FL_BORDER_FRAME,		///< see figure 1
-  _FL_SHADOW_FRAME,		///< see figure 1
-  _FL_ROUNDED_BOX,		///< see figure 1
-  _FL_RSHADOW_BOX,		///< see figure 1
-  _FL_ROUNDED_FRAME,		///< see figure 1
-  _FL_RFLAT_BOX,		///< see figure 1
-  _FL_ROUND_UP_BOX,		///< see figure 1
-  _FL_ROUND_DOWN_BOX,		///< see figure 1
-  _FL_DIAMOND_UP_BOX,		///< see figure 1
-  _FL_DIAMOND_DOWN_BOX,		///< see figure 1
-  _FL_OVAL_BOX,			///< see figure 1
-  _FL_OSHADOW_BOX,		///< see figure 1
-  _FL_OVAL_FRAME,		///< see figure 1
-  _FL_OFLAT_BOX,		///< see figure 1
-  _FL_PLASTIC_UP_BOX,		///< plastic version of FL_UP_BOX
-  _FL_PLASTIC_DOWN_BOX,		///< plastic version of FL_DOWN_BOX
-  _FL_PLASTIC_UP_FRAME,		///< plastic version of FL_UP_FRAME
-  _FL_PLASTIC_DOWN_FRAME,	///< plastic version of FL_DOWN_FRAME
-  _FL_PLASTIC_THIN_UP_BOX,	///< plastic version of FL_THIN_UP_BOX
-  _FL_PLASTIC_THIN_DOWN_BOX,	///< plastic version of FL_THIN_DOWN_BOX
-  _FL_PLASTIC_ROUND_UP_BOX,	///< plastic version of FL_ROUND_UP_BOX
-  _FL_PLASTIC_ROUND_DOWN_BOX,	///< plastic version of FL_ROUND_DOWN_BOX
-  _FL_GTK_UP_BOX,		///< gtk+ version of FL_UP_BOX
-  _FL_GTK_DOWN_BOX,		///< gtk+ version of FL_DOWN_BOX
-  _FL_GTK_UP_FRAME,		///< gtk+ version of FL_UP_FRAME
-  _FL_GTK_DOWN_FRAME,		///< gtk+ version of FL_DOWN_RAME
-  _FL_GTK_THIN_UP_BOX,		///< gtk+ version of FL_THIN_UP_BOX
-  _FL_GTK_THIN_DOWN_BOX,	///< gtk+ version of FL_THIN_DOWN_BOX
-  _FL_GTK_THIN_UP_FRAME,	///< gtk+ version of FL_UP_FRAME
-  _FL_GTK_THIN_DOWN_FRAME,	///< gtk+ version of FL_THIN_DOWN_FRAME
-  _FL_GTK_ROUND_UP_BOX,		///< gtk+ version of FL_ROUND_UP_BOX
-  _FL_GTK_ROUND_DOWN_BOX,	///< gtk+ version of FL_ROUND_DOWN_BOX
+enum Boxtype { // boxtypes (if you change these you must fix fl_boxtype.C):
+
+  NO_BOX = 0,		///< nothing is drawn at all, this box is invisible
+  FLAT_BOX,			///< a flat box
+  UP_BOX,			///< see figure 1
+  DOWN_BOX,			///< see figure 1
+  UP_FRAME,			///< see figure 1
+  DOWN_FRAME,		///< see figure 1
+  THIN_UP_BOX,		///< see figure 1
+  THIN_DOWN_BOX,		///< see figure 1
+  THIN_UP_FRAME,		///< see figure 1
+  THIN_DOWN_FRAME,		///< see figure 1
+  ENGRAVED_BOX,		///< see figure 1
+  EMBOSSED_BOX,		///< see figure 1
+  ENGRAVED_FRAME,		///< see figure 1
+  EMBOSSED_FRAME,		///< see figure 1
+  BORDER_BOX,		///< see figure 1
+  SHADOW_BOX,		///< see figure 1
+  BORDER_FRAME,		///< see figure 1
+  SHADOW_FRAME,		///< see figure 1
+  ROUNDED_BOX,		///< see figure 1
+  RSHADOW_BOX,		///< see figure 1
+  ROUNDED_FRAME,		///< see figure 1
+  RFLAT_BOX,		///< see figure 1
+  ROUND_UP_BOX,		///< see figure 1
+  ROUND_DOWN_BOX,		///< see figure 1
+  DIAMOND_UP_BOX,		///< see figure 1
+  DIAMOND_DOWN_BOX,		///< see figure 1
+  OVAL_BOX,			///< see figure 1
+  OSHADOW_BOX,		///< see figure 1
+  OVAL_FRAME,		///< see figure 1
+  OFLAT_BOX,		///< see figure 1
+  PLASTIC_UP_BOX,		///< plastic version of fltk3::UP_BOX
+  PLASTIC_DOWN_BOX,		///< plastic version of fltk3::DOWN_BOX
+  PLASTIC_UP_FRAME,		///< plastic version of fltk3::UP_FRAME
+  PLASTIC_DOWN_FRAME,	///< plastic version of fltk3::DOWN_FRAME
+  PLASTIC_THIN_UP_BOX,	///< plastic version of FL_THIN_UP_BOX
+  PLASTIC_THIN_DOWN_BOX,	///< plastic version of FL_THIN_DOWN_BOX
+  PLASTIC_ROUND_UP_BOX,	///< plastic version of FL_ROUND_UP_BOX
+  PLASTIC_ROUND_DOWN_BOX,	///< plastic version of FL_ROUND_DOWN_BOX
+  GTK_UP_BOX,		///< gtk+ version of fltk3::UP_BOX
+  GTK_DOWN_BOX,		///< gtk+ version of fltk3::DOWN_BOX
+  GTK_UP_FRAME,		///< gtk+ version of fltk3::UP_FRAME
+  GTK_DOWN_FRAME,		///< gtk+ version of FL_DOWN_RAME
+  GTK_THIN_UP_BOX,		///< gtk+ version of FL_THIN_UP_BOX
+  GTK_THIN_DOWN_BOX,	///< gtk+ version of FL_THIN_DOWN_BOX
+  GTK_THIN_UP_FRAME,	///< gtk+ version of fltk3::UP_FRAME
+  GTK_THIN_DOWN_FRAME,	///< gtk+ version of fltk3::THIN_DOWN_FRAME
+  GTK_ROUND_UP_BOX,		///< gtk+ version of FL_ROUND_UP_BOX
+  GTK_ROUND_DOWN_BOX,	///< gtk+ version of FL_ROUND_DOWN_BOX
   FL_FREE_BOXTYPE		///< the first free box type for creation of new box types
 };
-extern FL_EXPORT Fl_Boxtype fl_define_FL_ROUND_UP_BOX();
-#define FL_ROUND_UP_BOX fl_define_FL_ROUND_UP_BOX()
-#define FL_ROUND_DOWN_BOX (Fl_Boxtype)(fl_define_FL_ROUND_UP_BOX()+1)
-extern FL_EXPORT Fl_Boxtype fl_define_FL_SHADOW_BOX();
-#define FL_SHADOW_BOX fl_define_FL_SHADOW_BOX()
-#define FL_SHADOW_FRAME (Fl_Boxtype)(fl_define_FL_SHADOW_BOX()+2)
-extern FL_EXPORT Fl_Boxtype fl_define_FL_ROUNDED_BOX();
-#define FL_ROUNDED_BOX fl_define_FL_ROUNDED_BOX()
-#define FL_ROUNDED_FRAME (Fl_Boxtype)(fl_define_FL_ROUNDED_BOX()+2)
-extern FL_EXPORT Fl_Boxtype fl_define_FL_RFLAT_BOX();
-#define FL_RFLAT_BOX fl_define_FL_RFLAT_BOX()
-extern FL_EXPORT Fl_Boxtype fl_define_FL_RSHADOW_BOX();
-#define FL_RSHADOW_BOX fl_define_FL_RSHADOW_BOX()
-extern FL_EXPORT Fl_Boxtype fl_define_FL_DIAMOND_BOX();
-#define FL_DIAMOND_UP_BOX fl_define_FL_DIAMOND_BOX()
-#define FL_DIAMOND_DOWN_BOX (Fl_Boxtype)(fl_define_FL_DIAMOND_BOX()+1)
-extern FL_EXPORT Fl_Boxtype fl_define_FL_OVAL_BOX();
-#define FL_OVAL_BOX fl_define_FL_OVAL_BOX()
-#define FL_OSHADOW_BOX (Fl_Boxtype)(fl_define_FL_OVAL_BOX()+1)
-#define FL_OVAL_FRAME (Fl_Boxtype)(fl_define_FL_OVAL_BOX()+2)
-#define FL_OFLAT_BOX (Fl_Boxtype)(fl_define_FL_OVAL_BOX()+3)
 
-extern FL_EXPORT Fl_Boxtype fl_define_FL_PLASTIC_UP_BOX();
-#define FL_PLASTIC_UP_BOX fl_define_FL_PLASTIC_UP_BOX()
-#define FL_PLASTIC_DOWN_BOX (Fl_Boxtype)(fl_define_FL_PLASTIC_UP_BOX()+1)
-#define FL_PLASTIC_UP_FRAME (Fl_Boxtype)(fl_define_FL_PLASTIC_UP_BOX()+2)
-#define FL_PLASTIC_DOWN_FRAME (Fl_Boxtype)(fl_define_FL_PLASTIC_UP_BOX()+3)
-#define FL_PLASTIC_THIN_UP_BOX (Fl_Boxtype)(fl_define_FL_PLASTIC_UP_BOX()+4)
-#define FL_PLASTIC_THIN_DOWN_BOX (Fl_Boxtype)(fl_define_FL_PLASTIC_UP_BOX()+5)
-#define FL_PLASTIC_ROUND_UP_BOX (Fl_Boxtype)(fl_define_FL_PLASTIC_UP_BOX()+6)
-#define FL_PLASTIC_ROUND_DOWN_BOX (Fl_Boxtype)(fl_define_FL_PLASTIC_UP_BOX()+7)
-
-extern FL_EXPORT Fl_Boxtype fl_define_FL_GTK_UP_BOX();
-#define FL_GTK_UP_BOX fl_define_FL_GTK_UP_BOX()
-#define FL_GTK_DOWN_BOX (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+1)
-#define FL_GTK_UP_FRAME (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+2)
-#define FL_GTK_DOWN_FRAME (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+3)
-#define FL_GTK_THIN_UP_BOX (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+4)
-#define FL_GTK_THIN_DOWN_BOX (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+5)
-#define FL_GTK_THIN_UP_FRAME (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+6)
-#define FL_GTK_THIN_DOWN_FRAME (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+7)
-#define FL_GTK_ROUND_UP_BOX (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+8)
-#define FL_GTK_ROUND_DOWN_BOX (Fl_Boxtype)(fl_define_FL_GTK_UP_BOX()+9)
-
+}
+  
 // conversions of box types to other boxtypes:
 /**
   Get the filled version of a frame.
   If no filled version of a given frame exists, the behavior of this function
   is undefined and some random box or frame is returned,
   */
-inline Fl_Boxtype fl_box(Fl_Boxtype b) {
-  return (Fl_Boxtype)((b<FL_UP_BOX||b%4>1)?b:(b-2));
+inline fltk3::Boxtype fl_box(fltk3::Boxtype b) {
+  return (fltk3::Boxtype)((b<fltk3::UP_BOX||b%4>1)?b:(b-2));
 }
 /**
   Get the "pressed" or "down" version of a box.
   If no "down" version of a given box exists, the behavior of this function
   is undefined and some random box or frame is returned,
   */
-inline Fl_Boxtype fl_down(Fl_Boxtype b) {
-  return (Fl_Boxtype)((b<FL_UP_BOX)?b:(b|1));
+inline fltk3::Boxtype fl_down(fltk3::Boxtype b) {
+  return (fltk3::Boxtype)((b<fltk3::UP_BOX)?b:(b|1));
 }
 /**
   Get the unfilled, frame only version of a box.
   If no frame version of a given box exists, the behavior of this function
   is undefined and some random box or frame is returned,
   */
-inline Fl_Boxtype fl_frame(Fl_Boxtype b) {
-  return (Fl_Boxtype)((b%4<2)?b:(b+2));
+inline fltk3::Boxtype fl_frame(fltk3::Boxtype b) {
+  return (fltk3::Boxtype)((b%4<2)?b:(b+2));
 }
 
 // back-compatibility box types:
@@ -572,43 +534,29 @@ inline Fl_Boxtype fl_frame(Fl_Boxtype b) {
 
 /*@}*/	// group: Box Types
 
+namespace fltk3 {
+
 /**
    The labeltype() method sets the type of the label.
    
    The following standard label types are included:
    
-   \todo	The doxygen comments are incomplete, and some labeltypes
-   		are starting with an underscore. Also, there are three
-		external functions undocumented (yet):
-		  - fl_define_FL_SHADOW_LABEL()
-		  - fl_define_FL_ENGRAVED_LABEL()
-		  - fl_define_FL_EMBOSSED_LABEL()
 */
-enum Fl_Labeltype {	// labeltypes:
-  FL_NORMAL_LABEL	= 0,	///< draws the text (0)
-  FL_NO_LABEL,			///< does nothing
-  _FL_SHADOW_LABEL,		///< draws a drop shadow under the text
-  _FL_ENGRAVED_LABEL,		///< draws edges as though the text is engraved
-  _FL_EMBOSSED_LABEL,		///< draws edges as thought the text is raised
-  _FL_MULTI_LABEL,		///< ?
-  _FL_ICON_LABEL,		///< draws the icon associated with the text
-  _FL_IMAGE_LABEL,		///< ?
+enum Labeltype {	// labeltypes:
+  NORMAL_LABEL	= 0,	///< draws the text (0)
+  NO_LABEL,			///< does nothing
+  SHADOW_LABEL,		///< draws a drop shadow under the text
+  ENGRAVED_LABEL,		///< draws edges as though the text is engraved
+  EMBOSSED_LABEL,		///< draws edges as thought the text is raised
+  MULTI_LABEL,		///< ?
+  ICON_LABEL,		///< draws the icon associated with the text
+  IMAGE_LABEL,		///< ?
 
   FL_FREE_LABELTYPE		///< first free labeltype to use for creating own labeltypes
 };
 
-/** 
-  Sets the current  label type end return its corresponding Fl_Labeltype value. 
-  @{
-*/
-#define FL_SYMBOL_LABEL FL_NORMAL_LABEL
-extern Fl_Labeltype FL_EXPORT fl_define_FL_SHADOW_LABEL();
-#define FL_SHADOW_LABEL fl_define_FL_SHADOW_LABEL()
-extern Fl_Labeltype FL_EXPORT fl_define_FL_ENGRAVED_LABEL();
-#define FL_ENGRAVED_LABEL fl_define_FL_ENGRAVED_LABEL()
-extern Fl_Labeltype FL_EXPORT fl_define_FL_EMBOSSED_LABEL();
-#define FL_EMBOSSED_LABEL fl_define_FL_EMBOSSED_LABEL()
-/** @} */
+
+} // namespace
 
 /** \name Alignment Flags */
 /*@{*/
@@ -713,9 +661,12 @@ const Fl_Font FL_SCREEN_BOLD            = 14;	///< Default monospaced bold scree
 const Fl_Font FL_ZAPF_DINGBATS          = 15;	///< Zapf-dingbats font
 
 const Fl_Font FL_FREE_FONT              = 16;	///< first one to allocate
-const Fl_Font FL_BOLD                   = 1;	///< add this to helvetica, courier, or times
-const Fl_Font FL_ITALIC                 = 2;	///< add this to helvetica, courier, or times
-const Fl_Font FL_BOLD_ITALIC            = 3;	///< add this to helvetica, courier, or times
+
+namespace fltk3 {
+  const Fl_Font BOLD                   = 1;	///< add this to helvetica, courier, or times
+  const Fl_Font ITALIC                 = 2;	///< add this to helvetica, courier, or times
+  const Fl_Font BOLD_ITALIC            = 3;	///< add this to helvetica, courier, or times
+}
 
 /*@}*/
 
@@ -867,7 +818,7 @@ enum Fl_Cursor {	// standard cursors
   //FL_CURSOR_WE	= 55,
 };
 
-enum { // values for "when" passed to Fl::add_fd()
+enum { // values for "when" passed to fltk3::add_fd()
   FL_READ = 1,
   FL_WRITE = 4,
   FL_EXCEPT = 8
@@ -912,6 +863,7 @@ enum Fl_Damage {
 #    define inactive	fl_inactive
 #  endif // FLTK_1_0_COMPAT
 
+  
 #endif
 
 //

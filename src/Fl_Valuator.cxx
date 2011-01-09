@@ -28,7 +28,7 @@
 
 // Base class for sliders and all other one-value "knobs"
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Valuator.H>
 #include <fltk3/math.h>
 #include <stdio.h>
@@ -37,7 +37,7 @@
 Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
 /**
   Creates a new Fl_Valuator widget using the given position,
-  size, and label string. The default boxtype is FL_NO_BOX.
+  size, and label string. The default boxtype is fltk3::NO_BOX.
 */
 : Fl_Widget(X,Y,W,H,L) {
   align(FL_ALIGN_BOTTOM);

@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_ask.H>
 #include <fltk3/fl_draw.H>
 #include <stdio.h>
@@ -936,7 +936,7 @@ void Fl_PostScript_Graphics_Driver::font(int f, int s) {
 }
 
 void Fl_PostScript_Graphics_Driver::color(Fl_Color c) {
-  Fl::get_color(c, cr_, cg_, cb_);
+  fltk3::get_color(c, cr_, cg_, cb_);
   color(cr_, cg_, cb_);
 }
 
@@ -968,7 +968,7 @@ static uchar *calc_mask(uchar *img, int w, int h, Fl_Color bg)
 {
   uchar red, green, blue, r, g, b;
   uchar bit, byte, *q;
-  Fl::get_color(bg, red, green, blue);
+  fltk3::get_color(bg, red, green, blue);
   int W = (w+7)/8; // width of mask
   uchar* mask = new uchar[W * h];
   q = mask;
@@ -1484,7 +1484,7 @@ int Fl_PostScript_Printer::start_job(int pages, int *firstpage, int *lastpage) {
   print_from->value("1");
   { char tmp[10]; snprintf(tmp, sizeof(tmp), "%d", pages); print_to->value(tmp); }
   print_panel->show(); // this is modal
-  while (print_panel->shown()) Fl::wait();
+  while (print_panel->shown()) fltk3::wait();
   
   if (!print_start) // user clicked cancel
     return 1;

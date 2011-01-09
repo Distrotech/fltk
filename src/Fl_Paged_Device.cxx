@@ -29,7 +29,7 @@
  */
 
 #include <fltk3/Fl_Paged_Device.H>
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
 const char *Fl_Paged_Device::class_id = "Fl_Paged_Device";
@@ -127,15 +127,15 @@ void Fl_Paged_Device::origin(int *x, int *y)
  @param delta_x Optional horizontal offset from current graphics origin where to print the captured rectangle.
  @param delta_y As above, vertically.
  */
-void Fl_Paged_Device::print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
+void Fl_Paged_Device::print_window_part(fltk3::Window *win, int x, int y, int w, int h, int delta_x, int delta_y)
 {
   int slice, width, offset, count = 0;
   Fl_Surface_Device *current = Fl_Surface_Device::surface();
   Fl_Display_Device::display_device()->set_current();
-  Fl_Window *save_front = Fl::first_window();
+  fltk3::Window *save_front = fltk3::first_window();
   win->show();
   fl_gc = NULL;
-  Fl::check();
+  fltk3::check();
   win->make_current();
   uchar *image_data[20];
 #ifdef WIN32 // because of bug in StretchDIBits, vertically cut image in pieces of width slice

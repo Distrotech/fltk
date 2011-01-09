@@ -39,7 +39,7 @@
   The Fl_Group class is the FLTK container widget. It maintains
   an array of child widgets. These children can themselves be any widget
   including Fl_Group. The most important subclass of Fl_Group
-  is Fl_Window, however groups can also be used to control radio buttons 
+  is fltk3::Window, however groups can also be used to control radio buttons 
   or to enforce resize behavior.
 */
 class FL_EXPORT Fl_Group : public Fl_Widget {
@@ -91,7 +91,7 @@ public:
   void resize(int,int,int,int);
   /**
     Creates a new Fl_Group widget using the given position, size,
-    and label string. The default boxtype is FL_NO_BOX.
+    and label string. The default boxtype is fltk3::NO_BOX.
   */
   Fl_Group(int,int,int,int, const char * = 0);
   virtual ~Fl_Group();
@@ -138,13 +138,13 @@ public:
 
     The resizable may be set to the group itself, in which case all the
     contents are resized. This is the default value for Fl_Group,
-    although NULL is the default for Fl_Window and Fl_Pack.
+    although NULL is the default for fltk3::Window and Fl_Pack.
 
     If the resizable is NULL then all widgets remain a fixed size
     and distance from the top-left corner.
 
     It is possible to achieve any type of resize behavior by using an
-    invisible Fl_Box as the resizable and/or by using a hierarchy
+    invisible fltk3::Box as the resizable and/or by using a hierarchy
     of child Fl_Group's.
   */
   void resizable(Fl_Widget* o) {resizable_ = o;}

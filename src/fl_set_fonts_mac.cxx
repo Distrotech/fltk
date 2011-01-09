@@ -41,15 +41,15 @@
 #define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
 
 // turn a stored font name into a pretty name:
-const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
+const char* fltk3::get_font_name(Fl_Font fnum, int* ap) {
   Fl_Fontdesc *f = fl_fonts + fnum;
   if (!f->fontname[0]) {
     const char* p = f->name;
     if (!p || !*p) {if (ap) *ap = 0; return "";}
     strlcpy(f->fontname, p, ENDOFBUFFER);
     int type = 0;
-    if (strstr(f->name, "Bold")) type |= FL_BOLD;
-    if (strstr(f->name, "Italic")) type |= FL_ITALIC;
+    if (strstr(f->name, "Bold")) type |= fltk3::BOLD;
+    if (strstr(f->name, "Italic")) type |= fltk3::ITALIC;
     f->fontname[ENDOFBUFFER] = (char)type;
   }
   if (ap) *ap = f->fontname[ENDOFBUFFER];
@@ -58,7 +58,7 @@ const char* Fl::get_font_name(Fl_Font fnum, int* ap) {
 
 static int fl_free_font = FL_FREE_FONT;
 
-Fl_Font Fl::set_fonts(const char* xstarname) {
+Fl_Font fltk3::set_fonts(const char* xstarname) {
 #pragma unused ( xstarname )
 if (fl_free_font > FL_FREE_FONT) return (Fl_Font)fl_free_font; // if already called
 
@@ -84,7 +84,7 @@ if(fl_mac_os_version >= 0x1050) {
 	static char fname[100];
 	CFStringGetCString(cfname, fname, sizeof(fname), kCFStringEncodingUTF8);
 	CFRelease(cfname);
-	Fl::set_font((Fl_Font)(fl_free_font++), strdup(fname));
+	fltk3::set_font((Fl_Font)(fl_free_font++), strdup(fname));
 	}
   CFRelease(arrayref);
   return (Fl_Font)fl_free_font;
@@ -121,7 +121,7 @@ else {
       oName[511] = 0;
     else
       oName[actualLength] = 0;
-	Fl::set_font((Fl_Font)(fl_free_font++), strdup(oName));
+	fltk3::set_font((Fl_Font)(fl_free_font++), strdup(oName));
 //	free(oName);
   }
   free(oFontIDs);
@@ -134,7 +134,7 @@ else {
 }
 
 static int array[128];
-int Fl::get_font_sizes(Fl_Font fnum, int*& sizep) {
+int fltk3::get_font_sizes(Fl_Font fnum, int*& sizep) {
   Fl_Fontdesc *s = fl_fonts+fnum;
   if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
   int cnt = 0;

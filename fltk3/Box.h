@@ -26,26 +26,30 @@
 //
 
 /* \file
-   Fl_Box widget . */
+   fltk3::Box widget . */
 
-#ifndef Fl_Box_H
-#define Fl_Box_H
+#ifndef FLTK3_Box_H
+#define FLTK3_Box_H
 
 #ifndef Fl_Widget_H
 #include "Fl_Widget.H"
 #endif
+
+namespace fltk3 {
+  class Box;
+}
 
 /**
   This widget simply draws its box, and possibly it's label.  Putting it
   before some other widgets and making it big enough to surround them
   will let you draw a frame around them.
 */
-class FL_EXPORT Fl_Box : public Fl_Widget {
+class FL_EXPORT fltk3::Box : public Fl_Widget {
 protected:
   void draw();
 public:
   /**
-    - The first constructor sets box() to FL_NO_BOX, which
+    - The first constructor sets box() to fltk3::NO_BOX, which
     means it is invisible. However such widgets are useful as placeholders
     or Fl_Group::resizable()
     values.  To change the box to something visible, use box(n).
@@ -53,10 +57,10 @@ public:
     type.
     <P>The destructor removes the box.
   */
-    Fl_Box(int X, int Y, int W, int H, const char *l=0)
+    Box(int X, int Y, int W, int H, const char *l=0)
 	: Fl_Widget(X,Y,W,H,l) {}
-  /**    See Fl_Box::Fl_Box(int x, int y, int w, int h, const char * = 0)   */
-    Fl_Box(Fl_Boxtype b, int X, int Y, int W, int H, const char *l)
+  /**    See fltk3::Box::Box(int x, int y, int w, int h, const char * = 0)   */
+    Box(fltk3::Boxtype b, int X, int Y, int W, int H, const char *l)
 	: Fl_Widget(X,Y,W,H,l) {box(b);}
 
   virtual int handle(int);

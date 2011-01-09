@@ -33,7 +33,7 @@
 // can be used to dismiss the menus.
 
 #include <config.h>
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
 #include <fltk3/Fl_Menu_Window.H>
@@ -70,7 +70,7 @@ void Fl_Menu_Window::flush() {
   if (!gc) {
 	  gc = XCreateGC(fl_display, myi->xid, 0, 0);
 # if defined(FLTK_USE_CAIRO)
-	  if(Fl::autolink_context()) Fl::cairo_make_current(gc); // capture gc changes automatically to update the cairo context adequately
+	  if(fltk3::autolink_context()) fltk3::cairo_make_current(gc); // capture gc changes automatically to update the cairo context adequately
 # endif
   }
   fl_gc = gc;

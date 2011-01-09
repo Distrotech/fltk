@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
 #define BW 3
@@ -44,11 +44,11 @@ static void fl_shadow_box(int x, int y, int w, int h, Fl_Color c) {
   fl_shadow_frame(x,y,w,h,FL_GRAY0);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
-Fl_Boxtype fl_define_FL_SHADOW_BOX() {
-  fl_internal_boxtype(_FL_SHADOW_FRAME, fl_shadow_frame);
-  fl_internal_boxtype(_FL_SHADOW_BOX, fl_shadow_box);
-  return _FL_SHADOW_BOX;
+extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
+fltk3::Boxtype fl_define_FL_SHADOW_BOX() {
+  fl_internal_boxtype(fltk3::SHADOW_FRAME, fl_shadow_frame);
+  fl_internal_boxtype(fltk3::SHADOW_BOX, fl_shadow_box);
+  return fltk3::SHADOW_BOX;
 }
 
 //

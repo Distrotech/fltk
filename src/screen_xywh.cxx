@@ -26,7 +26,7 @@
 //
 
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/x.H>
 #include <config.h>
 
@@ -145,9 +145,9 @@ static void screen_init() {
   } else { // ! XineramaIsActive()
     num_screens = 1;
     int mm = DisplayWidthMM(fl_display, fl_screen);
-    dpi[0][0] = mm ? Fl::w()*25.4f/mm : 0.0f;
+    dpi[0][0] = mm ? fltk3::w()*25.4f/mm : 0.0f;
     mm = DisplayHeightMM(fl_display, fl_screen);
-    dpi[0][1] = mm ? Fl::h()*25.4f/mm : dpi[0][0];
+    dpi[0][1] = mm ? fltk3::h()*25.4f/mm : dpi[0][0];
   }
 }
 #else
@@ -156,9 +156,9 @@ static void screen_init() {
   num_screens = 1;
   if (!fl_display) fl_open_display();
   int mm = DisplayWidthMM(fl_display, fl_screen);
-  dpi[0] = mm ? Fl::w()*25.4f/mm : 0.0f;
+  dpi[0] = mm ? fltk3::w()*25.4f/mm : 0.0f;
   mm = DisplayHeightMM(fl_display, fl_screen);
-  dpi[1] = mm ? Fl::h()*25.4f/mm : dpi[0];  
+  dpi[1] = mm ? fltk3::h()*25.4f/mm : dpi[0];  
 }
 #endif // WIN32
 
@@ -166,7 +166,7 @@ static void screen_init() {
 /**
   Gets the number of available screens.
 */
-int Fl::screen_count() {
+int fltk3::screen_count() {
   if (!num_screens) screen_init();
 
   return num_screens;
@@ -178,7 +178,7 @@ int Fl::screen_count() {
   \param[out]  X,Y,W,H the corresponding screen bounding box
   \param[in] mx, my the absolute screen position
 */
-void Fl::screen_xywh(int &X, int &Y, int &W, int &H, int mx, int my) {
+void fltk3::screen_xywh(int &X, int &Y, int &W, int &H, int mx, int my) {
   if (!num_screens) screen_init();
 
 #ifdef WIN32
@@ -235,19 +235,19 @@ void Fl::screen_xywh(int &X, int &Y, int &W, int &H, int mx, int my) {
   (void)my;
 #endif // WIN32
 
-  X = Fl::x();
-  Y = Fl::y();
-  W = Fl::w();
-  H = Fl::h();
+  X = fltk3::x();
+  Y = fltk3::y();
+  W = fltk3::w();
+  H = fltk3::h();
 }
 
 /**
   Gets the screen bounding rect for the given screen. 
   \param[out]  X,Y,W,H the corresponding screen bounding box
-  \param[in] n the screen number (0 to Fl::screen_count() - 1)
+  \param[in] n the screen number (0 to fltk3::screen_count() - 1)
   \see void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) 
 */
-void Fl::screen_xywh(int &X, int &Y, int &W, int &H, int n) {
+void fltk3::screen_xywh(int &X, int &Y, int &W, int &H, int n) {
   if (!num_screens) screen_init();
 
 #ifdef WIN32
@@ -278,20 +278,20 @@ void Fl::screen_xywh(int &X, int &Y, int &W, int &H, int n) {
   (void)n;
 #endif // WIN32
 
-  X = Fl::x();
-  Y = Fl::y();
-  W = Fl::w();
-  H = Fl::h();
+  X = fltk3::x();
+  Y = fltk3::y();
+  W = fltk3::w();
+  H = fltk3::h();
 }
 
 
 /**
  Gets the screen resolution in dots-per-inch for the given screen. 
  \param[out]  h, v  horizontal and vertical resolution
- \param[in]   n     the screen number (0 to Fl::screen_count() - 1)
+ \param[in]   n     the screen number (0 to fltk3::screen_count() - 1)
  \see void screen_xywh(int &x, int &y, int &w, int &h, int mx, int my) 
  */
-void Fl::screen_dpi(float &h, float &v, int n)
+void fltk3::screen_dpi(float &h, float &v, int n)
 {
   if (!num_screens) screen_init();
   h = v = 0.0f;

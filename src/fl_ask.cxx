@@ -34,22 +34,22 @@
 #include <stdarg.h>
 #include "flstring.h"
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 
 #include <fltk3/fl_ask.H>
 
-#include <fltk3/Fl_Box.H>
+#include <fltk3/Box.h>
 #include <fltk3/Fl_Button.H>
 #include <fltk3/Fl_Return_Button.H>
-#include <fltk3/Fl_Window.H>
+#include <fltk3/Window.h>
 #include <fltk3/Fl_Input.H>
 #include <fltk3/Fl_Secret_Input.H>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
 
-static Fl_Window *message_form;
-static Fl_Box *message;
-static Fl_Box *icon;
+static fltk3::Window *message_form;
+static fltk3::Box *message;
+static fltk3::Box *icon;
 static Fl_Button *button[3];
 static Fl_Input *input;
 static int ret_val;
@@ -66,14 +66,14 @@ static char avoidRecursion = 0;
 // Note: this is used for the button callbacks and the window
 // callback (closing the window with the close button or menu).
 // The first argument (Fl_Widget *) can either be an Fl_Button*
-// pointer to one of the buttons or an Fl_Window* pointer to the
+// pointer to one of the buttons or an fltk3::Window* pointer to the
 // message window (message_form).
 static void button_cb(Fl_Widget *, void *val) {
   ret_val = (fl_intptr_t)val;
   message_form->hide();
 }
 
-static Fl_Window *makeform() {
+static fltk3::Window *makeform() {
  if (message_form) {
    message_form->size(410,103);
    return message_form;
@@ -83,15 +83,15 @@ static Fl_Window *makeform() {
  Fl_Group *previously_current_group = Fl_Group::current();
  Fl_Group::current(0);
  // create a new top level window
- Fl_Window *w = message_form = new Fl_Window(410,103,"");
+ fltk3::Window *w = message_form = new fltk3::Window(410,103,"");
  message_form->callback(button_cb,(void *)0);
  // w->clear_border();
- // w->box(FL_UP_BOX);
- (message = new Fl_Box(60, 25, 340, 20))
+ // w->box(fltk3::UP_BOX);
+ (message = new fltk3::Box(60, 25, 340, 20))
    ->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
  (input = new Fl_Input(60, 37, 340, 23))->hide();
- {Fl_Box* o = icon = new Fl_Box(10, 10, 50, 50);
-  o->box(FL_THIN_UP_BOX);
+ {fltk3::Box* o = icon = new fltk3::Box(10, 10, 50, 50);
+  o->box(fltk3::THIN_UP_BOX);
   o->labelfont(FL_TIMES_BOLD);
   o->labelsize(34);
   o->color(FL_WHITE);
@@ -107,7 +107,7 @@ static Fl_Window *makeform() {
    button[b]->callback(button_cb,(void *)b);
  }
  button[0]->shortcut(FL_Escape);
- w->resizable(new Fl_Box(60,10,110-60,27));
+ w->resizable(new fltk3::Box(60,10,110-60,27));
  w->end();
  w->set_modal();
  Fl_Group::current(previously_current_group);
@@ -197,7 +197,7 @@ static int innards(const char* fmt, va_list ap,
   const char *b1,
   const char *b2)
 {
-  Fl::pushed(0); // stop dragging (STR #2159)
+  fltk3::pushed(0); // stop dragging (STR #2159)
 
   avoidRecursion = 1;
 
@@ -231,13 +231,13 @@ static int innards(const char* fmt, va_list ap,
   else
     button[0]->shortcut(FL_Escape);
 
-  // deactivate Fl::grab(), because it is incompatible with modal windows
-  Fl_Window* g = Fl::grab();
-  if (g) Fl::grab(0);
+  // deactivate fltk3::grab(), because it is incompatible with modal windows
+  fltk3::Window* g = fltk3::grab();
+  if (g) fltk3::grab(0);
   message_form->show();
-  while (message_form->shown()) Fl::wait();
+  while (message_form->shown()) fltk3::wait();
   if (g) // regrab the previous popup menu, if there was one
-    Fl::grab(g);
+    fltk3::grab(g);
   icon->label(prev_icon_label);
 
   avoidRecursion = 0;
@@ -405,7 +405,7 @@ int fl_choice(const char*fmt,const char *b0,const char *b1,const char *b2,...){
   va_end(ap);
   return r;
 }
-/** Gets the Fl_Box icon container of the current default dialog used in 
+/** Gets the fltk3::Box icon container of the current default dialog used in 
     many common dialogs like fl_message(), fl_alert(), 
     fl_ask(), fl_choice(), fl_input(), fl_password() 
     \note \#include <fltk3/fl_ask.H>

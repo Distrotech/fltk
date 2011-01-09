@@ -29,7 +29,7 @@
 // These box types are in separate files so they are not linked
 // in if not used.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
 // A compiler from a certain very large software company will not compile
@@ -110,11 +110,11 @@ void fl_round_up_box(int x, int y, int w, int h, Fl_Color bgcolor) {
   draw(CLOSED,	    x,   y, w,   h, 0, (Fl_Color)g['A']);
 }
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
-Fl_Boxtype fl_define_FL_ROUND_UP_BOX() {
-  fl_internal_boxtype(_FL_ROUND_DOWN_BOX, fl_round_down_box);
-  fl_internal_boxtype(_FL_ROUND_UP_BOX, fl_round_up_box);
-  return _FL_ROUND_UP_BOX;
+extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
+fltk3::Boxtype fl_define_FL_ROUND_UP_BOX() {
+  fl_internal_boxtype(fltk3::ROUND_DOWN_BOX, fl_round_down_box);
+  fl_internal_boxtype(fltk3::ROUND_UP_BOX, fl_round_up_box);
+  return fltk3::ROUND_UP_BOX;
 }
 
 //

@@ -35,7 +35,7 @@
 // Include necessary header files...
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_PNG_Image.H>
 #include <config.h>
 #include <stdio.h>
@@ -80,7 +80,7 @@ Fl_PNG_Image::Fl_PNG_Image(const char *png) // I - File to read
 
   if (setjmp(png_jmpbuf(pp)))
   {
-    Fl::warning("PNG file \"%s\" contains errors!\n", png);
+    fltk3::warning("PNG file \"%s\" contains errors!\n", png);
     return;
   }
 

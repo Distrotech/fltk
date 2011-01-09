@@ -27,7 +27,7 @@
 
 // Drawing code for XForms style engraved & embossed labels
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Widget.H>
 #include <fltk3/fl_draw.H>
 
@@ -75,17 +75,17 @@ static void fl_embossed_label(
   innards(o, X, Y, W, H, align, data, 7);
 }
 
-Fl_Labeltype fl_define_FL_SHADOW_LABEL() {
-  Fl::set_labeltype(_FL_SHADOW_LABEL, fl_shadow_label, 0);
-  return _FL_SHADOW_LABEL;
+fltk3::Labeltype fl_define_FL_SHADOW_LABEL() {
+  fltk3::set_labeltype(fltk3::SHADOW_LABEL, fl_shadow_label, 0);
+  return fltk3::SHADOW_LABEL;
 }
-Fl_Labeltype fl_define_FL_ENGRAVED_LABEL() {
-  Fl::set_labeltype(_FL_ENGRAVED_LABEL, fl_engraved_label, 0);
-  return _FL_ENGRAVED_LABEL;
+fltk3::Labeltype fl_define_FL_ENGRAVED_LABEL() {
+  fltk3::set_labeltype(fltk3::ENGRAVED_LABEL, fl_engraved_label, 0);
+  return fltk3::ENGRAVED_LABEL;
 }
-Fl_Labeltype fl_define_FL_EMBOSSED_LABEL() {
-  Fl::set_labeltype(_FL_EMBOSSED_LABEL, fl_embossed_label, 0);
-  return _FL_EMBOSSED_LABEL;
+fltk3::Labeltype fl_define_FL_EMBOSSED_LABEL() {
+  fltk3::set_labeltype(fltk3::EMBOSSED_LABEL, fl_embossed_label, 0);
+  return fltk3::EMBOSSED_LABEL;
 }
 
 //

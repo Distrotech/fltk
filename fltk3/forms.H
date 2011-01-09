@@ -28,13 +28,13 @@
 #ifndef __FORMS_H__
 #define __FORMS_H__
 
-#include "Fl.H"
+#include "run.h"
 #include "Fl_Group.H"
-#include "Fl_Window.H"
+#include "Window.h"
 #include "fl_draw.H"
 
 typedef Fl_Widget FL_OBJECT;
-typedef Fl_Window FL_FORM;
+typedef fltk3::Window FL_FORM;
 
 ////////////////////////////////////////////////////////////////
 // Random constants & symbols defined by forms.h file:
@@ -99,7 +99,7 @@ typedef Fl_Window FL_FORM;
 
 #define FL_PUP_TOGGLE	2 // FL_MENU_TOGGLE
 #define FL_PUP_INACTIVE 1 // FL_MENU_INACTIVE
-#define FL_NO_FRAME	FL_NO_BOX
+#define FL_NO_FRAME	fltk3::NO_BOX
 #define FL_ROUNDED3D_UPBOX 	FL_ROUND_UP_BOX
 #define FL_ROUNDED3D_DOWNBOX	FL_ROUND_DOWN_BOX
 #define FL_OVAL3D_UPBOX		FL_ROUND_UP_BOX
@@ -170,17 +170,17 @@ inline void fl_finish() {}
 
 typedef void (*FL_IO_CALLBACK) (int, void*);
 inline void fl_add_io_callback(int fd, short w, FL_IO_CALLBACK cb, void* v) {
-  Fl::add_fd(fd,w,cb,v);}
+  fltk3::add_fd(fd,w,cb,v);}
 inline void fl_remove_io_callback(int fd, short, FL_IO_CALLBACK) {
-  Fl::remove_fd(fd);} // removes all the callbacks!
+  fltk3::remove_fd(fd);} // removes all the callbacks!
 
 // type of callback is different and no "id" number is returned:
 inline void fl_add_timeout(long msec, void (*cb)(void*), void* v) {
-  Fl::add_timeout(msec*.001, cb, v);}
+  fltk3::add_timeout(msec*.001, cb, v);}
 inline void fl_remove_timeout(int) {}
 
 // type of callback is different!
-inline void fl_set_idle_callback(void (*cb)()) {Fl::set_idle(cb);}
+inline void fl_set_idle_callback(void (*cb)()) {fltk3::set_idle(cb);}
 
 FL_EXPORT Fl_Widget* fl_do_forms(void);
 FL_EXPORT Fl_Widget* fl_check_forms();
@@ -190,28 +190,28 @@ inline Fl_Widget* fl_check_only_forms(void) {return fl_check_forms();}
 // because of new redraw behavior, these are no-ops:
 inline void fl_freeze_object(Fl_Widget*) {}
 inline void fl_unfreeze_object(Fl_Widget*) {}
-inline void fl_freeze_form(Fl_Window*) {}
-inline void fl_unfreeze_form(Fl_Window*) {}
+inline void fl_freeze_form(fltk3::Window*) {}
+inline void fl_unfreeze_form(fltk3::Window*) {}
 inline void fl_freeze_all_forms() {}
 inline void fl_unfreeze_all_forms() {}
 
-inline void fl_set_focus_object(Fl_Window*, Fl_Widget* o) {Fl::focus(o);}
-inline void fl_reset_focus_object(Fl_Widget* o) {Fl::focus(o);}
+inline void fl_set_focus_object(fltk3::Window*, Fl_Widget* o) {fltk3::focus(o);}
+inline void fl_reset_focus_object(Fl_Widget* o) {fltk3::focus(o);}
 #define fl_set_object_focus fl_set_focus_object
 
-// void fl_set_form_atclose(Fl_Window*w,int (*cb)(Fl_Window*,void*),void* v)
-// void fl_set_atclose(int (*cb)(Fl_Window*,void*),void*)
+// void fl_set_form_atclose(fltk3::Window*w,int (*cb)(fltk3::Window*,void*),void* v)
+// void fl_set_atclose(int (*cb)(fltk3::Window*,void*),void*)
 // fl_set_form_atactivate/atdeactivate not implemented!
 
 ////////////////////////////////////////////////////////////////
 // Fl_Widget:
 
-inline void fl_set_object_boxtype(Fl_Widget* o, Fl_Boxtype a) {o->box(a);}
+inline void fl_set_object_boxtype(Fl_Widget* o, fltk3::Boxtype a) {o->box(a);}
 inline void fl_set_object_lsize(Fl_Widget* o,int s) {o->labelsize(s);}
 
 /* forms lib font indexes must be byte sized - extract correct byte from style word */
 inline void fl_set_object_lstyle(Fl_Widget* o,int a) {
-  o->labelfont((Fl_Font)(a&0xff)); o->labeltype((Fl_Labeltype)(a>>8));}
+  o->labelfont((Fl_Font)(a&0xff)); o->labeltype((fltk3::Labeltype)(a>>8));}
 inline void fl_set_object_lcol(Fl_Widget* o, Fl_Color a) {o->labelcolor(a);}
 #define fl_set_object_lcolor  fl_set_object_lcol
 inline void fl_set_object_lalign(Fl_Widget* o, Fl_Align a) {o->align(a);}
@@ -243,10 +243,10 @@ inline void fl_delete_object(Fl_Widget* o) {o->parent()->remove(*o);}
 inline void fl_activate_object(Fl_Widget* o) {o->activate();}
 inline void fl_deactivate_object(Fl_Widget* o) {o->deactivate();}
 
-inline void fl_add_object(Fl_Window* f, Fl_Widget* x) {f->add(x);}
+inline void fl_add_object(fltk3::Window* f, Fl_Widget* x) {f->add(x);}
 inline void fl_insert_object(Fl_Widget* o, Fl_Widget* b) {b->parent()->insert(*o,b);}
 
-inline Fl_Window* FL_ObjWin(Fl_Widget* o) {return o->window();}
+inline fltk3::Window* FL_ObjWin(Fl_Widget* o) {return o->window();}
 
 ////////////////////////////////////////////////////////////////
 // things that appered in the demos a lot that I don't emulate, but
@@ -255,36 +255,36 @@ inline Fl_Window* FL_ObjWin(Fl_Widget* o) {return o->window();}
 inline int fl_get_border_width() {return 3;}
 inline void fl_set_border_width(int) {}
 inline void fl_set_object_dblbuffer(Fl_Widget*, int) {}
-inline void fl_set_form_dblbuffer(Fl_Window*, int) {}
+inline void fl_set_form_dblbuffer(fltk3::Window*, int) {}
 
 ////////////////////////////////////////////////////////////////
-// Fl_Window:
+// fltk3::Window:
 
-inline void fl_free_form(Fl_Window* x) {delete x;}
-inline void fl_redraw_form(Fl_Window* f) {f->redraw();}
+inline void fl_free_form(fltk3::Window* x) {delete x;}
+inline void fl_redraw_form(fltk3::Window* f) {f->redraw();}
 
-inline Fl_Window* fl_bgn_form(Fl_Boxtype b,int w,int h) {
-  Fl_Window* g = new Fl_Window(w,h,0);
+inline fltk3::Window* fl_bgn_form(fltk3::Boxtype b,int w,int h) {
+  fltk3::Window* g = new fltk3::Window(w,h,0);
   g->box(b);
   return g;
 }
 FL_EXPORT void fl_end_form();
-inline void fl_addto_form(Fl_Window* f) {f->begin();}
+inline void fl_addto_form(fltk3::Window* f) {f->begin();}
 inline Fl_Group* fl_bgn_group() {return new Fl_Group(0,0,0,0,0);}
 inline void fl_end_group() {Fl_Group::current()->forms_end();}
 inline void fl_addto_group(Fl_Widget* o) {((Fl_Group* )o)->begin();}
 #define resizebox _ddfdesign_kludge()
 
-inline void fl_scale_form(Fl_Window* f, double x, double y) {
+inline void fl_scale_form(fltk3::Window* f, double x, double y) {
   f->resizable(f); f->size(int(f->w()*x),int(f->h()*y));}
-inline void fl_set_form_position(Fl_Window* f,int x,int y) {f->position(x,y);}
-inline void fl_set_form_size(Fl_Window* f, int w, int h) {f->size(w,h);}
-inline void fl_set_form_geometry(Fl_Window* f,int x,int y,int w,int h) {
+inline void fl_set_form_position(fltk3::Window* f,int x,int y) {f->position(x,y);}
+inline void fl_set_form_size(fltk3::Window* f, int w, int h) {f->size(w,h);}
+inline void fl_set_form_geometry(fltk3::Window* f,int x,int y,int w,int h) {
   f->resize(x,y,w,h);}
 #define fl_set_initial_placement fl_set_form_geometry
-inline void fl_adjust_form_size(Fl_Window*) {}
+inline void fl_adjust_form_size(fltk3::Window*) {}
 
-FL_EXPORT void fl_show_form(Fl_Window* f,int p,int b,const char* n);
+FL_EXPORT void fl_show_form(fltk3::Window* f,int p,int b,const char* n);
 enum {	// "p" argument values:
   FL_PLACE_FREE = 0,	// make resizable
   FL_PLACE_MOUSE = 1,	// mouse centered on form
@@ -307,38 +307,38 @@ enum {	// "b" arguement values:
   FL_TRANSIENT
 //FL_MODAL = (1<<8)	// not implemented yet in Forms
 };
-inline void fl_set_form_hotspot(Fl_Window* w,int x,int y) {w->hotspot(x,y);}
-inline void fl_set_form_hotobject(Fl_Window* w, Fl_Widget* o) {w->hotspot(o);}
+inline void fl_set_form_hotspot(fltk3::Window* w,int x,int y) {w->hotspot(x,y);}
+inline void fl_set_form_hotobject(fltk3::Window* w, Fl_Widget* o) {w->hotspot(o);}
 extern FL_EXPORT char fl_flip;	// in forms.C
 inline void fl_flip_yorigin() {fl_flip = 1;}
 
 #define fl_prepare_form_window fl_show_form
-inline void fl_show_form_window(Fl_Window*) {}
+inline void fl_show_form_window(fltk3::Window*) {}
 
-inline void fl_raise_form(Fl_Window* f) {f->show();}
+inline void fl_raise_form(fltk3::Window* f) {f->show();}
 
-inline void fl_hide_form(Fl_Window* f) {f->hide();}
-inline void fl_pop_form(Fl_Window* f) {f->show();}
+inline void fl_hide_form(fltk3::Window* f) {f->hide();}
+inline void fl_pop_form(fltk3::Window* f) {f->show();}
 
 extern FL_EXPORT char fl_modal_next; // in forms.C
 inline void fl_activate_all_forms() {}
 inline void fl_deactivate_all_forms() {fl_modal_next = 1;}
-inline void fl_deactivate_form(Fl_Window*w) {w->deactivate();}
-inline void fl_activate_form(Fl_Window*w) {w->activate();}
+inline void fl_deactivate_form(fltk3::Window*w) {w->deactivate();}
+inline void fl_activate_form(fltk3::Window*w) {w->activate();}
 
-inline void fl_set_form_title(Fl_Window* f, const char* s) {f->label(s);}
-inline void fl_title_form(Fl_Window* f, const char* s) {f->label(s);}
+inline void fl_set_form_title(fltk3::Window* f, const char* s) {f->label(s);}
+inline void fl_title_form(fltk3::Window* f, const char* s) {f->label(s);}
 
 typedef void (*Forms_FormCB)(Fl_Widget*);
-inline void fl_set_form_callback(Fl_Window* f,Forms_FormCB c) {f->callback(c);}
+inline void fl_set_form_callback(fltk3::Window* f,Forms_FormCB c) {f->callback(c);}
 #define fl_set_form_call_back fl_set_form_callback
 
 inline void fl_init() {}
 FL_EXPORT void fl_set_graphics_mode(int,int);
 
-inline int fl_form_is_visible(Fl_Window* f) {return f->visible();}
+inline int fl_form_is_visible(fltk3::Window* f) {return f->visible();}
 
-inline int fl_mouse_button() {return Fl::event_button();}
+inline int fl_mouse_button() {return fltk3::event_button();}
 #define fl_mousebutton fl_mouse_button
 
 #define fl_free       free
@@ -349,9 +349,9 @@ inline int fl_mouse_button() {return Fl::event_button();}
 ////////////////////////////////////////////////////////////////
 // Drawing functions.  Only usable inside an Fl_Free object?
 
-inline void fl_drw_box(Fl_Boxtype b,int x,int y,int w,int h,Fl_Color bgc,int=3) {
+inline void fl_drw_box(fltk3::Boxtype b,int x,int y,int w,int h,Fl_Color bgc,int=3) {
     fl_draw_box(b,x,y,w,h,bgc);}
-inline void fl_drw_frame(Fl_Boxtype b,int x,int y,int w,int h,Fl_Color bgc,int=3) {
+inline void fl_drw_frame(fltk3::Boxtype b,int x,int y,int w,int h,Fl_Color bgc,int=3) {
     fl_draw_box(b,x,y,w,h,bgc);}
 
 inline void fl_drw_text(Fl_Align align, int x, int y, int w, int h,
@@ -371,9 +371,9 @@ inline void fl_drw_text_beside(Fl_Align align, int x, int y, int w, int h,
   fl_draw(s,x,y,w,h,align);
 }
 
-inline void fl_set_font_name(Fl_Font n,const char* s) {Fl::set_font(n,s);}
+inline void fl_set_font_name(Fl_Font n,const char* s) {fltk3::set_font(n,s);}
 
-inline void fl_mapcolor(Fl_Color c, uchar r, uchar g, uchar b) {Fl::set_color(c,r,g,b);}
+inline void fl_mapcolor(Fl_Color c, uchar r, uchar g, uchar b) {fltk3::set_color(c,r,g,b);}
 
 #define fl_set_clipping(x,y,w,h) fl_push_clip(x,y,w,h)
 #define fl_unset_clipping() fl_pop_clip()
@@ -391,18 +391,18 @@ inline type* name(uchar t,int x,int y,int w,int h,const char* l) { \
 inline type* name(uchar t,int x,int y,int w,int h,const char* l) { \
  return (type*)(fl_add_new(new type(t,x,y,w,h,l)));}
 #define forms_constructorb(type,name) \
-inline type* name(Fl_Boxtype t,int x,int y,int w,int h,const char* l) { \
+inline type* name(fltk3::Boxtype t,int x,int y,int w,int h,const char* l) { \
  return (type*)(fl_add_new(new type(t,x,y,w,h,l)));}
 
 #include "Fl_FormsBitmap.H"
-#define FL_NORMAL_BITMAP FL_NO_BOX
+#define FL_NORMAL_BITMAP fltk3::NO_BOX
 forms_constructorb(Fl_FormsBitmap, fl_add_bitmap)
 inline void fl_set_bitmap_data(Fl_Widget* o, int w, int h, const uchar* b) {
     ((Fl_FormsBitmap*)o)->set(w,h,b);
 }
 
 #include "Fl_FormsPixmap.H"
-#define FL_NORMAL_PIXMAP FL_NO_BOX
+#define FL_NORMAL_PIXMAP fltk3::NO_BOX
 forms_constructorb(Fl_FormsPixmap, fl_add_pixmap)
 inline void fl_set_pixmap_data(Fl_Widget* o, char*const* b) {
     ((Fl_FormsPixmap*)o)->set(b);
@@ -411,8 +411,8 @@ inline void fl_set_pixmap_data(Fl_Widget* o, char*const* b) {
 inline void fl_set_pixmap_align(Fl_Widget* o,Fl_Align a,int,int) {o->align(a);}
 //inline void fl_set_pixmap_colorcloseness(int, int, int);
 
-#include "Fl_Box.H"
-forms_constructorb(Fl_Box, fl_add_box)
+#include "Box.h"
+forms_constructorb(fltk3::Box, fl_add_box)
 
 #include "Fl_Browser.H"
 forms_constructor(Fl_Browser, fl_add_browser)
@@ -485,7 +485,7 @@ inline int fl_isdisplayed_browser_line(Fl_Widget* o, int n) {
 FL_EXPORT Fl_Button* fl_add_button(uchar t,int x,int y,int w,int h,const char* l);
 inline int fl_get_button(Fl_Widget* b) {return ((Fl_Button*)b)->value();}
 inline void fl_set_button(Fl_Widget* b, int v) {((Fl_Button*)b)->value(v);}
-inline int fl_get_button_numb(Fl_Widget*) {return Fl::event_button();}
+inline int fl_get_button_numb(Fl_Widget*) {return fltk3::event_button();}
 inline void fl_set_button_shortcut(Fl_Widget* b, const char* s,int=0) {
     ((Fl_Button*)b)->shortcut(s);}
 //#define fl_set_object_shortcut(b,s) fl_set_button_shortcut(b,s)
@@ -595,7 +595,7 @@ inline void fl_get_counter_bounds(Fl_Widget* o, float* a, float* b) {
 //inline void fl_set_counter_filter(Fl_Widget*,const char* (*)(Fl_Widget*,double,int));
 
 // Cursor stuff cannot be emulated because it uses X stuff
-inline void fl_set_cursor(Fl_Window* w, Fl_Cursor c) {w->cursor(c);}
+inline void fl_set_cursor(fltk3::Window* w, Fl_Cursor c) {w->cursor(c);}
 #define FL_INVISIBLE_CURSOR FL_CURSOR_NONE
 #define FL_DEFAULT_CURSOR FL_CURSOR_DEFAULT
 
@@ -627,11 +627,11 @@ inline void fl_set_dial_step(Fl_Widget* o, double v) {
 
 // Frames:
 
-inline Fl_Widget* fl_add_frame(Fl_Boxtype i,int x,int y,int w,int h,const char* l) {
+inline Fl_Widget* fl_add_frame(fltk3::Boxtype i,int x,int y,int w,int h,const char* l) {
   return fl_add_box(i,x-3,y-3,w+6,h+6,l);}
 
 // labelframe nyi
-inline Fl_Widget* fl_add_labelframe(Fl_Boxtype i,int x,int y,int w,int h,const char* l) {
+inline Fl_Widget* fl_add_labelframe(fltk3::Boxtype i,int x,int y,int w,int h,const char* l) {
   Fl_Widget* o = fl_add_box(i,x-3,y-3,w+6,h+6,l);
   o->align(FL_ALIGN_TOP_LEFT);
   return o;
@@ -809,16 +809,16 @@ inline void fl_set_slider_precision(Fl_Widget* o, int i) {
     ((Fl_Value_Slider*)o)->precision(i);}
 // filter function!
 
-// The forms text object was the same as an Fl_Box except it inverted the
+// The forms text object was the same as an fltk3::Box except it inverted the
 // meaning of FL_ALIGN_INSIDE.  Implementation in forms.cxx
 class FL_EXPORT Fl_FormsText : public Fl_Widget {
 protected:
     void draw();
 public:
-    Fl_FormsText(Fl_Boxtype b, int X, int Y, int W, int H, const char* l=0)
+    Fl_FormsText(fltk3::Boxtype b, int X, int Y, int W, int H, const char* l=0)
 	: Fl_Widget(X,Y,W,H,l) {box(b); align(FL_ALIGN_LEFT);}
 };
-#define FL_NORMAL_TEXT FL_NO_BOX
+#define FL_NORMAL_TEXT fltk3::NO_BOX
 forms_constructorb(Fl_FormsText, fl_add_text)
 
 #include "Fl_Timer.H"
@@ -835,8 +835,8 @@ void fl_gettime(long* sec, long* usec);
 
 // stuff from DDForms:
 
-inline int fl_double_click() {return Fl::event_clicks();}
-inline void fl_draw() {Fl::flush();}
+inline int fl_double_click() {return fltk3::event_clicks();}
+inline void fl_draw() {fltk3::flush();}
 
 #endif	/* define __FORMS_H__ */
 

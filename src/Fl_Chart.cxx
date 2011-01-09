@@ -26,7 +26,7 @@
 //
 
 #include <fltk3/math.h>
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Chart.H>
 #include <fltk3/fl_draw.H>
 #include "flstring.h"
@@ -233,11 +233,11 @@ static void draw_piechart(int x,int y,int w,int h,
 void Fl_Chart::draw() {
 
     draw_box();
-    Fl_Boxtype b = box();
-    int xx = x()+Fl::box_dx(b); // was 9 instead of dx...
-    int yy = y()+Fl::box_dy(b);
-    int ww = w()-Fl::box_dw(b);
-    int hh = h()-Fl::box_dh(b);
+    fltk3::Boxtype b = box();
+    int xx = x()+fltk3::box_dx(b); // was 9 instead of dx...
+    int yy = y()+fltk3::box_dy(b);
+    int ww = w()-fltk3::box_dw(b);
+    int hh = h()-fltk3::box_dh(b);
     fl_push_clip(xx, yy, ww, hh);
 
     ww--; hh--; // adjust for line thickness
@@ -287,13 +287,13 @@ void Fl_Chart::draw() {
 
 /**
   Create a new Fl_Chart widget using the given position, size and label string.
-  The default boxstyle is \c FL_NO_BOX.
+  The default boxstyle is \c fltk3::NO_BOX.
   \param[in] X, Y, W, H position and size of the widget
   \param[in] L widget label, default is no label
  */
 Fl_Chart::Fl_Chart(int X, int Y, int W, int H,const char *L) :
 Fl_Widget(X,Y,W,H,L) {
-  box(FL_BORDER_BOX);
+  box(fltk3::BORDER_BOX);
   align(FL_ALIGN_BOTTOM);
   numb       = 0;
   maxnumb    = 0;

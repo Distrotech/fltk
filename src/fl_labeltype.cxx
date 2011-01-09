@@ -29,7 +29,7 @@
 // Other label types (symbols) are in their own source files
 // to avoid linking if not used.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Widget.H>
 #include <fltk3/Fl_Group.H>
 #include <fltk3/fl_draw.H>
@@ -58,6 +58,7 @@ fl_normal_measure(const Fl_Label* o, int& W, int& H) {
 
 #define MAX_LABELTYPE 16
 
+// TODO: FLTK123 - fill the label type table!
 static Fl_Label_Draw_F* table[MAX_LABELTYPE] = {
   fl_normal_label,
   fl_no_label,
@@ -75,7 +76,7 @@ static Fl_Label_Draw_F* table[MAX_LABELTYPE] = {
 static Fl_Label_Measure_F* measure[MAX_LABELTYPE];
 
 /** Sets the functions to call to draw and measure a specific labeltype. */
-void Fl::set_labeltype(Fl_Labeltype t,Fl_Label_Draw_F* f,Fl_Label_Measure_F*m) 
+void fltk3::set_labeltype(fltk3::Labeltype t,Fl_Label_Draw_F* f,Fl_Label_Measure_F*m) 
 {
   table[t] = f; measure[t] = m;
 }
@@ -106,10 +107,10 @@ void Fl_Label::measure(int& W, int& H) const {
     This is the normal call for a widget's draw() method.
  */
 void Fl_Widget::draw_label() const {
-  int X = x_+Fl::box_dx(box());
-  int W = w_-Fl::box_dw(box());
+  int X = x_+fltk3::box_dx(box());
+  int W = w_-fltk3::box_dw(box());
   if (W > 11 && align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {X += 3; W -= 6;}
-  draw_label(X, y_+Fl::box_dy(box()), W, h_-Fl::box_dh(box()));
+  draw_label(X, y_+fltk3::box_dy(box()), W, h_-fltk3::box_dh(box()));
 }
 
 /** Draws the label in an arbitrary bounding box.

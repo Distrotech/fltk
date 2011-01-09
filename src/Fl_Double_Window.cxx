@@ -26,14 +26,14 @@
 //
 
 #include <config.h>
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Double_Window.H>
 #include <fltk3/Fl_Printer.H>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
 
 // On systems that support double buffering "naturally" the base
-// Fl_Window class will probably do double-buffer and this subclass
+// fltk3::Window class will probably do double-buffer and this subclass
 // does nothing.
 
 #if USE_XDBE
@@ -62,7 +62,7 @@ static int can_xdbe() {
 #endif
 
 void Fl_Double_Window::show() {
-  Fl_Window::show();
+  fltk3::Window::show();
 }
 
 static void fl_copy_offscreen_to_display(int x, int y, int w, int h, Fl_Offscreen pixmap, int srcx, int srcy);
@@ -390,7 +390,7 @@ void Fl_Double_Window::flush(int eraseoverlay) {
     DeleteDC(fl_gc);
     fl_gc = _sgc;
     //# if defined(FLTK_USE_CAIRO)
-    //if Fl::cairo_autolink_context() Fl::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
+    //if fltk3::cairo_autolink_context() fltk3::cairo_make_current(this); // capture gc changes automatically to update the cairo context adequately
     //# endif
 #elif defined(__APPLE__)
     if ( myi->other_xid ) {
@@ -417,7 +417,7 @@ void Fl_Double_Window::flush(int eraseoverlay) {
 void Fl_Double_Window::resize(int X,int Y,int W,int H) {
   int ow = w();
   int oh = h();
-  Fl_Window::resize(X,Y,W,H);
+  fltk3::Window::resize(X,Y,W,H);
 #if USE_XDBE
   if (use_xdbe) {
     Fl_X* myi = Fl_X::i(this);
@@ -444,7 +444,7 @@ void Fl_Double_Window::hide() {
 #endif
       fl_delete_offscreen(myi->other_xid);
   }
-  Fl_Window::hide();
+  fltk3::Window::hide();
 }
 
 /**

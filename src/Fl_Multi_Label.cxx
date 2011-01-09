@@ -28,7 +28,7 @@
 // Allows two labels to be used on a widget (by having one of them
 // be one of these it allows an infinte number!)
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Widget.H>
 #include <fltk3/Fl_Menu_Item.H>
 #include <fltk3/Fl_Multi_Label.H>
@@ -66,13 +66,13 @@ static void multi_measure(const Fl_Label* o, int& w, int& h) {
 }
 
 void Fl_Multi_Label::label(Fl_Widget* o) {
-  Fl::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
-  o->label(_FL_MULTI_LABEL, (const char*)this);
+  fltk3::set_labeltype(fltk3::MULTI_LABEL, multi_labeltype, multi_measure);
+  o->label(fltk3::MULTI_LABEL, (const char*)this);
 }
 
 void Fl_Multi_Label::label(Fl_Menu_Item* o) {
-  Fl::set_labeltype(_FL_MULTI_LABEL, multi_labeltype, multi_measure);
-  o->label(_FL_MULTI_LABEL, (const char*)this);
+  fltk3::set_labeltype(fltk3::MULTI_LABEL, multi_labeltype, multi_measure);
+  o->label(fltk3::MULTI_LABEL, (const char*)this);
 }
 
 //

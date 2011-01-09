@@ -36,7 +36,7 @@
 #define Fl_Color_Chooser_H
 
 #include <fltk3/Fl_Group.H>
-#include <fltk3/Fl_Box.H>
+#include <fltk3/Box.h>
 #include <fltk3/Fl_Return_Button.H>
 #include <fltk3/Fl_Choice.H>
 #include <fltk3/Fl_Value_Input.H>
@@ -120,7 +120,7 @@ class FL_EXPORT Fl_Color_Chooser : public Fl_Group {
   Flcc_Value_Input rvalue;
   Flcc_Value_Input gvalue;
   Flcc_Value_Input bvalue;
-  Fl_Box resize_box;
+  fltk3::Box resize_box;
   double hue_, saturation_, value_;
   double r_, g_, b_;
   void set_valuators();

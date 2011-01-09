@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Check_Button.H>
 
 // TODO Correct incorrect Fl_Check_Button comments.
@@ -41,7 +41,7 @@
  */
 Fl_Check_Button::Fl_Check_Button(int X, int Y, int W, int H, const char *L)
 : Fl_Light_Button(X, Y, W, H, L) {
-  box(FL_NO_BOX);
-  down_box(FL_DOWN_BOX);
+  box(fltk3::NO_BOX);
+  down_box(fltk3::DOWN_BOX);
   selection_color(FL_FOREGROUND_COLOR);
 }

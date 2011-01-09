@@ -31,7 +31,7 @@
 #include "flstring.h"
 #if HAVE_GL || defined(FL_DOXYGEN)
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/gl.h>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
@@ -345,7 +345,7 @@ void gl_color(Fl_Color i) {
 #endif
 #endif
   uchar red, green, blue;
-  Fl::get_color(i, red, green, blue);
+  fltk3::get_color(i, red, green, blue);
   glColor3ub(red, green, blue);
 }
 
@@ -414,8 +414,8 @@ void gl_texture_fifo::display_texture(int rank)
   glMatrixMode (GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity ();
-  float winw = Fl_Window::current()->w();
-  float winh = Fl_Window::current()->h();
+  float winw = fltk3::Window::current()->w();
+  float winh = fltk3::Window::current()->h();
   glScalef (2.0f / winw, 2.0f /  winh, 1.0f);
   glTranslatef (-winw / 2.0f, -winh / 2.0f, 0.0f);
   //write the texture on screen

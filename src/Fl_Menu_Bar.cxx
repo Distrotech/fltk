@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Menu_Bar.H>
 #include <fltk3/fl_draw.H>
 
@@ -39,8 +39,8 @@ void Fl_Menu_Bar::draw() {
     m->draw(X, y(), W, h(), this);
     X += W;
     if (m->flags & FL_MENU_DIVIDER) {
-      int y1 = y() + Fl::box_dy(box());
-      int y2 = y1 + h() - Fl::box_dh(box()) - 1;
+      int y1 = y() + fltk3::box_dy(box());
+      int y2 = y1 + h() - fltk3::box_dh(box()) - 1;
 
       // Draw a vertical divider between menus...
       fl_color(FL_DARK3);

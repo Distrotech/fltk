@@ -27,18 +27,18 @@
 
 // Rapid-App style knob
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Roller.H>
 #include <fltk3/fl_draw.H>
 #include <math.h>
 
 int Fl_Roller::handle(int event) {
   static int ipos;
-  int newpos = horizontal() ? Fl::event_x() : Fl::event_y();
+  int newpos = horizontal() ? fltk3::event_x() : fltk3::event_y();
   switch (event) {
   case FL_PUSH:
-    if (Fl::visible_focus()) {
-      Fl::focus(this);
+    if (fltk3::visible_focus()) {
+      fltk3::focus(this);
       redraw();
     }
     handle_push();
@@ -51,7 +51,7 @@ int Fl_Roller::handle(int event) {
     handle_release();
     return 1;
   case FL_KEYBOARD :
-    switch (Fl::event_key()) {
+    switch (fltk3::event_key()) {
       case FL_Up:
         if (horizontal()) return 0;
 	handle_drag(clamp(increment(value(),-1)));
@@ -74,7 +74,7 @@ int Fl_Roller::handle(int event) {
     // break not required because of switch...
   case FL_FOCUS :
   case FL_UNFOCUS :
-    if (Fl::visible_focus()) {
+    if (fltk3::visible_focus()) {
       redraw();
       return 1;
     } else return 0;
@@ -88,10 +88,10 @@ int Fl_Roller::handle(int event) {
 
 void Fl_Roller::draw() {
   if (damage()&FL_DAMAGE_ALL) draw_box();
-  int X = x()+Fl::box_dx(box());
-  int Y = y()+Fl::box_dy(box());
-  int W = w()-Fl::box_dw(box())-1;
-  int H = h()-Fl::box_dh(box())-1;
+  int X = x()+fltk3::box_dx(box());
+  int Y = y()+fltk3::box_dy(box());
+  int W = w()-fltk3::box_dw(box())-1;
+  int H = h()-fltk3::box_dh(box())-1;
   if (W<=0 || H <=0) return;
   int offset = step() ? int(value()/step()) : 0;
   const double ARC = 1.5; // 1/2 the number of radians visible
@@ -166,17 +166,17 @@ void Fl_Roller::draw() {
     }
   }
 
-  if (Fl::focus() == this) draw_focus(FL_THIN_UP_FRAME, x(), y(), w(), h());
+  if (fltk3::focus() == this) draw_focus(fltk3::THIN_UP_FRAME, x(), y(), w(), h());
 }
 
 /**
   Creates a new Fl_Roller widget using the given position,
-  size, and label string. The default boxtype is FL_NO_BOX.
+  size, and label string. The default boxtype is fltk3::NO_BOX.
   <P>Inherited destructor destroys the valuator.
 */
 Fl_Roller::Fl_Roller(int X,int Y,int W,int H,const char* L)
   : Fl_Valuator(X,Y,W,H,L) {
-  box(FL_UP_BOX);
+  box(fltk3::UP_BOX);
   step(1,1000);
 }
 

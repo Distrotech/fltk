@@ -32,7 +32,7 @@
 // These box types are in separate files so they are not linked
 // in if not used.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 #include "flstring.h"
 
@@ -50,8 +50,8 @@ inline Fl_Color shade_color(uchar gc, Fl_Color bc) {
 #ifdef USE_OLD_PLASTIC_COLOR
   return fl_color_average((Fl_Color)gc, bc, 0.75f);
 #else
-  unsigned	grgb = Fl::get_color((Fl_Color)gc),
-		brgb = Fl::get_color(bc);
+  unsigned	grgb = fltk3::get_color((Fl_Color)gc),
+		brgb = fltk3::get_color(bc);
   int		red, green, blue, gray;
 
 
@@ -71,7 +71,7 @@ inline Fl_Color shade_color(uchar gc, Fl_Color bc) {
   if (blue > 255)
     blue = 255;
 
-  if (Fl::draw_box_active())
+  if (fltk3::draw_box_active())
     return fl_rgb_color(red, green, blue);
   else
     return fl_color_average(FL_GRAY, fl_rgb_color(red, green, blue), 0.75f);
@@ -359,20 +359,20 @@ static void down_round(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-extern void fl_internal_boxtype(Fl_Boxtype, Fl_Box_Draw_F*);
+extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
 
 
-Fl_Boxtype fl_define_FL_PLASTIC_UP_BOX() {
-  fl_internal_boxtype(_FL_PLASTIC_UP_BOX, up_box);
-  fl_internal_boxtype(_FL_PLASTIC_DOWN_BOX, down_box);
-  fl_internal_boxtype(_FL_PLASTIC_UP_FRAME, up_frame);
-  fl_internal_boxtype(_FL_PLASTIC_DOWN_FRAME, down_frame);
-  fl_internal_boxtype(_FL_PLASTIC_THIN_UP_BOX, thin_up_box);
-  fl_internal_boxtype(_FL_PLASTIC_THIN_DOWN_BOX, down_box);
-  fl_internal_boxtype(_FL_PLASTIC_ROUND_UP_BOX, up_round);
-  fl_internal_boxtype(_FL_PLASTIC_ROUND_DOWN_BOX, down_round);
+fltk3::Boxtype fl_define_FL_PLASTIC_UP_BOX() {
+  fl_internal_boxtype(fltk3::PLASTIC_UP_BOX, up_box);
+  fl_internal_boxtype(fltk3::PLASTIC_DOWN_BOX, down_box);
+  fl_internal_boxtype(fltk3::PLASTIC_UP_FRAME, up_frame);
+  fl_internal_boxtype(fltk3::PLASTIC_DOWN_FRAME, down_frame);
+  fl_internal_boxtype(fltk3::PLASTIC_THIN_UP_BOX, thin_up_box);
+  fl_internal_boxtype(fltk3::PLASTIC_THIN_DOWN_BOX, down_box);
+  fl_internal_boxtype(fltk3::PLASTIC_ROUND_UP_BOX, up_round);
+  fl_internal_boxtype(fltk3::PLASTIC_ROUND_DOWN_BOX, down_round);
 
-  return _FL_PLASTIC_UP_BOX;
+  return fltk3::PLASTIC_UP_BOX;
 }
 
 

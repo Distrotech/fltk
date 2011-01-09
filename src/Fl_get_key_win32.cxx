@@ -29,7 +29,7 @@
 // which are actually X keysyms.  So this has to translate to MSWindows
 // VK_x symbols.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/x.H>
 
 // convert an Fltk (X) keysym to a MSWindows VK symbol:
@@ -123,11 +123,11 @@ static int fltk2ms(int fltk) {
   return 0;
 }
 
-int Fl::event_key(int k) {
+int fltk3::event_key(int k) {
   return GetKeyState(fltk2ms(k))&~1;
 }
 
-int Fl::get_key(int k) {
+int fltk3::get_key(int k) {
   uchar foo[256];
   GetKeyboardState(foo);
   return foo[fltk2ms(k)]&~1;

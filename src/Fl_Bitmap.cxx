@@ -31,7 +31,7 @@
 /** \fn Fl_Bitmap::Fl_Bitmap(const unsigned char *array, int W, int H)
   The constructors create a new bitmap from the specified bitmap data.*/
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
 #include <fltk3/Fl_Widget.H>
@@ -317,7 +317,7 @@ void Fl_GDI_Graphics_Driver::draw(Fl_Bitmap *bm, int XP, int YP, int WP, int HP,
     fl_begin_offscreen(tmp_id);
     Fl_Color save_c = fl_color(); // save bitmap's desired color
     uchar r, g, b;
-    Fl::get_color(save_c, r, g, b);
+    fltk3::get_color(save_c, r, g, b);
     r = 255-r;
     g = 255-g;
     b = 255-b;
@@ -395,8 +395,8 @@ void Fl_Bitmap::label(Fl_Widget* widget) {
 }
 
 void Fl_Bitmap::label(Fl_Menu_Item* m) {
-  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, measure);
-  m->label(_FL_IMAGE_LABEL, (const char*)this);
+  fltk3::set_labeltype(fltk3::IMAGE_LABEL, labeltype, measure);
+  m->label(fltk3::IMAGE_LABEL, (const char*)this);
 }
 
 Fl_Image *Fl_Bitmap::copy(int W, int H) {

@@ -5,7 +5,7 @@
 #ifndef FL_TREE_H
 #define FL_TREE_H
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Group.H>
 #include <fltk3/Fl_Scrollbar.H>
 #include <fltk3/fl_draw.H>
@@ -782,17 +782,17 @@ public:
     // no redraw().. only affects new add()itions
   }
   /// Sets the style of box used to draw selected items.
-  /// This is an fltk Fl_Boxtype.
-  /// The default is influenced by FLTK's current Fl::scheme()
+  /// This is an fltk fltk3::Boxtype.
+  /// The default is influenced by FLTK's current fltk3::scheme()
   ///
-  Fl_Boxtype selectbox() const {
+  fltk3::Boxtype selectbox() const {
     return(_prefs.selectbox());
   }
   /// Gets the style of box used to draw selected items.
-  /// This is an fltk Fl_Boxtype.
-  /// The default is influenced by FLTK's current Fl::scheme()
+  /// This is an fltk fltk3::Boxtype.
+  /// The default is influenced by FLTK's current fltk3::scheme()
   ///
-  void selectbox(Fl_Boxtype val) {
+  void selectbox(fltk3::Boxtype val) {
     _prefs.selectbox(val);
     redraw();
   }
@@ -832,10 +832,10 @@ public:
   /// Gets the current size of the scrollbars' troughs, in pixels.
   ///
   /// If this value is zero (default), this widget will use the global
-  /// Fl::scrollbar_size() value as the scrollbar's width.
+  /// fltk3::scrollbar_size() value as the scrollbar's width.
   /// 
-  /// \returns Scrollbar size in pixels, or 0 if the global Fl::scrollsize() is being used.
-  /// \see Fl::scrollbar_size(int)
+  /// \returns Scrollbar size in pixels, or 0 if the global fltk3::scrollsize() is being used.
+  /// \see fltk3::scrollbar_size(int)
   ///
   int scrollbar_size() const {
       return(_scrollbar_size);
@@ -843,7 +843,7 @@ public:
   /// Sets the pixel size of the scrollbars' troughs to the \p size, in pixels.
   ///
   /// Normally you should not need this method, and should use the global
-  /// Fl::scrollbar_size(int) instead to manage the size of ALL 
+  /// fltk3::scrollbar_size(int) instead to manage the size of ALL 
   /// your widgets' scrollbars. This ensures your application 
   /// has a consistent UI, is the default behavior, and is normally
   /// what you want.
@@ -852,15 +852,15 @@ public:
   /// scrollbar size. The need for this should be rare.
   ///   
   /// Setting \p size to the special value of 0 causes the widget to
-  /// track the global Fl::scrollbar_size(), which is the default.
+  /// track the global fltk3::scrollbar_size(), which is the default.
   ///   
   /// \param[in] size Sets the scrollbar size in pixels.\n
-  ///                 If 0 (default), scrollbar size tracks the global Fl::scrollbar_size()
-  /// \see Fl::scrollbar_size()
+  ///                 If 0 (default), scrollbar size tracks the global fltk3::scrollbar_size()
+  /// \see fltk3::scrollbar_size()
   ///
   void scrollbar_size(int size) {
       _scrollbar_size = size;
-      int scrollsize = _scrollbar_size ? _scrollbar_size : Fl::scrollbar_size();
+      int scrollsize = _scrollbar_size ? _scrollbar_size : fltk3::scrollbar_size();
       if ( _vscroll->w() != scrollsize ) {
         _vscroll->resize(x()+w()-scrollsize, h(), scrollsize, _vscroll->h());
       }

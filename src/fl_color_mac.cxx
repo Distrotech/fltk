@@ -34,7 +34,7 @@
 // matt: Quartz support done
 
 #include <config.h>
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
 
@@ -83,7 +83,7 @@ void Fl_Quartz_Graphics_Driver::color(uchar r, uchar g, uchar b) {
   CGContextSetRGBStrokeColor(fl_gc, fr, fg, fb, 1.0f);
 }
 
-void Fl::set_color(Fl_Color i, unsigned c) {
+void fltk3::set_color(Fl_Color i, unsigned c) {
   if (fl_cmap[i] != c) {
     fl_cmap[i] = c;
   }

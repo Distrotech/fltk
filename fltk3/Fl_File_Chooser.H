@@ -29,7 +29,7 @@
 
 #ifndef Fl_File_Chooser_H
 #define Fl_File_Chooser_H
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Double_Window.H>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,7 +41,7 @@
 #include <fltk3/Fl_Preferences.H>
 #include <fltk3/Fl_Tile.H>
 #include <fltk3/Fl_File_Browser.H>
-#include <fltk3/Fl_Box.H>
+#include <fltk3/Box.h>
 #include <fltk3/Fl_Check_Button.H>
 #include <fltk3/Fl_File_Input.H>
 #include <fltk3/Fl_Return_Button.H>
@@ -89,7 +89,7 @@ private:
   Fl_File_Browser *fileList;
   void cb_fileList_i(Fl_File_Browser*, void*);
   static void cb_fileList(Fl_File_Browser*, void*);
-  Fl_Box *previewBox;
+  fltk3::Box *previewBox;
 public:
   Fl_Check_Button *previewButton;
 private:

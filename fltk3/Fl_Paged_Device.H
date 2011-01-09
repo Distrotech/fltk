@@ -33,7 +33,7 @@
 #define Fl_Paged_Device_H
 
 #include <fltk3/Fl_Device.H>
-#include <fltk3/Fl_Window.H>
+#include <fltk3/Window.h>
 
 /** \brief Number of elements in enum Page_Format */
 #define NO_PAGE_FORMATS 30 /* MSVC6 compilation fix */
@@ -146,7 +146,7 @@ public:
   virtual void translate(int x, int y);
   virtual void untranslate(void);
   void print_widget(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
-  void print_window_part(Fl_Window *win, int x, int y, int w, int h, int delta_x = 0, int delta_y = 0);
+  void print_window_part(fltk3::Window *win, int x, int y, int w, int h, int delta_x = 0, int delta_y = 0);
   virtual int end_page (void);
   virtual void end_job (void);
 };

@@ -38,7 +38,7 @@
 #ifndef Fl_Input_Choice_H
 #define Fl_Input_Choice_H
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Group.H>
 #include <fltk3/Fl_Input.H>
 #include <fltk3/Fl_Menu_Button.H>
@@ -60,15 +60,15 @@ class FL_EXPORT Fl_Input_Choice : public Fl_Group {
   // Private class to handle slightly 'special' behavior of menu button
   class InputMenuButton : public Fl_Menu_Button {
     void draw() {
-      draw_box(FL_UP_BOX, color());
+      draw_box(fltk3::UP_BOX, color());
       fl_color(active_r() ? labelcolor() : fl_inactive(labelcolor()));
       int xc = x()+w()/2, yc=y()+h()/2;
       fl_polygon(xc-5,yc-3,xc+5,yc-3,xc,yc+3);
-      if (Fl::focus() == this) draw_focus();
+      if (fltk3::focus() == this) draw_focus();
     }
   public:
     InputMenuButton(int x,int y,int w,int h,const char*l=0) : 
-	Fl_Menu_Button(x,y,w,h,l) { box(FL_UP_BOX); }
+	Fl_Menu_Button(x,y,w,h,l) { box(fltk3::UP_BOX); }
   };
 
   Fl_Input *inp_;
@@ -123,15 +123,15 @@ class FL_EXPORT Fl_Input_Choice : public Fl_Group {
   }
 
   // Custom resize behavior -- input stretches, menu button doesn't
-  inline int inp_x() { return(x() + Fl::box_dx(box())); }
-  inline int inp_y() { return(y() + Fl::box_dy(box())); }
-  inline int inp_w() { return(w() - Fl::box_dw(box()) - 20); }
-  inline int inp_h() { return(h() - Fl::box_dh(box())); }
+  inline int inp_x() { return(x() + fltk3::box_dx(box())); }
+  inline int inp_y() { return(y() + fltk3::box_dy(box())); }
+  inline int inp_w() { return(w() - fltk3::box_dw(box()) - 20); }
+  inline int inp_h() { return(h() - fltk3::box_dh(box())); }
 
-  inline int menu_x() { return(x() + w() - 20 - Fl::box_dx(box())); }
-  inline int menu_y() { return(y() + Fl::box_dy(box())); }
+  inline int menu_x() { return(x() + w() - 20 - fltk3::box_dx(box())); }
+  inline int menu_y() { return(y() + fltk3::box_dy(box())); }
   inline int menu_w() { return(20); }
-  inline int menu_h() { return(h() - Fl::box_dh(box())); }
+  inline int menu_h() { return(h() - fltk3::box_dh(box())); }
 
 public:
   /**
@@ -140,17 +140,17 @@ public:
   <P> Inherited destructor Destroys the widget and any value associated with it.
   */
   Fl_Input_Choice (int x,int y,int w,int h,const char*l=0) : Fl_Group(x,y,w,h,l) {
-    Fl_Group::box(FL_DOWN_BOX);
+    Fl_Group::box(fltk3::DOWN_BOX);
     align(FL_ALIGN_LEFT);				// default like Fl_Input
     inp_ = new Fl_Input(inp_x(), inp_y(),
 			inp_w(), inp_h());
     inp_->callback(inp_cb, (void*)this);
-    inp_->box(FL_FLAT_BOX);		// cosmetic
+    inp_->box(fltk3::FLAT_BOX);		// cosmetic
     inp_->when(FL_WHEN_CHANGED|FL_WHEN_NOT_CHANGED);
     menu_ = new InputMenuButton(menu_x(), menu_y(),
 				menu_w(), menu_h());
     menu_->callback(menu_cb, (void*)this);
-    menu_->box(FL_FLAT_BOX);				// cosmetic
+    menu_->box(fltk3::FLAT_BOX);				// cosmetic
     end();
   }
   
@@ -168,9 +168,9 @@ public:
   /** Removes all items from the menu. */
   void clear() { menu_->clear(); }
   /** Gets the box type of the menu button */
-  Fl_Boxtype down_box() const { return (menu_->down_box()); }
+  fltk3::Boxtype down_box() const { return (menu_->down_box()); }
   /** Sets the box type of the menu button */
-  void down_box(Fl_Boxtype b) { menu_->down_box(b); }
+  void down_box(fltk3::Boxtype b) { menu_->down_box(b); }
   /** Gets the Fl_Menu_Item array used for the menu. */
   const Fl_Menu_Item *menu() { return (menu_->menu()); }
   /** Sets the Fl_Menu_Item array used for the menu. */

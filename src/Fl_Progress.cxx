@@ -35,7 +35,7 @@
 // Include necessary header files...
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Progress.H>
 #include <fltk3/fl_draw.H>
 
@@ -59,10 +59,10 @@ void Fl_Progress::draw()
 
 
   // Get the box borders...
-  bx = Fl::box_dx(box());
-  by = Fl::box_dy(box());
-  bw = Fl::box_dw(box());
-  bh = Fl::box_dh(box());
+  bx = fltk3::box_dx(box());
+  by = fltk3::box_dy(box());
+  bw = fltk3::box_dw(box());
+  bh = fltk3::box_dh(box());
 
   tx = x() + bx;
   tw = w() - bw;
@@ -110,7 +110,7 @@ void Fl_Progress::draw()
 Fl_Progress::Fl_Progress(int X, int Y, int W, int H, const char* L)
 : Fl_Widget(X, Y, W, H, L) {
   align(FL_ALIGN_INSIDE);
-  box(FL_DOWN_BOX);
+  box(fltk3::DOWN_BOX);
   color(FL_BACKGROUND2_COLOR, FL_YELLOW);
   minimum(0.0f);
   maximum(100.0f);

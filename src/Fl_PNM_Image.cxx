@@ -34,7 +34,7 @@
 // Include necessary header files...
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_PNM_Image.H>
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,7 +83,7 @@ Fl_PNM_Image::Fl_PNM_Image(const char *name)	// I - File to read
   lineptr = fgets(line, sizeof(line), fp);
   if (!lineptr) {
     fclose(fp);
-    Fl::error("Early end-of-file in PNM file \"%s\"!", name);
+    fltk3::error("Early end-of-file in PNM file \"%s\"!", name);
     return;
   }
 

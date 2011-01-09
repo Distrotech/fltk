@@ -41,7 +41,7 @@
 // Implemented without using the xpm library (which I can't use because
 // it interferes with the color cube used by fl_draw_image).
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 #include <fltk3/x.H>
 #include <fltk3/Fl_Widget.H>
@@ -259,8 +259,8 @@ void Fl_Pixmap::label(Fl_Widget* widget) {
 }
 
 void Fl_Pixmap::label(Fl_Menu_Item* m) {
-  Fl::set_labeltype(_FL_IMAGE_LABEL, labeltype, Fl_Image::measure);
-  m->label(_FL_IMAGE_LABEL, (const char*)this);
+  fltk3::set_labeltype(fltk3::IMAGE_LABEL, labeltype, Fl_Image::measure);
+  m->label(fltk3::IMAGE_LABEL, (const char*)this);
 }
 
 void Fl_Pixmap::copy_data() {
@@ -421,7 +421,7 @@ void Fl_Pixmap::color_average(Fl_Color c, float i) {
   uchar		r, g, b;
   unsigned	ia, ir, ig, ib;
 
-  Fl::get_color(c, r, g, b);
+  fltk3::get_color(c, r, g, b);
   if (i < 0.0f) i = 0.0f;
   else if (i > 1.0f) i = 1.0f;
 

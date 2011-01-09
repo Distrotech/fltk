@@ -32,7 +32,7 @@ extern int fl_gl_load_plugin;
 
 static int temp = fl_gl_load_plugin;
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/x.H>
 #include "Fl_Gl_Choice.H"
 #include <fltk3/Fl_Gl_Window.H>
@@ -83,7 +83,7 @@ void Fl_Gl_Window::show() {
       }
 
       if (!g) {
-        Fl::error("Insufficient GL support");
+        fltk3::error("Insufficient GL support");
 	return;
       }
     }
@@ -95,7 +95,7 @@ void Fl_Gl_Window::show() {
 	else Fl_X::i(window())->contains_GL_subwindow();
 #endif
   }
-  Fl_Window::show();
+  fltk3::Window::show();
 
 #ifdef __APPLE__
   set_visible();
@@ -427,7 +427,7 @@ void Fl_Gl_Window::resize(int X,int Y,int W,int H) {
   }
 #endif
 
-  Fl_Window::resize(X,Y,W,H);
+  fltk3::Window::resize(X,Y,W,H);
 }
 
 /**
@@ -459,7 +459,7 @@ void Fl_Gl_Window::hide() {
     overlay = 0;
   }
 #endif
-  Fl_Window::hide();
+  fltk3::Window::hide();
 }
 
 /**
@@ -473,7 +473,7 @@ Fl_Gl_Window::~Fl_Gl_Window() {
 
 void Fl_Gl_Window::init() {
   end(); // we probably don't want any children
-  box(FL_NO_BOX);
+  box(fltk3::NO_BOX);
 
   mode_    = FL_RGB | FL_DEPTH | FL_DOUBLE;
   alist    = 0;
@@ -525,7 +525,7 @@ void Fl_Gl_Window::draw_overlay() {}
   buffers are swapped after this function is completed.
 */
 void Fl_Gl_Window::draw() {
-    Fl::fatal("Fl_Gl_Window::draw() *must* be overriden. Please refer to the documentation.");
+    fltk3::fatal("Fl_Gl_Window::draw() *must* be overriden. Please refer to the documentation.");
 }
 
 
@@ -546,7 +546,7 @@ int Fl_Gl_Window::handle(int event)
       show(); //
   }
 #endif
-  return Fl_Window::handle(event);
+  return fltk3::Window::handle(event);
 }
 
 //

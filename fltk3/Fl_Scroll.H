@@ -43,7 +43,7 @@
   \image latex  Fl_Scroll.png "Fl_Scroll" width=4cm
 
   If all of the child widgets are packed together into a solid
-  rectangle then you want to set box() to FL_NO_BOX or
+  rectangle then you want to set box() to fltk3::NO_BOX or
   one of the _FRAME types. This will result in the best output.
   However, if the child widgets are a sparse arrangement you must
   set box() to a real _BOX type. This can result in some
@@ -89,7 +89,7 @@
   fit inside the Fl_Scroll without scrolling.  Be sure to leave
   space for the scrollbars, as Fluid won't show these either.
 
-  <I>You cannot use Fl_Window as a child of this since the
+  <I>You cannot use fltk3::Window as a child of this since the
   clipping is not conveyed to it when drawn, and it will draw over the
   scrollbars and neighboring objects.</I>
 */
@@ -159,10 +159,10 @@ public:
     Gets the current size of the scrollbars' troughs, in pixels.
 
     If this value is zero (default), this widget will use the 
-    Fl::scrollbar_size() value as the scrollbar's width.
+    fltk3::scrollbar_size() value as the scrollbar's width.
   
-    \returns Scrollbar size in pixels, or 0 if the global Fl::scrollsize() is being used.
-    \see Fl::scrollbar_size(int)
+    \returns Scrollbar size in pixels, or 0 if the global fltk3::scrollsize() is being used.
+    \see fltk3::scrollbar_size(int)
   */
   int scrollbar_size() const {
       return(scrollbar_size_);
@@ -171,7 +171,7 @@ public:
     Sets the pixel size of the scrollbars' troughs to the \p size, in pixels.
 
     Normally you should not need this method, and should use
-    Fl::scrollbar_size(int) instead to manage the size of ALL 
+    fltk3::scrollbar_size(int) instead to manage the size of ALL 
     your widgets' scrollbars. This ensures your application 
     has a consistent UI, is the default behavior, and is normally
     what you want.
@@ -180,11 +180,11 @@ public:
     scrollbar size. The need for this should be rare.
     
     Setting \p size to the special value of 0 causes the widget to
-    track the global Fl::scrollbar_size(), which is the default.
+    track the global fltk3::scrollbar_size(), which is the default.
     
     \param[in] size Sets the scrollbar size in pixels.\n
-                    If 0 (default), scrollbar size tracks the global Fl::scrollbar_size()
-    \see Fl::scrollbar_size()
+                    If 0 (default), scrollbar size tracks the global fltk3::scrollbar_size()
+    \see fltk3::scrollbar_size()
   */
   void scrollbar_size(int size) {
       if ( size != scrollbar_size_ ) redraw();

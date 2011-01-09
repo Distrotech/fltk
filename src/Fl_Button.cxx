@@ -25,10 +25,10 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Button.H>
 #include <fltk3/Fl_Group.H>
-#include <fltk3/Fl_Window.H>
+#include <fltk3/Window.h>
 
 
 Fl_Widget_Tracker *Fl_Button::key_release_tracker = 0;
@@ -77,13 +77,13 @@ void Fl_Button::draw() {
   Fl_Color col = value() ? selection_color() : color();
   draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(), col);
   draw_backdrop();
-  if (labeltype() == FL_NORMAL_LABEL && value()) {
+  if (labeltype() == fltk3::NORMAL_LABEL && value()) {
     Fl_Color c = labelcolor();
     labelcolor(fl_contrast(c, col));
     draw_label();
     labelcolor(c);
   } else draw_label();
-  if (Fl::focus() == this) draw_focus();
+  if (fltk3::focus() == this) draw_focus();
 }
 
 int Fl_Button::handle(int event) {
@@ -94,9 +94,9 @@ int Fl_Button::handle(int event) {
 //  if ((value_?selection_color():color())==FL_GRAY) redraw();
     return 1;
   case FL_PUSH:
-    if (Fl::visible_focus() && handle(FL_FOCUS)) Fl::focus(this);
+    if (fltk3::visible_focus() && handle(FL_FOCUS)) fltk3::focus(this);
   case FL_DRAG:
-    if (Fl::event_inside(this)) {
+    if (fltk3::event_inside(this)) {
       if (type() == FL_RADIO_BUTTON) newval = 1;
       else newval = !oldval;
     } else
@@ -132,14 +132,14 @@ int Fl_Button::handle(int event) {
     return 1;
   case FL_SHORTCUT:
     if (!(shortcut() ?
-	  Fl::test_shortcut(shortcut()) : test_shortcut())) return 0;    
-    if (Fl::visible_focus() && handle(FL_FOCUS)) Fl::focus(this);
+	  fltk3::test_shortcut(shortcut()) : test_shortcut())) return 0;    
+    if (fltk3::visible_focus() && handle(FL_FOCUS)) fltk3::focus(this);
     goto triggered_by_keyboard;
   case FL_FOCUS : /* FALLTHROUGH */
   case FL_UNFOCUS :
-    if (Fl::visible_focus()) {
-      if (box() == FL_NO_BOX) {
-	// Widgets with the FL_NO_BOX boxtype need a parent to
+    if (fltk3::visible_focus()) {
+      if (box() == fltk3::NO_BOX) {
+	// Widgets with the fltk3::NO_BOX boxtype need a parent to
 	// redraw, since it is responsible for redrawing the
 	// background...
 	int X = x() > 0 ? x() - 1 : 0;
@@ -149,8 +149,8 @@ int Fl_Button::handle(int event) {
       return 1;
     } else return 0;
   case FL_KEYBOARD :
-    if (Fl::focus() == this && Fl::event_key() == ' ' &&
-        !(Fl::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
+    if (fltk3::focus() == this && fltk3::event_key() == ' ' &&
+        !(fltk3::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
       set_changed();
     triggered_by_keyboard:
       Fl_Widget_Tracker wp(this);
@@ -175,13 +175,13 @@ int Fl_Button::handle(int event) {
 void Fl_Button::simulate_key_action()
 {
   if (key_release_tracker) {
-    Fl::remove_timeout(key_release_timeout, key_release_tracker);
+    fltk3::remove_timeout(key_release_timeout, key_release_tracker);
     key_release_timeout(key_release_tracker);
   }
   value(1); 
   redraw();
   key_release_tracker = new Fl_Widget_Tracker(this);
-  Fl::add_timeout(0.15, key_release_timeout, key_release_tracker);
+  fltk3::add_timeout(0.15, key_release_timeout, key_release_tracker);
 }
 
 void Fl_Button::key_release_timeout(void *d)
@@ -206,8 +206,8 @@ void Fl_Button::key_release_timeout(void *d)
  */
 Fl_Button::Fl_Button(int X, int Y, int W, int H, const char *L)
 : Fl_Widget(X,Y,W,H,L) {
-  box(FL_UP_BOX);
-  down_box(FL_NO_BOX);
+  box(fltk3::UP_BOX);
+  down_box(fltk3::NO_BOX);
   value_ = oldval = 0;
   shortcut_ = 0;
   set_flag(SHORTCUT_LABEL);

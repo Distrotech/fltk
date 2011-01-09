@@ -69,9 +69,9 @@ static int Y,H;
 
 #ifdef __APPLE__
 // returns the unique tooltip window
-Fl_Window *Fl_Tooltip::current_window(void)
+fltk3::Window *Fl_Tooltip::current_window(void)
 {
-  return (Fl_Window*)window;
+  return (fltk3::Window*)window;
 }
 #endif
 
@@ -83,17 +83,17 @@ void Fl_TooltipBox::layout() {
   ww += 6; hh += 6;
 
   // find position on the screen of the widget:
-  int ox = Fl::event_x_root();
+  int ox = fltk3::event_x_root();
   int oy = Y + H+2;
   for (Fl_Widget* p = Fl_Tooltip::current(); p; p = p->window()) {
     oy += p->y();
   }
   int scr_x, scr_y, scr_w, scr_h;
-  Fl::screen_xywh(scr_x, scr_y, scr_w, scr_h);
+  fltk3::screen_xywh(scr_x, scr_y, scr_w, scr_h);
   if (ox+ww > scr_x+scr_w) ox = scr_x+scr_w - ww;
   if (ox < scr_x) ox = scr_x;
   if (H > 30) {
-    oy = Fl::event_y_root()+13;
+    oy = fltk3::event_y_root()+13;
     if (oy+hh > scr_y+scr_h) oy -= 23+hh;
   } else {
     if (oy+hh > scr_y+scr_h) oy -= (4+hh+H);
@@ -104,7 +104,7 @@ void Fl_TooltipBox::layout() {
 }
 
 void Fl_TooltipBox::draw() {
-  draw_box(FL_BORDER_BOX, 0, 0, w(), h(), Fl_Tooltip::color());
+  draw_box(fltk3::BORDER_BOX, 0, 0, w(), h(), Fl_Tooltip::color());
   fl_color(Fl_Tooltip::textcolor());
   fl_font(Fl_Tooltip::font(), Fl_Tooltip::size());
   fl_draw(tip, 3, 3, w()-6, h()-6, Fl_Align(FL_ALIGN_LEFT|FL_ALIGN_WRAP));
@@ -132,9 +132,9 @@ static void tooltip_timeout(void*) {
   if (!tip || !*tip) {
     if (window) window->hide();
   } else {
-    //if (Fl::grab()) return;
+    //if (fltk3::grab()) return;
     if (!window) window = new Fl_TooltipBox;
-    // this cast bypasses the normal Fl_Window label() code:
+    // this cast bypasses the normal fltk3::Window label() code:
     ((Fl_Widget*)window)->label(tip);
     window->layout();
     window->redraw();
@@ -143,7 +143,7 @@ static void tooltip_timeout(void*) {
     window->show();
   }
 
-  Fl::remove_timeout(recent_timeout);
+  fltk3::remove_timeout(recent_timeout);
   recent_tooltip = 1;
   recursion = 0;
 }
@@ -207,12 +207,12 @@ void Fl_Tooltip::exit_(Fl_Widget *w) {
 
   if (!widget_ || (w && w == window)) return;
   widget_ = 0;
-  Fl::remove_timeout(tooltip_timeout);
-  Fl::remove_timeout(recent_timeout);
+  fltk3::remove_timeout(tooltip_timeout);
+  fltk3::remove_timeout(recent_timeout);
   if (window && window->visible()) window->hide();
   if (recent_tooltip) {
-    if (Fl::event_state() & FL_BUTTONS) recent_tooltip = 0;
-    else Fl::add_timeout(Fl_Tooltip::hoverdelay(), recent_timeout);
+    if (fltk3::event_state() & FL_BUTTONS) recent_tooltip = 0;
+    else fltk3::add_timeout(Fl_Tooltip::hoverdelay(), recent_timeout);
   }
 }
 
@@ -222,7 +222,7 @@ void Fl_Tooltip::exit_(Fl_Widget *w) {
 // inside or near the box).
 /**
   You may be able to use this to provide tooltips for internal pieces
-  of your widget. Call this after setting Fl::belowmouse() to
+  of your widget. Call this after setting fltk3::belowmouse() to
   your widget (because that calls the above enter() method). Then figure
   out what thing the mouse is pointing at, and call this with the widget
   (this pointer is used to remove the tooltip if the widget is deleted
@@ -249,14 +249,14 @@ void Fl_Tooltip::enter_area(Fl_Widget* wid, int x,int y,int w,int h, const char*
   }
   // do nothing if it is the same:
   if (wid==widget_ /*&& x==X && y==Y && w==W && h==H*/ && t==tip) return;
-  Fl::remove_timeout(tooltip_timeout);
-  Fl::remove_timeout(recent_timeout);
+  fltk3::remove_timeout(tooltip_timeout);
+  fltk3::remove_timeout(recent_timeout);
   // remember it:
   widget_ = wid; Y = y; H = h; tip = t;
   // popup the tooltip immediately if it was recently up:
   if (recent_tooltip) {
     if (window) window->hide();
-    Fl::add_timeout(Fl_Tooltip::hoverdelay(), tooltip_timeout);
+    fltk3::add_timeout(Fl_Tooltip::hoverdelay(), tooltip_timeout);
   } else if (Fl_Tooltip::delay() < .1) {
 #ifdef WIN32
     // possible fix for the Windows titlebar, it seems to want the
@@ -266,7 +266,7 @@ void Fl_Tooltip::enter_area(Fl_Widget* wid, int x,int y,int w,int h, const char*
     tooltip_timeout(0);
   } else {
     if (window && window->visible()) window->hide();
-    Fl::add_timeout(Fl_Tooltip::delay(), tooltip_timeout);
+    fltk3::add_timeout(Fl_Tooltip::delay(), tooltip_timeout);
   }
 
 #ifdef DEBUG

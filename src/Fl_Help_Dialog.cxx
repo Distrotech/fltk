@@ -175,11 +175,11 @@ Fl_Help_Dialog::Fl_Help_Dialog() {
         larger_->callback((Fl_Callback*)cb_larger_);
       } // Fl_Button* larger_
       { Fl_Group* o = new Fl_Group(350, 10, 171, 25);
-        o->box(FL_DOWN_BOX);
+        o->box(fltk3::DOWN_BOX);
         o->color(FL_BACKGROUND2_COLOR);
         { find_ = new Fl_Input(375, 12, 143, 21, "@search");
           find_->tooltip("find text in document");
-          find_->box(FL_FLAT_BOX);
+          find_->box(fltk3::FLAT_BOX);
           find_->labelsize(13);
           find_->textfont(4);
           find_->callback((Fl_Callback*)cb_find_);
@@ -187,13 +187,13 @@ Fl_Help_Dialog::Fl_Help_Dialog() {
         } // Fl_Input* find_
         o->end();
       } // Fl_Group* o
-      { Fl_Box* o = new Fl_Box(150, 10, 190, 25);
+      { fltk3::Box* o = new fltk3::Box(150, 10, 190, 25);
         Fl_Group::current()->resizable(o);
-      } // Fl_Box* o
+      } // fltk3::Box* o
       o->end();
     } // Fl_Group* o
     { view_ = new Fl_Help_View(10, 45, 510, 330);
-      view_->box(FL_DOWN_BOX);
+      view_->box(fltk3::DOWN_BOX);
       view_->callback((Fl_Callback*)cb_view_);
       Fl_Group::current()->resizable(view_);
     } // Fl_Help_View* view_

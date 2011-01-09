@@ -25,23 +25,23 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/x.H>
 
 #ifndef FL_DOXYGEN
 // at present, this is effectively used by Mac OS X only
-int Fl::compose_state = 0;
+int fltk3::compose_state = 0;
 #endif
 
 /** Any text editing widget should call this for each FL_KEYBOARD event.
  Use of this function is very simple.
  
  <p>If <i>true</i> is returned, then it has modified the
- Fl::event_text() and Fl::event_length() to a set of <i>bytes</i> to
+ fltk3::event_text() and fltk3::event_length() to a set of <i>bytes</i> to
  insert (it may be of zero length!).  In will also set the "del"
  parameter to the number of <i>bytes</i> to the left of the cursor to
  delete, this is used to delete the results of the previous call to
- Fl::compose().
+ fltk3::compose().
  
  <p>If <i>false</i> is returned, the keys should be treated as function
  keys, and del is set to zero. You could insert the text anyways, if
@@ -51,22 +51,22 @@ int Fl::compose_state = 0;
  versions may take quite awhile, as they may pop up a window or do
  other user-interface things to allow characters to be selected.
  */
-int Fl::compose(int& del) {
+int fltk3::compose(int& del) {
   // character composition is now handled by the OS
   del = 0;
 #if defined(__APPLE__)
   // this stuff is to be treated as a function key
-  if(Fl::e_length == 0 || Fl::e_keysym == FL_Enter || Fl::e_keysym == FL_KP_Enter || 
-     Fl::e_keysym == FL_Tab || Fl::e_keysym == FL_Escape || Fl::e_state&(FL_META | FL_CTRL) ) {
+  if(fltk3::e_length == 0 || fltk3::e_keysym == FL_Enter || fltk3::e_keysym == FL_KP_Enter || 
+     fltk3::e_keysym == FL_Tab || fltk3::e_keysym == FL_Escape || fltk3::e_state&(FL_META | FL_CTRL) ) {
     return 0;
   }
 #else
   unsigned char ascii = (unsigned)e_text[0];
   if ((e_state & (FL_ALT | FL_META)) && !(ascii & 128)) return 0;
 #endif
-  if(Fl::compose_state) {
-    del = Fl::compose_state;
-    Fl::compose_state = 0;
+  if(fltk3::compose_state) {
+    del = fltk3::compose_state;
+    fltk3::compose_state = 0;
   } else {
 #ifndef __APPLE__
     // Only insert non-control characters:

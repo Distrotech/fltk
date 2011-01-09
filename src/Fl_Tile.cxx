@@ -30,9 +30,9 @@
 // The size of the first child determines where the resize border is.
 // The resizebox is used to limit where the border can be dragged to.
 
-#include <fltk3/Fl.H>
+#include <fltk3/run.h>
 #include <fltk3/Fl_Tile.H>
-#include <fltk3/Fl_Window.H>
+#include <fltk3/Window.h>
 #include <stdlib.h>
 
 // Drag the edges that were initially at oldx,oldy to newx,newy:
@@ -129,8 +129,8 @@ int Fl_Tile::handle(int event) {
 #define DRAGV 2
 #define GRABAREA 4
 
-  int mx = Fl::event_x();
-  int my = Fl::event_y();
+  int mx = fltk3::event_x();
+  int my = fltk3::event_y();
 
   switch (event) {
 
@@ -187,14 +187,14 @@ int Fl_Tile::handle(int event) {
     Fl_Widget* r = resizable(); if (!r) r = this;
     int newx;
     if (sdrag&DRAGH) {
-      newx = Fl::event_x()-sdx;
+      newx = fltk3::event_x()-sdx;
       if (newx < r->x()) newx = r->x();
       else if (newx > r->x()+r->w()) newx = r->x()+r->w();
     } else
       newx = sx;
     int newy;
     if (sdrag&DRAGV) {
-      newy = Fl::event_y()-sdy;
+      newy = fltk3::event_y()-sdy;
       if (newy < r->y()) newy = r->y();
       else if (newy > r->y()+r->h()) newy = r->y()+r->h();
     } else

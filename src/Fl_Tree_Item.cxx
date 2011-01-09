@@ -34,7 +34,7 @@
 
 // Was the last event inside the specified xywh?
 static int event_inside(const int xywh[4]) {
-  return(Fl::event_inside(xywh[0],xywh[1],xywh[2],xywh[3]));
+  return(fltk3::event_inside(xywh[0],xywh[1],xywh[2],xywh[3]));
 }
 
 /// Constructor.
@@ -507,13 +507,13 @@ Fl_Tree_Item *Fl_Tree_Item::find_clicked(const Fl_Tree_Prefs &prefs) {
   return(0);
 }
 
-static void draw_item_focus(Fl_Boxtype B, Fl_Color C, int X, int Y, int W, int H) {
-  if (!Fl::visible_focus()) return;
+static void draw_item_focus(fltk3::Boxtype B, Fl_Color C, int X, int Y, int W, int H) {
+  if (!fltk3::visible_focus()) return;
   switch (B) {
-    case FL_DOWN_BOX:
-    case FL_DOWN_FRAME:
-    case FL_THIN_DOWN_BOX:
-    case FL_THIN_DOWN_FRAME:
+    case fltk3::DOWN_BOX:
+    case fltk3::DOWN_FRAME:
+    case fltk3::THIN_DOWN_BOX:
+    case fltk3::THIN_DOWN_FRAME:
       X ++;
       Y ++;
     default:
@@ -523,8 +523,8 @@ static void draw_item_focus(Fl_Boxtype B, Fl_Color C, int X, int Y, int W, int H
 
 #if defined(USE_X11) || defined(__APPLE_QUARTZ__)
   fl_line_style(FL_DOT);
-  fl_rect(X + Fl::box_dx(B), Y + Fl::box_dy(B),
-          W - Fl::box_dw(B) - 1, H - Fl::box_dh(B) - 1);
+  fl_rect(X + fltk3::box_dx(B), Y + fltk3::box_dy(B),
+          W - fltk3::box_dw(B) - 1, H - fltk3::box_dh(B) - 1);
   fl_line_style(FL_SOLID);
 #else
   // Some platforms don't implement dotted line style, so draw
@@ -535,10 +535,10 @@ static void draw_item_focus(Fl_Boxtype B, Fl_Color C, int X, int Y, int W, int H
   // on odd-numbered rows...
   int i, xx, yy;
 
-  X += Fl::box_dx(B);
-  Y += Fl::box_dy(B);
-  W -= Fl::box_dw(B) + 2;
-  H -= Fl::box_dh(B) + 2;
+  X += fltk3::box_dx(B);
+  Y += fltk3::box_dy(B);
+  W -= fltk3::box_dw(B) + 2;
+  H -= fltk3::box_dh(B) + 2;
 
   for (xx = 0, i = 1; xx < W; xx ++, i ++) if (i & 1) fl_point(X + xx, Y);
   for (yy = 0; yy < H; yy ++, i ++) if (i & 1) fl_point(X + W, Y + yy);
@@ -673,9 +673,9 @@ void Fl_Tree_Item::draw(int X, int &Y, int W, Fl_Widget *tree,
         fl_draw(_label, X+useroff, Y+H-fl_descent()-1);
       }
     }
-    if ( this == itemfocus && Fl::visible_focus() && Fl::focus() == tree) {
+    if ( this == itemfocus && fltk3::visible_focus() && fltk3::focus() == tree) {
       // Draw focus box around this item
-      draw_item_focus(FL_NO_BOX,bg,bx+1,by+1,bw-1,bh-1);
+      draw_item_focus(fltk3::NO_BOX,bg,bx+1,by+1,bw-1,bh-1);
     }
     Y += H;
   }			// end drawthis
