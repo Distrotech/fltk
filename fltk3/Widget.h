@@ -52,6 +52,8 @@ typedef unsigned long fl_uintptr_t;
 
 class Fl_Image;
 
+class Fl_Widget; // needed for FLTK1 compatibility
+
 namespace fltk3 {
   class Window;
   class Group;
@@ -112,6 +114,7 @@ struct FL_EXPORT Fl_Label {
  */
 class FL_EXPORT fltk3::Widget : public fltk3::Object {
   friend class Group;
+  friend class ::Fl_Widget;
 
   fltk3::Group* parent_;
   Fl_Callback* callback_;

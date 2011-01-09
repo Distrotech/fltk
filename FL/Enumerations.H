@@ -576,7 +576,6 @@ enum Fl_Labeltype {	// labeltypes:
   FL_FREE_LABELTYPE		///< first free labeltype to use for creating own labeltypes
 };
 
-#if 0 // TODO: FLTK123
 
 /** \name Alignment Flags */
 /*@{*/
@@ -651,7 +650,6 @@ const Fl_Align FL_ALIGN_POSITION_MASK   = 0x000f; // left, right, top, bottom
 const Fl_Align FL_ALIGN_IMAGE_MASK      = 0x0320; // l/r, t/b, backdrop
 /*@}*/
 
-#endif // TODO: FLTK123
 
 /** \name Font Numbers */
 /*@{*/
@@ -716,7 +714,11 @@ extern FL_EXPORT Fl_Fontsize FL_NORMAL_SIZE;	///< normal font size
  
  */
 
+#endif // TODO: FLTK123
+
 typedef unsigned int Fl_Color;
+
+#if 0 // TODO: FLTK123
 
 // Standard colors. These are used as default colors in widgets and altered as necessary
 const Fl_Color FL_FOREGROUND_COLOR  = 0;	///< the default foreground color (0) used for labels and text
