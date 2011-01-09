@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 // "$Id: Widget.h 6518 2008-11-11 22:31:26Z spitzak $"
 //
 // Copyright 1998-2006 by Bill Spitzak and others.
@@ -21,14 +19,17 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 
-#ifndef fltk_Widget_h
-#define fltk_Widget_h
+#ifndef fltk2_Widget_h
+#define fltk2_Widget_h
 
+#include <fltk3/Wrapper.h>
+#include <fltk3/Widget.h>
 #include "Style.h"
 #include "Rectangle.h"
 
 namespace fltk {
 
+#if 0 // TODO: FLTK123
 class FL_API Widget;
 class FL_API Window;
 class FL_API Symbol;
@@ -45,15 +46,26 @@ typedef void (Callback1)(Widget*, long);
 #ifdef FLTK_1_WIDGET  // back-compatability section:
 FL_API Font* font(int);
 #endif
-
-class FL_API Widget : public Rectangle {
+  
+#endif // TODO: FLTK123
+  
+  class FL_API Widget : public fltk3::Wrapper {
+  
+#if 0 // TODO: FLTK123
   // disable the copy assignment/constructors:
   Widget & operator=(const Widget &);
   Widget(const Widget &);
-
+#endif // TODO: FLTK123
+  
 public:
 
-  Widget(int,int,int,int,const char* =0);
+    Widget() {}
+    Widget(int x, int y, int w, int h, const char *l=0) {
+      _p = new fltk3::Widget(x, y, w, h, l);
+      _p->wrapper(this);
+    }
+  
+#if 0 // TODO: FLTK123
   virtual ~Widget();
 
   virtual void draw();
@@ -216,9 +228,12 @@ public:
   void	cursor(Cursor*) const	;
 
   void	measure_label(int&, int&) const ;
+    
+    // TODO: FLTK123 - please port FLTK2 box styles to FLTK3!
+    Box* box() { return (fltk::Box)((fltk3::Widget*)_p)->box(); }
+    void box(Box *b) { ((fltk3::Widget*)_p)->box((fltk3::Boxtype)b); }
 
-  Box*	box()			const;
-  Box*	buttonbox()		const;
+    Box*	buttonbox()		const;
   Symbol* glyph()		const;
   Font*	labelfont()		const;
   Font*	textfont()		const;
@@ -237,7 +252,6 @@ public:
   unsigned char scrollbar_align() const;
   unsigned char scrollbar_width() const;
 
-  void box(Box*)		;
   void buttonbox(Box*)		;
   void glyph(Symbol*)		;
   void labelfont(Font*)		;
@@ -310,7 +324,7 @@ private:
   uchar			damage_;
   uchar			layout_damage_;
   uchar			when_;
-
+#endif // TODO: FLTK123
 };
 
 enum { // Widget::when() values
@@ -331,4 +345,3 @@ enum { // Widget::when() values
 //
 // End of "$Id: Widget.h 6518 2008-11-11 22:31:26Z spitzak $".
 //
-#endif

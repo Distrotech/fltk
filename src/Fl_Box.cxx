@@ -28,11 +28,6 @@
 #include <fltk3/Widget.h>
 #include <fltk3/Box.h>
 
-void fltk3::Box::draw() {
-  draw_box();
-  draw_label();
-}
-
 int fltk3::Box::handle(int event) {
   if (event == FL_ENTER || event == FL_LEAVE) return 1;
   else return 0;

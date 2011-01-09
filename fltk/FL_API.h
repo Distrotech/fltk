@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 // "$Id: FL_API.h 5448 2006-09-19 01:14:07Z spitzak $"
 //
 // This file is included by all FLTK header files. Originally it was to
@@ -25,7 +23,12 @@
 // USA.
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
-#ifndef FL_API
+#ifndef FLTK2_FL_API_H
+#define FLTK2_FL_API_H
+
+#define FL_API
+
+#if 0 // TODO: FLTK123
 
 #if _MSC_VER > 1000
 # pragma once
@@ -71,9 +74,10 @@
 
 typedef unsigned char uchar;
 
+#endif // TODO: FLTK123
+
 #endif
 
 //
 // End of "$Id: FL_API.h 5448 2006-09-19 01:14:07Z spitzak $".
 //
-#endif

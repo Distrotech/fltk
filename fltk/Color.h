@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Color.h 6233 2008-09-14 07:54:06Z spitzak $"
 //
@@ -29,8 +27,8 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifndef fltk_Color_h
-#define fltk_Color_h
+#ifndef fltk2_Color_h
+#define fltk2_Color_h
 
 #include "FL_API.h"
 #include "Flags.h"
@@ -106,6 +104,8 @@ enum {
   WINDOWS_BLUE	= 0x88 //!< default selection_color
 };
 
+#if 0 // TODO: FLTK123
+  
 inline Color color(unsigned char r, unsigned char g, unsigned char b) {
   return Color((r<<24)+(g<<16)+(b<<8)); }
 inline Color color(unsigned char g) {
@@ -122,6 +122,8 @@ FL_API Color get_color_index(Color index);
 FL_API void set_background(Color);
 FL_API Color nearest_index(Color);
 
+#endif // TODO: FLTK123
+  
 }
 
 //@}
@@ -131,4 +133,3 @@ FL_API Color nearest_index(Color);
 //
 // End of "$Id: Color.h 6233 2008-09-14 07:54:06Z spitzak $".
 //
-#endif

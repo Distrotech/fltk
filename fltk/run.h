@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 // "$Id: run.h 6233 2008-09-14 07:54:06Z spitzak $"
 //
 // The basic fltk runtime. Every program needs to call this somewhere.
@@ -30,8 +28,11 @@
 # undef check
 #endif
 
+#include <fltk3/run.h>
+
 namespace fltk {
 
+#if 0 // TODO: FLTK123
 /// \name fltk/run.h
 //@{
 
@@ -46,7 +47,11 @@ FL_API int wait();
 FL_API int wait(float time);
 FL_API int check();
 FL_API int ready();
-FL_API int run();
+#endif // TODO: FLTK123
+  
+  FL_API int run() { return fltk3::run(); }
+  
+#if 0 // TODO: FLTK123
 FL_API void flush();
 FL_API void redraw();
 extern FL_API int damage_;
@@ -88,9 +93,8 @@ FL_API void awake(void* message = 0);
 FL_API void* thread_message();
 FL_API bool in_main_thread();
 
-//@}
+#endif // TODO: FLTK123
 
 }
 
-#endif
 #endif

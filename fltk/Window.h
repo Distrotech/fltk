@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 // "$Id: Window.h 6150 2008-08-04 22:53:30Z spitzak $"
 //
 // Window widget. This must be the outermost group. You can also put
@@ -24,26 +22,35 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 
-#ifndef fltk_Window_h
-#define fltk_Window_h
+#ifndef fltk2_Window_h
+#define fltk2_Window_h
 
+#include <fltk3/Window.h>
 #include "Group.h"
 
 namespace fltk {
 
+#if 0 // TODo: FLTK123
+  
 // value for x,y to indicate window system places window
 const int USEDEFAULT = ((int)0x80000000); // same as Win32 value
 
 class CreatedWindow;
 class Monitor;
 
-// implementations of methods of Window are in different files in src/
+#endif // TODO: FLTK123
 
 class FL_API Window : public Group {
 public:
 
+  Window(int W, int H, const char *l = 0) {
+    _p = new fltk3::Window(W, H, l);
+    _p->wrapper(this);
+    // FIXME: this should not cause a begine in FLTK3 for compatibility
+  }
+  
+#if 0 // TODo: FLTK123  
   Window(int,int,int,int, const char* = 0, bool begin = false);
-  Window(int,int, const char* = 0);
   static NamedStyle* default_style;
   virtual ~Window();
 
@@ -87,7 +94,11 @@ public:
 
   bool shown() const {return i != 0;}
   void show();
-  void show(int, char**);
+#endif // TODO: FLTK123
+  
+  void show(int argc, char **argv) { ((fltk3::Window*)_p)->show(argc, argv); }
+  
+#if 0 // TODO: FLTK123
   void show(const Window* parent);
   bool exec(const Window* parent = 0, bool grab = false);
   void make_exec_return(bool);
@@ -149,6 +160,8 @@ private:
   };
   static const char* xclass_;
   void _Window(); // constructor innards
+#endif // TODO: FLTK123
+  
 };
 
 }
@@ -158,4 +171,3 @@ private:
 //
 // End of "$Id: Window.h 6150 2008-08-04 22:53:30Z spitzak $".
 //
-#endif

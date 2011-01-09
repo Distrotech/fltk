@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Style.h 6233 2008-09-14 07:54:06Z spitzak $"
 //
@@ -25,10 +23,12 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_Style_h
-#define fltk_Style_h
+#ifndef fltk2_Style_h
+#define fltk2_Style_h
 
 #include "Color.h"
+
+#if 0 // TODO: FLTK123
 
 namespace fltk {
 
@@ -202,9 +202,10 @@ extern "C" FL_API bool fltk_theme();
 
 //@}
 
+#endif // TODO: FLTK123
+
 #endif
 
 //
 // End of "$Id: Style.h 6233 2008-09-14 07:54:06Z spitzak $".
 //
-#endif

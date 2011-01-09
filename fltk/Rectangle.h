@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 // "$Id: Rectangle.h 5454 2006-09-19 02:38:02Z spitzak $"
 //
 // Copyright 1998-2006 by Bill Spitzak and others.
@@ -21,8 +19,8 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 
-#ifndef fltk_Rectangle_h
-#define fltk_Rectangle_h
+#ifndef fltk2_Rectangle_h
+#define fltk2_Rectangle_h
 
 #include "FL_API.h"
 
@@ -38,10 +36,17 @@
 namespace fltk {
 
 class FL_API Rectangle {
+  
+#if 0 // TODO: FLTK123
   int x_, y_, w_, h_;
-
+#endif // TODO: FLTK123
+  
  public:
 
+  Rectangle() {}
+  
+#if 0 // TODO: FLTK123
+  Rectangle(int x, int y, int w, int h);
   /*! Left edge */
   int x() const {return x_;}
   /*! Top edge */
@@ -97,10 +102,6 @@ class FL_API Rectangle {
   /*! Where to put baseline to center current font nicely */
   int baseline_y() const;
 
-  Rectangle() {}
-
-  /*! Constructor that sets x(), y(), w(), and h(). */
-  Rectangle(int x, int y, int w, int h) : x_(x), y_(y), w_(w), h_(h) {}
 
   /*! Constructor that sets x() and y() to zero, and sets w() and h(). */
   Rectangle(int w, int h) : x_(0), y_(0), w_(w), h_(h) {}
@@ -116,10 +117,10 @@ class FL_API Rectangle {
 
   void merge(const Rectangle& r);
   void intersect(const Rectangle& r);
-
+#endif // TODO: FLTK123
+  
 };
 
 }
 
-#endif
 #endif

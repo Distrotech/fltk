@@ -45,8 +45,6 @@ namespace fltk3 {
   will let you draw a frame around them.
 */
 class FL_EXPORT fltk3::Box : public fltk3::Widget {
-protected:
-  void draw();
 public:
   /**
     - The first constructor sets box() to fltk3::NO_BOX, which

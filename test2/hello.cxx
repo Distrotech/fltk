@@ -9,10 +9,10 @@ int main(int argc, char **argv) {
   Window *window = new Window(300, 180);
   window->begin();
   Widget *box = new Widget(20, 40, 260, 100, "Hello, World!");
-  box->box(UP_BOX);
-  box->labelfont(HELVETICA_BOLD_ITALIC);
-  box->labelsize(36);
-  box->labeltype(SHADOW_LABEL);
+  // FIXME: box->box(UP_BOX);
+  // FIXME: box->labelfont(HELVETICA_BOLD_ITALIC);
+  // FIXME: box->labelsize(36);
+  // FIXME: box->labeltype(SHADOW_LABEL);
   window->end();
   window->show(argc, argv);
   return run();

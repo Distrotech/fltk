@@ -630,7 +630,10 @@
 		C9555EF512DA01B500FFF041 /* Xutf8.h in Headers */ = {isa = PBXBuildFile; fileRef = C9555E6112DA01B500FFF041 /* Xutf8.h */; };
 		C9555FD012DA220500FFF041 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
 		C9555FD212DA220500FFF041 /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
-		C9555FF612DA227B00FFF041 /* hello.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9555FF512DA227B00FFF041 /* hello.cxx */; };
+		C955616A12DA430000FFF041 /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C955616C12DA430000FFF041 /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C955617C12DA433000FFF041 /* hello.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C955617B12DA433000FFF041 /* hello.cxx */; };
+		C955617D12DA433B00FFF041 /* hello.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9555FF512DA227B00FFF041 /* hello.cxx */; };
 		C96290C21274D0CF007D3CFE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9628FFD1274D0B3007D3CFE /* Cocoa.framework */; };
 		C96290E21274D0EF007D3CFE /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C96290E11274D0EF007D3CFE /* AGL.framework */; };
 		C96290E61274D100007D3CFE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C96290E51274D100007D3CFE /* OpenGL.framework */; };
@@ -1484,6 +1487,18 @@
 			script = "export DYLD_FRAMEWORK_PATH=${TARGET_BUILD_DIR} && cd ${INPUT_FILE_DIR} && ${TARGET_BUILD_DIR}/Fluid.app/Contents/MacOS/Fluid -c ${INPUT_FILE_NAME}";
 		};
 		C9555FD312DA220500FFF041 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.fl";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cxx",
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.h",
+			);
+			script = "export DYLD_FRAMEWORK_PATH=${TARGET_BUILD_DIR} && cd ${INPUT_FILE_DIR} && ${TARGET_BUILD_DIR}/Fluid.app/Contents/MacOS/Fluid -c ${INPUT_FILE_NAME}";
+		};
+		C955616D12DA430000FFF041 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.fl";
@@ -2785,6 +2800,13 @@
 			remoteGlobalIDString = A57FDE871C99A52BEEDEE68C;
 			remoteInfo = fltk;
 		};
+		C955616512DA430000FFF041 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BF1A7FFEACF5F31B4127482 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A57FDE871C99A52BEEDEE68C;
+			remoteInfo = fltk;
+		};
 		CA3CA540809B8723BA17A4D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4BF1A7FFEACF5F31B4127482 /* Project object */;
@@ -3687,6 +3709,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C955616B12DA430000FFF041 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C955616C12DA430000FFF041 /* fltk.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C99FD8E112D2A295002FC776 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4398,6 +4430,9 @@
 		C9555FD712DA220500FFF041 /* hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9555FEA12DA220600FFF041 /* hello-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "hello-Info copy.plist"; path = "plists/hello-Info copy.plist"; sourceTree = "<group>"; };
 		C9555FF512DA227B00FFF041 /* hello.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hello.cxx; path = ../../test1/hello.cxx; sourceTree = SOURCE_ROOT; };
+		C955617112DA430000FFF041 /* hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C955617912DA430000FFF041 /* hello-Info copy 2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "hello-Info copy 2.plist"; path = "plists/hello-Info copy 2.plist"; sourceTree = "<group>"; };
+		C955617B12DA433000FFF041 /* hello.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hello.cxx; path = ../../test2/hello.cxx; sourceTree = SOURCE_ROOT; };
 		C9628FFD1274D0B3007D3CFE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C96290E11274D0EF007D3CFE /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = System/Library/Frameworks/AGL.framework; sourceTree = SDKROOT; };
 		C96290E51274D100007D3CFE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -5089,6 +5124,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C955616912DA430000FFF041 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C955616A12DA430000FFF041 /* fltk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CFFFB4C330636C95339A8F4F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -5554,9 +5597,11 @@
 				188555DBC553F66588792C6B /* Frameworks */,
 				015D2BD894993395B263D6C0 /* Tests */,
 				C9555FF312DA223C00FFF041 /* Tests FLTK 1 */,
+				C955616012DA42DE00FFF041 /* Tests FLTK 2 */,
 				DCB546B00EC62A9F8CC4181A /* Products */,
 				C9628FFA1274D0A1007D3CFE /* Resources */,
 				C9555FEA12DA220600FFF041 /* hello-Info copy.plist */,
+				C955617912DA430000FFF041 /* hello-Info copy 2.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -6271,6 +6316,22 @@
 			name = Hello;
 			sourceTree = "<group>";
 		};
+		C955616012DA42DE00FFF041 /* Tests FLTK 2 */ = {
+			isa = PBXGroup;
+			children = (
+				C955616112DA42F100FFF041 /* Hello */,
+			);
+			name = "Tests FLTK 2";
+			sourceTree = "<group>";
+		};
+		C955616112DA42F100FFF041 /* Hello */ = {
+			isa = PBXGroup;
+			children = (
+				C955617B12DA433000FFF041 /* hello.cxx */,
+			);
+			name = Hello;
+			sourceTree = "<group>";
+		};
 		C9628FFA1274D0A1007D3CFE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -6492,6 +6553,7 @@
 				5191489A6263E11B65A57B4D /* valuators.app */,
 				C9165EAF1291A304003FF4F0 /* utf8.app */,
 				C9555FD712DA220500FFF041 /* hello.app */,
+				C955617112DA430000FFF041 /* hello.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8193,6 +8255,26 @@
 			productReference = C9555FD712DA220500FFF041 /* hello.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C955616312DA430000FFF041 /* hello2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C955616E12DA430000FFF041 /* Build configuration list for PBXNativeTarget "hello2" */;
+			buildPhases = (
+				C955616612DA430000FFF041 /* Resources */,
+				C955616712DA430000FFF041 /* Sources */,
+				C955616912DA430000FFF041 /* Frameworks */,
+				C955616B12DA430000FFF041 /* CopyFiles */,
+			);
+			buildRules = (
+				C955616D12DA430000FFF041 /* PBXBuildRule */,
+			);
+			dependencies = (
+				C955616412DA430000FFF041 /* PBXTargetDependency */,
+			);
+			name = hello2;
+			productName = hello;
+			productReference = C955617112DA430000FFF041 /* hello.app */;
+			productType = "com.apple.product-type.application";
+		};
 		CA05747C492074A51F2F35BC /* iconize */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A28344FBEB8BBC1EB0B0B397 /* Build configuration list for PBXNativeTarget "iconize" */;
@@ -8579,6 +8661,7 @@
 				2BFE084E4D6FAB77DCAF0A83 /* utf8 */,
 				E167C0E81B125EBADAC8ED73 /* valuators */,
 				C9555FC912DA220500FFF041 /* hello1 */,
+				C955616312DA430000FFF041 /* hello2 */,
 			);
 		};
 /* End PBXProject section */
@@ -9049,6 +9132,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C9555FCC12DA220500FFF041 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C955616612DA430000FFF041 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -9916,7 +10006,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9555FF612DA227B00FFF041 /* hello.cxx in Sources */,
+				C955617D12DA433B00FFF041 /* hello.cxx in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C955616712DA430000FFF041 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C955617C12DA433000FFF041 /* hello.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10828,6 +10926,11 @@
 			isa = PBXTargetDependency;
 			target = A57FDE871C99A52BEEDEE68C /* fltk */;
 			targetProxy = C9555FCB12DA220500FFF041 /* PBXContainerItemProxy */;
+		};
+		C955616412DA430000FFF041 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A57FDE871C99A52BEEDEE68C /* fltk */;
+			targetProxy = C955616512DA430000FFF041 /* PBXContainerItemProxy */;
 		};
 		C97AC7320761F9B9C60C0B57 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -15069,6 +15172,67 @@
 			};
 			name = Release;
 		};
+		C955616F12DA430000FFF041 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/hello-Info copy 2.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = hello;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Debug;
+		};
+		C955617012DA430000FFF041 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/hello-Info copy 2.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = hello;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Release;
+		};
 		CB5DC25E5DACEFD0C087A26C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -16437,6 +16601,15 @@
 			buildConfigurations = (
 				C9555FD512DA220500FFF041 /* Debug */,
 				C9555FD612DA220500FFF041 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C955616E12DA430000FFF041 /* Build configuration list for PBXNativeTarget "hello2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C955616F12DA430000FFF041 /* Debug */,
+				C955617012DA430000FFF041 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

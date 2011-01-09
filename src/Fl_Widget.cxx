@@ -340,6 +340,12 @@ fltk3::Widget::do_callback(fltk3::Widget* o,void* arg) {
     clear_changed();
 }
 
+void fltk3::Widget::draw() {
+  draw_box();
+  draw_label();
+}
+
+
 //
 // End of "$Id$".
 //

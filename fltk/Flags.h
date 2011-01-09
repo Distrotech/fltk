@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Flags.h 6233 2008-09-14 07:54:06Z spitzak $"
 //
@@ -112,4 +110,3 @@ enum {
 //
 // End of "$Id: Flags.h 6233 2008-09-14 07:54:06Z spitzak $".
 //
-#endif

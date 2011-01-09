@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Group.h 5915 2007-06-19 17:49:29Z spitzak $"
 //
@@ -26,27 +24,34 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_Group_h
-#define fltk_Group_h
+#ifndef fltk2_Group_h
+#define fltk2_Group_h
 
-#ifndef fltk_Widget_h
-# include "Widget.h"
-#endif
+#include <fltk3/Group.h>
+#include "Widget.h"
 
 namespace fltk {
 
 class FL_API Group : public Widget {
 public:
+  
+  Group() {}
+  Group(int,int,int,int, const char * = 0, bool begin=false);
 
+
+#if 0 // TODO: FLTK123  
   int children() const {return children_;}
   Widget* child(int n) const {return array_[n];}
 
   void draw();
   void layout();
   int handle(int);
-
-  void begin() {current_ = this;}
-  void end() {current_ = (Group*)parent();}
+#endif // TODO: FLTK123
+  
+  void begin() { ((fltk3::Group*)_p)->begin(); }
+  void end() { ((fltk3::Group*)_p)->end(); }
+  
+#if 0 // TODO: FLTK123
   static Group *current() {return current_;}
   static void current(Group *g) {current_ = g;}
 
@@ -105,7 +110,7 @@ private:
   int *sizes_; // remembered initial sizes of children
 
   static Group *current_;
-
+#endif // TODO: FLTK123
 };
 
 }
@@ -115,4 +120,3 @@ private:
 //
 // End of "$Id: Group.h 5915 2007-06-19 17:49:29Z spitzak $".
 //
-#endif
