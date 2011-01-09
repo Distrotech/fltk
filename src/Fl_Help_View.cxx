@@ -93,8 +93,8 @@ extern "C"
 //
 
 static int	quote_char(const char *);
-static void	scrollbar_callback(Fl_Widget *s, void *);
-static void	hscrollbar_callback(Fl_Widget *s, void *);
+static void	scrollbar_callback(fltk3::Widget *s, void *);
+static void	hscrollbar_callback(fltk3::Widget *s, void *);
 
 //
 // global flag for image loading (see get_image).
@@ -446,8 +446,8 @@ Fl_Help_View::draw()
 			attr[1024];	// Attribute buffer
   int			xx, yy, ww, hh;	// Current positions and sizes
   int			line;		// Current line
-  Fl_Font               font;
-  Fl_Fontsize           fsize;          // Current font and size
+  fltk3::Font               font;
+  fltk3::Fontsize           fsize;          // Current font and size
   Fl_Color              fcolor;         // current font color 
   int			head, pre,	// Flags for text
 			needspace;	// Do we need whitespace?
@@ -694,7 +694,7 @@ Fl_Help_View::draw()
 	  {
             if (tolower(buf[0]) == 'h')
 	    {
-	      font  = FL_HELVETICA_BOLD;
+	      font  = fltk3::HELVETICA_BOLD;
 	      fsize = textsize_ + '7' - buf[1];
 	    }
 	    else if (strcasecmp(buf, "DT") == 0)
@@ -704,7 +704,7 @@ Fl_Help_View::draw()
 	    }
 	    else if (strcasecmp(buf, "PRE") == 0)
 	    {
-	      font  = FL_COURIER;
+	      font  = fltk3::COURIER;
 	      fsize = textsize_;
 	      pre   = 1;
 	    }
@@ -742,11 +742,11 @@ Fl_Help_View::draw()
             if (get_attr(attrs, "FACE", attr, sizeof(attr)) != NULL) {
 	      if (!strncasecmp(attr, "helvetica", 9) ||
 	          !strncasecmp(attr, "arial", 5) ||
-		  !strncasecmp(attr, "sans", 4)) font = FL_HELVETICA;
+		  !strncasecmp(attr, "sans", 4)) font = fltk3::HELVETICA;
               else if (!strncasecmp(attr, "times", 5) ||
-	               !strncasecmp(attr, "serif", 5)) font = FL_TIMES;
-              else if (!strncasecmp(attr, "symbol", 6)) font = FL_SYMBOL;
-	      else font = FL_COURIER;
+	               !strncasecmp(attr, "serif", 5)) font = fltk3::TIMES;
+              else if (!strncasecmp(attr, "symbol", 6)) font = fltk3::SYMBOL;
+	      else font = fltk3::COURIER;
             }
 
             if (get_attr(attrs, "SIZE", attr, sizeof(attr)) != NULL) {
@@ -817,11 +817,11 @@ Fl_Help_View::draw()
 	    pushfont(font |= fltk3::ITALIC, fsize);
 	  else if (strcasecmp(buf, "CODE") == 0 ||
 	           strcasecmp(buf, "TT") == 0)
-	    pushfont(font = FL_COURIER, fsize);
+	    pushfont(font = fltk3::COURIER, fsize);
 	  else if (strcasecmp(buf, "KBD") == 0)
-	    pushfont(font = FL_COURIER_BOLD, fsize);
+	    pushfont(font = fltk3::COURIER_BOLD, fsize);
 	  else if (strcasecmp(buf, "VAR") == 0)
-	    pushfont(font = FL_COURIER_ITALIC, fsize);
+	    pushfont(font = fltk3::COURIER_ITALIC, fsize);
 	  else if (strcasecmp(buf, "/HEAD") == 0)
             head = 0;
 	  else if (strcasecmp(buf, "/H1") == 0 ||
@@ -1073,8 +1073,8 @@ void Fl_Help_View::format() {
   int		xx, yy, ww, hh;	// Size of current text fragment
   int		line;		// Current line in block
   int		links;		// Links for current line
-  Fl_Font       font;
-  Fl_Fontsize   fsize;          // Current font and size
+  fltk3::Font       font;
+  fltk3::Fontsize   fsize;          // Current font and size
   Fl_Color      fcolor;         // Current font color
   unsigned char	border;		// Draw border?
   int		talign,		// Current alignment
@@ -1383,7 +1383,7 @@ void Fl_Help_View::format() {
 
           if (tolower(buf[0]) == 'h' && isdigit(buf[1]))
 	  {
-	    font  = FL_HELVETICA_BOLD;
+	    font  = fltk3::HELVETICA_BOLD;
 	    fsize = textsize_ + '7' - buf[1];
 	  }
 	  else if (strcasecmp(buf, "DT") == 0)
@@ -1393,7 +1393,7 @@ void Fl_Help_View::format() {
 	  }
 	  else if (strcasecmp(buf, "PRE") == 0)
 	  {
-	    font  = FL_COURIER;
+	    font  = fltk3::COURIER;
 	    fsize = textsize_;
 	    pre   = 1;
 	  }
@@ -1631,11 +1631,11 @@ void Fl_Help_View::format() {
           if (get_attr(attrs, "FACE", attr, sizeof(attr)) != NULL) {
 	    if (!strncasecmp(attr, "helvetica", 9) ||
 	        !strncasecmp(attr, "arial", 5) ||
-		!strncasecmp(attr, "sans", 4)) font = FL_HELVETICA;
+		!strncasecmp(attr, "sans", 4)) font = fltk3::HELVETICA;
             else if (!strncasecmp(attr, "times", 5) ||
-	             !strncasecmp(attr, "serif", 5)) font = FL_TIMES;
-            else if (!strncasecmp(attr, "symbol", 6)) font = FL_SYMBOL;
-	    else font = FL_COURIER;
+	             !strncasecmp(attr, "serif", 5)) font = fltk3::TIMES;
+            else if (!strncasecmp(attr, "symbol", 6)) font = fltk3::SYMBOL;
+	    else font = fltk3::COURIER;
           }
 
           if (get_attr(attrs, "SIZE", attr, sizeof(attr)) != NULL) {
@@ -1660,11 +1660,11 @@ void Fl_Help_View::format() {
 	  pushfont(font |= fltk3::ITALIC, fsize);
 	else if (strcasecmp(buf, "CODE") == 0 ||
 	         strcasecmp(buf, "TT") == 0)
-	  pushfont(font = FL_COURIER, fsize);
+	  pushfont(font = fltk3::COURIER, fsize);
 	else if (strcasecmp(buf, "KBD") == 0)
-	  pushfont(font = FL_COURIER_BOLD, fsize);
+	  pushfont(font = fltk3::COURIER_BOLD, fsize);
 	else if (strcasecmp(buf, "VAR") == 0)
-	  pushfont(font = FL_COURIER_ITALIC, fsize);
+	  pushfont(font = fltk3::COURIER_ITALIC, fsize);
 	else if (strcasecmp(buf, "/B") == 0 ||
 		 strcasecmp(buf, "/STRONG") == 0 ||
 		 strcasecmp(buf, "/I") == 0 ||
@@ -1897,8 +1897,8 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 		*attrs,					// Pointer to attributes
 		*start;					// Start of element
   int		minwidths[MAX_COLUMNS];			// Minimum widths for each column
-  Fl_Font       font;
-  Fl_Fontsize   fsize;				        // Current font and size
+  fltk3::Font       font;
+  fltk3::Fontsize   fsize;				        // Current font and size
   Fl_Color      fcolor;                                 // Currrent font color
 
   // Clear widths...
@@ -1990,7 +1990,7 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 
         if (tolower(buf[0]) == 'h' && isdigit(buf[1]))
 	{
-	  font  = FL_HELVETICA_BOLD;
+	  font  = fltk3::HELVETICA_BOLD;
 	  fsize = textsize_ + '7' - buf[1];
 	}
 	else if (strcasecmp(buf, "DT") == 0)
@@ -2000,7 +2000,7 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 	}
 	else if (strcasecmp(buf, "PRE") == 0)
 	{
-	  font  = FL_COURIER;
+	  font  = fltk3::COURIER;
 	  fsize = textsize_;
 	  pre   = 1;
 	}
@@ -2134,11 +2134,11 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
 	pushfont(font |= fltk3::ITALIC, fsize);
       else if (strcasecmp(buf, "CODE") == 0 ||
                strcasecmp(buf, "TT") == 0)
-	pushfont(font = FL_COURIER, fsize);
+	pushfont(font = fltk3::COURIER, fsize);
       else if (strcasecmp(buf, "KBD") == 0)
-	pushfont(font = FL_COURIER_BOLD, fsize);
+	pushfont(font = fltk3::COURIER_BOLD, fsize);
       else if (strcasecmp(buf, "VAR") == 0)
-	pushfont(font = FL_COURIER_ITALIC, fsize);
+	pushfont(font = fltk3::COURIER_ITALIC, fsize);
       else if (strcasecmp(buf, "/B") == 0 ||
 	       strcasecmp(buf, "/STRONG") == 0 ||
 	       strcasecmp(buf, "/I") == 0 ||
@@ -2961,7 +2961,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       redraw();
       return 1;
     case FL_ENTER :
-      Fl_Group::handle(event);
+      fltk3::Group::handle(event);
       return 1;
     case FL_LEAVE :
       fl_cursor(FL_CURSOR_DEFAULT);
@@ -2971,7 +2971,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       else fl_cursor(FL_CURSOR_DEFAULT);
       return 1;
     case FL_PUSH:
-      if (Fl_Group::handle(event)) return 1;
+      if (fltk3::Group::handle(event)) return 1;
       linkp = find_link(xx, yy);
       if (linkp) {
         fl_cursor(FL_CURSOR_HAND);
@@ -3022,7 +3022,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       }
       break; }
   }
-  return (Fl_Group::handle(event));
+  return (fltk3::Group::handle(event));
 }
 
 /** 
@@ -3034,7 +3034,7 @@ Fl_Help_View::Fl_Help_View(int        xx,	// I - Left position
 			   int        ww,	// I - Width in pixels
 			   int        hh,	// I - Height in pixels
 			   const char *l)
-    : Fl_Group(xx, yy, ww, hh, l),
+    : fltk3::Group(xx, yy, ww, hh, l),
       scrollbar_(xx + ww - fltk3::scrollbar_size(), yy,
                  fltk3::scrollbar_size(), hh - fltk3::scrollbar_size()),
       hscrollbar_(xx, yy + hh - fltk3::scrollbar_size(),
@@ -3047,7 +3047,7 @@ Fl_Help_View::Fl_Help_View(int        xx,	// I - Left position
   bgcolor_      = FL_BACKGROUND_COLOR;
   textcolor_    = FL_FOREGROUND_COLOR;
   linkcolor_    = FL_SELECTION_COLOR;
-  textfont_     = FL_TIMES;
+  textfont_     = fltk3::TIMES;
   textsize_     = 12;
   value_        = NULL;
 
@@ -3240,7 +3240,7 @@ Fl_Help_View::resize(int xx,	// I - New left position
 					// Box to draw...
 
 
-  Fl_Widget::resize(xx, yy, ww, hh);
+  fltk3::Widget::resize(xx, yy, ww, hh);
 
   int scrollsize = scrollbar_size_ ? scrollbar_size_ : fltk3::scrollbar_size();
   scrollbar_.resize(x() + w() - scrollsize - fltk3::box_dw(b) + fltk3::box_dx(b),
@@ -3500,7 +3500,7 @@ quote_char(const char *p) {	// I - Quoted string
 
 /** The vertical scrollbar callback. */
 static void
-scrollbar_callback(Fl_Widget *s, void *)
+scrollbar_callback(fltk3::Widget *s, void *)
 {
   ((Fl_Help_View *)(s->parent()))->topline(int(((Fl_Scrollbar*)s)->value()));
 }
@@ -3508,7 +3508,7 @@ scrollbar_callback(Fl_Widget *s, void *)
 
 /** The horizontal scrollbar callback. */
 static void
-hscrollbar_callback(Fl_Widget *s, void *)
+hscrollbar_callback(fltk3::Widget *s, void *)
 {
   ((Fl_Help_View *)(s->parent()))->leftline(int(((Fl_Scrollbar*)s)->value()));
 }

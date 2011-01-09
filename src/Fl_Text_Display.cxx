@@ -89,7 +89,7 @@ static int scroll_x = 0;
  \param l label text, defaults to none
  */
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H, const char* l)
-: Fl_Group(X, Y, W, H, l) {
+: fltk3::Group(X, Y, W, H, l) {
   int i;
   
   mMaxsize = 0;
@@ -104,7 +104,7 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H, const char* l)
   box(fltk3::DOWN_FRAME);
   textsize(FL_NORMAL_SIZE);
   textcolor(FL_FOREGROUND_COLOR);
-  textfont(FL_HELVETICA);
+  textfont(fltk3::HELVETICA);
   set_flag(SHORTCUT_LABEL);
   
   text_area.x = 0;
@@ -292,7 +292,7 @@ void Fl_Text_Display::resize(int X, int Y, int W, int H) {
 #ifdef DEBUG
   printf("    oldWidth=%d, mContinuousWrap=%d, mWrapMargin=%d\n", oldWidth, mContinuousWrap, mWrapMargin);
 #endif // DEBUG
-  Fl_Widget::resize(X,Y,W,H);
+  fltk3::Widget::resize(X,Y,W,H);
   if (!buffer()) return;
   X += fltk3::box_dx(box());
   Y += fltk3::box_dy(box());
@@ -1923,7 +1923,7 @@ void Fl_Text_Display::draw_string(int style,
    pre-allocated and pre-configured.  For syntax highlighting, GCs are
    configured here, on the fly. */
   
-  Fl_Font font = textfont();
+  fltk3::Font font = textfont();
   int fsize = textsize();
   Fl_Color foreground;
   Fl_Color background;
@@ -2170,8 +2170,8 @@ int Fl_Text_Display::position_style( int lineStartPos, int lineLen, int lineInde
 double Fl_Text_Display::string_width( const char *string, int length, int style ) const {
   IS_UTF8_ALIGNED(string)
 
-  Fl_Font font;
-  Fl_Fontsize fsize;
+  fltk3::Font font;
+  fltk3::Fontsize fsize;
   
   if ( mNStyles && (style & STYLE_LOOKUP_MASK) ) {
     int si = (style & STYLE_LOOKUP_MASK) - 'A';
@@ -3546,7 +3546,7 @@ int Fl_Text_Display::handle(int event) {
       !dragging && event != FL_LEAVE && event != FL_ENTER &&
       event != FL_MOVE && event != FL_FOCUS && event != FL_UNFOCUS &&
       event != FL_KEYBOARD && event != FL_KEYUP) {
-    return Fl_Group::handle(event);
+    return fltk3::Group::handle(event);
   }
   
   switch (event) {
@@ -3582,7 +3582,7 @@ int Fl_Text_Display::handle(int event) {
         fltk3::focus(this);
         handle(FL_FOCUS);
       }
-      if (Fl_Group::handle(event)) return 1;
+      if (fltk3::Group::handle(event)) return 1;
       if (fltk3::event_state()&FL_SHIFT) return handle(FL_DRAG);
       dragging = 1;
       int pos = xy_to_position(fltk3::event_x(), fltk3::event_y(), CURSOR_POS);

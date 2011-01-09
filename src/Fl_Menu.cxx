@@ -131,7 +131,7 @@ int Fl_Menu_Item::measure(int* hp, const Fl_Menu_* m) const {
   l.image   = 0;
   l.deimage = 0;
   l.type    = labeltype_;
-  l.font    = labelsize_ || labelfont_ ? labelfont_ : (m ? m->textfont() : FL_HELVETICA);
+  l.font    = labelsize_ || labelfont_ ? labelfont_ : (m ? m->textfont() : fltk3::HELVETICA);
   l.size    = labelsize_ ? labelsize_ : m ? m->textsize() : FL_NORMAL_SIZE;
   l.color   = FL_FOREGROUND_COLOR; // this makes no difference?
   fl_draw_shortcut = 1;
@@ -150,7 +150,7 @@ void Fl_Menu_Item::draw(int x, int y, int w, int h, const Fl_Menu_* m,
   l.image   = 0;
   l.deimage = 0;
   l.type    = labeltype_;
-  l.font    = labelsize_ || labelfont_ ? labelfont_ : (m ? m->textfont() : FL_HELVETICA);
+  l.font    = labelsize_ || labelfont_ ? labelfont_ : (m ? m->textfont() : fltk3::HELVETICA);
   l.size    = labelsize_ ? labelsize_ : m ? m->textsize() : FL_NORMAL_SIZE;
   l.color   = labelcolor_ ? labelcolor_ : m ? m->textcolor() : int(FL_FOREGROUND_COLOR);
   if (!active()) l.color = fl_inactive((Fl_Color)l.color);
@@ -450,8 +450,8 @@ void menuwindow::drawentry(const Fl_Menu_Item* m, int n, int eraseit) {
     int x1 = xx+ww-sz-3;
     fl_polygon(x1+2, y1, x1+2, y1+sz, x1+sz/2+2, y1+sz/2);
   } else if (m->shortcut_) {
-    Fl_Font f = m->labelsize_ || m->labelfont_ ? (Fl_Font)m->labelfont_ :
-                    button ? button->textfont() : FL_HELVETICA;
+    fltk3::Font f = m->labelsize_ || m->labelfont_ ? (fltk3::Font)m->labelfont_ :
+                    button ? button->textfont() : fltk3::HELVETICA;
     fl_font(f, m->labelsize_ ? m->labelsize_ :
                    button ? button->textsize() : FL_NORMAL_SIZE);
     const char *k, *s = fl_shortcut_label(m->shortcut_, &k);
@@ -806,7 +806,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
     const Fl_Menu_* pbutton,
     const Fl_Menu_Item* t,
     int menubar) const {
-  Fl_Group::current(0); // fix possible user error...
+  fltk3::Group::current(0); // fix possible user error...
 
   button = pbutton;
   if (pbutton) {
@@ -1002,7 +1002,7 @@ const Fl_Menu_Item* Fl_Menu_Item::find_shortcut(int* ip, const bool require_alt)
   if (m) for (int ii = 0; m->text; m = m->next(), ii++) {
     if (m->activevisible()) {
       if (fltk3::test_shortcut(m->shortcut_)
-	 || Fl_Widget::test_shortcut(m->text, require_alt)) {
+	 || fltk3::Widget::test_shortcut(m->text, require_alt)) {
 	if (ip) *ip=ii;
 	return m;
       }
@@ -1028,7 +1028,7 @@ const Fl_Menu_Item* Fl_Menu_Item::test_shortcut() const {
     if (m->activevisible()) {
       // return immediately any match of an item in top level menu:
       if (fltk3::test_shortcut(m->shortcut_)) return m;
-      // if (Fl_Widget::test_shortcut(m->text)) return m;
+      // if (fltk3::Widget::test_shortcut(m->text)) return m;
       // only return matches from lower menu if nothing found in top menu:
       if (!ret && m->submenu()) {
 	const Fl_Menu_Item* s =

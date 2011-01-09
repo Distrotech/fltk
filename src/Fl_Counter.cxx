@@ -201,7 +201,7 @@ Fl_Counter::Fl_Counter(int X, int Y, int W, int H, const char* L)
   Fl_Valuator::step(1, 10);
   lstep_ = 1.0;
   mouseobj = 0;
-  textfont_ = FL_HELVETICA;
+  textfont_ = fltk3::HELVETICA;
   textsize_ = FL_NORMAL_SIZE;
   textcolor_ = FL_FOREGROUND_COLOR;
 }

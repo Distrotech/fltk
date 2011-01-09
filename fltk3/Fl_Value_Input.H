@@ -69,7 +69,7 @@ public:
   Fl_Input input;
 private:
   char soft_;
-  static void input_cb(Fl_Widget*,void*);
+  static void input_cb(fltk3::Widget*,void*);
   virtual void value_damage(); // cause damage() due to value() changing
 public:
   int handle(int);
@@ -110,13 +110,13 @@ public:
   void shortcut(int s) {input.shortcut(s);}
 
   /** Gets the typeface of the text in the value box.  */
-  Fl_Font textfont() const {return input.textfont();}
+  fltk3::Font textfont() const {return input.textfont();}
   /** Sets the typeface of the text in the value box.  */
-  void textfont(Fl_Font s) {input.textfont(s);}
+  void textfont(fltk3::Font s) {input.textfont(s);}
   /** Gets the size of the text in the value box.  */
-  Fl_Fontsize textsize() const {return input.textsize();}
+  fltk3::Fontsize textsize() const {return input.textsize();}
   /** Sets the size of the text in the value box.  */
-  void textsize(Fl_Fontsize s) {input.textsize(s);}
+  void textsize(fltk3::Fontsize s) {input.textsize(s);}
   /** Gets the color of the text in the value box.  */
   Fl_Color textcolor() const {return input.textcolor();}
   /** Sets the color of the text in the value box.*/

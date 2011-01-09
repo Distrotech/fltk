@@ -131,7 +131,7 @@ public:
       fltk3::e_y = fltk3::e_y_root-fl_dnd_target_window->y();
     }
     if (fillCurrentDragData(0)) {
-      // Fl_Group will change DND_DRAG into DND_ENTER and DND_LEAVE if needed
+      // fltk3::Group will change DND_DRAG into DND_ENTER and DND_LEAVE if needed
       if ( fltk3::handle( FL_DND_DRAG, fl_dnd_target_window ) )
         *pdwEffect = DROPEFFECT_MOVE|DROPEFFECT_COPY; //|DROPEFFECT_LINK;
       else
@@ -167,7 +167,7 @@ public:
     if ( !fltk3::handle( FL_DND_RELEASE, target ) )
       return S_OK;
 
-    Fl_Widget *w = target;
+    fltk3::Widget *w = target;
     while (w->parent()) w = w->window();
     HWND hwnd = fl_xid( (fltk3::Window*)w );
     if (fillCurrentDragData(data)) {
@@ -538,7 +538,7 @@ int fltk3::dnd()
   fdo->Release();
   fds->Release();
 
-  Fl_Widget *w = fltk3::pushed();
+  fltk3::Widget *w = fltk3::pushed();
   if ( w )
   {
     int old_event = fltk3::e_number;

@@ -34,7 +34,7 @@
 #include <fltk3/run.h>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
-#include <fltk3/Fl_Widget.H>
+#include <fltk3/Widget.h>
 #include <fltk3/Fl_Menu_Item.H>
 #include <fltk3/Fl_Bitmap.H>
 #include <fltk3/Fl_Printer.H>
@@ -390,7 +390,7 @@ void Fl_Bitmap::uncache() {
   }
 }
 
-void Fl_Bitmap::label(Fl_Widget* widget) {
+void Fl_Bitmap::label(fltk3::Widget* widget) {
   widget->image(this);
 }
 

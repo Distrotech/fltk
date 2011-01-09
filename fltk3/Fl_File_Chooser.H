@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <fltk3/Fl_Group.H>
+#include <fltk3/Group.H>
 #include <fltk3/Fl_Choice.H>
 #include <fltk3/Fl_Menu_Button.H>
 #include <fltk3/Fl_Button.H>
@@ -59,7 +59,7 @@ private:
   char preview_text_[2048]; 
   int type_; 
   void favoritesButtonCB(); 
-  void favoritesCB(Fl_Widget *w); 
+  void favoritesCB(fltk3::Widget *w); 
   void fileListCB(); 
   void fileNameCB(); 
   void newdir(); 
@@ -150,10 +150,10 @@ public:
   int shown();
   void textcolor(Fl_Color c);
   Fl_Color textcolor();
-  void textfont(Fl_Font f);
-  Fl_Font textfont();
-  void textsize(Fl_Fontsize s);
-  Fl_Fontsize textsize();
+  void textfont(fltk3::Font f);
+  fltk3::Font textfont();
+  void textsize(fltk3::Fontsize s);
+  fltk3::Fontsize textsize();
   void type(int t);
   int type();
   void * user_data() const;
@@ -219,9 +219,9 @@ public:
   */
   static Fl_File_Sort_F *sort; 
 private:
-  Fl_Widget* ext_group; 
+  fltk3::Widget* ext_group; 
 public:
-  Fl_Widget* add_extra(Fl_Widget* gr);
+  fltk3::Widget* add_extra(fltk3::Widget* gr);
   Fl_File_Browser *browser(void) {return fileList; };
 };
 FL_EXPORT char *fl_dir_chooser(const char *message,const char *fname,int relative=0);

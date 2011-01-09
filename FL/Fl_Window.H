@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id$"
 //
@@ -30,35 +28,24 @@
 /* \file
    Fl_Window widget . */
 
-#ifndef Fl_Window_H
-#define Fl_Window_H
+#ifndef FLTK1_Window_H
+#define FLTK1_Window_H
 
+#include <fltk3/Window.h>
 #include "Fl_Group.H"
+
+#if 0 // TODO: FLTK123
 
 #define FL_WINDOW 0xF0		///< window type id all subclasses have type() >= this
 #define FL_DOUBLE_WINDOW 0xF1   ///< double window type id
 
 class Fl_X;
 
-/**
-  This widget produces an actual window.  This can either be a main
-  window, with a border and title and all the window management controls,
-  or a "subwindow" inside a window.  This is controlled by whether or not
-  the window has a parent().
+#endif // TODO: FLTK123
 
-  Once you create a window, you usually add children Fl_Widget
-  's to it by using window->add(child) for each new widget.
-  See Fl_Group for more information on how to add and remove children.
-
-  There are several subclasses of Fl_Window that provide
-  double-buffering, overlay, menu, and OpenGL support.
-
-  The window's callback is done if the user tries to close a window
-  using the window manager and Fl::modal() is zero or equal to the
-  window. Fl_Window has a default callback that calls Fl_Window::hide().
-*/
 class FL_EXPORT Fl_Window : public Fl_Group {
 
+#if 0  // TODO: FLTK123
   static char *default_xclass_;
 
   friend class Fl_X;
@@ -110,38 +97,16 @@ protected:
     \see force_position(int)
   */
   int force_position() const { return ((flags() & FORCE_POSITION)?1:0); }
-
+#endif
+  
 public:
 
-  /**
-    Creates a window from the given size and title. 
-    If Fl_Group::current() is not NULL, the window is created as a 
-    subwindow of the parent window.
-    
-    The first form of the constructor creates a top-level window
-    and asks the window manager to position the window. The second
-    form of the constructor either creates a subwindow or a
-    top-level window at the specified location (x,y) , subject to window
-    manager configuration. If you do not specify the position of the
-    window, the window manager will pick a place to show the window
-    or allow the user to pick a location. Use position(x,y)
-    or hotspot() before calling show() to request a
-    position on the screen. See Fl_Window::resize() 
-    for some more details on positioning windows.
-    
-    Top-level windows initially have visible() set to 0
-    and parent() set to NULL. Subwindows initially
-    have visible() set to 1 and parent() set to
-    the parent window pointer.
-    
-    Fl_Widget::box() defaults to FL_FLAT_BOX. If you plan to
-    completely fill the window with children widgets you should
-    change this to FL_NO_BOX. If you turn the window border off
-    you may want to change this to FL_UP_BOX.
-
-    \see Fl_Window(int x, int y, int w, int h, const char* title = 0)
-  */
-    Fl_Window(int w, int h, const char* title= 0);
+  Fl_Window(int w, int h, const char* title= 0) {
+    _p = new fltk3::Window(w, h, title); 
+    _p->wrapper(this);
+  }
+  
+#if 0 // TODO: FLTK123
   /** Creates a window from the given position, size and title.
 
     \see Fl_Window::Fl_Window(int w, int h, const char *title = 0)
@@ -364,27 +329,12 @@ public:
     has not been shown then this does nothing and is harmless.
   */
   virtual void hide();
-  /**
-    Puts the window on the screen and parses command-line arguments.
-
-    Usually (on X) this has the side effect of opening the display.
-
-    This form should be used for top-level windows, at least for the
-    first (main) window. It allows standard arguments to be parsed
-    from the command-line. You can use \p argc and \p argv from
-    main(int argc, char **argv) for this call.
-
-    The first call also sets up some system-specific internal
-    variables like the system colors.
-
-    \todo explain which system parameters are set up.
-
-    \param argc command-line argument count, usually from main()
-    \param argv command-line argument vector, usually from main()
-
-    \see virtual void Fl_Window::show()
-  */
-  void show(int argc, char **argv);
+  
+#endif // TODO: FLTK123
+  
+  void show(int argc, char **argv) { ((fltk3::Window*)_p)->show(argc, argv); }
+  
+#if 0 // TODO: FLTK123
   /**
     Makes the window completely fill the screen, without any window
     manager border visible.  You must use fullscreen_off() to undo
@@ -447,7 +397,8 @@ public:
   void cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE); // platform dependent
   void default_cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
   static void default_callback(Fl_Window*, void* v);
-
+#endif  // TODO: FLTK123
+  
 };
 
 #endif
@@ -455,4 +406,3 @@ public:
 //
 // End of "$Id$".
 //
-#endif

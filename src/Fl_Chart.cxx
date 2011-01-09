@@ -292,7 +292,7 @@ void Fl_Chart::draw() {
   \param[in] L widget label, default is no label
  */
 Fl_Chart::Fl_Chart(int X, int Y, int W, int H,const char *L) :
-Fl_Widget(X,Y,W,H,L) {
+fltk3::Widget(X,Y,W,H,L) {
   box(fltk3::BORDER_BOX);
   align(FL_ALIGN_BOTTOM);
   numb       = 0;
@@ -300,7 +300,7 @@ Fl_Widget(X,Y,W,H,L) {
   sizenumb   = FL_CHART_MAX;
   autosize_  = 1;
   min = max  = 0;
-  textfont_  = FL_HELVETICA;
+  textfont_  = fltk3::HELVETICA;
   textsize_  = 10;
   textcolor_ = FL_FOREGROUND_COLOR;
   entries    = (FL_CHART_ENTRY *)calloc(sizeof(FL_CHART_ENTRY), FL_CHART_MAX + 1);

@@ -119,7 +119,7 @@ protected:
   friend void fl_draw(const char *str, int n, int x, int y);
   friend void fl_draw(int angle, const char *str, int n, int x, int y);
   friend void fl_rtl_draw(const char *str, int n, int x, int y);
-  friend void fl_font(Fl_Font face, Fl_Fontsize size);
+  friend void fl_font(fltk3::Font face, fltk3::Fontsize size);
   friend void fl_color(Fl_Color c);
   friend void fl_color(uchar r, uchar g, uchar b);
   friend void fl_point(int x, int y);
@@ -185,8 +185,8 @@ protected:
   virtual void draw(int angle, const char *str, int n, int x, int y) {};
   /** \brief see fl_rtl_draw(const char *str, int n, int x, int y). */
   virtual void rtl_draw(const char *str, int n, int x, int y) {};
-  /** \brief see fl_font(Fl_Font face, Fl_Fontsize size). */
-  virtual void font(Fl_Font face, Fl_Fontsize size) {};
+  /** \brief see fl_font(fltk3::Font face, fltk3::Fontsize size). */
+  virtual void font(fltk3::Font face, fltk3::Fontsize size) {};
   /** \brief see fl_color(Fl_Color c). */
   virtual void color(Fl_Color c) {};
   /** \brief see fl_color(uchar r, uchar g, uchar b). */
@@ -298,7 +298,7 @@ public:
   void draw(const char* str, int n, int x, int y);
   void draw(int angle, const char *str, int n, int x, int y);
   void rtl_draw(const char* str, int n, int x, int y);
-  void font(Fl_Font face, Fl_Fontsize size);
+  void font(fltk3::Font face, fltk3::Fontsize size);
   void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
@@ -324,7 +324,7 @@ public:
   void draw(const char* str, int n, int x, int y);
   void draw(int angle, const char *str, int n, int x, int y);
   void rtl_draw(const char* str, int n, int x, int y);
-  void font(Fl_Font face, Fl_Fontsize size);
+  void font(fltk3::Font face, fltk3::Fontsize size);
   void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
@@ -350,7 +350,7 @@ public:
   void draw(const char* str, int n, int x, int y);
   void draw(int angle, const char *str, int n, int x, int y);
   void rtl_draw(const char* str, int n, int x, int y);
-  void font(Fl_Font face, Fl_Fontsize size);
+  void font(fltk3::Font face, fltk3::Fontsize size);
   void draw(Fl_Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_Bitmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy);
   void draw(Fl_RGB_Image *img, int XP, int YP, int WP, int HP, int cx, int cy);
@@ -416,7 +416,7 @@ public:
    \param x,y offsets where to print relatively to coordinates origin
    \param height height of the current drawing area
    */
-  virtual int print(Fl_Widget* w, int x, int y, int height) { return 0; }
+  virtual int print(fltk3::Widget* w, int x, int y, int height) { return 0; }
 };
 
 #endif // Fl_Device_H

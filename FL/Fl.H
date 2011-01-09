@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id$"
 //
@@ -31,8 +29,10 @@
     Fl static class.
  */
 
-#ifndef Fl_H
-#  define Fl_H
+#ifndef FLTK1_H
+#  define FLTK1_H
+
+#include <fltk3/run.h>
 
 #ifdef FLTK_HAVE_CAIRO
 # include <FL/Fl_Cairo.H>
@@ -48,6 +48,7 @@
 #    undef check
 #  endif
 
+#if 0
 
 class Fl_Widget;
 class Fl_Window;
@@ -108,12 +109,16 @@ typedef int (*Fl_Args_Handler)(int argc, char **argv, int &i);
 
 /** @} */ /* group callback_functions */
 
+#endif // TODO: FLTK123
 
 /**
   The Fl is the FLTK global (static) containing
   state information and global methods for the current application.
 */
 class FL_EXPORT Fl {
+public:
+  
+#if 0 // TODO: FLTK123
   Fl() {}; // no constructor!
   
 public: // should be private!
@@ -273,7 +278,11 @@ public:
   static double wait(double time);
   static int check();
   static int ready();
-  static int run();
+#endif  // TODO: FLTK123
+  
+  static int run() { return fltk3::run(); }
+  
+#if 0 // TODO: FLTK123
   static Fl_Widget* readqueue();
   /**
   Adds a one-shot timeout callback.  The function will be called by
@@ -1067,9 +1076,12 @@ public:
   /** @} */ 
 
 #endif // FLTK_HAVE_CAIRO
-
+  
+#endif // TODO: FLTK123
+  
 };
 
+#if 0 // TODO: FLTK123
 /**
   This class should be used to control safe widget deletion.
 
@@ -1155,9 +1167,10 @@ public:
      @{ */
  /** @} */
 
+#endif
+
 #endif // !Fl_H
 
 //
 // End of "$Id$".
 //
-#endif

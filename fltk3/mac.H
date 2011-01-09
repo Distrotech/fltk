@@ -33,7 +33,7 @@
 #if !defined(Fl_X_H)
 #  error "Never use <fltk3/mac.H> directly; include <fltk3/x.H> instead."
 #endif // !Fl_X_H
-#include <fltk3/Fl_Widget.H>
+#include <fltk3/Widget.h>
 
 typedef void* Window;	    // this is really a pointer to the subclass FLWindow of NSWindow
 typedef void* Fl_Offscreen; // this is really a CGContextRef

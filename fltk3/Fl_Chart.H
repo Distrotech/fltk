@@ -32,7 +32,7 @@
 #define Fl_Chart_H
 
 #ifndef Fl_Widget_H
-#include "Fl_Widget.H"
+#include "Widget.h"
 #endif
 
 // values for type()
@@ -78,15 +78,15 @@ struct FL_CHART_ENTRY {
          separated from the pie.
   \li \c FL_SPIKE_CHART: Each sample value is drawn as a vertical line.
  */
-class FL_EXPORT Fl_Chart : public Fl_Widget {
+class FL_EXPORT Fl_Chart : public fltk3::Widget {
     int numb;
     int maxnumb;
     int sizenumb;
     FL_CHART_ENTRY *entries;
     double min,max;
     uchar autosize_;
-    Fl_Font textfont_;
-    Fl_Fontsize textsize_;
+    fltk3::Font textfont_;
+    fltk3::Fontsize textsize_;
     Fl_Color textcolor_;
 protected:
     void draw();
@@ -116,7 +116,7 @@ public:
      */
     int size() const {return numb;}
 
-    void size(int W, int H) { Fl_Widget::size(W, H); }
+    void size(int W, int H) { fltk3::Widget::size(W, H); }
 
     /**
       Gets the maximum number of data values for a chart.
@@ -126,14 +126,14 @@ public:
     void maxsize(int m);
 
     /** Gets the chart's text font */
-    Fl_Font textfont() const {return textfont_;}
+    fltk3::Font textfont() const {return textfont_;}
     /** Sets the chart's text font to \p s. */
-    void textfont(Fl_Font s) {textfont_ = s;}
+    void textfont(fltk3::Font s) {textfont_ = s;}
 
     /** Gets the chart's text size */
-    Fl_Fontsize textsize() const {return textsize_;}
+    fltk3::Fontsize textsize() const {return textsize_;}
     /** gets the chart's text size to \p s. */
-    void textsize(Fl_Fontsize s) {textsize_ = s;}
+    void textsize(fltk3::Fontsize s) {textsize_ = s;}
 
     /** Gets the chart's text color */
     Fl_Color textcolor() const {return textcolor_;}

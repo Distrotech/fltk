@@ -601,7 +601,7 @@ int Fl_Text_Editor::handle(int event) {
     case FL_PUSH:
       if (fltk3::event_button() == 2) {
         // don't let the text_display see this event
-        if (Fl_Group::handle(event)) return 1;
+        if (fltk3::Group::handle(event)) return 1;
         dragType = DRAG_NONE;
 	if(buffer()->selected()) {
 	  buffer()->unselect();

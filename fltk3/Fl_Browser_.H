@@ -34,7 +34,7 @@
 #define Fl_Browser__H
 
 #ifndef Fl_Group_H
-#include "Fl_Group.H"
+#include "fltk3/Group.H"
 #endif
 #include "Fl_Scrollbar.H"
 #include <fltk3/run.h>		// fltk3::scrollbar_size()
@@ -64,7 +64,7 @@
   accessing image data or doing stat() on a file or doing some
   other slow operation.
 */
-class FL_EXPORT Fl_Browser_ : public Fl_Group {
+class FL_EXPORT Fl_Browser_ : public fltk3::Group {
   int position_;	// where user wants it scrolled to
   int real_position_;	// the current vertical scrolling position
   int hposition_;	// where user wants it panned to
@@ -72,8 +72,8 @@ class FL_EXPORT Fl_Browser_ : public Fl_Group {
   int offset_;		// how far down top_ item the real_position is
   int max_width;	// widest object seen so far
   uchar has_scrollbar_;	// which scrollbars are enabled
-  Fl_Font textfont_;
-  Fl_Fontsize textsize_;
+  fltk3::Font textfont_;
+  fltk3::Fontsize textsize_;
   Fl_Color textcolor_;
   void* top_;		// which item scrolling position is in
   void* selection_;	// which is selected (except for FL_MULTI_BROWSER)
@@ -279,20 +279,20 @@ public:
     Gets the default text font for the lines in the browser.
     \see textfont(), textsize(), textcolor()
   */
-  Fl_Font textfont() const { return textfont_; }
+  fltk3::Font textfont() const { return textfont_; }
   /**
     Sets the default text font for the lines in the browser to \p font.
   */
-  void textfont(Fl_Font font) { textfont_ = font; }
+  void textfont(fltk3::Font font) { textfont_ = font; }
 
   /**
     Gets the default text size (in pixels) for the lines in the browser.
   */
-  Fl_Fontsize textsize() const { return textsize_; }
+  fltk3::Fontsize textsize() const { return textsize_; }
   /**
     Sets the default text size (in pixels) for the lines in the browser to \p size.
   */
-  void textsize(Fl_Fontsize size) { textsize_ = size; }
+  void textsize(fltk3::Fontsize size) { textsize_ = size; }
 
   /**
     Gets the default text color for the lines in the browser.

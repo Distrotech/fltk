@@ -32,7 +32,7 @@
 #define Fl_Menu__H
 
 #ifndef Fl_Widget_H
-#include "Fl_Widget.H"
+#include "Widget.h"
 #endif
 #include "Fl_Menu_Item.H"
 
@@ -45,7 +45,7 @@
   array may either be supplied directly by the user program, or it may
   be "private": a dynamically allocated array managed by the Fl_Menu_.
 */
-class FL_EXPORT Fl_Menu_ : public Fl_Widget {
+class FL_EXPORT Fl_Menu_ : public fltk3::Widget {
 
   Fl_Menu_Item *menu_;
   const Fl_Menu_Item *value_;
@@ -54,8 +54,8 @@ protected:
 
   uchar alloc;			// flag indicates if menu_ is a dynamic copy (=1) or not (=0)
   uchar down_box_;
-  Fl_Font textfont_;
-  Fl_Fontsize textsize_;
+  fltk3::Font textfont_;
+  fltk3::Fontsize textsize_;
   Fl_Color textcolor_;
 
 public:
@@ -103,7 +103,7 @@ public:
   }
   int  add(const char *);
   int  size() const ;
-  void size(int W, int H) { Fl_Widget::size(W, H); }
+  void size(int W, int H) { fltk3::Widget::size(W, H); }
   void clear();
   int clear_submenu(int index);
   void replace(int,const char *);
@@ -133,13 +133,13 @@ public:
   const char *text(int i) const {return menu_[i].text;}
 
   /** Gets the current font of menu item labels.  */
-  Fl_Font textfont() const {return textfont_;}
+  fltk3::Font textfont() const {return textfont_;}
   /**  Sets the current font of menu item labels.  */
-  void textfont(Fl_Font c) {textfont_=c;}
+  void textfont(fltk3::Font c) {textfont_=c;}
   /**  Gets the font size of menu item labels.  */
-  Fl_Fontsize textsize() const {return textsize_;}
+  fltk3::Fontsize textsize() const {return textsize_;}
   /**  Sets the font size of menu item labels.  */
-  void textsize(Fl_Fontsize c) {textsize_=c;}
+  void textsize(fltk3::Fontsize c) {textsize_=c;}
   /** Get the current color of menu item labels.  */
   Fl_Color textcolor() const {return textcolor_;}
   /** Sets the current color of menu item labels. */

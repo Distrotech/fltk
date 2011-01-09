@@ -32,7 +32,7 @@
 #define Fl_Input__H
 
 #ifndef Fl_Widget_H
-#include "Fl_Widget.H"
+#include "Widget.h"
 #endif
 
 #define FL_NORMAL_INPUT		0
@@ -99,7 +99,7 @@
   None of these issues should be disastrous. Nevertheless, we should
   discuss how FLTK should handle false UTF-8 sequences and pointers.
 */
-class FL_EXPORT Fl_Input_ : public Fl_Widget {
+class FL_EXPORT Fl_Input_ : public fltk3::Widget {
 
   /** \internal Storage for the text field. */
   const char* value_;
@@ -142,10 +142,10 @@ class FL_EXPORT Fl_Input_ : public Fl_Widget {
   uchar erase_cursor_only;
 
   /** \internal The font used for the entire text. */
-  Fl_Font textfont_;
+  fltk3::Font textfont_;
 
   /** \internal Height of the font used for the entire text. */
-  Fl_Fontsize textsize_;
+  fltk3::Fontsize textsize_;
 
   /** \internal color of the entire text */
   Fl_Color textcolor_;
@@ -266,8 +266,8 @@ public:
 
   /** Sets the width and height of this widget.
     \param [in] W, H new width and height
-    \see Fl_Widget::size(int, int) */
-  void size(int W, int H) { Fl_Widget::size(W, H); }
+    \see fltk3::Widget::size(int, int) */
+  void size(int W, int H) { fltk3::Widget::size(W, H); }
 
   /** Gets the maximum length of the input field.  
     \todo It is not clear if this function is actually required */
@@ -383,22 +383,22 @@ public:
   void shortcut(int s) {shortcut_ = s;}
 
   /** Gets the font of the text in the input field.
-    \return the current Fl_Font index */
-  Fl_Font textfont() const {return textfont_;}
+    \return the current fltk3::Font index */
+  fltk3::Font textfont() const {return textfont_;}
 
   /** Sets the font of the text in the input field.
-    The text font defaults to \c FL_HELVETICA.
+    The text font defaults to \c fltk3::HELVETICA.
     \param [in] s the new text font */
-  void textfont(Fl_Font s) {textfont_ = s;}
+  void textfont(fltk3::Font s) {textfont_ = s;}
 
   /** Gets the size of the text in the input field.
     \return the text height in pixels */
-  Fl_Fontsize textsize() const {return textsize_;}
+  fltk3::Fontsize textsize() const {return textsize_;}
 
   /** Sets the size of the text in the input field.
     The text height defaults to \c FL_NORMAL_SIZE.
     \param [in] s the new font height in pixel units */
-  void textsize(Fl_Fontsize s) {textsize_ = s;}
+  void textsize(fltk3::Fontsize s) {textsize_ = s;}
 
   /** Gets the color of the text in the input field.
     \return the text color

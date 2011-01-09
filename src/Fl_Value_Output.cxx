@@ -97,7 +97,7 @@ Fl_Value_Output::Fl_Value_Output(int X, int Y, int W, int H,const char *l)
 : Fl_Valuator(X,Y,W,H,l) {
   box(fltk3::NO_BOX);
   align(FL_ALIGN_LEFT);
-  textfont_ = FL_HELVETICA;
+  textfont_ = fltk3::HELVETICA;
   textsize_ = FL_NORMAL_SIZE;
   textcolor_ = FL_FOREGROUND_COLOR;
   soft_ = 0;

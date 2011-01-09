@@ -28,7 +28,7 @@
 #ifndef Fl_Menu_Item_H
 #define Fl_Menu_Item_H
 
-#  include "Fl_Widget.H"
+#  include "Widget.h"
 #  include "Fl_Image.H"
 
 #  if defined(__APPLE__) && defined(check)
@@ -122,8 +122,8 @@ struct FL_EXPORT Fl_Menu_Item {
   void *user_data_;	    ///< menu item user_data for the menu's callback
   int flags;		    ///< menu item flags like FL_MENU_TOGGLE, FL_MENU_RADIO
   uchar labeltype_;	    ///< how the menu item text looks like
-  Fl_Font labelfont_;	    ///< which font for this menu item text
-  Fl_Fontsize labelsize_;   ///< size of menu item text
+  fltk3::Font labelfont_;	    ///< which font for this menu item text
+  fltk3::Fontsize labelsize_;   ///< size of menu item text
   Fl_Color labelcolor_;	    ///< menu item text color
 
   // advance N items, skipping submenus:
@@ -197,7 +197,7 @@ struct FL_EXPORT Fl_Menu_Item {
     enumeration list for predefined fonts. The default value is a
     Helvetica font. The function fltk3::set_font() can define new fonts.
   */
-  Fl_Font labelfont() const {return labelfont_;}
+  fltk3::Font labelfont() const {return labelfont_;}
 
   /**
     Sets the menu item's label font.
@@ -205,13 +205,13 @@ struct FL_EXPORT Fl_Menu_Item {
     enumeration list for predefined fonts. The default value is a
     Helvetica font.  The function fltk3::set_font() can define new fonts.
   */
-  void labelfont(Fl_Font a) {labelfont_ = a;}
+  void labelfont(fltk3::Font a) {labelfont_ = a;}
 
   /** Gets the label font pixel size/height. */
-  Fl_Fontsize labelsize() const {return labelsize_;}
+  fltk3::Fontsize labelsize() const {return labelsize_;}
 
   /** Sets the label font pixel size/height.*/
-  void labelsize(Fl_Fontsize a) {labelsize_ = a;}
+  void labelsize(fltk3::Fontsize a) {labelsize_ = a;}
 
   /**
     Returns the callback function that is set for the menu item.
@@ -377,27 +377,27 @@ struct FL_EXPORT Fl_Menu_Item {
   const Fl_Menu_Item* find_shortcut(int *ip=0, const bool require_alt = false) const;
 
   /**
-    Calls the Fl_Menu_Item item's callback, and provides the Fl_Widget argument.
+    Calls the Fl_Menu_Item item's callback, and provides the fltk3::Widget argument.
     The callback is called with the stored user_data() as its second argument.
     You must first check that callback() is non-zero before calling this.
   */
-  void do_callback(Fl_Widget* o) const {callback_(o, user_data_);}
+  void do_callback(fltk3::Widget* o) const {callback_(o, user_data_);}
 
   /**
-    Calls the Fl_Menu_Item item's callback, and provides the Fl_Widget argument.
+    Calls the Fl_Menu_Item item's callback, and provides the fltk3::Widget argument.
     This call overrides the callback's second argument with the given value \p arg.
     You must first check that callback() is non-zero before calling this.
   */
-  void do_callback(Fl_Widget* o,void* arg) const {callback_(o, arg);}
+  void do_callback(fltk3::Widget* o,void* arg) const {callback_(o, arg);}
 
   /**
-    Calls the Fl_Menu_Item item's callback, and provides the Fl_Widget argument.
+    Calls the Fl_Menu_Item item's callback, and provides the fltk3::Widget argument.
     This call overrides the callback's second argument with the
     given value \p arg. long \p arg is cast to void* when calling
     the callback.
     You must first check that callback() is non-zero before calling this.
   */
-  void do_callback(Fl_Widget* o,long arg) const {callback_(o, (void*)arg);}
+  void do_callback(fltk3::Widget* o,long arg) const {callback_(o, (void*)arg);}
 
   // back-compatibility, do not use:
 

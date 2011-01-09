@@ -93,7 +93,7 @@ int Fl_Menu_Button::handle(int e) {
       return 1;
     } else return 0;
   case FL_SHORTCUT:
-    if (Fl_Widget::test_shortcut()) {popup(); return 1;}
+    if (fltk3::Widget::test_shortcut()) {popup(); return 1;}
     return test_shortcut() != 0;
   case FL_FOCUS: /* FALLTHROUGH */
   case FL_UNFOCUS:

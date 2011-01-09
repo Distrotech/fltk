@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 /*
  * "$Id$"
  *
@@ -27,8 +25,8 @@
  *     http://www.fltk.org/str.php
  */
 
-#ifndef Fl_Export_H
-#  define Fl_Export_H
+#ifndef FLTK1_EXPORT_H
+#  define FLTK1_EXPORT_H
 
 /*
  * The following is only used when building DLLs under WIN32...
@@ -49,4 +47,3 @@
 /*
  * End of "$Id$".
  */
-#endif

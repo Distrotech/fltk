@@ -56,7 +56,7 @@
 #endif /* WIN32 || __EMX__ */
 
 #include <fltk3/Fl_File_Icon.H>
-#include <fltk3/Fl_Widget.H>
+#include <fltk3/Widget.h>
 #include <fltk3/fl_draw.H>
 #include <fltk3/filename.H>
 
@@ -456,7 +456,7 @@ Fl_File_Icon::draw(int      x,		// I - Upper-lefthand X
   label type as needed.
   \param[in] w widget for which this icon will become the label
 */
-void Fl_File_Icon::label(Fl_Widget *w)	// I - Widget to label
+void Fl_File_Icon::label(fltk3::Widget *w)	// I - Widget to label
 {
   fltk3::set_labeltype(fltk3::ICON_LABEL, labeltype, 0);
   w->label(fltk3::ICON_LABEL, (const char*)this);

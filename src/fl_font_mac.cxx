@@ -35,7 +35,7 @@ extern unsigned fl_utf8toUtf16(const char* src, unsigned srclen, unsigned short*
 
 static const CGAffineTransform font_mx = { 1, 0, 0, -1, 0, 0 };
 
-Fl_Font_Descriptor::Fl_Font_Descriptor(const char* name, Fl_Fontsize Size) {
+Fl_Font_Descriptor::Fl_Font_Descriptor(const char* name, fltk3::Fontsize Size) {
   next = 0;
 #  if HAVE_GL
   listbase = 0;
@@ -218,7 +218,7 @@ void fl_font(Fl_Font_Descriptor* s) {
   // we will use fl_fontsize later to access the required style and layout
 }
 
-static Fl_Font_Descriptor* find(Fl_Font fnum, Fl_Fontsize size) {
+static Fl_Font_Descriptor* find(fltk3::Font fnum, fltk3::Fontsize size) {
   Fl_Fontdesc* s = fl_fonts+fnum;
   if (!s->name) s = fl_fonts; // use 0 if fnum undefined
   Fl_Font_Descriptor* f;
@@ -233,11 +233,11 @@ static Fl_Font_Descriptor* find(Fl_Font fnum, Fl_Fontsize size) {
 ////////////////////////////////////////////////////////////////
 // Public interface:
 
-Fl_Font fl_font_ = 0;
-Fl_Fontsize fl_size_ = 0;
+fltk3::Font fl_font_ = 0;
+fltk3::Fontsize fl_size_ = 0;
 
 
-void Fl_Quartz_Graphics_Driver::font(Fl_Font fnum, Fl_Fontsize size) {
+void Fl_Quartz_Graphics_Driver::font(fltk3::Font fnum, fltk3::Fontsize size) {
   if (fnum==-1) {
     fl_font_ = 0; 
     fl_size_ = 0;

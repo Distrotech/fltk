@@ -1,7 +1,7 @@
 //
-// "$Id$"
+// "$Id: Wrapper.h 7365 2010-03-30 15:18:29Z matt $"
 //
-// Box widget for the Fast Light Tool Kit (FLTK).
+// Widget header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2010 by Bill Spitzak and others.
 //
@@ -25,20 +25,36 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/Widget.h>
-#include <fltk3/Box.h>
+/* \file
+   fltk3::Wrapper */
 
-void fltk3::Box::draw() {
-  draw_box();
-  draw_label();
-}
+#ifndef FLTK3_Wrapper_H
+#define FLTK3_Wrapper_H
 
-int fltk3::Box::handle(int event) {
-  if (event == FL_ENTER || event == FL_LEAVE) return 1;
-  else return 0;
-}
+namespace fltk3 {
+  
+  class Object; 
 
+/**
+ * \brief a base class for any kind of langage wrapper around FLTK3.
+ */
+  class Wrapper {
+  protected:
+    Object *_p;
+  public:
+    Wrapper() 
+    : _p(0L) { }
+    virtual ~Wrapper() { }
+    
+    unsigned int vcalls;
+    virtual void draw() { /* call _p->draw() with a flag set */ }
+  };
+  
+}; // namespace fltk3
+
+
+#endif
 
 //
-// End of "$Id$".
+// End of "$Id: Wrapper.h 7365 2010-03-30 15:18:29Z matt $".
 //

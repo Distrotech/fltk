@@ -30,7 +30,7 @@
 static int fl_angle_ = 0;
 
 #ifndef FL_DOXYGEN
-Fl_Font_Descriptor::Fl_Font_Descriptor(const char* name, Fl_Fontsize size) {
+Fl_Font_Descriptor::Fl_Font_Descriptor(const char* name, fltk3::Fontsize size) {
   int weight = FW_NORMAL;
   int italic = 0;
   switch (*name++) {
@@ -117,7 +117,7 @@ static Fl_Fontdesc built_in_table[] = {
 
 Fl_Fontdesc* fl_fonts = built_in_table;
 
-static Fl_Font_Descriptor* find(Fl_Font fnum, Fl_Fontsize size, int angle) {
+static Fl_Font_Descriptor* find(fltk3::Font fnum, fltk3::Fontsize size, int angle) {
   Fl_Fontdesc* s = fl_fonts+fnum;
   if (!s->name) s = fl_fonts; // use 0 if fnum undefined
   Fl_Font_Descriptor* f;
@@ -132,11 +132,11 @@ static Fl_Font_Descriptor* find(Fl_Font fnum, Fl_Fontsize size, int angle) {
 ////////////////////////////////////////////////////////////////
 // Public interface:
 
-Fl_Font fl_font_ = 0;
-Fl_Fontsize fl_size_ = 0;
+fltk3::Font fl_font_ = 0;
+fltk3::Fontsize fl_size_ = 0;
 //static HDC font_gc;
 
-void fl_font(Fl_Font fnum, Fl_Fontsize size, int angle) {
+void fl_font(fltk3::Font fnum, fltk3::Fontsize size, int angle) {
   if (fnum==-1) { // just make sure that we will load a new font next time
     fl_font_ = 0; fl_size_ = 0; fl_angle_ = 0;
     return;
@@ -146,7 +146,7 @@ void fl_font(Fl_Font fnum, Fl_Fontsize size, int angle) {
   fl_fontsize = find(fnum, size, angle);
 }
 
-void Fl_GDI_Graphics_Driver::font(Fl_Font fnum, Fl_Fontsize size) {
+void Fl_GDI_Graphics_Driver::font(fltk3::Font fnum, fltk3::Fontsize size) {
   fl_font(fnum, size, 0);
 }
 

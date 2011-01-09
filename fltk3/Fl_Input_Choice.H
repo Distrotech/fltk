@@ -39,7 +39,7 @@
 #define Fl_Input_Choice_H
 
 #include <fltk3/run.h>
-#include <fltk3/Fl_Group.H>
+#include <fltk3/Group.H>
 #include <fltk3/Fl_Input.H>
 #include <fltk3/Fl_Menu_Button.H>
 #include <fltk3/fl_draw.H>
@@ -56,7 +56,7 @@
   widgets directly, using the menubutton()
   and input() accessor methods.
 */
-class FL_EXPORT Fl_Input_Choice : public Fl_Group {
+class FL_EXPORT Fl_Input_Choice : public fltk3::Group {
   // Private class to handle slightly 'special' behavior of menu button
   class InputMenuButton : public Fl_Menu_Button {
     void draw() {
@@ -74,14 +74,14 @@ class FL_EXPORT Fl_Input_Choice : public Fl_Group {
   Fl_Input *inp_;
   InputMenuButton *menu_;
 
-  static void menu_cb(Fl_Widget*, void *data) { 
+  static void menu_cb(fltk3::Widget*, void *data) { 
     Fl_Input_Choice *o=(Fl_Input_Choice *)data;
     Fl_Widget_Tracker wp(o);
     const Fl_Menu_Item *item = o->menubutton()->mvalue();
     if (item && item->flags & (FL_SUBMENU|FL_SUBMENU_POINTER)) return;	// ignore submenus
     if (!strcmp(o->inp_->value(), o->menu_->text()))
     {
-      o->Fl_Widget::clear_changed();
+      o->fltk3::Widget::clear_changed();
       if (o->when() & FL_WHEN_NOT_CHANGED)
 	o->do_callback();
     }
@@ -89,7 +89,7 @@ class FL_EXPORT Fl_Input_Choice : public Fl_Group {
     {
       o->inp_->value(o->menu_->text());
       o->inp_->set_changed();
-      o->Fl_Widget::set_changed();
+      o->fltk3::Widget::set_changed();
       if (o->when() & (FL_WHEN_CHANGED|FL_WHEN_RELEASE))
 	o->do_callback();
     }
@@ -98,20 +98,20 @@ class FL_EXPORT Fl_Input_Choice : public Fl_Group {
 
     if (o->callback() != default_callback)
     {
-      o->Fl_Widget::clear_changed();
+      o->fltk3::Widget::clear_changed();
       o->inp_->clear_changed();
     }
   }
 
-  static void inp_cb(Fl_Widget*, void *data) { 
+  static void inp_cb(fltk3::Widget*, void *data) { 
     Fl_Input_Choice *o=(Fl_Input_Choice *)data;
     Fl_Widget_Tracker wp(o);
     if (o->inp_->changed()) {
-      o->Fl_Widget::set_changed();
+      o->fltk3::Widget::set_changed();
       if (o->when() & (FL_WHEN_CHANGED|FL_WHEN_RELEASE))
 	o->do_callback();
     } else {
-      o->Fl_Widget::clear_changed();
+      o->fltk3::Widget::clear_changed();
       if (o->when() & FL_WHEN_NOT_CHANGED)
 	o->do_callback();
     }
@@ -119,7 +119,7 @@ class FL_EXPORT Fl_Input_Choice : public Fl_Group {
     if (wp.deleted()) return;
 
     if (o->callback() != default_callback)
-      o->Fl_Widget::clear_changed();
+      o->fltk3::Widget::clear_changed();
   }
 
   // Custom resize behavior -- input stretches, menu button doesn't
@@ -139,8 +139,8 @@ public:
     and label string.
   <P> Inherited destructor Destroys the widget and any value associated with it.
   */
-  Fl_Input_Choice (int x,int y,int w,int h,const char*l=0) : Fl_Group(x,y,w,h,l) {
-    Fl_Group::box(fltk3::DOWN_BOX);
+  Fl_Input_Choice (int x,int y,int w,int h,const char*l=0) : fltk3::Group(x,y,w,h,l) {
+    fltk3::Group::box(fltk3::DOWN_BOX);
     align(FL_ALIGN_LEFT);				// default like Fl_Input
     inp_ = new Fl_Input(inp_x(), inp_y(),
 			inp_w(), inp_h());
@@ -156,14 +156,14 @@ public:
   
   /** Adds an item to the menu.*/
   void add(const char *s) { menu_->add(s);  }
-  int changed() const { return inp_->changed() | Fl_Widget::changed();}
+  int changed() const { return inp_->changed() | fltk3::Widget::changed();}
   void clear_changed() { 
     inp_->clear_changed();
-    Fl_Widget::clear_changed();
+    fltk3::Widget::clear_changed();
   }
   void set_changed() { 
     inp_->set_changed();
-    // no need to call Fl_Widget::set_changed()
+    // no need to call fltk3::Widget::set_changed()
   }
   /** Removes all items from the menu. */
   void clear() { menu_->clear(); }
@@ -176,7 +176,7 @@ public:
   /** Sets the Fl_Menu_Item array used for the menu. */
   void menu(const Fl_Menu_Item *m) { menu_->menu(m); }
   void resize(int X, int Y, int W, int H) {
-    Fl_Group::resize(X,Y,W,H);
+    fltk3::Group::resize(X,Y,W,H);
     inp_->resize(inp_x(), inp_y(), inp_w(), inp_h());
     menu_->resize(menu_x(), menu_y(), menu_w(), menu_h());
   }
@@ -185,13 +185,13 @@ public:
   /** Sets the encapsulated input text color attributes */
   void textcolor(Fl_Color c) { inp_->textcolor(c);}
   /** Gets the encapsulated input text font  attributes */
-  Fl_Font textfont() const { return (inp_->textfont());}
+  fltk3::Font textfont() const { return (inp_->textfont());}
   /** Sets the encapsulated input text font attributes */
-  void textfont(Fl_Font f) { inp_->textfont(f);}
+  void textfont(fltk3::Font f) { inp_->textfont(f);}
   /** Gets the encapsulated input size attributes */
-  Fl_Fontsize textsize() const { return (inp_->textsize()); }
+  fltk3::Fontsize textsize() const { return (inp_->textsize()); }
   /** Sets the encapsulated input size attributes */
-  void textsize(Fl_Fontsize s) { inp_->textsize(s); }
+  void textsize(fltk3::Fontsize s) { inp_->textsize(s); }
   /** See void Fl_Input_Choice::value(const char *s)  */
   const char* value() const { return (inp_->value()); }
   /**

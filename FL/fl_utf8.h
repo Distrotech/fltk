@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 /* "$Id$"
  *
  * Author: Jean-Marc Lienher ( http://oksid.ch )
@@ -37,8 +35,8 @@
   \brief header for Unicode and UTF8 chracter handling
 */
 
-#ifndef _HAVE_FL_UTF8_HDR_
-#define _HAVE_FL_UTF8_HDR_
+#ifndef FLTK1_UTF8_H
+#define FLTK1_UTF8_H
 
 #include "Fl_Export.H"
 #include "fl_types.h"
@@ -46,6 +44,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#if 0 // TODO: FLTK123
 
 #ifdef WIN32
 #  include <sys/types.h>
@@ -257,9 +257,10 @@ FL_EXPORT char fl_make_path( const char *path );
 #endif /* __cplusplus */
 
 
+#endif // TODO: FLTK123
+
 #endif /* _HAVE_FL_UTF8_HDR_ */
 
 /*
  * End of "$Id$".
  */
-#endif

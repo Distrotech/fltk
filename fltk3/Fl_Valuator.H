@@ -32,7 +32,7 @@
 #define Fl_Valuator_H
 
 #ifndef Fl_Widget_H
-#include "Fl_Widget.H"
+#include "Widget.h"
 #endif
 
 // shared type() values for classes that work in both directions:
@@ -52,7 +52,7 @@
   The ones labelled "0" are the default versions with a type(0).  
   For consistency the symbol FL_VERTICAL is defined as zero.
 */
-class FL_EXPORT Fl_Valuator : public Fl_Widget {
+class FL_EXPORT Fl_Valuator : public fltk3::Widget {
 
   double value_;
   double previous_value_;

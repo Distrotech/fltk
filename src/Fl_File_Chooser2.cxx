@@ -242,16 +242,16 @@
 /** \fn Fl_Color Fl_File_Chooser::textcolor()
   Sets or gets the current Fl_File_Browser text color.*/
 
-/** \fn void Fl_File_Chooser::textfont(Fl_Font f)
+/** \fn void Fl_File_Chooser::textfont(fltk3::Font f)
   Sets or gets the current Fl_File_Browser text font.*/
 
-/** \fn Fl_Font Fl_File_Chooser::textfont()
+/** \fn fltk3::Font Fl_File_Chooser::textfont()
   Sets or gets the current Fl_File_Browser text font.*/
 
-/** \fn void Fl_File_Chooser::textsize(Fl_Fontsize s)
+/** \fn void Fl_File_Chooser::textsize(fltk3::Fontsize s)
   Sets or gets the current Fl_File_Browser text size.*/
 
-/** \fn Fl_Fontsize Fl_File_Chooser::textsize()
+/** \fn fltk3::Fontsize Fl_File_Chooser::textsize()
   Sets or gets the current Fl_File_Browser text size.*/
 
 /** \fn void Fl_File_Chooser::type(int t)
@@ -283,7 +283,7 @@
 /** \fn int Fl_File_Chooser::visible()
   Returns 1 if the Fl_File_Chooser window is visible.*/
 
-/** \fn Fl_Widget* Fl_File_Chooser::add_extra(Fl_Widget*)
+/** \fn fltk3::Widget* Fl_File_Chooser::add_extra(fltk3::Widget*)
   Adds extra widget at the bottom of Fl_File_Chooser window.
   Returns pointer for previous extra widget or NULL if not set previously.
   If argument is NULL only remove previous extra widget.
@@ -564,7 +564,7 @@ Fl_File_Chooser::favoritesButtonCB()
 //
 
 void
-Fl_File_Chooser::favoritesCB(Fl_Widget *w)
+Fl_File_Chooser::favoritesCB(fltk3::Widget *w)
 					// I - Widget
 {
   int		i;			// Looping var
@@ -1090,7 +1090,7 @@ void Fl_File_Chooser::preview(int e)
   prefs_.set("preview", e);
   prefs_.flush();
 
-  Fl_Group *p = previewBox->parent();
+  fltk3::Group *p = previewBox->parent();
   if (e) {
     int w = p->w() * 2 / 3;
     fileList->resize(fileList->x(), fileList->y(),
@@ -1399,7 +1399,7 @@ Fl_File_Chooser::update_preview()
       previewBox->label(filename ? "?" : 0);
       previewBox->align(FL_ALIGN_CLIP);
       previewBox->labelsize(75);
-      previewBox->labelfont(FL_HELVETICA);
+      previewBox->labelfont(fltk3::HELVETICA);
     } else {
       // Show the first 1k of text...
       int size = previewBox->h() / 20;
@@ -1410,7 +1410,7 @@ Fl_File_Chooser::update_preview()
       previewBox->align((Fl_Align)(FL_ALIGN_CLIP | FL_ALIGN_INSIDE |
                                    FL_ALIGN_LEFT | FL_ALIGN_TOP));
       previewBox->labelsize(size);
-      previewBox->labelfont(FL_COURIER);
+      previewBox->labelfont(fltk3::COURIER);
     }
   } else if (image) {
     pbw = previewBox->w() - 20;
@@ -1439,7 +1439,7 @@ Fl_File_Chooser::update_preview()
     previewBox->label(newlabel);
     previewBox->align(FL_ALIGN_CLIP);
     previewBox->labelsize(newlabel[0]=='@'?75:12);
-    previewBox->labelfont(FL_HELVETICA);
+    previewBox->labelfont(fltk3::HELVETICA);
   }
 
   previewBox->redraw();

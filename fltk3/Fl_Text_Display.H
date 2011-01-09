@@ -34,8 +34,8 @@
 #define FL_TEXT_DISPLAY_H
 
 #include "fl_draw.H"
-#include "Fl_Group.H"
-#include "Fl_Widget.H"
+#include "fltk3/Group.H"
+#include "Widget.h"
 #include "Fl_Scrollbar.H"
 #include "Fl_Text_Buffer.H"
 
@@ -47,7 +47,7 @@
  in the widget is managed by the Fl_Text_Buffer class. A single Text Buffer
  can be displayed by multiple Text Displays.
  */
-class FL_EXPORT Fl_Text_Display: public Fl_Group 
+class FL_EXPORT Fl_Text_Display: public fltk3::Group 
 {
 public:
   
@@ -105,8 +105,8 @@ public:
    */
   struct Style_Table_Entry {
     Fl_Color    color;
-    Fl_Font     font;
-    Fl_Fontsize size;
+    fltk3::Font     font;
+    fltk3::Fontsize size;
     unsigned    attr;
   };
   
@@ -244,25 +244,25 @@ public:
    Gets the default font used when drawing text in the widget.
    \return current text font face unless overridden by a style
    */
-  Fl_Font textfont() const {return textfont_;}
+  fltk3::Font textfont() const {return textfont_;}
   
   /**
    Sets the default font used when drawing text in the widget.
    \param s default text font face
    */
-  void textfont(Fl_Font s) {textfont_ = s; mColumnScale = 0;}
+  void textfont(fltk3::Font s) {textfont_ = s; mColumnScale = 0;}
   
   /**
    Gets the default size of text in the widget.
    \return current text height unless overridden by a style
    */
-  Fl_Fontsize textsize() const {return textsize_;}
+  fltk3::Fontsize textsize() const {return textsize_;}
   
   /**
    Sets the default size of text in the widget.
    \param s new text size
    */
-  void textsize(Fl_Fontsize s) {textsize_ = s; mColumnScale = 0;}
+  void textsize(fltk3::Fontsize s) {textsize_ = s; mColumnScale = 0;}
   
   /**
    Gets the default color of text in the widget.
@@ -462,8 +462,8 @@ protected:
   
   int shortcut_;
   
-  Fl_Font textfont_;
-  Fl_Fontsize textsize_;
+  fltk3::Font textfont_;
+  fltk3::Fontsize textsize_;
   Fl_Color textcolor_;
   
   // The following are not presently used from the original NEdit code,

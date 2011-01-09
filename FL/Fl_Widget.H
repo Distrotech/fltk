@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id$"
 //
@@ -30,14 +28,15 @@
 /** \file
    Fl_Widget, Fl_Label classes . */
 
-#ifndef Fl_Widget_H
-#define Fl_Widget_H
+#ifndef FLTK1_Widget_H
+#define FLTK1_Widget_H
 
+#include <fltk3/Wrapper.h>
+#include <fltk3/Widget.h>
 #include "Enumerations.H"
 
-/**
-  \todo	typedef's fl_intptr_t and fl_uintptr_t should be documented.
-*/
+#if 0  // TODO: FLTK123
+
 #ifdef _WIN64
 #ifdef __GNUC__
 #include <stdint.h>
@@ -95,56 +94,16 @@ struct FL_EXPORT Fl_Label {
   void measure(int &w, int &h) const ;
 };
 
+#endif  // TODO: FLTK123
 
-/** Fl_Widget is the base class for all widgets in FLTK.  
-  
-    You can't create one of these because the constructor is not public.
-    However you can subclass it.  
 
-    All "property" accessing methods, such as color(), parent(), or argument() 
-    are implemented as trivial inline functions and thus are as fast and small 
-    as accessing fields in a structure. Unless otherwise noted, the property 
-    setting methods such as color(n) or label(s) are also trivial inline 
-    functions, even if they change the widget's appearance. It is up to the 
-    user code to call redraw() after these.
- */
-class FL_EXPORT Fl_Widget {
+class FL_EXPORT Fl_Widget : public fltk3::Wrapper {
   friend class Fl_Group;
-
-  Fl_Group* parent_;
-  Fl_Callback* callback_;
-  void* user_data_;
-  int x_,y_,w_,h_;
-  Fl_Label label_;
-  unsigned int flags_;
-  Fl_Color color_;
-  Fl_Color color2_;
-  uchar type_;
-  uchar damage_;
-  uchar box_;
-  uchar when_;
-
-  const char *tooltip_;
-
-  /** unimplemented copy ctor */
-  Fl_Widget(const Fl_Widget &);
-  /** unimplemented assignment operator */
-  Fl_Widget& operator=(const Fl_Widget &);
-
+  
 protected:
-
-  /** Creates a widget at the given position and size.
-
-      The Fl_Widget is a protected constructor, but all derived widgets have a 
-      matching public constructor. It takes a value for x(), y(), w(), h(), and 
-      an optional value for label().
-    
-      \param[in] x, y the position of the widget relative to the enclosing window
-      \param[in] w, h size of the widget in pixels
-      \param[in] label optional text for the widget label
-   */
-  Fl_Widget(int x, int y, int w, int h, const char *label=0L);
-
+  Fl_Widget() {}
+  
+#if 0 // TODO: FLTK123
   /** Internal use only. Use position(int,int), size(int,int) or resize(int,int,int,int) instead. */
   void x(int v) {x_ = v;}
   /** Internal use only. Use position(int,int), size(int,int) or resize(int,int,int,int) instead. */
@@ -196,8 +155,13 @@ protected:
   void draw_label() const;
   void draw_label(int, int, int, int) const;
 
+#endif // TODO: FLTK123
+  
 public:
 
+  Fl_Widget(int x, int y, int w, int h, const char *label=0L);
+  
+#if 0 // TODO: FLTK123
   /** Destroys the widget.
       Destroying single widgets is not very common. You almost always want to 
       destroy the parent group instead, which will destroy all of the child widgets 
@@ -353,22 +317,12 @@ public:
       \see align(), Fl_Align
    */
   void align(Fl_Align alignment) {label_.align_ = alignment;}
+#endif // TODO: FLTK123
 
-  /** Gets the box type of the widget.
-      \return the current box type
-      \see box(Fl_Boxtype), Fl_Boxtype
-   */
-  Fl_Boxtype box() const {return (Fl_Boxtype)box_;}
-  
-  /** Sets the box type for the widget. 
-      This identifies a routine that draws the background of the widget.
-      See Fl_Boxtype for the available types. The default depends on the 
-      widget, but is usually FL_NO_BOX or FL_UP_BOX.
-      \param[in] new_box the new box type
-      \see box(), Fl_Boxtype
-   */
-  void box(Fl_Boxtype new_box) {box_ = new_box;}
+  Fl_Boxtype box() const { return (Fl_Boxtype)((fltk3::Widget*)_p)->box(); }
+  void box(Fl_Boxtype new_box) { ((fltk3::Widget*)_p)->box((fltk3::Boxtype)new_box); }
 
+#if 0 // TODO: FLTK123
   /** Gets the background color of the widget.
       \return current background color
       \see color(Fl_Color), color(Fl_Color, Fl_Color)
@@ -447,21 +401,6 @@ public:
    */
   void label(Fl_Labeltype a, const char* b) {label_.type = a; label_.value = b;}
 
-  /** Gets the label type.
-      \return the current label type.
-      \see Fl_Labeltype
-   */
-  Fl_Labeltype labeltype() const {return (Fl_Labeltype)label_.type;}
-
-  /** Sets the label type. 
-      The label type identifies the function that draws the label of the widget. 
-      This is generally used for special effects such as embossing or for using 
-      the label() pointer as another form of data such as an icon. The value 
-      FL_NORMAL_LABEL prints the label as plain text.
-      \param[in] a new label type
-      \see Fl_Labeltype
-   */
-  void labeltype(Fl_Labeltype a) {label_.type = a;}
 
   /** Gets the label color. 
       The default color is FL_FOREGROUND_COLOR. 
@@ -475,35 +414,16 @@ public:
    */
   void labelcolor(Fl_Color c) {label_.color=c;}
 
-  /** Gets the font to use. 
-      Fonts are identified by indexes into a table. The default value
-      uses a Helvetica typeface (Arial for Microsoft&reg; Windows&reg;).
-      The function Fl::set_font() can define new typefaces.
-      \return current font used by the label
-      \see Fl_Font
-   */
-  Fl_Font labelfont() const {return label_.font;}
+#endif // TODO: FLTK123
+  
+  Fl_Labeltype labeltype() const { return (Fl_Labeltype)((fltk3::Widget*)_p)->labeltype(); }
+  void labeltype(Fl_Labeltype a) { ((fltk3::Widget*)_p)->labeltype((fltk3::Labeltype)a); }
+  Fl_Font labelfont() const { return (Fl_Font)((fltk3::Widget*)_p)->labelfont(); }
+  void labelfont(Fl_Font f) { ((fltk3::Widget*)_p)->labelfont((fltk3::Font)f); }
+  Fl_Fontsize labelsize() const { return (Fl_Fontsize)((fltk3::Widget*)_p)->labelsize(); }
+  void labelsize(Fl_Fontsize pix) { ((fltk3::Widget*)_p)->labelsize((fltk3::Fontsize)pix); }
 
-  /** Sets the font to use. 
-      Fonts are identified by indexes into a table. The default value
-      uses a Helvetica typeface (Arial for Microsoft&reg; Windows&reg;).
-      The function Fl::set_font() can define new typefaces.
-      \param[in] f the new font for the label
-      \see Fl_Font
-   */
-  void labelfont(Fl_Font f) {label_.font=f;}
-
-  /** Gets the font size in pixels. 
-      The default size is 14 pixels.
-      \return the current font size
-   */
-  Fl_Fontsize labelsize() const {return label_.size;}
-
-  /** Sets the font size in pixels.
-      \param[in] pix the new font size
-      \see Fl_Fontsize labelsize()
-   */
-  void labelsize(Fl_Fontsize pix) {label_.size=pix;}
+#if 0 // TODO: FLTK123
 
   /** Gets the image that is used as part of the widget label.
       This image is used when drawing the widget in the active state.
@@ -991,7 +911,11 @@ public:
       \deprecated Use selection_color(unsigned) instead.
   */
   void color2(unsigned a) {color2_ = a;}
+#endif  // TODO: FLTK123
+  
 };
+
+#if 0  // TODO: FLTK123
 
 /**
     Reserved type numbers (necessary for my cheapo RTTI) start here.
@@ -1000,9 +924,10 @@ public:
 */
 #define FL_RESERVED_TYPE 100
 
+#endif // TODO: FLTK123
+
 #endif
 
 //
 // End of "$Id$".
 //
-#endif

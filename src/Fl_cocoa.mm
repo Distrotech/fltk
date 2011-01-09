@@ -1847,7 +1847,7 @@ void Fl_X::make(fltk3::Window* w)
 {
   static int xyPos = 100;
   if ( w->parent() ) {		// create a subwindow
-    Fl_Group::current(0);
+    fltk3::Group::current(0);
     // our subwindow needs this structure to know about its clipping. 
     Fl_X* x = new Fl_X;
     x->other_xid = 0;
@@ -1879,7 +1879,7 @@ void Fl_X::make(fltk3::Window* w)
   else {			// create a desktop window
     NSAutoreleasePool *localPool;
     localPool = [[NSAutoreleasePool alloc] init]; 
-    Fl_Group::current(0);
+    fltk3::Group::current(0);
     fl_open_display();
     NSInteger winlevel = NSNormalWindowLevel;
     NSUInteger winstyle;
@@ -1895,7 +1895,7 @@ void Fl_X::make(fltk3::Window* w)
       }
     } else {
       if (w->resizable()) {
-        Fl_Widget *o = w->resizable();
+        fltk3::Widget *o = w->resizable();
         int minw = o->w(); if (minw > 100) minw = 100;
         int minh = o->h(); if (minh > 100) minh = 100;
         w->size_range(w->w() - o->w() + minw, w->h() - o->h() + minh, 0, 0);
@@ -2079,7 +2079,7 @@ const char *fl_filename_name( const char *name )
  * \todo make the titlebar icon work!
  */
 void fltk3::Window::label(const char *name,const char */*iname*/) {
-  Fl_Widget::label(name);
+  fltk3::Widget::label(name);
   if (shown() || i) {
     q_set_window_title((NSWindow*)i->xid, name);
   }
@@ -2154,7 +2154,7 @@ void fltk3::Window::resize(int X,int Y,int W,int H) {
   }
   resize_from_system = 0;
   if (is_a_resize) {
-    Fl_Group::resize(X,Y,W,H);
+    fltk3::Group::resize(X,Y,W,H);
     if (shown()) { 
       redraw(); 
     }
@@ -2347,7 +2347,7 @@ void fltk3::copy(const char *stuff, int len, int clipboard) {
 }
 
 // Call this when a "paste" operation happens:
-void fltk3::paste(Fl_Widget &receiver, int clipboard) {
+void fltk3::paste(fltk3::Widget &receiver, int clipboard) {
   if (clipboard) {
     // see if we own the selection, if not go get it:
     fl_selection_length[1] = 0;
@@ -3092,7 +3092,7 @@ static NSImage *imageFromText(const char *text, int *pwidth, int *pheight)
 {
   const char *p, *q;
   int width = 0, height, w2, ltext = strlen(text);
-  fl_font(FL_HELVETICA, 10);
+  fl_font(fltk3::HELVETICA, 10);
   p = text;
   int nl = 0;
   while((q=strchr(p, '\n')) != NULL) { 
@@ -3162,7 +3162,7 @@ int fltk3::dnd(void)
   [mypasteboard declareTypes:[NSArray arrayWithObjects:@"public.utf8-plain-text", nil] owner:nil];
   [mypasteboard setData:(NSData*)text forType:@"public.utf8-plain-text"];
   CFRelease(text);
-  Fl_Widget *w = fltk3::pushed();
+  fltk3::Widget *w = fltk3::pushed();
   fltk3::Window *win = w->window();
   if (win == NULL) {
     win = (fltk3::Window*)w;

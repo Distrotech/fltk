@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id$"
 //
@@ -31,11 +29,13 @@
  *  This file contains type definitions and general enumerations.
  */
 
-#ifndef Fl_Enumerations_H
-#define Fl_Enumerations_H
+#ifndef FLTK1_Enumerations_H
+#define FLTK1_Enumerations_H
 
 #  include "Fl_Export.H"
 #  include "fl_types.h"
+
+#if 0 // TODO: FLTK123
 
 /** \name Version Numbers
 
@@ -427,24 +427,9 @@ enum Fl_When { // Fl_Widget::when():
 
 /*@}*/		// group: Event States
 
-/** \name Box Types
-    \brief FLTK standard box types
-    
-    This enum defines the standard box types included with FLTK.
-    
-    FL_NO_BOX means nothing is drawn at all, so whatever is already 
-    on the screen remains. The FL_..._FRAME types only draw their edges, 
-    leaving the interior unchanged. The blue color in Figure 1 
-    is the area that is not drawn by the frame types.
-    
-    \image html boxtypes.png "Figure 1: FLTK standard box types"
-    \image latex boxtypes.png "FLTK standard box types" width=10cm
-    \todo	Description of boxtypes is incomplete.
-    		See below for the defined enum Fl_Boxtype.
-		\see src/Fl_get_system_colors.cxx
-*/
-/*@{*/
-enum Fl_Boxtype { // boxtypes (if you change these you must fix fl_boxtype.C):
+#endif // TODO: FLTK123
+
+enum Fl_Boxtype {
 
   FL_NO_BOX = 0,		///< nothing is drawn at all, this box is invisible
   FL_FLAT_BOX,			///< a flat box
@@ -461,41 +446,43 @@ enum Fl_Boxtype { // boxtypes (if you change these you must fix fl_boxtype.C):
   FL_ENGRAVED_FRAME,		///< see figure 1
   FL_EMBOSSED_FRAME,		///< see figure 1
   FL_BORDER_BOX,		///< see figure 1
-  _FL_SHADOW_BOX,		///< see figure 1
+  FL_SHADOW_BOX,		///< see figure 1
   FL_BORDER_FRAME,		///< see figure 1
-  _FL_SHADOW_FRAME,		///< see figure 1
-  _FL_ROUNDED_BOX,		///< see figure 1
-  _FL_RSHADOW_BOX,		///< see figure 1
-  _FL_ROUNDED_FRAME,		///< see figure 1
-  _FL_RFLAT_BOX,		///< see figure 1
-  _FL_ROUND_UP_BOX,		///< see figure 1
-  _FL_ROUND_DOWN_BOX,		///< see figure 1
-  _FL_DIAMOND_UP_BOX,		///< see figure 1
-  _FL_DIAMOND_DOWN_BOX,		///< see figure 1
-  _FL_OVAL_BOX,			///< see figure 1
-  _FL_OSHADOW_BOX,		///< see figure 1
-  _FL_OVAL_FRAME,		///< see figure 1
-  _FL_OFLAT_BOX,		///< see figure 1
-  _FL_PLASTIC_UP_BOX,		///< plastic version of FL_UP_BOX
-  _FL_PLASTIC_DOWN_BOX,		///< plastic version of FL_DOWN_BOX
-  _FL_PLASTIC_UP_FRAME,		///< plastic version of FL_UP_FRAME
-  _FL_PLASTIC_DOWN_FRAME,	///< plastic version of FL_DOWN_FRAME
-  _FL_PLASTIC_THIN_UP_BOX,	///< plastic version of FL_THIN_UP_BOX
-  _FL_PLASTIC_THIN_DOWN_BOX,	///< plastic version of FL_THIN_DOWN_BOX
-  _FL_PLASTIC_ROUND_UP_BOX,	///< plastic version of FL_ROUND_UP_BOX
-  _FL_PLASTIC_ROUND_DOWN_BOX,	///< plastic version of FL_ROUND_DOWN_BOX
-  _FL_GTK_UP_BOX,		///< gtk+ version of FL_UP_BOX
-  _FL_GTK_DOWN_BOX,		///< gtk+ version of FL_DOWN_BOX
-  _FL_GTK_UP_FRAME,		///< gtk+ version of FL_UP_FRAME
-  _FL_GTK_DOWN_FRAME,		///< gtk+ version of FL_DOWN_RAME
-  _FL_GTK_THIN_UP_BOX,		///< gtk+ version of FL_THIN_UP_BOX
-  _FL_GTK_THIN_DOWN_BOX,	///< gtk+ version of FL_THIN_DOWN_BOX
-  _FL_GTK_THIN_UP_FRAME,	///< gtk+ version of FL_UP_FRAME
-  _FL_GTK_THIN_DOWN_FRAME,	///< gtk+ version of FL_THIN_DOWN_FRAME
-  _FL_GTK_ROUND_UP_BOX,		///< gtk+ version of FL_ROUND_UP_BOX
-  _FL_GTK_ROUND_DOWN_BOX,	///< gtk+ version of FL_ROUND_DOWN_BOX
+  FL_SHADOW_FRAME,		///< see figure 1
+  FL_ROUNDED_BOX,		///< see figure 1
+  FL_RSHADOW_BOX,		///< see figure 1
+  FL_ROUNDED_FRAME,		///< see figure 1
+  FL_RFLAT_BOX,		///< see figure 1
+  FL_ROUND_UP_BOX,		///< see figure 1
+  FL_ROUND_DOWN_BOX,		///< see figure 1
+  FL_DIAMOND_UP_BOX,		///< see figure 1
+  FL_DIAMOND_DOWN_BOX,		///< see figure 1
+  FL_OVAL_BOX,			///< see figure 1
+  FL_OSHADOW_BOX,		///< see figure 1
+  FL_OVAL_FRAME,		///< see figure 1
+  FL_OFLAT_BOX,		///< see figure 1
+  FL_PLASTIC_UP_BOX,		///< plastic version of FL_UP_BOX
+  FL_PLASTIC_DOWN_BOX,		///< plastic version of FL_DOWN_BOX
+  FL_PLASTIC_UP_FRAME,		///< plastic version of FL_UP_FRAME
+  FL_PLASTIC_DOWN_FRAME,	///< plastic version of FL_DOWN_FRAME
+  FL_PLASTIC_THIN_UP_BOX,	///< plastic version of FL_THIN_UP_BOX
+  FL_PLASTIC_THIN_DOWN_BOX,	///< plastic version of FL_THIN_DOWN_BOX
+  FL_PLASTIC_ROUND_UP_BOX,	///< plastic version of FL_ROUND_UP_BOX
+  FL_PLASTIC_ROUND_DOWN_BOX,	///< plastic version of FL_ROUND_DOWN_BOX
+  FL_GTK_UP_BOX,		///< gtk+ version of FL_UP_BOX
+  FL_GTK_DOWN_BOX,		///< gtk+ version of FL_DOWN_BOX
+  FL_GTK_UP_FRAME,		///< gtk+ version of FL_UP_FRAME
+  FL_GTK_DOWN_FRAME,		///< gtk+ version of FL_DOWN_RAME
+  FL_GTK_THIN_UP_BOX,		///< gtk+ version of FL_THIN_UP_BOX
+  FL_GTK_THIN_DOWN_BOX,	///< gtk+ version of FL_THIN_DOWN_BOX
+  FL_GTK_THIN_UP_FRAME,	///< gtk+ version of FL_UP_FRAME
+  FL_GTK_THIN_DOWN_FRAME,	///< gtk+ version of FL_THIN_DOWN_FRAME
+  FL_GTK_ROUND_UP_BOX,		///< gtk+ version of FL_ROUND_UP_BOX
+  FL_GTK_ROUND_DOWN_BOX,	///< gtk+ version of FL_ROUND_DOWN_BOX
   FL_FREE_BOXTYPE		///< the first free box type for creation of new box types
 };
+
+#if 0 // TODO: FLTK123
 extern FL_EXPORT Fl_Boxtype fl_define_FL_ROUND_UP_BOX();
 #define FL_ROUND_UP_BOX fl_define_FL_ROUND_UP_BOX()
 #define FL_ROUND_DOWN_BOX (Fl_Boxtype)(fl_define_FL_ROUND_UP_BOX()+1)
@@ -574,43 +561,22 @@ inline Fl_Boxtype fl_frame(Fl_Boxtype b) {
 
 /*@}*/	// group: Box Types
 
-/**
-   The labeltype() method sets the type of the label.
-   
-   The following standard label types are included:
-   
-   \todo	The doxygen comments are incomplete, and some labeltypes
-   		are starting with an underscore. Also, there are three
-		external functions undocumented (yet):
-		  - fl_define_FL_SHADOW_LABEL()
-		  - fl_define_FL_ENGRAVED_LABEL()
-		  - fl_define_FL_EMBOSSED_LABEL()
-*/
+#endif // TODO: FLTK123
+
 enum Fl_Labeltype {	// labeltypes:
   FL_NORMAL_LABEL	= 0,	///< draws the text (0)
   FL_NO_LABEL,			///< does nothing
-  _FL_SHADOW_LABEL,		///< draws a drop shadow under the text
-  _FL_ENGRAVED_LABEL,		///< draws edges as though the text is engraved
-  _FL_EMBOSSED_LABEL,		///< draws edges as thought the text is raised
-  _FL_MULTI_LABEL,		///< ?
-  _FL_ICON_LABEL,		///< draws the icon associated with the text
-  _FL_IMAGE_LABEL,		///< ?
+  FL_SHADOW_LABEL,		///< draws a drop shadow under the text
+  FL_ENGRAVED_LABEL,		///< draws edges as though the text is engraved
+  FL_EMBOSSED_LABEL,		///< draws edges as thought the text is raised
+  FL_MULTI_LABEL,		///< ?
+  FL_ICON_LABEL,		///< draws the icon associated with the text
+  FL_IMAGE_LABEL,		///< ?
 
   FL_FREE_LABELTYPE		///< first free labeltype to use for creating own labeltypes
 };
 
-/** 
-  Sets the current  label type end return its corresponding Fl_Labeltype value. 
-  @{
-*/
-#define FL_SYMBOL_LABEL FL_NORMAL_LABEL
-extern Fl_Labeltype FL_EXPORT fl_define_FL_SHADOW_LABEL();
-#define FL_SHADOW_LABEL fl_define_FL_SHADOW_LABEL()
-extern Fl_Labeltype FL_EXPORT fl_define_FL_ENGRAVED_LABEL();
-#define FL_ENGRAVED_LABEL fl_define_FL_ENGRAVED_LABEL()
-extern Fl_Labeltype FL_EXPORT fl_define_FL_EMBOSSED_LABEL();
-#define FL_EMBOSSED_LABEL fl_define_FL_EMBOSSED_LABEL()
-/** @} */
+#if 0 // TODO: FLTK123
 
 /** \name Alignment Flags */
 /*@{*/
@@ -685,6 +651,7 @@ const Fl_Align FL_ALIGN_POSITION_MASK   = 0x000f; // left, right, top, bottom
 const Fl_Align FL_ALIGN_IMAGE_MASK      = 0x0320; // l/r, t/b, backdrop
 /*@}*/
 
+#endif // TODO: FLTK123
 
 /** \name Font Numbers */
 /*@{*/
@@ -719,12 +686,9 @@ const Fl_Font FL_BOLD                   = 1;	///< add this to helvetica, courier
 const Fl_Font FL_ITALIC                 = 2;	///< add this to helvetica, courier, or times
 const Fl_Font FL_BOLD_ITALIC            = 3;	///< add this to helvetica, courier, or times
 
-/*@}*/
-
-/** Size of a font in pixels.
- *  This is the approximate height of a font in pixels.
- */
 typedef int Fl_Fontsize;
+
+#if 0 // TODO: FLTK123
 
 extern FL_EXPORT Fl_Fontsize FL_NORMAL_SIZE;	///< normal font size
 
@@ -914,9 +878,10 @@ enum Fl_Damage {
 #    define inactive	fl_inactive
 #  endif // FLTK_1_0_COMPAT
 
+#endif // TODO: FLTK123
+
 #endif
 
 //
 // End of "$Id$".
 //
-#endif

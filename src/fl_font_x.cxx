@@ -260,8 +260,8 @@ static Fl_Font_Descriptor* find(int fnum, int size) {
 ////////////////////////////////////////////////////////////////
 // Public interface:
 
-Fl_Font fl_font_ = 0;
-Fl_Fontsize fl_size_ = 0;
+fltk3::Font fl_font_ = 0;
+fltk3::Fontsize fl_size_ = 0;
 void *fl_xftfont = 0;
 static GC font_gc;
 
@@ -269,7 +269,7 @@ XFontStruct* Fl_XFont_On_Demand::value() {
   return ptr;
 }
 
-void Fl_Xlib_Graphics_Driver::font(Fl_Font fnum, Fl_Fontsize size) {
+void Fl_Xlib_Graphics_Driver::font(fltk3::Font fnum, fltk3::Fontsize size) {
   if (fnum==-1) {
     fl_font_ = 0; fl_size_ = 0;
     return;
@@ -320,7 +320,7 @@ void fl_text_extents(const char *c, int n, int &dx, int &dy, int &W, int &H) {
 
 void Fl_Xlib_Graphics_Driver::draw(const char* c, int n, int x, int y) {
   if (font_gc != fl_gc) {
-    if (!current_font) fl_font(FL_HELVETICA, 14);
+    if (!current_font) fl_font(fltk3::HELVETICA, 14);
     font_gc = fl_gc;
     XSetFont(fl_display, fl_gc, current_font->fid);
   }
@@ -333,7 +333,7 @@ void Fl_Xlib_Graphics_Driver::draw(int angle, const char *str, int n, int x, int
 
 void Fl_Xlib_Graphics_Driver::rtl_draw(const char* c, int n, int x, int y) {
   if (font_gc != fl_gc) {
-    if (!current_font) fl_font(FL_HELVETICA, 12);
+    if (!current_font) fl_font(fltk3::HELVETICA, 12);
     font_gc = fl_gc;
   }
   XUtf8DrawRtlString(fl_display, fl_window, current_font, fl_gc, x, y, c, n);

@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 /*
  * "$Id$"
  *
@@ -31,8 +29,8 @@
  *  This file contains simple "C"-style type definitions.
  */
 
-#ifndef FL_TYPES_H
-#define FL_TYPES_H
+#ifndef FLTK1_TYPES_H
+#define FLTK1_TYPES_H
 
 /** \name	Miscellaneous */
 /*@{*/	/* group: Miscellaneous */
@@ -66,4 +64,3 @@ typedef unsigned int Fl_Char;
 /*
  * End of "$Id$".
  */
-#endif

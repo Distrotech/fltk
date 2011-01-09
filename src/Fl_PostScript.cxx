@@ -596,7 +596,7 @@ void Fl_PostScript_Graphics_Driver::reset(){
   gap_=1;
   clip_=0;
   cr_=cg_=cb_=0;
-  font_=FL_HELVETICA;
+  font_=fltk3::HELVETICA;
   size_=12;
   linewidth_=0;
   linestyle_=FL_SOLID;
@@ -927,8 +927,8 @@ static const char *_fontNames[] = {
 };
 
 void Fl_PostScript_Graphics_Driver::font(int f, int s) {
-  if (f >= FL_FREE_FONT)
-    f = FL_COURIER;
+  if (f >= fltk3::FREE_FONT)
+    f = fltk3::COURIER;
   fprintf(output, "/%s SF\n" , _fontNames[f]);
   fprintf(output,"%i FS\n", s);
   Fl_Display_Device::display_device()->driver()->font(f,s); // Use display fonts for font measurement
@@ -996,8 +996,8 @@ static uchar *calc_mask(uchar *img, int w, int h, Fl_Color bg)
 // write to PostScript a bitmap image of a UTF8 string
 static void transformed_draw_extra(const char* str, int n, double x, double y, int w, FILE *output) {
   const float scale = 3; // scale for bitmask computation
-  Fl_Fontsize old_size = fl_size();
-  fl_font(fl_font(), (Fl_Fontsize)(scale * old_size) );
+  fltk3::Fontsize old_size = fl_size();
+  fl_font(fl_font(), (fltk3::Fontsize)(scale * old_size) );
   w =  (int)(w *scale + 0.5);
   int h = fl_height();
   // create an offscreen image of the string

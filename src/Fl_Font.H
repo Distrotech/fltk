@@ -57,9 +57,9 @@ public:
   int *width[64];
   TEXTMETRIC metr;
   int angle;
-  FL_EXPORT Fl_Font_Descriptor(const char* fontname, Fl_Fontsize size);
+  FL_EXPORT Fl_Font_Descriptor(const char* fontname, fltk3::Fontsize size);
 #  elif defined(__APPLE_QUARTZ__)
-  FL_EXPORT Fl_Font_Descriptor(const char* fontname, Fl_Fontsize size);
+  FL_EXPORT Fl_Font_Descriptor(const char* fontname, fltk3::Fontsize size);
   ATSUTextLayout layout;
 #     if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
   CTFontRef fontref;
@@ -73,15 +73,15 @@ public:
 #  elif USE_XFT
   XftFont* font;
   const char* encoding;
-  Fl_Fontsize size;
+  fltk3::Fontsize size;
   int angle;
   FL_EXPORT Fl_Font_Descriptor(const char* xfontname);
 #  else
   XUtf8FontStruct* font;	// X UTF-8 font information
   FL_EXPORT Fl_Font_Descriptor(const char* xfontname);
 #  endif
-  Fl_Fontsize minsize;		// smallest point size that should use this
-  Fl_Fontsize maxsize;		// largest point size that should use this
+  fltk3::Fontsize minsize;		// smallest point size that should use this
+  fltk3::Fontsize maxsize;		// largest point size that should use this
 #  if HAVE_GL
   unsigned int listbase;// base of display list, 0 = none
   char glok[64];

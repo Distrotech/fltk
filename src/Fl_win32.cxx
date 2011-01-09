@@ -39,7 +39,7 @@
 #include <fltk3/Enumerations.H>
 #include <fltk3/Fl_Tooltip.H>
 #include "flstring.h"
-#include "Fl_Font.H"
+#include "fltk3::Font.H"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -573,7 +573,7 @@ void fltk3::copy(const char *stuff, int len, int clipboard) {
 }
 
 // Call this when a "paste" operation happens:
-void fltk3::paste(Fl_Widget &receiver, int clipboard) {
+void fltk3::paste(fltk3::Widget &receiver, int clipboard) {
   if (!clipboard || fl_i_own_selection[clipboard]) {
     // We already have it, do it quickly without window server.
     // Notice that the text is clobbered if set_selection is
@@ -1305,7 +1305,7 @@ void fltk3::Window::resize(int X,int Y,int W,int H) {
     flags |= SWP_NOMOVE;
   }
   if (is_a_resize) {
-    Fl_Group::resize(X,Y,W,H);
+    fltk3::Group::resize(X,Y,W,H);
     if (visible_r()) {
       redraw(); 
       // only wait for exposure if this window has a size - a window 
@@ -1380,7 +1380,7 @@ UINT fl_wake_msg = 0;
 int fl_disable_transient_for; // secret method of removing TRANSIENT_FOR
 
 Fl_X* Fl_X::make(fltk3::Window* w) {
-  Fl_Group::current(0); // get rid of very common user bug: forgot end()
+  fltk3::Group::current(0); // get rid of very common user bug: forgot end()
 
   // if the window is a subwindow and our parent is not mapped yet, we
   // mark this window visible, so that mapping the parent at a later
@@ -1454,7 +1454,7 @@ Fl_X* Fl_X::make(fltk3::Window* w) {
   } else {
     if (!w->size_range_set) {
       if (w->resizable()) {
-	Fl_Widget *o = w->resizable();
+	fltk3::Widget *o = w->resizable();
 	int minw = o->w(); if (minw > 100) minw = 100;
 	int minh = o->h(); if (minh > 100) minh = 100;
 	w->size_range(w->w() - o->w() + minw, w->h() - o->h() + minh, 0, 0);
@@ -1726,7 +1726,7 @@ const char *fl_filename_name(const char *name) {
 }
 
 void fltk3::Window::label(const char *name,const char *iname) {
-  Fl_Widget::label(name);
+  fltk3::Widget::label(name);
   iconlabel_ = iname;
   if (shown() && !parent()) {
     if (!name) name = "";
@@ -1754,7 +1754,7 @@ void fltk3::Window::label(const char *name,const char *iname) {
 // I use FL_GRAY for this and only do this cheat for windows that are
 // that color.
 // Actually it is totally disabled.
-// Fl_Widget *fl_boxcheat;
+// fltk3::Widget *fl_boxcheat;
 //static inline int can_boxcheat(uchar b) {return (b==1 || (b&2) && b<=15);}
 
 void fltk3::Window::show() {
@@ -1931,7 +1931,7 @@ Fl_Region XRectangleRegion(int x, int y, int w, int h) {
 // contains also preparePrintFront call above
 #include <fltk3/Fl_Printer.H>
 #include <fltk3/Fl_Button.H>
-void printFront(Fl_Widget *o, void *data)
+void printFront(fltk3::Widget *o, void *data)
 {
   Fl_Printer printer;
   o->window()->hide();

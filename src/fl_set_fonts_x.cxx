@@ -85,10 +85,10 @@ static int use_registry(const char *p) {
 // making the name, and then forgot about it. To avoid having to change
 // the header files I decided to store this value in the last character
 // of the font name array.
-#define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
+#define ENDOFBUFFER 127 // sizeof(fltk3::Font.fontname)-1
 
 // turn a stored (with *'s) X font name into a pretty name:
-const char* fltk3::get_font_name(Fl_Font fnum, int* ap) {
+const char* fltk3::get_font_name(fltk3::Font fnum, int* ap) {
   Fl_Fontdesc *f = fl_fonts + fnum;
   if (!f->fontname[0]) {
     int type = 0;
@@ -259,9 +259,9 @@ static int to_canonical(char *to, const char *from, size_t tolen) {
 
 static unsigned int fl_free_font = FL_FREE_FONT;
 
-Fl_Font fltk3::set_fonts(const char* xstarname) {
+fltk3::Font fltk3::set_fonts(const char* xstarname) {
   if (fl_free_font > (unsigned)FL_FREE_FONT) // already been here
-    return (Fl_Font)fl_free_font;
+    return (fltk3::Font)fl_free_font;
   fl_open_display();
   int xlistsize;
   char buf[20];
@@ -270,7 +270,7 @@ Fl_Font fltk3::set_fonts(const char* xstarname) {
     xstarname = buf;
   }
   char **xlist = XListFonts(fl_display, xstarname, 10000, &xlistsize);
-  if (!xlist) return (Fl_Font)fl_free_font;
+  if (!xlist) return (fltk3::Font)fl_free_font;
   qsort(xlist, xlistsize, sizeof(*xlist), ultrasort);
   int used_xlist = 0;
   for (int i=0; i<xlistsize;) {
@@ -298,7 +298,7 @@ Fl_Font fltk3::set_fonts(const char* xstarname) {
       } else */{
 	j = fl_free_font++;
 	if (p == canon) p = strdup(p); else used_xlist = 1;
-	fltk3::set_font((Fl_Font)j, p);
+	fltk3::set_font((fltk3::Font)j, p);
 	break;
       }
     }
@@ -309,10 +309,10 @@ Fl_Font fltk3::set_fonts(const char* xstarname) {
     }
   }
   if (!used_xlist) XFreeFontNames(xlist);
-  return (Fl_Font)fl_free_font;
+  return (fltk3::Font)fl_free_font;
 }
 
-int fltk3::get_font_sizes(Fl_Font fnum, int*& sizep) {
+int fltk3::get_font_sizes(fltk3::Font fnum, int*& sizep) {
   Fl_Fontdesc *s = fl_fonts+fnum;
   if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
   if (!s->xlist) {

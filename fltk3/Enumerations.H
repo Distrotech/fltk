@@ -93,7 +93,7 @@
  *  window manager.
  * 
  *  Events are identified by the integer argument passed to the 
- *  Fl_Widget::handle() virtual method. Other information about the 
+ *  fltk3::Widget::handle() virtual method. Other information about the 
  *  most recent event is stored in static locations and acquired  by 
  *  calling the fltk3::event_*() methods. This static information remains 
  *  valid until the next event is read from the window system, so it 
@@ -111,9 +111,9 @@ enum Fl_Event {	// events
    *  fltk3::event_y().
    *
    *  A widget indicates that it "wants" the mouse click by returning non-zero 
-   *  from its Fl_Widget::handle() method. It will then become the 
+   *  from its fltk3::Widget::handle() method. It will then become the 
    *  fltk3::pushed() widget and will get FL_DRAG and the matching FL_RELEASE events.  
-   *  If Fl_Widget::handle() returns zero then FLTK will try sending the FL_PUSH 
+   *  If fltk3::Widget::handle() returns zero then FLTK will try sending the FL_PUSH 
    *  to another widget. 
    */
   FL_PUSH		= 1,
@@ -229,31 +229,31 @@ enum Fl_Event {	// events
    */
   FL_SHORTCUT		= 12,
 
-  /** This widget is no longer active, due to Fl_Widget::deactivate() 
-   *  being called on it or one of its parents. Fl_Widget::active() may 
-   *  still be true after this, the widget is only active if Fl_Widget::active()
-   *  is true on it and all its parents (use Fl_Widget::active_r() to check this).
+  /** This widget is no longer active, due to fltk3::Widget::deactivate() 
+   *  being called on it or one of its parents. fltk3::Widget::active() may 
+   *  still be true after this, the widget is only active if fltk3::Widget::active()
+   *  is true on it and all its parents (use fltk3::Widget::active_r() to check this).
    */
   FL_DEACTIVATE		= 13,
 
-  /** This widget is now active, due to Fl_Widget::activate() being 
+  /** This widget is now active, due to fltk3::Widget::activate() being 
    *  called on it or one of its parents.
    */
   FL_ACTIVATE		= 14,
 
-  /** This widget is no longer visible, due to Fl_Widget::hide() being 
+  /** This widget is no longer visible, due to fltk3::Widget::hide() being 
    *  called on it or one of its parents, or due to a parent window being 
-   *  minimized.  Fl_Widget::visible() may still be true after this, but the 
+   *  minimized.  fltk3::Widget::visible() may still be true after this, but the 
    *  widget is visible only if visible() is true for it and all its 
-   *  parents (use Fl_Widget::visible_r() to check this).
+   *  parents (use fltk3::Widget::visible_r() to check this).
    */
   FL_HIDE		= 15,
 
-  /** This widget is visible again, due to Fl_Widget::show() being called on 
+  /** This widget is visible again, due to fltk3::Widget::show() being called on 
    *  it or one of its parents, or due to a parent window being restored. 
    *  Child fltk3::Windows respond to this by actually creating the window if not 
    *  done already, so if you subclass a window, be sure to pass FL_SHOW 
-   *  to the base class Fl_Widget::handle() method!
+   *  to the base class fltk3::Widget::handle() method!
    */
   FL_SHOW		= 16,
 
@@ -302,10 +302,10 @@ enum Fl_Event {	// events
 /*@{*/
 /** These constants determine when a callback is performed.
  *
- *  \sa Fl_Widget::when();
+ *  \sa fltk3::Widget::when();
  *  \todo doxygen comments for values are incomplete and maybe wrong or unclear
  */
-enum Fl_When { // Fl_Widget::when():
+enum Fl_When { // fltk3::Widget::when():
   FL_WHEN_NEVER		= 0,	///< Never call the callback
   FL_WHEN_CHANGED	= 1,	///< Do the callback only when the widget value changes
   FL_WHEN_NOT_CHANGED	= 2,	///< Do the callback whenever the user interacts with the widget
@@ -535,27 +535,27 @@ inline fltk3::Boxtype fl_frame(fltk3::Boxtype b) {
 /*@}*/	// group: Box Types
 
 namespace fltk3 {
-
-/**
+  
+  /**
    The labeltype() method sets the type of the label.
    
    The following standard label types are included:
    
-*/
-enum Labeltype {	// labeltypes:
-  NORMAL_LABEL	= 0,	///< draws the text (0)
-  NO_LABEL,			///< does nothing
-  SHADOW_LABEL,		///< draws a drop shadow under the text
-  ENGRAVED_LABEL,		///< draws edges as though the text is engraved
-  EMBOSSED_LABEL,		///< draws edges as thought the text is raised
-  MULTI_LABEL,		///< ?
-  ICON_LABEL,		///< draws the icon associated with the text
-  IMAGE_LABEL,		///< ?
-
-  FL_FREE_LABELTYPE		///< first free labeltype to use for creating own labeltypes
-};
-
-
+   */
+  enum Labeltype {	// labeltypes:
+    NORMAL_LABEL	= 0,	///< draws the text (0)
+    NO_LABEL,			///< does nothing
+    SHADOW_LABEL,		///< draws a drop shadow under the text
+    ENGRAVED_LABEL,		///< draws edges as though the text is engraved
+    EMBOSSED_LABEL,		///< draws edges as thought the text is raised
+    MULTI_LABEL,		///< ?
+    ICON_LABEL,		///< draws the icon associated with the text
+    IMAGE_LABEL,		///< ?
+    
+    FREE_LABELTYPE		///< first free labeltype to use for creating own labeltypes
+  };
+  
+  
 } // namespace
 
 /** \name Alignment Flags */
@@ -632,50 +632,52 @@ const Fl_Align FL_ALIGN_IMAGE_MASK      = 0x0320; // l/r, t/b, backdrop
 /*@}*/
 
 
-/** \name Font Numbers */
-/*@{*/
-/** A font number is an index into the internal font table.
-
-    The following constants define the standard FLTK fonts:
-
- */
-typedef int Fl_Font;
-
-// standard fonts
-
-const Fl_Font FL_HELVETICA              = 0;	///< Helvetica (or Arial) normal (0)
-const Fl_Font FL_HELVETICA_BOLD         = 1;	///< Helvetica (or Arial) bold
-const Fl_Font FL_HELVETICA_ITALIC       = 2;	///< Helvetica (or Arial) oblique
-const Fl_Font FL_HELVETICA_BOLD_ITALIC  = 3;	///< Helvetica (or Arial) bold-oblique
-const Fl_Font FL_COURIER                = 4;	///< Courier normal
-const Fl_Font FL_COURIER_BOLD           = 5;	///< Courier bold 
-const Fl_Font FL_COURIER_ITALIC         = 6;	///< Courier italic
-const Fl_Font FL_COURIER_BOLD_ITALIC    = 7;	///< Courier bold-italic
-const Fl_Font FL_TIMES                  = 8;	///< Times roman
-const Fl_Font FL_TIMES_BOLD             = 9;	///< Times roman bold
-const Fl_Font FL_TIMES_ITALIC           = 10;	///< Times roman italic
-const Fl_Font FL_TIMES_BOLD_ITALIC      = 11;	///< Times roman bold-italic
-const Fl_Font FL_SYMBOL                 = 12;	///< Standard symbol font
-const Fl_Font FL_SCREEN                 = 13;	///< Default monospaced screen font
-const Fl_Font FL_SCREEN_BOLD            = 14;	///< Default monospaced bold screen font
-const Fl_Font FL_ZAPF_DINGBATS          = 15;	///< Zapf-dingbats font
-
-const Fl_Font FL_FREE_FONT              = 16;	///< first one to allocate
-
 namespace fltk3 {
-  const Fl_Font BOLD                   = 1;	///< add this to helvetica, courier, or times
-  const Fl_Font ITALIC                 = 2;	///< add this to helvetica, courier, or times
-  const Fl_Font BOLD_ITALIC            = 3;	///< add this to helvetica, courier, or times
-}
+  
+  /** \name Font Numbers */
+  /*@{*/
+  /** A font number is an index into the internal font table.
+   
+   The following constants define the standard FLTK fonts:
+   
+   */
+  typedef int Font;
+  
+  // standard fonts
+  
+  const Font HELVETICA              = 0;	///< Helvetica (or Arial) normal (0)
+  const Font HELVETICA_BOLD         = 1;	///< Helvetica (or Arial) bold
+  const Font HELVETICA_ITALIC       = 2;	///< Helvetica (or Arial) oblique
+  const Font HELVETICA_BOLD_ITALIC  = 3;	///< Helvetica (or Arial) bold-oblique
+  const Font COURIER                = 4;	///< Courier normal
+  const Font COURIER_BOLD           = 5;	///< Courier bold 
+  const Font COURIER_ITALIC         = 6;	///< Courier italic
+  const Font COURIER_BOLD_ITALIC    = 7;	///< Courier bold-italic
+  const Font TIMES                  = 8;	///< Times roman
+  const Font TIMES_BOLD             = 9;	///< Times roman bold
+  const Font TIMES_ITALIC           = 10;	///< Times roman italic
+  const Font TIMES_BOLD_ITALIC      = 11;	///< Times roman bold-italic
+  const Font SYMBOL                 = 12;	///< Standard symbol font
+  const Font SCREEN                 = 13;	///< Default monospaced screen font
+  const Font SCREEN_BOLD            = 14;	///< Default monospaced bold screen font
+  const Font ZAPF_DINGBATS          = 15;	///< Zapf-dingbats font
+  
+  const Font FREE_FONT              = 16;	///< first one to allocate
+  
+  const Font BOLD                   = 1;	///< add this to helvetica, courier, or times
+  const Font ITALIC                 = 2;	///< add this to helvetica, courier, or times
+  const Font BOLD_ITALIC            = 3;	///< add this to helvetica, courier, or times
 
 /*@}*/
 
-/** Size of a font in pixels.
- *  This is the approximate height of a font in pixels.
- */
-typedef int Fl_Fontsize;
+  /** Size of a font in pixels.
+   *  This is the approximate height of a font in pixels.
+   */
+  typedef int Fontsize;
 
-extern FL_EXPORT Fl_Fontsize FL_NORMAL_SIZE;	///< normal font size
+}
+  
+extern FL_EXPORT fltk3::Fontsize FL_NORMAL_SIZE;	///< normal font size
 
 /** \name Colors */
 /*@{*/

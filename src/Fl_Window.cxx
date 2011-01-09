@@ -63,7 +63,7 @@ void fltk3::Window::_Window() {
 }
 
 fltk3::Window::Window(int X,int Y,int W, int H, const char *l)
-: Fl_Group(X, Y, W, H, l) {
+: fltk3::Group(X, Y, W, H, l) {
   cursor_default = FL_CURSOR_DEFAULT;
   cursor_fg      = FL_BLACK;
   cursor_bg      = FL_WHITE;
@@ -74,7 +74,7 @@ fltk3::Window::Window(int X,int Y,int W, int H, const char *l)
 
 fltk3::Window::Window(int W, int H, const char *l)
 // fix common user error of a missing end() with current(0):
-  : Fl_Group((Fl_Group::current(0),0), 0, W, H, l) {
+  : fltk3::Group((fltk3::Group::current(0),0), 0, W, H, l) {
   cursor_default = FL_CURSOR_DEFAULT;
   cursor_fg      = FL_BLACK;
   cursor_bg      = FL_WHITE;
@@ -83,8 +83,8 @@ fltk3::Window::Window(int W, int H, const char *l)
   clear_visible();
 }
 
-fltk3::Window *Fl_Widget::window() const {
-  for (Fl_Widget *o = parent(); o; o = o->parent())
+fltk3::Window *fltk3::Widget::window() const {
+  for (fltk3::Widget *o = parent(); o; o = o->parent())
     if (o->type() >= FL_WINDOW) return (fltk3::Window*)o;
   return 0;
 }
@@ -103,7 +103,7 @@ int fltk3::Window::y_root() const {
 
 void fltk3::Window::draw() {
 
-  // The following is similar to Fl_Group::draw(), but ...
+  // The following is similar to fltk3::Group::draw(), but ...
   //  - we draw the box with x=0 and y=0 instead of x() and y()
   //  - we don't draw a label
 
@@ -166,7 +166,7 @@ void fltk3::Window::iconlabel(const char *iname) {
 /** Default callback for window widgets. It hides the window and then calls the default widget callback. */
 void fltk3::default_atclose(fltk3::Window* window, void* v) {
   window->hide();
-  Fl_Widget::default_callback(window, v); // put on fltk3::read_queue()
+  fltk3::Widget::default_callback(window, v); // put on fltk3::read_queue()
 }
 /** Back compatibility: default window callback handler \see fltk3::set_atclose() */
 void (*fltk3::atclose)(fltk3::Window*, void*) = default_atclose;

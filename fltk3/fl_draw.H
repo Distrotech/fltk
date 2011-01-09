@@ -449,21 +449,21 @@ inline void fl_transformed_vertex(double xf, double yf) {fl_graphics_driver->tra
   The size of the font is measured in pixels and not "points".
   Lines should be spaced \p size pixels apart or more.
 */
-inline void fl_font(Fl_Font face, Fl_Fontsize size) { fl_graphics_driver->font(face,size); }
-extern FL_EXPORT Fl_Font fl_font_; ///< current font index
+inline void fl_font(fltk3::Font face, fltk3::Fontsize size) { fl_graphics_driver->font(face,size); }
+extern FL_EXPORT fltk3::Font fl_font_; ///< current font index
 
 /**
   Returns the \p face set by the most recent call to fl_font().
   This can be used to save/restore the font.
 */
-inline Fl_Font fl_font() {return fl_font_;}
+inline fltk3::Font fl_font() {return fl_font_;}
 /** \brief current font size */
-extern FL_EXPORT Fl_Fontsize fl_size_;
+extern FL_EXPORT fltk3::Fontsize fl_size_;
 /**
   Returns the \p size set by the most recent call to fl_font().
   This can be used to save/restore the font.
 */
-inline Fl_Fontsize fl_size() {return fl_size_;}
+inline fltk3::Fontsize fl_size() {return fl_size_;}
 
 // information you can get about the current font:
 /**

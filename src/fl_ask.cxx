@@ -54,8 +54,8 @@ static Fl_Button *button[3];
 static Fl_Input *input;
 static int ret_val;
 static const char *iconlabel = "?";
-Fl_Font fl_message_font_ = FL_HELVETICA;
-Fl_Fontsize fl_message_size_ = 14;
+fltk3::Font fl_message_font_ = fltk3::HELVETICA;
+fltk3::Fontsize fl_message_size_ = 14;
 #ifdef __APPLE__
 extern "C" void NSBeep(void);
 #endif
@@ -65,10 +65,10 @@ static char avoidRecursion = 0;
 // Sets the global return value (ret_val) and closes the window.
 // Note: this is used for the button callbacks and the window
 // callback (closing the window with the close button or menu).
-// The first argument (Fl_Widget *) can either be an Fl_Button*
+// The first argument (fltk3::Widget *) can either be an Fl_Button*
 // pointer to one of the buttons or an fltk3::Window* pointer to the
 // message window (message_form).
-static void button_cb(Fl_Widget *, void *val) {
+static void button_cb(fltk3::Widget *, void *val) {
   ret_val = (fl_intptr_t)val;
   message_form->hide();
 }
@@ -80,8 +80,8 @@ static fltk3::Window *makeform() {
  }
  // make sure that the dialog does not become the child of some 
  // current group
- Fl_Group *previously_current_group = Fl_Group::current();
- Fl_Group::current(0);
+ fltk3::Group *previously_current_group = fltk3::Group::current();
+ fltk3::Group::current(0);
  // create a new top level window
  fltk3::Window *w = message_form = new fltk3::Window(410,103,"");
  message_form->callback(button_cb,(void *)0);
@@ -92,7 +92,7 @@ static fltk3::Window *makeform() {
  (input = new Fl_Input(60, 37, 340, 23))->hide();
  {fltk3::Box* o = icon = new fltk3::Box(10, 10, 50, 50);
   o->box(fltk3::THIN_UP_BOX);
-  o->labelfont(FL_TIMES_BOLD);
+  o->labelfont(fltk3::TIMES_BOLD);
   o->labelsize(34);
   o->color(FL_WHITE);
   o->labelcolor(FL_BLUE);
@@ -110,7 +110,7 @@ static fltk3::Window *makeform() {
  w->resizable(new fltk3::Box(60,10,110-60,27));
  w->end();
  w->set_modal();
- Fl_Group::current(previously_current_group);
+ fltk3::Group::current(previously_current_group);
  return w;
 }
 
@@ -226,7 +226,7 @@ static int innards(const char* fmt, va_list ap,
   if (button[1]->visible() && !input->visible()) 
     button[1]->take_focus();
   message_form->hotspot(button[0]);
-  if (b0 && Fl_Widget::label_shortcut(b0))
+  if (b0 && fltk3::Widget::label_shortcut(b0))
     button[0]->shortcut(0);
   else
     button[0]->shortcut(FL_Escape);
@@ -410,7 +410,7 @@ int fl_choice(const char*fmt,const char *b0,const char *b1,const char *b2,...){
     fl_ask(), fl_choice(), fl_input(), fl_password() 
     \note \#include <fltk3/fl_ask.H>
 */ 
-Fl_Widget *fl_message_icon() {makeform(); return icon;}
+fltk3::Widget *fl_message_icon() {makeform(); return icon;}
 
 static const char* input_innards(const char* fmt, va_list ap,
 				 const char* defstr, uchar type) {

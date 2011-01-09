@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id$"
 //
@@ -30,22 +28,15 @@
 /* \file
    Fl_Group, Fl_End classes . */
 
-#ifndef Fl_Group_H
-#define Fl_Group_H
+#ifndef FLTK1_Group_H
+#define FLTK1_Group_H
 
-#ifndef Fl_Widget_H
 #include "Fl_Widget.H"
-#endif
 
-/**
-  The Fl_Group class is the FLTK container widget. It maintains
-  an array of child widgets. These children can themselves be any widget
-  including Fl_Group. The most important subclass of Fl_Group
-  is Fl_Window, however groups can also be used to control radio buttons 
-  or to enforce resize behavior.
-*/
+
 class FL_EXPORT Fl_Group : public Fl_Widget {
 
+#if 0 // TODO: FLTK123
   Fl_Widget** array_;
   Fl_Widget* savedfocus_;
   Fl_Widget* resizable_;
@@ -58,8 +49,12 @@ class FL_EXPORT Fl_Group : public Fl_Widget {
   // unimplemented copy ctor and assignment operator
   Fl_Group(const Fl_Group&);
   Fl_Group& operator=(const Fl_Group&);
+#endif // TODO: FLTK123
 
 protected:
+  Fl_Group() {}
+  
+#if 0 // TODO: FLTK123
   void draw();
   void draw_child(Fl_Widget& widget) const;
   void draw_children();
@@ -67,11 +62,19 @@ protected:
   void update_child(Fl_Widget& widget) const;
   int  *sizes();
 
+#endif // TODO: FLTK123
+  
 public:
 
+#if 0 // TODO: FLTK123
+  
   int handle(int);
-  void begin();
-  void end();
+#endif // TODO: FLTK123
+
+  void begin() { ((fltk3::Group*)_p)->begin(); }
+  void end() { ((fltk3::Group*)_p)->end(); }
+  
+#if 0 // TODO: FLTK123
   static Fl_Group *current();
   static void current(Fl_Group *g);
 
@@ -91,11 +94,13 @@ public:
   Fl_Widget* const* array() const;
 
   void resize(int,int,int,int);
-  /**
-    Creates a new Fl_Group widget using the given position, size,
-    and label string. The default boxtype is FL_NO_BOX.
-  */
+
+#endif // TODO: FLTK123
+  
   Fl_Group(int,int,int,int, const char * = 0);
+  
+#if 0 // TODO: FLTK123
+  
   virtual ~Fl_Group();
   void add(Fl_Widget&);
   /**
@@ -196,7 +201,12 @@ public:
 
   /** This is for forms compatibility only */
   void forms_end();
+  
+#endif // TODO: FLTK123
+  
 };
+
+#if 0 // TODO: FLTK123
 
 // dummy class used to end child groups in constructors for complex
 // subclasses of Fl_Group:
@@ -225,9 +235,10 @@ public:
   Fl_End() {Fl_Group::current()->end();}
 };
 
+#endif // TODO: FLTK123
+
 #endif
 
 //
 // End of "$Id$".
 //
-#endif

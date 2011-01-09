@@ -148,7 +148,7 @@ public:
     Returns 0 if browser is empty.
   */
   int size() const { return lines; }
-  void size(int W, int H) { Fl_Widget::size(W, H); }
+  void size(int W, int H) { fltk3::Widget::size(W, H); }
 
   int topline() const ;
   /** For internal use only? */
@@ -180,10 +180,10 @@ public:
   int selected(int line) const ;
   void show(int line);
   /** Shows the entire Fl_Browser widget -- opposite of hide(). */
-  void show() { Fl_Widget::show(); }
+  void show() { fltk3::Widget::show(); }
   void hide(int line);
   /** Hides the entire Fl_Browser widget -- opposite of show(). */
-  void hide() { Fl_Widget::hide(); }
+  void hide() { fltk3::Widget::hide(); }
   int visible(int line) const ;
 
   int value() const ;
@@ -217,7 +217,7 @@ public:
     \li <tt>'\@b'</tt> Use a <B>bold</B> font (adds fltk3::BOLD to font)
     \li <tt>'\@i'</tt> Use an <I>italic</I> font (adds fltk3::ITALIC to font)
     \li <tt>'\@f' or '\@t'</tt> Use a fixed-pitch
-    font (sets font to FL_COURIER)
+    font (sets font to fltk3::COURIER)
     \li <tt>'\@c'</tt> Center the line horizontally
     \li <tt>'\@r'</tt> Right-justify the text
     \li <tt>'\@B0', '\@B1', ... '\@B255'</tt> Fill the backgound with

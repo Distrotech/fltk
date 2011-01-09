@@ -38,7 +38,7 @@
 
 #  include <stdio.h>
 #  include "run.h"
-#  include "Fl_Group.H"
+#  include "fltk3/Group.H"
 #  include "Fl_Scrollbar.H"
 #  include "fl_draw.H"
 #  include "Fl_Shared_Image.H"
@@ -50,7 +50,7 @@
 //
 
 
-typedef const char *(Fl_Help_Func)(Fl_Widget *, const char *);
+typedef const char *(Fl_Help_Func)(fltk3::Widget *, const char *);
 
 
 //
@@ -90,12 +90,12 @@ struct Fl_Help_Link
 
 /** Fl_Help_View font stack element definition. */
 struct Fl_Help_Font_Style {
-  Fl_Font      f;  ///< Font
-  Fl_Fontsize  s;  ///< Font Size
+  fltk3::Font      f;  ///< Font
+  fltk3::Fontsize  s;  ///< Font Size
   Fl_Color     c;  ///< Font Color
-  void get(Fl_Font &afont, Fl_Fontsize &asize, Fl_Color &acolor) {afont=f; asize=s; acolor=c;} ///< Gets current font attributes
-  void set(Fl_Font afont, Fl_Fontsize asize, Fl_Color acolor) {f=afont; s=asize; c=acolor;} ///< Sets current font attributes
-  Fl_Help_Font_Style(Fl_Font afont, Fl_Fontsize asize, Fl_Color acolor) {set(afont, asize, acolor);}
+  void get(fltk3::Font &afont, fltk3::Fontsize &asize, Fl_Color &acolor) {afont=f; asize=s; acolor=c;} ///< Gets current font attributes
+  void set(fltk3::Font afont, fltk3::Fontsize asize, Fl_Color acolor) {f=afont; s=asize; c=acolor;} ///< Sets current font attributes
+  Fl_Help_Font_Style(fltk3::Font afont, fltk3::Fontsize asize, Fl_Color acolor) {set(afont, asize, acolor);}
   Fl_Help_Font_Style(){} // For in table use
 };
 
@@ -108,22 +108,22 @@ struct Fl_Help_Font_Stack {
     nfonts_ = 0;
   }
 
-  void init(Fl_Font f, Fl_Fontsize s, Fl_Color c) { 
+  void init(fltk3::Font f, fltk3::Fontsize s, Fl_Color c) { 
     nfonts_ = 0;
     elts_[nfonts_].set(f, s, c);
     fl_font(f, s); 
     fl_color(c);
   }
   /** Gets the top (current) element on the stack. */
-  void top(Fl_Font &f, Fl_Fontsize &s, Fl_Color &c) { elts_[nfonts_].get(f, s, c); }
+  void top(fltk3::Font &f, fltk3::Fontsize &s, Fl_Color &c) { elts_[nfonts_].get(f, s, c); }
   /** Pushes the font style triplet on the stack, also calls fl_font() & fl_color() adequately */
-  void push(Fl_Font f, Fl_Fontsize s, Fl_Color c) { 
+  void push(fltk3::Font f, fltk3::Fontsize s, Fl_Color c) { 
     if (nfonts_ <  MAX_FL_HELP_FS_ELTS-1) nfonts_ ++;
     elts_[nfonts_].set(f, s, c);
     fl_font(f, s); fl_color(c); 
   }
   /** Pops from the stack the font style triplet and calls fl_font() & fl_color() adequately */
-  void pop(Fl_Font &f, Fl_Fontsize &s, Fl_Color &c) { 
+  void pop(fltk3::Font &f, fltk3::Fontsize &s, Fl_Color &c) { 
     if (nfonts_ > 0) nfonts_ --;
     top(f, s, c);
     fl_font(f, s); fl_color(c);
@@ -209,7 +209,7 @@ struct Fl_Help_Target
      - yen Yuml yuml
 
 */
-class FL_EXPORT Fl_Help_View : public Fl_Group	// Help viewer widget
+class FL_EXPORT Fl_Help_View : public fltk3::Group	// Help viewer widget
 {
   enum { RIGHT = -1, CENTER, LEFT };	///< Alignments
 
@@ -218,8 +218,8 @@ class FL_EXPORT Fl_Help_View : public Fl_Group	// Help viewer widget
 		bgcolor_,		///< Background color
 		textcolor_,		///< Text color
 		linkcolor_;		///< Link color
-  Fl_Font       textfont_;		///< Default font for text
-  Fl_Fontsize  textsize_;		///< Default font size
+  fltk3::Font       textfont_;		///< Default font for text
+  fltk3::Fontsize  textsize_;		///< Default font size
   const char	*value_;		///< HTML text value
   Fl_Help_Font_Stack fstack_;           ///< font stack management
   int		nblocks_,		///< Number of blocks/paragraphs
@@ -262,10 +262,10 @@ class FL_EXPORT Fl_Help_View : public Fl_Group	// Help viewer widget
   static Fl_Color hv_selection_text_color;
 
 
-  void initfont(Fl_Font &f, Fl_Fontsize &s, Fl_Color &c) { f = textfont_; s = textsize_; c = textcolor_; fstack_.init(f, s, c); }
-  void pushfont(Fl_Font f, Fl_Fontsize s) {fstack_.push(f, s, textcolor_);}
-  void pushfont(Fl_Font f, Fl_Fontsize s, Fl_Color c) {fstack_.push(f, s, c);}
-  void popfont(Fl_Font &f, Fl_Fontsize &s, Fl_Color &c) {fstack_.pop(f, s, c);}
+  void initfont(fltk3::Font &f, fltk3::Fontsize &s, Fl_Color &c) { f = textfont_; s = textsize_; c = textcolor_; fstack_.init(f, s, c); }
+  void pushfont(fltk3::Font f, fltk3::Fontsize s) {fstack_.push(f, s, textcolor_);}
+  void pushfont(fltk3::Font f, fltk3::Fontsize s, Fl_Color c) {fstack_.push(f, s, c);}
+  void popfont(fltk3::Font &f, fltk3::Fontsize &s, Fl_Color &c) {fstack_.pop(f, s, c);}
 
   Fl_Help_Block	*add_block(const char *s, int xx, int yy, int ww, int hh, uchar border = 0);
   void		add_link(const char *n, int xx, int yy, int ww, int hh);
@@ -312,7 +312,7 @@ public:
     It must return a pathname that can be opened as a local file or NULL:
     
     \code
-    const char *fn(Fl_Widget *w, const char *uri);
+    const char *fn(fltk3::Widget *w, const char *uri);
     \endcode
     
     The link function can be used to retrieve remote or virtual
@@ -329,19 +329,19 @@ public:
   void		resize(int,int,int,int);
   /** Gets the size of the help view. */
   int		size() const { return (size_); }
-  void		size(int W, int H) { Fl_Widget::size(W, H); }
+  void		size(int W, int H) { fltk3::Widget::size(W, H); }
   /** Sets the default text color. */
   void		textcolor(Fl_Color c) { if (textcolor_ == defcolor_) textcolor_ = c; defcolor_ = c; }
   /** Returns the current default text color. */
   Fl_Color	textcolor() const { return (defcolor_); }
   /** Sets the default text font. */
-  void		textfont(Fl_Font f) { textfont_ = f; format(); }
+  void		textfont(fltk3::Font f) { textfont_ = f; format(); }
   /** Returns the current default text font. */
-  Fl_Font       textfont() const { return (textfont_); }
+  fltk3::Font       textfont() const { return (textfont_); }
   /** Sets the default text size. */
-  void		textsize(Fl_Fontsize s) { textsize_ = s; format(); }
+  void		textsize(fltk3::Fontsize s) { textsize_ = s; format(); }
   /** Gets the default text size. */
-  Fl_Fontsize  textsize() const { return (textsize_); }
+  fltk3::Fontsize  textsize() const { return (textsize_); }
   /** Returns the current document title, or NULL if there is no title. */
   const char	*title() { return (title_); }
   void		topline(const char *n);

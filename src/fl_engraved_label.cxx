@@ -28,7 +28,7 @@
 // Drawing code for XForms style engraved & embossed labels
 
 #include <fltk3/run.h>
-#include <fltk3/Fl_Widget.H>
+#include <fltk3/Widget.h>
 #include <fltk3/fl_draw.H>
 
 // data[] is dx, dy, color triples
@@ -40,7 +40,7 @@ static void innards(
   Fl_Align a1 = align;
   if (a1 & FL_ALIGN_CLIP) {
     fl_push_clip(X, Y, W, H); a1 = (Fl_Align)(a1&~FL_ALIGN_CLIP);}
-  fl_font((Fl_Font)o->font, o->size);
+  fl_font((fltk3::Font)o->font, o->size);
   for (int i = 0; i < n; i++) {
     fl_color((Fl_Color)(i < n-1 ? data[i][2] : o->color));
     fl_draw(o->value, X+data[i][0], Y+data[i][1], W, H, a1);

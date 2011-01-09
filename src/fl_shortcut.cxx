@@ -42,7 +42,7 @@
 // calling it "shift+3" on a US keyboard)
 
 #include <fltk3/run.h>
-#include <fltk3/Fl_Widget.H>
+#include <fltk3/Widget.h>
 #include <fltk3/Fl_Button.H>
 #include <fltk3/fl_draw.H>
 #include <ctype.h>
@@ -56,7 +56,7 @@
     FL_SHORTCUT, against a shortcut value (described in 
     Fl_Button).
     
-    Not to be confused with Fl_Widget::test_shortcut().
+    Not to be confused with fltk3::Widget::test_shortcut().
     
     \return non-zero if there is a match.
 */
@@ -306,7 +306,7 @@ unsigned int fl_old_shortcut(const char* s) {
 
   \note Internal use only.
 */
-unsigned int Fl_Widget::label_shortcut(const char *t) {
+unsigned int fltk3::Widget::label_shortcut(const char *t) {
   if (!t) return 0;
   for (;;) {
     if (*t==0) return 0;
@@ -339,7 +339,7 @@ unsigned int Fl_Widget::label_shortcut(const char *t) {
 
   \note Internal use only.
 */
-int Fl_Widget::test_shortcut(const char *t, const bool require_alt) {
+int fltk3::Widget::test_shortcut(const char *t, const bool require_alt) {
   if (!t) return 0;
   // for menubars etc. shortcuts must work only if the Alt modifier is pressed
   if (require_alt && fltk3::event_state(FL_ALT)==0) return 0;
@@ -365,7 +365,7 @@ int Fl_Widget::test_shortcut(const char *t, const bool require_alt) {
   \note Internal use only.
 */
 
-int Fl_Widget::test_shortcut() {
+int fltk3::Widget::test_shortcut() {
   if (!(flags()&SHORTCUT_LABEL)) return 0;
   return test_shortcut(label());
 }

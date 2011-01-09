@@ -32,7 +32,7 @@
 #define Fl_Timer_H
 
 #ifndef Fl_Widget_H
-#include "Fl_Widget.H"
+#include "Widget.h"
 #endif
 
 // values for type():
@@ -47,7 +47,7 @@
   future.  You should directly call 
   fltk3::add_timeout() instead.
 */
-class FL_EXPORT Fl_Timer : public Fl_Widget {
+class FL_EXPORT Fl_Timer : public fltk3::Widget {
   static void stepcb(void *);
   void step();
   char on, direction_;

@@ -130,7 +130,7 @@ Fl_Choice::Fl_Choice(int X, int Y, int W, int H, const char *L)
 : Fl_Menu_(X,Y,W,H,L) {
   align(FL_ALIGN_LEFT);
   when(FL_WHEN_RELEASE);
-  textfont(FL_HELVETICA);
+  textfont(fltk3::HELVETICA);
   box(fltk3::FLAT_BOX);
   down_box(fltk3::BORDER_BOX);
 }
@@ -191,7 +191,7 @@ int Fl_Choice::handle(int e) {
     picked(v);
     return 1;
   case FL_SHORTCUT:
-    if (Fl_Widget::test_shortcut()) goto J1;
+    if (fltk3::Widget::test_shortcut()) goto J1;
     v = menu()->test_shortcut();
     if (!v) return 0;
     if (v != mvalue()) redraw();

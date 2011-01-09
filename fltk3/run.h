@@ -39,7 +39,7 @@
 #  include "fl_utf8.h"
 #  include "Enumerations.H"
 #  ifndef Fl_Object
-#    define Fl_Object Fl_Widget	/**< for back compatibility - use Fl_Widget! */
+#    define Fl_Object fltk3::Widget	/**< for back compatibility - use fltk3::Widget! */
 #  endif
 
 #  ifdef check
@@ -47,12 +47,12 @@
 #  endif
 
 
-class Fl_Widget;
 class Fl_Image;
 struct Fl_Label;
 
 namespace fltk3 {
   class Window;
+  class Widget;
 }
 
 
@@ -131,11 +131,11 @@ namespace fltk3 {
   extern int e_keysym;
   extern char* e_text;
   extern int e_length;
-  extern Fl_Widget* belowmouse_;
-  extern Fl_Widget* pushed_;
-  extern Fl_Widget* focus_;
+  extern fltk3::Widget* belowmouse_;
+  extern fltk3::Widget* pushed_;
+  extern fltk3::Widget* focus_;
   extern int damage_;
-  extern Fl_Widget* selection_owner_;
+  extern fltk3::Widget* selection_owner_;
   extern fltk3::Window* modal_;
   extern fltk3::Window* grab_;
   extern int compose_state;
@@ -274,7 +274,7 @@ namespace fltk3 {
   int check();
   int ready();
   int run();
-  Fl_Widget* readqueue();
+  fltk3::Widget* readqueue();
   /**
   Adds a one-shot timeout callback.  The function will be called by
   fltk3::wait() at <i>t</i> seconds after this function is called.
@@ -680,22 +680,22 @@ namespace fltk3 {
   */
   inline void compose_reset() {compose_state = 0;}
   int event_inside(int,int,int,int);
-  int event_inside(const Fl_Widget*);
+  int event_inside(const fltk3::Widget*);
   int test_shortcut(Fl_Shortcut);
 
   // event destinations:
   int handle(int, fltk3::Window*);
   /**  Gets the widget that is below the mouse. 
-       \see  belowmouse(Fl_Widget*) */
-  inline Fl_Widget* belowmouse() {return belowmouse_;}
-  void belowmouse(Fl_Widget*);
+       \see  belowmouse(fltk3::Widget*) */
+  inline fltk3::Widget* belowmouse() {return belowmouse_;}
+  void belowmouse(fltk3::Widget*);
   /** Gets the widget that is being pushed.
-      \see void pushed(Fl_Widget*) */
-  inline Fl_Widget* pushed()	{return pushed_;}
-  void pushed(Fl_Widget*);
-  /** Gets the current fltk3::focus() widget. \sa fltk3::focus(Fl_Widget*) */
-  inline Fl_Widget* focus()	{return focus_;}
-  void focus(Fl_Widget*);
+      \see void pushed(fltk3::Widget*) */
+  inline fltk3::Widget* pushed()	{return pushed_;}
+  void pushed(fltk3::Widget*);
+  /** Gets the current fltk3::focus() widget. \sa fltk3::focus(fltk3::Widget*) */
+  inline fltk3::Widget* focus()	{return focus_;}
+  void focus(fltk3::Widget*);
   void add_handler(Fl_Event_Handler h);
   void remove_handler(Fl_Event_Handler h);
   /** @} */
@@ -731,7 +731,7 @@ namespace fltk3 {
   drag-and-drop selections. The clipboard is used for traditional 
   copy/cut/paste operations.
   */
-  void paste(Fl_Widget &receiver, int source /*=0*/); // platform dependent
+  void paste(fltk3::Widget &receiver, int source /*=0*/); // platform dependent
   /**
     Initiate a Drag And Drop operation. The selection buffer should be
     filled with relevant data before calling this method. FLTK will
@@ -745,11 +745,11 @@ namespace fltk3 {
 
   // These are for back-compatibility only:
   /**  back-compatibility only: Gets the widget owning the current selection  
-       \see Fl_Widget* selection_owner(Fl_Widget*) */
-  inline Fl_Widget* selection_owner() {return selection_owner_;}
-  void selection_owner(Fl_Widget*);
-  void selection(Fl_Widget &owner, const char*, int len);
-  void paste(Fl_Widget &receiver);
+       \see fltk3::Widget* selection_owner(fltk3::Widget*) */
+  inline fltk3::Widget* selection_owner() {return selection_owner_;}
+  void selection_owner(fltk3::Widget*);
+  void selection(fltk3::Widget &owner, const char*, int len);
+  void paste(fltk3::Widget &receiver);
 /** @} */
 /** \defgroup  fl_screen  Screen functions
 	fl global screen functions declared in <fltk3/run.h>
@@ -802,7 +802,7 @@ namespace fltk3 {
   void	free_color(Fl_Color i, int overlay = 0); // platform dependent
 
   // fonts:
-  const char* get_font(Fl_Font);
+  const char* get_font(fltk3::Font);
   /**
     Get a human-readable string describing the family of this face.  This
     is useful if you are presenting a choice to the user.  There is no
@@ -815,7 +815,7 @@ namespace fltk3 {
     forward and back for a set with non-zero attributes, these faces along
     with the face with a zero attribute before them constitute a family.
   */
-  const char* get_font_name(Fl_Font, int* attributes = 0);
+  const char* get_font_name(fltk3::Font, int* attributes = 0);
   /**
     Return an array of sizes in \p sizep.  The return value is the
     length of this array.  The sizes are sorted from smallest to largest
@@ -827,9 +827,9 @@ namespace fltk3 {
     points at a static buffer that is overwritten each call.  Under X this
     will open the display.
   */
-  int get_font_sizes(Fl_Font, int*& sizep);
-  void set_font(Fl_Font, const char*);
-  void set_font(Fl_Font, Fl_Font);
+  int get_font_sizes(fltk3::Font, int*& sizep);
+  void set_font(fltk3::Font, const char*);
+  void set_font(fltk3::Font, fltk3::Font);
   /**
     FLTK will open the display, and add every fonts on the server to the
     face table.  It will attempt to put "families" of faces together, so
@@ -848,7 +848,7 @@ namespace fltk3 {
     
     The return value is how many faces are in the table after this is done.
   */
-  Fl_Font set_fonts(const char* = 0); // platform dependent
+  fltk3::Font set_fonts(const char* = 0); // platform dependent
 
   /**   @} */
  /** \defgroup  fl_drawings  Drawing functions
@@ -989,7 +989,7 @@ namespace fltk3 {
     These functions, declared in <fltk3/run.h>, support deletion of widgets inside callbacks.
 
     fltk3::delete_widget() should be called when deleting widgets
-    or complete widget trees (Fl_Group, fltk3::Window, ...) inside
+    or complete widget trees (fltk3::Group, fltk3::Window, ...) inside
     callbacks.
 
     The other functions are intended for internal use. The preferred
@@ -1014,11 +1014,11 @@ namespace fltk3 {
 
    @{ */
   // Widget deletion:
-  void delete_widget(Fl_Widget *w);
+  void delete_widget(fltk3::Widget *w);
   void do_widget_deletion();
-  void watch_widget_pointer(Fl_Widget *&w);
-  void release_widget_pointer(Fl_Widget *&w);
-  void clear_widget_pointer(Fl_Widget const *w);
+  void watch_widget_pointer(fltk3::Widget *&w);
+  void release_widget_pointer(fltk3::Widget *&w);
+  void clear_widget_pointer(fltk3::Widget const *w);
   /** @} */
 
 #ifdef FLTK_HAVE_CAIRO
@@ -1112,11 +1112,11 @@ namespace fltk3 {
 */
 class FL_EXPORT Fl_Widget_Tracker {
 
-  Fl_Widget* wp_;
+  fltk3::Widget* wp_;
 
 public:
 
-  Fl_Widget_Tracker(Fl_Widget *wi);
+  Fl_Widget_Tracker(fltk3::Widget *wi);
   ~Fl_Widget_Tracker();
 
   /**
@@ -1124,7 +1124,7 @@ public:
 
     This pointer is \c NULL, if the widget has been deleted.
   */
-  Fl_Widget *widget() {return wp_;}
+  fltk3::Widget *widget() {return wp_;}
 
   /**
     Returns 1, if the watched widget has been deleted.

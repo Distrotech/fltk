@@ -35,7 +35,7 @@
 // Include necessary headers.
 //
 
-#include "Fl_Widget.H"
+#include "Widget.h"
 
 
 //
@@ -44,7 +44,7 @@
 /**
     Displays a progress bar for the user.
 */
-class FL_EXPORT Fl_Progress : public Fl_Widget
+class FL_EXPORT Fl_Progress : public fltk3::Widget
 {
   float	value_,
 	minimum_,

@@ -110,8 +110,8 @@ Fl_Fontdesc* fl_fonts = built_in_table;
 
 #define current_font (fl_fontsize->font)
 
-Fl_Font fl_font_ = 0;
-Fl_Fontsize fl_size_ = 0;
+fltk3::Font fl_font_ = 0;
+fltk3::Fontsize fl_size_ = 0;
 int fl_angle_ = 0; // internal for rotating text support
 Fl_XFont_On_Demand fl_xfont;
 void *fl_xftfont = 0;
@@ -121,7 +121,7 @@ Fl_Font_Descriptor* fl_fontsize = 0;
 
 
 
-void fl_font(Fl_Font fnum, Fl_Fontsize size, int angle) {
+void fl_font(fltk3::Font fnum, fltk3::Fontsize size, int angle) {
   if (fnum==-1) { // special case to stop font caching
     fl_font_ = 0; fl_size_ = 0; fl_angle_ = 0;
     return;
@@ -152,7 +152,7 @@ void fl_font(Fl_Font fnum, Fl_Fontsize size, int angle) {
   fl_xftfont = (void*)f->font;
 }
 
-void Fl_Xlib_Graphics_Driver::font(Fl_Font fnum, Fl_Fontsize size) {
+void Fl_Xlib_Graphics_Driver::font(fltk3::Font fnum, fltk3::Fontsize size) {
   fl_font(fnum,size,0);
 }
 
@@ -588,7 +588,7 @@ void fl_destroy_xft_draw(Window id) {
 
 void Fl_Xlib_Graphics_Driver::draw(const char *str, int n, int x, int y) {
   if ( !current_font ) {
-    fl_font(FL_HELVETICA, 14);
+    fl_font(fltk3::HELVETICA, 14);
   }
 #if USE_OVERLAY
   XftDraw*& draw_ = fl_overlay ? draw_overlay : ::draw_;

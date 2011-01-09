@@ -84,7 +84,7 @@ void fltk3::Window::hotspot(int X, int Y, int offscreen) {
   position(X,Y);
 }
 
-void fltk3::Window::hotspot(const Fl_Widget *o, int offscreen) {
+void fltk3::Window::hotspot(const fltk3::Widget *o, int offscreen) {
   int X = o->w()/2;
   int Y = o->h()/2;
   while (o != this && o) {

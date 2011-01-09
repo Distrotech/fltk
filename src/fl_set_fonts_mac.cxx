@@ -38,10 +38,10 @@
 // making the name, and then forgot about it. To avoid having to change
 // the header files I decided to store this value in the last character
 // of the font name array.
-#define ENDOFBUFFER 127 // sizeof(Fl_Font.fontname)-1
+#define ENDOFBUFFER 127 // sizeof(fltk3::Font.fontname)-1
 
 // turn a stored font name into a pretty name:
-const char* fltk3::get_font_name(Fl_Font fnum, int* ap) {
+const char* fltk3::get_font_name(fltk3::Font fnum, int* ap) {
   Fl_Fontdesc *f = fl_fonts + fnum;
   if (!f->fontname[0]) {
     const char* p = f->name;
@@ -56,11 +56,11 @@ const char* fltk3::get_font_name(Fl_Font fnum, int* ap) {
   return f->fontname;
 }
 
-static int fl_free_font = FL_FREE_FONT;
+static int fl_free_font = fltk3::FREE_FONT;
 
-Fl_Font fltk3::set_fonts(const char* xstarname) {
+fltk3::Font fltk3::set_fonts(const char* xstarname) {
 #pragma unused ( xstarname )
-if (fl_free_font > FL_FREE_FONT) return (Fl_Font)fl_free_font; // if already called
+if (fl_free_font > fltk3::FREE_FONT) return (fltk3::Font)fl_free_font; // if already called
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
   if(fl_mac_os_version == 0) fl_open_display();
@@ -84,10 +84,10 @@ if(fl_mac_os_version >= 0x1050) {
 	static char fname[100];
 	CFStringGetCString(cfname, fname, sizeof(fname), kCFStringEncodingUTF8);
 	CFRelease(cfname);
-	fltk3::set_font((Fl_Font)(fl_free_font++), strdup(fname));
+	fltk3::set_font((fltk3::Font)(fl_free_font++), strdup(fname));
 	}
   CFRelease(arrayref);
-  return (Fl_Font)fl_free_font;
+  return (fltk3::Font)fl_free_font;
 }
 else {
 #endif
@@ -121,11 +121,11 @@ else {
       oName[511] = 0;
     else
       oName[actualLength] = 0;
-	fltk3::set_font((Fl_Font)(fl_free_font++), strdup(oName));
+	fltk3::set_font((fltk3::Font)(fl_free_font++), strdup(oName));
 //	free(oName);
   }
   free(oFontIDs);
-  return (Fl_Font)fl_free_font;
+  return (fltk3::Font)fl_free_font;
 #endif //__LP64__
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
   }
@@ -134,7 +134,7 @@ else {
 }
 
 static int array[128];
-int fltk3::get_font_sizes(Fl_Font fnum, int*& sizep) {
+int fltk3::get_font_sizes(fltk3::Font fnum, int*& sizep) {
   Fl_Fontdesc *s = fl_fonts+fnum;
   if (!s->name) s = fl_fonts; // empty slot in table, use entry 0
   int cnt = 0;
