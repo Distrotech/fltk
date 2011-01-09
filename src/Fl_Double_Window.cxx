@@ -26,11 +26,11 @@
 //
 
 #include <config.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Double_Window.H>
-#include <FL/Fl_Printer.H>
-#include <FL/x.H>
-#include <FL/fl_draw.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Double_Window.H>
+#include <fltk3/Fl_Printer.H>
+#include <fltk3/x.H>
+#include <fltk3/fl_draw.H>
 
 // On systems that support double buffering "naturally" the base
 // Fl_Window class will probably do double-buffer and this subclass

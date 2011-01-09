@@ -45,10 +45,10 @@
 ////////////////////////////////////////////////////////////////
 
 #include <config.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Printer.H>
-#include <FL/fl_draw.H>
-#include <FL/x.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Printer.H>
+#include <fltk3/fl_draw.H>
+#include <fltk3/x.H>
 
 #define MAXBUFFER 0x40000 // 256k
 

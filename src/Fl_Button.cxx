@@ -25,10 +25,10 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Group.H>
-#include <FL/Fl_Window.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Button.H>
+#include <fltk3/Fl_Group.H>
+#include <fltk3/Fl_Window.H>
 
 
 Fl_Widget_Tracker *Fl_Button::key_release_tracker = 0;

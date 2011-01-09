@@ -25,31 +25,20 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
+#include <fltk3/run.h>
+#include <fltk3/Window.h>
+#include <fltk3/Box.h>
 
 int main(int argc, char **argv) {
-#if (1) // FIXME: test screen dimensions and resolution. Remove before release !
-  float ppi_h, ppi_v;
-  int x,y,w,h;
-  int n = Fl::screen_count();
-  for (int i=0; i<n; i++) {
-    Fl::screen_xywh(x,y,w,h,i);
-    Fl::screen_dpi(ppi_h, ppi_v, i);
-    printf("Screen %2d (%4d,%4d,%4d,%4d) res. is %7.3f x %7.3f ppi\n", i, x,y,w,h, ppi_h, ppi_v);
-  }
-  fflush(stdout);
-#endif // FIXME: test screen dimensions and resolution. Remove before release !
-  Fl_Window *window = new Fl_Window(340,180);
-  Fl_Box *box = new Fl_Box(20,40,300,100,"Hello, World!");
-  box->box(FL_UP_BOX);
-  box->labelfont(FL_BOLD+FL_ITALIC);
+  fltk3::Window *window = new fltk3::Window(340,180);
+  fltk3::Box *box = new fltk3::Box(20,40,300,100,"Hello, World!");
+  box->box(fltk3::UP_BOX);
+  box->labelfont(fltk3::BOLD+fltk3::ITALIC);
   box->labelsize(36);
-  box->labeltype(FL_SHADOW_LABEL);
+  box->labeltype(fltk3::SHADOW_LABEL);
   window->end();
   window->show(argc, argv);
-  return Fl::run();
+  return fltk3::run();
 }
 
 //

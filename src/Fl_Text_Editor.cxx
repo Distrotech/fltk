@@ -29,10 +29,10 @@
 #include <stdlib.h>
 #include "flstring.h"
 #include <ctype.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Text_Editor.H>
-#include <FL/fl_ask.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/Fl_Text_Editor.H>
+#include <fltk3/fl_ask.H>
 
 
 /* Keyboard Control Matrix

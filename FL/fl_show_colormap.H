@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -56,3 +58,4 @@ FL_EXPORT Fl_Color fl_show_colormap(Fl_Color oldcol);
 //
 // End of "$Id$".
 //
+#endif

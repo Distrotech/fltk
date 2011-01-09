@@ -59,11 +59,11 @@ extern "C" {
 }
 
 #include <config.h>
-#include <FL/Fl.H>
-#include <FL/x.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Tooltip.H>
-#include <FL/Fl_Sys_Menu_Bar.H>
+#include <fltk3/Fl.H>
+#include <fltk3/x.H>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/Fl_Tooltip.H>
+#include <fltk3/Fl_Sys_Menu_Bar.H>
 #include <stdio.h>
 #include <stdlib.h>
 #include "flstring.h"
@@ -1855,7 +1855,7 @@ static char *currDragData = 0L;
 static int currDragSize = 0; 
 static OSErr currDragErr = noErr;
 Fl_Window *fl_dnd_target_window = 0;
-#include <FL/fl_draw.H>
+#include <fltk3/fl_draw.H>
 
 /**
  * Fill the currDrag* variables with the current DnD ASCII text.

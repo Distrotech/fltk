@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -175,3 +177,4 @@ extern FL_EXPORT int fl_parse_color(const char* p, uchar& r, uchar& g, uchar& b)
 //
 // End of "$Id$".
 //
+#endif

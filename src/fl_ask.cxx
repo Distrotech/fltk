@@ -34,18 +34,18 @@
 #include <stdarg.h>
 #include "flstring.h"
 
-#include <FL/Fl.H>
+#include <fltk3/Fl.H>
 
-#include <FL/fl_ask.H>
+#include <fltk3/fl_ask.H>
 
-#include <FL/Fl_Box.H>
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Return_Button.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Input.H>
-#include <FL/Fl_Secret_Input.H>
-#include <FL/x.H>
-#include <FL/fl_draw.H>
+#include <fltk3/Fl_Box.H>
+#include <fltk3/Fl_Button.H>
+#include <fltk3/Fl_Return_Button.H>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/Fl_Input.H>
+#include <fltk3/Fl_Secret_Input.H>
+#include <fltk3/x.H>
+#include <fltk3/fl_draw.H>
 
 static Fl_Window *message_form;
 static Fl_Box *message;
@@ -257,7 +257,7 @@ const char* fl_close= "Close";   ///< string pointer used in common dialogs, you
 // fltk functions:
 /**
    Emits a system beep message.
-   \note \#include <FL/fl_ask.H>
+   \note \#include <fltk3/fl_ask.H>
  */
 void fl_beep(int type) {
 #ifdef WIN32
@@ -309,7 +309,7 @@ void fl_beep(int type) {
 
    \note Common dialog boxes are application modal. No more than one common dialog box
    can be open at any time. Requests for additional dialog boxes are ignored.
-   \note \#include <FL/fl_ask.H>
+   \note \#include <fltk3/fl_ask.H>
 
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
@@ -333,7 +333,7 @@ void fl_message(const char *fmt, ...) {
 
    \note Common dialog boxes are application modal. No more than one common dialog box
    can be open at any time. Requests for additional dialog boxes are ignored.
-   \note \#include <FL/fl_ask.H>
+   \note \#include <fltk3/fl_ask.H>
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
  */
@@ -356,7 +356,7 @@ void fl_alert(const char *fmt, ...) {
 
    \note Common dialog boxes are application modal. No more than one common dialog box
    can be open at any time. Requests for additional dialog boxes are ignored.
-   \note \#include <FL/fl_ask.H>
+   \note \#include <fltk3/fl_ask.H>
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
    \retval 0 if the no button is selected or another dialog box is still open
@@ -382,7 +382,7 @@ int fl_ask(const char *fmt, ...) {
 
    \note Common dialog boxes are application modal. No more than one common dialog box
     can be open at any time. Requests for additional dialog boxes are ignored.
-   \note \#include <FL/fl_ask.H>
+   \note \#include <fltk3/fl_ask.H>
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
    \param[in] b0 text label of button 0
@@ -408,7 +408,7 @@ int fl_choice(const char*fmt,const char *b0,const char *b1,const char *b2,...){
 /** Gets the Fl_Box icon container of the current default dialog used in 
     many common dialogs like fl_message(), fl_alert(), 
     fl_ask(), fl_choice(), fl_input(), fl_password() 
-    \note \#include <FL/fl_ask.H>
+    \note \#include <fltk3/fl_ask.H>
 */ 
 Fl_Widget *fl_message_icon() {makeform(); return icon;}
 
@@ -431,7 +431,7 @@ static const char* input_innards(const char* fmt, va_list ap,
 
    \note Common dialog boxes are application modal. No more than one common dialog box
    can be open at any time. Requests for additional dialog boxes are ignored.
-   \note \#include <FL/fl_ask.H>
+   \note \#include <fltk3/fl_ask.H>
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
    \param[in] defstr defines the default returned string if no text is entered
@@ -457,7 +457,7 @@ const char* fl_input(const char *fmt, const char *defstr, ...) {
 
    \note Common dialog boxes are application modal. No more than one common dialog box
    can be open at any time. Requests for additional dialog boxes are ignored.
-   \note \#include <FL/fl_ask.H>
+   \note \#include <fltk3/fl_ask.H>
 
    \param[in] fmt can be used as an sprintf-like format and variables for the message text
    \param[in] defstr defines the default returned string if no text is entered

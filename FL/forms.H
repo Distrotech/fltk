@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -843,3 +845,4 @@ inline void fl_draw() {Fl::flush();}
 //
 // End of "$Id$".
 //
+#endif

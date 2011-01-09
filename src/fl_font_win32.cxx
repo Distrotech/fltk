@@ -25,7 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl_Printer.H>
+#include <fltk3/Fl_Printer.H>
 
 static int fl_angle_ = 0;
 

@@ -30,14 +30,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <FL/fl_utf8.h>
+#include <fltk3/fl_utf8.h>
 #include "flstring.h"
 #include <limits.h>
 #include <ctype.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Text_Buffer.H>
-#include <FL/Fl_Text_Display.H>
-#include <FL/Fl_Window.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Text_Buffer.H>
+#include <fltk3/Fl_Text_Display.H>
+#include <fltk3/Fl_Window.H>
 
 #undef min
 #undef max

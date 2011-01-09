@@ -28,10 +28,10 @@
 #define DISPLAY_SEARCH_BOTH_WAYS_AT_ONCE
 
 #include <stdio.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Widget.H>
-#include <FL/Fl_Browser_.H>
-#include <FL/fl_draw.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Widget.H>
+#include <fltk3/Fl_Browser_.H>
+#include <fltk3/fl_draw.H>
 
 
 // This is the base class for browsers.  To be useful it must be

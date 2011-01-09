@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -78,3 +80,4 @@ typedef Fl_Menu_Bar Fl_Sys_Menu_Bar;
 //
 // End of "$Id$".
 //
+#endif

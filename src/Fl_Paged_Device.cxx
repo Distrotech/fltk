@@ -28,9 +28,9 @@
  \brief implementation of class Fl_Paged_Device.
  */
 
-#include <FL/Fl_Paged_Device.H>
-#include <FL/Fl.H>
-#include <FL/fl_draw.H>
+#include <fltk3/Fl_Paged_Device.H>
+#include <fltk3/Fl.H>
+#include <fltk3/fl_draw.H>
 
 const char *Fl_Paged_Device::class_id = "Fl_Paged_Device";
 

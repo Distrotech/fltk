@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -166,3 +168,4 @@ class FL_EXPORT Fl_File_Icon			//// Icon data
 //
 // End of "$Id$".
 //
+#endif

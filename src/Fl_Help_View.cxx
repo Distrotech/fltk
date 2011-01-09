@@ -55,14 +55,14 @@
 // Include necessary header files...
 //
 
-#include <FL/Fl_Help_View.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Pixmap.H>
-#include <FL/x.H>
+#include <fltk3/Fl_Help_View.H>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/Fl_Pixmap.H>
+#include <fltk3/x.H>
 #include <stdio.h>
 #include <stdlib.h>
-#include <FL/fl_utf8.h>
-#include <FL/filename.H>	// fl_open_uri()
+#include <fltk3/fl_utf8.h>
+#include <fltk3/filename.H>	// fl_open_uri()
 #include "flstring.h"
 #include <ctype.h>
 #include <errno.h>

@@ -25,12 +25,12 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
-#include <FL/fl_ask.H>
-#include <FL/fl_draw.H>
+#include <fltk3/Fl.H>
+#include <fltk3/fl_ask.H>
+#include <fltk3/fl_draw.H>
 #include <stdio.h>
-#include <FL/Fl_PostScript.H>
-#include <FL/Fl_Native_File_Chooser.H>
+#include <fltk3/Fl_PostScript.H>
+#include <fltk3/Fl_Native_File_Chooser.H>
 
 const char *Fl_PostScript_Graphics_Driver::class_id = "Fl_PostScript_Graphics_Driver";
 const char *Fl_PostScript_File_Device::class_id = "Fl_PostScript_File_Device";

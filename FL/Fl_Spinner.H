@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -264,3 +266,4 @@ class FL_EXPORT Fl_Spinner : public Fl_Group
 //
 // End of "$Id$".
 //
+#endif

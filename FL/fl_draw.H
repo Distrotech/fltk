@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -733,3 +735,4 @@ FL_EXPORT int fl_add_symbol(const char* name, void (*drawit)(Fl_Color), int scal
 //
 // End of "$Id$".
 //
+#endif

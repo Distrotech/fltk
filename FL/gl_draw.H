@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -33,3 +35,4 @@ extern FL_EXPORT void gl_remove_displaylist_fonts();
 //
 // End of "$Id$".
 //
+#endif

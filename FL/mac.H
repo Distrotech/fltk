@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -215,3 +217,4 @@ extern int fl_mac_os_version;
 // End of "$Id$".
 //
 
+#endif

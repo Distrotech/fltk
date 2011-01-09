@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -233,3 +235,4 @@ FL_EXPORT void fl_file_chooser_ok_label(const char*l);
 //
 // End of "$Id$".
 //
+#endif

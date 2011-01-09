@@ -25,9 +25,9 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
-#include <FL/Fl_Device.H>
-#include <FL/Fl_Image.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Device.H>
+#include <fltk3/Fl_Image.H>
 
 const char *Fl_Device::class_id = "Fl_Device";
 const char *Fl_Surface_Device::class_id = "Fl_Surface_Device";

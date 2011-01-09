@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -69,3 +71,4 @@ inline double copysign(double a, double b) {return b<0 ? -a : a;}
 //
 // End of "$Id$".
 //
+#endif

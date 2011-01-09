@@ -28,10 +28,10 @@
 // in.  Search other files for "WIN32" or filenames ending in _win32.cxx
 // for other system-specific code.
 
-#include <FL/Fl.H>
-#include <FL/x.H>
-#include <FL/Fl_Window.H>
-#include <FL/fl_utf8.h>
+#include <fltk3/Fl.H>
+#include <fltk3/x.H>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/fl_utf8.h>
 #include "flstring.h"
 #include <stdio.h>
 #include <stdlib.h>

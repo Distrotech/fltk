@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id: Fl_Plugin.H 6995 2010-01-12 08:48:55Z matt $"
 //
@@ -104,3 +106,4 @@ public:
 //
 // End of "$Id: Fl_Preferences.H 6995 2010-01-12 08:48:55Z matt $".
 //
+#endif

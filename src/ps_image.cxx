@@ -31,10 +31,10 @@
 #include <math.h>
 #include <string.h>
 
-#include <FL/Fl_PostScript.H>
-#include <FL/Fl.H>
-#include <FL/Fl_Pixmap.H>
-#include <FL/Fl_Bitmap.H>
+#include <fltk3/Fl_PostScript.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Pixmap.H>
+#include <fltk3/Fl_Bitmap.H>
  
 int Fl_PostScript_Graphics_Driver::alpha_mask(const uchar * data, int w, int h, int D, int LD){
 

@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -110,3 +112,4 @@ FL_EXPORT void gl_draw_image(const uchar *, int x,int y,int w,int h, int d=3, in
 //
 // End of "$Id$".
 //
+#endif

@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -97,3 +99,4 @@ class FL_EXPORT Fl_Pixmap : public Fl_Image {
 //
 // End of "$Id$".
 //
+#endif

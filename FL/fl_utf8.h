@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 /* "$Id$"
  *
  * Author: Jean-Marc Lienher ( http://oksid.ch )
@@ -260,3 +262,4 @@ FL_EXPORT char fl_make_path( const char *path );
 /*
  * End of "$Id$".
  */
+#endif

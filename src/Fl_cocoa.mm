@@ -46,14 +46,14 @@ extern "C" {
 }
 
 
-#include <FL/Fl.H>
-#include <FL/x.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Tooltip.H>
-#include <FL/Fl_Sys_Menu_Bar.H>
-#include <FL/Fl_Printer.H>
-#include <FL/Fl_Input_.H>
-#include <FL/Fl_Text_Display.H>
+#include <fltk3/Fl.H>
+#include <fltk3/x.H>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/Fl_Tooltip.H>
+#include <fltk3/Fl_Sys_Menu_Bar.H>
+#include <fltk3/Fl_Printer.H>
+#include <fltk3/Fl_Input_.H>
+#include <fltk3/Fl_Text_Display.H>
 #include <stdio.h>
 #include <stdlib.h>
 #include "flstring.h"

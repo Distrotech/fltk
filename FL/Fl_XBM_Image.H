@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -48,3 +50,4 @@ class FL_EXPORT Fl_XBM_Image : public Fl_Bitmap {
 //
 // End of "$Id$".
 //
+#endif

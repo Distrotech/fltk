@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 /*
  * "$Id$"
  *
@@ -178,3 +180,4 @@ int _fl_filename_isdir_quick(const char *name);
 /*
  * End of "$Id$".
  */
+#endif

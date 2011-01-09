@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -108,3 +110,4 @@ FL_EXPORT extern void fl_register_images();
 //
 // End of "$Id$"
 //
+#endif

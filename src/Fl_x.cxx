@@ -36,12 +36,12 @@
 /* #define BACKSPACE_HACK 1 */
 
 #  include <config.h>
-#  include <FL/Fl.H>
-#  include <FL/x.H>
-#  include <FL/Fl_Window.H>
-#  include <FL/fl_utf8.h>
-#  include <FL/Fl_Tooltip.H>
-#  include <FL/fl_draw.H>
+#  include <fltk3/Fl.H>
+#  include <fltk3/x.H>
+#  include <fltk3/Fl_Window.H>
+#  include <fltk3/fl_utf8.h>
+#  include <fltk3/Fl_Tooltip.H>
+#  include <fltk3/fl_draw.H>
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include "flstring.h"
@@ -1879,8 +1879,8 @@ void Fl_Window::make_current() {
 #ifdef USE_PRINT_BUTTON
 // to test the Fl_Printer class creating a "Print front window" button in a separate window
 // contains also preparePrintFront call above
-#include <FL/Fl_Printer.H>
-#include <FL/Fl_Button.H>
+#include <fltk3/Fl_Printer.H>
+#include <fltk3/Fl_Button.H>
 void printFront(Fl_Widget *o, void *data)
 {
   Fl_Printer printer;

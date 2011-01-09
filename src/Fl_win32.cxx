@@ -32,12 +32,12 @@
 // This file must be #include'd in Fl.cxx and not compiled separately.
 
 #ifndef FL_DOXYGEN
-#include <FL/Fl.H>
-#include <FL/fl_utf8.h>
-#include <FL/Fl_Window.H>
-#include <FL/fl_draw.H>
-#include <FL/Enumerations.H>
-#include <FL/Fl_Tooltip.H>
+#include <fltk3/Fl.H>
+#include <fltk3/fl_utf8.h>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/fl_draw.H>
+#include <fltk3/Enumerations.H>
+#include <fltk3/Fl_Tooltip.H>
 #include "flstring.h"
 #include "Fl_Font.H"
 #include <stdio.h>
@@ -1713,7 +1713,7 @@ void Fl_X::set_minmax(LPMINMAXINFO minmax)
 
 ////////////////////////////////////////////////////////////////
 
-#include <FL/filename.H> // need so FL_EXPORT fl_filename_name works
+#include <fltk3/filename.H> // need so FL_EXPORT fl_filename_name works
 
 // returns pointer to the filename, or null if name ends with '/'
 const char *fl_filename_name(const char *name) {
@@ -1929,8 +1929,8 @@ Fl_Region XRectangleRegion(int x, int y, int w, int h) {
 #ifdef USE_PRINT_BUTTON
 // to test the Fl_Printer class creating a "Print front window" button in a separate window
 // contains also preparePrintFront call above
-#include <FL/Fl_Printer.H>
-#include <FL/Fl_Button.H>
+#include <fltk3/Fl_Printer.H>
+#include <fltk3/Fl_Button.H>
 void printFront(Fl_Widget *o, void *data)
 {
   Fl_Printer printer;

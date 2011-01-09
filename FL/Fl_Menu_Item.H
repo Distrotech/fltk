@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -441,3 +443,4 @@ enum {	// back-compatibility enum:
 //
 // End of "$Id$".
 //
+#endif

@@ -31,10 +31,10 @@
 // handling is designed so windows themselves work correctly.
 
 #include <stdio.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Group.H>
-#include <FL/Fl_Window.H>
-#include <FL/fl_draw.H>
+#include <fltk3/Fl.H>
+#include <fltk3/Fl_Group.H>
+#include <fltk3/Fl_Window.H>
+#include <fltk3/fl_draw.H>
 #include <stdlib.h>
 
 Fl_Group* Fl_Group::current_;

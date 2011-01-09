@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -139,3 +141,4 @@ class FL_EXPORT Fl_Text_Editor : public Fl_Text_Display {
 // End of "$Id$".
 //
 
+#endif

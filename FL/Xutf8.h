@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 /* "$Id$"
  *
  * Author: Jean-Marc Lienher ( http://oksid.ch )
@@ -174,3 +176,4 @@ XUtf8Toupper(
 /*
  *  End of "$Id$".
  */ 
+#endif

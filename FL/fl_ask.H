@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -75,3 +77,4 @@ extern FL_EXPORT const char* fl_close;
 //
 // End of "$Id$".
 //
+#endif

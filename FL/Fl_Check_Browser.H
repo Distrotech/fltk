@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -120,3 +122,4 @@ class FL_EXPORT Fl_Check_Browser : public Fl_Browser_ {
 // End of "$Id$".
 //
 
+#endif

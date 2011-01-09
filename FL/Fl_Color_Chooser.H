@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -197,3 +199,4 @@ FL_EXPORT int fl_color_chooser(const char* name, uchar& r, uchar& g, uchar& b, i
 //
 // End of "$Id$".
 //
+#endif

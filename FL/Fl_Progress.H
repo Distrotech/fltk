@@ -1,3 +1,5 @@
+#warn FLTK123: This file has not been ported yet
+#if 0
 //
 // "$Id$"
 //
@@ -79,3 +81,4 @@ class FL_EXPORT Fl_Progress : public Fl_Widget
 //
 // End of "$Id$".
 //
+#endif

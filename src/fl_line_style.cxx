@@ -30,10 +30,10 @@
   \brief Line style drawing utility hiding different platforms.
 */
 
-#include <FL/Fl.H>
-#include <FL/fl_draw.H>
-#include <FL/x.H>
-#include <FL/Fl_Printer.H>
+#include <fltk3/Fl.H>
+#include <fltk3/fl_draw.H>
+#include <fltk3/x.H>
+#include <fltk3/Fl_Printer.H>
 #include "flstring.h"
 #include <stdio.h>
 

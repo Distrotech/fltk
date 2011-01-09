@@ -25,8 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <FL/Fl.H>
-#include <FL/x.H>
+#include <fltk3/Fl.H>
+#include <fltk3/x.H>
 
 #ifndef FL_DOXYGEN
 // at present, this is effectively used by Mac OS X only
