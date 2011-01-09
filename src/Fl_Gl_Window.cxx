@@ -292,7 +292,7 @@ void Fl_Gl_Window::flush() {
 
   // Draw into hardware overlay planes if they are damaged:
   if (overlay && overlay != this
-      && (damage()&(FL_DAMAGE_OVERLAY|FL_DAMAGE_EXPOSE) || !save_valid)) {
+      && (damage()&(fltk3::DAMAGE_OVERLAY|fltk3::DAMAGE_EXPOSE) || !save_valid)) {
     // SGI 320 messes up overlay with user-defined cursors:
     if (Fl_X::i(this)->cursor && Fl_X::i(this)->cursor != fl_default_cursor) {
       fixcursor = true; // make it restore cursor later
@@ -309,7 +309,7 @@ void Fl_Gl_Window::flush() {
     valid_f_ = save_valid_f;
     wglSwapLayerBuffers(Fl_X::i(this)->private_dc, WGL_SWAP_OVERLAY1);
     // if only the overlay was damaged we are done, leave main layer alone:
-    if (damage() == FL_DAMAGE_OVERLAY) {
+    if (damage() == fltk3::DAMAGE_OVERLAY) {
       if (fixcursor) SetCursor(Fl_X::i(this)->cursor);
       return;
     }
@@ -340,18 +340,18 @@ void Fl_Gl_Window::flush() {
     if (SWAP_TYPE == NODAMAGE) {
 
       // don't draw if only overlay damage or expose events:
-      if ((damage()&~(FL_DAMAGE_OVERLAY|FL_DAMAGE_EXPOSE)) || !save_valid)
+      if ((damage()&~(fltk3::DAMAGE_OVERLAY|fltk3::DAMAGE_EXPOSE)) || !save_valid)
 	draw();
       swap_buffers();
 
     } else if (SWAP_TYPE == COPY) {
 
       // don't draw if only the overlay is damaged:
-      if (damage() != FL_DAMAGE_OVERLAY || !save_valid) draw();
+      if (damage() != fltk3::DAMAGE_OVERLAY || !save_valid) draw();
 	  swap_buffers();
 
     } else if (SWAP_TYPE == SWAP){
-      damage(FL_DAMAGE_ALL);
+      damage(fltk3::DAMAGE_ALL);
       draw();
       if (overlay == this) draw_overlay();
       swap_buffers();
@@ -361,7 +361,7 @@ void Fl_Gl_Window::flush() {
       // SWAP_TYPE == COPY.  Otherwise overlay redraw is way too slow.
       if (overlay == this) {
 	// don't draw if only the overlay is damaged:
-	if (damage1_ || damage() != FL_DAMAGE_OVERLAY || !save_valid) draw();
+	if (damage1_ || damage() != fltk3::DAMAGE_OVERLAY || !save_valid) draw();
 	// we use a separate context for the copy because rasterpos must be 0
 	// and depth test needs to be off:
 	static GLContext ortho_context = 0;

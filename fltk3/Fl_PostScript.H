@@ -98,7 +98,7 @@ class Clip {
   uchar * mask;
   int mx; // width of mask;
   int my; // mask lines
-  //Fl_Color bg_;
+  //fltk3::Color bg_;
   int (*close_cmd_)(FILE *);
   int page_policy_;
   int nPages;
@@ -131,7 +131,7 @@ class Clip {
   enum Fl_Paged_Device::Page_Format page_format_;
   char *ps_filename_;
   // implementation of drawing methods
-  void color(Fl_Color c);
+  void color(fltk3::Color c);
   void color(uchar r, uchar g, uchar b);
   
   void push_clip(int x, int y, int w, int h);

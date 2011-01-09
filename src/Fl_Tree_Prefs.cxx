@@ -127,7 +127,7 @@ void Fl_Tree_Prefs::closeicon(Fl_Image *val) {
 /// Fl_Tree_Prefs constructor
 Fl_Tree_Prefs::Fl_Tree_Prefs() {
   _labelfont              = fltk3::HELVETICA;
-  _labelsize              = FL_NORMAL_SIZE;
+  _labelsize              = fltk3::NORMAL_SIZE;
   _marginleft             = 6;
   _margintop              = 3;
   //_marginright          = 3;
@@ -140,7 +140,7 @@ Fl_Tree_Prefs::Fl_Tree_Prefs() {
   _bgcolor                = FL_WHITE;
   _selectcolor            = FL_DARK_BLUE;
   _inactivecolor          = FL_GRAY;
-  _connectorcolor         = Fl_Color(43);
+  _connectorcolor         = fltk3::Color(43);
 #ifdef __APPLE__
   _connectorstyle         = FL_TREE_CONNECTOR_NONE;
 #else

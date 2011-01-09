@@ -212,7 +212,7 @@ struct fl_margins {
 The following functions are also used to draw stuff and should be replaced with
 local copies that are much faster when merely counting:
 
-fl_color(Fl_Color);
+fl_color(fltk3::Color);
 fl_rectf(int, int, int, int);
 fl_push_clip(int, int, int, int);
 fl_xyline(int, int, int);
@@ -236,8 +236,8 @@ int Fl_Help_View::mouse_x = 0;
 int Fl_Help_View::mouse_y = 0;
 int Fl_Help_View::current_pos = 0;
 Fl_Help_View *Fl_Help_View::current_view = 0L;
-Fl_Color Fl_Help_View::hv_selection_color;
-Fl_Color Fl_Help_View::hv_selection_text_color;
+fltk3::Color Fl_Help_View::hv_selection_color;
+fltk3::Color Fl_Help_View::hv_selection_text_color;
 
 /*
  * Limitation: if a word contains &code; notations, we will calculate a wrong length.
@@ -247,7 +247,7 @@ Fl_Color Fl_Help_View::hv_selection_text_color;
 void Fl_Help_View::hv_draw(const char *t, int x, int y)
 {
   if (selected && current_view==this && current_pos<selection_last && current_pos>=selection_first) {
-    Fl_Color c = fl_color();
+    fltk3::Color c = fl_color();
     fl_color(hv_selection_color);
     int w = (int)fl_width(t);
     if (current_pos+(int)strlen(t)<selection_last) 
@@ -448,7 +448,7 @@ Fl_Help_View::draw()
   int			line;		// Current line
   fltk3::Font               font;
   fltk3::Fontsize           fsize;          // Current font and size
-  Fl_Color              fcolor;         // current font color 
+  fltk3::Color              fcolor;         // current font color 
   int			head, pre,	// Flags for text
 			needspace;	// Do we need whitespace?
   fltk3::Boxtype		b = box() ? box() : fltk3::DOWN_BOX;
@@ -1075,7 +1075,7 @@ void Fl_Help_View::format() {
   int		links;		// Links for current line
   fltk3::Font       font;
   fltk3::Fontsize   fsize;          // Current font and size
-  Fl_Color      fcolor;         // Current font color
+  fltk3::Color      fcolor;         // Current font color
   unsigned char	border;		// Draw border?
   int		talign,		// Current alignment
 		newalign,	// New alignment
@@ -1087,7 +1087,7 @@ void Fl_Help_View::format() {
   int		column,		// Current table column number
 		columns[MAX_COLUMNS];
 				// Column widths
-  Fl_Color	tc, rc;		// Table/row background color
+  fltk3::Color	tc, rc;		// Table/row background color
   fltk3::Boxtype	b = box() ? box() : fltk3::DOWN_BOX;
 				// Box to draw...
   fl_margins	margins;	// Left margin stack...
@@ -1899,7 +1899,7 @@ Fl_Help_View::format_table(int        *table_width,	// O - Total table width
   int		minwidths[MAX_COLUMNS];			// Minimum widths for each column
   fltk3::Font       font;
   fltk3::Fontsize   fsize;				        // Current font and size
-  Fl_Color      fcolor;                                 // Currrent font color
+  fltk3::Color      fcolor;                                 // Currrent font color
 
   // Clear widths...
   *table_width = 0;
@@ -2503,9 +2503,9 @@ Fl_Help_View::get_attr(const char *p,		// I - Pointer to start of attributes
 
 
 /** Gets a color attribute. */
-Fl_Color				// O - Color value
+fltk3::Color				// O - Color value
 Fl_Help_View::get_color(const char *n,	// I - Color name
-                        Fl_Color   c)	// I - Default color value
+                        fltk3::Color   c)	// I - Default color value
 {
   int	i;				// Looping var
   int	rgb, r, g, b;			// RGB values
@@ -2964,47 +2964,47 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       fltk3::Group::handle(event);
       return 1;
     case FL_LEAVE :
-      fl_cursor(FL_CURSOR_DEFAULT);
+      fl_cursor(fltk3::CURSOR_DEFAULT);
       break;
     case FL_MOVE:
-      if (find_link(xx, yy)) fl_cursor(FL_CURSOR_HAND);
-      else fl_cursor(FL_CURSOR_DEFAULT);
+      if (find_link(xx, yy)) fl_cursor(fltk3::CURSOR_HAND);
+      else fl_cursor(fltk3::CURSOR_DEFAULT);
       return 1;
     case FL_PUSH:
       if (fltk3::Group::handle(event)) return 1;
       linkp = find_link(xx, yy);
       if (linkp) {
-        fl_cursor(FL_CURSOR_HAND);
+        fl_cursor(fltk3::CURSOR_HAND);
         return 1;
       }
       if (begin_selection()) {
-        fl_cursor(FL_CURSOR_INSERT);
+        fl_cursor(fltk3::CURSOR_INSERT);
         return 1;
       }
-      fl_cursor(FL_CURSOR_DEFAULT);
+      fl_cursor(fltk3::CURSOR_DEFAULT);
       return 1;
     case FL_DRAG:
       if (linkp) {
         if (fltk3::event_is_click()) {
-          fl_cursor(FL_CURSOR_HAND);
+          fl_cursor(fltk3::CURSOR_HAND);
         } else {
-          fl_cursor(FL_CURSOR_DEFAULT); // should be "FL_CURSOR_CANCEL" if we had it
+          fl_cursor(fltk3::CURSOR_DEFAULT); // should be "fltk3::CURSOR_CANCEL" if we had it
         }
         return 1;
       }
       if (current_view==this && selection_push_last) {
         if (extend_selection()) redraw();
-        fl_cursor(FL_CURSOR_INSERT);
+        fl_cursor(fltk3::CURSOR_INSERT);
         return 1;
       }
-      fl_cursor(FL_CURSOR_DEFAULT);
+      fl_cursor(fltk3::CURSOR_DEFAULT);
       return 1;
     case FL_RELEASE:
       if (linkp) {
         if (fltk3::event_is_click()) {
           follow_link(linkp);
         }
-        fl_cursor(FL_CURSOR_DEFAULT);
+        fl_cursor(fltk3::CURSOR_DEFAULT);
         linkp = 0;
         return 1;
       }

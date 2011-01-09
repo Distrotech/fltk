@@ -32,22 +32,22 @@
 #include <fltk3/run.h>
 #include <fltk3/fl_draw.H>
 
-static void fl_oval_flat_box(int x, int y, int w, int h, Fl_Color c) {
+static void fl_oval_flat_box(int x, int y, int w, int h, fltk3::Color c) {
   fl_color(c);
   fl_pie(x, y, w, h, 0, 360);
 }
 
-static void fl_oval_frame(int x, int y, int w, int h, Fl_Color c) {
+static void fl_oval_frame(int x, int y, int w, int h, fltk3::Color c) {
   fl_color(c);
   fl_arc(x, y, w, h, 0, 360);
 }
 
-static void fl_oval_box(int x, int y, int w, int h, Fl_Color c) {
+static void fl_oval_box(int x, int y, int w, int h, fltk3::Color c) {
   fl_oval_flat_box(x,y,w,h,c);
   fl_oval_frame(x,y,w,h,FL_BLACK);
 }
 
-static void fl_oval_shadow_box(int x, int y, int w, int h, Fl_Color c) {
+static void fl_oval_shadow_box(int x, int y, int w, int h, fltk3::Color c) {
   fl_oval_flat_box(x+3,y+3,w,h,FL_DARK3);
   fl_oval_box(x,y,w,h,c);
 }

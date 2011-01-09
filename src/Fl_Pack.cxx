@@ -103,7 +103,7 @@ void Fl_Pack::draw() {
           H = th - rh;
       }
       if (spacing_ && current_position>maximum_position && box() &&
-        (X != o->x() || Y != o->y() || d&FL_DAMAGE_ALL)) {
+        (X != o->x() || Y != o->y() || d&fltk3::DAMAGE_ALL)) {
         fl_color(color());
         if (horizontal())
           fl_rectf(maximum_position, ty, spacing_, th);
@@ -112,9 +112,9 @@ void Fl_Pack::draw() {
       }
       if (X != o->x() || Y != o->y() || W != o->w() || H != o->h()) {
         o->resize(X,Y,W,H);
-        o->clear_damage(FL_DAMAGE_ALL);
+        o->clear_damage(fltk3::DAMAGE_ALL);
       }
-      if (d&FL_DAMAGE_ALL) {
+      if (d&fltk3::DAMAGE_ALL) {
         draw_child(*o);
         draw_outside_label(*o);
       } else update_child(*o);
@@ -144,9 +144,9 @@ void Fl_Pack::draw() {
   th += fltk3::box_dh(box()); if (th <= 0) th = 1;
   if (tw != w() || th != h()) {
     fltk3::Widget::resize(x(),y(),tw,th);
-    d = FL_DAMAGE_ALL;
+    d = fltk3::DAMAGE_ALL;
   }
-  if (d&FL_DAMAGE_ALL) {
+  if (d&fltk3::DAMAGE_ALL) {
     draw_box();
     draw_label();
   }

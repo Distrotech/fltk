@@ -74,11 +74,11 @@ void Fl_Button::setonly() { // set this radio button on, turn others off
 
 void Fl_Button::draw() {
   if (type() == FL_HIDDEN_BUTTON) return;
-  Fl_Color col = value() ? selection_color() : color();
+  fltk3::Color col = value() ? selection_color() : color();
   draw_box(value() ? (down_box()?down_box():fl_down(box())) : box(), col);
   draw_backdrop();
   if (labeltype() == fltk3::NORMAL_LABEL && value()) {
-    Fl_Color c = labelcolor();
+    fltk3::Color c = labelcolor();
     labelcolor(fl_contrast(c, col));
     draw_label();
     labelcolor(c);
@@ -108,12 +108,12 @@ int Fl_Button::handle(int event) {
       value_ = newval;
       set_changed();
       redraw();
-      if (when() & FL_WHEN_CHANGED) do_callback();
+      if (when() & fltk3::WHEN_CHANGED) do_callback();
     }
     return 1;
   case FL_RELEASE:
     if (value_ == oldval) {
-      if (when() & FL_WHEN_NOT_CHANGED) do_callback();
+      if (when() & fltk3::WHEN_NOT_CHANGED) do_callback();
       return 1;
     }
     set_changed();
@@ -122,13 +122,13 @@ int Fl_Button::handle(int event) {
     else {
       value(oldval);
       set_changed();
-      if (when() & FL_WHEN_CHANGED) {
+      if (when() & fltk3::WHEN_CHANGED) {
 	Fl_Widget_Tracker wp(this);
         do_callback();
         if (wp.deleted()) return 1;
       }
     }
-    if (when() & FL_WHEN_RELEASE) do_callback();
+    if (when() & fltk3::WHEN_RELEASE) do_callback();
     return 1;
   case FL_SHORTCUT:
     if (!(shortcut() ?
@@ -144,27 +144,27 @@ int Fl_Button::handle(int event) {
 	// background...
 	int X = x() > 0 ? x() - 1 : 0;
 	int Y = y() > 0 ? y() - 1 : 0;
-	if (window()) window()->damage(FL_DAMAGE_ALL, X, Y, w() + 2, h() + 2);
+	if (window()) window()->damage(fltk3::DAMAGE_ALL, X, Y, w() + 2, h() + 2);
       } else redraw();
       return 1;
     } else return 0;
   case FL_KEYBOARD :
     if (fltk3::focus() == this && fltk3::event_key() == ' ' &&
-        !(fltk3::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
+        !(fltk3::event_state() & (fltk3::SHIFT | fltk3::CTRL | fltk3::ALT | fltk3::META))) {
       set_changed();
     triggered_by_keyboard:
       Fl_Widget_Tracker wp(this);
       if (type() == FL_RADIO_BUTTON && !value_) {
 	setonly();
-	if (when() & FL_WHEN_CHANGED) do_callback();
+	if (when() & fltk3::WHEN_CHANGED) do_callback();
       } else if (type() == FL_TOGGLE_BUTTON) {
 	value(!value());
-	if (when() & FL_WHEN_CHANGED) do_callback();
+	if (when() & fltk3::WHEN_CHANGED) do_callback();
       } else {
         simulate_key_action();
       }
       if (wp.deleted()) return 1;
-      if (when() & FL_WHEN_RELEASE) do_callback();
+      if (when() & fltk3::WHEN_RELEASE) do_callback();
       return 1;
     }
   default:

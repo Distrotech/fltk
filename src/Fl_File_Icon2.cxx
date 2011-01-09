@@ -257,11 +257,11 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
 	{
 	  // Composite color; compute average...
 	  c = -c;
-	  add_color(fl_color_average((Fl_Color)(c >> 4),
-	                             (Fl_Color)(c & 15), 0.5f));
+	  add_color(fl_color_average((fltk3::Color)(c >> 4),
+	                             (fltk3::Color)(c & 15), 0.5f));
 	}
 	else
-	  add_color((Fl_Color)c);
+	  add_color((fltk3::Color)c);
       }
     }
     else if (strcmp(command, "bgnline") == 0)
@@ -296,7 +296,7 @@ Fl_File_Icon::load_fti(const char *fti)	// I - File to read from
 	{
 	  // Composite color; compute average...
 	  c = -c;
-	  cval = fl_color_average((Fl_Color)(c >> 4), (Fl_Color)(c & 15), 0.5f);
+	  cval = fl_color_average((fltk3::Color)(c >> 4), (fltk3::Color)(c & 15), 0.5f);
 	}
 	else
 	  cval = c;
@@ -358,7 +358,7 @@ int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
   if (img->count() == 1) {
     int		x, y;		// X & Y in image
     int		startx;		// Starting X coord
-    Fl_Color	c,		// Current color
+    fltk3::Color	c,		// Current color
 		temp;		// Temporary color
     const uchar *row;		// Pointer into image
 
@@ -366,7 +366,7 @@ int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
     // Loop through grayscale or RGB image...
     for (y = 0, row = (const uchar *)(*(img->data())); y < img->h(); y ++, row += img->ld())
     {
-      for (x = 0, startx = 0, c = (Fl_Color)-1;
+      for (x = 0, startx = 0, c = (fltk3::Color)-1;
            x < img->w();
 	   x ++, row += img->d())
       {
@@ -379,7 +379,7 @@ int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
 	      if (row[1] > 127)
         	temp = fl_rgb_color(row[0], row[0], row[0]);
 	      else
-		temp = (Fl_Color)-1;
+		temp = (fltk3::Color)-1;
 	      break;
 	  case 3 :
               temp = fl_rgb_color(row[0], row[1], row[2]);
@@ -388,13 +388,13 @@ int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
 	      if (row[3] > 127)
         	temp = fl_rgb_color(row[0], row[1], row[2]);
 	      else
-		temp = (Fl_Color)-1;
+		temp = (fltk3::Color)-1;
 	      break;
 	}
 
 	if (temp != c)
 	{
-	  if (x > startx && c != (Fl_Color)-1)
+	  if (x > startx && c != (fltk3::Color)-1)
 	  {
 	    add_color(c);
 	    add(POLYGON);
@@ -410,7 +410,7 @@ int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
 	}
       }
 
-      if (x > startx && c != (Fl_Color)-1)
+      if (x > startx && c != (fltk3::Color)-1)
       {
 	add_color(c);
 	add(POLYGON);
@@ -431,7 +431,7 @@ int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
 		*const*ptr;		// Pointer into data array
     int		ncolors,		// Number of colors
 		chars_per_color;	// Characters per color
-    Fl_Color	*colors;		// Colors
+    fltk3::Color	*colors;		// Colors
     int		red, green, blue;	// Red, green, and blue values
     int		x, y;			// X & Y in image
     int		startx;			// Starting X coord
@@ -441,10 +441,10 @@ int Fl_File_Icon::load_image(const char *ifile)	// I - File to read from
     ptr = img->data();
     sscanf(*ptr, "%*d%*d%d%d", &ncolors, &chars_per_color);
 
-    colors = new Fl_Color[1 << (chars_per_color * 8)];
+    colors = new fltk3::Color[1 << (chars_per_color * 8)];
 
     // Read the colormap...
-    memset(colors, 0, sizeof(Fl_Color) << (chars_per_color * 8));
+    memset(colors, 0, sizeof(fltk3::Color) << (chars_per_color * 8));
     bg = ' ';
 
     ptr ++;

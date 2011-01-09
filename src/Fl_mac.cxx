@@ -175,11 +175,11 @@ static unsigned short macKeyLookUp[128] =
 static unsigned int mods_to_e_state( UInt32 mods )
 {
   long state = 0;
-  if ( mods & kEventKeyModifierNumLockMask ) state |= FL_NUM_LOCK;
-  if ( mods & cmdKey ) state |= FL_META;
-  if ( mods & (optionKey|rightOptionKey) ) state |= FL_ALT;
-  if ( mods & (controlKey|rightControlKey) ) state |= FL_CTRL;
-  if ( mods & (shiftKey|rightShiftKey) ) state |= FL_SHIFT;
+  if ( mods & kEventKeyModifierNumLockMask ) state |= fltk3::NUM_LOCK;
+  if ( mods & cmdKey ) state |= fltk3::META;
+  if ( mods & (optionKey|rightOptionKey) ) state |= fltk3::ALT;
+  if ( mods & (controlKey|rightControlKey) ) state |= fltk3::CTRL;
+  if ( mods & (shiftKey|rightShiftKey) ) state |= fltk3::SHIFT;
   if ( mods & alphaLock ) state |= FL_CAPS_LOCK;
   unsigned int ret = ( fltk3::e_state & 0xff000000 ) | state;
   fltk3::e_state = ret;
@@ -965,9 +965,9 @@ static void chord_to_e_state( UInt32 chord )
 {
   static ulong state[] = 
   { 
-    0, FL_BUTTON1, FL_BUTTON3, FL_BUTTON1|FL_BUTTON3, FL_BUTTON2,
-    FL_BUTTON2|FL_BUTTON1, FL_BUTTON2|FL_BUTTON3, 
-    FL_BUTTON2|FL_BUTTON1|FL_BUTTON3
+    0, fltk3::BUTTON1, fltk3::BUTTON3, fltk3::BUTTON1|fltk3::BUTTON3, fltk3::BUTTON2,
+    fltk3::BUTTON2|fltk3::BUTTON1, fltk3::BUTTON2|fltk3::BUTTON3, 
+    fltk3::BUTTON2|fltk3::BUTTON1|fltk3::BUTTON3
   };
   fltk3::e_state = ( fltk3::e_state & 0xff0000 ) | state[ chord & 0x07 ];
 }
@@ -1348,9 +1348,9 @@ pascal OSStatus carbonKeyboardHandler(
     sym = macKeyLookUp[maskedKeyCode];
     if ( isalpha(key) )
       sym = tolower(key);
-    else if ( fltk3::e_state&FL_CTRL && key<32 && sym<0xff00)
+    else if ( fltk3::e_state&fltk3::CTRL && key<32 && sym<0xff00)
       sym = key+96;
-    else if ( fltk3::e_state&FL_ALT && sym<0xff00) // find the keycap of this key
+    else if ( fltk3::e_state&fltk3::ALT && sym<0xff00) // find the keycap of this key
       sym = keycode_to_sym( maskedKeyCode, 0, macKeyLookUp[ maskedKeyCode ] );
     fltk3::e_keysym = fltk3::e_original_keysym = sym;
     // Handle FL_KP_Enter on regular keyboards and on Powerbooks
@@ -1677,11 +1677,11 @@ void handleUpdateEvent( WindowPtr xid )
   }
   for ( Fl_X *cx = i->xidChildren; cx; cx = cx->xidNext )
   {
-    cx->w->clear_damage(window->damage()|FL_DAMAGE_EXPOSE);
+    cx->w->clear_damage(window->damage()|fltk3::DAMAGE_EXPOSE);
     cx->flush();
     cx->w->clear_damage();
   }
-  window->clear_damage(window->damage()|FL_DAMAGE_EXPOSE);
+  window->clear_damage(window->damage()|fltk3::DAMAGE_EXPOSE);
   i->flush();
   window->clear_damage();
   SetPort( oldPort );
@@ -1999,9 +1999,9 @@ static pascal OSErr dndTrackingHandler( DragTrackingMessage msg, WindowPtr w, vo
     fltk3::e_y = py - target->y();
     fl_dnd_target_window = target;
     if ( fltk3::handle( FL_DND_ENTER, target ) )
-      fl_cursor( FL_CURSOR_HAND ); //ShowDragHilite( ); // modify the mouse cursor?!
+      fl_cursor( fltk3::CURSOR_HAND ); //ShowDragHilite( ); // modify the mouse cursor?!
     else
-      fl_cursor( FL_CURSOR_DEFAULT ); //HideDragHilite( dragRef );
+      fl_cursor( fltk3::CURSOR_DEFAULT ); //HideDragHilite( dragRef );
     breakMacEventLoop();
     return noErr;
   case kDragTrackingInWindow:
@@ -2014,15 +2014,15 @@ static pascal OSErr dndTrackingHandler( DragTrackingMessage msg, WindowPtr w, vo
     fltk3::e_y = py - target->y();
     fl_dnd_target_window = target;
     if ( fltk3::handle( FL_DND_DRAG, target ) )
-      fl_cursor( FL_CURSOR_HAND ); //ShowDragHilite( ); // modify the mouse cursor?!
+      fl_cursor( fltk3::CURSOR_HAND ); //ShowDragHilite( ); // modify the mouse cursor?!
     else
-      fl_cursor( FL_CURSOR_DEFAULT ); //HideDragHilite( dragRef );
+      fl_cursor( fltk3::CURSOR_DEFAULT ); //HideDragHilite( dragRef );
     breakMacEventLoop();
     return noErr;
     break;
   case kDragTrackingLeaveWindow:
     // HideDragHilite()
-    fl_cursor( FL_CURSOR_DEFAULT ); //HideDragHilite( dragRef );
+    fl_cursor( fltk3::CURSOR_DEFAULT ); //HideDragHilite( dragRef );
     if ( fl_dnd_target_window )
     {
       fltk3::handle( FL_DND_LEAVE, fl_dnd_target_window );
@@ -2375,7 +2375,7 @@ void fltk3::Window::show() {
   image(fltk3::scheme_bg_);
   if (fltk3::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
-    align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
+    align(fltk3::ALIGN_CENTER | fltk3::ALIGN_INSIDE | fltk3::ALIGN_CLIP);
   } else {
     labeltype(FL_NO_LABEL);
   }
@@ -2497,7 +2497,7 @@ void fltk3::Window::make_current()
 }
 
 // helper function to manage the current CGContext fl_gc
-extern Fl_Color fl_color_;
+extern fltk3::Color fl_color_;
 extern class Fl_Font_Descriptor *fl_fontsize;
 extern void fl_font(class Fl_Font_Descriptor*);
 extern void fl_quartz_restore_line_style_();

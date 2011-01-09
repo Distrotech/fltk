@@ -118,7 +118,7 @@ int Fl_Scrollbar::handle(int event) {
   case FL_LEAVE:
     return 1;
   case FL_RELEASE:
-      damage(FL_DAMAGE_ALL);
+      damage(fltk3::DAMAGE_ALL);
     if (pushed_) {
       fltk3::remove_timeout(timeout_cb, this);
       pushed_ = 0;
@@ -132,7 +132,7 @@ int Fl_Scrollbar::handle(int event) {
       handle_push();
       fltk3::add_timeout(INITIALREPEAT, timeout_cb, this);
       increment_cb();
-      damage(FL_DAMAGE_ALL);
+      damage(fltk3::DAMAGE_ALL);
       return 1;
     }
     return Fl_Slider::handle(event, X,Y,W,H);
@@ -207,7 +207,7 @@ int Fl_Scrollbar::handle(int event) {
 }
 
 void Fl_Scrollbar::draw() {
-  if (damage()&FL_DAMAGE_ALL) draw_box();
+  if (damage()&fltk3::DAMAGE_ALL) draw_box();
   int X = x()+fltk3::box_dx(box());
   int Y = y()+fltk3::box_dy(box());
   int W = w()-fltk3::box_dw(box());
@@ -215,7 +215,7 @@ void Fl_Scrollbar::draw() {
   if (horizontal()) {
     if (W < 3*H) {Fl_Slider::draw(X,Y,W,H); return;}
     Fl_Slider::draw(X+H,Y,W-2*H,H);
-    if (damage()&FL_DAMAGE_ALL) {
+    if (damage()&fltk3::DAMAGE_ALL) {
       draw_box((pushed_==1) ? fl_down(slider()) : slider(),
 	       X, Y, H, H, selection_color());
       draw_box((pushed_==2) ? fl_down(slider()) : slider(),
@@ -240,7 +240,7 @@ void Fl_Scrollbar::draw() {
   } else { // vertical
     if (H < 3*W) {Fl_Slider::draw(X,Y,W,H); return;}
     Fl_Slider::draw(X,Y+W,W,H-2*W);
-    if (damage()&FL_DAMAGE_ALL) {
+    if (damage()&fltk3::DAMAGE_ALL) {
       draw_box((pushed_==1) ? fl_down(slider()) : slider(),
 	       X, Y, W, W, selection_color());
       draw_box((pushed_==2) ? fl_down(slider()) : slider(),

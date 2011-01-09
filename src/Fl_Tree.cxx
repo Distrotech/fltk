@@ -94,7 +94,7 @@ Fl_Tree::Fl_Tree(int X, int Y, int W, int H, const char *L) : fltk3::Group(X,Y,W
   _scrollbar_size  = 0;				// 0: uses fltk3::scrollbar_size()
   box(fltk3::DOWN_BOX);
   color(FL_WHITE);
-  when(FL_WHEN_CHANGED);
+  when(fltk3::WHEN_CHANGED);
   _vscroll = new Fl_Scrollbar(0,0,0,0);		// will be resized by draw()
   _vscroll->hide();
   _vscroll->type(FL_VERTICAL);
@@ -480,7 +480,7 @@ int Fl_Tree::handle(int e) {
       if ( ! _item_focus ) {					// no focus established yet?
 	switch (fltk3::event_key()) {				// determine if focus was navigated..
 	  case FL_Tab: {					// received focus via TAB?
-	    if ( fltk3::event_state(FL_SHIFT) ) {			// SHIFT-TAB similar to FL_Up
+	    if ( fltk3::event_state(fltk3::SHIFT) ) {			// SHIFT-TAB similar to FL_Up
 	      set_item_focus(next_visible_item(0, FL_Up));
 	    } else {						// TAB similar to FL_Down
 	      set_item_focus(next_visible_item(0, FL_Down));
@@ -518,7 +518,7 @@ int Fl_Tree::handle(int e) {
 	  switch (ekey) {
 	    case FL_Enter:	// ENTER: selects current item only
 	    case FL_KP_Enter:
-	      if ( when() & ~FL_WHEN_ENTER_KEY) {
+	      if ( when() & ~fltk3::WHEN_ENTER_KEY) {
 		select_only(_item_focus);
 		show_item(_item_focus);		// STR #2426
 		return(1);
@@ -568,7 +568,7 @@ int Fl_Tree::handle(int e) {
 		if ( itembot > y()+h() ) { show_item_bottom(_item_focus); }
 		// Extend selection
 		if ( _prefs.selectmode() == FL_TREE_SELECT_MULTI &&	// multiselect on?
-		     (fltk3::event_state() & FL_SHIFT) &&			// shift key?
+		     (fltk3::event_state() & fltk3::SHIFT) &&			// shift key?
 		     ! _item_focus->is_selected() ) {			// not already selected?
 		    select(_item_focus);				// extend selection..
 		}
@@ -617,9 +617,9 @@ int Fl_Tree::handle(int e) {
 	      select_only(o);
 	      break;
 	    case FL_TREE_SELECT_MULTI: {
-	      if ( fltk3::event_state() & FL_SHIFT ) {		// SHIFT+PUSH?
+	      if ( fltk3::event_state() & fltk3::SHIFT ) {		// SHIFT+PUSH?
 	        select(o);					// add to selection
-	      } else if ( fltk3::event_state() & FL_CTRL ) {	// CTRL+PUSH?
+	      } else if ( fltk3::event_state() & fltk3::CTRL ) {	// CTRL+PUSH?
 		select_toggle(o);				// toggle selection state
 		lastselect = o;					// save toggled item (prevent oscillation)
 	      } else {
@@ -661,7 +661,7 @@ int Fl_Tree::handle(int e) {
 	    select_only(o);
 	    break;
 	  case FL_TREE_SELECT_MULTI:
-	    if ( fltk3::event_state() & FL_CTRL &&	// CTRL-DRAG: toggle?
+	    if ( fltk3::event_state() & fltk3::CTRL &&	// CTRL-DRAG: toggle?
 	         lastselect != o ) {		// not already toggled from last microdrag?
 	      select_toggle(o);			// toggle selection
 	      lastselect = o;			// save we toggled it (prevents oscillation)

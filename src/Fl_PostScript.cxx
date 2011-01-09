@@ -935,7 +935,7 @@ void Fl_PostScript_Graphics_Driver::font(int f, int s) {
   font_ = f; size_ = s;
 }
 
-void Fl_PostScript_Graphics_Driver::color(Fl_Color c) {
+void Fl_PostScript_Graphics_Driver::color(fltk3::Color c) {
   fltk3::get_color(c, cr_, cg_, cb_);
   color(cr_, cg_, cb_);
 }
@@ -964,7 +964,7 @@ void Fl_PostScript_Graphics_Driver::draw(int angle, const char *str, int n, int 
 
 
 // computes the mask for the RGB image img of all pixels with color != bg
-static uchar *calc_mask(uchar *img, int w, int h, Fl_Color bg)
+static uchar *calc_mask(uchar *img, int w, int h, fltk3::Color bg)
 {
   uchar red, green, blue, r, g, b;
   uchar bit, byte, *q;
@@ -1001,8 +1001,8 @@ static void transformed_draw_extra(const char* str, int n, double x, double y, i
   w =  (int)(w *scale + 0.5);
   int h = fl_height();
   // create an offscreen image of the string
-  Fl_Color text_color = fl_color();
-  Fl_Color bg_color = fl_contrast(FL_WHITE, text_color);
+  fltk3::Color text_color = fl_color();
+  fltk3::Color bg_color = fl_contrast(FL_WHITE, text_color);
   Fl_Offscreen off = fl_create_offscreen(w+2, (int)(h+3*scale) );
   fl_begin_offscreen(off);
   fl_color(bg_color);

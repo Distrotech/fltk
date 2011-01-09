@@ -86,14 +86,14 @@ struct FL_EXPORT Fl_Label {
   /** size of label font */
   fltk3::Fontsize size;
   /** text color */
-  Fl_Color color;
+  fltk3::Color color;
   /** alignment of label */
-  Fl_Align align_;
+  fltk3::Align align_;
   /** type of label. \see fltk3::Labeltype */
   uchar type;
 
   /** Draws the label aligned to the given box */
-  void draw(int,int,int,int, Fl_Align) const ;
+  void draw(int,int,int,int, fltk3::Align) const ;
   void measure(int &w, int &h) const ;
 };
 
@@ -111,7 +111,7 @@ struct FL_EXPORT Fl_Label {
     user code to call redraw() after these.
  */
 class FL_EXPORT fltk3::Widget : public fltk3::Object {
-  friend class ::fltk3::Group;
+  friend class Group;
 
   fltk3::Group* parent_;
   Fl_Callback* callback_;
@@ -119,8 +119,8 @@ class FL_EXPORT fltk3::Widget : public fltk3::Object {
   int x_,y_,w_,h_;
   Fl_Label label_;
   unsigned int flags_;
-  Fl_Color color_;
-  Fl_Color color2_;
+  fltk3::Color color_;
+  fltk3::Color color2_;
   uchar type_;
   uchar damage_;
   uchar box_;
@@ -177,8 +177,8 @@ protected:
         USERFLAG1       = 1<<31   ///< reserved for 3rd party extensions
   };
   void draw_box() const;
-  void draw_box(fltk3::Boxtype t, Fl_Color c) const;
-  void draw_box(fltk3::Boxtype t, int x,int y,int w,int h, Fl_Color c) const;
+  void draw_box(fltk3::Boxtype t, fltk3::Color c) const;
+  void draw_box(fltk3::Boxtype t, int x,int y,int w,int h, fltk3::Color c) const;
   void draw_backdrop() const;
   /** draws a focus rectangle around the widget */
   void draw_focus() {draw_focus(box(),x(),y(),w(),h());}
@@ -343,18 +343,18 @@ public:
   /** Gets the label alignment.
 
       \return label alignment
-      \see label(), align(Fl_Align), Fl_Align
+      \see label(), align(fltk3::Align), fltk3::Align
    */
-  Fl_Align align() const {return label_.align_;}
+  fltk3::Align align() const {return label_.align_;}
 
   /** Sets the label alignment.
       This controls how the label is displayed next to or inside the widget. 
-      The default value is FL_ALIGN_CENTER, which centers the label inside 
+      The default value is fltk3::ALIGN_CENTER, which centers the label inside 
       the widget.
       \param[in] alignment new label alignment
-      \see align(), Fl_Align
+      \see align(), fltk3::Align
    */
-  void align(Fl_Align alignment) {label_.align_ = alignment;}
+  void align(fltk3::Align alignment) {label_.align_ = alignment;}
 
   /** Gets the box type of the widget.
       \return the current box type
@@ -373,9 +373,9 @@ public:
 
   /** Gets the background color of the widget.
       \return current background color
-      \see color(Fl_Color), color(Fl_Color, Fl_Color)
+      \see color(fltk3::Color), color(fltk3::Color, fltk3::Color)
    */
-  Fl_Color color() const {return color_;}
+  fltk3::Color color() const {return color_;}
 
   /** Sets the background color of the widget. 
       The color is passed to the box routine. The color is either an index into 
@@ -385,25 +385,25 @@ public:
       The default for most widgets is FL_BACKGROUND_COLOR. Use fltk3::set_color()
       to redefine colors in the color map.
       \param[in] bg background color
-      \see color(), color(Fl_Color, Fl_Color), selection_color(Fl_Color)
+      \see color(), color(fltk3::Color, fltk3::Color), selection_color(fltk3::Color)
    */
-  void color(Fl_Color bg) {color_ = bg;}
+  void color(fltk3::Color bg) {color_ = bg;}
 
   /** Gets the selection color.
       \return the current selection color
-      \see selection_color(Fl_Color), color(Fl_Color, Fl_Color)
+      \see selection_color(fltk3::Color), color(fltk3::Color, fltk3::Color)
    */
-  Fl_Color selection_color() const {return color2_;}
+  fltk3::Color selection_color() const {return color2_;}
 
   /** Sets the selection color.
       The selection color is defined for Forms compatibility and is usually 
       used to color the widget when it is selected, although some widgets 
       use this color for other purposes. You can set both colors at once 
-      with color(Fl_Color bg, Fl_Color sel).
+      with color(fltk3::Color bg, fltk3::Color sel).
       \param[in] a the new selection color
-      \see selection_color(), color(Fl_Color, Fl_Color)
+      \see selection_color(), color(fltk3::Color, fltk3::Color)
    */
-  void selection_color(Fl_Color a) {color2_ = a;}
+  void selection_color(fltk3::Color a) {color2_ = a;}
 
   /** Sets the background and selection color of the widget. 
 
@@ -412,7 +412,7 @@ public:
       \param[in] sel selection color
       \see color(unsigned), selection_color(unsigned)
    */
-  void color(Fl_Color bg, Fl_Color sel) {color_=bg; color2_=sel;}
+  void color(fltk3::Color bg, fltk3::Color sel) {color_=bg; color2_=sel;}
 
   /** Gets the current label text.
       \return a pointer to the current label text
@@ -469,13 +469,13 @@ public:
       The default color is FL_FOREGROUND_COLOR. 
       \return the current label color
    */
-  Fl_Color labelcolor() const {return label_.color;}
+  fltk3::Color labelcolor() const {return label_.color;}
 
   /** Sets the label color. 
       The default color is FL_FOREGROUND_COLOR. 
       \param[in] c the new label color
    */
-  void labelcolor(Fl_Color c) {label_.color=c;}
+  void labelcolor(fltk3::Color c) {label_.color=c;}
 
   /** Gets the font to use. 
       Fonts are identified by indexes into a table. The default value
@@ -611,22 +611,22 @@ public:
   /** Returns the conditions under which the callback is called.
 
       You can set the flags with when(uchar), the default value is
-      FL_WHEN_RELEASE.
+      fltk3::WHEN_RELEASE.
 
       \return set of flags
       \see when(uchar)
    */
-  Fl_When when() const {return (Fl_When)when_;}
+  fltk3::When when() const {return (fltk3::When)when_;}
 
   /** Sets the flags used to decide when a callback is called.
 
      This controls when callbacks are done. The following values are useful,
-     the default value is FL_WHEN_RELEASE:
+     the default value is fltk3::WHEN_RELEASE:
      
      \li 0: The callback is not done, but changed() is turned on.
-     \li FL_WHEN_CHANGED: The callback is done each time the text is
+     \li fltk3::WHEN_CHANGED: The callback is done each time the text is
          changed by the user.
-     \li FL_WHEN_RELEASE: The callback will be done when this widget loses 
+     \li fltk3::WHEN_RELEASE: The callback will be done when this widget loses 
          the focus, including when the window is unmapped. This is a useful 
 	 value for text fields in a panel where doing the callback on every
   	 change is wasteful. However the callback will also happen if the 
@@ -634,11 +634,11 @@ public:
 	 anything visible (like pop up an error message).
 	 You might do better setting this to zero, and scanning all the
 	 items for changed() when the OK button on a panel is pressed.
-     \li FL_WHEN_ENTER_KEY: If the user types the Enter key, the entire 
+     \li fltk3::WHEN_ENTER_KEY: If the user types the Enter key, the entire 
          text is selected, and the callback is done if the text has changed. 
 	 Normally the Enter key will navigate to the next field (or insert 
 	 a newline for a Fl_Multiline_Input) - this changes the behavior.
-     \li FL_WHEN_ENTER_KEY|FL_WHEN_NOT_CHANGED: The Enter key will do the
+     \li fltk3::WHEN_ENTER_KEY|fltk3::WHEN_NOT_CHANGED: The Enter key will do the
          callback even if the text has not changed. Useful for command fields.
       fltk3::Widget::when() is a set of bitflags used by subclasses of 
       fltk3::Widget to decide when to do the callback.
@@ -919,7 +919,7 @@ public:
    */
   void damage(uchar c, int x, int y, int w, int h);
 
-  void draw_label(int, int, int, int, Fl_Align) const;
+  void draw_label(int, int, int, int, fltk3::Align) const;
 
   /** Sets width ww and height hh accordingly with the label size.
       Labels with images will return w() and h() of the image.
@@ -987,7 +987,7 @@ public:
   /** For back compatibility only.
       \deprecated Use selection_color() instead.
   */
-  Fl_Color color2() const {return (Fl_Color)color2_;}
+  fltk3::Color color2() const {return (fltk3::Color)color2_;}
 
   /** For back compatibility only.
       \deprecated Use selection_color(unsigned) instead.

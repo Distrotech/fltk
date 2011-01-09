@@ -345,7 +345,7 @@ void fltk3::lock() {
     // Monitor the read side of the pipe so that messages sent via
     // fltk3::awake() from a thread will "wake up" the main thread in
     // fltk3::wait().
-    fltk3::add_fd(thread_filedes[0], FL_READ, thread_awake_cb);
+    fltk3::add_fd(thread_filedes[0], fltk3::READ, thread_awake_cb);
 
     // Set lock/unlock functions for this system, using a system-supplied
     // recursive mutex if supported...

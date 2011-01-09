@@ -63,7 +63,7 @@ void Fl_Slider::slider_size(double v) {
   if (v > 1) v = 1;
   if (slider_size_ != float(v)) {
     slider_size_ = float(v); 
-    damage(FL_DAMAGE_EXPOSE);
+    damage(fltk3::DAMAGE_EXPOSE);
   }
 }
 
@@ -74,7 +74,7 @@ void Fl_Slider::slider_size(double v) {
 void Fl_Slider::bounds(double a, double b) {
   if (minimum() != a || maximum() != b) {
     Fl_Valuator::bounds(a, b); 
-    damage(FL_DAMAGE_EXPOSE);
+    damage(fltk3::DAMAGE_EXPOSE);
   }
 }
 
@@ -106,7 +106,7 @@ void Fl_Slider::draw_bg(int X, int Y, int W, int H) {
   draw_box();
   fl_pop_clip();
 
-  Fl_Color black = active_r() ? FL_FOREGROUND_COLOR : FL_INACTIVE_COLOR;
+  fltk3::Color black = active_r() ? FL_FOREGROUND_COLOR : FL_INACTIVE_COLOR;
   if (type() == FL_VERT_NICE_SLIDER) {
     draw_box(fltk3::THIN_DOWN_BOX, X+W/2-2, Y, 4, H, black);
   } else if (type() == FL_HOR_NICE_SLIDER) {
@@ -214,7 +214,7 @@ void Fl_Slider::draw(int X, int Y, int W, int H) {
 }
 
 void Fl_Slider::draw() {
-  if (damage()&FL_DAMAGE_ALL) draw_box();
+  if (damage()&fltk3::DAMAGE_ALL) draw_box();
   draw(x()+fltk3::box_dx(box()),
        y()+fltk3::box_dy(box()),
        w()-fltk3::box_dw(box()),

@@ -72,13 +72,13 @@ namespace fltk3 {
   @{ */
 
 /** signature of some label drawing functions passed as parameters */
-typedef void (Fl_Label_Draw_F)(const Fl_Label *label, int x, int y, int w, int h, Fl_Align align);
+typedef void (Fl_Label_Draw_F)(const Fl_Label *label, int x, int y, int w, int h, fltk3::Align align);
 
 /** signature of some label measurement functions passed as parameters */
 typedef void (Fl_Label_Measure_F)(const Fl_Label *label, int &width, int &height);
 
 /** signature of some box drawing functions passed as parameters */
-typedef void (Fl_Box_Draw_F)(int x, int y, int w, int h, Fl_Color color);
+typedef void (Fl_Box_Draw_F)(int x, int y, int w, int h, fltk3::Color color);
 
 /** signature of some timeout callback functions passed as parameters */
 typedef void (*Fl_Timeout_Handler)(void *data);
@@ -336,7 +336,7 @@ namespace fltk3 {
     arbitrary void* argument.
     
     The second version takes a when bitfield, with the bits
-    FL_READ, FL_WRITE, and FL_EXCEPT defined,
+    fltk3::READ, fltk3::WRITE, and fltk3::EXCEPT defined,
     to indicate when the callback should be done.
     
     There can only be one callback of each type for a file descriptor. 
@@ -562,19 +562,19 @@ namespace fltk3 {
     returns non-zero if any of the passed bits are turned on.
     The legal bits are:
     
-    \li FL_SHIFT
+    \li fltk3::SHIFT
     \li FL_CAPS_LOCK
-    \li FL_CTRL
-    \li FL_ALT
-    \li FL_NUM_LOCK
-    \li FL_META
-    \li FL_SCROLL_LOCK
-    \li FL_BUTTON1
-    \li FL_BUTTON2
-    \li FL_BUTTON3
+    \li fltk3::CTRL
+    \li fltk3::ALT
+    \li fltk3::NUM_LOCK
+    \li fltk3::META
+    \li fltk3::SCROLL_LOCK
+    \li fltk3::BUTTON1
+    \li fltk3::BUTTON2
+    \li fltk3::BUTTON3
     
-    X servers do not agree on shift states, and FL_NUM_LOCK, FL_META, and
-    FL_SCROLL_LOCK may not work. The values were selected to match the
+    X servers do not agree on shift states, and fltk3::NUM_LOCK, fltk3::META, and
+    fltk3::SCROLL_LOCK may not work. The values were selected to match the
     XFree86 server on Linux. In addition there is a bug in the way X works
     so that the shift state is not correctly reported until the first event
     <I>after</I> the shift key is pressed or released.
@@ -786,20 +786,20 @@ namespace fltk3 {
      @{ */
  
   // color map:
-  void	set_color(Fl_Color, uchar, uchar, uchar);
+  void	set_color(fltk3::Color, uchar, uchar, uchar);
   /**
     Sets an entry in the fl_color index table. You can set it to any
     8-bit RGB color. The color is not allocated until fl_color(i) is used.
   */
-  void	set_color(Fl_Color i, unsigned c); // platform dependent
-  unsigned get_color(Fl_Color i);
-  void	get_color(Fl_Color i, uchar &red, uchar &green, uchar &blue);
+  void	set_color(fltk3::Color i, unsigned c); // platform dependent
+  unsigned get_color(fltk3::Color i);
+  void	get_color(fltk3::Color i, uchar &red, uchar &green, uchar &blue);
   /**
     Frees the specified color from the colormap, if applicable.
     If overlay is non-zero then the color is freed from the
     overlay colormap.
   */
-  void	free_color(Fl_Color i, int overlay = 0); // platform dependent
+  void	free_color(fltk3::Color i, int overlay = 0); // platform dependent
 
   // fonts:
   const char* get_font(fltk3::Font);
@@ -890,37 +890,37 @@ namespace fltk3 {
   /** \addtogroup fl_events 
     @{ */
   /** Returns non-zero if the Shift key is pressed. */
-  inline int event_shift() {return e_state&FL_SHIFT;}
+  inline int event_shift() {return e_state&fltk3::SHIFT;}
   /** Returns non-zero if the Control key is pressed. */
-  inline int event_ctrl() {return e_state&FL_CTRL;}
-  /** Returns non-zero if the FL_COMMAND key is pressed, either FL_CTRL or on OSX FL_META. */
-  inline int event_command() {return e_state&FL_COMMAND;}
+  inline int event_ctrl() {return e_state&fltk3::CTRL;}
+  /** Returns non-zero if the fltk3::COMMAND key is pressed, either fltk3::CTRL or on OSX fltk3::META. */
+  inline int event_command() {return e_state&fltk3::COMMAND;}
   /** Returns non-zero if the Alt key is pressed. */
-  inline int event_alt() {return e_state&FL_ALT;}
+  inline int event_alt() {return e_state&fltk3::ALT;}
   /**
     Returns the mouse buttons state bits; if non-zero, then at least one
     button is pressed now.  This function returns the button state at the 
     time of the event. During an FL_RELEASE event, the state 
     of the released button will be 0. To find out, which button 
     caused an FL_RELEASE event, you can use fltk3::event_button() instead.
-    \return a bit mask value like { [FL_BUTTON1] | [FL_BUTTON2] | [FL_BUTTON3] }
+    \return a bit mask value like { [fltk3::BUTTON1] | [fltk3::BUTTON2] | [fltk3::BUTTON3] }
   */
   inline int event_buttons() {return e_state&0x7f000000;}
   /**
     Returns non-zero if mouse button 1 is currently held down.
     For more details, see fltk3::event_buttons().
   */
-  inline int event_button1() {return e_state&FL_BUTTON1;}
+  inline int event_button1() {return e_state&fltk3::BUTTON1;}
   /**
     Returns non-zero if button 2 is currently held down.
     For more details, see fltk3::event_buttons().
   */
-  inline int event_button2() {return e_state&FL_BUTTON2;}
+  inline int event_button2() {return e_state&fltk3::BUTTON2;}
   /**
     Returns non-zero if button 3 is currently held down.
     For more details, see fltk3::event_buttons().
   */
-  inline int event_button3() {return e_state&FL_BUTTON3;}
+  inline int event_button3() {return e_state&fltk3::BUTTON3;}
   /**   @} */
 
   /**

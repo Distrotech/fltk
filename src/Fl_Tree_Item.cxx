@@ -507,7 +507,7 @@ Fl_Tree_Item *Fl_Tree_Item::find_clicked(const Fl_Tree_Prefs &prefs) {
   return(0);
 }
 
-static void draw_item_focus(fltk3::Boxtype B, Fl_Color C, int X, int Y, int W, int H) {
+static void draw_item_focus(fltk3::Boxtype B, fltk3::Color C, int X, int Y, int W, int H) {
   if (!fltk3::visible_focus()) return;
   switch (B) {
     case fltk3::DOWN_BOX:
@@ -562,8 +562,8 @@ void Fl_Tree_Item::draw(int X, int &Y, int W, fltk3::Widget *tree,
     W += prefs.openicon()->w();
   }
   // Colors, fonts
-  Fl_Color fg = _selected ? prefs.bgcolor()     : _labelfgcolor;
-  Fl_Color bg = _selected ? prefs.selectcolor() : _labelbgcolor;
+  fltk3::Color fg = _selected ? prefs.bgcolor()     : _labelfgcolor;
+  fltk3::Color bg = _selected ? prefs.selectcolor() : _labelbgcolor;
   if ( ! _active ) {
     fg = fl_inactive(fg);
     if ( _selected ) bg = fl_inactive(bg);

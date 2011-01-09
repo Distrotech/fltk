@@ -48,18 +48,18 @@
 void Fl_Input::draw() {
   if (input_type() == FL_HIDDEN_INPUT) return;
   fltk3::Boxtype b = box();
-  if (damage() & FL_DAMAGE_ALL) draw_box(b, color());
+  if (damage() & fltk3::DAMAGE_ALL) draw_box(b, color());
   Fl_Input_::drawtext(x()+fltk3::box_dx(b), y()+fltk3::box_dy(b),
 		      w()-fltk3::box_dw(b), h()-fltk3::box_dh(b));
 }
 
 // kludge so shift causes selection to extend:
 int Fl_Input::shift_position(int p) {
-  return position(p, fltk3::event_state(FL_SHIFT) ? mark() : p);
+  return position(p, fltk3::event_state(fltk3::SHIFT) ? mark() : p);
 }
 
 int Fl_Input::shift_up_down_position(int p) {
-  return up_down_position(p, fltk3::event_state(FL_SHIFT));
+  return up_down_position(p, fltk3::event_state(fltk3::SHIFT));
 }
 
 // Old text from FLTK 1.1 for reference:
@@ -363,8 +363,8 @@ int Fl_Input::handle_key() {
     return 1;
   }
   
-  unsigned int mods = fltk3::event_state() & (FL_META|FL_CTRL|FL_ALT);
-  unsigned int shift = fltk3::event_state() & FL_SHIFT;
+  unsigned int mods = fltk3::event_state() & (fltk3::META|fltk3::CTRL|fltk3::ALT);
+  unsigned int shift = fltk3::event_state() & fltk3::SHIFT;
   unsigned int multiline = (input_type() == FL_MULTILINE_INPUT) ? 1 : 0;
   //
   // The following lists apps that support these keypresses.
@@ -386,14 +386,14 @@ int Fl_Input::handle_key() {
       //
       if (mods==0 && shift) return kf_paste();			// Shift-Insert   (WP,NP,WOW,GE,KE,OF)
       if (mods==0)          return kf_insert_toggle();		// Insert         (Standard)
-      if (mods==FL_CTRL)    return kf_copy();			// Ctrl-Insert    (WP,NP,WOW,GE,KE,OF)
+      if (mods==fltk3::CTRL)    return kf_copy();			// Ctrl-Insert    (WP,NP,WOW,GE,KE,OF)
       return 0;							// ignore other combos, pass to parent
 
     case FL_Delete: {
 #ifdef __APPLE__
       if (mods==0)          return kf_delete_char_right();	// Delete         (OSX-HIG,TE,SA,WOX)
-      if (mods==FL_CTRL)    return kf_delete_char_right();	// Ctrl-Delete    (??? TE,!SA,!WOX)
-      if (mods==FL_ALT)     return kf_delete_word_right();	// Alt-Delete     (OSX-HIG,TE,SA)
+      if (mods==fltk3::CTRL)    return kf_delete_char_right();	// Ctrl-Delete    (??? TE,!SA,!WOX)
+      if (mods==fltk3::ALT)     return kf_delete_word_right();	// Alt-Delete     (OSX-HIG,TE,SA)
       return 0;							// ignore other combos, pass to parent
 #else
       int selected = (position() != mark()) ? 1 : 0;
@@ -402,7 +402,7 @@ int Fl_Input::handle_key() {
       if (mods==0 && shift && !selected)
                             return kf_delete_char_right();	// Shift-Delete no selection (WP,NP,WOW,GE,KE,!OF)
       if (mods==0)          return kf_delete_char_right();	// Delete         (Standard)
-      if (mods==FL_CTRL)    return kf_delete_word_right();	// Ctrl-Delete    (WP,!NP,WOW,GE,KE,!OF)
+      if (mods==fltk3::CTRL)    return kf_delete_word_right();	// Ctrl-Delete    (WP,!NP,WOW,GE,KE,!OF)
       return 0;							// ignore other combos, pass to parent
 #endif
     }
@@ -410,54 +410,54 @@ int Fl_Input::handle_key() {
     case FL_Left:
 #ifdef __APPLE__
       if (mods==0)          return kf_move_char_left();		// Left           (OSX-HIG)
-      if (mods==FL_ALT)     return kf_move_word_left();		// Alt-Left       (OSX-HIG)
-      if (mods==FL_META)    return kf_move_sol();		// Meta-Left      (OSX-HIG)
-      if (mods==FL_CTRL)    return kf_move_sol();		// Ctrl-Left      (TE/SA)
+      if (mods==fltk3::ALT)     return kf_move_word_left();		// Alt-Left       (OSX-HIG)
+      if (mods==fltk3::META)    return kf_move_sol();		// Meta-Left      (OSX-HIG)
+      if (mods==fltk3::CTRL)    return kf_move_sol();		// Ctrl-Left      (TE/SA)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_move_char_left();		// Left           (WP,NP,WOW,GE,KE,OF)
-      if (mods==FL_CTRL)    return kf_move_word_left();		// Ctrl-Left      (WP,NP,WOW,GE,KE,!OF)
-      if (mods==FL_META)    return kf_move_char_left();		// Meta-Left      (WP,NP,?WOW,GE,KE)
+      if (mods==fltk3::CTRL)    return kf_move_word_left();		// Ctrl-Left      (WP,NP,WOW,GE,KE,!OF)
+      if (mods==fltk3::META)    return kf_move_char_left();		// Meta-Left      (WP,NP,?WOW,GE,KE)
       return 0;							// ignore other combos, pass to parent
 #endif
 
     case FL_Right:
 #ifdef __APPLE__
       if (mods==0)          return kf_move_char_right();	// Right          (OSX-HIG)
-      if (mods==FL_ALT)     return kf_move_word_right();	// Alt-Right      (OSX-HIG)
-      if (mods==FL_META)    return kf_move_eol();		// Meta-Right     (OSX-HIG)
-      if (mods==FL_CTRL)    return kf_move_eol();		// Ctrl-Right     (TE/SA)
+      if (mods==fltk3::ALT)     return kf_move_word_right();	// Alt-Right      (OSX-HIG)
+      if (mods==fltk3::META)    return kf_move_eol();		// Meta-Right     (OSX-HIG)
+      if (mods==fltk3::CTRL)    return kf_move_eol();		// Ctrl-Right     (TE/SA)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_move_char_right();	// Right          (WP,NP,WOW,GE,KE,OF)
-      if (mods==FL_CTRL)    return kf_move_word_right();	// Ctrl-Right     (WP,NP,WOW,GE,KE,!OF)
-      if (mods==FL_META)    return kf_move_char_right();	// Meta-Right     (WP,NP,?WOW,GE,KE,!OF)
+      if (mods==fltk3::CTRL)    return kf_move_word_right();	// Ctrl-Right     (WP,NP,WOW,GE,KE,!OF)
+      if (mods==fltk3::META)    return kf_move_char_right();	// Meta-Right     (WP,NP,?WOW,GE,KE,!OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
     case FL_Up:
 #ifdef __APPLE__
       if (mods==0)          return kf_lines_up(1);		// Up             (OSX-HIG)
-      if (mods==FL_CTRL)    return kf_page_up();		// Ctrl-Up        (TE !HIG)
-      if (mods==FL_ALT)     return kf_move_up_and_sol();	// Alt-Up         (OSX-HIG)
-      if (mods==FL_META)    return kf_top();			// Meta-Up        (OSX-HIG)
+      if (mods==fltk3::CTRL)    return kf_page_up();		// Ctrl-Up        (TE !HIG)
+      if (mods==fltk3::ALT)     return kf_move_up_and_sol();	// Alt-Up         (OSX-HIG)
+      if (mods==fltk3::META)    return kf_top();			// Meta-Up        (OSX-HIG)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_lines_up(1);		// Up             (WP,NP,WOW,GE,KE,OF)
-      if (mods==FL_CTRL)    return kf_move_up_and_sol();	// Ctrl-Up        (WP,!NP,WOW,GE,!KE,OF)
+      if (mods==fltk3::CTRL)    return kf_move_up_and_sol();	// Ctrl-Up        (WP,!NP,WOW,GE,!KE,OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
     case FL_Down:
 #ifdef __APPLE__
       if (mods==0)          return kf_lines_down(1);		// Dn             (OSX-HIG)
-      if (mods==FL_CTRL)    return kf_page_down();		// Ctrl-Dn        (TE !HIG)
-      if (mods==FL_ALT)     return kf_move_down_and_eol();	// Alt-Dn         (OSX-HIG)
-      if (mods==FL_META)    return kf_bottom();			// Meta-Dn        (OSX-HIG)
+      if (mods==fltk3::CTRL)    return kf_page_down();		// Ctrl-Dn        (TE !HIG)
+      if (mods==fltk3::ALT)     return kf_move_down_and_eol();	// Alt-Dn         (OSX-HIG)
+      if (mods==fltk3::META)    return kf_bottom();			// Meta-Dn        (OSX-HIG)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_lines_down(1);		// Dn             (WP,NP,WOW,GE,KE,OF)
-      if (mods==FL_CTRL)    return kf_move_down_and_eol();	// Ctrl-Down      (WP,!NP,WOW,GE,!KE,OF)
+      if (mods==fltk3::CTRL)    return kf_move_down_and_eol();	// Ctrl-Down      (WP,!NP,WOW,GE,!KE,OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
@@ -466,13 +466,13 @@ int Fl_Input::handle_key() {
       // OSX-HIG recommends Alt increase one semantic unit, Meta next higher..
 #ifdef __APPLE__
       if (mods==0)          return kf_page_up();		// PgUp           (OSX-HIG)
-      if (mods==FL_ALT)     return kf_page_up();		// Alt-PageUp     (OSX-HIG)
-      if (mods==FL_META)    return kf_top();			// Meta-PageUp    (OSX-HIG,!TE)
+      if (mods==fltk3::ALT)     return kf_page_up();		// Alt-PageUp     (OSX-HIG)
+      if (mods==fltk3::META)    return kf_top();			// Meta-PageUp    (OSX-HIG,!TE)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_page_up();		// PageUp         (WP,NP,WOW,GE,KE)
-      if (mods==FL_CTRL)    return kf_page_up();		// Ctrl-PageUp    (!WP,!NP,!WOW,!GE,KE,OF)
-      if (mods==FL_ALT)     return kf_page_up();		// Alt-PageUp     (!WP,!NP,!WOW,!GE,KE,OF)
+      if (mods==fltk3::CTRL)    return kf_page_up();		// Ctrl-PageUp    (!WP,!NP,!WOW,!GE,KE,OF)
+      if (mods==fltk3::ALT)     return kf_page_up();		// Alt-PageUp     (!WP,!NP,!WOW,!GE,KE,OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
@@ -481,54 +481,54 @@ int Fl_Input::handle_key() {
       // Fl_Input has no scroll control, so instead we move the cursor by one page
       // OSX-HIG recommends Alt increase one semantic unit, Meta next higher..
       if (mods==0)          return kf_page_down();		// PgDn           (OSX-HIG)
-      if (mods==FL_ALT)     return kf_page_down();		// Alt-PageDn     (OSX-HIG)
-      if (mods==FL_META)    return kf_bottom();			// Meta-PageDn    (OSX-HIG,!TE)
+      if (mods==fltk3::ALT)     return kf_page_down();		// Alt-PageDn     (OSX-HIG)
+      if (mods==fltk3::META)    return kf_bottom();			// Meta-PageDn    (OSX-HIG,!TE)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_page_down();		// PageDn         (WP,NP,WOW,GE,KE)
-      if (mods==FL_CTRL)    return kf_page_down();		// Ctrl-PageDn    (!WP,!NP,!WOW,!GE,KE,OF)
-      if (mods==FL_ALT)     return kf_page_down();		// Alt-PageDn     (!WP,!NP,!WOW,!GE,KE,OF)
+      if (mods==fltk3::CTRL)    return kf_page_down();		// Ctrl-PageDn    (!WP,!NP,!WOW,!GE,KE,OF)
+      if (mods==fltk3::ALT)     return kf_page_down();		// Alt-PageDn     (!WP,!NP,!WOW,!GE,KE,OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
     case FL_Home:
 #ifdef __APPLE__
       if (mods==0)          return kf_top();			// Home           (OSX-HIG)
-      if (mods==FL_ALT)     return kf_top();			// Alt-Home       (???)
+      if (mods==fltk3::ALT)     return kf_top();			// Alt-Home       (???)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_move_sol();		// Home           (WP,NP,WOW,GE,KE,OF)
-      if (mods==FL_CTRL)    return kf_top();			// Ctrl-Home      (WP,NP,WOW,GE,KE,OF)
+      if (mods==fltk3::CTRL)    return kf_top();			// Ctrl-Home      (WP,NP,WOW,GE,KE,OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
     case FL_End:
 #ifdef __APPLE__
       if (mods==0)          return kf_bottom();			// End            (OSX-HIG)
-      if (mods==FL_ALT)     return kf_bottom();			// Alt-End        (???)
+      if (mods==fltk3::ALT)     return kf_bottom();			// Alt-End        (???)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_move_eol();		// End            (WP,NP,WOW,GE,KE,OF)
-      if (mods==FL_CTRL)    return kf_bottom();			// Ctrl-End       (WP,NP,WOW,GE,KE,OF)
+      if (mods==fltk3::CTRL)    return kf_bottom();			// Ctrl-End       (WP,NP,WOW,GE,KE,OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
     case FL_BackSpace:
 #ifdef __APPLE__
       if (mods==0)          return kf_delete_char_left();	// Backspace      (OSX-HIG)
-      if (mods==FL_CTRL)    return kf_delete_char_left();	// Ctrl-Backspace (TE/SA)
-      if (mods==FL_ALT)     return kf_delete_word_left();	// Alt-Backspace  (OSX-HIG)
-      if (mods==FL_META)    return kf_delete_sol();		// Meta-Backspace (OSX-HIG,!TE)
+      if (mods==fltk3::CTRL)    return kf_delete_char_left();	// Ctrl-Backspace (TE/SA)
+      if (mods==fltk3::ALT)     return kf_delete_word_left();	// Alt-Backspace  (OSX-HIG)
+      if (mods==fltk3::META)    return kf_delete_sol();		// Meta-Backspace (OSX-HIG,!TE)
       return 0;							// ignore other combos, pass to parent
 #else
       if (mods==0)          return kf_delete_char_left();	// Backspace      (WP,NP,WOW,GE,KE,OF)
-      if (mods==FL_CTRL)    return kf_delete_word_left();	// Ctrl-Backspace (WP,!NP,WOW,GE,KE,!OF)
+      if (mods==fltk3::CTRL)    return kf_delete_word_left();	// Ctrl-Backspace (WP,!NP,WOW,GE,KE,!OF)
       return 0;							// ignore other combos, pass to parent
 #endif
 
     case FL_Enter:
     case FL_KP_Enter:
-      if (when() & FL_WHEN_ENTER_KEY) {
+      if (when() & fltk3::WHEN_ENTER_KEY) {
         position(size(), 0);
         maybe_do_callback();
         return 1;
@@ -549,20 +549,20 @@ int Fl_Input::handle_key() {
       return 0;							// ignore other combos, pass to parent
 
     case 'a':
-      if (mods==FL_COMMAND) return kf_select_all();		// Ctrl-A, Mac:Meta-A             (Standard/OSX-HIG)
+      if (mods==fltk3::COMMAND) return kf_select_all();		// Ctrl-A, Mac:Meta-A             (Standard/OSX-HIG)
       break;							// handle other combos elsewhere
     case 'c':
-      if (mods==FL_COMMAND) return kf_copy();			// Ctrl-C, Mac:Meta-C             (Standard/OSX-HIG)
+      if (mods==fltk3::COMMAND) return kf_copy();			// Ctrl-C, Mac:Meta-C             (Standard/OSX-HIG)
       break;							// handle other combos elsewhere
     case 'v':
-      if (mods==FL_COMMAND) return kf_paste();			// Ctrl-V, Mac:Meta-V             (Standard/OSX-HIG)
+      if (mods==fltk3::COMMAND) return kf_paste();			// Ctrl-V, Mac:Meta-V             (Standard/OSX-HIG)
       break;							// handle other combos elsewhere
     case 'x':
-      if (mods==FL_COMMAND) return kf_copy_cut();		// Ctrl-X, Mac:Meta-X             (Standard/OSX-HIG)
+      if (mods==fltk3::COMMAND) return kf_copy_cut();		// Ctrl-X, Mac:Meta-X             (Standard/OSX-HIG)
       break;
     case 'z':
-      if (mods==FL_COMMAND && !shift) return kf_undo();		// Ctrl-Z, Mac:Meta-Z             (Standard/OSX-HIG)
-      if (mods==FL_COMMAND && shift)  return kf_redo();		// Shift-Ctrl-Z, Mac:Shift-Meta-Z (Standard/OSX-HIG)
+      if (mods==fltk3::COMMAND && !shift) return kf_undo();		// Ctrl-Z, Mac:Meta-Z             (Standard/OSX-HIG)
+      if (mods==fltk3::COMMAND && shift)  return kf_redo();		// Shift-Ctrl-Z, Mac:Shift-Meta-Z (Standard/OSX-HIG)
       break;							// handle other combos elsewhere
   }
   
@@ -616,7 +616,7 @@ int Fl_Input::handle(int event) {
       // widget doesn't destroy the field, replacing it with a tab character.
       //
       if (fltk3::event_key() == FL_Tab 			// Tab key?
-          && !fltk3::event_state(FL_SHIFT)			// no shift?
+          && !fltk3::event_state(fltk3::SHIFT)			// no shift?
           && !tab_nav()					// with tab navigation disabled?
 	  && input_type() == FL_MULTILINE_INPUT		// with a multiline input?
           && (mark()==0 && position()==size())) {	// while entire field selected?
@@ -628,7 +628,7 @@ int Fl_Input::handle(int event) {
         return (1);
       } else {
         if (active_r() && window() && this == fltk3::belowmouse()) 
-          window()->cursor(FL_CURSOR_NONE);
+          window()->cursor(fltk3::CURSOR_NONE);
         return handle_key();
       }
       //NOTREACHED
@@ -641,7 +641,7 @@ int Fl_Input::handle(int event) {
                                 w()-fltk3::box_dw(b), h()-fltk3::box_dh(b), 0);
         newpos = position(); 
         position( oldpos, oldmark );
-        if (fltk3::focus()==this && !fltk3::event_state(FL_SHIFT) && input_type()!=FL_SECRET_INPUT &&
+        if (fltk3::focus()==this && !fltk3::event_state(fltk3::SHIFT) && input_type()!=FL_SECRET_INPUT &&
            ( (newpos >= mark() && newpos < position()) || 
              (newpos >= position() && newpos < mark()) ) ) {
           // user clicked in the selection, may be trying to drag
@@ -729,7 +729,7 @@ int Fl_Input::handle(int event) {
           handle(FL_UNFOCUS);
         }
 #if !(defined(__APPLE__) || defined(WIN32))
-      fltk3::first_window()->cursor(FL_CURSOR_MOVE);
+      fltk3::first_window()->cursor(fltk3::CURSOR_MOVE);
 #endif
       return 1;
       

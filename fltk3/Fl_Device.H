@@ -120,7 +120,7 @@ protected:
   friend void fl_draw(int angle, const char *str, int n, int x, int y);
   friend void fl_rtl_draw(const char *str, int n, int x, int y);
   friend void fl_font(fltk3::Font face, fltk3::Fontsize size);
-  friend void fl_color(Fl_Color c);
+  friend void fl_color(fltk3::Color c);
   friend void fl_color(uchar r, uchar g, uchar b);
   friend void fl_point(int x, int y);
   friend void fl_loop(int x0, int y0, int x1, int y1, int x2, int y2);
@@ -187,8 +187,8 @@ protected:
   virtual void rtl_draw(const char *str, int n, int x, int y) {};
   /** \brief see fl_font(fltk3::Font face, fltk3::Fontsize size). */
   virtual void font(fltk3::Font face, fltk3::Fontsize size) {};
-  /** \brief see fl_color(Fl_Color c). */
-  virtual void color(Fl_Color c) {};
+  /** \brief see fl_color(fltk3::Color c). */
+  virtual void color(fltk3::Color c) {};
   /** \brief see fl_color(uchar r, uchar g, uchar b). */
   virtual void color(uchar r, uchar g, uchar b) {};
   /** \brief see fl_point(int x, int y). */
@@ -293,7 +293,7 @@ public:
   /** \brief The constructor. */
   Fl_Quartz_Graphics_Driver() { class_name( class_id); };
   static const char *class_id;
-  void color(Fl_Color c);
+  void color(fltk3::Color c);
   void color(uchar r, uchar g, uchar b);
   void draw(const char* str, int n, int x, int y);
   void draw(int angle, const char *str, int n, int x, int y);
@@ -319,7 +319,7 @@ public:
   /** \brief The constructor. */
   Fl_GDI_Graphics_Driver() { class_name ( class_id); };
   static const char *class_id;
-  void color(Fl_Color c);
+  void color(fltk3::Color c);
   void color(uchar r, uchar g, uchar b);
   void draw(const char* str, int n, int x, int y);
   void draw(int angle, const char *str, int n, int x, int y);
@@ -345,7 +345,7 @@ public:
   /** \brief The constructor. */
   Fl_Xlib_Graphics_Driver() { class_name ( class_id); };
   static const char *class_id;
-  void color(Fl_Color c);
+  void color(fltk3::Color c);
   void color(uchar r, uchar g, uchar b);
   void draw(const char* str, int n, int x, int y);
   void draw(int angle, const char *str, int n, int x, int y);

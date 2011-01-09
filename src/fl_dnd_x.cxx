@@ -88,7 +88,7 @@ static int local_handle(int event, fltk3::Window* window) {
 
 int fltk3::dnd() {
   fltk3::Window *source_fl_win = fltk3::first_window();
-  fltk3::first_window()->cursor(FL_CURSOR_MOVE);
+  fltk3::first_window()->cursor(fltk3::CURSOR_MOVE);
   Window source_window = fl_xid(fltk3::first_window());
   fl_local_grab = grabfunc;
   Window target_window = 0;
@@ -192,7 +192,7 @@ int fltk3::dnd() {
   }
 
   fl_local_grab = 0;
-  source_fl_win->cursor(FL_CURSOR_DEFAULT);
+  source_fl_win->cursor(fltk3::CURSOR_DEFAULT);
   return 1;
 }
 

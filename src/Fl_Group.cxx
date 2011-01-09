@@ -133,7 +133,7 @@ static int navkey() {
   case 0: // not an FL_KEYBOARD/FL_SHORTCUT event
     break;
   case FL_Tab:
-    if (!fltk3::event_state(FL_SHIFT)) return FL_Right;
+    if (!fltk3::event_state(fltk3::SHIFT)) return FL_Right;
     return FL_Left;
   case FL_Right:
     return FL_Right;
@@ -365,7 +365,7 @@ int fltk3::Group::navigation(int key) {
 
 fltk3::Group::Group(int X,int Y,int W,int H,const char *l)
 : fltk3::Widget(X,Y,W,H,l) {
-  align(FL_ALIGN_TOP);
+  align(fltk3::ALIGN_TOP);
   children_ = 0;
   array_ = 0;
   savedfocus_ = 0;
@@ -725,7 +725,7 @@ void fltk3::Group::draw_children() {
 		 h() - fltk3::box_dh(box()));
   }
 
-  if (damage() & ~FL_DAMAGE_CHILD) { // redraw the entire thing:
+  if (damage() & ~fltk3::DAMAGE_CHILD) { // redraw the entire thing:
     for (int i=children_; i--;) {
       fltk3::Widget& o = **a++;
       draw_child(o);
@@ -739,7 +739,7 @@ void fltk3::Group::draw_children() {
 }
 
 void fltk3::Group::draw() {
-  if (damage() & ~FL_DAMAGE_CHILD) { // redraw the entire thing:
+  if (damage() & ~fltk3::DAMAGE_CHILD) { // redraw the entire thing:
     draw_box();
     draw_label();
   }
@@ -771,7 +771,7 @@ void fltk3::Group::update_child(fltk3::Widget& widget) const {
 void fltk3::Group::draw_child(fltk3::Widget& widget) const {
   if (widget.visible() && widget.type() < FL_WINDOW &&
       fl_not_clipped(widget.x(), widget.y(), widget.w(), widget.h())) {
-    widget.clear_damage(FL_DAMAGE_ALL);
+    widget.clear_damage(fltk3::DAMAGE_ALL);
     widget.draw();
     widget.clear_damage();
   }
@@ -783,9 +783,9 @@ extern char fl_draw_shortcut;
 void fltk3::Group::draw_outside_label(const fltk3::Widget& widget) const {
   if (!widget.visible()) return;
   // skip any labels that are inside the widget:
-  if (!(widget.align()&15) || (widget.align() & FL_ALIGN_INSIDE)) return;
+  if (!(widget.align()&15) || (widget.align() & fltk3::ALIGN_INSIDE)) return;
   // invent a box that is outside the widget:
-  Fl_Align a = widget.align();
+  fltk3::Align a = widget.align();
   int X = widget.x();
   int Y = widget.y();
   int W = widget.w();
@@ -796,40 +796,40 @@ void fltk3::Group::draw_outside_label(const fltk3::Widget& widget) const {
   } else {
     wx = x(); wy = y();
   }
-  if ( (a & 0x0f) == FL_ALIGN_LEFT_TOP ) {
-    a = (a &~0x0f ) | FL_ALIGN_TOP_RIGHT;
+  if ( (a & 0x0f) == fltk3::ALIGN_LEFT_TOP ) {
+    a = (a &~0x0f ) | fltk3::ALIGN_TOP_RIGHT;
     X = wx;
     W = widget.x()-X-3;
-  } else if ( (a & 0x0f) == FL_ALIGN_LEFT_BOTTOM ) {
-    a = (a &~0x0f ) | FL_ALIGN_BOTTOM_RIGHT; 
+  } else if ( (a & 0x0f) == fltk3::ALIGN_LEFT_BOTTOM ) {
+    a = (a &~0x0f ) | fltk3::ALIGN_BOTTOM_RIGHT; 
     X = wx;
     W = widget.x()-X-3;
-  } else if ( (a & 0x0f) == FL_ALIGN_RIGHT_TOP ) {
-    a = (a &~0x0f ) | FL_ALIGN_TOP_LEFT; 
+  } else if ( (a & 0x0f) == fltk3::ALIGN_RIGHT_TOP ) {
+    a = (a &~0x0f ) | fltk3::ALIGN_TOP_LEFT; 
     X = X+W+3;
     W = wx+this->w()-X;
-  } else if ( (a & 0x0f) == FL_ALIGN_RIGHT_BOTTOM ) {
-    a = (a &~0x0f ) | FL_ALIGN_BOTTOM_LEFT; 
+  } else if ( (a & 0x0f) == fltk3::ALIGN_RIGHT_BOTTOM ) {
+    a = (a &~0x0f ) | fltk3::ALIGN_BOTTOM_LEFT; 
     X = X+W+3;
     W = wx+this->w()-X;
-  } else if (a & FL_ALIGN_TOP) {
-    a ^= (FL_ALIGN_BOTTOM|FL_ALIGN_TOP);
+  } else if (a & fltk3::ALIGN_TOP) {
+    a ^= (fltk3::ALIGN_BOTTOM|fltk3::ALIGN_TOP);
     Y = wy;
     H = widget.y()-Y;
-  } else if (a & FL_ALIGN_BOTTOM) {
-    a ^= (FL_ALIGN_BOTTOM|FL_ALIGN_TOP);
+  } else if (a & fltk3::ALIGN_BOTTOM) {
+    a ^= (fltk3::ALIGN_BOTTOM|fltk3::ALIGN_TOP);
     Y = Y+H;
     H = wy+h()-Y;
-  } else if (a & FL_ALIGN_LEFT) {
-    a ^= (FL_ALIGN_LEFT|FL_ALIGN_RIGHT);
+  } else if (a & fltk3::ALIGN_LEFT) {
+    a ^= (fltk3::ALIGN_LEFT|fltk3::ALIGN_RIGHT);
     X = wx;
     W = widget.x()-X-3;
-  } else if (a & FL_ALIGN_RIGHT) {
-    a ^= (FL_ALIGN_LEFT|FL_ALIGN_RIGHT);
+  } else if (a & fltk3::ALIGN_RIGHT) {
+    a ^= (fltk3::ALIGN_LEFT|fltk3::ALIGN_RIGHT);
     X = X+W+3;
     W = wx+this->w()-X;
   }
-  widget.draw_label(X,Y,W,H,(Fl_Align)a);
+  widget.draw_label(X,Y,W,H,(fltk3::Align)a);
 }
 
 //

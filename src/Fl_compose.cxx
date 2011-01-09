@@ -57,12 +57,12 @@ int fltk3::compose(int& del) {
 #if defined(__APPLE__)
   // this stuff is to be treated as a function key
   if(fltk3::e_length == 0 || fltk3::e_keysym == FL_Enter || fltk3::e_keysym == FL_KP_Enter || 
-     fltk3::e_keysym == FL_Tab || fltk3::e_keysym == FL_Escape || fltk3::e_state&(FL_META | FL_CTRL) ) {
+     fltk3::e_keysym == FL_Tab || fltk3::e_keysym == FL_Escape || fltk3::e_state&(fltk3::META | fltk3::CTRL) ) {
     return 0;
   }
 #else
   unsigned char ascii = (unsigned)e_text[0];
-  if ((e_state & (FL_ALT | FL_META)) && !(ascii & 128)) return 0;
+  if ((e_state & (fltk3::ALT | fltk3::META)) && !(ascii & 128)) return 0;
 #endif
   if(fltk3::compose_state) {
     del = fltk3::compose_state;

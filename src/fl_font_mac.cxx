@@ -406,7 +406,7 @@ void Fl_Quartz_Graphics_Driver::draw(const char* str, int n, int x, int y) {
 
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-static CGColorRef flcolortocgcolor(Fl_Color i)
+static CGColorRef flcolortocgcolor(fltk3::Color i)
 {
   uchar r, g, b;
   fltk3::get_color(i, r, g, b);

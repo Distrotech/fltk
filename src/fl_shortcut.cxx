@@ -33,11 +33,11 @@
 //
 // To make it easier to match some things it is more complex:
 //
-// Only FL_META, FL_ALT, FL_SHIFT, and FL_CTRL must be "off".  A
+// Only fltk3::META, fltk3::ALT, fltk3::SHIFT, and fltk3::CTRL must be "off".  A
 // zero in the other shift flags indicates "dont care".
 //
 // It also checks against the first character of fltk3::event_text(),
-// and zero for FL_SHIFT means "don't care".
+// and zero for fltk3::SHIFT means "don't care".
 // This allows punctuation shortcuts like "#" to work (rather than
 // calling it "shift+3" on a US keyboard)
 
@@ -63,9 +63,9 @@
 int fltk3::test_shortcut(unsigned int shortcut) {
   if (!shortcut) return 0;
 
-  unsigned int v = shortcut & FL_KEY_MASK;
+  unsigned int v = shortcut & fltk3::KEY_MASK;
   if (((unsigned)fl_tolower(v))!=v) {
-    shortcut |= FL_SHIFT;
+    shortcut |= fltk3::SHIFT;
   }
 
   int shift = fltk3::event_state();
@@ -74,19 +74,19 @@ int fltk3::test_shortcut(unsigned int shortcut) {
   // record shift flags that are wrong:
   int mismatch = (shortcut^shift)&0x7fff0000;
   // these three must always be correct:
-  if (mismatch&(FL_META|FL_ALT|FL_CTRL)) return 0;
+  if (mismatch&(fltk3::META|fltk3::ALT|fltk3::CTRL)) return 0;
 
-  unsigned int key = shortcut & FL_KEY_MASK;
+  unsigned int key = shortcut & fltk3::KEY_MASK;
 
   // if shift is also correct, check for exactly equal keysyms:
-  if (!(mismatch&(FL_SHIFT)) && key == (unsigned)fltk3::event_key()) return 1;
+  if (!(mismatch&(fltk3::SHIFT)) && key == (unsigned)fltk3::event_key()) return 1;
 
   // try matching utf8, ignore shift:
   unsigned int firstChar = fl_utf8decode(fltk3::event_text(), fltk3::event_text()+fltk3::event_length(), 0);
-  if ( ! (FL_CAPS_LOCK&shift) && key==firstChar) return 1;
+  if ( ! (fltk3::CAPS_LOCK&shift) && key==firstChar) return 1;
 
   // kludge so that Ctrl+'_' works (as opposed to Ctrl+'^_'):
-  if ((shift&FL_CTRL) && key >= 0x3f && key <= 0x5F
+  if ((shift&fltk3::CTRL) && key >= 0x3f && key <= 0x5F
       && firstChar==(key^0x40)) return 1; // firstChar should be within a-z
   return 0;
 }
@@ -194,24 +194,24 @@ const char* fl_shortcut_label(unsigned int shortcut, const char **eom) {
   if (eom) *eom = p;
   if (!shortcut) {*p = 0; return buf;}
   // fix upper case shortcuts
-  unsigned int v = shortcut & FL_KEY_MASK;
+  unsigned int v = shortcut & fltk3::KEY_MASK;
   if (((unsigned)fl_tolower(v))!=v) {
-    shortcut |= FL_SHIFT;
+    shortcut |= fltk3::SHIFT;
   }
 #ifdef __APPLE__
   //                        this column contains utf8 characters - v
-  if (shortcut & FL_SHIFT) {strcpy(p,"\xe2\x87\xa7"); p += 3;}  // upwards white arrow
-  if (shortcut & FL_CTRL)  {strcpy(p,"\xe2\x8c\x83"); p += 3;}  // up arrowhead
-  if (shortcut & FL_ALT)   {strcpy(p,"\xe2\x8c\xa5"); p += 3;}  // alternative key symbol
-  if (shortcut & FL_META)  {strcpy(p,"\xe2\x8c\x98"); p += 3;}  // place of interest sign
+  if (shortcut & fltk3::SHIFT) {strcpy(p,"\xe2\x87\xa7"); p += 3;}  // upwards white arrow
+  if (shortcut & fltk3::CTRL)  {strcpy(p,"\xe2\x8c\x83"); p += 3;}  // up arrowhead
+  if (shortcut & fltk3::ALT)   {strcpy(p,"\xe2\x8c\xa5"); p += 3;}  // alternative key symbol
+  if (shortcut & fltk3::META)  {strcpy(p,"\xe2\x8c\x98"); p += 3;}  // place of interest sign
 #else
-  if (shortcut & FL_META) {strcpy(p,"Meta+"); p += 5;}
-  if (shortcut & FL_ALT) {strcpy(p,"Alt+"); p += 4;}
-  if (shortcut & FL_SHIFT) {strcpy(p,"Shift+"); p += 6;}
-  if (shortcut & FL_CTRL) {strcpy(p,"Ctrl+"); p += 5;}
+  if (shortcut & fltk3::META) {strcpy(p,"Meta+"); p += 5;}
+  if (shortcut & fltk3::ALT) {strcpy(p,"Alt+"); p += 4;}
+  if (shortcut & fltk3::SHIFT) {strcpy(p,"Shift+"); p += 6;}
+  if (shortcut & fltk3::CTRL) {strcpy(p,"Ctrl+"); p += 5;}
 #endif // __APPLE__
   if (eom) *eom = p;
-  unsigned int key = shortcut & FL_KEY_MASK;
+  unsigned int key = shortcut & fltk3::KEY_MASK;
 #if defined(WIN32) || defined(__APPLE__) // if not X
   if (key >= FL_F && key <= FL_F_Last) {
     *p++ = 'F';
@@ -273,7 +273,7 @@ const char* fl_shortcut_label(unsigned int shortcut, const char **eom) {
   Emulation of XForms named shortcuts.
 
   Converts ascii shortcut specifications (eg. "^c") 
-  into the FLTK integer equivalent (eg. FL_CTRL+'c')
+  into the FLTK integer equivalent (eg. fltk3::CTRL+'c')
 
   These ascii characters are used to specify the various keyboard modifier keys:
   \verbatim
@@ -285,9 +285,9 @@ const char* fl_shortcut_label(unsigned int shortcut, const char **eom) {
 unsigned int fl_old_shortcut(const char* s) {
   if (!s || !*s) return 0;
   unsigned int n = 0;
-  if (*s == '#') {n |= FL_ALT; s++;}
-  if (*s == '+') {n |= FL_SHIFT; s++;}
-  if (*s == '^') {n |= FL_CTRL; s++;}
+  if (*s == '#') {n |= fltk3::ALT; s++;}
+  if (*s == '+') {n |= fltk3::SHIFT; s++;}
+  if (*s == '^') {n |= fltk3::CTRL; s++;}
   if (*s && s[1]) return n | (int)strtol(s,0,0); // allow 0xf00 to get any key
   return n | *s;
 }
@@ -342,7 +342,7 @@ unsigned int fltk3::Widget::label_shortcut(const char *t) {
 int fltk3::Widget::test_shortcut(const char *t, const bool require_alt) {
   if (!t) return 0;
   // for menubars etc. shortcuts must work only if the Alt modifier is pressed
-  if (require_alt && fltk3::event_state(FL_ALT)==0) return 0;
+  if (require_alt && fltk3::event_state(fltk3::ALT)==0) return 0;
   unsigned int c = fl_utf8decode(fltk3::event_text(), fltk3::event_text()+fltk3::event_length(), 0);
   if (!c) return 0;
   if (c == label_shortcut(t))

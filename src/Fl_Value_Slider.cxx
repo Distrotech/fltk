@@ -50,7 +50,7 @@ void Fl_Value_Slider::draw() {
   } else {
     syy += 25; bhh = 25; shh -= 25;
   }
-  if (damage()&FL_DAMAGE_ALL) draw_box(box(),sxx,syy,sww,shh,color());
+  if (damage()&fltk3::DAMAGE_ALL) draw_box(box(),sxx,syy,sww,shh,color());
   Fl_Slider::draw(sxx+fltk3::box_dx(box()),
 		  syy+fltk3::box_dy(box()),
 		  sww-fltk3::box_dw(box()),
@@ -60,7 +60,7 @@ void Fl_Value_Slider::draw() {
   format(buf);
   fl_font(textfont(), textsize());
   fl_color(active_r() ? textcolor() : fl_inactive(textcolor()));
-  fl_draw(buf, bxx, byy, bww, bhh, FL_ALIGN_CLIP);
+  fl_draw(buf, bxx, byy, bww, bhh, fltk3::ALIGN_CLIP);
 }
 
 int Fl_Value_Slider::handle(int event) {

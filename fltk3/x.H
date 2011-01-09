@@ -95,7 +95,7 @@ extern FL_EXPORT Fl_XFont_On_Demand fl_xfont;
 extern FL_EXPORT GC fl_gc;
 extern FL_EXPORT Window fl_window;
 extern FL_EXPORT void *fl_xftfont;
-FL_EXPORT ulong fl_xpixel(Fl_Color i);
+FL_EXPORT ulong fl_xpixel(fltk3::Color i);
 FL_EXPORT ulong fl_xpixel(uchar r, uchar g, uchar b);
 FL_EXPORT void fl_clip_region(Fl_Region);
 FL_EXPORT Fl_Region fl_clip_region();

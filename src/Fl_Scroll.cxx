@@ -152,20 +152,20 @@ void Fl_Scroll::recalc_scrollbars(ScrollInfo &si) {
       if ((type() & ALWAYS_ON) || si.child_t < Y || si.child_b > Y+H) {
 	si.vneeded = 1;
 	W -= si.scrollsize;
-	if (scrollbar.align() & FL_ALIGN_LEFT) X += si.scrollsize;
+	if (scrollbar.align() & fltk3::ALIGN_LEFT) X += si.scrollsize;
       }
     }
     if (type() & HORIZONTAL) {
       if ((type() & ALWAYS_ON) || si.child_l < X || si.child_r > X+W) {
 	si.hneeded = 1;
 	H -= si.scrollsize;
-	if (scrollbar.align() & FL_ALIGN_TOP) Y += si.scrollsize;
+	if (scrollbar.align() & fltk3::ALIGN_TOP) Y += si.scrollsize;
 	// recheck vertical since we added a horizontal scrollbar
 	if (!si.vneeded && (type() & VERTICAL)) {
 	  if ((type() & ALWAYS_ON) || si.child_t < Y || si.child_b > Y+H) {
 	    si.vneeded = 1;
 	    W -= si.scrollsize;
-	    if (scrollbar.align() & FL_ALIGN_LEFT) X += si.scrollsize;
+	    if (scrollbar.align() & fltk3::ALIGN_LEFT) X += si.scrollsize;
 	  }
 	}
       }
@@ -178,14 +178,14 @@ void Fl_Scroll::recalc_scrollbars(ScrollInfo &si) {
 
   // calculate hor scrollbar position
   si.hscroll_x = si.innerchild_x;
-  si.hscroll_y = (scrollbar.align() & FL_ALIGN_TOP) 
+  si.hscroll_y = (scrollbar.align() & fltk3::ALIGN_TOP) 
 		     ? si.innerbox_y
 		     : si.innerbox_y + si.innerbox_h - si.scrollsize;
   si.hscroll_w = si.innerchild_w;
   si.hscroll_h = si.scrollsize;
 
   // calculate ver scrollbar position
-  si.vscroll_x = (scrollbar.align() & FL_ALIGN_LEFT)
+  si.vscroll_x = (scrollbar.align() & fltk3::ALIGN_LEFT)
                      ? si.innerbox_x
 		     : si.innerbox_x + si.innerbox_w - si.scrollsize;
   si.vscroll_y = si.innerchild_y;
@@ -235,11 +235,11 @@ void Fl_Scroll::bbox(int& X, int& Y, int& W, int& H) {
   H = h()-fltk3::box_dh(box());
   if (scrollbar.visible()) {
     W -= scrollbar.w();
-    if (scrollbar.align() & FL_ALIGN_LEFT) X += scrollbar.w();
+    if (scrollbar.align() & fltk3::ALIGN_LEFT) X += scrollbar.w();
   }
   if (hscrollbar.visible()) {
     H -= hscrollbar.h();
-    if (scrollbar.align() & FL_ALIGN_TOP) Y += hscrollbar.h();
+    if (scrollbar.align() & fltk3::ALIGN_TOP) Y += hscrollbar.h();
   }
 }
 
@@ -249,11 +249,11 @@ void Fl_Scroll::draw() {
 
   uchar d = damage();
 
-  if (d & FL_DAMAGE_ALL) { // full redraw
+  if (d & fltk3::DAMAGE_ALL) { // full redraw
     draw_box(box(),x(),y(),w(),h(),color());
     draw_clip(this, X, Y, W, H);
   } else {
-    if (d & FL_DAMAGE_SCROLL) {
+    if (d & fltk3::DAMAGE_SCROLL) {
       // scroll the contents:
       fl_scroll(X, Y, W, H, oldx-xposition_, oldy-yposition_, draw_clip, this);
 
@@ -275,7 +275,7 @@ void Fl_Scroll::draw() {
       if (T > Y) draw_clip(this, X, Y, W, T - Y);
       if (B < (Y + H)) draw_clip(this, X, B, W, Y + H - B);
     }
-    if (d & FL_DAMAGE_CHILD) { // draw damaged children
+    if (d & fltk3::DAMAGE_CHILD) { // draw damaged children
       fl_push_clip(X, Y, W, H);
       fltk3::Widget*const* a = array();
       for (int i=children()-2; i--;) update_child(**a++);
@@ -291,25 +291,25 @@ void Fl_Scroll::draw() {
       // Now that we know what's needed, make it so.
       if (si.vneeded && !scrollbar.visible()) {
 	scrollbar.set_visible();
-	d = FL_DAMAGE_ALL;
+	d = fltk3::DAMAGE_ALL;
       }
       else if (!si.vneeded && scrollbar.visible()) {
 	scrollbar.clear_visible();
 	draw_clip(this, si.vscroll_x, si.vscroll_y, si.vscroll_w, si.vscroll_h);
-	d = FL_DAMAGE_ALL;
+	d = fltk3::DAMAGE_ALL;
       }
       if (si.hneeded && !hscrollbar.visible()) {
 	hscrollbar.set_visible();
-	d = FL_DAMAGE_ALL;
+	d = fltk3::DAMAGE_ALL;
       }
       else if (!si.hneeded && hscrollbar.visible()) {
 	hscrollbar.clear_visible();
 	draw_clip(this, si.hscroll_x, si.hscroll_y, si.hscroll_w, si.hscroll_h);
-	d = FL_DAMAGE_ALL;
+	d = fltk3::DAMAGE_ALL;
       }
       else if ( hscrollbar.h() != si.scrollsize || scrollbar.w() != si.scrollsize ) {
          // scrollsize changed
-         d = FL_DAMAGE_ALL;
+         d = fltk3::DAMAGE_ALL;
       }
 
       scrollbar.resize(si.vscroll_x, si.vscroll_y, si.vscroll_w, si.vscroll_h);
@@ -322,7 +322,7 @@ void Fl_Scroll::draw() {
   }
 
   // draw the scrollbars:
-  if (d & FL_DAMAGE_ALL) {
+  if (d & fltk3::DAMAGE_ALL) {
     draw_child(scrollbar);
     draw_child(hscrollbar);
     if (scrollbar.visible() && hscrollbar.visible()) {
@@ -349,8 +349,8 @@ void Fl_Scroll::resize(int X, int Y, int W, int H) {
   }
   if (dw==0 && dh==0) {
     char pad = ( scrollbar.visible() && hscrollbar.visible() );
-    char al = ( (scrollbar.align() & FL_ALIGN_LEFT) != 0 );
-    char at = ( (scrollbar.align() & FL_ALIGN_TOP)  !=0 );
+    char al = ( (scrollbar.align() & fltk3::ALIGN_LEFT) != 0 );
+    char at = ( (scrollbar.align() & fltk3::ALIGN_TOP)  !=0 );
     scrollbar.position(al?X:X+W-scrollbar.w(), (at&&pad)?Y+hscrollbar.h():Y);
     hscrollbar.position((al&&pad)?X+scrollbar.w():X, at?Y:Y+H-hscrollbar.h());
   } else {
@@ -372,8 +372,8 @@ void Fl_Scroll::scroll_to(int X, int Y) {
     if (o == &hscrollbar || o == &scrollbar) continue;
     o->position(o->x()+dx, o->y()+dy);
   }
-  if (parent() == (fltk3::Group *)window() && fltk3::scheme_bg_) damage(FL_DAMAGE_ALL);
-  else damage(FL_DAMAGE_SCROLL);
+  if (parent() == (fltk3::Group *)window() && fltk3::scheme_bg_) damage(fltk3::DAMAGE_ALL);
+  else damage(fltk3::DAMAGE_SCROLL);
 }
 
 void Fl_Scroll::hscrollbar_cb(fltk3::Widget* o, void*) {

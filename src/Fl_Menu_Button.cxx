@@ -88,7 +88,7 @@ int Fl_Menu_Button::handle(int e) {
   case FL_KEYBOARD:
     if (!box()) return 0;
     if (fltk3::event_key() == ' ' &&
-        !(fltk3::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) {
+        !(fltk3::event_state() & (fltk3::SHIFT | fltk3::CTRL | fltk3::ALT | fltk3::META))) {
       popup();
       return 1;
     } else return 0;

@@ -74,7 +74,7 @@ class FL_EXPORT Fl_Browser_ : public fltk3::Group {
   uchar has_scrollbar_;	// which scrollbars are enabled
   fltk3::Font textfont_;
   fltk3::Fontsize textsize_;
-  Fl_Color textcolor_;
+  fltk3::Color textcolor_;
   void* top_;		// which item scrolling position is in
   void* selection_;	// which is selected (except for FL_MULTI_BROWSER)
   void *redraw1,*redraw2; // minimal update pointers
@@ -184,7 +184,7 @@ protected:
     This method will cause the entire list to be redrawn.
     \see redraw_lines(), redraw_line()
    */
-  void redraw_lines() { damage(FL_DAMAGE_SCROLL); } // redraw all of them
+  void redraw_lines() { damage(fltk3::DAMAGE_SCROLL); } // redraw all of them
   void bbox(int &X,int &Y,int &W,int &H) const;
   int leftedge() const;	// x position after scrollbar & border
   void *find_item(int ypos); // item under mouse
@@ -297,11 +297,11 @@ public:
   /**
     Gets the default text color for the lines in the browser.
   */
-  Fl_Color textcolor() const { return textcolor_; }
+  fltk3::Color textcolor() const { return textcolor_; }
   /**
     Sets the default text color for the lines in the browser to color \p col.
   */
-  void textcolor(Fl_Color col) { textcolor_ = col; }
+  void textcolor(fltk3::Color col) { textcolor_ = col; }
 
   /**
     Gets the current size of the scrollbars' troughs, in pixels.
@@ -362,12 +362,12 @@ public:
     Moves the vertical scrollbar to the righthand side of the list.
     For back compatibility.
   */
-  void scrollbar_right() { scrollbar.align(FL_ALIGN_RIGHT); }
+  void scrollbar_right() { scrollbar.align(fltk3::ALIGN_RIGHT); }
   /**
     Moves the vertical scrollbar to the lefthand side of the list.
     For back compatibility.
   */
-  void scrollbar_left() { scrollbar.align(FL_ALIGN_LEFT); }
+  void scrollbar_left() { scrollbar.align(fltk3::ALIGN_LEFT); }
   void sort(int flags=0);
 };
 

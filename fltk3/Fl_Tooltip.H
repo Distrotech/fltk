@@ -76,13 +76,13 @@ public:
   /**    Sets the size of the tooltip text.  */
   static void size(fltk3::Fontsize s) { size_ = s; }
   /** Gets the background color for tooltips. The default background color is a pale yellow.  */
-  static Fl_Color color() { return color_; }
+  static fltk3::Color color() { return color_; }
   /** Sets the background color for tooltips. The default background color is a pale yellow.  */
-  static void color(Fl_Color c) { color_ = c; }
+  static void color(fltk3::Color c) { color_ = c; }
   /** Gets the color of the text in the tooltip. The default is  black. */
-  static Fl_Color textcolor() { return textcolor_; }
+  static fltk3::Color textcolor() { return textcolor_; }
   /** Sets the color of the text in the tooltip. The default is  black. */
-  static void textcolor(Fl_Color c) { textcolor_ = c; }
+  static void textcolor(fltk3::Color c) { textcolor_ = c; }
 #ifdef __APPLE__
   // the unique tooltip window
   static fltk3::Window* current_window(void);
@@ -100,8 +100,8 @@ private:
 private:
   static float delay_; //!< delay before a tooltip is shown
   static float hoverdelay_; //!< delay between tooltips
-  static Fl_Color color_;
-  static Fl_Color textcolor_;
+  static fltk3::Color color_;
+  static fltk3::Color textcolor_;
   static fltk3::Font font_;
   static fltk3::Fontsize size_;
   static fltk3::Widget* widget_; //!< Keeps track of the current target widget

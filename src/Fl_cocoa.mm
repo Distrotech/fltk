@@ -178,12 +178,12 @@ static unsigned short macKeyLookUp[128] =
 static unsigned int mods_to_e_state( NSUInteger mods )
 {
   long state = 0;
-  if ( mods & NSNumericPadKeyMask ) state |= FL_NUM_LOCK;
-  if ( mods & NSCommandKeyMask ) state |= FL_META;
-  if ( mods & NSAlternateKeyMask ) state |= FL_ALT;
-  if ( mods & NSControlKeyMask ) state |= FL_CTRL;
-  if ( mods & NSShiftKeyMask ) state |= FL_SHIFT;
-  if ( mods & NSAlphaShiftKeyMask ) state |= FL_CAPS_LOCK;
+  if ( mods & NSNumericPadKeyMask ) state |= fltk3::NUM_LOCK;
+  if ( mods & NSCommandKeyMask ) state |= fltk3::META;
+  if ( mods & NSAlternateKeyMask ) state |= fltk3::ALT;
+  if ( mods & NSControlKeyMask ) state |= fltk3::CTRL;
+  if ( mods & NSShiftKeyMask ) state |= fltk3::SHIFT;
+  if ( mods & NSAlphaShiftKeyMask ) state |= fltk3::CAPS_LOCK;
   unsigned int ret = ( fltk3::e_state & 0xff000000 ) | state;
   fltk3::e_state = ret;
   //printf( "State 0x%08x (%04x)\n", fltk3::e_state, mods );
@@ -769,14 +769,14 @@ static void cocoaMouseHandler(NSEvent *theEvent)
   
   NSEventType etype = [theEvent type];
   if (etype == NSLeftMouseDown || etype == NSRightMouseDown || etype == NSOtherMouseDown) {
-    if (btn == 1) fltk3::e_state |= FL_BUTTON1;
-    else if (btn == 3) fltk3::e_state |= FL_BUTTON2;
-    else if (btn == 2) fltk3::e_state |= FL_BUTTON3;
+    if (btn == 1) fltk3::e_state |= fltk3::BUTTON1;
+    else if (btn == 3) fltk3::e_state |= fltk3::BUTTON2;
+    else if (btn == 2) fltk3::e_state |= fltk3::BUTTON3;
   }
   else if (etype == NSLeftMouseUp || etype == NSRightMouseUp || etype == NSOtherMouseUp) {
-    if (btn == 1) fltk3::e_state &= ~FL_BUTTON1;
-    else if (btn == 3) fltk3::e_state &= ~FL_BUTTON2;
-    else if (btn == 2) fltk3::e_state &= ~FL_BUTTON3;
+    if (btn == 1) fltk3::e_state &= ~fltk3::BUTTON1;
+    else if (btn == 3) fltk3::e_state &= ~fltk3::BUTTON2;
+    else if (btn == 2) fltk3::e_state &= ~fltk3::BUTTON3;
     }
     
   switch ( etype ) {
@@ -1436,11 +1436,11 @@ static void handleUpdateEvent( fltk3::Window *window )
       XDestroyRegion(cx->region);
       cx->region = 0;
     }
-    cx->w->clear_damage(FL_DAMAGE_ALL);
+    cx->w->clear_damage(fltk3::DAMAGE_ALL);
     cx->flush();
     cx->w->clear_damage();
   }
-  window->clear_damage(FL_DAMAGE_ALL);
+  window->clear_damage(fltk3::DAMAGE_ALL);
   i->flush();
   window->clear_damage();
 }     
@@ -2093,7 +2093,7 @@ void fltk3::Window::show() {
   image(fltk3::scheme_bg_);
   if (fltk3::scheme_bg_) {
     labeltype(fltk3::NORMAL_LABEL);
-    align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
+    align(fltk3::ALIGN_CENTER | fltk3::ALIGN_INSIDE | fltk3::ALIGN_CLIP);
   } else {
     labeltype(fltk3::NO_LABEL);
   }
@@ -2228,7 +2228,7 @@ void fltk3::Window::make_current()
 }
 
 // helper function to manage the current CGContext fl_gc
-extern Fl_Color fl_color_;
+extern fltk3::Color fl_color_;
 extern class Fl_Font_Descriptor *fl_fontsize;
 extern void fl_font(class Fl_Font_Descriptor*);
 extern void fl_quartz_restore_line_style_();
@@ -2663,51 +2663,51 @@ static NSCursor *PrepareCursor(NSCursor *cursor, CGContextRef (*f)() )
   return cursor;
 }
 
-void Fl_X::set_cursor(Fl_Cursor c)
+void Fl_X::set_cursor(fltk3::Cursor c)
 {
   NSCursor *icrsr;
   switch (c) {
-    case FL_CURSOR_CROSS:  icrsr = [NSCursor crosshairCursor]; break;
-    case FL_CURSOR_WAIT:
+    case fltk3::CURSOR_CROSS:  icrsr = [NSCursor crosshairCursor]; break;
+    case fltk3::CURSOR_WAIT:
       static NSCursor *watch = nil;
       watch = PrepareCursor(watch,  &Fl_X::watch_cursor_image);
       icrsr = watch;
       break;
-    case FL_CURSOR_INSERT: icrsr = [NSCursor IBeamCursor]; break;
-    case FL_CURSOR_N:      icrsr = [NSCursor resizeUpCursor]; break;
-    case FL_CURSOR_S:      icrsr = [NSCursor resizeDownCursor]; break;
-    case FL_CURSOR_NS:     icrsr = [NSCursor resizeUpDownCursor]; break;
-    case FL_CURSOR_HELP:   
+    case fltk3::CURSOR_INSERT: icrsr = [NSCursor IBeamCursor]; break;
+    case fltk3::CURSOR_N:      icrsr = [NSCursor resizeUpCursor]; break;
+    case fltk3::CURSOR_S:      icrsr = [NSCursor resizeDownCursor]; break;
+    case fltk3::CURSOR_NS:     icrsr = [NSCursor resizeUpDownCursor]; break;
+    case fltk3::CURSOR_HELP:   
       static NSCursor *help = nil;
       help = PrepareCursor(help,  &Fl_X::help_cursor_image);
       icrsr = help;
       break;
-    case FL_CURSOR_HAND:   icrsr = [NSCursor pointingHandCursor]; break;
-    case FL_CURSOR_MOVE:   icrsr = [NSCursor openHandCursor]; break;
-    case FL_CURSOR_NE:
-    case FL_CURSOR_SW:
-    case FL_CURSOR_NESW:   
+    case fltk3::CURSOR_HAND:   icrsr = [NSCursor pointingHandCursor]; break;
+    case fltk3::CURSOR_MOVE:   icrsr = [NSCursor openHandCursor]; break;
+    case fltk3::CURSOR_NE:
+    case fltk3::CURSOR_SW:
+    case fltk3::CURSOR_NESW:   
       static NSCursor *nesw = nil;
       nesw = PrepareCursor(nesw,  &Fl_X::nesw_cursor_image);
       icrsr = nesw;
       break;
-    case FL_CURSOR_E:      icrsr = [NSCursor resizeRightCursor]; break;
-    case FL_CURSOR_W:      icrsr = [NSCursor resizeLeftCursor]; break;
-    case FL_CURSOR_WE:     icrsr = [NSCursor resizeLeftRightCursor]; break;
-    case FL_CURSOR_SE:
-    case FL_CURSOR_NW:
-    case FL_CURSOR_NWSE:   
+    case fltk3::CURSOR_E:      icrsr = [NSCursor resizeRightCursor]; break;
+    case fltk3::CURSOR_W:      icrsr = [NSCursor resizeLeftCursor]; break;
+    case fltk3::CURSOR_WE:     icrsr = [NSCursor resizeLeftRightCursor]; break;
+    case fltk3::CURSOR_SE:
+    case fltk3::CURSOR_NW:
+    case fltk3::CURSOR_NWSE:   
       static NSCursor *nwse = nil;
       nwse = PrepareCursor(nwse,  &Fl_X::nwse_cursor_image);
       icrsr = nwse;
       break;
-    case FL_CURSOR_NONE:   
+    case fltk3::CURSOR_NONE:   
       static NSCursor *none = nil;
       none = PrepareCursor(none,  &Fl_X::none_cursor_image);
       icrsr = none; 
       break;
-    case FL_CURSOR_ARROW:
-    case FL_CURSOR_DEFAULT:
+    case fltk3::CURSOR_ARROW:
+    case fltk3::CURSOR_DEFAULT:
     default:			   icrsr = [NSCursor arrowCursor];
       break;
   }
@@ -2980,10 +2980,10 @@ void *Fl_Sys_Menu_Bar::doMenuOrItemOperation(Fl_Sys_Menu_Bar::menuOrItemOperatio
     item = va_arg(ap, NSMenuItem*);
     value = va_arg(ap, int);
     NSUInteger macMod = 0;
-    if ( value & FL_META ) macMod = NSCommandKeyMask;
-    if ( value & FL_SHIFT || isupper(value) ) macMod |= NSShiftKeyMask;
-    if ( value & FL_ALT ) macMod |= NSAlternateKeyMask;
-    if ( value & FL_CTRL ) macMod |= NSControlKeyMask;
+    if ( value & fltk3::META ) macMod = NSCommandKeyMask;
+    if ( value & fltk3::SHIFT || isupper(value) ) macMod |= NSShiftKeyMask;
+    if ( value & fltk3::ALT ) macMod |= NSAlternateKeyMask;
+    if ( value & fltk3::CTRL ) macMod |= NSControlKeyMask;
     [item setKeyEquivalentModifierMask:macMod];
   }
   else if (operation == Fl_Sys_Menu_Bar::setState) {	// arguments: NSMenuItem*, int

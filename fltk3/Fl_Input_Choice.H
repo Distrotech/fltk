@@ -82,7 +82,7 @@ class FL_EXPORT Fl_Input_Choice : public fltk3::Group {
     if (!strcmp(o->inp_->value(), o->menu_->text()))
     {
       o->fltk3::Widget::clear_changed();
-      if (o->when() & FL_WHEN_NOT_CHANGED)
+      if (o->when() & fltk3::WHEN_NOT_CHANGED)
 	o->do_callback();
     }
     else
@@ -90,7 +90,7 @@ class FL_EXPORT Fl_Input_Choice : public fltk3::Group {
       o->inp_->value(o->menu_->text());
       o->inp_->set_changed();
       o->fltk3::Widget::set_changed();
-      if (o->when() & (FL_WHEN_CHANGED|FL_WHEN_RELEASE))
+      if (o->when() & (fltk3::WHEN_CHANGED|fltk3::WHEN_RELEASE))
 	o->do_callback();
     }
     
@@ -108,11 +108,11 @@ class FL_EXPORT Fl_Input_Choice : public fltk3::Group {
     Fl_Widget_Tracker wp(o);
     if (o->inp_->changed()) {
       o->fltk3::Widget::set_changed();
-      if (o->when() & (FL_WHEN_CHANGED|FL_WHEN_RELEASE))
+      if (o->when() & (fltk3::WHEN_CHANGED|fltk3::WHEN_RELEASE))
 	o->do_callback();
     } else {
       o->fltk3::Widget::clear_changed();
-      if (o->when() & FL_WHEN_NOT_CHANGED)
+      if (o->when() & fltk3::WHEN_NOT_CHANGED)
 	o->do_callback();
     }
     
@@ -141,12 +141,12 @@ public:
   */
   Fl_Input_Choice (int x,int y,int w,int h,const char*l=0) : fltk3::Group(x,y,w,h,l) {
     fltk3::Group::box(fltk3::DOWN_BOX);
-    align(FL_ALIGN_LEFT);				// default like Fl_Input
+    align(fltk3::ALIGN_LEFT);				// default like Fl_Input
     inp_ = new Fl_Input(inp_x(), inp_y(),
 			inp_w(), inp_h());
     inp_->callback(inp_cb, (void*)this);
     inp_->box(fltk3::FLAT_BOX);		// cosmetic
-    inp_->when(FL_WHEN_CHANGED|FL_WHEN_NOT_CHANGED);
+    inp_->when(fltk3::WHEN_CHANGED|fltk3::WHEN_NOT_CHANGED);
     menu_ = new InputMenuButton(menu_x(), menu_y(),
 				menu_w(), menu_h());
     menu_->callback(menu_cb, (void*)this);
@@ -181,9 +181,9 @@ public:
     menu_->resize(menu_x(), menu_y(), menu_w(), menu_h());
   }
   /** Gets the encapsulated input text color attributes */
-  Fl_Color textcolor() const { return (inp_->textcolor());}
+  fltk3::Color textcolor() const { return (inp_->textcolor());}
   /** Sets the encapsulated input text color attributes */
-  void textcolor(Fl_Color c) { inp_->textcolor(c);}
+  void textcolor(fltk3::Color c) { inp_->textcolor(c);}
   /** Gets the encapsulated input text font  attributes */
   fltk3::Font textfont() const { return (inp_->textfont());}
   /** Sets the encapsulated input text font attributes */

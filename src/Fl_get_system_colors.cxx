@@ -247,17 +247,17 @@ void fltk3::get_system_colors()
 #define D1 BORDER_WIDTH
 #define D2 (BORDER_WIDTH+BORDER_WIDTH)
 
-extern void	fl_up_box(int, int, int, int, Fl_Color);
-extern void	fl_down_box(int, int, int, int, Fl_Color);
-extern void	fl_thin_up_box(int, int, int, int, Fl_Color);
-extern void	fl_thin_down_box(int, int, int, int, Fl_Color);
-extern void	fl_round_up_box(int, int, int, int, Fl_Color);
-extern void	fl_round_down_box(int, int, int, int, Fl_Color);
+extern void	fl_up_box(int, int, int, int, fltk3::Color);
+extern void	fl_down_box(int, int, int, int, fltk3::Color);
+extern void	fl_thin_up_box(int, int, int, int, fltk3::Color);
+extern void	fl_thin_down_box(int, int, int, int, fltk3::Color);
+extern void	fl_round_up_box(int, int, int, int, fltk3::Color);
+extern void	fl_round_down_box(int, int, int, int, fltk3::Color);
 
-extern void	fl_up_frame(int, int, int, int, Fl_Color);
-extern void	fl_down_frame(int, int, int, int, Fl_Color);
-extern void	fl_thin_up_frame(int, int, int, int, Fl_Color);
-extern void	fl_thin_down_frame(int, int, int, int, Fl_Color);
+extern void	fl_up_frame(int, int, int, int, fltk3::Color);
+extern void	fl_down_frame(int, int, int, int, fltk3::Color);
+extern void	fl_thin_up_frame(int, int, int, int, fltk3::Color);
+extern void	fl_thin_down_frame(int, int, int, int, fltk3::Color);
 
 #ifndef FL_DOXYGEN
 const char	*fltk3::scheme_ = (const char *)0;	    // current scheme 
@@ -412,7 +412,7 @@ int fltk3::reload_scheme() {
   // Set (or clear) the background tile for all windows...
   for (win = first_window(); win; win = next_window(win)) {
     win->labeltype(scheme_bg_ ? fltk3::NORMAL_LABEL : fltk3::NO_LABEL);
-    win->align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
+    win->align(fltk3::ALIGN_CENTER | fltk3::ALIGN_INSIDE | fltk3::ALIGN_CLIP);
     win->image(scheme_bg_);
     win->redraw();
   }

@@ -75,7 +75,7 @@ void Fl_Progress::draw()
 
   // Draw the box and label...
   if (progress > 0) {
-    Fl_Color c = labelcolor();
+    fltk3::Color c = labelcolor();
     labelcolor(fl_contrast(labelcolor(), selection_color()));
 
     fl_push_clip(x(), y(), progress + bx, h());
@@ -109,7 +109,7 @@ void Fl_Progress::draw()
 */
 Fl_Progress::Fl_Progress(int X, int Y, int W, int H, const char* L)
 : fltk3::Widget(X, Y, W, H, L) {
-  align(FL_ALIGN_INSIDE);
+  align(fltk3::ALIGN_INSIDE);
   box(fltk3::DOWN_BOX);
   color(FL_BACKGROUND2_COLOR, FL_YELLOW);
   minimum(0.0f);

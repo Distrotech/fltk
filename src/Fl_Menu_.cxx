@@ -274,8 +274,8 @@ const Fl_Menu_Item* Fl_Menu_::picked(const Fl_Menu_Item* v) {
       set_changed();
     }
     value_ = v;
-    if (when()&(FL_WHEN_CHANGED|FL_WHEN_RELEASE)) {
-      if (changed() || when()&FL_WHEN_NOT_CHANGED) {
+    if (when()&(fltk3::WHEN_CHANGED|fltk3::WHEN_RELEASE)) {
+      if (changed() || when()&fltk3::WHEN_NOT_CHANGED) {
 	if (value_ && value_->callback_) value_->do_callback((fltk3::Widget*)this);
 	else do_callback();
       }
@@ -308,12 +308,12 @@ Fl_Menu_::Fl_Menu_(int X,int Y,int W,int H,const char* l)
 : fltk3::Widget(X,Y,W,H,l) {
   set_flag(SHORTCUT_LABEL);
   box(fltk3::UP_BOX);
-  when(FL_WHEN_RELEASE_ALWAYS);
+  when(fltk3::WHEN_RELEASE_ALWAYS);
   value_ = menu_ = 0;
   alloc = 0;
   selection_color(FL_SELECTION_COLOR);
   textfont(fltk3::HELVETICA);
-  textsize(FL_NORMAL_SIZE);
+  textsize(fltk3::NORMAL_SIZE);
   textcolor(FL_FOREGROUND_COLOR);
   down_box(fltk3::NO_BOX);
 }

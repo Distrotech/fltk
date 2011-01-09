@@ -164,10 +164,10 @@
 /** \fn Fl_File_Chooser::~Fl_File_Chooser()
   Destroys the widget and frees all memory used by it.*/
 
-/** \fn void Fl_File_Chooser::color(Fl_Color c)
+/** \fn void Fl_File_Chooser::color(fltk3::Color c)
   Sets or gets the background color of the Fl_File_Browser list.*/
 
-/** \fn Fl_Color Fl_File_Chooser::color()
+/** \fn fltk3::Color Fl_File_Chooser::color()
   Sets or gets the background color of the Fl_File_Browser list.*/
 
 /** \fn int Fl_File_Chooser::count()
@@ -236,10 +236,10 @@
 /** \fn void Fl_File_Chooser::show()
   Shows the Fl_File_Chooser window.*/
 
-/** \fn void Fl_File_Chooser::textcolor(Fl_Color c)
+/** \fn void Fl_File_Chooser::textcolor(fltk3::Color c)
   Sets or gets the current Fl_File_Browser text color.*/
 
-/** \fn Fl_Color Fl_File_Chooser::textcolor()
+/** \fn fltk3::Color Fl_File_Chooser::textcolor()
   Sets or gets the current Fl_File_Browser text color.*/
 
 /** \fn void Fl_File_Chooser::textfont(fltk3::Font f)
@@ -1258,13 +1258,13 @@ Fl_File_Chooser::update_favorites()
   favoritesButton->clear();
   favoritesButton->add("bla");
   favoritesButton->clear();
-  favoritesButton->add(add_favorites_label, FL_ALT + 'a', 0);
-  favoritesButton->add(manage_favorites_label, FL_ALT + 'm', 0, 0, FL_MENU_DIVIDER);
-  favoritesButton->add(filesystems_label, FL_ALT + 'f', 0);
+  favoritesButton->add(add_favorites_label, fltk3::ALT + 'a', 0);
+  favoritesButton->add(manage_favorites_label, fltk3::ALT + 'm', 0, 0, FL_MENU_DIVIDER);
+  favoritesButton->add(filesystems_label, fltk3::ALT + 'f', 0);
     
   if ((home = getenv("HOME")) != NULL) {
     quote_pathname(menuname, home, sizeof(menuname));
-    favoritesButton->add(menuname, FL_ALT + 'h', 0);
+    favoritesButton->add(menuname, fltk3::ALT + 'h', 0);
   }
 
   for (i = 0; i < 100; i ++) {
@@ -1274,7 +1274,7 @@ Fl_File_Chooser::update_favorites()
 
     quote_pathname(menuname, pathname, sizeof(menuname));
 
-    if (i < 10) favoritesButton->add(menuname, FL_ALT + '0' + i, 0);
+    if (i < 10) favoritesButton->add(menuname, fltk3::ALT + '0' + i, 0);
     else favoritesButton->add(menuname);
   }
 
@@ -1321,13 +1321,13 @@ Fl_File_Chooser::update_preview()
         set = 1;
       } else {
         // if this file is an image, try to load it
-        window->cursor(FL_CURSOR_WAIT);
+        window->cursor(fltk3::CURSOR_WAIT);
         fltk3::check();
         
         image = Fl_Shared_Image::get(filename);
         
         if (image) {
-          window->cursor(FL_CURSOR_DEFAULT);
+          window->cursor(fltk3::CURSOR_DEFAULT);
           fltk3::check();
           set = 1;
         }
@@ -1359,7 +1359,7 @@ Fl_File_Chooser::update_preview()
       preview_text_[0] = '\0';
     }
 
-    window->cursor(FL_CURSOR_DEFAULT);
+    window->cursor(fltk3::CURSOR_DEFAULT);
     fltk3::check();
 
     // Scan the buffer for printable UTF8 chars...
@@ -1397,7 +1397,7 @@ Fl_File_Chooser::update_preview()
     if (*ptr || ptr == preview_text_) {
       // Non-printable file, just show a big ?...
       previewBox->label(filename ? "?" : 0);
-      previewBox->align(FL_ALIGN_CLIP);
+      previewBox->align(fltk3::ALIGN_CLIP);
       previewBox->labelsize(75);
       previewBox->labelfont(fltk3::HELVETICA);
     } else {
@@ -1407,8 +1407,8 @@ Fl_File_Chooser::update_preview()
       else if (size > 14) size = 14;
 
       previewBox->label(preview_text_);
-      previewBox->align((Fl_Align)(FL_ALIGN_CLIP | FL_ALIGN_INSIDE |
-                                   FL_ALIGN_LEFT | FL_ALIGN_TOP));
+      previewBox->align((fltk3::Align)(fltk3::ALIGN_CLIP | fltk3::ALIGN_INSIDE |
+                                   fltk3::ALIGN_LEFT | fltk3::ALIGN_TOP));
       previewBox->labelsize(size);
       previewBox->labelfont(fltk3::COURIER);
     }
@@ -1433,11 +1433,11 @@ Fl_File_Chooser::update_preview()
       previewBox->image((Fl_Image *)image);
     }
 
-    previewBox->align(FL_ALIGN_CLIP);
+    previewBox->align(fltk3::ALIGN_CLIP);
     previewBox->label(0);
   } else if (newlabel) {
     previewBox->label(newlabel);
-    previewBox->align(FL_ALIGN_CLIP);
+    previewBox->align(fltk3::ALIGN_CLIP);
     previewBox->labelsize(newlabel[0]=='@'?75:12);
     previewBox->labelfont(fltk3::HELVETICA);
   }

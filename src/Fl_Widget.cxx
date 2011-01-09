@@ -108,7 +108,7 @@ int fltk3::Widget::handle(int) {
 }
 
 /** Default font size for widgets */
-fltk3::Fontsize FL_NORMAL_SIZE = 14;
+fltk3::Fontsize fltk3::NORMAL_SIZE = 14;
 
 fltk3::Widget::Widget(int X, int Y, int W, int H, const char* L) {
 
@@ -119,9 +119,9 @@ fltk3::Widget::Widget(int X, int Y, int W, int H, const char* L) {
   label_.deimage = 0;
   label_.type	 = fltk3::NORMAL_LABEL;
   label_.font	 = fltk3::HELVETICA;
-  label_.size	 = FL_NORMAL_SIZE;
+  label_.size	 = fltk3::NORMAL_SIZE;
   label_.color	 = FL_FOREGROUND_COLOR;
-  label_.align_	 = FL_ALIGN_CENTER;
+  label_.align_	 = fltk3::ALIGN_CENTER;
   tooltip_       = 0;
   callback_	 = default_callback;
   user_data_ 	 = 0;
@@ -131,7 +131,7 @@ fltk3::Widget::Widget(int X, int Y, int W, int H, const char* L) {
   box_		 = fltk3::NO_BOX;
   color_	 = FL_GRAY;
   color2_	 = FL_GRAY;
-  when_		 = FL_WHEN_RELEASE;
+  when_		 = fltk3::WHEN_RELEASE;
 
   parent_ = 0;
   if (fltk3::Group::current()) fltk3::Group::current()->add(this);

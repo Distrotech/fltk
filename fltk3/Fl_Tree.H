@@ -65,8 +65,8 @@
 ///
 ///     The callback() is invoked depending on the value of when():
 ///
-///         - FL_WHEN_RELEASE -- callback invoked when left mouse button is released on an item
-///         - FL_WHEN_CHANGED -- callback invoked when left mouse changes selection state
+///         - fltk3::WHEN_RELEASE -- callback invoked when left mouse button is released on an item
+///         - fltk3::WHEN_CHANGED -- callback invoked when left mouse changes selection state
 ///
 ///     The simple way to define a tree:
 /// \code

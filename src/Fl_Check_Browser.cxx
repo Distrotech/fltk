@@ -88,7 +88,7 @@ Fl_Check_Browser::Fl_Check_Browser(int X, int Y, int W, int H, const char *l)
 /**  The constructor makes an empty browser.*/
 : Fl_Browser_(X, Y, W, H, l) {
 	type(FL_SELECT_BROWSER);
-	when(FL_WHEN_NEVER);
+	when(fltk3::WHEN_NEVER);
 	first = last = 0;
 	nitems_ = nchecked_ = 0;
 	cached_item = -1;
@@ -121,7 +121,7 @@ void Fl_Check_Browser::item_draw(void *v, int X, int Y, int, int) const {
 	cb_item *i = (cb_item *)v;
 	char *s = i->text;
 	int tsize = textsize();
-	Fl_Color col = active_r() ? textcolor() : fl_inactive(textcolor());
+	fltk3::Color col = active_r() ? textcolor() : fl_inactive(textcolor());
 	int cy = Y + (tsize + 1 - CHECK_SIZE) / 2;
 	X += 2;
 

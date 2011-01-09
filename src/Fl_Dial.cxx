@@ -37,7 +37,7 @@
   \param[in] X, Y, W, H position and size
 */
 void Fl_Dial::draw(int X, int Y, int W, int H) {
-  if (damage()&FL_DAMAGE_ALL) draw_box(box(), X, Y, W, H, color());
+  if (damage()&fltk3::DAMAGE_ALL) draw_box(box(), X, Y, W, H, color());
   X += fltk3::box_dx(box());
   Y += fltk3::box_dy(box());
   W -= fltk3::box_dw(box());
@@ -60,7 +60,7 @@ void Fl_Dial::draw(int X, int Y, int W, int H) {
     }
     return;
   }
-  if (!(damage()&FL_DAMAGE_ALL)) {
+  if (!(damage()&fltk3::DAMAGE_ALL)) {
     if (active_r()) fl_color(color());
     else fl_color(fl_inactive(color()));
     fl_pie(X+1, Y+1, W-2, H-2, 0, 360);

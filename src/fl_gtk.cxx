@@ -38,13 +38,13 @@
 extern void fl_internal_boxtype(fltk3::Boxtype, Fl_Box_Draw_F*);
 
 
-static void gtk_color(Fl_Color c) {
+static void gtk_color(fltk3::Color c) {
   if (fltk3::draw_box_active()) fl_color(c);
   else fl_color(fl_inactive(c));
 }
 
 
-static void gtk_up_frame(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_up_frame(int x, int y, int w, int h, fltk3::Color c) {
   gtk_color(fl_color_average(FL_WHITE, c, 0.5));
   fl_xyline(x + 2, y + 1, x + w - 3);
   fl_yxline(x + 1, y + 2, y + h - 3);
@@ -63,7 +63,7 @@ static void gtk_up_frame(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_up_box(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_up_box(int x, int y, int w, int h, fltk3::Color c) {
   gtk_up_frame(x, y, w, h, c);
 
   gtk_color(fl_color_average(FL_WHITE, c, 0.4f));
@@ -84,7 +84,7 @@ static void gtk_up_box(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_down_frame(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_down_frame(int x, int y, int w, int h, fltk3::Color c) {
   gtk_color(fl_color_average(FL_BLACK, c, 0.5));
   fl_begin_loop();
     fl_vertex(x, y + 2);
@@ -106,7 +106,7 @@ static void gtk_down_frame(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_down_box(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_down_box(int x, int y, int w, int h, fltk3::Color c) {
   gtk_down_frame(x, y, w, h, c);
 
   gtk_color(c);
@@ -115,7 +115,7 @@ static void gtk_down_box(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_thin_up_frame(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_thin_up_frame(int x, int y, int w, int h, fltk3::Color c) {
   gtk_color(fl_color_average(FL_WHITE, c, 0.6f));
   fl_xyline(x + 1, y, x + w - 2);
   fl_yxline(x, y + 1, y + h - 2);
@@ -126,7 +126,7 @@ static void gtk_thin_up_frame(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_thin_up_box(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_thin_up_box(int x, int y, int w, int h, fltk3::Color c) {
   gtk_thin_up_frame(x, y, w, h, c);
 
   gtk_color(fl_color_average(FL_WHITE, c, 0.4f));
@@ -146,7 +146,7 @@ static void gtk_thin_up_box(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_thin_down_frame(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_thin_down_frame(int x, int y, int w, int h, fltk3::Color c) {
   gtk_color(fl_color_average(FL_BLACK, c, 0.4f));
   fl_xyline(x + 1, y, x + w - 2);
   fl_yxline(x, y + 1, y + h - 2);
@@ -157,7 +157,7 @@ static void gtk_thin_down_frame(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_thin_down_box(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_thin_down_box(int x, int y, int w, int h, fltk3::Color c) {
   gtk_thin_down_frame(x, y, w, h, c);
 
   gtk_color(c);
@@ -212,7 +212,7 @@ static void draw(int which, int x,int y,int w,int h, int inset)
   }
 }
 
-void gtk_round_up_box(int x, int y, int w, int h, Fl_Color c) {
+void gtk_round_up_box(int x, int y, int w, int h, fltk3::Color c) {
   fl_color(c);
   draw(FILL,	    x,   y, w,   h, 2);
 
@@ -243,7 +243,7 @@ void gtk_round_up_box(int x, int y, int w, int h, Fl_Color c) {
   draw(CLOSED,	    x,   y, w,   h, 0);
 }
 
-void gtk_round_down_box(int x, int y, int w, int h, Fl_Color c) {
+void gtk_round_down_box(int x, int y, int w, int h, fltk3::Color c) {
   fl_color(c);
   draw(FILL,	    x,   y, w,   h, 2);
 
@@ -260,7 +260,7 @@ void gtk_round_down_box(int x, int y, int w, int h, Fl_Color c) {
 
 #else
 
-static void gtk_round_up_box(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_round_up_box(int x, int y, int w, int h, fltk3::Color c) {
   gtk_color(c);
   fl_pie(x, y, w, h, 0.0, 360.0);
   gtk_color(fl_color_average(FL_WHITE, c, 0.5f));
@@ -272,7 +272,7 @@ static void gtk_round_up_box(int x, int y, int w, int h, Fl_Color c) {
 }
 
 
-static void gtk_round_down_box(int x, int y, int w, int h, Fl_Color c) {
+static void gtk_round_down_box(int x, int y, int w, int h, fltk3::Color c) {
   gtk_color(c);
   fl_pie(x, y, w, h, 0.0, 360.0);
   gtk_color(fl_color_average(FL_BLACK, c, 0.2));

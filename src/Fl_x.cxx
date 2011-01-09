@@ -798,7 +798,7 @@ static void set_event_xy() {
   fl_event_time = fl_xevent->xbutton.time;
 #  ifdef __sgi
   // get the meta key off PC keyboards:
-  if (fl_key_vector[18]&0x18) fltk3::e_state |= FL_META;
+  if (fl_key_vector[18]&0x18) fltk3::e_state |= fltk3::META;
 #  endif
   // turn off is_click if enough time or mouse movement has passed:
   if (abs(fltk3::e_x_root-px)+abs(fltk3::e_y_root-py) > 3 ||
@@ -1189,7 +1189,7 @@ int fl_handle(const XEvent& thisevent)
 #  endif
 
   case GraphicsExpose:
-    window->damage(FL_DAMAGE_EXPOSE, xevent.xexpose.x, xevent.xexpose.y,
+    window->damage(fltk3::DAMAGE_EXPOSE, xevent.xexpose.x, xevent.xexpose.y,
                    xevent.xexpose.width, xevent.xexpose.height);
     return 1;
 
@@ -1246,7 +1246,7 @@ int fl_handle(const XEvent& thisevent)
           keysym = XKeycodeToKeysym(fl_display, keycode, 0);
         }
       }
-      // MRS: Can't use fltk3::event_state(FL_CTRL) since the state is not
+      // MRS: Can't use fltk3::event_state(fltk3::CTRL) since the state is not
       //      set until set_event_xy() is called later...
       if ((xevent.xkey.state & ControlMask) && keysym == '-') buffer[0] = 0x1f; // ^_
       buffer[len] = 0;
@@ -1357,7 +1357,7 @@ int fl_handle(const XEvent& thisevent)
       fltk3::e_dy = +1; // Down
       event = FL_MOUSEWHEEL;
     } else {
-      fltk3::e_state |= (FL_BUTTON1 << (xevent.xbutton.button-1));
+      fltk3::e_state |= (fltk3::BUTTON1 << (xevent.xbutton.button-1));
       event = FL_PUSH;
       checkdouble();
     }
@@ -1382,7 +1382,7 @@ int fl_handle(const XEvent& thisevent)
   case ButtonRelease:
     fltk3::e_keysym = FL_Button + xevent.xbutton.button;
     set_event_xy();
-    fltk3::e_state &= ~(FL_BUTTON1 << (xevent.xbutton.button-1));
+    fltk3::e_state &= ~(fltk3::BUTTON1 << (xevent.xbutton.button-1));
     if (xevent.xbutton.button == Button4 ||
         xevent.xbutton.button == Button5) return 0;
     event = FL_RELEASE;
@@ -1835,7 +1835,7 @@ void fltk3::Window::show() {
   image(fltk3::scheme_bg_);
   if (fltk3::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
-    align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
+    align(fltk3::ALIGN_CENTER | fltk3::ALIGN_INSIDE | fltk3::ALIGN_CLIP);
   } else {
     labeltype(FL_NO_LABEL);
   }

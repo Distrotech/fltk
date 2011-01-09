@@ -47,7 +47,7 @@ void fltk3::Window::_Window() {
   box(fltk3::FLAT_BOX);
   if (fltk3::scheme_bg_) {
     labeltype(fltk3::NORMAL_LABEL);
-    align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
+    align(fltk3::ALIGN_CENTER | fltk3::ALIGN_INSIDE | fltk3::ALIGN_CLIP);
     image(fltk3::scheme_bg_);
   } else {
     labeltype(fltk3::NO_LABEL);
@@ -64,7 +64,7 @@ void fltk3::Window::_Window() {
 
 fltk3::Window::Window(int X,int Y,int W, int H, const char *l)
 : fltk3::Group(X, Y, W, H, l) {
-  cursor_default = FL_CURSOR_DEFAULT;
+  cursor_default = fltk3::CURSOR_DEFAULT;
   cursor_fg      = FL_BLACK;
   cursor_bg      = FL_WHITE;
 
@@ -75,7 +75,7 @@ fltk3::Window::Window(int X,int Y,int W, int H, const char *l)
 fltk3::Window::Window(int W, int H, const char *l)
 // fix common user error of a missing end() with current(0):
   : fltk3::Group((fltk3::Group::current(0),0), 0, W, H, l) {
-  cursor_default = FL_CURSOR_DEFAULT;
+  cursor_default = fltk3::CURSOR_DEFAULT;
   cursor_fg      = FL_BLACK;
   cursor_bg      = FL_WHITE;
 
@@ -107,7 +107,7 @@ void fltk3::Window::draw() {
   //  - we draw the box with x=0 and y=0 instead of x() and y()
   //  - we don't draw a label
 
-  if (damage() & ~FL_DAMAGE_CHILD) {	 // draw the entire thing
+  if (damage() & ~fltk3::DAMAGE_CHILD) {	 // draw the entire thing
     draw_box(box(),0,0,w(),h(),color()); // draw box with x/y = 0
   }
   draw_children();
@@ -122,7 +122,7 @@ void fltk3::Window::draw() {
     if (dx<=0) dx = 1;
     if (dy<=0) dy = 1;
     int x1 = w()-dx-1, x2 = x1, y1 = h()-dx-1, y2 = y1;
-    Fl_Color c[4] = {
+    fltk3::Color c[4] = {
       color(),
       fl_color_average(color(), FL_WHITE, 0.7f),
       fl_color_average(color(), FL_BLACK, 0.6f),

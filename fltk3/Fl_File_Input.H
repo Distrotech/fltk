@@ -40,9 +40,9 @@
 
   A navigation bar located above the input field allows the user to
   navigate upward in the directory tree.
-  You may want to handle FL_WHEN_CHANGED events for tracking text changes
-  and also FL_WHEN_RELEASE for button release when changing to parent dir.
-  FL_WHEN_RELEASE callback won't be called if the directory clicked 
+  You may want to handle fltk3::WHEN_CHANGED events for tracking text changes
+  and also fltk3::WHEN_RELEASE for button release when changing to parent dir.
+  fltk3::WHEN_RELEASE callback won't be called if the directory clicked 
   is the same that the current one.
   <P align=CENTER> \image html Fl_File_Input.png </P> 
   \image latex Fl_File_Input.png "Fl_File_Input"  width=6cm
@@ -53,7 +53,7 @@
 */
 class FL_EXPORT Fl_File_Input : public Fl_Input
 {
-  Fl_Color	errorcolor_;
+  fltk3::Color	errorcolor_;
   char		ok_entry_;
   uchar		down_box_;
   short		buttons_[200];
@@ -82,9 +82,9 @@ public:
     Gets the current error color.
     \todo Better docs for Fl_File_Input::errorcolor() - is it even used?
   */
-  Fl_Color	errorcolor() const { return errorcolor_; }
+  fltk3::Color	errorcolor() const { return errorcolor_; }
   /** Sets the current error color to \p c */
-  void		errorcolor(Fl_Color c) { errorcolor_ = c; }
+  void		errorcolor(fltk3::Color c) { errorcolor_ = c; }
 
   int	value(const char *str);
   int	value(const char *str, int len);

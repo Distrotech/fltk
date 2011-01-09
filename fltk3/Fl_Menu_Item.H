@@ -82,9 +82,9 @@ class Fl_Menu_;
   Typically menu items are statically defined; for example:
   \code
   Fl_Menu_Item popup[] = {
-   {"&alpha",   FL_ALT+'a', the_cb, (void*)1},
-   {"&beta",    FL_ALT+'b', the_cb, (void*)2},
-   {"gamma",    FL_ALT+'c', the_cb, (void*)3, FL_MENU_DIVIDER},
+   {"&alpha",   fltk3::ALT+'a', the_cb, (void*)1},
+   {"&beta",    fltk3::ALT+'b', the_cb, (void*)2},
+   {"gamma",    fltk3::ALT+'c', the_cb, (void*)3, FL_MENU_DIVIDER},
    {"&strange",  0,   strange_cb},
    {"&charm",    0,   charm_cb},
    {"&truth",    0,   truth_cb},
@@ -94,10 +94,10 @@ class Fl_Menu_;
    {"two"},
    {"three"},
    {0},
-   {"inactive", FL_ALT+'i', 0, 0, FL_MENU_INACTIVE|FL_MENU_DIVIDER},
-   {"invisible",FL_ALT+'i', 0, 0, FL_MENU_INVISIBLE},
-   {"check",    FL_ALT+'i', 0, 0, FL_MENU_TOGGLE|FL_MENU_VALUE},
-   {"box",      FL_ALT+'i', 0, 0, FL_MENU_TOGGLE},
+   {"inactive", fltk3::ALT+'i', 0, 0, FL_MENU_INACTIVE|FL_MENU_DIVIDER},
+   {"invisible",fltk3::ALT+'i', 0, 0, FL_MENU_INVISIBLE},
+   {"check",    fltk3::ALT+'i', 0, 0, FL_MENU_TOGGLE|FL_MENU_VALUE},
+   {"box",      fltk3::ALT+'i', 0, 0, FL_MENU_TOGGLE},
    {0}};
   \endcode
   produces:
@@ -124,7 +124,7 @@ struct FL_EXPORT Fl_Menu_Item {
   uchar labeltype_;	    ///< how the menu item text looks like
   fltk3::Font labelfont_;	    ///< which font for this menu item text
   fltk3::Fontsize labelsize_;   ///< size of menu item text
-  Fl_Color labelcolor_;	    ///< menu item text color
+  fltk3::Color labelcolor_;	    ///< menu item text color
 
   // advance N items, skipping submenus:
   const Fl_Menu_Item *next(int=1) const;
@@ -184,13 +184,13 @@ struct FL_EXPORT Fl_Menu_Item {
     color is not black fltk will \b not use overlay bitplanes to draw
     the menu - this is so that images put in the menu draw correctly.
   */
-  Fl_Color labelcolor() const {return labelcolor_;}
+  fltk3::Color labelcolor() const {return labelcolor_;}
 
   /**
     Sets the menu item's label color.
-    \see Fl_Color Fl_Menu_Item::labelcolor() const
+    \see fltk3::Color Fl_Menu_Item::labelcolor() const
   */
-  void labelcolor(Fl_Color a) {labelcolor_ = a;}
+  void labelcolor(fltk3::Color a) {labelcolor_ = a;}
   /**
     Gets the menu item's label font.
     Fonts are identified by small 8-bit indexes into a table. See the
@@ -281,7 +281,7 @@ struct FL_EXPORT Fl_Menu_Item {
   /**
     Sets exactly what key combination will trigger the menu item.  The
     value is a logical 'or' of a key and a set of shift flags, for instance 
-    FL_ALT+'a' or FL_ALT+FL_F+10 or just 'a'.  A value of
+    fltk3::ALT+'a' or fltk3::ALT+FL_F+10 or just 'a'.  A value of
     zero disables the shortcut.
 
     The key can be any value returned by fltk3::event_key(), but will usually 

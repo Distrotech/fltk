@@ -891,7 +891,7 @@ void fl_fix_focus() {
 
 // MRS: Originally we checked the button state, but a user reported that it
 //      broke click-to-focus in FLWM?!?
-//  if (!(fltk3::event_state() & 0x7f00000 /*FL_BUTTONS*/)) {
+//  if (!(fltk3::event_state() & 0x7f00000 /*fltk3::BUTTONS*/)) {
   if (!fltk3::pushed()) {
     // set belowmouse based on fltk3::modal() and fl_xmousewin:
     w = fl_xmousewin;
@@ -1220,7 +1220,7 @@ void fltk3::Window::hide() {
   // MacOS X manages a single pointer per application. Make sure that hiding
   // a toplevel window will not leave us with some random pointer shape, or
   // worst case, an invisible pointer
-  if (!parent()) cursor(FL_CURSOR_DEFAULT);
+  if (!parent()) cursor(fltk3::CURSOR_DEFAULT);
 #endif
   i = 0;
 
@@ -1404,7 +1404,7 @@ void fltk3::paste(fltk3::Widget &receiver) {
 #include <fltk3/fl_draw.H>
 
 void fltk3::Widget::redraw() {
-  damage(FL_DAMAGE_ALL);
+  damage(fltk3::DAMAGE_ALL);
 }
 
 void fltk3::Widget::redraw_label() {
@@ -1415,10 +1415,10 @@ void fltk3::Widget::redraw_label() {
       // background...
       int X = x() > 0 ? x() - 1 : 0;
       int Y = y() > 0 ? y() - 1 : 0;
-      window()->damage(FL_DAMAGE_ALL, X, Y, w() + 2, h() + 2);
+      window()->damage(fltk3::DAMAGE_ALL, X, Y, w() + 2, h() + 2);
     }
 
-    if (align() && !(align() & FL_ALIGN_INSIDE) && window()->shown()) {
+    if (align() && !(align() & fltk3::ALIGN_INSIDE) && window()->shown()) {
       // If the label is not inside the widget, compute the location of
       // the label and redraw the window within that bounding box...
       int W = 0, H = 0;
@@ -1430,36 +1430,36 @@ void fltk3::Widget::redraw_label() {
       // This assumes the measure() returns the correct outline, which it does 
       // not in all possible cases of alignment combinedwith image and symbols.
       switch (align() & 0x0f) {
-        case FL_ALIGN_TOP_LEFT:
-          window()->damage(FL_DAMAGE_EXPOSE, x(), y()-H, W, H); break;
-        case FL_ALIGN_TOP:
-          window()->damage(FL_DAMAGE_EXPOSE, x()+(w()-W)/2, y()-H, W, H); break;
-        case FL_ALIGN_TOP_RIGHT:
-          window()->damage(FL_DAMAGE_EXPOSE, x()+w()-W, y()-H, W, H); break;
-        case FL_ALIGN_LEFT_TOP:
-          window()->damage(FL_DAMAGE_EXPOSE, x()-W, y(), W, H); break;
-        case FL_ALIGN_RIGHT_TOP:
-          window()->damage(FL_DAMAGE_EXPOSE, x()+w(), y(), W, H); break;
-        case FL_ALIGN_LEFT:
-          window()->damage(FL_DAMAGE_EXPOSE, x()-W, y()+(h()-H)/2, W, H); break;
-        case FL_ALIGN_RIGHT:
-          window()->damage(FL_DAMAGE_EXPOSE, x()+w(), y()+(h()-H)/2, W, H); break;
-        case FL_ALIGN_LEFT_BOTTOM:
-          window()->damage(FL_DAMAGE_EXPOSE, x()-W, y()+h()-H, W, H); break;
-        case FL_ALIGN_RIGHT_BOTTOM:
-          window()->damage(FL_DAMAGE_EXPOSE, x()+w(), y()+h()-H, W, H); break;
-        case FL_ALIGN_BOTTOM_LEFT:
-          window()->damage(FL_DAMAGE_EXPOSE, x(), y()+h(), W, H); break;
-        case FL_ALIGN_BOTTOM:
-          window()->damage(FL_DAMAGE_EXPOSE, x()+(w()-W)/2, y()+h(), W, H); break;
-        case FL_ALIGN_BOTTOM_RIGHT:
-          window()->damage(FL_DAMAGE_EXPOSE, x()+w()-W, y()+h(), W, H); break;
+        case fltk3::ALIGN_TOP_LEFT:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x(), y()-H, W, H); break;
+        case fltk3::ALIGN_TOP:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()+(w()-W)/2, y()-H, W, H); break;
+        case fltk3::ALIGN_TOP_RIGHT:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()+w()-W, y()-H, W, H); break;
+        case fltk3::ALIGN_LEFT_TOP:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()-W, y(), W, H); break;
+        case fltk3::ALIGN_RIGHT_TOP:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()+w(), y(), W, H); break;
+        case fltk3::ALIGN_LEFT:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()-W, y()+(h()-H)/2, W, H); break;
+        case fltk3::ALIGN_RIGHT:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()+w(), y()+(h()-H)/2, W, H); break;
+        case fltk3::ALIGN_LEFT_BOTTOM:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()-W, y()+h()-H, W, H); break;
+        case fltk3::ALIGN_RIGHT_BOTTOM:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()+w(), y()+h()-H, W, H); break;
+        case fltk3::ALIGN_BOTTOM_LEFT:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x(), y()+h(), W, H); break;
+        case fltk3::ALIGN_BOTTOM:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()+(w()-W)/2, y()+h(), W, H); break;
+        case fltk3::ALIGN_BOTTOM_RIGHT:
+          window()->damage(fltk3::DAMAGE_EXPOSE, x()+w()-W, y()+h(), W, H); break;
         default:
-          window()->damage(FL_DAMAGE_ALL); break;
+          window()->damage(fltk3::DAMAGE_ALL); break;
       }
     } else {
       // The label is inside the widget, so just redraw the widget itself...
-      damage(FL_DAMAGE_ALL);
+      damage(fltk3::DAMAGE_ALL);
     }
   }
 }
@@ -1474,18 +1474,18 @@ void fltk3::Widget::damage(uchar fl) {
     if (!i) return; // window not mapped, so ignore it
     if (i->region) {XDestroyRegion(i->region); i->region = 0;}
     damage_ |= fl;
-    fltk3::damage(FL_DAMAGE_CHILD);
+    fltk3::damage(fltk3::DAMAGE_CHILD);
   }
 }
 
 void fltk3::Widget::damage(uchar fl, int X, int Y, int W, int H) {
   fltk3::Widget* wi = this;
-  // mark all parent widgets between this and window with FL_DAMAGE_CHILD:
+  // mark all parent widgets between this and window with fltk3::DAMAGE_CHILD:
   while (wi->type() < FL_WINDOW) {
     wi->damage_ |= fl;
     wi = wi->parent();
     if (!wi) return;
-    fl = FL_DAMAGE_CHILD;
+    fl = fltk3::DAMAGE_CHILD;
   }
   Fl_X* i = Fl_X::i((fltk3::Window*)wi);
   if (!i) return; // window not mapped, so ignore it
@@ -1535,11 +1535,11 @@ void fltk3::Widget::damage(uchar fl, int X, int Y, int W, int H) {
     i->region = XRectangleRegion(X,Y,W,H);
     wi->damage_ = fl;
   }
-  fltk3::damage(FL_DAMAGE_CHILD);
+  fltk3::damage(fltk3::DAMAGE_CHILD);
 }
 void fltk3::Window::flush() {
   make_current();
-//if (damage() == FL_DAMAGE_EXPOSE && can_boxcheat(box())) fl_boxcheat = this;
+//if (damage() == fltk3::DAMAGE_EXPOSE && can_boxcheat(box())) fl_boxcheat = this;
   fl_clip_region(i->region); i->region = 0;
   draw();
 }

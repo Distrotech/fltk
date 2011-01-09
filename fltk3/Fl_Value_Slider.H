@@ -42,7 +42,7 @@
 class FL_EXPORT Fl_Value_Slider : public Fl_Slider {
     fltk3::Font textfont_;
     fltk3::Fontsize textsize_;
-    Fl_Color textcolor_;
+    fltk3::Color textcolor_;
 protected:
     void draw();
 public:
@@ -57,9 +57,9 @@ public:
     /**    Sets the size of the text in the value box.  */
     void textsize(fltk3::Fontsize s) {textsize_ = s;}
     /**    Gets the color of the text in the value box.  */
-    Fl_Color textcolor() const {return textcolor_;}
+    fltk3::Color textcolor() const {return textcolor_;}
     /**    Sets the color of the text in the value box.  */
-    void textcolor(Fl_Color s) {textcolor_ = s;}
+    void textcolor(fltk3::Color s) {textcolor_ = s;}
 };
 
 #endif

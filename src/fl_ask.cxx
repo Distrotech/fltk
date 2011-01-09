@@ -88,7 +88,7 @@ static fltk3::Window *makeform() {
  // w->clear_border();
  // w->box(fltk3::UP_BOX);
  (message = new fltk3::Box(60, 25, 340, 20))
-   ->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
+   ->align(fltk3::ALIGN_LEFT|fltk3::ALIGN_INSIDE|fltk3::ALIGN_WRAP);
  (input = new Fl_Input(60, 37, 340, 23))->hide();
  {fltk3::Box* o = icon = new fltk3::Box(10, 10, 50, 50);
   o->box(fltk3::THIN_UP_BOX);
@@ -103,7 +103,7 @@ static fltk3::Window *makeform() {
      button[b] = new Fl_Return_Button(x, 70, 90, 23);
    else
      button[b] = new Fl_Button(x, 70, 90, 23);
-   button[b]->align(FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
+   button[b]->align(fltk3::ALIGN_INSIDE|fltk3::ALIGN_WRAP);
    button[b]->callback(button_cb,(void *)b);
  }
  button[0]->shortcut(FL_Escape);

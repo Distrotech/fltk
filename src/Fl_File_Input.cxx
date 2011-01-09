@@ -46,7 +46,7 @@
 // Redraw bit for directory bar...
 //
 
-#define FL_DAMAGE_BAR	0x10
+static const unsigned int DAMAGE_BAR	= 0x10;
 
 
 /**
@@ -73,7 +73,7 @@ void Fl_File_Input::draw_buttons() {
 	X;					// Current X position
 
 
-  if (damage() & (FL_DAMAGE_BAR | FL_DAMAGE_ALL)) {
+  if (damage() & (DAMAGE_BAR | fltk3::DAMAGE_ALL)) {
     update_buttons();
   }
 
@@ -148,7 +148,7 @@ void Fl_File_Input::update_buttons() {
 int						// O - TRUE on success
 Fl_File_Input::value(const char *str,		// I - New string value
                      int        len) {		// I - Length of value
-  damage(FL_DAMAGE_BAR);
+  damage(DAMAGE_BAR);
   return Fl_Input::value(str,len);
 }
 
@@ -160,7 +160,7 @@ Fl_File_Input::value(const char *str,		// I - New string value
 */
 int						// O - TRUE on success
 Fl_File_Input::value(const char *str) {		// I - New string value
-  damage(FL_DAMAGE_BAR);
+  damage(DAMAGE_BAR);
   return Fl_Input::value(str);
 }
 
@@ -170,11 +170,11 @@ Fl_File_Input::value(const char *str) {		// I - New string value
 */
 void Fl_File_Input::draw() {
   fltk3::Boxtype b = box();
-  if (damage() & (FL_DAMAGE_BAR | FL_DAMAGE_ALL)) draw_buttons();
+  if (damage() & (DAMAGE_BAR | fltk3::DAMAGE_ALL)) draw_buttons();
   // this flag keeps Fl_Input_::drawtext from drawing a bogus box!
   char must_trick_fl_input_ = 
-    fltk3::focus()!=this && !size() && !(damage()&FL_DAMAGE_ALL);
-  if ((damage() & FL_DAMAGE_ALL) || must_trick_fl_input_) 
+    fltk3::focus()!=this && !size() && !(damage()&fltk3::DAMAGE_ALL);
+  if ((damage() & fltk3::DAMAGE_ALL) || must_trick_fl_input_) 
     draw_box(b,x(),y()+DIR_HEIGHT,w(),h()-DIR_HEIGHT,color());
   if (!must_trick_fl_input_) 
     Fl_Input_::drawtext(x()+fltk3::box_dx(b)+3, y()+fltk3::box_dy(b)+DIR_HEIGHT,
@@ -199,9 +199,9 @@ Fl_File_Input::handle(int event) 		// I - Event
     case FL_ENTER :
       if (active_r()) {
 	if (fltk3::event_y() < (y() + DIR_HEIGHT)) 
-          window()->cursor(FL_CURSOR_DEFAULT);
+          window()->cursor(fltk3::CURSOR_DEFAULT);
 	else 
-          window()->cursor(FL_CURSOR_INSERT);
+          window()->cursor(fltk3::CURSOR_INSERT);
       }
 
       return 1;
@@ -219,7 +219,7 @@ Fl_File_Input::handle(int event) 		// I - Event
       { Fl_Widget_Tracker wp(this);
 	if (Fl_Input::handle(event)) {
 	  if (wp.exists())
-	    damage(FL_DAMAGE_BAR);
+	    damage(DAMAGE_BAR);
 	  return 1;
 	}
       }
@@ -286,7 +286,7 @@ Fl_File_Input::handle_button(int event)		// I - Event
 
     // Then do the callbacks, if necessary...
     set_changed();
-    if (when() & (FL_WHEN_CHANGED|FL_WHEN_RELEASE) ) do_callback();
+    if (when() & (fltk3::WHEN_CHANGED|fltk3::WHEN_RELEASE) ) do_callback();
   }
 
   return 1;

@@ -213,8 +213,8 @@ private:
   int _redraw_botrow;
   int _redraw_leftcol;
   int _redraw_rightcol;
-  Fl_Color _row_header_color;
-  Fl_Color _col_header_color;
+  fltk3::Color _row_header_color;
+  fltk3::Color _col_header_color;
   
   int _auto_drag;
   int _selecting;
@@ -257,7 +257,7 @@ private:
   IntVector _colwidths;			// column widths in pixels
   IntVector _rowheights;		// row heights in pixels
   
-  Fl_Cursor _last_cursor;		// last mouse cursor before changed to 'resize' cursor
+  fltk3::Cursor _last_cursor;		// last mouse cursor before changed to 'resize' cursor
   
   // EVENT CALLBACK DATA
   TableContext _callback_context;	// event context
@@ -319,7 +319,7 @@ protected:
   void table_scrolled();			// table scrolled; recalc
   void get_bounds(TableContext context,		// return x/y/w/h bounds for context
                   int &X, int &Y, int &W, int &H);
-  void change_cursor(Fl_Cursor newcursor);	// change mouse cursor to some other shape
+  void change_cursor(fltk3::Cursor newcursor);	// change mouse cursor to some other shape
   TableContext cursor2rowcol(int &R, int &C, ResizeFlag &resizeflag);
   // find r/c given current x/y event
   int find_cell(TableContext context,		// find cell's x/y/w/h given r/c
@@ -407,7 +407,7 @@ protected:
 	       {
 		   fl_draw_box(FL_THIN_UP_BOX, X, Y, W, H, color());
 		   fl_color(FL_BLACK);
-		   fl_draw(s, X, Y, W, H, FL_ALIGN_CENTER);
+		   fl_draw(s, X, Y, W, H, fltk3::ALIGN_CENTER);
 	       }
 	       fl_pop_clip();
 	       return;
@@ -421,7 +421,7 @@ protected:
 		   
 		   // TEXT
 		   fl_color(FL_BLACK);
-		   fl_draw(s, X, Y, W, H, FL_ALIGN_CENTER);
+		   fl_draw(s, X, Y, W, H, fltk3::ALIGN_CENTER);
 		   
 		   // BORDER
 		   fl_color(FL_LIGHT2);
@@ -468,7 +468,7 @@ protected:
     }
     
     // Indicate partial redraw needed of some cells
-    damage(FL_DAMAGE_CHILD);
+    damage(fltk3::DAMAGE_CHILD);
   }
   
 public:
@@ -712,7 +712,7 @@ public:
   /**
    Sets the row header color and causes the screen to redraw.
    */
-  inline void row_header_color(Fl_Color val) {	// set/get row header color
+  inline void row_header_color(fltk3::Color val) {	// set/get row header color
     _row_header_color = val;
     redraw();
   }
@@ -720,14 +720,14 @@ public:
   /**
    Returns the current row header color.
    */
-  inline Fl_Color row_header_color() {
+  inline fltk3::Color row_header_color() {
     return(_row_header_color);
   } 
   
   /**
    Sets the color for column headers and redraws the table.
    */
-  inline void col_header_color(Fl_Color val) {	// set/get col header color
+  inline void col_header_color(fltk3::Color val) {	// set/get col header color
     _col_header_color = val;
     redraw();
   }
@@ -735,7 +735,7 @@ public:
   /**
    Gets the color for column headers.
    */
-  inline Fl_Color col_header_color() {
+  inline fltk3::Color col_header_color() {
     return(_col_header_color);
   }
   
@@ -743,7 +743,7 @@ public:
    Sets the height of the specified row in pixels,
    and the table is redrawn.
    callback() will be invoked with CONTEXT_RC_RESIZE
-   if the row's height was actually changed, and when() is FL_WHEN_CHANGED.
+   if the row's height was actually changed, and when() is fltk3::WHEN_CHANGED.
    */
   void row_height(int row, int height);		// set/get row height
   
@@ -757,7 +757,7 @@ public:
   /**
    Sets the width of the specified column in pixels, and the table is redrawn.
    callback() will be invoked with CONTEXT_RC_RESIZE
-   if the column's width was actually changed, and when() is FL_WHEN_CHANGED.
+   if the column's width was actually changed, and when() is fltk3::WHEN_CHANGED.
    */   
   void col_width(int col, int width);		// set/get a column's width
   
@@ -967,14 +967,14 @@ public:
    
    <table border=1>
    <tr>
-   <td>\p FL_WHEN_CHANGED</td>
+   <td>\p fltk3::WHEN_CHANGED</td>
    <td>
    callback() will be called when rows or columns are resized (interactively or 
    via col_width() or row_height()), passing CONTEXT_RC_RESIZE via 
    callback_context().
    </td>
    </tr><tr>
-   <td>\p FL_WHEN_RELEASE</td>
+   <td>\p fltk3::WHEN_RELEASE</td>
    <td>
    callback() will be called during FL_RELEASE events, such as when someone 
    releases a mouse button somewhere on the table.
@@ -989,7 +989,7 @@ public:
    also look at the regular fltk event values (ie. fltk3::event() and fltk3::button()) 
    to determine what kind of event is occurring.
    */
-  void when(Fl_When flags);
+  void when(fltk3::When flags);
 #endif
   
 #if FL_DOXYGEN
@@ -1021,7 +1021,7 @@ public:
    Someone clicked on a cell.
    
    To receive callbacks for FL_RELEASE events, you must set
-   when(FL_WHEN_RELEASE).
+   when(fltk3::WHEN_RELEASE).
    </td>
    </tr><tr>
    <td><tt>Fl_Table::CONTEXT_RC_RESIZE</tt></td>
@@ -1036,7 +1036,7 @@ public:
    
    If resizing a row, C=0 and R=row being resized.
    
-   NOTE: To receive resize events, you must set when(FL_WHEN_CHANGED).
+   NOTE: To receive resize events, you must set when(fltk3::WHEN_CHANGED).
    </td>
    </tr>
    </table>
@@ -1065,7 +1065,7 @@ public:
      MyTable() {
        [..]
        table.callback(&event_callback, (void*)this);   // setup callback
-       table.when(FL_WHEN_CHANGED|FL_WHEN_RELEASE);    // when to call it
+       table.when(fltk3::WHEN_CHANGED|fltk3::WHEN_RELEASE);    // when to call it
      }
    };
    \endcode

@@ -289,7 +289,7 @@ static void gl_draw_invert(const char* str, int n, int x, int y) {
 void gl_draw(
   const char* str, 	// the (multi-line) string
   int x, int y, int w, int h, 	// bounding box
-  Fl_Align align) {
+  fltk3::Align align) {
   fl_draw(str, x, -y-h, w, h, align, gl_draw_invert);
 }
 
@@ -324,7 +324,7 @@ extern int fl_overlay_depth;
   For color-index modes it will use fl_xpixel(c), which is only
   right if the window uses the default colormap!
   */
-void gl_color(Fl_Color i) {
+void gl_color(fltk3::Color i) {
 #if HAVE_GL_OVERLAY
 #if defined(WIN32)
   if (fl_overlay && fl_overlay_depth) {

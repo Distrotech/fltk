@@ -41,7 +41,7 @@ void Fl_Value_Input::input_cb(fltk3::Widget*, void* v) {
   double nv;
   if ((t.step() - floor(t.step()))>0.0 || t.step() == 0.0) nv = strtod(t.input.value(), 0);
   else nv = strtol(t.input.value(), 0, 0);
-  if (nv != t.value() || t.when() & FL_WHEN_NOT_CHANGED) {
+  if (nv != t.value() || t.when() & fltk3::WHEN_NOT_CHANGED) {
     t.set_value(nv);
     t.set_changed();
     if (t.when()) t.do_callback();
@@ -49,7 +49,7 @@ void Fl_Value_Input::input_cb(fltk3::Widget*, void* v) {
 }
 
 void Fl_Value_Input::draw() {
-  if (damage()&~FL_DAMAGE_CHILD) input.clear_damage(FL_DAMAGE_ALL);
+  if (damage()&~fltk3::DAMAGE_CHILD) input.clear_damage(fltk3::DAMAGE_ALL);
   input.box(box());
   input.color(color(), selection_color());
   fltk3::Widget *i = &input; i->draw(); // calls protected input.draw()
@@ -129,11 +129,11 @@ Fl_Value_Input::Fl_Value_Input(int X, int Y, int W, int H, const char* l)
     input.parent()->remove(input);
   input.parent((fltk3::Group *)this); // kludge!
   input.callback(input_cb, this);
-  input.when(FL_WHEN_CHANGED);
+  input.when(fltk3::WHEN_CHANGED);
   box(input.box());
   color(input.color());
   selection_color(input.selection_color());
-  align(FL_ALIGN_LEFT);
+  align(fltk3::ALIGN_LEFT);
   value_damage();
   set_flag(SHORTCUT_LABEL);
 }

@@ -410,7 +410,7 @@ Fl_Image *Fl_Pixmap::copy(int W, int H) {
   return new_image;
 }
 
-void Fl_Pixmap::color_average(Fl_Color c, float i) {
+void Fl_Pixmap::color_average(fltk3::Color c, float i) {
   // Delete any existing pixmap/mask objects...
   uncache();
 

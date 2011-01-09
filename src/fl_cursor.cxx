@@ -43,7 +43,7 @@
   Sets the cursor for the current window to the specified shape and colors.
   The cursors are defined in the <fltk3/Enumerations.H> header file. 
   */
-void fl_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void fl_cursor(fltk3::Cursor c, fltk3::Color fg, fltk3::Color bg) {
   if (fltk3::first_window()) fltk3::first_window()->cursor(c,fg,bg);
 }
 /** 
@@ -51,8 +51,8 @@ void fl_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 
     For back compatibility only.
 */
-void fltk3::Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
-//  if (c == FL_CURSOR_DEFAULT) c = FL_CURSOR_ARROW;
+void fltk3::Window::default_cursor(fltk3::Cursor c, fltk3::Color fg, fltk3::Color bg) {
+//  if (c == fltk3::CURSOR_DEFAULT) c = fltk3::CURSOR_ARROW;
 
   cursor_default = c;
   cursor_fg      = fg;
@@ -67,29 +67,29 @@ void fltk3::Window::default_cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
 #    define IDC_HAND	MAKEINTRESOURCE(32649)
 #  endif // !IDC_HAND
 
-void fltk3::Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
+void fltk3::Window::cursor(fltk3::Cursor c, fltk3::Color c1, fltk3::Color c2) {
   if (!shown()) return;
   // the cursor must be set for the top level window, not for subwindows
   fltk3::Window *w = window(), *toplevel = this;
   while (w) { toplevel = w; w = w->window(); }
   if (toplevel != this) { toplevel->cursor(c, c1, c2); return; }
   // now set the actual cursor
-  if (c == FL_CURSOR_DEFAULT) {
+  if (c == fltk3::CURSOR_DEFAULT) {
     c = cursor_default;
   }
-  if (c > FL_CURSOR_NESW) {
+  if (c > fltk3::CURSOR_NESW) {
     i->cursor = 0;
-  } else if (c == FL_CURSOR_DEFAULT) {
+  } else if (c == fltk3::CURSOR_DEFAULT) {
     i->cursor = fl_default_cursor;
   } else {
     LPSTR n;
     switch (c) {
-    case FL_CURSOR_ARROW:	n = IDC_ARROW; break;
-    case FL_CURSOR_CROSS:	n = IDC_CROSS; break;
-    case FL_CURSOR_WAIT:	n = IDC_WAIT; break;
-    case FL_CURSOR_INSERT:	n = IDC_IBEAM; break;
-    case FL_CURSOR_HELP:	n = IDC_HELP; break;
-    case FL_CURSOR_HAND: {
+    case fltk3::CURSOR_ARROW:	n = IDC_ARROW; break;
+    case fltk3::CURSOR_CROSS:	n = IDC_CROSS; break;
+    case fltk3::CURSOR_WAIT:	n = IDC_WAIT; break;
+    case fltk3::CURSOR_INSERT:	n = IDC_IBEAM; break;
+    case fltk3::CURSOR_HELP:	n = IDC_HELP; break;
+    case fltk3::CURSOR_HAND: {
           OSVERSIONINFO osvi;
 
           // Get the OS version: Windows 98 and 2000 have a standard
@@ -103,19 +103,19 @@ void fltk3::Window::cursor(Fl_Cursor c, Fl_Color c1, Fl_Color c2) {
   	       osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)) n = IDC_HAND;
           else n = IDC_UPARROW;
 	} break;
-    case FL_CURSOR_MOVE:	n = IDC_SIZEALL; break;
-    case FL_CURSOR_N:
-    case FL_CURSOR_S:
-    case FL_CURSOR_NS:		n = IDC_SIZENS; break;
-    case FL_CURSOR_NE:
-    case FL_CURSOR_SW:
-    case FL_CURSOR_NESW:	n = IDC_SIZENESW; break;
-    case FL_CURSOR_E:
-    case FL_CURSOR_W:
-    case FL_CURSOR_WE:		n = IDC_SIZEWE; break;
-    case FL_CURSOR_SE:
-    case FL_CURSOR_NW:
-    case FL_CURSOR_NWSE:	n = IDC_SIZENWSE; break;
+    case fltk3::CURSOR_MOVE:	n = IDC_SIZEALL; break;
+    case fltk3::CURSOR_N:
+    case fltk3::CURSOR_S:
+    case fltk3::CURSOR_NS:		n = IDC_SIZENS; break;
+    case fltk3::CURSOR_NE:
+    case fltk3::CURSOR_SW:
+    case fltk3::CURSOR_NESW:	n = IDC_SIZENESW; break;
+    case fltk3::CURSOR_E:
+    case fltk3::CURSOR_W:
+    case fltk3::CURSOR_WE:		n = IDC_SIZEWE; break;
+    case fltk3::CURSOR_SE:
+    case fltk3::CURSOR_NW:
+    case fltk3::CURSOR_NWSE:	n = IDC_SIZENWSE; break;
     default:			n = IDC_NO; break;
     }
     i->cursor = LoadCursor(NULL, n);
@@ -227,8 +227,8 @@ CGContextRef Fl_X::nwse_cursor_image(void)
   return (CGContextRef)off;
 }
 
-void fltk3::Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color) {
-  if (c == FL_CURSOR_DEFAULT) {
+void fltk3::Window::cursor(fltk3::Cursor c, fltk3::Color, fltk3::Color) {
+  if (c == fltk3::CURSOR_DEFAULT) {
     c = cursor_default;
   }
   if (i) i->set_cursor(c);
@@ -245,7 +245,7 @@ static struct TableEntry {
   uchar mask[CURSORSIZE*CURSORSIZE/8];
   Cursor cursor;
 } table[] = {
-  {{	// FL_CURSOR_NS
+  {{	// fltk3::CURSOR_NS
    0x00, 0x00, 0x80, 0x01, 0xc0, 0x03, 0xe0, 0x07, 0x80, 0x01, 0x80, 0x01,
    0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01,
    0xe0, 0x07, 0xc0, 0x03, 0x80, 0x01, 0x00, 0x00},
@@ -253,7 +253,7 @@ static struct TableEntry {
    0x80, 0x01, 0xc0, 0x03, 0xe0, 0x07, 0xf0, 0x0f, 0xf0, 0x0f, 0xc0, 0x03,
    0xc0, 0x03, 0xc0, 0x03, 0xc0, 0x03, 0xc0, 0x03, 0xc0, 0x03, 0xf0, 0x0f,
    0xf0, 0x0f, 0xe0, 0x07, 0xc0, 0x03, 0x80, 0x01}},
-  {{	// FL_CURSOR_EW
+  {{	// fltk3::CURSOR_EW
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x10,
    0x0c, 0x30, 0xfe, 0x7f, 0xfe, 0x7f, 0x0c, 0x30, 0x08, 0x10, 0x00, 0x00,
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -261,7 +261,7 @@ static struct TableEntry {
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x18, 0x1c, 0x38,
    0xfe, 0x7f, 0xff, 0xff, 0xff, 0xff, 0xfe, 0x7f, 0x1c, 0x38, 0x18, 0x18,
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-  {{	// FL_CURSOR_NWSE
+  {{	// fltk3::CURSOR_NWSE
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78, 0x00, 0x38, 0x00, 0x78, 0x00,
    0xe8, 0x00, 0xc0, 0x01, 0x80, 0x03, 0x00, 0x17, 0x00, 0x1e, 0x00, 0x1c,
    0x00, 0x1e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -269,7 +269,7 @@ static struct TableEntry {
    0x00, 0x00, 0x00, 0x00, 0xfc, 0x00, 0xfc, 0x00, 0x7c, 0x00, 0xfc, 0x00,
    0xfc, 0x01, 0xec, 0x03, 0xc0, 0x37, 0x80, 0x3f, 0x00, 0x3f, 0x00, 0x3e,
    0x00, 0x3f, 0x00, 0x3f, 0x00, 0x00, 0x00, 0x00}},
-  {{	// FL_CURSOR_NESW
+  {{	// fltk3::CURSOR_NESW
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1e, 0x00, 0x1c, 0x00, 0x1e,
    0x00, 0x17, 0x80, 0x03, 0xc0, 0x01, 0xe8, 0x00, 0x78, 0x00, 0x38, 0x00,
    0x78, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -277,14 +277,14 @@ static struct TableEntry {
    0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0x00, 0x3f, 0x00, 0x3e, 0x00, 0x3f,
    0x80, 0x3f, 0xc0, 0x37, 0xec, 0x03, 0xfc, 0x01, 0xfc, 0x00, 0x7c, 0x00,
    0xfc, 0x00, 0xfc, 0x00, 0x00, 0x00, 0x00, 0x00}},
-  {{0}, {0}} // FL_CURSOR_NONE & unknown
+  {{0}, {0}} // fltk3::CURSOR_NONE & unknown
 };
 
-void fltk3::Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
+void fltk3::Window::cursor(fltk3::Cursor c, fltk3::Color fg, fltk3::Color bg) {
   if (!shown()) return;
   Cursor xc;
   int deleteit = 0;
-  if (c == FL_CURSOR_DEFAULT) {
+  if (c == fltk3::CURSOR_DEFAULT) {
     c  = cursor_default;
     fg = cursor_fg;
     bg = cursor_bg;
@@ -293,8 +293,8 @@ void fltk3::Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg) {
   if (!c) {
     xc = None;
   } else {
-    if (c >= FL_CURSOR_NS) {
-      TableEntry *q = (c > FL_CURSOR_NESW) ? table+4 : table+(c-FL_CURSOR_NS);
+    if (c >= fltk3::CURSOR_NS) {
+      TableEntry *q = (c > fltk3::CURSOR_NESW) ? table+4 : table+(c-fltk3::CURSOR_NS);
       if (!(q->cursor)) {
 	XColor dummy = { 0 };
 	Pixmap p = XCreateBitmapFromData(fl_display,

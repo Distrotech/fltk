@@ -87,7 +87,7 @@ int Fl_Roller::handle(int event) {
 }
 
 void Fl_Roller::draw() {
-  if (damage()&FL_DAMAGE_ALL) draw_box();
+  if (damage()&fltk3::DAMAGE_ALL) draw_box();
   int X = x()+fltk3::box_dx(box());
   int Y = y()+fltk3::box_dy(box());
   int W = w()-fltk3::box_dw(box())-1;
@@ -101,7 +101,7 @@ void Fl_Roller::draw() {
     int h1 = W/4+1; // distance from end that shading starts
     fl_color(color()); fl_rectf(X+h1,Y,W-2*h1,H);
     for (int i=0; h1; i++) {
-      fl_color((Fl_Color)(FL_GRAY-i-1));
+      fl_color((fltk3::Color)(FL_GRAY-i-1));
       int h2 = FL_GRAY-i-1 > FL_DARK3 ? 2*h1/3+1 : 0;
       fl_rectf(X+h2,Y,h1-h2,H);
       fl_rectf(X+W-h1,Y,h1-h2,H);
@@ -135,7 +135,7 @@ void Fl_Roller::draw() {
     int h1 = H/4+1; // distance from end that shading starts
     fl_color(color()); fl_rectf(X,Y+h1,W,H-2*h1);
     for (int i=0; h1; i++) {
-      fl_color((Fl_Color)(FL_GRAY-i-1));
+      fl_color((fltk3::Color)(FL_GRAY-i-1));
       int h2 = FL_GRAY-i-1 > FL_DARK3 ? 2*h1/3+1 : 0;
       fl_rectf(X,Y+h2,W,h1-h2);
       fl_rectf(X,Y+H-h1,W,h1-h2);

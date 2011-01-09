@@ -34,12 +34,12 @@
 
 float		Fl_Tooltip::delay_ = 1.0f;
 float		Fl_Tooltip::hoverdelay_ = 0.2f;
-Fl_Color	Fl_Tooltip::color_ = fl_color_cube(FL_NUM_RED - 1,
+fltk3::Color	Fl_Tooltip::color_ = fl_color_cube(FL_NUM_RED - 1,
 		                                   FL_NUM_GREEN - 1,
 						   FL_NUM_BLUE - 2);
-Fl_Color	Fl_Tooltip::textcolor_ = FL_BLACK;
+fltk3::Color	Fl_Tooltip::textcolor_ = FL_BLACK;
 fltk3::Font         Fl_Tooltip::font_ = fltk3::HELVETICA;
-fltk3::Fontsize     Fl_Tooltip::size_ = FL_NORMAL_SIZE;
+fltk3::Fontsize     Fl_Tooltip::size_ = fltk3::NORMAL_SIZE;
 
 #define MAX_WIDTH 400
 
@@ -79,7 +79,7 @@ void Fl_TooltipBox::layout() {
   fl_font(Fl_Tooltip::font(), Fl_Tooltip::size());
   int ww, hh;
   ww = MAX_WIDTH;
-  fl_measure(tip, ww, hh, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
+  fl_measure(tip, ww, hh, fltk3::ALIGN_LEFT|fltk3::ALIGN_WRAP|fltk3::ALIGN_INSIDE);
   ww += 6; hh += 6;
 
   // find position on the screen of the widget:
@@ -107,7 +107,7 @@ void Fl_TooltipBox::draw() {
   draw_box(fltk3::BORDER_BOX, 0, 0, w(), h(), Fl_Tooltip::color());
   fl_color(Fl_Tooltip::textcolor());
   fl_font(Fl_Tooltip::font(), Fl_Tooltip::size());
-  fl_draw(tip, 3, 3, w()-6, h()-6, Fl_Align(FL_ALIGN_LEFT|FL_ALIGN_WRAP));
+  fl_draw(tip, 3, 3, w()-6, h()-6, fltk3::Align(fltk3::ALIGN_LEFT|fltk3::ALIGN_WRAP));
 }
 
 static char recent_tooltip;
@@ -211,7 +211,7 @@ void Fl_Tooltip::exit_(fltk3::Widget *w) {
   fltk3::remove_timeout(recent_timeout);
   if (window && window->visible()) window->hide();
   if (recent_tooltip) {
-    if (fltk3::event_state() & FL_BUTTONS) recent_tooltip = 0;
+    if (fltk3::event_state() & fltk3::BUTTONS) recent_tooltip = 0;
     else fltk3::add_timeout(Fl_Tooltip::hoverdelay(), recent_timeout);
   }
 }

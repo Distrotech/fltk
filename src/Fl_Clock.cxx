@@ -42,7 +42,7 @@ const float hourhand[4][2] = {{-0.5f, 0}, {0, 1.5f}, {0.5f, 0}, {0, -7.0f}};
 const float  minhand[4][2] = {{-0.5f, 0}, {0, 1.5f}, {0.5f, 0}, {0, -11.5f}};
 const float  sechand[4][2] = {{-0.1f, 0}, {0, 2.0f}, {0.1f, 0}, {0, -11.5f}};
 
-static void drawhand(double ang,const float v[][2],Fl_Color fill,Fl_Color line)
+static void drawhand(double ang,const float v[][2],fltk3::Color fill,fltk3::Color line)
 {
   fl_push_matrix();
   fl_rotate(ang);
@@ -53,7 +53,7 @@ static void drawhand(double ang,const float v[][2],Fl_Color fill,Fl_Color line)
   fl_pop_matrix();
 }
 
-void Fl_Clock_Output::drawhands(Fl_Color fill, Fl_Color line) {
+void Fl_Clock_Output::drawhands(fltk3::Color fill, fltk3::Color line) {
   if (!active_r()) {
     fill = fl_inactive(fill);
     line = fl_inactive(line);
@@ -79,8 +79,8 @@ static void rect(double x, double y, double w, double h) {
   \param[in] X, Y, W, H position and size
 */
 void Fl_Clock_Output::draw(int X, int Y, int W, int H) {
-  Fl_Color box_color = type()==FL_ROUND_CLOCK ? FL_GRAY : color();
-  Fl_Color shadow_color = fl_color_average(box_color, FL_BLACK, 0.5);
+  fltk3::Color box_color = type()==FL_ROUND_CLOCK ? FL_GRAY : color();
+  fltk3::Color shadow_color = fl_color_average(box_color, FL_BLACK, 0.5);
   draw_box(box(), X, Y, W, H, box_color);
   fl_push_matrix();
   fl_translate(X+W/2.0-.5, Y+H/2.0-.5);
@@ -129,7 +129,7 @@ void Fl_Clock_Output::value(int H, int m, int s) {
   if (H!=hour_ || m!=minute_ || s!=second_) {
     hour_ = H; minute_ = m; second_ = s;
     value_ = (H * 60 + m) * 60 + s;
-    damage(FL_DAMAGE_CHILD);
+    damage(fltk3::DAMAGE_CHILD);
   }
 }
 
@@ -158,7 +158,7 @@ Fl_Clock_Output::Fl_Clock_Output(int X, int Y, int W, int H, const char *L)
 : fltk3::Widget(X, Y, W, H, L) {
   box(fltk3::UP_BOX);
   selection_color(fl_gray_ramp(5));
-  align(FL_ALIGN_BOTTOM);
+  align(fltk3::ALIGN_BOTTOM);
   hour_ = 0;
   minute_ = 0;
   second_ = 0;

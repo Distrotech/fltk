@@ -104,8 +104,8 @@ void Fl_Tile::resize(int X,int Y,int W,int H) {
   }
 }
 
-static void set_cursor(Fl_Tile*t, Fl_Cursor c) {
-  static Fl_Cursor cursor;
+static void set_cursor(Fl_Tile*t, fltk3::Cursor c) {
+  static fltk3::Cursor cursor;
   if (cursor == c || !t->window()) return;
   cursor = c;
 #ifdef __sgi
@@ -115,11 +115,11 @@ static void set_cursor(Fl_Tile*t, Fl_Cursor c) {
 #endif
 }
 
-static Fl_Cursor cursors[4] = {
-  FL_CURSOR_DEFAULT,
-  FL_CURSOR_WE,
-  FL_CURSOR_NS,
-  FL_CURSOR_MOVE};
+static fltk3::Cursor cursors[4] = {
+  fltk3::CURSOR_DEFAULT,
+  fltk3::CURSOR_WE,
+  fltk3::CURSOR_NS,
+  fltk3::CURSOR_MOVE};
 
 int Fl_Tile::handle(int event) {
   static int sdrag;
@@ -176,7 +176,7 @@ int Fl_Tile::handle(int event) {
   }
 
   case FL_LEAVE:
-    set_cursor(this, FL_CURSOR_DEFAULT);
+    set_cursor(this, fltk3::CURSOR_DEFAULT);
     break;
 
   case FL_DRAG:

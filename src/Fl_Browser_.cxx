@@ -83,12 +83,12 @@ void Fl_Browser_::bbox(int& X, int& Y, int& W, int& H) const {
   H = h()-fltk3::box_dh(b);
   if (scrollbar.visible()) {
     W -= scrollsize;
-    if (scrollbar.align() & FL_ALIGN_LEFT) X += scrollsize;
+    if (scrollbar.align() & fltk3::ALIGN_LEFT) X += scrollsize;
   }
   if (W < 0) W = 0;
   if (hscrollbar.visible()) {
     H -= scrollsize;
-    if (scrollbar.align() & FL_ALIGN_TOP) Y += scrollsize;
+    if (scrollbar.align() & fltk3::ALIGN_TOP) Y += scrollsize;
   }
   if (H < 0) H = 0;
 }
@@ -117,10 +117,10 @@ void Fl_Browser_::resize(int X, int Y, int W, int H) {
   // move the scrollbars so they can respond to events:
   bbox(X,Y,W,H);
   scrollbar.resize(
-	scrollbar.align()&FL_ALIGN_LEFT ? X-scrollsize : X+W,
+	scrollbar.align()&fltk3::ALIGN_LEFT ? X-scrollsize : X+W,
 	Y, scrollsize, H);
   hscrollbar.resize(
-	X, scrollbar.align()&FL_ALIGN_TOP ? Y-scrollsize : Y+H,
+	X, scrollbar.align()&fltk3::ALIGN_TOP ? Y-scrollsize : Y+H,
 	W, scrollsize);
 }
 
@@ -132,9 +132,9 @@ void Fl_Browser_::resize(int X, int Y, int W, int H) {
   \see redraw_lines(), redraw_line()
 */
 void Fl_Browser_::redraw_line(void* item) {
-  if (!redraw1 || redraw1 == item) {redraw1 = item; damage(FL_DAMAGE_EXPOSE);}
-  else if (!redraw2 || redraw2 == item) {redraw2 = item; damage(FL_DAMAGE_EXPOSE);}
-  else damage(FL_DAMAGE_SCROLL);
+  if (!redraw1 || redraw1 == item) {redraw1 = item; damage(fltk3::DAMAGE_EXPOSE);}
+  else if (!redraw2 || redraw2 == item) {redraw2 = item; damage(fltk3::DAMAGE_EXPOSE);}
+  else damage(fltk3::DAMAGE_SCROLL);
 }
 
 // Figure out top() based on position():
@@ -187,7 +187,7 @@ void Fl_Browser_::update_top() {
       offset_ = yy-ly;
       real_position_ = yy;
     }
-    damage(FL_DAMAGE_SCROLL);
+    damage(fltk3::DAMAGE_SCROLL);
   }
 }
 
@@ -342,7 +342,7 @@ void Fl_Browser_::draw() {
   int X, Y, W, H; bbox(X, Y, W, H);
   int dont_repeat = 0;
 J1:
-  if (damage() & FL_DAMAGE_ALL) { // redraw the box if full redraw
+  if (damage() & fltk3::DAMAGE_ALL) { // redraw the box if full redraw
     fltk3::Boxtype b = box() ? box() : fltk3::DOWN_BOX;
     draw_box(b, x(), y(), w(), h(), color());
     drawsquare = 1;
@@ -359,7 +359,7 @@ J1:
     top_ = item_first(); real_position_ = offset_ = 0;
     if (scrollbar.visible()) {
       scrollbar.clear_visible();
-      clear_damage((uchar)(damage()|FL_DAMAGE_SCROLL));
+      clear_damage((uchar)(damage()|fltk3::DAMAGE_SCROLL));
     }
   }
 
@@ -374,7 +374,7 @@ J1:
     real_hposition_ = 0;
     if (hscrollbar.visible()) {
       hscrollbar.clear_visible();
-      clear_damage((uchar)(damage()|FL_DAMAGE_SCROLL));
+      clear_damage((uchar)(damage()|fltk3::DAMAGE_SCROLL));
     }
   }
 
@@ -392,7 +392,7 @@ J1:
     top_ = item_first(); real_position_ = offset_ = 0;
     if (scrollbar.visible()) {
       scrollbar.clear_visible();
-      clear_damage((uchar)(damage()|FL_DAMAGE_SCROLL));
+      clear_damage((uchar)(damage()|fltk3::DAMAGE_SCROLL));
     }
   }
 
@@ -406,11 +406,11 @@ J1:
   for (; l && yy < H; l = item_next(l)) {
     int hh = item_height(l);
     if (hh <= 0) continue;
-    if ((damage()&(FL_DAMAGE_SCROLL|FL_DAMAGE_ALL)) || l == redraw1 || l == redraw2) {
+    if ((damage()&(fltk3::DAMAGE_SCROLL|fltk3::DAMAGE_ALL)) || l == redraw1 || l == redraw2) {
       if (item_selected(l)) {
 	fl_color(active_r() ? selection_color() : fl_inactive(selection_color()));
 	fl_rectf(X, yy+Y, W, hh);
-      } else if (!(damage()&FL_DAMAGE_ALL)) {
+      } else if (!(damage()&fltk3::DAMAGE_ALL)) {
 	fl_push_clip(X, yy+Y, W, hh);
 	draw_box(box() ? box() : fltk3::DOWN_BOX, x(), y(), w(), h(), color());
 	fl_pop_clip();
@@ -426,7 +426,7 @@ J1:
     yy += hh;
   }
   // erase the area below last line:
-  if (!(damage()&FL_DAMAGE_ALL) && yy < H) {
+  if (!(damage()&fltk3::DAMAGE_ALL) && yy < H) {
     fl_push_clip(X, yy+Y, W, H-yy);
     draw_box(box() ? box() : fltk3::DOWN_BOX, x(), y(), w(), h(), color());
     fl_pop_clip();
@@ -442,15 +442,15 @@ J1:
     full_width_ = full_width();
     if ((has_scrollbar_ & VERTICAL) &&
 	((has_scrollbar_ & ALWAYS_ON) || position_ || full_height_>H)) {
-      if (!scrollbar.visible()) { damage(FL_DAMAGE_ALL); goto J1; }
+      if (!scrollbar.visible()) { damage(fltk3::DAMAGE_ALL); goto J1; }
     } else {
-      if (scrollbar.visible()) { damage(FL_DAMAGE_ALL); goto J1; }
+      if (scrollbar.visible()) { damage(fltk3::DAMAGE_ALL); goto J1; }
     }
     if ((has_scrollbar_ & HORIZONTAL) &&
 	((has_scrollbar_ & ALWAYS_ON) || hposition_ || full_width_>W)) {
-      if (!hscrollbar.visible()) { damage(FL_DAMAGE_ALL); goto J1; }
+      if (!hscrollbar.visible()) { damage(fltk3::DAMAGE_ALL); goto J1; }
     } else {
-      if (hscrollbar.visible()) { damage(FL_DAMAGE_ALL); goto J1; }
+      if (hscrollbar.visible()) { damage(fltk3::DAMAGE_ALL); goto J1; }
     }
   }
 
@@ -459,7 +459,7 @@ J1:
   int dy = top_ ? item_quick_height(top_) : 0; if (dy < 10) dy = 10;
   if (scrollbar.visible()) {
     scrollbar.damage_resize(
-	scrollbar.align()&FL_ALIGN_LEFT ? X-scrollsize : X+W,
+	scrollbar.align()&fltk3::ALIGN_LEFT ? X-scrollsize : X+W,
 	Y, scrollsize, H);
     scrollbar.value(position_, H, 0, full_height_);
     scrollbar.linesize(dy);
@@ -468,7 +468,7 @@ J1:
   }
   if (hscrollbar.visible()) {
     hscrollbar.damage_resize(
-	X, scrollbar.align()&FL_ALIGN_TOP ? Y-scrollsize : Y+H,
+	X, scrollbar.align()&fltk3::ALIGN_TOP ? Y-scrollsize : Y+H,
 	W, scrollsize);
     hscrollbar.value(hposition_, W, 0, full_width_);
     hscrollbar.linesize(dy);
@@ -736,20 +736,20 @@ int Fl_Browser_::handle(int event) {
         switch (fltk3::event_key()) {
         case FL_Enter:
         case FL_KP_Enter:
-          select_only(l, when() & ~FL_WHEN_ENTER_KEY);
+            select_only(l, when() & ~fltk3::WHEN_ENTER_KEY);
 	  if (wp.deleted()) return 1;
-	  if (when() & FL_WHEN_ENTER_KEY) {
+	  if (when() & fltk3::WHEN_ENTER_KEY) {
 	    set_changed();
 	    do_callback();
 	  }
           return 1;
         case ' ':
           selection_ = l;
-          select(l, !item_selected(l), when() & ~FL_WHEN_ENTER_KEY);
+            select(l, !item_selected(l), when() & ~fltk3::WHEN_ENTER_KEY);
           return 1;
         case FL_Down:
           while ((l = item_next(l))) {
-            if (fltk3::event_state(FL_SHIFT|FL_CTRL))
+            if (fltk3::event_state(fltk3::SHIFT|fltk3::CTRL))
               select(l, l1 ? item_selected(l1) : 1, when());
 	    if (wp.deleted()) return 1;
             if (item_height(l)>0) goto J1;
@@ -757,7 +757,7 @@ int Fl_Browser_::handle(int event) {
           return 1;
         case FL_Up:
           while ((l = item_prev(l))) {
-            if (fltk3::event_state(FL_SHIFT|FL_CTRL))
+            if (fltk3::event_state(fltk3::SHIFT|fltk3::CTRL))
               select(l, l1 ? item_selected(l1) : 1, when());
 	    if (wp.deleted()) return 1;
             if (item_height(l)>0) goto J1;
@@ -780,10 +780,10 @@ J1:
   int my;
 // NOTE:
 // instead of:
-//     change = select_only(find_item(my), when() & FL_WHEN_CHANGED)
+//     change = select_only(find_item(my), when() & fltk3::WHEN_CHANGED)
 // we use the construct:
 //     change = select_only(find_item(my), 0);
-//     if (change && (when() & FL_WHEN_CHANGED)) {
+//     if (change && (when() & fltk3::WHEN_CHANGED)) {
 //	 set_changed();
 //       do_callback();
 //     }
@@ -812,7 +812,7 @@ J1:
     else if (type() != FL_MULTI_BROWSER) {
       change = select_only(find_item(my), 0);
       if (wp.deleted()) return 1;
-      if (change && (when() & FL_WHEN_CHANGED)) {
+      if (change && (when() & fltk3::WHEN_CHANGED)) {
 	set_changed();
 	do_callback();
 	if (wp.deleted()) return 1;
@@ -820,19 +820,19 @@ J1:
     } else {
       void* l = find_item(my);
       whichway = 1;
-      if (fltk3::event_state(FL_CTRL)) { // toggle selection:
+      if (fltk3::event_state(fltk3::CTRL)) { // toggle selection:
       TOGGLE:
 	if (l) {
 	  whichway = !item_selected(l);
 	  change = select(l, whichway, 0);
 	  if (wp.deleted()) return 1;
-	  if (change && (when() & FL_WHEN_CHANGED)) {
+	  if (change && (when() & fltk3::WHEN_CHANGED)) {
 	    set_changed();
 	    do_callback();
 	    if (wp.deleted()) return 1;
 	  }
 	}
-      } else if (fltk3::event_state(FL_SHIFT)) { // extend selection:
+      } else if (fltk3::event_state(fltk3::SHIFT)) { // extend selection:
 	if (l == selection_) goto TOGGLE;
 	// state of previous selection determines new value:
 	whichway = l ? !item_selected(l) : 1;
@@ -846,25 +846,25 @@ J1:
 	}}
 	if (down) {
 	  for (void* m = selection_; m != l; m = item_next(m)) {
-	    select(m, whichway, when() & FL_WHEN_CHANGED);
+	    select(m, whichway, when() & fltk3::WHEN_CHANGED);
 	    if (wp.deleted()) return 1;
 	  }
 	} else {
 	  void* e = selection_;
 	  for (void* m = item_next(l); m; m = item_next(m)) {
-	    select(m, whichway, when() & FL_WHEN_CHANGED);
+	    select(m, whichway, when() & fltk3::WHEN_CHANGED);
 	    if (wp.deleted()) return 1;
 	    if (m == e) break;
 	  }
 	}
 	// do the clicked item last so the select box is around it:
 	change = 1;
-	if (l) select(l, whichway, when() & FL_WHEN_CHANGED);
+	if (l) select(l, whichway, when() & fltk3::WHEN_CHANGED);
 	if (wp.deleted()) return 1;
       } else { // select only this item
 	change = select_only(l, 0);
 	if (wp.deleted()) return 1;
-	if (change && (when() & FL_WHEN_CHANGED)) {
+	if (change && (when() & fltk3::WHEN_CHANGED)) {
 	  set_changed();
 	  do_callback();
 	  if (wp.deleted()) return 1;
@@ -902,7 +902,7 @@ J1:
 	change_t = select(t, whichway, 0);
 	if (wp.deleted()) return 1;
 	change |= change_t;
-	if (change_t && (when() & FL_WHEN_CHANGED)) {
+	if (change_t && (when() & fltk3::WHEN_CHANGED)) {
 	  set_changed();
 	  do_callback();
 	  if (wp.deleted()) return 1;
@@ -915,7 +915,7 @@ J1:
 	(fltk3::event_x()<x() || fltk3::event_x()>x()+w()) ? selection_ :
 	find_item(my);
       change = (l != l1);
-      select_only(l, when() & FL_WHEN_CHANGED);
+      select_only(l, when() & fltk3::WHEN_CHANGED);
       if (wp.deleted()) return 1;
     }
     py = my;
@@ -929,14 +929,14 @@ J1:
     }
     if (change) {
       set_changed();
-      if (when() & FL_WHEN_RELEASE) do_callback();
+      if (when() & fltk3::WHEN_RELEASE) do_callback();
     } else {
-      if (when() & FL_WHEN_NOT_CHANGED) do_callback();
+      if (when() & fltk3::WHEN_NOT_CHANGED) do_callback();
     }
     if (wp.deleted()) return 1;
 
     // double click calls the callback: (like Enter Key)
-    if (fltk3::event_clicks() && (when() & FL_WHEN_ENTER_KEY)) {
+    if (fltk3::event_clicks() && (when() & fltk3::WHEN_ENTER_KEY)) {
       set_changed();
       do_callback();
     }
@@ -963,20 +963,20 @@ Fl_Browser_::Fl_Browser_(int X, int Y, int W, int H, const char* L)
     hscrollbar(0, 0, 0, 0, 0)
 {
   box(fltk3::NO_BOX);
-  align(FL_ALIGN_BOTTOM);
+  align(fltk3::ALIGN_BOTTOM);
   position_ = real_position_ = 0;
   hposition_ = real_hposition_ = 0;
   offset_ = 0;
   top_ = 0;
-  when(FL_WHEN_RELEASE_ALWAYS);
+  when(fltk3::WHEN_RELEASE_ALWAYS);
   selection_ = 0;
   color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
   scrollbar.callback(scrollbar_callback);
-//scrollbar.align(FL_ALIGN_LEFT|FL_ALIGN_BOTTOM); // back compatibility?
+//scrollbar.align(fltk3::ALIGN_LEFT|fltk3::ALIGN_BOTTOM); // back compatibility?
   hscrollbar.callback(hscrollbar_callback);
   hscrollbar.type(FL_HORIZONTAL);
   textfont_ = fltk3::HELVETICA;
-  textsize_ = FL_NORMAL_SIZE;
+  textsize_ = fltk3::NORMAL_SIZE;
   textcolor_ = FL_FOREGROUND_COLOR;
   has_scrollbar_ = BOTH;
   max_width = 0;

@@ -232,8 +232,8 @@ static fltk3::Window *track_mouse_win=0;	// current TrackMouseEvent() window
 // A.S. Dec 2009: We got reports that current winsock2.h files define
 // POLLIN, POLLOUT, and POLLERR with conflicting values WRT what we
 // used before (STR #2301).  Therefore we must not use these values
-// for our internal purposes, but use FL_READ, FL_WRITE, and
-// FL_EXCEPT, as defined for use in fltk3::add_fd().
+// for our internal purposes, but use fltk3::READ, fltk3::WRITE, and
+// fltk3::EXCEPT, as defined for use in fltk3::add_fd().
 //
 static int maxfd = 0;
 static fd_set fdsets[3];
@@ -291,14 +291,14 @@ void fltk3::add_fd(int n, int events, void (*cb)(int, void*), void *v) {
   fd[i].cb = cb;
   fd[i].arg = v;
 
-  if (events & FL_READ) FD_SET((unsigned)n, &fdsets[0]);
-  if (events & FL_WRITE) FD_SET((unsigned)n, &fdsets[1]);
-  if (events & FL_EXCEPT) FD_SET((unsigned)n, &fdsets[2]);
+  if (events & fltk3::READ) FD_SET((unsigned)n, &fdsets[0]);
+  if (events & fltk3::WRITE) FD_SET((unsigned)n, &fdsets[1]);
+  if (events & fltk3::EXCEPT) FD_SET((unsigned)n, &fdsets[2]);
   if (n > maxfd) maxfd = n;
 }
 
 void fltk3::add_fd(int fd, void (*cb)(int, void*), void* v) {
-  fltk3::add_fd(fd, FL_READ, cb, v);
+  fltk3::add_fd(fd, fltk3::READ, cb, v);
 }
 
 void fltk3::remove_fd(int n, int events) {
@@ -317,9 +317,9 @@ void fltk3::remove_fd(int n, int events) {
   }
   nfds = j;
 
-  if (events & FL_READ) FD_CLR(unsigned(n), &fdsets[0]);
-  if (events & FL_WRITE) FD_CLR(unsigned(n), &fdsets[1]);
-  if (events & FL_EXCEPT) FD_CLR(unsigned(n), &fdsets[2]);
+  if (events & fltk3::READ) FD_CLR(unsigned(n), &fdsets[0]);
+  if (events & fltk3::WRITE) FD_CLR(unsigned(n), &fdsets[1]);
+  if (events & fltk3::EXCEPT) FD_CLR(unsigned(n), &fdsets[2]);
 }
 
 void fltk3::remove_fd(int n) {
@@ -373,9 +373,9 @@ int fl_wait(double time_to_wait) {
       for (int i = 0; i < nfds; i ++) {
 	SOCKET f = fd[i].fd;
 	short revents = 0;
-	if (fl_wsk_fd_is_set(f, &fdt[0])) revents |= FL_READ;
-	if (fl_wsk_fd_is_set(f, &fdt[1])) revents |= FL_WRITE;
-	if (fl_wsk_fd_is_set(f, &fdt[2])) revents |= FL_EXCEPT;
+	if (fl_wsk_fd_is_set(f, &fdt[0])) revents |= fltk3::READ;
+	if (fl_wsk_fd_is_set(f, &fdt[1])) revents |= fltk3::WRITE;
+	if (fl_wsk_fd_is_set(f, &fdt[2])) revents |= fltk3::EXCEPT;
 	if (fd[i].events & revents) fd[i].cb(f, fd[i].arg);
       }
       time_to_wait = 0.0; // just peek for any messages
@@ -665,12 +665,12 @@ static int mouse_event(fltk3::Window *window, int what, int button,
   ulong state = fltk3::e_state & 0xff0000; // keep shift key states
 #if 0
   // mouse event reports some shift flags, perhaps save them?
-  if (wParam & MK_SHIFT) state |= FL_SHIFT;
-  if (wParam & MK_CONTROL) state |= FL_CTRL;
+  if (wParam & MK_SHIFT) state |= fltk3::SHIFT;
+  if (wParam & MK_CONTROL) state |= fltk3::CTRL;
 #endif
-  if (wParam & MK_LBUTTON) state |= FL_BUTTON1;
-  if (wParam & MK_MBUTTON) state |= FL_BUTTON2;
-  if (wParam & MK_RBUTTON) state |= FL_BUTTON3;
+  if (wParam & MK_LBUTTON) state |= fltk3::BUTTON1;
+  if (wParam & MK_MBUTTON) state |= fltk3::BUTTON2;
+  if (wParam & MK_RBUTTON) state |= fltk3::BUTTON3;
   fltk3::e_state = state;
 
   switch (what) {
@@ -879,7 +879,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     if (window->type() == FL_DOUBLE_WINDOW) ValidateRgn(hWnd,0);
     else ValidateRgn(hWnd,i->region);
 
-    window->clear_damage((uchar)(window->damage()|FL_DAMAGE_EXPOSE));
+    window->clear_damage((uchar)(window->damage()|fltk3::DAMAGE_EXPOSE));
     // These next two statements should not be here, so that all update
     // is deferred until fltk3::flush() is called during idle.  However WIN32
     // apparently is very unhappy if we don't obey it and draw right now.
@@ -950,12 +950,12 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
       ulong state = 0;
       if (GetAsyncKeyState(VK_CAPITAL)) state |= FL_CAPS_LOCK;
-      if (GetAsyncKeyState(VK_NUMLOCK)) state |= FL_NUM_LOCK;
-      if (GetAsyncKeyState(VK_SCROLL)) state |= FL_SCROLL_LOCK;
-      if (GetAsyncKeyState(VK_CONTROL)&~1) state |= FL_CTRL;
-      if (GetAsyncKeyState(VK_SHIFT)&~1) state |= FL_SHIFT;
-      if (GetAsyncKeyState(VK_MENU)) state |= FL_ALT;
-      if ((GetAsyncKeyState(VK_LWIN)|GetAsyncKeyState(VK_RWIN))&~1) state |= FL_META;
+      if (GetAsyncKeyState(VK_NUMLOCK)) state |= fltk3::NUM_LOCK;
+      if (GetAsyncKeyState(VK_SCROLL)) state |= fltk3::SCROLL_LOCK;
+      if (GetAsyncKeyState(VK_CONTROL)&~1) state |= fltk3::CTRL;
+      if (GetAsyncKeyState(VK_SHIFT)&~1) state |= fltk3::SHIFT;
+      if (GetAsyncKeyState(VK_MENU)) state |= fltk3::ALT;
+      if ((GetAsyncKeyState(VK_LWIN)|GetAsyncKeyState(VK_RWIN))&~1) state |= fltk3::META;
       fltk3::e_state = state;
       return 0;
     }
@@ -993,21 +993,21 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
   case WM_SYSCHAR: {
     ulong state = fltk3::e_state & 0xff000000; // keep the mouse button state
     // if GetKeyState is expensive we might want to comment some of these out:
-    if (GetKeyState(VK_SHIFT)&~1) state |= FL_SHIFT;
+    if (GetKeyState(VK_SHIFT)&~1) state |= fltk3::SHIFT;
     if (GetKeyState(VK_CAPITAL)) state |= FL_CAPS_LOCK;
-    if (GetKeyState(VK_CONTROL)&~1) state |= FL_CTRL;
+    if (GetKeyState(VK_CONTROL)&~1) state |= fltk3::CTRL;
     // Alt gets reported for the Alt-GR switch on foreign keyboards.
     // so we need to check the event as well to get it right:
     if ((lParam&(1<<29)) //same as GetKeyState(VK_MENU)
-	&& uMsg != WM_CHAR) state |= FL_ALT;
-    if (GetKeyState(VK_NUMLOCK)) state |= FL_NUM_LOCK;
+	&& uMsg != WM_CHAR) state |= fltk3::ALT;
+    if (GetKeyState(VK_NUMLOCK)) state |= fltk3::NUM_LOCK;
     if ((GetKeyState(VK_LWIN)|GetKeyState(VK_RWIN))&~1) {
       // WIN32 bug?  GetKeyState returns garbage if the user hit the
       // meta key to pop up start menu.  Sigh.
       if ((GetAsyncKeyState(VK_LWIN)|GetAsyncKeyState(VK_RWIN))&~1)
-	state |= FL_META;
+	state |= fltk3::META;
     }
-    if (GetKeyState(VK_SCROLL)) state |= FL_SCROLL_LOCK;
+    if (GetKeyState(VK_SCROLL)) state |= fltk3::SCROLL_LOCK;
     fltk3::e_state = state;
     static char buffer[1024];
     if (uMsg == WM_CHAR || uMsg == WM_SYSCHAR) {
@@ -1019,7 +1019,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 
     } else if (fltk3::e_keysym >= FL_KP && fltk3::e_keysym <= FL_KP_Last) {
-      if (state & FL_NUM_LOCK) {
+      if (state & fltk3::NUM_LOCK) {
         // Convert to regular keypress...
 	buffer[0] = fltk3::e_keysym-FL_KP;
 	fltk3::e_length = 1;
@@ -1761,7 +1761,7 @@ void fltk3::Window::show() {
   image(fltk3::scheme_bg_);
   if (fltk3::scheme_bg_) {
     labeltype(FL_NORMAL_LABEL);
-    align(FL_ALIGN_CENTER | FL_ALIGN_INSIDE | FL_ALIGN_CLIP);
+    align(fltk3::ALIGN_CENTER | fltk3::ALIGN_INSIDE | fltk3::ALIGN_CLIP);
   } else {
     labeltype(FL_NO_LABEL);
   }

@@ -98,9 +98,9 @@ void Fl_Choice::draw() {
       l.font = m.labelsize_ || m.labelfont_ ? m.labelfont_ : textfont();
       l.size = m.labelsize_ ? m.labelsize_ : textsize();
       l.color= m.labelcolor_ ? m.labelcolor_ : textcolor();
-      if (!m.active()) l.color = fl_inactive((Fl_Color)l.color);
+      if (!m.active()) l.color = fl_inactive((fltk3::Color)l.color);
       fl_draw_shortcut = 2; // hack value to make '&' disappear
-      l.draw(xx+3, yy, ww>6 ? ww-6 : 0, hh, FL_ALIGN_LEFT);
+      l.draw(xx+3, yy, ww>6 ? ww-6 : 0, hh, fltk3::ALIGN_LEFT);
       fl_draw_shortcut = 0;
       if ( fltk3::focus() == this ) draw_focus(box(), xx, yy, ww, hh);
     }
@@ -128,8 +128,8 @@ void Fl_Choice::draw() {
  */
 Fl_Choice::Fl_Choice(int X, int Y, int W, int H, const char *L)
 : Fl_Menu_(X,Y,W,H,L) {
-  align(FL_ALIGN_LEFT);
-  when(FL_WHEN_RELEASE);
+  align(fltk3::ALIGN_LEFT);
+  when(fltk3::WHEN_RELEASE);
   textfont(fltk3::HELVETICA);
   box(fltk3::FLAT_BOX);
   down_box(fltk3::BORDER_BOX);
@@ -171,7 +171,7 @@ int Fl_Choice::handle(int e) {
 
   case FL_KEYBOARD:
     if (fltk3::event_key() != ' ' ||
-        (fltk3::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META))) return 0;
+        (fltk3::event_state() & (fltk3::SHIFT | fltk3::CTRL | fltk3::ALT | fltk3::META))) return 0;
   case FL_PUSH:
     if (fltk3::visible_focus()) fltk3::focus(this);
   J1:
@@ -181,7 +181,7 @@ int Fl_Choice::handle(int e) {
     } else {
       // In order to preserve the old look-n-feel of "white" menus,
       // temporarily override the color() of this widget...
-      Fl_Color c = color();
+      fltk3::Color c = color();
       color(FL_BACKGROUND2_COLOR);
       v = menu()->pulldown(x(), y(), w(), h(), mvalue(), this);
       color(c);

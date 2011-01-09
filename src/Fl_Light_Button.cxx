@@ -39,7 +39,7 @@
 
 void Fl_Light_Button::draw() {
   if (box()) draw_box(this==fltk3::pushed() ? fl_down(box()) : box(), color());
-  Fl_Color col = value() ? (active_r() ? selection_color() :
+  fltk3::Color col = value() ? (active_r() ? selection_color() :
                             fl_inactive(selection_color())) : color();
   int W;
   int dx, dy;
@@ -166,7 +166,7 @@ Fl_Light_Button::Fl_Light_Button(int X, int Y, int W, int H, const char* l)
 : Fl_Button(X, Y, W, H, l) {
   type(FL_TOGGLE_BUTTON);
   selection_color(FL_YELLOW);
-  align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+  align(fltk3::ALIGN_LEFT|fltk3::ALIGN_INSIDE);
 }
 
 //

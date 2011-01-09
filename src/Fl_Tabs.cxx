@@ -151,10 +151,10 @@ void Fl_Tabs::redraw_tabs()
   int H = tab_height();
   if (H >= 0) {
     H += fltk3::box_dy(box());
-    damage(FL_DAMAGE_SCROLL, x(), y(), w(), H);
+    damage(fltk3::DAMAGE_SCROLL, x(), y(), w(), H);
   } else {
     H = fltk3::box_dy(box()) - H;
-    damage(FL_DAMAGE_SCROLL, x(), y() + h() - H, w(), H);
+    damage(fltk3::DAMAGE_SCROLL, x(), y() + h() - H, w(), H);
   }
 }
 
@@ -318,8 +318,8 @@ void Fl_Tabs::draw() {
   fltk3::Widget *v = value();
   int H = tab_height();
 
-  if (damage() & FL_DAMAGE_ALL) { // redraw the entire thing:
-    Fl_Color c = v ? v->color() : color();
+  if (damage() & fltk3::DAMAGE_ALL) { // redraw the entire thing:
+    fltk3::Color c = v ? v->color() : color();
 
     draw_box(box(), x(), y()+(H>=0?H:0), w(), h()-(H>=0?H:-H), c);
 
@@ -335,7 +335,7 @@ void Fl_Tabs::draw() {
   } else { // redraw the child
     if (v) update_child(*v);
   }
-  if (damage() & (FL_DAMAGE_SCROLL|FL_DAMAGE_ALL)) {
+  if (damage() & (fltk3::DAMAGE_SCROLL|fltk3::DAMAGE_ALL)) {
     int nc = children();
     int selected = tab_positions();
     int i;
@@ -374,16 +374,16 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, fltk3::Widget* o, int what)
 
     H += dh;
 
-    Fl_Color c = sel ? selection_color() : o->selection_color();
+    fltk3::Color c = sel ? selection_color() : o->selection_color();
 
     draw_box(bt, x1, y() + yofs, W, H + 10 - yofs, c);
 
     // Save the previous label color
-    Fl_Color oc = o->labelcolor();
+    fltk3::Color oc = o->labelcolor();
 
     // Draw the label using the current color...
     o->labelcolor(sel ? labelcolor() : o->labelcolor());    
-    o->draw_label(x1, y() + yofs, W, H - yofs, FL_ALIGN_CENTER);
+    o->draw_label(x1, y() + yofs, W, H - yofs, fltk3::ALIGN_CENTER);
 
     // Restore the original label color...
     o->labelcolor(oc);
@@ -400,16 +400,16 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, fltk3::Widget* o, int what)
 
     H += dh;
 
-    Fl_Color c = sel ? selection_color() : o->selection_color();
+    fltk3::Color c = sel ? selection_color() : o->selection_color();
 
     draw_box(bt, x1, y() + h() - H - 10, W, H + 10 - yofs, c);
 
     // Save the previous label color
-    Fl_Color oc = o->labelcolor();
+    fltk3::Color oc = o->labelcolor();
 
     // Draw the label using the current color...
     o->labelcolor(sel ? labelcolor() : o->labelcolor());
-    o->draw_label(x1, y() + h() - H, W, H - yofs, FL_ALIGN_CENTER);
+    o->draw_label(x1, y() + h() - H, W, H - yofs, fltk3::ALIGN_CENTER);
 
     // Restore the original label color...
     o->labelcolor(oc);

@@ -102,7 +102,7 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H, const char* l)
   
   color(FL_BACKGROUND2_COLOR, FL_SELECTION_COLOR);
   box(fltk3::DOWN_FRAME);
-  textsize(FL_NORMAL_SIZE);
+  textsize(fltk3::NORMAL_SIZE);
   textcolor(FL_FOREGROUND_COLOR);
   textfont(fltk3::HELVETICA);
   set_flag(SHORTCUT_LABEL);
@@ -121,7 +121,7 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H, const char* l)
   end();
   
   scrollbar_width(fltk3::scrollbar_size());
-  scrollbar_align(FL_ALIGN_BOTTOM_RIGHT);
+  scrollbar_align(fltk3::ALIGN_BOTTOM_RIGHT);
   
   mCursorOn = 0;
   mCursorPos = 0;
@@ -260,7 +260,7 @@ void Fl_Text_Display::highlight_data(Fl_Text_Buffer *styleBuffer,
   mColumnScale = 0;
   
   mStyleBuffer->canUndo(0);
-  damage(FL_DAMAGE_EXPOSE);
+  damage(fltk3::DAMAGE_EXPOSE);
 }
 
 
@@ -349,11 +349,11 @@ void Fl_Text_Display::resize(int X, int Y, int W, int H) {
     // figure the scrollbars
     if (scrollbar_width()) {
       /* Decide if the vertical scrollbar needs to be visible */
-      if (scrollbar_align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT) &&
+      if (scrollbar_align() & (fltk3::ALIGN_LEFT|fltk3::ALIGN_RIGHT) &&
           mNBufferLines >= mNVisibleLines - 1)
       {
         mVScrollBar->set_visible();
-        if (scrollbar_align() & FL_ALIGN_LEFT) {
+        if (scrollbar_align() & fltk3::ALIGN_LEFT) {
           text_area.x = X+scrollbar_width()+LEFT_MARGIN;
           text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN;
           mVScrollBar->resize(X, text_area.y-TOP_MARGIN, scrollbar_width(),
@@ -387,14 +387,14 @@ void Fl_Text_Display::resize(int X, int Y, int W, int H) {
       /* WAS: Suggestion: Try turning the horizontal scrollbar on when
        you first see a line that is too wide in the window, but then
        don't turn it off (ie mix both of your solutions). */
-      if (scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) &&
+      if (scrollbar_align() & (fltk3::ALIGN_TOP|fltk3::ALIGN_BOTTOM) &&
           (mVScrollBar->visible() || longest_vline() > text_area.w))
       {
         if (!mHScrollBar->visible()) {
           mHScrollBar->set_visible();
           again = 1; // loop again to see if we now need vert. & recalc sizes
         }
-        if (scrollbar_align() & FL_ALIGN_TOP) {
+        if (scrollbar_align() & fltk3::ALIGN_TOP) {
           text_area.y = Y + scrollbar_width()+TOP_MARGIN;
           text_area.h = H - scrollbar_width()-TOP_MARGIN-BOTTOM_MARGIN;
           mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y,
@@ -501,7 +501,7 @@ void Fl_Text_Display::redisplay_range(int startpos, int endpos) {
     damage_range2_start = min(damage_range2_start, startpos);
     damage_range2_end = max(damage_range2_end, endpos);
   }
-  damage(FL_DAMAGE_SCROLL);
+  damage(fltk3::DAMAGE_SCROLL);
 }
 
 
@@ -1482,7 +1482,7 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   
   /* If the changes caused scrolling, re-paint everything and we're done. */
   if ( scrolled ) {
-    textD->damage(FL_DAMAGE_EXPOSE);
+    textD->damage(fltk3::DAMAGE_EXPOSE);
     if ( textD->mStyleBuffer )   /* See comments in extendRangeForStyleMods */
       textD->mStyleBuffer->primary_selection()->selected(0);
     return;
@@ -1925,8 +1925,8 @@ void Fl_Text_Display::draw_string(int style,
   
   fltk3::Font font = textfont();
   int fsize = textsize();
-  Fl_Color foreground;
-  Fl_Color background;
+  fltk3::Color foreground;
+  fltk3::Color background;
   
   if ( style & STYLE_LOOKUP_MASK ) {
     int si = (style & STYLE_LOOKUP_MASK) - 'A';
@@ -2561,7 +2561,7 @@ int Fl_Text_Display::scroll_(int topLineNum, int horizOffset) {
   mHorizOffset = horizOffset;
   
   // redraw all text
-  damage(FL_DAMAGE_EXPOSE);
+  damage(fltk3::DAMAGE_EXPOSE);
   return 1;
 }
 
@@ -3357,7 +3357,7 @@ void Fl_Text_Display::draw(void) {
   fl_push_clip(x(),y(),w(),h());	// prevent drawing outside widget area
   
   // draw the non-text, non-scrollbar areas.
-  if (damage() & FL_DAMAGE_ALL) {
+  if (damage() & fltk3::DAMAGE_ALL) {
     //    printf("drawing all (box = %d)\n", box());
     // draw the box()
     int W = w(), H = h();
@@ -3394,7 +3394,7 @@ void Fl_Text_Display::draw(void) {
     
     // blank the previous cursor protrusions
   }
-  else if (damage() & (FL_DAMAGE_SCROLL | FL_DAMAGE_EXPOSE)) {
+  else if (damage() & (fltk3::DAMAGE_SCROLL | fltk3::DAMAGE_EXPOSE)) {
     //    printf("blanking previous cursor extrusions at Y: %d\n", mCursorOldY);
     // CET - FIXME - save old cursor position instead and just draw side needed?
     fl_push_clip(text_area.x-LEFT_MARGIN,
@@ -3409,15 +3409,15 @@ void Fl_Text_Display::draw(void) {
   }
   
   // draw the scrollbars
-  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_CHILD)) {
-    mVScrollBar->damage(FL_DAMAGE_ALL);
-    mHScrollBar->damage(FL_DAMAGE_ALL);
+  if (damage() & (fltk3::DAMAGE_ALL | fltk3::DAMAGE_CHILD)) {
+    mVScrollBar->damage(fltk3::DAMAGE_ALL);
+    mHScrollBar->damage(fltk3::DAMAGE_ALL);
   }
   update_child(*mVScrollBar);
   update_child(*mHScrollBar);
   
   // draw all of the text
-  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_EXPOSE)) {
+  if (damage() & (fltk3::DAMAGE_ALL | fltk3::DAMAGE_EXPOSE)) {
     //printf("drawing all text\n");
     int X, Y, W, H;
     if (fl_clip_box(text_area.x, text_area.y, text_area.w, text_area.h,
@@ -3430,7 +3430,7 @@ void Fl_Text_Display::draw(void) {
       draw_text(text_area.x, text_area.y, text_area.w, text_area.h);
     }
   }
-  else if (damage() & FL_DAMAGE_SCROLL) {
+  else if (damage() & fltk3::DAMAGE_SCROLL) {
     // draw some lines of text
     fl_push_clip(text_area.x, text_area.y,
                  text_area.w, text_area.h);
@@ -3446,7 +3446,7 @@ void Fl_Text_Display::draw(void) {
   }
   
   // draw the text cursor
-  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_SCROLL | FL_DAMAGE_EXPOSE)
+  if (damage() & (fltk3::DAMAGE_ALL | fltk3::DAMAGE_SCROLL | fltk3::DAMAGE_EXPOSE)
       && !buffer()->primary_selection()->selected() &&
       mCursorOn && fltk3::focus() == this ) {
     fl_push_clip(text_area.x-LEFT_MARGIN,
@@ -3554,8 +3554,8 @@ int Fl_Text_Display::handle(int event) {
     case FL_MOVE:
       if (active_r()) {
         if (fltk3::event_inside(text_area.x, text_area.y, text_area.w,
-	                     text_area.h)) window()->cursor(FL_CURSOR_INSERT);
-	else window()->cursor(FL_CURSOR_DEFAULT);
+	                     text_area.h)) window()->cursor(fltk3::CURSOR_INSERT);
+	else window()->cursor(fltk3::CURSOR_DEFAULT);
 	return 1;
       } else {
         return 0;
@@ -3564,7 +3564,7 @@ int Fl_Text_Display::handle(int event) {
     case FL_LEAVE:
     case FL_HIDE:
       if (active_r() && window()) {
-        window()->cursor(FL_CURSOR_DEFAULT);
+        window()->cursor(fltk3::CURSOR_DEFAULT);
         
 	return 1;
       } else {
@@ -3574,8 +3574,8 @@ int Fl_Text_Display::handle(int event) {
     case FL_PUSH: {
       if (active_r() && window()) {
         if (fltk3::event_inside(text_area.x, text_area.y, text_area.w,
-                             text_area.h)) window()->cursor(FL_CURSOR_INSERT);
-        else window()->cursor(FL_CURSOR_DEFAULT);
+                             text_area.h)) window()->cursor(fltk3::CURSOR_INSERT);
+        else window()->cursor(fltk3::CURSOR_DEFAULT);
       }
       
       if (fltk3::focus() != this) {
@@ -3583,7 +3583,7 @@ int Fl_Text_Display::handle(int event) {
         handle(FL_FOCUS);
       }
       if (fltk3::Group::handle(event)) return 1;
-      if (fltk3::event_state()&FL_SHIFT) return handle(FL_DRAG);
+      if (fltk3::event_state()&fltk3::SHIFT) return handle(FL_DRAG);
       dragging = 1;
       int pos = xy_to_position(fltk3::event_x(), fltk3::event_y(), CURSOR_POS);
       dragPos = pos;
@@ -3665,7 +3665,7 @@ int Fl_Text_Display::handle(int event) {
       
     case FL_RELEASE: {
       if (fltk3::event_is_click() && (! fltk3::event_clicks()) && 
-	  buffer()->primary_selection()->includes(dragPos) && !(fltk3::event_state()&FL_SHIFT) ) {
+	  buffer()->primary_selection()->includes(dragPos) && !(fltk3::event_state()&fltk3::SHIFT) ) {
 	buffer()->unselect(); // clicking in the selection: unselect and move cursor
 	insert_position(dragPos);
 	return 1;
@@ -3699,7 +3699,7 @@ int Fl_Text_Display::handle(int event) {
       else return mHScrollBar->handle(event);
       
     case FL_UNFOCUS:
-      if (active_r() && window()) window()->cursor(FL_CURSOR_DEFAULT);
+      if (active_r() && window()) window()->cursor(fltk3::CURSOR_DEFAULT);
     case FL_FOCUS:
       if (buffer()->selected()) {
         int start, end;
@@ -3720,7 +3720,7 @@ int Fl_Text_Display::handle(int event) {
       
     case FL_KEYBOARD:
       // Copy?
-      if ((fltk3::event_state()&(FL_CTRL|FL_COMMAND)) && fltk3::event_key()=='c') {
+      if ((fltk3::event_state()&(fltk3::CTRL|fltk3::COMMAND)) && fltk3::event_key()=='c') {
         if (!buffer()->selected()) return 1;
         const char *copy = buffer()->selection_text();
         if (*copy) fltk3::copy(copy, strlen(copy), 1);
@@ -3729,7 +3729,7 @@ int Fl_Text_Display::handle(int event) {
       }
       
       // Select all ?
-      if ((fltk3::event_state()&(FL_CTRL|FL_COMMAND)) && fltk3::event_key()=='a') {
+      if ((fltk3::event_state()&(fltk3::CTRL|fltk3::COMMAND)) && fltk3::event_key()=='a') {
         buffer()->select(0,buffer()->length());
         const char *copy = buffer()->selection_text();
         if (*copy) fltk3::copy(copy, strlen(copy), 0);

@@ -132,7 +132,7 @@ int Fl_Menu_Item::measure(int* hp, const Fl_Menu_* m) const {
   l.deimage = 0;
   l.type    = labeltype_;
   l.font    = labelsize_ || labelfont_ ? labelfont_ : (m ? m->textfont() : fltk3::HELVETICA);
-  l.size    = labelsize_ ? labelsize_ : m ? m->textsize() : FL_NORMAL_SIZE;
+  l.size    = labelsize_ ? labelsize_ : m ? m->textsize() : fltk3::NORMAL_SIZE;
   l.color   = FL_FOREGROUND_COLOR; // this makes no difference?
   fl_draw_shortcut = 1;
   int w = 0; int h = 0;
@@ -151,23 +151,23 @@ void Fl_Menu_Item::draw(int x, int y, int w, int h, const Fl_Menu_* m,
   l.deimage = 0;
   l.type    = labeltype_;
   l.font    = labelsize_ || labelfont_ ? labelfont_ : (m ? m->textfont() : fltk3::HELVETICA);
-  l.size    = labelsize_ ? labelsize_ : m ? m->textsize() : FL_NORMAL_SIZE;
+  l.size    = labelsize_ ? labelsize_ : m ? m->textsize() : fltk3::NORMAL_SIZE;
   l.color   = labelcolor_ ? labelcolor_ : m ? m->textcolor() : int(FL_FOREGROUND_COLOR);
-  if (!active()) l.color = fl_inactive((Fl_Color)l.color);
-  Fl_Color color = m ? m->color() : FL_GRAY;
+  if (!active()) l.color = fl_inactive((fltk3::Color)l.color);
+  fltk3::Color color = m ? m->color() : FL_GRAY;
   if (selected) {
-    Fl_Color r = m ? m->selection_color() : FL_SELECTION_COLOR;
+    fltk3::Color r = m ? m->selection_color() : FL_SELECTION_COLOR;
     fltk3::Boxtype b = m && m->down_box() ? m->down_box() : fltk3::FLAT_BOX;
     if (fl_contrast(r,color)!=r) { // back compatibility boxtypes
       if (selected == 2) { // menu title
 	r = color;
 	b = m ? m->box() : fltk3::UP_BOX;
       } else {
-	r = (Fl_Color)(FL_COLOR_CUBE-1); // white
-	l.color = fl_contrast((Fl_Color)labelcolor_, r);
+	r = (fltk3::Color)(FL_COLOR_CUBE-1); // white
+	l.color = fl_contrast((fltk3::Color)labelcolor_, r);
       }
     } else {
-      l.color = fl_contrast((Fl_Color)labelcolor_, r);
+      l.color = fl_contrast((fltk3::Color)labelcolor_, r);
     }
     if (selected == 2) { // menu title
       fl_draw_box(b, x, y, w, h, r);
@@ -179,7 +179,7 @@ void Fl_Menu_Item::draw(int x, int y, int w, int h, const Fl_Menu_* m,
   }
 
   if (flags & (FL_MENU_TOGGLE|FL_MENU_RADIO)) {
-    int d = (h - FL_NORMAL_SIZE + 1) / 2;
+    int d = (h - fltk3::NORMAL_SIZE + 1) / 2;
     int W = h - 2 * d;
 
     if (flags & FL_MENU_RADIO) {
@@ -256,7 +256,7 @@ void Fl_Menu_Item::draw(int x, int y, int w, int h, const Fl_Menu_* m,
   }
 
   if (!fl_draw_shortcut) fl_draw_shortcut = 1;
-  l.draw(x+3, y, w>6 ? w-6 : 0, h, FL_ALIGN_LEFT);
+  l.draw(x+3, y, w>6 ? w-6 : 0, h, fltk3::ALIGN_LEFT);
   fl_draw_shortcut = 0;
 }
 
@@ -453,16 +453,16 @@ void menuwindow::drawentry(const Fl_Menu_Item* m, int n, int eraseit) {
     fltk3::Font f = m->labelsize_ || m->labelfont_ ? (fltk3::Font)m->labelfont_ :
                     button ? button->textfont() : fltk3::HELVETICA;
     fl_font(f, m->labelsize_ ? m->labelsize_ :
-                   button ? button->textsize() : FL_NORMAL_SIZE);
+                   button ? button->textsize() : fltk3::NORMAL_SIZE);
     const char *k, *s = fl_shortcut_label(m->shortcut_, &k);
     if (fl_utf_nb_char((const unsigned char*)k, strlen(k))<=4) {
       // righ-align the modifiers and left-align the key
       char buf[32]; strcpy(buf, s); buf[k-s] = 0;
-      fl_draw(buf, xx, yy, ww-shortcutWidth, hh, FL_ALIGN_RIGHT);
-      fl_draw(  k, xx+ww-shortcutWidth, yy, shortcutWidth, hh, FL_ALIGN_LEFT);
+      fl_draw(buf, xx, yy, ww-shortcutWidth, hh, fltk3::ALIGN_RIGHT);
+      fl_draw(  k, xx+ww-shortcutWidth, yy, shortcutWidth, hh, fltk3::ALIGN_LEFT);
     } else {
       // right-align to the menu
-      fl_draw(s, xx, yy, ww-4, hh, FL_ALIGN_RIGHT);
+      fl_draw(s, xx, yy, ww-4, hh, fltk3::ALIGN_RIGHT);
     }
   }
 
@@ -479,14 +479,14 @@ void menutitle::draw() {
 }
 
 void menuwindow::draw() {
-  if (damage() != FL_DAMAGE_CHILD) {	// complete redraw
+  if (damage() != fltk3::DAMAGE_CHILD) {	// complete redraw
     fl_draw_box(box(), 0, 0, w(), h(), button ? button->color() : color());
     if (menu) {
       const Fl_Menu_Item* m; int j;
       for (m=menu->first(), j=0; m->text; j++, m = m->next()) drawentry(m, j, 0);
     }
   } else {
-    if (damage() & FL_DAMAGE_CHILD && selected!=drawn_selected) { // change selection
+    if (damage() & fltk3::DAMAGE_CHILD && selected!=drawn_selected) { // change selection
       drawentry(menu->next(drawn_selected), drawn_selected, 1);
       drawentry(menu->next(selected), selected, 1);
     }
@@ -495,7 +495,7 @@ void menuwindow::draw() {
 }
 
 void menuwindow::set_selected(int n) {
-  if (n != selected) {selected = n; damage(FL_DAMAGE_CHILD);}
+  if (n != selected) {selected = n; damage(fltk3::DAMAGE_CHILD);}
 }
 
 ////////////////////////////////////////////////////////////////

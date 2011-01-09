@@ -74,8 +74,8 @@ class FL_EXPORT fltk3::Window : public fltk3::Group {
   int dw, dh, aspect;
   uchar size_range_set;
   // cursor stuff
-  Fl_Cursor cursor_default;
-  Fl_Color cursor_fg, cursor_bg;
+  fltk3::Cursor cursor_default;
+  fltk3::Color cursor_fg, cursor_bg;
   void size_range_();
   void _Window(); // constructor innards
 
@@ -439,15 +439,15 @@ public:
     you set it in a static variable and call this only if the new cursor
     is different.
 
-    The type Fl_Cursor is an enumeration defined in <fltk3/Enumerations.H>.
+    The type fltk3::Cursor is an enumeration defined in <fltk3/Enumerations.H>.
     (Under X you can get any XC_cursor value by passing 
-    Fl_Cursor((XC_foo/2)+1)).  The colors only work on X, they are
+    fltk3::Cursor((XC_foo/2)+1)).  The colors only work on X, they are
     not implemented on WIN32.
 
     For back compatibility only.
   */
-  void cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE); // platform dependent
-  void default_cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
+  void cursor(fltk3::Cursor, fltk3::Color=FL_BLACK, fltk3::Color=FL_WHITE); // platform dependent
+  void default_cursor(fltk3::Cursor, fltk3::Color=FL_BLACK, fltk3::Color=FL_WHITE);
   static void default_callback(Window*, void* v);
 
 };

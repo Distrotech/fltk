@@ -269,7 +269,7 @@ Fl_File_Browser::item_draw(void *p,	// I - List item data
 {
   int		i;			// Looping var
   FL_BLINE	*line;			// Pointer to line
-  Fl_Color	c;			// Text color
+  fltk3::Color	c;			// Text color
   char		*t,			// Pointer into text
 		*ptr,			// Pointer into fragment
 		fragment[10240];	// Fragment of text
@@ -340,7 +340,7 @@ Fl_File_Browser::item_draw(void *p,	// I - List item data
       *ptr = '\0';
 
       fl_draw(fragment, X + width, Y, W - width, fl_height(),
-              (Fl_Align)(FL_ALIGN_LEFT | FL_ALIGN_CLIP), 0, 0);
+              (fltk3::Align)(fltk3::ALIGN_LEFT | fltk3::ALIGN_CLIP), 0, 0);
 
       // Point back to the start of the fragment...
       ptr    = fragment;
@@ -365,7 +365,7 @@ Fl_File_Browser::item_draw(void *p,	// I - List item data
       }
 
       fl_draw(fragment, X + width, Y, cW, fl_height(),
-              (Fl_Align)(FL_ALIGN_LEFT | FL_ALIGN_CLIP), 0, 0);
+              (fltk3::Align)(fltk3::ALIGN_LEFT | fltk3::ALIGN_CLIP), 0, 0);
 
       // Advance to the next column...
       column ++;
@@ -388,7 +388,7 @@ Fl_File_Browser::item_draw(void *p,	// I - List item data
     *ptr = '\0';
 
     fl_draw(fragment, X + width, Y, W - width, fl_height(),
-            (Fl_Align)(FL_ALIGN_LEFT | FL_ALIGN_CLIP), 0, 0);
+            (fltk3::Align)(fltk3::ALIGN_LEFT | fltk3::ALIGN_CLIP), 0, 0);
   }
 }
 
