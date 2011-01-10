@@ -43,7 +43,7 @@
 
 #include <fltk3/run.h>
 #include <fltk3/Widget.h>
-#include <fltk3/Fl_Button.H>
+#include <fltk3/Button.h>
 #include <fltk3/fl_draw.H>
 #include <ctype.h>
 #include "flstring.h"
@@ -54,7 +54,7 @@
 /**
     Test the current event, which must be an fltk3::KEYBOARD or 
     fltk3::SHORTCUT, against a shortcut value (described in 
-    Fl_Button).
+    fltk3::Button).
     
     Not to be confused with fltk3::Widget::test_shortcut().
     
@@ -167,7 +167,7 @@ static Keyname table[] = {
 /**
   Get a human-readable string from a shortcut value.
 
-  Unparse a shortcut value as used by Fl_Button or Fl_Menu_Item into
+  Unparse a shortcut value as used by fltk3::Button or Fl_Menu_Item into
   a human-readable string like "Alt+N". This only works if the shortcut
   is a character key or a numbered function key. If the shortcut is
   zero then an empty string is returned. The return value points at

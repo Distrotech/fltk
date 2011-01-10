@@ -26,30 +26,37 @@
 //
 
 /* \file
-   Fl_Button widget . */
+   fltk3::Button widget . */
 
-#ifndef Fl_Button_H
-#define Fl_Button_H
+#ifndef FLTK3_Button_H
+#define FLTK3_Button_H
 
-#ifndef Fl_Widget_H
 #include "Widget.h"
-#endif
 
+class Fl_Button;
+
+namespace fltk3 {
+  
+  class Button;
+  class Wrapper;
+  
 // values for type()
-#define FL_NORMAL_BUTTON	0   /**< value() will be set to 1 during the press of the button and 
+  const unsigned int NORMAL_BUTTON = 0;   /**< value() will be set to 1 during the press of the button and 
                                          reverts back to 0 when the button is released */
-#define FL_TOGGLE_BUTTON	1   ///< value() toggles between 0 and 1 at every click of the button
-#define FL_RADIO_BUTTON		(FL_RESERVED_TYPE+2) /**< is set to 1 at button press, and all other
-				         buttons in the same group with <tt>type() == FL_RADIO_BUTTON</tt>
+  const unsigned int TOGGLE_BUTTON = 1;   ///< value() toggles between 0 and 1 at every click of the button
+  const unsigned int RADIO_BUTTON = (FL_RESERVED_TYPE+2); /**< is set to 1 at button press, and all other
+				         buttons in the same group with <tt>type() == fltk3::RADIO_BUTTON</tt>
 				         are set to zero.*/
-#define FL_HIDDEN_BUTTON	3   ///< for Forms compatibility
+  const unsigned int HIDDEN_BUTTON = 3;   ///< for Forms compatibility
+
+}
 
 extern FL_EXPORT Fl_Shortcut fl_old_shortcut(const char*);
 
 class Fl_Widget_Tracker;
 
 /**
-  \class Fl_Button
+  \class fltk3::Button
   \brief Buttons generate callbacks when they are clicked by the user.
   
   You control exactly when and how by changing the values for type() and
@@ -61,18 +68,18 @@ class Fl_Widget_Tracker;
   to hold down the \e Alt key so that the input field does not eat the event
   first as an \c fltk3::KEYBOARD event.
 
-  \todo Refactor the doxygen comments for Fl_Button type() documentation.
+  \todo Refactor the doxygen comments for fltk3::Button type() documentation.
 
-  For an Fl_Button object, the type() call returns one of:
+  For an fltk3::Button object, the type() call returns one of:
   \li \c FL_NORMAL_BUTTON (0): value() remains unchanged after button press.
-  \li \c FL_TOGGLE_BUTTON: value() is inverted after button press.
-  \li \c FL_RADIO_BUTTON: value() is set to 1 after button press, and all other
-         buttons in the current group with <tt>type() == FL_RADIO_BUTTON</tt>
+  \li \c fltk3::TOGGLE_BUTTON: value() is inverted after button press.
+  \li \c fltk3::RADIO_BUTTON: value() is set to 1 after button press, and all other
+         buttons in the current group with <tt>type() == fltk3::RADIO_BUTTON</tt>
 	 are set to zero.
 
-  \todo Refactor the doxygen comments for Fl_Button when() documentation.
+  \todo Refactor the doxygen comments for fltk3::Button when() documentation.
 
-  For an Fl_Button object, the following when() values are useful, the default
+  For an fltk3::Button object, the following when() values are useful, the default
   being \c fltk3::WHEN_RELEASE:
   \li \c 0: The callback is not done, instead changed() is turned on.
   \li \c fltk3::WHEN_RELEASE: The callback is done after the user successfully
@@ -81,8 +88,10 @@ class Fl_Widget_Tracker;
          (when the user pushes and releases the button, and as the mouse is
 	 dragged around in and out of the button).
 */
-class FL_EXPORT Fl_Button : public fltk3::Widget {
+class FL_EXPORT fltk3::Button : public fltk3::Widget {
 
+  friend class ::Fl_Button;
+  
   int shortcut_;
   char value_;
   char oldval;
@@ -100,7 +109,7 @@ public:
 
   virtual int handle(int);
 
-  Fl_Button(int X, int Y, int W, int H, const char *L = 0);
+  Button(int X, int Y, int W, int H, const char *L = 0);
 
   int value(int v);
 
@@ -121,7 +130,7 @@ public:
    */
   int clear() {return value(0);}
 
-  void setonly(); // this should only be called on FL_RADIO_BUTTONs
+  void setonly(); // this should only be called on fltk3::RADIO_BUTTONs
 
   /**
     Returns the current shortcut key for the button.

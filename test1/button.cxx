@@ -31,7 +31,8 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Button.H>
 
-void beepcb(Fl_Widget *, void *) {
+void beepcb(Fl_Widget *w, void *) {
+  w->color(FL_RED);
   printf("\007"); fflush(stdout);
 }
 

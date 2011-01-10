@@ -641,6 +641,12 @@
 		C984AFA812D02A1800D66DAD /* demo.menu in Resources */ = {isa = PBXBuildFile; fileRef = C984AFA712D02A1800D66DAD /* demo.menu */; };
 		C99FD8E212D2A2AD002FC776 /* browser.cxx in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D999C03407EAEE9C4D3477A /* browser.cxx */; };
 		C9A374AB3AD29E141C659819 /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C9AF4E1312DBB75100E3D29D /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C9AF4E1512DBB75100E3D29D /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C9AF4E3A12DBB75D00E3D29D /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C9AF4E3C12DBB75D00E3D29D /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C9AF4E4E12DBB7A000E3D29D /* button.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9AF4E4D12DBB7A000E3D29D /* button.cxx */; };
+		C9AF4E5012DBB7BF00E3D29D /* button.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9AF4E4F12DBB7BF00E3D29D /* button.cxx */; };
 		C9C4C91FDA73557BB6B69F3D /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = D9DB580DCA05DE487FACA272 /* jchuff.c */; };
 		C9D72F10B7A22DD0349ABC68 /* fltk_forms.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 097D0B476E396B9AAC6FA1E0 /* fltk_forms.framework */; };
 		C9EDD4E01274BB7000ADB21C /* png.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9EDD4DE1274BB6600ADB21C /* png.h */; };
@@ -1499,6 +1505,30 @@
 			script = "export DYLD_FRAMEWORK_PATH=${TARGET_BUILD_DIR} && cd ${INPUT_FILE_DIR} && ${TARGET_BUILD_DIR}/Fluid.app/Contents/MacOS/Fluid -c ${INPUT_FILE_NAME}";
 		};
 		C955616D12DA430000FFF041 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.fl";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cxx",
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.h",
+			);
+			script = "export DYLD_FRAMEWORK_PATH=${TARGET_BUILD_DIR} && cd ${INPUT_FILE_DIR} && ${TARGET_BUILD_DIR}/Fluid.app/Contents/MacOS/Fluid -c ${INPUT_FILE_NAME}";
+		};
+		C9AF4E1612DBB75100E3D29D /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.fl";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cxx",
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.h",
+			);
+			script = "export DYLD_FRAMEWORK_PATH=${TARGET_BUILD_DIR} && cd ${INPUT_FILE_DIR} && ${TARGET_BUILD_DIR}/Fluid.app/Contents/MacOS/Fluid -c ${INPUT_FILE_NAME}";
+		};
+		C9AF4E3D12DBB75D00E3D29D /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.fl";
@@ -2807,6 +2837,20 @@
 			remoteGlobalIDString = A57FDE871C99A52BEEDEE68C;
 			remoteInfo = fltk;
 		};
+		C9AF4E0E12DBB75100E3D29D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BF1A7FFEACF5F31B4127482 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A57FDE871C99A52BEEDEE68C;
+			remoteInfo = fltk;
+		};
+		C9AF4E3512DBB75D00E3D29D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BF1A7FFEACF5F31B4127482 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A57FDE871C99A52BEEDEE68C;
+			remoteInfo = fltk;
+		};
 		CA3CA540809B8723BA17A4D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4BF1A7FFEACF5F31B4127482 /* Project object */;
@@ -3729,6 +3773,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9AF4E1412DBB75100E3D29D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C9AF4E1512DBB75100E3D29D /* fltk.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9AF4E3B12DBB75D00E3D29D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C9AF4E3C12DBB75D00E3D29D /* fltk.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9EDD42D1274B84100ADB21C /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4437,6 +4501,12 @@
 		C96290E11274D0EF007D3CFE /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = System/Library/Frameworks/AGL.framework; sourceTree = SDKROOT; };
 		C96290E51274D100007D3CFE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		C984AFA712D02A1800D66DAD /* demo.menu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = demo.menu; path = ../../test/demo.menu; sourceTree = SOURCE_ROOT; };
+		C9AF4E1A12DBB75100E3D29D /* button.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = button.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9AF4E3112DBB75100E3D29D /* button-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "button-Info copy.plist"; path = "plists/button-Info copy.plist"; sourceTree = "<group>"; };
+		C9AF4E4112DBB75D00E3D29D /* button.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = button.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9AF4E4912DBB75E00E3D29D /* button-Info copy 2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "button-Info copy 2.plist"; path = "plists/button-Info copy 2.plist"; sourceTree = "<group>"; };
+		C9AF4E4D12DBB7A000E3D29D /* button.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = button.cxx; path = ../../test1/button.cxx; sourceTree = SOURCE_ROOT; };
+		C9AF4E4F12DBB7BF00E3D29D /* button.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = button.cxx; path = ../../test2/button.cxx; sourceTree = SOURCE_ROOT; };
 		C9EDD143127338F600ADB21C /* README.OSX.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.OSX.txt; path = ../../README.OSX.txt; sourceTree = SOURCE_ROOT; };
 		C9EDD4DE1274BB6600ADB21C /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../../png/png.h; sourceTree = SOURCE_ROOT; };
 		C9EDD4DF1274BB6600ADB21C /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = ../../png/pngconf.h; sourceTree = SOURCE_ROOT; };
@@ -5132,6 +5202,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9AF4E1212DBB75100E3D29D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9AF4E1312DBB75100E3D29D /* fltk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9AF4E3912DBB75D00E3D29D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9AF4E3A12DBB75D00E3D29D /* fltk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CFFFB4C330636C95339A8F4F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -5602,6 +5688,8 @@
 				C9628FFA1274D0A1007D3CFE /* Resources */,
 				C9555FEA12DA220600FFF041 /* hello-Info copy.plist */,
 				C955617912DA430000FFF041 /* hello-Info copy 2.plist */,
+				C9AF4E3112DBB75100E3D29D /* button-Info copy.plist */,
+				C9AF4E4912DBB75E00E3D29D /* button-Info copy 2.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -6303,6 +6391,7 @@
 		C9555FF312DA223C00FFF041 /* Tests FLTK 1 */ = {
 			isa = PBXGroup;
 			children = (
+				C9AF4E4B12DBB77100E3D29D /* Button */,
 				C9555FF412DA224A00FFF041 /* Hello */,
 			);
 			name = "Tests FLTK 1";
@@ -6319,6 +6408,7 @@
 		C955616012DA42DE00FFF041 /* Tests FLTK 2 */ = {
 			isa = PBXGroup;
 			children = (
+				C9AF4E4C12DBB77900E3D29D /* Button */,
 				C955616112DA42F100FFF041 /* Hello */,
 			);
 			name = "Tests FLTK 2";
@@ -6341,6 +6431,22 @@
 				C96290E51274D100007D3CFE /* OpenGL.framework */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		C9AF4E4B12DBB77100E3D29D /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				C9AF4E4D12DBB7A000E3D29D /* button.cxx */,
+			);
+			name = Button;
+			sourceTree = "<group>";
+		};
+		C9AF4E4C12DBB77900E3D29D /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				C9AF4E4F12DBB7BF00E3D29D /* button.cxx */,
+			);
+			name = Button;
 			sourceTree = "<group>";
 		};
 		C9EDD4DC1274BB4100ADB21C /* Headers */ = {
@@ -6554,6 +6660,8 @@
 				C9165EAF1291A304003FF4F0 /* utf8.app */,
 				C9555FD712DA220500FFF041 /* hello.app */,
 				C955617112DA430000FFF041 /* hello.app */,
+				C9AF4E1A12DBB75100E3D29D /* button.app */,
+				C9AF4E4112DBB75D00E3D29D /* button.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8275,6 +8383,46 @@
 			productReference = C955617112DA430000FFF041 /* hello.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C9AF4E0C12DBB75100E3D29D /* button1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9AF4E1712DBB75100E3D29D /* Build configuration list for PBXNativeTarget "button1" */;
+			buildPhases = (
+				C9AF4E0F12DBB75100E3D29D /* Resources */,
+				C9AF4E1012DBB75100E3D29D /* Sources */,
+				C9AF4E1212DBB75100E3D29D /* Frameworks */,
+				C9AF4E1412DBB75100E3D29D /* CopyFiles */,
+			);
+			buildRules = (
+				C9AF4E1612DBB75100E3D29D /* PBXBuildRule */,
+			);
+			dependencies = (
+				C9AF4E0D12DBB75100E3D29D /* PBXTargetDependency */,
+			);
+			name = button1;
+			productName = button;
+			productReference = C9AF4E1A12DBB75100E3D29D /* button.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C9AF4E3312DBB75D00E3D29D /* button2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9AF4E3E12DBB75D00E3D29D /* Build configuration list for PBXNativeTarget "button2" */;
+			buildPhases = (
+				C9AF4E3612DBB75D00E3D29D /* Resources */,
+				C9AF4E3712DBB75D00E3D29D /* Sources */,
+				C9AF4E3912DBB75D00E3D29D /* Frameworks */,
+				C9AF4E3B12DBB75D00E3D29D /* CopyFiles */,
+			);
+			buildRules = (
+				C9AF4E3D12DBB75D00E3D29D /* PBXBuildRule */,
+			);
+			dependencies = (
+				C9AF4E3412DBB75D00E3D29D /* PBXTargetDependency */,
+			);
+			name = button2;
+			productName = button;
+			productReference = C9AF4E4112DBB75D00E3D29D /* button.app */;
+			productType = "com.apple.product-type.application";
+		};
 		CA05747C492074A51F2F35BC /* iconize */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A28344FBEB8BBC1EB0B0B397 /* Build configuration list for PBXNativeTarget "iconize" */;
@@ -8662,6 +8810,8 @@
 				E167C0E81B125EBADAC8ED73 /* valuators */,
 				C9555FC912DA220500FFF041 /* hello1 */,
 				C955616312DA430000FFF041 /* hello2 */,
+				C9AF4E0C12DBB75100E3D29D /* button1 */,
+				C9AF4E3312DBB75D00E3D29D /* button2 */,
 			);
 		};
 /* End PBXProject section */
@@ -9139,6 +9289,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C955616612DA430000FFF041 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9AF4E0F12DBB75100E3D29D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9AF4E3612DBB75D00E3D29D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -10015,6 +10179,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				C955617C12DA433000FFF041 /* hello.cxx in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9AF4E1012DBB75100E3D29D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9AF4E4E12DBB7A000E3D29D /* button.cxx in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9AF4E3712DBB75D00E3D29D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9AF4E5012DBB7BF00E3D29D /* button.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10936,6 +11116,16 @@
 			isa = PBXTargetDependency;
 			target = A57FDE871C99A52BEEDEE68C /* fltk */;
 			targetProxy = B54D9F1191F36B8EE72F3369 /* PBXContainerItemProxy */;
+		};
+		C9AF4E0D12DBB75100E3D29D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A57FDE871C99A52BEEDEE68C /* fltk */;
+			targetProxy = C9AF4E0E12DBB75100E3D29D /* PBXContainerItemProxy */;
+		};
+		C9AF4E3412DBB75D00E3D29D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A57FDE871C99A52BEEDEE68C /* fltk */;
+			targetProxy = C9AF4E3512DBB75D00E3D29D /* PBXContainerItemProxy */;
 		};
 		CB5F037BD3DC9B4748DF5E51 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -15233,6 +15423,128 @@
 			};
 			name = Release;
 		};
+		C9AF4E1812DBB75100E3D29D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/button-Info copy.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = button;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Debug;
+		};
+		C9AF4E1912DBB75100E3D29D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/button-Info copy.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = button;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Release;
+		};
+		C9AF4E3F12DBB75D00E3D29D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/button-Info copy 2.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = button;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Debug;
+		};
+		C9AF4E4012DBB75D00E3D29D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/button-Info copy 2.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = button;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Release;
+		};
 		CB5DC25E5DACEFD0C087A26C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -16610,6 +16922,24 @@
 			buildConfigurations = (
 				C955616F12DA430000FFF041 /* Debug */,
 				C955617012DA430000FFF041 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C9AF4E1712DBB75100E3D29D /* Build configuration list for PBXNativeTarget "button1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9AF4E1812DBB75100E3D29D /* Debug */,
+				C9AF4E1912DBB75100E3D29D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C9AF4E3E12DBB75D00E3D29D /* Build configuration list for PBXNativeTarget "button2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9AF4E3F12DBB75D00E3D29D /* Debug */,
+				C9AF4E4012DBB75D00E3D29D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -33,7 +33,8 @@
 
 using namespace fltk3;
 
-void beepcb(Widget *, void *) {
+void beepcb(Widget *w, void *) {
+  w->color(FL_RED);
   printf("\007"); fflush(stdout);
 }
 
