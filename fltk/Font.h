@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Font.h 5461 2006-09-19 02:49:30Z spitzak $"
 //
@@ -22,9 +20,10 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 
-#ifndef fltk_Font_h
-#define fltk_Font_h
+#ifndef fltk2_Font_h
+#define fltk2_Font_h
 
+#include <fltk3/Enumerations.H>
 #include "Style.h"
 
 namespace fltk {
@@ -36,6 +35,8 @@ enum {  // values for attributes:
 };
 
 struct FL_API Font {
+  fltk3::Font fltk3_id;
+#if 0 // TODO: FLTK123
   const char* name_;
   int attributes_;
   // other fields are added here!
@@ -55,8 +56,12 @@ struct FL_API Font {
   const char* system_name();
 
   static const char* current_name();
-
+#endif // TODO: FLTK123
 };
+
+  extern Font fltk2_font_list[16];
+  
+#if 0 // TODO: FLTK123
 
 // Find a Font from a name and attributes:
 FL_API Font* font(const char* name, int attrib = 0);
@@ -67,7 +72,8 @@ FL_API Font* font(int);
 // Find and return every font on the system.
 FL_API int list_fonts(Font**& arrayp);
 
+#endif // TODO: FLTK123
+
 }
 
-#endif
 #endif

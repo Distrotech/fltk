@@ -34,9 +34,9 @@
 #  include "Enumerations.H"
 
 struct Fl_Menu_Item;
-struct Fl_Label;
 
 namespace fltk3 {
+  struct Label;
   class Widget;
   class Image;
 }
@@ -93,8 +93,8 @@ class FL_EXPORT fltk3::Image {
   void data(const char * const *p, int c) {data_ = p; count_ = c;}
   void draw_empty(int X, int Y);
 
-  static void labeltype(const Fl_Label *lo, int lx, int ly, int lw, int lh, fltk3::Align la);
-  static void measure(const Fl_Label *lo, int &lw, int &lh);
+  static void labeltype(const fltk3::Label *lo, int lx, int ly, int lw, int lh, fltk3::Align la);
+  static void measure(const fltk3::Label *lo, int &lw, int &lh);
 
   public:
 

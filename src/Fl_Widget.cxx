@@ -346,7 +346,12 @@ fltk3::Widget::copy_label(const char *a) {
 void
 fltk3::Widget::do_callback(fltk3::Widget* o,void* arg) {
   Fl_Widget_Tracker wp(this);
-  callback_(o,arg);
+  // FIXME: the other callbacks must know about wrappers as well.
+  if (o && o->pWrapper) {
+    callback_((fltk3::Widget*)o->pWrapper,arg);
+  } else {
+    callback_(o,arg);
+  }
   if (wp.deleted()) return;
   if (callback_ != default_callback)
     clear_changed();
@@ -359,6 +364,7 @@ void fltk3::Widget::draw() {
 }
 
 
+// ========================= Wrapper Support ===================================
 
 fltk3::Object::~Object() {
   if ( pWrapper && !(pWrapper->pVCalls&Wrapper::pVCallDtor) ) {
@@ -374,7 +380,112 @@ fltk3::Wrapper::~Wrapper() {
   }
 }
 
+// =================== FLTK1 Compatibility Support =============================
 
+
+// =================== FLTK2 Compatibility Support =============================
+
+#include <fltk/Font.h>
+
+fltk::Font fltk::fltk2_font_list[] = {
+  { fltk3::HELVETICA },
+  { fltk3::HELVETICA_BOLD },
+  { fltk3::HELVETICA_ITALIC },
+  { fltk3::HELVETICA_BOLD_ITALIC },
+  { fltk3::COURIER },
+  { fltk3::COURIER_BOLD },
+  { fltk3::COURIER_ITALIC },
+  { fltk3::COURIER_BOLD_ITALIC },
+  { fltk3::TIMES },
+  { fltk3::TIMES_BOLD },
+  { fltk3::TIMES_ITALIC },
+  { fltk3::TIMES_BOLD_ITALIC },
+  { fltk3::SYMBOL },
+  { fltk3::SCREEN },
+  { fltk3::SCREEN_BOLD },
+  { fltk3::ZAPF_DINGBATS }
+};
+
+fltk::Font *const fltk::HELVETICA             = fltk2_font_list+0;
+fltk::Font *const fltk::HELVETICA_BOLD        = fltk2_font_list+1;
+fltk::Font *const fltk::HELVETICA_ITALIC      = fltk2_font_list+2;
+fltk::Font *const fltk::HELVETICA_BOLD_ITALIC = fltk2_font_list+3;
+fltk::Font *const fltk::COURIER               = fltk2_font_list+4;
+fltk::Font *const fltk::COURIER_BOLD          = fltk2_font_list+5;
+fltk::Font *const fltk::COURIER_ITALIC        = fltk2_font_list+6;
+fltk::Font *const fltk::COURIER_BOLD_ITALIC   = fltk2_font_list+7;
+fltk::Font *const fltk::TIMES                 = fltk2_font_list+8;
+fltk::Font *const fltk::TIMES_BOLD            = fltk2_font_list+9;
+fltk::Font *const fltk::TIMES_ITALIC          = fltk2_font_list+10;
+fltk::Font *const fltk::TIMES_BOLD_ITALIC     = fltk2_font_list+11;
+fltk::Font *const fltk::SYMBOL                = fltk2_font_list+12;
+fltk::Font *const fltk::SCREEN                = fltk2_font_list+13;
+fltk::Font *const fltk::SCREEN_BOLD           = fltk2_font_list+14;
+fltk::Font *const fltk::ZAPF_DINGBATS         = fltk2_font_list+15;
+
+#include <fltk/Box.h>
+#include <fltk/Symbol.h>
+
+fltk::Symbol fltk::fltk2_box_list[] = {
+  { fltk3::NO_BOX },
+  { fltk3::FLAT_BOX },
+  { fltk3::UP_BOX },
+  { fltk3::DOWN_BOX },
+  { fltk3::UP_FRAME },
+  { fltk3::DOWN_FRAME },
+  { fltk3::THIN_UP_BOX },
+  { fltk3::THIN_DOWN_BOX },
+  { fltk3::THIN_UP_FRAME },
+  { fltk3::THIN_DOWN_FRAME },
+  { fltk3::ENGRAVED_BOX },
+  { fltk3::EMBOSSED_BOX },
+  { fltk3::ENGRAVED_FRAME },
+  { fltk3::EMBOSSED_FRAME },
+  { fltk3::BORDER_BOX },
+  { fltk3::SHADOW_BOX },
+  { fltk3::BORDER_FRAME },
+  { fltk3::SHADOW_FRAME }
+};
+
+fltk::Box *const fltk::NO_BOX           = fltk2_box_list+0;
+fltk::Box *const fltk::FLAT_BOX         = fltk2_box_list+1;
+fltk::Box *const fltk::UP_BOX           = fltk2_box_list+2;
+fltk::Box *const fltk::DOWN_BOX         = fltk2_box_list+3;
+fltk::Box *const fltk::UP_FRAME         = fltk2_box_list+4;
+fltk::Box *const fltk::DOWN_FRAME       = fltk2_box_list+5;
+fltk::Box *const fltk::THIN_UP_BOX      = fltk2_box_list+6;
+fltk::Box *const fltk::THIN_DOWN_BOX    = fltk2_box_list+7;
+fltk::Box *const fltk::THIN_UP_FRAME    = fltk2_box_list+8;
+fltk::Box *const fltk::THIN_DOWN_FRAME  = fltk2_box_list+9;
+fltk::Box *const fltk::ENGRAVED_BOX     = fltk2_box_list+10;
+fltk::Box *const fltk::EMBOSSED_BOX     = fltk2_box_list+11;
+fltk::Box *const fltk::ENGRAVED_FRAME   = fltk2_box_list+12;
+fltk::Box *const fltk::EMBOSSED_FRAME   = fltk2_box_list+13;
+fltk::Box *const fltk::BORDER_BOX       = fltk2_box_list+14;
+fltk::Box *const fltk::SHADOW_BOX       = fltk2_box_list+15;
+fltk::Box *const fltk::BORDER_FRAME     = fltk2_box_list+16;
+fltk::Box *const fltk::SHADOW_FRAME     = fltk2_box_list+17;
+
+
+#include <fltk/LabelType.h>
+
+fltk::LabelType fltk::fltk2_labeltype_list[] = {
+  { fltk3::NORMAL_LABEL },
+  { fltk3::NO_LABEL },
+  { fltk3::SHADOW_LABEL },
+  { fltk3::ENGRAVED_LABEL },
+  { fltk3::EMBOSSED_LABEL },
+  { fltk3::MULTI_LABEL },
+  { fltk3::ICON_LABEL },
+  { fltk3::IMAGE_LABEL }
+};
+
+fltk::LabelType *const fltk::NO_LABEL       = fltk2_labeltype_list+1;
+fltk::LabelType *const fltk::NORMAL_LABEL   = fltk2_labeltype_list+0;
+fltk::LabelType *const fltk::SYMBOL_LABEL   = fltk2_labeltype_list+0;
+fltk::LabelType *const fltk::SHADOW_LABEL   = fltk2_labeltype_list+2;
+fltk::LabelType *const fltk::ENGRAVED_LABEL = fltk2_labeltype_list+3;
+fltk::LabelType *const fltk::EMBOSSED_LABEL = fltk2_labeltype_list+4;
 
 //
 // End of "$Id$".

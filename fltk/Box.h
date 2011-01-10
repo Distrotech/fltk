@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Box.h 5865 2007-06-01 13:04:19Z sanel.z $"
 //
@@ -25,16 +23,23 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_Box_h
-#define fltk_Box_h
+#ifndef fltk2_Box_h
+#define fltk2_Box_h
+
+#include "Symbol.h"
+
+#if 0 // TODO: FLTK123
 
 #include "Color.h"
 #include "Flags.h"
-#include "Symbol.h"
+
+#endif // TODO: FLTK123
 
 namespace fltk {
+  
+  typedef Symbol Box;
 
-typedef Symbol Box;
+#if 0 // TODO: FLTK123
 
 class FL_API FrameBox : public Box {
 protected:
@@ -68,6 +73,9 @@ public:
   HighlightBox(const char* n, const Box* d);
 };
 
+#endif // TODO: FLTK123
+
+  
 }
 
 #endif
@@ -75,4 +83,3 @@ public:
 //
 // End of "$Id: Box.h 5865 2007-06-01 13:04:19Z sanel.z $".
 //
-#endif

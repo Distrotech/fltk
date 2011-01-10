@@ -58,40 +58,20 @@ typedef Fl_Callback* Fl_Callback_p;
 typedef void (Fl_Callback0)(Fl_Widget*);
 typedef void (Fl_Callback1)(Fl_Widget*, long);
 
-#if 0  // TODO: FLTK123
 
-
-/** This struct stores all information for a text or mixed graphics label.
-
-    \todo For FLTK 1.3, the Fl_Label type will become a widget by itself. That way
-          we will be avoiding a lot of code duplication by handling labels in 
-          a similar fashion to widgets containing text. We also provide an easy
-          interface for very complex labels, containing html or vector graphics.
- */
+// FIXME: FLTK123 - this does not port very well. FLTK2 may have a better solution.
 struct FL_EXPORT Fl_Label {
-  /** label text */
   const char* value;
-  /** optional image for an active label */
   Fl_Image* image;
-  /** optional image for a deactivated label */
   Fl_Image* deimage;
-  /** label font used in text */
   Fl_Font font;
-  /** size of label font */
   Fl_Fontsize size;
-  /** text color */
   Fl_Color color;
-  /** alignment of label */
   Fl_Align align_;
-  /** type of label. \see Fl_Labeltype */
   uchar type;
-
-  /** Draws the label aligned to the given box */
   void draw(int,int,int,int, Fl_Align) const ;
   void measure(int &w, int &h) const ;
 };
-
-#endif  // TODO: FLTK123
 
 
 class FL_EXPORT Fl_Widget : public fltk3::WidgetWrapper {
@@ -178,18 +158,20 @@ public:
     _p->wrapper(this);
   }
   
-#if 0 // TODO: FLTK123
-  virtual ~Fl_Widget() {}
-#endif // TODO: FLTK123
-  
   // Wrapper: virtual void draw()
   // Wrapper: virtual int handle(int event)
   // Wrapper: virtual void resize(int x, int y, int w, int h)
   // Wrapper: virtual void show()
   // Wrapper: virtual void hide()
-  virtual Fl_Group* as_group() { return 0L; }
-  virtual Fl_Window* as_window() { return 0L; }
-  virtual class Fl_Gl_Window* as_gl_window() { return 0L; }
+  virtual Fl_Group* as_group() { 
+    return 0L; 
+  }
+  virtual Fl_Window* as_window() { 
+    return 0L; 
+  }
+  virtual class Fl_Gl_Window* as_gl_window() { 
+    return 0L; 
+  }
   
   Fl_Group* parent() const {
     return (Fl_Group*)( ((fltk3::Widget*)_p)->parent()->wrapper() );

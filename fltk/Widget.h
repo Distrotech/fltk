@@ -26,6 +26,9 @@
 #include <fltk3/Widget.h>
 #include "Style.h"
 #include "Rectangle.h"
+#include "Font.h"
+#include "Box.h"
+#include "LabelType.h"
 
 
 namespace fltk {
@@ -50,7 +53,7 @@ FL_API Font* font(int);
   
 #endif // TODO: FLTK123
   
-  class FL_API Widget : public fltk3::Wrapper {
+  class FL_API Widget : public fltk3::WidgetWrapper {
   
 #if 0 // TODO: FLTK123
   // disable the copy assignment/constructors:
@@ -233,10 +236,19 @@ public:
     // TODO: FLTK123 - please port FLTK2 box styles to FLTK3!
     Box* box() { return (fltk::Box)((fltk3::Widget*)_p)->box(); }
     void box(Box *b) { ((fltk3::Widget*)_p)->box((fltk3::Boxtype)b); }
+#endif
+    
+    void box(Box *f) {
+      ((fltk3::Widget*)_p)->box(f->fltk3_id);
+    }
+    Box *box() const {
+      return fltk2_box_list + ((fltk3::Widget*)_p)->box();
+    }    
+    
+#if 0
 
     Box*	buttonbox()		const;
   Symbol* glyph()		const;
-  Font*	labelfont()		const;
   Font*	textfont()		const;
   LabelType* labeltype()	const;
   Color	color()			const;
@@ -255,9 +267,20 @@ public:
 
   void buttonbox(Box*)		;
   void glyph(Symbol*)		;
-  void labelfont(Font*)		;
+#endif  // TODO: FLTK123
+
+    void labelfont(Font *f) {
+      ((fltk3::Widget*)_p)->labelfont(f->fltk3_id);
+    }
+    Font *labelfont() const {
+      return fltk2_font_list + ((fltk3::Widget*)_p)->labelfont();
+    }
+    void labeltype(LabelType *l) {
+      ((fltk3::Widget*)_p)->labeltype(l->fltk3_id);
+    }
+    
+#if 0  // TODO: FLTK123
   void textfont(Font*)		;
-  void labeltype(LabelType*)	;
   void color(Color)		;
   void textcolor(Color a)	;
   void selection_color(Color)	;
@@ -266,7 +289,13 @@ public:
   void labelcolor(Color)	;
   void highlight_color(Color)	;
   void highlight_textcolor(Color);
-  void labelsize(float a)	;
+#endif  // TODO: FLTK123
+    
+    void labelsize(float a) {
+      ((fltk3::Widget*)_p)->labelsize((fltk3::Fontsize)a);
+    }
+    
+#if 0  // TODO: FLTK123
   void textsize(float a)	;
   void leading(float a)		;
   void scrollbar_align(unsigned char);

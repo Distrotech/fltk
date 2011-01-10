@@ -47,9 +47,8 @@
 #  endif
 
 
-struct Fl_Label;
-
 namespace fltk3 {
+  struct Label;
   class Window;
   class Widget;
   class Image;
@@ -72,10 +71,10 @@ namespace fltk3 {
   @{ */
 
 /** signature of some label drawing functions passed as parameters */
-typedef void (Fl_Label_Draw_F)(const Fl_Label *label, int x, int y, int w, int h, fltk3::Align align);
+typedef void (Fl_Label_Draw_F)(const fltk3::Label *label, int x, int y, int w, int h, fltk3::Align align);
 
 /** signature of some label measurement functions passed as parameters */
-typedef void (Fl_Label_Measure_F)(const Fl_Label *label, int &width, int &height);
+typedef void (Fl_Label_Measure_F)(const fltk3::Label *label, int &width, int &height);
 
 /** signature of some box drawing functions passed as parameters */
 typedef void (Fl_Box_Draw_F)(int x, int y, int w, int h, fltk3::Color color);

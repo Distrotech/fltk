@@ -28,15 +28,14 @@
 
 #include "Color.h"
 
-#if 0 // TODO: FLTK123
-
 namespace fltk {
 
-/// \name fltk/Style.h
-//@{
-
+#if 0 // TODO: FLTK123
+  
 class FL_API Widget;
 class FL_API Rectangle;
+#endif // TODO: FLTK123
+
 class FL_API Symbol;
 typedef Symbol Box;
 
@@ -66,6 +65,7 @@ extern FL_API Box* const BORDER_FRAME;
 extern FL_API Box* const PLASTIC_UP_BOX;
 extern FL_API Box* const PLASTIC_DOWN_BOX;
 
+  
 struct Font;
 extern FL_API Font* const HELVETICA;
 extern FL_API Font* const HELVETICA_BOLD;
@@ -84,6 +84,7 @@ extern FL_API Font* const SCREEN_FONT;
 extern FL_API Font* const SCREEN_BOLD_FONT;
 extern FL_API Font* const ZAPF_DINGBATS;
 
+  
 class LabelType;
 extern FL_API LabelType* const NO_LABEL;
 extern FL_API LabelType* const NORMAL_LABEL;
@@ -91,6 +92,9 @@ extern FL_API LabelType* const SYMBOL_LABEL; // same as NORMAL_LABEL
 extern FL_API LabelType* const SHADOW_LABEL;
 extern FL_API LabelType* const ENGRAVED_LABEL;
 extern FL_API LabelType* const EMBOSSED_LABEL;
+
+#if 0  // TODO: FLTK123
+  
 
 class Style;
 
@@ -196,7 +200,11 @@ FL_API void load_theme();
 FL_API void reload_theme();
 FL_API bool reset_theme();
 
+#endif // TODO: FLTK123
+
 }
+
+#if 0 // TODO: FLTK123
 
 extern "C" FL_API bool fltk_theme();
 

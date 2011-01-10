@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 // "$Id: Symbol.h 5865 2007-06-01 13:04:19Z sanel.z $"
 //
 // Copyright 1998-2006 by Bill Spitzak and others.
@@ -22,19 +20,29 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_Symbol_h
-#define fltk_Symbol_h
+#ifndef fltk2_Symbol_h
+#define fltk2_Symbol_h
 
+#include <fltk3/Enumerations.H>
 #include "FL_API.h"
+
+#if 0 // TODO: FLTK123
+
 #include "Color.h"
 #include "Rectangle.h"
 #include "PixelType.h"
 
+#endif // TODO: FLTK123
+
 namespace fltk {
 
 class Style;
-
+  
 class FL_API Symbol {
+public:
+  fltk3::Boxtype fltk3_id;
+  
+#if 0 // TODO: FLTK123
   const char* name_;
   Rectangle inset_;
 
@@ -83,12 +91,15 @@ class FL_API Symbol {
   static unsigned text_length() {return text_length_;}
 
   virtual ~Symbol();
+#endif // TODO: FLTK123
 };
 
+  extern Symbol fltk2_box_list[18];
+
+#if 0 // TODO: FLTK123
 // Back-compatability constructor:
 FL_API void add_symbol(const char* name, void (*drawit)(Color), int scalable);
-
+#endif // TODO: FLTK123
 }
 
-#endif
 #endif

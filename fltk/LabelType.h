@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: LabelType.h 5770 2007-04-10 10:42:07Z spitzak $"
 //
@@ -28,8 +26,8 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_LabelType_h
-#define fltk_LabelType_h
+#ifndef fltk2_LabelType_h
+#define fltk2_LabelType_h
 
 #include "Flags.h"
 #include "Rectangle.h"
@@ -40,6 +38,8 @@ class Style;
 
 class FL_API LabelType {
 public:
+  fltk3::Labeltype fltk3_id;
+#if 0 // TODO: FLTK123
   virtual void draw(const char*, const Rectangle&, Flags) const;
   const char* name;
   LabelType* next;
@@ -47,8 +47,12 @@ public:
   LabelType(const char* n) : name(n), next(first) {first = this;}
   static LabelType* find(const char* name);
   virtual ~LabelType(); // virtual to shut up C++ warnings
+#endif // TODO: FLTK123
 };
 
+  extern LabelType fltk2_labeltype_list[8];
+
+#if 0 // TODO: FLTK123
 // You can use this to draw overlapping patterns
 class FL_API EngravedLabel : public LabelType {
   const int* data;
@@ -57,8 +61,8 @@ public:
   EngravedLabel(const char * n, const int p[][3])
     : LabelType(n), data((const int*)p) {}
 };
+#endif // TODO: FLTK123
 
 }
 
-#endif
 #endif
