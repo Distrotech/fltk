@@ -359,6 +359,23 @@ void fltk3::Widget::draw() {
 }
 
 
+
+fltk3::Object::~Object() {
+  if ( pWrapper && !(pWrapper->pVCalls&Wrapper::pVCallDtor) ) {
+    pWrapper->pVCalls |= Wrapper::pVCallDtor;
+    delete pWrapper;
+  }
+}
+
+fltk3::Wrapper::~Wrapper() {
+  if ( !(pVCalls&pVCallDtor) ) {
+    pVCalls |= pVCallDtor;
+    delete _p;
+  }
+}
+
+
+
 //
 // End of "$Id$".
 //
