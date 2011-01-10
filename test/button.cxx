@@ -27,15 +27,17 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Button.H>
+#include <fltk3/run.h>
+#include <fltk3/Window.h>
+#include <fltk3/Button.h>
 
-void beepcb(Fl_Widget *, void *) {
+using namespace fltk3;
+
+void beepcb(Widget *, void *) {
   printf("\007"); fflush(stdout);
 }
 
-void exitcb(Fl_Widget *, void *) {
+void exitcb(Widget *, void *) {
   exit(0);
 }
 
@@ -49,18 +51,18 @@ void stdin_cb(int, void*) {
 #endif
 
 int main(int argc, char ** argv) {
-  Fl_Window *window = new Fl_Window(320,65);
-  Fl_Button *b1 = new Fl_Button(20, 20, 80, 25, "&Beep");
+  Window *window = new Window(320,65);
+  Button *b1 = new Button(20, 20, 80, 25, "&Beep");
   b1->callback(beepcb,0);
-  /*Fl_Button *b2 =*/ new Fl_Button(120,20, 80, 25, "&no op");
-  Fl_Button *b3 = new Fl_Button(220,20, 80, 25, "E&xit");
+  /*Button *b2 =*/ new Button(120,20, 80, 25, "&no op");
+  Button *b3 = new Button(220,20, 80, 25, "E&xit");
   b3->callback(exitcb,0);
   window->end();
   window->show(argc,argv);
 #if 0
   Fl::add_fd(0, stdin_cb);
 #endif
-  return Fl::run();
+  return run();
 }
 
 //

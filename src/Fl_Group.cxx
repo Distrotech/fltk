@@ -34,6 +34,7 @@
 #include <fltk3/run.h>
 #include <fltk3/Group.H>
 #include <fltk3/Window.h>
+#include <fltk3/Wrapper.h>
 #include <fltk3/fl_draw.H>
 #include <stdlib.h>
 
@@ -148,6 +149,7 @@ static int navkey() {
 }
 
 int fltk3::Group::handle(int event) {
+  FLTK3_OBJECT_VCALLS_WRAPPER_INT(handle(event), Handle);
 
   fltk3::Widget*const* a = array();
   int i;
@@ -635,6 +637,7 @@ int* fltk3::Group::sizes() {
   \sa fltk3::Widget::resize(int,int,int,int)
 */
 void fltk3::Group::resize(int X, int Y, int W, int H) {
+  FLTK3_OBJECT_VCALLS_WRAPPER(resize(X, Y, W, H), Resize);
 
   int dx = X-x();
   int dy = Y-y();
@@ -739,6 +742,7 @@ void fltk3::Group::draw_children() {
 }
 
 void fltk3::Group::draw() {
+  FLTK3_OBJECT_VCALLS_WRAPPER(draw(), Draw);
   if (damage() & ~fltk3::DAMAGE_CHILD) { // redraw the entire thing:
     draw_box();
     draw_label();
