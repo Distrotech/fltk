@@ -104,7 +104,15 @@ static void cleanup_readqueue(fltk3::Widget *w) {
 }
 ////////////////////////////////////////////////////////////////
 
-int fltk3::Widget::handle(int) {
+int fltk3::Widget::handle(int event) {
+  if (pWrapper) {
+    int ret = 0;
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetHandle) )
+      ret = ((WidgetWrapper*)pWrapper)->handle(event);
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetHandle) )
+      return ret;
+    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetHandle;
+  }
   return 0;
 }
 
@@ -139,6 +147,15 @@ fltk3::Widget::Widget(int X, int Y, int W, int H, const char* L) {
 }
 
 void fltk3::Widget::resize(int X, int Y, int W, int H) {
+  /*
+  if (pWrapper) {
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetResize) )
+      ((WidgetWrapper*)pWrapper)->resize(X, Y, W, H);
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetResize) )
+      return;
+    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetResize;
+  }
+  */
   x_ = X; y_ = Y; w_ = W; h_ = H;
 }
 
@@ -260,6 +277,13 @@ int fltk3::Widget::active_r() const {
 }
 
 void fltk3::Widget::show() {
+  if (pWrapper) {
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetShow) )
+      ((WidgetWrapper*)pWrapper)->show();
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetShow) )
+      return;
+    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetShow;
+  }
   if (!visible()) {
     clear_flag(INVISIBLE);
     if (visible_r()) {
@@ -272,6 +296,13 @@ void fltk3::Widget::show() {
 }
 
 void fltk3::Widget::hide() {
+  if (pWrapper) {
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetHide) )
+      ((WidgetWrapper*)pWrapper)->hide();
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetHide) )
+      return;
+    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetHide;
+  }
   if (visible_r()) {
     set_flag(INVISIBLE);
     for (fltk3::Widget *p = parent(); p; p = p->parent())
@@ -343,11 +374,11 @@ fltk3::Widget::do_callback(fltk3::Widget* o,void* arg) {
 
 void fltk3::Widget::draw() {
   if (pWrapper) {
-    if ( !(pWrapper->pVCalls & 1) )
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetDraw) )
       pWrapper->draw();
-    if ( !(pWrapper->pVCalls & 1) )
+    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetDraw) )
       return;
-    pWrapper->pVCalls &= ~1;
+    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetDraw;
   }
   draw_box();
   draw_label();

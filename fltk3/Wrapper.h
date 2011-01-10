@@ -47,6 +47,12 @@ namespace fltk3 {
     virtual ~Wrapper() { }
     
     unsigned int pVCalls;
+    static const unsigned int pVCallWidgetDraw   = 1<<0;
+    static const unsigned int pVCallWidgetHandle = 1<<1;
+    static const unsigned int pVCallWidgetResize = 1<<2;
+    static const unsigned int pVCallWidgetShow   = 1<<3;
+    static const unsigned int pVCallWidgetHide   = 1<<4;
+    
     virtual void draw() { /* call _p->draw() with a flag set */ }
   };
   
@@ -55,30 +61,30 @@ namespace fltk3 {
   public:
     virtual ~WidgetWrapper() {}
     virtual void draw() {
-      pVCalls |= 1;
+      pVCalls |= pVCallWidgetDraw;
       ((fltk3::Widget*)_p)->draw();
-      pVCalls &= ~1;
+      pVCalls &= ~pVCallWidgetDraw;
     }
     virtual int handle(int event) { 
-      pVCalls |= 1;
+      pVCalls |= pVCallWidgetHandle;
       int ret = ((fltk3::Widget*)_p)->handle(event);
-      pVCalls &= ~1;
+      pVCalls &= ~pVCallWidgetHandle;
       return ret;
     }
     virtual void resize(int x, int y, int w, int h) {
-      pVCalls |= 1;
+      pVCalls |= pVCallWidgetResize;
       ((fltk3::Widget*)_p)->resize(x, y, w, h);
-      pVCalls &= ~1;
+      pVCalls &= ~pVCallWidgetResize;
     }
     virtual void show() {
-      pVCalls |= 1;
+      pVCalls |= pVCallWidgetShow;
       ((fltk3::Widget*)_p)->show();
-      pVCalls &= ~1;
+      pVCalls &= ~pVCallWidgetShow;
     }
     virtual void hide() {
-      pVCalls |= 1;
+      pVCalls |= pVCallWidgetHide;
       ((fltk3::Widget*)_p)->hide();
-      pVCalls &= ~1;
+      pVCalls &= ~pVCallWidgetHide;
     }
   };
   
