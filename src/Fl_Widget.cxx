@@ -27,6 +27,7 @@
 
 #include <fltk3/run.h>
 #include <fltk3/Widget.h>
+#include <fltk3/Wrapper.h>
 #include <fltk3/Group.H>
 #include <fltk3/Fl_Tooltip.H>
 #include <fltk3/fl_draw.H>
@@ -341,6 +342,13 @@ fltk3::Widget::do_callback(fltk3::Widget* o,void* arg) {
 }
 
 void fltk3::Widget::draw() {
+  if (pWrapper) {
+    if ( !(pWrapper->pVCalls & 1) )
+      pWrapper->draw();
+    if ( !(pWrapper->pVCalls & 1) )
+      return;
+    pWrapper->pVCalls &= ~1;
+  }
   draw_box();
   draw_label();
 }

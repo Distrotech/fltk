@@ -46,7 +46,7 @@ namespace fltk3 {
     : _p(0L) { }
     virtual ~Wrapper() { }
     
-    unsigned int vcalls;
+    unsigned int pVCalls;
     virtual void draw() { /* call _p->draw() with a flag set */ }
   };
   

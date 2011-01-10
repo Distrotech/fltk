@@ -182,9 +182,13 @@ public:
     _p->wrapper(this);
   }
   
+  virtual void draw() {
+    pVCalls |= 1;
+    ((fltk3::Widget*)_p)->draw();
+    pVCalls &= ~1;
+  }
 #if 0 // TODO: FLTK123
   virtual ~Fl_Widget() {}
-  virtual void draw() {}
   virtual int handle(int event) {}
   virtual void resize(int x, int y, int w, int h) {}
   virtual void show() {}

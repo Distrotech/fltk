@@ -154,7 +154,11 @@ public:
     invisible Fl_Box as the resizable and/or by using a hierarchy
     of child Fl_Group's.
   */
-  void resizable(Fl_Widget* o) {resizable_ = o;}
+#endif
+  
+  void resizable(Fl_Widget* o) { ((fltk3::Group*)_p)->resizable( (fltk3::Widget*)(o->_p) ); }
+  
+#if 0
   /**
     See void Fl_Group::resizable(Fl_Widget *box) 
   */

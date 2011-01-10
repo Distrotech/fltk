@@ -6,7 +6,7 @@
 using namespace fltk;
 
 int main(int argc, char **argv) {
-  Window *window = new Window(300, 180);
+  Window *window = new Window(300, 180,"FLTK 2");
   window->begin();
   Widget *box = new Widget(20, 40, 260, 100, "Hello, World!");
   // FIXME: box->box(UP_BOX);
