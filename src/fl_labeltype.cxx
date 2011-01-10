@@ -58,22 +58,28 @@ fl_normal_measure(const fltk3::Label* o, int& W, int& H) {
 
 #define MAX_LABELTYPE 16
 
+extern void fl_shadow_label(const fltk3::Label* o, int X, int Y, int W, int H, fltk3::Align align);
+extern void fl_engraved_label(const fltk3::Label* o, int X, int Y, int W, int H, fltk3::Align align);
+extern void fl_embossed_label(const fltk3::Label* o, int X, int Y, int W, int H, fltk3::Align align);
+extern void fl_multi_label(const fltk3::Label* o, int X, int Y, int W, int H, fltk3::Align align);
+
 // TODO: FLTK123 - fill the label type table!
 static Fl_Label_Draw_F* table[MAX_LABELTYPE] = {
   fl_normal_label,
   fl_no_label,
-  fl_normal_label,	// _FL_SHADOW_LABEL,
-  fl_normal_label,	// _FL_ENGRAVED_LABEL,
-  fl_normal_label,	// _FL_EMBOSSED_LABEL,
-  fl_no_label,		// _FL_MULTI_LABEL,
-  fl_no_label,		// _FL_ICON_LABEL,
+  fl_shadow_label,	// _FL_SHADOW_LABEL,
+  fl_engraved_label,	// _FL_ENGRAVED_LABEL,
+  fl_embossed_label,	// _FL_EMBOSSED_LABEL,
+  fl_normal_label,	// _FL_MULTI_LABEL,
+  fl_normal_label,	// _FL_ICON_LABEL,
+  fl_normal_label,	// _FL_IMAGE_LABEL,
   // FL_FREE_LABELTYPE+n:
-  fl_no_label, fl_no_label, fl_no_label,
+  fl_no_label, fl_no_label,
   fl_no_label, fl_no_label, fl_no_label,
   fl_no_label, fl_no_label, fl_no_label
 };
 
-static Fl_Label_Measure_F* measure[MAX_LABELTYPE];
+static Fl_Label_Measure_F* measure[MAX_LABELTYPE] = {};
 
 /** Sets the functions to call to draw and measure a specific labeltype. */
 void fltk3::set_labeltype(fltk3::Labeltype t,Fl_Label_Draw_F* f,Fl_Label_Measure_F*m) 
