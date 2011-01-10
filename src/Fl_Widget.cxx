@@ -105,14 +105,7 @@ static void cleanup_readqueue(fltk3::Widget *w) {
 ////////////////////////////////////////////////////////////////
 
 int fltk3::Widget::handle(int event) {
-  if (pWrapper) {
-    int ret = 0;
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetHandle) )
-      ret = ((WidgetWrapper*)pWrapper)->handle(event);
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetHandle) )
-      return ret;
-    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetHandle;
-  }
+  FLTK3_OBJECT_VCALLS_WRAPPER_INT(handle(event), Handle);
   return 0;
 }
 
@@ -147,15 +140,7 @@ fltk3::Widget::Widget(int X, int Y, int W, int H, const char* L) {
 }
 
 void fltk3::Widget::resize(int X, int Y, int W, int H) {
-  /*
-  if (pWrapper) {
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetResize) )
-      ((WidgetWrapper*)pWrapper)->resize(X, Y, W, H);
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetResize) )
-      return;
-    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetResize;
-  }
-  */
+  FLTK3_OBJECT_VCALLS_WRAPPER(resize(X, Y, W, H), Resize);
   x_ = X; y_ = Y; w_ = W; h_ = H;
 }
 
@@ -277,13 +262,7 @@ int fltk3::Widget::active_r() const {
 }
 
 void fltk3::Widget::show() {
-  if (pWrapper) {
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetShow) )
-      ((WidgetWrapper*)pWrapper)->show();
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetShow) )
-      return;
-    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetShow;
-  }
+  FLTK3_OBJECT_VCALLS_WRAPPER(show(), Show);
   if (!visible()) {
     clear_flag(INVISIBLE);
     if (visible_r()) {
@@ -296,6 +275,7 @@ void fltk3::Widget::show() {
 }
 
 void fltk3::Widget::hide() {
+  FLTK3_OBJECT_VCALLS_WRAPPER(hide(), Hide);
   if (pWrapper) {
     if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetHide) )
       ((WidgetWrapper*)pWrapper)->hide();
@@ -373,13 +353,7 @@ fltk3::Widget::do_callback(fltk3::Widget* o,void* arg) {
 }
 
 void fltk3::Widget::draw() {
-  if (pWrapper) {
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetDraw) )
-      pWrapper->draw();
-    if ( !(pWrapper->pVCalls & Wrapper::pVCallWidgetDraw) )
-      return;
-    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetDraw;
-  }
+  FLTK3_OBJECT_VCALLS_WRAPPER(draw(), Draw);
   draw_box();
   draw_label();
 }

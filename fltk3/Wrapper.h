@@ -31,6 +31,52 @@
 #ifndef FLTK3_Wrapper_H
 #define FLTK3_Wrapper_H
 
+#define FLTK3_WRAPPER_VCALLS_OBJECT(proto, call, flag) \
+  virtual void proto { \
+    if ( pVCalls & pVCallWidget##flag ) { \
+    } else { \
+      pVCalls |= pVCallWidget##flag; \
+      ((fltk3::Widget*)_p)->call; \
+      pVCalls &= ~pVCallWidget##flag; \
+    } \
+  }
+
+#define FLTK3_OBJECT_VCALLS_WRAPPER(call, flag) \
+  if (pWrapper) { \
+    if ( pWrapper->pVCalls & Wrapper::pVCallWidget##flag ) { \
+    } else { \
+      pWrapper->pVCalls |= Wrapper::pVCallWidgetResize; \
+      ((WidgetWrapper*)pWrapper)->call; \
+      if ( !(pWrapper->pVCalls & Wrapper::pVCallWidget##flag) ) \
+        return; \
+    } \
+    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetResize; \
+  }
+
+#define FLTK3_WRAPPER_VCALLS_OBJECT_INT(proto, call, flag) \
+  virtual int proto { \
+    int ret = 0; \
+    if ( pVCalls & pVCallWidget##flag ) { \
+    } else { \
+      pVCalls |= pVCallWidget##flag; \
+      ret = ((fltk3::Widget*)_p)->call; \
+      pVCalls &= ~pVCallWidget##flag; \
+    } \
+    return ret; \
+  }
+
+#define FLTK3_OBJECT_VCALLS_WRAPPER_INT(call, flag) \
+  if (pWrapper) { \
+    if ( pWrapper->pVCalls & Wrapper::pVCallWidget##flag ) { \
+    } else { \
+      pWrapper->pVCalls |= Wrapper::pVCallWidgetResize; \
+      int ret = ((WidgetWrapper*)pWrapper)->call; \
+      if ( !(pWrapper->pVCalls & Wrapper::pVCallWidget##flag) ) \
+        return ret; \
+    } \
+    pWrapper->pVCalls &= ~Wrapper::pVCallWidgetResize; \
+  }
+
 namespace fltk3 {
   
   class Object; 
@@ -43,7 +89,7 @@ namespace fltk3 {
     Object *_p;
   public:
     Wrapper() 
-    : _p(0L) { }
+    : _p(0L), pVCalls(0) { }
     virtual ~Wrapper() { }
     
     unsigned int pVCalls;
@@ -52,7 +98,7 @@ namespace fltk3 {
     static const unsigned int pVCallWidgetResize = 1<<2;
     static const unsigned int pVCallWidgetShow   = 1<<3;
     static const unsigned int pVCallWidgetHide   = 1<<4;
-    
+
     virtual void draw() { /* call _p->draw() with a flag set */ }
   };
   
@@ -60,32 +106,21 @@ namespace fltk3 {
   class WidgetWrapper : public Wrapper {
   public:
     virtual ~WidgetWrapper() {}
-    virtual void draw() {
-      pVCalls |= pVCallWidgetDraw;
-      ((fltk3::Widget*)_p)->draw();
-      pVCalls &= ~pVCallWidgetDraw;
-    }
-    virtual int handle(int event) { 
-      pVCalls |= pVCallWidgetHandle;
-      int ret = ((fltk3::Widget*)_p)->handle(event);
-      pVCalls &= ~pVCallWidgetHandle;
-      return ret;
-    }
-    virtual void resize(int x, int y, int w, int h) {
-      pVCalls |= pVCallWidgetResize;
-      ((fltk3::Widget*)_p)->resize(x, y, w, h);
-      pVCalls &= ~pVCallWidgetResize;
-    }
-    virtual void show() {
-      pVCalls |= pVCallWidgetShow;
-      ((fltk3::Widget*)_p)->show();
-      pVCalls &= ~pVCallWidgetShow;
-    }
-    virtual void hide() {
-      pVCalls |= pVCallWidgetHide;
-      ((fltk3::Widget*)_p)->hide();
-      pVCalls &= ~pVCallWidgetHide;
-    }
+    FLTK3_WRAPPER_VCALLS_OBJECT(draw(),
+                                draw(),
+                                Draw)
+    FLTK3_WRAPPER_VCALLS_OBJECT_INT(handle(int event),
+                                handle(event),
+                                Handle)
+    FLTK3_WRAPPER_VCALLS_OBJECT(resize(int x, int y, int w, int h),
+                                resize(x, y, w, h),
+                                Resize)
+    FLTK3_WRAPPER_VCALLS_OBJECT(show(),
+                                show(),
+                                Show)
+    FLTK3_WRAPPER_VCALLS_OBJECT(hide(),
+                                hide(),
+                                Hide)
   };
   
   
