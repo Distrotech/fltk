@@ -33,7 +33,7 @@
 int fltk3::compose_state = 0;
 #endif
 
-/** Any text editing widget should call this for each FL_KEYBOARD event.
+/** Any text editing widget should call this for each fltk3::KEYBOARD event.
  Use of this function is very simple.
  
  <p>If <i>true</i> is returned, then it has modified the

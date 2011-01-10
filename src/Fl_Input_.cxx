@@ -919,16 +919,16 @@ void Fl_Input_::maybe_do_callback() {
 int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
   switch (event) {
 
-  case FL_ENTER:
-  case FL_MOVE:
+  case fltk3::ENTER:
+  case fltk3::MOVE:
     if (active_r() && window()) window()->cursor(fltk3::CURSOR_INSERT);
     return 1;
 
-  case FL_LEAVE:
+  case fltk3::LEAVE:
     if (active_r() && window()) window()->cursor(fltk3::CURSOR_DEFAULT);
     return 1;
 
-  case FL_FOCUS:
+  case fltk3::FOCUS:
     fl_set_spot(textfont(), textsize(), x(), y(), w(), h(), window());
     if (mark_ == position_) {
       minimal_update(size()+1);
@@ -936,38 +936,38 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
       minimal_update(mark_, position_);
     return 1;
 
-  case FL_UNFOCUS:
+  case fltk3::UNFOCUS:
     if (active_r() && window()) window()->cursor(fltk3::CURSOR_DEFAULT);
     if (mark_ == position_) {
       if (!(damage()&fltk3::DAMAGE_EXPOSE)) {minimal_update(position_); erase_cursor_only = 1;}
     } else //if (fltk3::selection_owner() != this)
       minimal_update(mark_, position_);
-  case FL_HIDE:
+  case fltk3::HIDE:
     fl_reset_spot();
     if (!readonly() && (when() & fltk3::WHEN_RELEASE))
       maybe_do_callback();
     return 1;
 
-  case FL_PUSH:
+  case fltk3::PUSH:
     if (active_r() && window()) window()->cursor(fltk3::CURSOR_INSERT);
 
     handle_mouse(X, Y, W, H, fltk3::event_state(fltk3::SHIFT));
 
     if (fltk3::focus() != this) {
       fltk3::focus(this);
-      handle(FL_FOCUS);
+      handle(fltk3::FOCUS);
     }
     return 1;
 
-  case FL_DRAG:
+  case fltk3::DRAG:
     handle_mouse(X, Y, W, H, 1);
     return 1;
 
-  case FL_RELEASE:
+  case fltk3::RELEASE:
     copy(0);
     return 1;
 
-  case FL_PASTE: {
+  case fltk3::PASTE: {
     // Don't allow pastes into readonly widgets...
     if (readonly()) {
       fl_beep(FL_BEEP_ERROR);
@@ -1017,10 +1017,10 @@ int Fl_Input_::handletext(int event, int X, int Y, int W, int H) {
     }
     return replace(position(), mark(), t, e-t);}
 
-  case FL_SHORTCUT:
+  case fltk3::SHORTCUT:
     if (!(shortcut() ? fltk3::test_shortcut(shortcut()) : test_shortcut())) 
       return 0;
-    if (fltk3::visible_focus() && handle(FL_FOCUS)) {
+    if (fltk3::visible_focus() && handle(fltk3::FOCUS)) {
       fltk3::focus(this);
       return 1;
     } // else fall through

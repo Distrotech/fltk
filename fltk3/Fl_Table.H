@@ -271,7 +271,7 @@ private:
   int _resizing_row;			// row being dragged
   int _dragging_x;			// starting x position for horiz drag
   int _dragging_y;			// starting y position for vert drag
-  int _last_row;			// last row we FL_PUSH'ed
+  int _last_row;			// last row we fltk3::PUSH'ed
   
   // Redraw single cell
   void _redraw_cell(TableContext context, int R, int C);
@@ -976,7 +976,7 @@ public:
    </tr><tr>
    <td>\p fltk3::WHEN_RELEASE</td>
    <td>
-   callback() will be called during FL_RELEASE events, such as when someone 
+   callback() will be called during fltk3::RELEASE events, such as when someone 
    releases a mouse button somewhere on the table.
    </td>
    </tr>
@@ -1020,7 +1020,7 @@ public:
    <td>
    Someone clicked on a cell.
    
-   To receive callbacks for FL_RELEASE events, you must set
+   To receive callbacks for fltk3::RELEASE events, you must set
    when(fltk3::WHEN_RELEASE).
    </td>
    </tr><tr>

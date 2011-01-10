@@ -89,13 +89,13 @@ void Fl_Button::draw() {
 int Fl_Button::handle(int event) {
   int newval;
   switch (event) {
-  case FL_ENTER: /* FALLTHROUGH */
-  case FL_LEAVE:
+  case fltk3::ENTER: /* FALLTHROUGH */
+  case fltk3::LEAVE:
 //  if ((value_?selection_color():color())==FL_GRAY) redraw();
     return 1;
-  case FL_PUSH:
-    if (fltk3::visible_focus() && handle(FL_FOCUS)) fltk3::focus(this);
-  case FL_DRAG:
+  case fltk3::PUSH:
+    if (fltk3::visible_focus() && handle(fltk3::FOCUS)) fltk3::focus(this);
+  case fltk3::DRAG:
     if (fltk3::event_inside(this)) {
       if (type() == FL_RADIO_BUTTON) newval = 1;
       else newval = !oldval;
@@ -111,7 +111,7 @@ int Fl_Button::handle(int event) {
       if (when() & fltk3::WHEN_CHANGED) do_callback();
     }
     return 1;
-  case FL_RELEASE:
+  case fltk3::RELEASE:
     if (value_ == oldval) {
       if (when() & fltk3::WHEN_NOT_CHANGED) do_callback();
       return 1;
@@ -130,13 +130,13 @@ int Fl_Button::handle(int event) {
     }
     if (when() & fltk3::WHEN_RELEASE) do_callback();
     return 1;
-  case FL_SHORTCUT:
+  case fltk3::SHORTCUT:
     if (!(shortcut() ?
 	  fltk3::test_shortcut(shortcut()) : test_shortcut())) return 0;    
-    if (fltk3::visible_focus() && handle(FL_FOCUS)) fltk3::focus(this);
+    if (fltk3::visible_focus() && handle(fltk3::FOCUS)) fltk3::focus(this);
     goto triggered_by_keyboard;
-  case FL_FOCUS : /* FALLTHROUGH */
-  case FL_UNFOCUS :
+  case fltk3::FOCUS : /* FALLTHROUGH */
+  case fltk3::UNFOCUS :
     if (fltk3::visible_focus()) {
       if (box() == fltk3::NO_BOX) {
 	// Widgets with the fltk3::NO_BOX boxtype need a parent to
@@ -148,7 +148,7 @@ int Fl_Button::handle(int event) {
       } else redraw();
       return 1;
     } else return 0;
-  case FL_KEYBOARD :
+  case fltk3::KEYBOARD :
     if (fltk3::focus() == this && fltk3::event_key() == ' ' &&
         !(fltk3::event_state() & (fltk3::SHIFT | fltk3::CTRL | fltk3::ALT | fltk3::META))) {
       set_changed();

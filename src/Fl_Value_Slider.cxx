@@ -64,7 +64,7 @@ void Fl_Value_Slider::draw() {
 }
 
 int Fl_Value_Slider::handle(int event) {
-  if (event == FL_PUSH && fltk3::visible_focus()) {
+  if (event == fltk3::PUSH && fltk3::visible_focus()) {
     fltk3::focus(this);
     redraw();
   }

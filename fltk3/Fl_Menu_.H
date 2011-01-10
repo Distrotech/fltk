@@ -74,7 +74,7 @@ public:
     Returns the menu item with the entered shortcut (key value).
 
     This searches the complete menu() for a shortcut that matches the
-    entered key value.  It must be called for a FL_KEYBOARD or FL_SHORTCUT
+    entered key value.  It must be called for a fltk3::KEYBOARD or fltk3::SHORTCUT
     event.
 
     If a match is found, the menu's callback will be called.

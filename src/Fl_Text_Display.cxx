@@ -3543,15 +3543,15 @@ int Fl_Text_Display::handle(int event) {
   if (!buffer()) return 0;
   // This isn't very elegant!
   if (!fltk3::event_inside(text_area.x, text_area.y, text_area.w, text_area.h) &&
-      !dragging && event != FL_LEAVE && event != FL_ENTER &&
-      event != FL_MOVE && event != FL_FOCUS && event != FL_UNFOCUS &&
-      event != FL_KEYBOARD && event != FL_KEYUP) {
+      !dragging && event != fltk3::LEAVE && event != fltk3::ENTER &&
+      event != fltk3::MOVE && event != fltk3::FOCUS && event != fltk3::UNFOCUS &&
+      event != fltk3::KEYBOARD && event != fltk3::KEYUP) {
     return fltk3::Group::handle(event);
   }
   
   switch (event) {
-    case FL_ENTER:
-    case FL_MOVE:
+    case fltk3::ENTER:
+    case fltk3::MOVE:
       if (active_r()) {
         if (fltk3::event_inside(text_area.x, text_area.y, text_area.w,
 	                     text_area.h)) window()->cursor(fltk3::CURSOR_INSERT);
@@ -3561,8 +3561,8 @@ int Fl_Text_Display::handle(int event) {
         return 0;
       }
       
-    case FL_LEAVE:
-    case FL_HIDE:
+    case fltk3::LEAVE:
+    case fltk3::HIDE:
       if (active_r() && window()) {
         window()->cursor(fltk3::CURSOR_DEFAULT);
         
@@ -3571,7 +3571,7 @@ int Fl_Text_Display::handle(int event) {
 	return 0;
       }
       
-    case FL_PUSH: {
+    case fltk3::PUSH: {
       if (active_r() && window()) {
         if (fltk3::event_inside(text_area.x, text_area.y, text_area.w,
                              text_area.h)) window()->cursor(fltk3::CURSOR_INSERT);
@@ -3580,10 +3580,10 @@ int Fl_Text_Display::handle(int event) {
       
       if (fltk3::focus() != this) {
         fltk3::focus(this);
-        handle(FL_FOCUS);
+        handle(fltk3::FOCUS);
       }
       if (fltk3::Group::handle(event)) return 1;
-      if (fltk3::event_state()&fltk3::SHIFT) return handle(FL_DRAG);
+      if (fltk3::event_state()&fltk3::SHIFT) return handle(fltk3::DRAG);
       dragging = 1;
       int pos = xy_to_position(fltk3::event_x(), fltk3::event_y(), CURSOR_POS);
       dragPos = pos;
@@ -3609,7 +3609,7 @@ int Fl_Text_Display::handle(int event) {
       return 1;
     }
       
-    case FL_DRAG: {
+    case fltk3::DRAG: {
       if (dragType==DRAG_NONE)
         return 1;
       if (dragType==DRAG_START_DND) {
@@ -3663,7 +3663,7 @@ int Fl_Text_Display::handle(int event) {
       return 1;
     }
       
-    case FL_RELEASE: {
+    case fltk3::RELEASE: {
       if (fltk3::event_is_click() && (! fltk3::event_clicks()) && 
 	  buffer()->primary_selection()->includes(dragPos) && !(fltk3::event_state()&fltk3::SHIFT) ) {
 	buffer()->unselect(); // clicking in the selection: unselect and move cursor
@@ -3694,13 +3694,13 @@ int Fl_Text_Display::handle(int event) {
       return 1;
     }
       
-    case FL_MOUSEWHEEL:
+    case fltk3::MOUSEWHEEL:
       if (fltk3::event_dy()) return mVScrollBar->handle(event);
       else return mHScrollBar->handle(event);
       
-    case FL_UNFOCUS:
+    case fltk3::UNFOCUS:
       if (active_r() && window()) window()->cursor(fltk3::CURSOR_DEFAULT);
-    case FL_FOCUS:
+    case fltk3::FOCUS:
       if (buffer()->selected()) {
         int start, end;
         if (buffer()->selection_position(&start, &end))
@@ -3718,7 +3718,7 @@ int Fl_Text_Display::handle(int event) {
       }
       return 1;
       
-    case FL_KEYBOARD:
+    case fltk3::KEYBOARD:
       // Copy?
       if ((fltk3::event_state()&(fltk3::CTRL|fltk3::COMMAND)) && fltk3::event_key()=='c') {
         if (!buffer()->selected()) return 1;
@@ -3742,10 +3742,10 @@ int Fl_Text_Display::handle(int event) {
       
       break;
       
-    case FL_SHORTCUT:
+    case fltk3::SHORTCUT:
       if (!(shortcut() ? fltk3::test_shortcut(shortcut()) : test_shortcut()))
         return 0;
-      if (fltk3::visible_focus() && handle(FL_FOCUS)) {
+      if (fltk3::visible_focus() && handle(fltk3::FOCUS)) {
         fltk3::focus(this);
         return 1;
       }

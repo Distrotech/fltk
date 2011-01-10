@@ -44,37 +44,37 @@
   #include <fltk3/names.h>		// array will be defined here
   int MyClass::handle(int e) {
       printf("Event was %s (%d)\n", fl_eventnames[e], e);
-      // ..resulting output might be e.g. "Event was FL_PUSH (1)"..
+      // ..resulting output might be e.g. "Event was fltk3::PUSH (1)"..
       [..]
   }
   \endcode
  */
 const char * const fl_eventnames[] =
 {
-  "FL_NO_EVENT",
-  "FL_PUSH",
-  "FL_RELEASE",
-  "FL_ENTER",
-  "FL_LEAVE",
-  "FL_DRAG",
-  "FL_FOCUS",
-  "FL_UNFOCUS",
-  "FL_KEYDOWN",
-  "FL_KEYUP",
-  "FL_CLOSE",
-  "FL_MOVE",
-  "FL_SHORTCUT",
-  "FL_DEACTIVATE",
-  "FL_ACTIVATE",
-  "FL_HIDE",
-  "FL_SHOW",
-  "FL_PASTE",
-  "FL_SELECTIONCLEAR",
-  "FL_MOUSEWHEEL",
-  "FL_DND_ENTER",
-  "FL_DND_DRAG",
-  "FL_DND_LEAVE",
-  "FL_DND_RELEASE",
+  "fltk3::NO_EVENT",
+  "fltk3::PUSH",
+  "fltk3::RELEASE",
+  "fltk3::ENTER",
+  "fltk3::LEAVE",
+  "fltk3::DRAG",
+  "fltk3::FOCUS",
+  "fltk3::UNFOCUS",
+  "fltk3::KEYDOWN",
+  "fltk3::KEYUP",
+  "fltk3::CLOSE",
+  "fltk3::MOVE",
+  "fltk3::SHORTCUT",
+  "fltk3::DEACTIVATE",
+  "fltk3::ACTIVATE",
+  "fltk3::HIDE",
+  "fltk3::SHOW",
+  "fltk3::PASTE",
+  "fltk3::SELECTIONCLEAR",
+  "fltk3::MOUSEWHEEL",
+  "fltk3::DND_ENTER",
+  "fltk3::DND_DRAG",
+  "fltk3::DND_LEAVE",
+  "fltk3::DND_RELEASE",
 };
 
 /**

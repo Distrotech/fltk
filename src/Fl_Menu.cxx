@@ -654,7 +654,7 @@ int menuwindow::early_hide_handle(int e) {
 #endif
   menustate &pp = *p;
   switch (e) {
-  case FL_KEYBOARD:
+  case fltk3::KEYBOARD:
     switch (fltk3::event_key()) {
     case FL_BackSpace:
     BACKTAB:
@@ -702,7 +702,7 @@ int menuwindow::early_hide_handle(int e) {
       return 1;
     }
     break;
-  case FL_SHORTCUT: 
+  case fltk3::SHORTCUT: 
     {
       for (int mymenu = pp.nummenus; mymenu--;) {
 	menuwindow &mw = *(pp.p[mymenu]);
@@ -715,14 +715,14 @@ int menuwindow::early_hide_handle(int e) {
       }
     }
     break;
-  case FL_ENTER:
-  case FL_MOVE:
-  case FL_PUSH:
-  case FL_DRAG:
+  case fltk3::ENTER:
+  case fltk3::MOVE:
+  case fltk3::PUSH:
+  case fltk3::DRAG:
     {
 #ifdef __QNX__
-      // STR 704: workaround QNX X11 bug - in QNX a FL_MOVE event is sent
-      // right after FL_RELEASE...
+      // STR 704: workaround QNX X11 bug - in QNX a fltk3::MOVE event is sent
+      // right after fltk3::RELEASE...
       if (pp.state == DONE_STATE) return 1;
 #endif // __QNX__
       int mx = fltk3::event_x_root();
@@ -731,7 +731,7 @@ int menuwindow::early_hide_handle(int e) {
       // Clicking or dragging outside menu cancels it...
       if ((!pp.menubar || mymenu) && !pp.is_inside(mx, my)) {
 	setitem(0, -1, 0);
-	if (e==FL_PUSH)
+	if (e==fltk3::PUSH)
 	  pp.state = DONE_STATE;
 	return 1;
       }
@@ -741,12 +741,12 @@ int menuwindow::early_hide_handle(int e) {
 	  break;
 	if (mymenu <= 0) {
 	  // buttons in menubars must be deselected if we move outside of them!
-	  if (pp.menu_number==-1 && e==FL_PUSH) {
+	  if (pp.menu_number==-1 && e==fltk3::PUSH) {
 	    pp.state = DONE_STATE;
 	    return 1;
 	  }
 	  if (pp.current_item && pp.menu_number==0 && !pp.current_item->submenu()) {
-	    if (e==FL_PUSH)
+	    if (e==fltk3::PUSH)
 	      pp.state = DONE_STATE;
 	    setitem(0, -1, 0);
 	    return 1;
@@ -757,7 +757,7 @@ int menuwindow::early_hide_handle(int e) {
       }
       if (my == 0 && item > 0) setitem(mymenu, item - 1);
       else setitem(mymenu, item);
-      if (e == FL_PUSH) {
+      if (e == fltk3::PUSH) {
 	if (pp.current_item && pp.current_item->submenu() // this is a menu title
 	    && item != pp.p[mymenu]->selected // and it is not already on
 	    && !pp.current_item->callback_) // and it does not have a callback
@@ -767,7 +767,7 @@ int menuwindow::early_hide_handle(int e) {
       }
     }
     return 1;
-  case FL_RELEASE:
+  case fltk3::RELEASE:
     // Mouse must either be held down/dragged some, or this must be
     // the second click (not the one that popped up the menu):
     if (   !fltk3::event_is_click() 
@@ -836,7 +836,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(
   pp.current_item = 0; pp.menu_number = 0; pp.item_number = -1;
   if (menubar) {
     // find the initial menu
-    if (!mw.handle(FL_DRAG)) {
+    if (!mw.handle(fltk3::DRAG)) {
       fltk3::grab(0);
       return 0;
     }
@@ -989,8 +989,8 @@ const Fl_Menu_Item* Fl_Menu_Item::popup(
   Search only the top level menu for a shortcut.  
   Either &x in the label or the shortcut fields are used.
 
-  This tests the current event, which must be an FL_KEYBOARD or 
-  FL_SHORTCUT, against a shortcut value.
+  This tests the current event, which must be an fltk3::KEYBOARD or 
+  fltk3::SHORTCUT, against a shortcut value.
 
   \param ip returns the index of the item, if \p ip is not NULL.
   \param require_alt if true: match only if Alt key is pressed.
@@ -1015,7 +1015,7 @@ const Fl_Menu_Item* Fl_Menu_Item::find_shortcut(int* ip, const bool require_alt)
 // shortcut.  Only uses the shortcut field, ignores &x in the labels:
 /**
   This is designed to be called by a widgets handle() method in
-  response to a FL_SHORTCUT event.  If the current event matches
+  response to a fltk3::SHORTCUT event.  If the current event matches
   one of the items shortcut, that item is returned.  If the keystroke
   does not match any shortcuts then NULL is returned.  This only
   matches the shortcut() fields, not the letters in the title

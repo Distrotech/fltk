@@ -470,9 +470,9 @@ int Fl_Tree::handle(int e) {
   // Developer note: Fl_Browser_::handle() used for reference here..
   // #include <fltk3/names.h>	// for event debugging
   // fprintf(stderr, "DEBUG: %s (%d)\n", fl_eventnames[e], e);
-  if (e == FL_ENTER || e == FL_LEAVE) return(1);
+  if (e == fltk3::ENTER || e == fltk3::LEAVE) return(1);
   switch (e) {
-    case FL_FOCUS: {
+    case fltk3::FOCUS: {
       // FLTK tests if we want focus. 
       //     If a nav key was used to give us focus, and we've got no saved
       //     focus widget, determine which item gets focus depending on nav key.
@@ -503,11 +503,11 @@ int Fl_Tree::handle(int e) {
       if ( visible_focus() ) redraw();	// draw focus change
       return(1);
     }
-    case FL_UNFOCUS: {		// FLTK telling us some other widget took focus.
+    case fltk3::UNFOCUS: {		// FLTK telling us some other widget took focus.
       if ( visible_focus() ) redraw();	// draw focus change
       return(1);
     }
-    case FL_KEYBOARD: {		// keyboard shortcut
+    case fltk3::KEYBOARD: {		// keyboard shortcut
       // Do shortcuts first or scrollbar will get them...
       if (_prefs.selectmode() > FL_TREE_SELECT_NONE ) {
 	if ( !_item_focus ) {
@@ -594,8 +594,8 @@ int Fl_Tree::handle(int e) {
   // fprintf(stderr, "ERCODEBUG: Fl_Tree::handle(): Event was %s (%d)\n", fl_eventnames[e], e); // DEBUGGING
   if ( ! _root ) return(ret);
   switch ( e ) {
-    case FL_PUSH: {					// clicked on a tree item?
-      if (fltk3::visible_focus() && handle(FL_FOCUS)) {
+    case fltk3::PUSH: {					// clicked on a tree item?
+      if (fltk3::visible_focus() && handle(fltk3::FOCUS)) {
         fltk3::focus(this);
       }
       lastselect = 0;
@@ -632,7 +632,7 @@ int Fl_Tree::handle(int e) {
       }
       break;
     }
-    case FL_DRAG: {
+    case fltk3::DRAG: {
       // do the scrolling first:
       int my = fltk3::event_y();
       if ( my < y() ) {				// above top?

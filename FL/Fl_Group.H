@@ -25,217 +25,136 @@
 //     http://www.fltk.org/str.php
 //
 
-/* \file
-   Fl_Group, Fl_End classes . */
-
 #ifndef FLTK1_Group_H
 #define FLTK1_Group_H
 
+#include <fltk3/Group.h>
 #include "Fl_Widget.H"
 
 
 class FL_EXPORT Fl_Group : public Fl_Widget {
 
-#if 0 // TODO: FLTK123
-  Fl_Widget** array_;
-  Fl_Widget* savedfocus_;
-  Fl_Widget* resizable_;
-  int children_;
-  int *sizes_; // remembered initial sizes of children
-
-  int navigation(int);
-  static Fl_Group *current_;
- 
-  // unimplemented copy ctor and assignment operator
-  Fl_Group(const Fl_Group&);
-  Fl_Group& operator=(const Fl_Group&);
-#endif // TODO: FLTK123
-
 protected:
-  Fl_Group() {}
-  
-#if 0 // TODO: FLTK123
-  void draw();
-  void draw_child(Fl_Widget& widget) const;
-  void draw_children();
-  void draw_outside_label(const Fl_Widget& widget) const ;
-  void update_child(Fl_Widget& widget) const;
-  int  *sizes();
-
-#endif // TODO: FLTK123
+  Fl_Group() {
+  }
+  void draw_child(Fl_Widget& widget) const {
+    fltk3::Widget *w3 = (fltk3::Widget*)widget._p;
+    ((fltk3::Group*)_p)->draw_child(*w3);
+  }
+  void draw_children() {
+    ((fltk3::Group*)_p)->draw_children(); 
+  }
+  void draw_outside_label(const Fl_Widget& widget) const {
+    fltk3::Widget *w3 = (fltk3::Widget*)widget._p;
+    ((fltk3::Group*)_p)->draw_outside_label(*w3);
+  }
+  void update_child(Fl_Widget& widget) const {
+    fltk3::Widget *w3 = (fltk3::Widget*)widget._p;
+    ((fltk3::Group*)_p)->update_child(*w3);
+  }
+  int *sizes() {
+    return ((fltk3::Group*)_p)->sizes(); 
+  }
   
 public:
 
-#if 0 // TODO: FLTK123
-  
-  int handle(int);
-#endif // TODO: FLTK123
-
-  void begin() { ((fltk3::Group*)_p)->begin(); }
-  void end() { ((fltk3::Group*)_p)->end(); }
-  
-#if 0 // TODO: FLTK123
-  static Fl_Group *current();
-  static void current(Fl_Group *g);
-
-  /**
-    Returns how many child widgets the group has.
-  */
-  int children() const {return children_;}
-  /**
-    Returns array()[n].  <i>No range checking is done!</i>
-  */
-  Fl_Widget* child(int n) const {return array()[n];}
-  int find(const Fl_Widget*) const;
-  /**
-    See int Fl_Group::find(const Fl_Widget *w) const 
-  */
-  int find(const Fl_Widget& o) const {return find(&o);}
-  Fl_Widget* const* array() const;
-
-  void resize(int,int,int,int);
-
-#endif // TODO: FLTK123
-  
-  Fl_Group(int,int,int,int, const char * = 0);
-  
-#if 0 // TODO: FLTK123
-  
-  virtual ~Fl_Group();
-  void add(Fl_Widget&);
-  /**
-    See void Fl_Group::add(Fl_Widget &w) 
-  */
-  void add(Fl_Widget* o) {add(*o);}
-  void insert(Fl_Widget&, int i);
-  /**
-    This does insert(w, find(before)).  This will append the
-    widget if \p before is not in the group.
-  */
-  void insert(Fl_Widget& o, Fl_Widget* before) {insert(o,find(before));}
-  void remove(int index);
-  void remove(Fl_Widget&);
-  /**
-    Removes the widget \p o from the group.
-    \sa void remove(Fl_Widget&)
-  */
-  void remove(Fl_Widget* o) {remove(*o);}
-  void clear();
-
-  /**
-    See void Fl_Group::resizable(Fl_Widget *box) 
-  */
-  void resizable(Fl_Widget& o) {resizable_ = &o;}
-  /**
-    The resizable widget defines the resizing box for the group. When the
-    group is resized it calculates a new size and position for all of its
-    children. Widgets that are horizontally or vertically inside the
-    dimensions of the box are scaled to the new size. Widgets outside the
-    box are moved.
-
-    In these examples the gray area is the resizable:
-
-    \image html resizebox1.png
-    
-    \image html resizebox2.png
-    
-    \image latex resizebox1.png "before resize"  width=4cm
-    
-    \image latex resizebox2.png "after resize"   width=4cm
-
-    The resizable may be set to the group itself, in which case all the
-    contents are resized. This is the default value for Fl_Group,
-    although NULL is the default for Fl_Window and Fl_Pack.
-
-    If the resizable is NULL then all widgets remain a fixed size
-    and distance from the top-left corner.
-
-    It is possible to achieve any type of resize behavior by using an
-    invisible Fl_Box as the resizable and/or by using a hierarchy
-    of child Fl_Group's.
-  */
-#endif
-  
-  void resizable(Fl_Widget* o) { ((fltk3::Group*)_p)->resizable( (fltk3::Widget*)(o->_p) ); }
-  
-#if 0
-  /**
-    See void Fl_Group::resizable(Fl_Widget *box) 
-  */
-  Fl_Widget* resizable() const {return resizable_;}
-  /**
-    Adds a widget to the group and makes it the resizable widget.
-  */
-  void add_resizable(Fl_Widget& o) {resizable_ = &o; add(o);}
-  void init_sizes();
-
-  /**
-    Controls whether the group widget clips the drawing of
-    child widgets to its bounding box.
-    
-    Set \p c to 1 if you want to clip the child widgets to the
-    bounding box.
-
-    The default is to not clip (0) the drawing of child widgets.
-  */
-  void clip_children(int c) { if (c) set_flag(CLIP_CHILDREN); else clear_flag(CLIP_CHILDREN); }
-  /**
-    Returns the current clipping mode.
-
-    \return true, if clipping is enabled, false otherwise.
-
-    \see void Fl_Group::clip_children(int c)
-  */
-  unsigned int clip_children() { return (flags() & CLIP_CHILDREN) != 0; }
-
-  // Note: Doxygen docs in Fl_Widget.H to avoid redundancy.
-  virtual Fl_Group* as_group() { return this; }
-
-  // back compatibility functions:
-
-  /**
-    \deprecated This is for backwards compatibility only. You should use
-    \e W->%take_focus() instead.
-    \sa Fl_Widget::take_focus();
-  */
-  void focus(Fl_Widget* W) {W->take_focus();}
-
-  /** This is for forms compatibility only */
-  Fl_Widget* & _ddfdesign_kludge() {return resizable_;}
-
-  /** This is for forms compatibility only */
-  void forms_end();
-  
-#endif // TODO: FLTK123
-  
+  // in Wrapper: void draw();
+  // in Wrapper: int handle(int);
+  // in Wrapper: void resize(int,int,int,int);
+  // in Wrapper: virtual ~Fl_Group();
+  virtual Fl_Group* as_group() { 
+    return this; 
+  }
+  void begin() { 
+    ((fltk3::Group*)_p)->begin(); 
+  }
+  void end() { 
+    ((fltk3::Group*)_p)->end(); 
+  }
+  static Fl_Group *current() {
+    return (Fl_Group*)( fltk3::Group::current()->wrapper() );
+  }
+  static void current(Fl_Group *g) {
+    fltk3::Group::current( (fltk3::Group*)( ((Fl_Widget*)g)->_p ) );
+  }
+  int children() const {
+    return ((fltk3::Group*)_p)->children(); 
+  }
+  Fl_Widget* child(int n) const {
+    return (Fl_Widget*)( ((fltk3::Group*)_p)->child(n)->wrapper() );
+  }
+  int find(const Fl_Widget *g) const {
+    return ((fltk3::Group*)_p)->find( ( (fltk3::Widget*)((Fl_Widget*)g)->_p ) );
+  }
+  int find(const Fl_Widget& o) const {
+    return find(&o);
+  }
+  // TODO: Fl_Widget* const* array() const;  
+  Fl_Group(int x, int y, int w, int h, const char *l = 0) {
+    _p = new fltk3::Group(x, y, w, h, l);
+    _p->wrapper(this);
+  }
+  void add(Fl_Widget &w) {
+    add(&w);
+  }
+  void add(Fl_Widget* o) {
+    ((fltk3::Group*)_p)->add( ( (fltk3::Widget*)((Fl_Widget*)o)->_p ) );
+  }
+  void insert(Fl_Widget &widget, int i) { 
+    fltk3::Widget *w3 = (fltk3::Widget*)widget._p;
+    ((fltk3::Group*)_p)->insert(*w3, i);
+  }
+  void insert(Fl_Widget& o, Fl_Widget* before) {
+    fltk3::Widget *w3 = (fltk3::Widget*)o._p;
+    ((fltk3::Group*)_p)->insert(*w3, (fltk3::Widget*)((Fl_Widget*)before)->_p);
+  }
+  void remove(int index) {
+    ((fltk3::Group*)_p)->remove(index); 
+  }
+  void remove(Fl_Widget &w) {
+    remove(&w);
+  }
+  void remove(Fl_Widget* o) {
+    ((fltk3::Group*)_p)->remove( ( (fltk3::Widget*)((Fl_Widget*)o)->_p ) );
+  }
+  void clear() {
+    ((fltk3::Group*)_p)->clear(); 
+  }
+  void resizable(Fl_Widget& o) {
+    resizable(&o);
+  }
+  void resizable(Fl_Widget* o) { 
+    ((fltk3::Group*)_p)->resizable( (fltk3::Widget*)(o->_p) ); 
+  }  
+  Fl_Widget* resizable() const {
+    return (Fl_Widget*)( ((fltk3::Group*)_p)->resizable()->wrapper() );
+  }
+  void add_resizable(Fl_Widget& o) {
+    fltk3::Widget *w3 = (fltk3::Widget*)o._p;
+    ((fltk3::Group*)_p)->add_resizable(*w3);
+  }
+  void init_sizes() {
+    ((fltk3::Group*)_p)->init_sizes(); 
+  }
+  void clip_children(int c) {
+    ((fltk3::Group*)_p)->clip_children(c); 
+  }
+  unsigned int clip_children() {
+    return ((fltk3::Group*)_p)->clip_children(); 
+  }
+  void focus(Fl_Widget* W) {
+    ((fltk3::Group*)_p)->focus( ( (fltk3::Widget*)((Fl_Widget*)W)->_p ) );
+  }
+  // TODO: Fl_Widget* & _ddfdesign_kludge() {return resizable_;}
+  void forms_end() {
+    ((fltk3::Group*)_p)->forms_end(); 
+  }  
 };
 
 #if 0 // TODO: FLTK123
 
-// dummy class used to end child groups in constructors for complex
-// subclasses of Fl_Group:
-/**
-  This is a dummy class that allows you to end a Fl_Group in a constructor list of a
-  class:
-  \code 
-   class MyClass {
-   Fl_Group group;
-   Fl_Button button_in_group;
-   Fl_End end;
-   Fl_Button button_outside_group;
-   MyClass();
-  };
-  MyClass::MyClass() :
-   group(10,10,100,100),
-   button_in_group(20,20,60,30),
-   end(),
-   button_outside_group(10,120,60,30)
-  {} 
-  \endcode
-*/
 class FL_EXPORT Fl_End {
 public:
-  /** All it does is calling Fl_Group::current()->end() */
   Fl_End() {Fl_Group::current()->end();}
 };
 

@@ -2953,24 +2953,24 @@ Fl_Help_View::handle(int event)	// I - Event to handle
 
   switch (event)
   {
-    case FL_FOCUS:
+    case fltk3::FOCUS:
       redraw();
       return 1;
-    case FL_UNFOCUS:
+    case fltk3::UNFOCUS:
       clear_selection();
       redraw();
       return 1;
-    case FL_ENTER :
+    case fltk3::ENTER :
       fltk3::Group::handle(event);
       return 1;
-    case FL_LEAVE :
+    case fltk3::LEAVE :
       fl_cursor(fltk3::CURSOR_DEFAULT);
       break;
-    case FL_MOVE:
+    case fltk3::MOVE:
       if (find_link(xx, yy)) fl_cursor(fltk3::CURSOR_HAND);
       else fl_cursor(fltk3::CURSOR_DEFAULT);
       return 1;
-    case FL_PUSH:
+    case fltk3::PUSH:
       if (fltk3::Group::handle(event)) return 1;
       linkp = find_link(xx, yy);
       if (linkp) {
@@ -2983,7 +2983,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       }
       fl_cursor(fltk3::CURSOR_DEFAULT);
       return 1;
-    case FL_DRAG:
+    case fltk3::DRAG:
       if (linkp) {
         if (fltk3::event_is_click()) {
           fl_cursor(fltk3::CURSOR_HAND);
@@ -2999,7 +2999,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
       }
       fl_cursor(fltk3::CURSOR_DEFAULT);
       return 1;
-    case FL_RELEASE:
+    case fltk3::RELEASE:
       if (linkp) {
         if (fltk3::event_is_click()) {
           follow_link(linkp);
@@ -3013,7 +3013,7 @@ Fl_Help_View::handle(int event)	// I - Event to handle
         return 1;
       }
       return 1;
-    case FL_SHORTCUT: {
+    case fltk3::SHORTCUT: {
       char ascii = fltk3::event_text()[0];
       switch (ascii) {
         case ctrl('A'): select_all(); redraw(); return 1;

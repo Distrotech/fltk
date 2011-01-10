@@ -614,7 +614,7 @@ static void do_timer(CFRunLoopTimerRef timer, void* data)
 }
 - (BOOL)windowShouldClose:(FLWindow *)fl
 {
-  fltk3::handle( FL_CLOSE, [fl getFLTK3Window] ); // this might or might not close the window
+  fltk3::handle( fltk3::CLOSE, [fl getFLTK3Window] ); // this might or might not close the window
   if (!Fl_X::first) return YES;
   fltk3::Window *l = fltk3::first_window();
   while( l != NULL && l != [fl getFLTK3Window]) l = fltk3::next_window(l);
@@ -661,7 +661,7 @@ static double do_queued_events( double time = 0.0 )
 #if CONSOLIDATE_MOTION
   if (send_motion && send_motion == fl_xmousewin) {
     send_motion = 0;
-    fltk3::handle(FL_MOVE, fl_xmousewin);
+    fltk3::handle(fltk3::MOVE, fl_xmousewin);
   }
 #endif
   
@@ -728,11 +728,11 @@ static void cocoaMouseWheelHandler(NSEvent *theEvent)
   if ([theEvent deltaX] != 0) {
     fltk3::e_dx = (int)-dx;
     fltk3::e_dy = 0;
-    if ( fltk3::e_dx) fltk3::handle( FL_MOUSEWHEEL, window );
+    if ( fltk3::e_dx) fltk3::handle( fltk3::MOUSEWHEEL, window );
   } else if ([theEvent deltaY] != 0) {
     fltk3::e_dx = 0;
     fltk3::e_dy = (int)-dy;
-    if ( fltk3::e_dy) fltk3::handle( FL_MOUSEWHEEL, window );
+    if ( fltk3::e_dy) fltk3::handle( fltk3::MOUSEWHEEL, window );
   } else {
     fl_unlock_function();
     return;
@@ -784,7 +784,7 @@ static void cocoaMouseHandler(NSEvent *theEvent)
     case NSRightMouseDown:
     case NSOtherMouseDown:
       suppressed = 0;
-      sendEvent = FL_PUSH;
+      sendEvent = fltk3::PUSH;
       fltk3::e_is_click = 1; 
       px = (int)pos.x; py = (int)pos.y;
       if ([theEvent clickCount] > 1) 
@@ -801,14 +801,14 @@ static void cocoaMouseHandler(NSEvent *theEvent)
       }
       if ( !window ) break;
       if ( !sendEvent ) {
-        sendEvent = FL_RELEASE; 
+        sendEvent = fltk3::RELEASE; 
       }
       fltk3::e_keysym = keysym[ btn ];
       // fall through
     case NSMouseMoved:
       suppressed = 0;
       if ( !sendEvent ) { 
-        sendEvent = FL_MOVE; 
+        sendEvent = fltk3::MOVE; 
       }
       // fall through
     case NSLeftMouseDragged:
@@ -816,7 +816,7 @@ static void cocoaMouseHandler(NSEvent *theEvent)
     case NSOtherMouseDragged: {
       if (suppressed) break;
       if ( !sendEvent ) {
-        sendEvent = FL_MOVE; // fltk3::handle will convert into FL_DRAG
+        sendEvent = fltk3::MOVE; // fltk3::handle will convert into fltk3::DRAG
         if (fabs(pos.x-px)>5 || fabs(pos.y-py)>5) 
           fltk3::e_is_click = 0;
       }
@@ -914,11 +914,11 @@ static int cocoaKeyboardHandler(NSEvent *theEvent)
   maskedKeyCode = keyCode & 0x7f;
   switch([theEvent type]) {
     case NSKeyDown:
-      sendEvent = FL_KEYBOARD;
+      sendEvent = fltk3::KEYBOARD;
       // fall through
     case NSKeyUp:
       if ( !sendEvent ) {
-        sendEvent = FL_KEYUP;
+        sendEvent = fltk3::KEYUP;
         fltk3::e_state &= 0xbfffffff; // clear the deadkey flag
       }
       mods_to_e_state( mods ); // process modifier keys
@@ -1077,7 +1077,7 @@ extern "C" {
 {
   FLWindow *nsw = (FLWindow*)[notif object];
   fltk3::Window *window = [nsw getFLTK3Window];
-  fltk3::handle( FL_FOCUS, window);
+  fltk3::handle( fltk3::FOCUS, window);
 }
 - (void)windowDidBecomeMain:(NSNotification *)notif
 {
@@ -1131,7 +1131,7 @@ extern "C" {
   NSApplicationTerminateReply reply = NSTerminateNow;
   while ( Fl_X::first ) {
     Fl_X *x = Fl_X::first;
-    fltk3::handle( FL_CLOSE, x->w );
+    fltk3::handle( fltk3::CLOSE, x->w );
     if ( Fl_X::first == x ) {
       reply = NSTerminateCancel; // FLTK has not closed all windows, so we return to the main program now
       break;
@@ -1660,7 +1660,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
   {
     mods_to_e_keysym( tMods );
     if ( fltk3::e_keysym ) 
-      sendEvent = ( prevMods<mods ) ? FL_KEYBOARD : FL_KEYUP;
+      sendEvent = ( prevMods<mods ) ? fltk3::KEYBOARD : fltk3::KEYUP;
     fltk3::e_length = 0;
     fltk3::e_text = (char*)"";
     prevMods = mods;
@@ -1675,7 +1675,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
   fltk3::Window *target = [(FLWindow*)[self window] getFLTK3Window];
   update_e_xy_and_e_xy_root([self window]);
   fl_dnd_target_window = target;
-  int ret = fltk3::handle( FL_DND_ENTER, target );
+  int ret = fltk3::handle( fltk3::DND_ENTER, target );
   breakMacEventLoop();
   return ret ? NSDragOperationCopy : NSDragOperationNone;
 }
@@ -1684,7 +1684,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
   fltk3::Window *target = [(FLWindow*)[self window] getFLTK3Window];
   update_e_xy_and_e_xy_root([self window]);
   fl_dnd_target_window = target;
-  int ret = fltk3::handle( FL_DND_DRAG, target );
+  int ret = fltk3::handle( fltk3::DND_DRAG, target );
   breakMacEventLoop();
   return ret ? NSDragOperationCopy : NSDragOperationNone;
 }
@@ -1692,7 +1692,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 {
   static char *DragData = NULL;
   fltk3::Window *target = [(FLWindow*)[self window] getFLTK3Window];
-  if ( !fltk3::handle( FL_DND_RELEASE, target ) ) { 
+  if ( !fltk3::handle( fltk3::DND_RELEASE, target ) ) { 
     breakMacEventLoop();
     return NO;
   }
@@ -1724,7 +1724,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
   fltk3::e_text = DragData;
   fltk3::e_length = strlen(DragData);
   int old_event = fltk3::e_number;
-  fltk3::belowmouse()->handle(fltk3::e_number = FL_PASTE);
+  fltk3::belowmouse()->handle(fltk3::e_number = fltk3::PASTE);
   fltk3::e_number = old_event;
   if (DragData) { free(DragData); DragData = NULL; }
   fltk3::e_text = NULL;
@@ -1736,7 +1736,7 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
 - (void)draggingExited:(id < NSDraggingInfo >)sender
 {
   if ( fl_dnd_target_window ) {
-    fltk3::handle( FL_DND_LEAVE, fl_dnd_target_window );
+    fltk3::handle( fltk3::DND_LEAVE, fl_dnd_target_window );
     fl_dnd_target_window = 0;
   }
 }
@@ -1773,8 +1773,8 @@ static void  q_set_window_title(NSWindow *nsw, const char * name ) {
     fltk3::Window *window = [(FLWindow*)[NSApp keyWindow] getFLTK3Window];
     fltk3::e_text = (char*)[received UTF8String];
     fltk3::e_length = strlen(fltk3::e_text);
-    fltk3::handle(FL_KEYBOARD, window);
-    fltk3::handle(FL_KEYUP, window);
+    fltk3::handle(fltk3::KEYBOARD, window);
+    fltk3::handle(fltk3::KEYUP, window);
     fl_unlock_function();
     // for some reason, the window does not redraw until the next mouse move or button push
     // sending a 'redraw()' or 'awake()' does not solve the issue!
@@ -1870,7 +1870,7 @@ void Fl_X::make(fltk3::Window* w)
 	x->next = z;
       }
       int old_event = fltk3::e_number;
-      w->handle(fltk3::e_number = FL_SHOW);
+      w->handle(fltk3::e_number = fltk3::SHOW);
       fltk3::e_number = old_event;
       w->redraw();		// force draw to happen
     }
@@ -2028,7 +2028,7 @@ void Fl_X::make(fltk3::Window* w)
     w->y(int(srect.size.height - (crect.origin.y + w->h())));
     
     int old_event = fltk3::e_number;
-    w->handle(fltk3::e_number = FL_SHOW);
+    w->handle(fltk3::e_number = fltk3::SHOW);
     fltk3::e_number = old_event;
     
     if (w->modal()) { fltk3::modal_ = w; fl_fix_focus(); }
@@ -2410,7 +2410,7 @@ void fltk3::paste(fltk3::Widget &receiver, int clipboard) {
   fltk3::e_text = fl_selection_buffer[clipboard];
   fltk3::e_length = fl_selection_length[clipboard];
   if (!fltk3::e_text) fltk3::e_text = (char *)"";
-  receiver.handle(FL_PASTE);
+  receiver.handle(fltk3::PASTE);
 }
 
 void fltk3::add_timeout(double time, Fl_Timeout_Handler cb, void* data)
@@ -3190,7 +3190,7 @@ int fltk3::dnd(void)
              source:myview  slideBack:YES];
   if ( w ) {
     int old_event = fltk3::e_number;
-    w->handle(fltk3::e_number = FL_RELEASE);
+    w->handle(fltk3::e_number = fltk3::RELEASE);
     fltk3::e_number = old_event;
     fltk3::pushed( 0 );
   }

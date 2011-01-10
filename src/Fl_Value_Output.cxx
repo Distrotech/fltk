@@ -59,12 +59,12 @@ int Fl_Value_Output::handle(int event) {
   int mx = fltk3::event_x();
   static int ix, drag;
   switch (event) {
-  case FL_PUSH:
+  case fltk3::PUSH:
     ix = mx;
     drag = fltk3::event_button();
     handle_push();
     return 1;
-  case FL_DRAG:
+  case fltk3::DRAG:
     delta = fltk3::event_x()-ix;
     if (delta > 5) delta -= 5;
     else if (delta < -5) delta += 5;
@@ -77,11 +77,11 @@ int Fl_Value_Output::handle(int event) {
     v = round(v);
     handle_drag(soft()?softclamp(v):clamp(v));;
     return 1;
-  case FL_RELEASE:
+  case fltk3::RELEASE:
     handle_release();
     return 1;
-  case FL_ENTER :
-  case FL_LEAVE :
+  case fltk3::ENTER :
+  case fltk3::LEAVE :
     return 1;
   default:
     return 0;

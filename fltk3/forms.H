@@ -58,7 +58,7 @@ typedef fltk3::Window FL_FORM;
 #define FL_CANCEL	0
 #define FL_INVALID	0
 #define FL_IGNORE	-1
-//#define FL_CLOSE	-2 // this variable is never used in FLTK Forms. It is removed becaus it conflicts with the window FL_CLOSE event
+//#define fltk3::CLOSE	-2 // this variable is never used in FLTK Forms. It is removed becaus it conflicts with the window fltk3::CLOSE event
 
 #define FL_LCOL		FL_BLACK
 #define FL_COL1		FL_GRAY
@@ -479,7 +479,7 @@ inline int fl_isdisplayed_browser_line(fltk3::Widget* o, int n) {
 #define FL_INOUT_BUTTON		5
 #define FL_RETURN_BUTTON	6
 #define FL_HIDDEN_RET_BUTTON	7
-#define FL_PUSH_BUTTON		FL_TOGGLE_BUTTON
+#define fltk3::PUSH_BUTTON		FL_TOGGLE_BUTTON
 #define FL_MENU_BUTTON		9
 
 FL_EXPORT Fl_Button* fl_add_button(uchar t,int x,int y,int w,int h,const char* l);
@@ -713,9 +713,9 @@ inline const char* fl_get_input(fltk3::Widget* o) {return ((Fl_Input*)o)->value(
 
 #include "Fl_Menu_Button.H"
 
-// types are not implemented, they all act like FL_PUSH_MENU:
+// types are not implemented, they all act like fltk3::PUSH_MENU:
 #define FL_TOUCH_MENU		0
-#define FL_PUSH_MENU		1
+#define fltk3::PUSH_MENU		1
 #define FL_PULLDOWN_MENU	2
 forms_constructor(Fl_Menu_Button, fl_add_menu)
 

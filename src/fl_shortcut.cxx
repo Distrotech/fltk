@@ -52,8 +52,8 @@
 #endif
 
 /**
-    Test the current event, which must be an FL_KEYBOARD or 
-    FL_SHORTCUT, against a shortcut value (described in 
+    Test the current event, which must be an fltk3::KEYBOARD or 
+    fltk3::SHORTCUT, against a shortcut value (described in 
     Fl_Button).
     
     Not to be confused with fltk3::Widget::test_shortcut().
@@ -323,7 +323,7 @@ unsigned int fltk3::Widget::label_shortcut(const char *t) {
 /** Returns true if the given text \p t contains the entered '&x' shortcut.
 
   This method must only be called in handle() methods or callbacks after
-  a keypress event (usually FL_KEYDOWN or FL_SHORTCUT). The given text
+  a keypress event (usually fltk3::KEYDOWN or fltk3::SHORTCUT). The given text
   \p t (usually a widget's label or menu text) is searched for a '&x'
   shortcut, and if found, this is compared with the entered key value.
 
@@ -353,7 +353,7 @@ int fltk3::Widget::test_shortcut(const char *t, const bool require_alt) {
 /** Returns true if the widget's label contains the entered '&x' shortcut.
 
   This method must only be called in handle() methods or callbacks after
-  a keypress event (usually FL_KEYDOWN or FL_SHORTCUT).
+  a keypress event (usually fltk3::KEYDOWN or fltk3::SHORTCUT).
   The widget's label is searched for a '&x'
   shortcut, and if found, this is compared with the entered key value.
 

@@ -233,9 +233,6 @@ public:
 
   void	measure_label(int&, int&) const ;
     
-    // TODO: FLTK123 - please port FLTK2 box styles to FLTK3!
-    Box* box() { return (fltk::Box)((fltk3::Widget*)_p)->box(); }
-    void box(Box *b) { ((fltk3::Widget*)_p)->box((fltk3::Boxtype)b); }
 #endif
     
     void box(Box *f) {
@@ -244,10 +241,16 @@ public:
     Box *box() const {
       return fltk2_box_list + ((fltk3::Widget*)_p)->box();
     }    
+    Box *buttonbox() const {
+      // TODO: not in F3  return fltk2_box_list + ((fltk3::Widget*)_p)->buttonbox();
+      return 0;
+    }
+    void buttonbox(Box *f) {
+      // TODO: not in F3  ((fltk3::Widget*)_p)->buttonbox(f->fltk3_id);
+    }
     
 #if 0
 
-    Box*	buttonbox()		const;
   Symbol* glyph()		const;
   Font*	textfont()		const;
   LabelType* labeltype()	const;
@@ -265,7 +268,6 @@ public:
   unsigned char scrollbar_align() const;
   unsigned char scrollbar_width() const;
 
-  void buttonbox(Box*)		;
   void glyph(Symbol*)		;
 #endif  // TODO: FLTK123
 
@@ -339,21 +341,6 @@ public:
   void label_size(float n)	{ labelsize(n); }
 
 #endif
-
-private:
-
-  const char*		label_;
-  const Symbol*		image_;
-  unsigned		flags_;
-  const Style*		style_;
-  Callback*		callback_;
-  void*			user_data_;
-  const char*		tooltip_; // make this into another widget?
-  Group*		parent_;
-  uchar			type_;
-  uchar			damage_;
-  uchar			layout_damage_;
-  uchar			when_;
 #endif // TODO: FLTK123
 };
 
