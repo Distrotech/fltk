@@ -27,7 +27,7 @@
 
 #ifndef Fl_RGB_Image_H
 # define Fl_RGB_Image_H
-# include "Fl_Image.H"
+# include "Image.h"
 #endif // !Fl_RGB_Image_H
 
 //

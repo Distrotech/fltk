@@ -399,7 +399,7 @@ void Fl_Bitmap::label(Fl_Menu_Item* m) {
   m->label(fltk3::IMAGE_LABEL, (const char*)this);
 }
 
-Fl_Image *Fl_Bitmap::copy(int W, int H) {
+fltk3::Image *Fl_Bitmap::copy(int W, int H) {
   Fl_Bitmap	*new_image;	// New RGB image
   uchar		*new_array;	// New array for image data
 

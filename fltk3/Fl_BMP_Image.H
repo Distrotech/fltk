@@ -30,7 +30,7 @@
 
 #ifndef Fl_BMP_Image_H
 #define Fl_BMP_Image_H
-#  include "Fl_Image.H"
+#  include "Image.h"
 
 /**
   The Fl_BMP_Image class supports loading, caching,

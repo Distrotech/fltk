@@ -34,7 +34,7 @@
 #define Fl_Device_H
 
 #include <fltk3/Fl_Plugin.H>
-#include <fltk3/Fl_Image.H>
+#include <fltk3/Image.h>
 #include <fltk3/Fl_Bitmap.H>
 #include <fltk3/Fl_Pixmap.H>
 #include <fltk3/Fl_RGB_Image.H>

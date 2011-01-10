@@ -47,12 +47,12 @@
 #  endif
 
 
-class Fl_Image;
 struct Fl_Label;
 
 namespace fltk3 {
   class Window;
   class Widget;
+  class Image;
 }
 
 
@@ -211,7 +211,7 @@ namespace fltk3 {
   extern int awake_ring_head_;
   extern int awake_ring_tail_;
   extern const char* scheme_;
-  extern Fl_Image* scheme_bg_;
+  extern fltk3::Image* scheme_bg_;
 
   extern int e_original_keysym; // late addition
   extern int scrollbar_size_;
@@ -883,7 +883,7 @@ namespace fltk3 {
   void default_atclose(fltk3::Window*,void*);
   /** For back compatibility, sets the fltk3::atclose handler callback. You
       can now simply change the callback for the window instead.
-      \see fltk3::Window::callback(Fl_Callback*) */
+      \see fltk3::Window::callback(fltk3::Callback*) */
   inline void set_atclose(Fl_Atclose_Handler f) {atclose = f;}
   /**   @} */
 

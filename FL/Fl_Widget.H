@@ -53,17 +53,13 @@ class Fl_Window;
 class Fl_Group;
 class Fl_Image;
 
+typedef void (Fl_Callback )(Fl_Widget*, void*);
+typedef Fl_Callback* Fl_Callback_p;
+typedef void (Fl_Callback0)(Fl_Widget*);
+typedef void (Fl_Callback1)(Fl_Widget*, long);
+
 #if 0  // TODO: FLTK123
 
-
-/** Default callback type definition for all fltk widgets (by far the most used) */
-typedef void (Fl_Callback )(Fl_Widget*, void*);
-/** Default callback type pointer definition for all fltk widgets */
-typedef Fl_Callback* Fl_Callback_p; // needed for BORLAND
-/** One parameter callback type definition passing only the widget */
-typedef void (Fl_Callback0)(Fl_Widget*);
-/** Callback type definition passing the widget and a long data value */
-typedef void (Fl_Callback1)(Fl_Widget*, long);
 
 /** This struct stores all information for a text or mixed graphics label.
 
@@ -98,7 +94,7 @@ struct FL_EXPORT Fl_Label {
 #endif  // TODO: FLTK123
 
 
-class FL_EXPORT Fl_Widget : public fltk3::Wrapper {
+class FL_EXPORT Fl_Widget : public fltk3::WidgetWrapper {
   friend class Fl_Group;
   
 protected:
@@ -182,21 +178,18 @@ public:
     _p->wrapper(this);
   }
   
-  virtual void draw() {
-    pVCalls |= 1;
-    ((fltk3::Widget*)_p)->draw();
-    pVCalls &= ~1;
-  }
 #if 0 // TODO: FLTK123
   virtual ~Fl_Widget() {}
-  virtual int handle(int event) {}
-  virtual void resize(int x, int y, int w, int h) {}
-  virtual void show() {}
-  virtual void hide() {}
-  virtual Fl_Group* as_group() {}
-  virtual Fl_Window* as_window() {}
-  virtual class Fl_Gl_Window* as_gl_window() {}
 #endif // TODO: FLTK123
+  
+  // Wrapper: virtual void draw()
+  // Wrapper: virtual int handle(int event)
+  // Wrapper: virtual void resize(int x, int y, int w, int h)
+  // Wrapper: virtual void show()
+  // Wrapper: virtual void hide()
+  virtual Fl_Group* as_group() { return 0L; }
+  virtual Fl_Window* as_window() { return 0L; }
+  virtual class Fl_Gl_Window* as_gl_window() { return 0L; }
   
   Fl_Group* parent() const {
     return (Fl_Group*)( ((fltk3::Widget*)_p)->parent()->wrapper() );
@@ -304,67 +297,188 @@ public:
     ((fltk3::Widget*)_p)->copy_tooltip(text); 
   }
   
-#if 0 // TODO: FLTK123
-  Fl_Image* image() {}
-  const Fl_Image* image() const {}
-  void image(Fl_Image* img) {}
-  void image(Fl_Image& img) {}
-  Fl_Image* deimage() {}
-  const Fl_Image* deimage() const {}
-  void deimage(Fl_Image* img) {}
-  void deimage(Fl_Image& img) {}
-  Fl_Callback_p callback() const {}
-  void callback(Fl_Callback* cb, void* p) {}
-  void callback(Fl_Callback* cb) {}
-  void callback(Fl_Callback0*cb) {}
-  void callback(Fl_Callback1*cb, long p=0) {}
-  void* user_data() const {}
-  void user_data(void* v) {}
-  long argument() const {}
-  void argument(long v) {}
-  Fl_When when() const {}
-  void when(uchar i) {}
-  unsigned int visible() const {}
-  int visible_r() const {}
-  void set_visible() {}
-  void clear_visible() {}
-  unsigned int active() const {}
-  int active_r() const {}
-  void activate() {}
-  void deactivate() {}
-  unsigned int output() const {}
-  void set_output() {}
-  void clear_output() {}
-  unsigned int takesevents() const {}
-  unsigned int changed() const {}
-  void set_changed() {}
-  void clear_changed() {}
-  int take_focus() {}
-  void set_visible_focus() {}
-  void clear_visible_focus() {}
-  void visible_focus(int v) {}
-  unsigned int  visible_focus() {}
-  static void default_callback(Fl_Widget *cb, void *d) {}
-  void do_callback() {}
-  void do_callback(Fl_Widget* o,long arg) {}
-  void do_callback(Fl_Widget* o,void* arg=0) {}
-  int test_shortcut() {}
-  static unsigned int label_shortcut(const char *t) {}
-  static int test_shortcut(const char*, const bool require_alt = false) {}
-  int contains(const Fl_Widget *w) const {}
-  int inside(const Fl_Widget* w) const {}
-  void redraw() {}
-  void redraw_label() {}
-  uchar damage() const {}
-  void clear_damage(uchar c = 0) {}
-  void damage(uchar c) {}
-  void damage(uchar c, int x, int y, int w, int h) {}
-  void draw_label(int, int, int, int, Fl_Align) const {}
-  void measure_label(int& ww, int& hh) const {}
-  Fl_Window* window() const {}
-  Fl_Color color2() const {}
-  void color2(unsigned a) {}
-#endif  // TODO: FLTK123
+  Fl_Image* image() { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: Fl_Image* image()\n");
+    return 0L;
+  }
+  const Fl_Image* image() const { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: const Fl_Image* image() const\n");
+    return 0L;
+  }
+  void image(Fl_Image* img) { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: void image(Fl_Image* img)\n");
+  }
+  void image(Fl_Image& img) { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: void image(Fl_Image& img)\n");
+  }
+  Fl_Image* deimage() { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: Fl_Image* deimage()\n");
+    return 0L;
+  }
+  const Fl_Image* deimage() const { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: const Fl_Image* deimage() const\n");
+    return 0L;
+  }
+  void deimage(Fl_Image* img) { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: void deimage(Fl_Image* img)\n");
+  }
+  void deimage(Fl_Image& img) { // FIXME: fltk3::Image needs to be wrapped!
+    fprintf(stderr, "Call not yet implemented: void deimage(Fl_Image& img)\n");
+  }
+  
+  Fl_Callback_p callback() const {
+    return (Fl_Callback_p)((fltk3::Widget*)_p)->callback();
+  }
+  void callback(Fl_Callback* cb, void* p) {
+    ((fltk3::Widget*)_p)->callback( (fltk3::Callback*)cb, p );
+  }
+  void callback(Fl_Callback* cb) {
+    ((fltk3::Widget*)_p)->callback( (fltk3::Callback*)cb );
+  }
+  void callback(Fl_Callback0*cb) {
+    ((fltk3::Widget*)_p)->callback( (fltk3::Callback0*)cb );
+  }
+  void callback(Fl_Callback1*cb, long p=0) {
+    ((fltk3::Widget*)_p)->callback( (fltk3::Callback1*)cb, p );
+  }
+  void *user_data() const {
+    return ((fltk3::Widget*)_p)->user_data();
+  }
+  void user_data(void *v) {
+    ((fltk3::Widget*)_p)->user_data(v);
+  }
+  long argument() const {
+    return ((fltk3::Widget*)_p)->argument();
+  }
+  void argument(long v) {
+    ((fltk3::Widget*)_p)->argument(v);
+  }
+  Fl_When when() const {
+    return (Fl_When)((fltk3::Widget*)_p)->when();
+  }
+  void when(uchar i) {
+    ((fltk3::Widget*)_p)->when(i);
+  }
+  unsigned int visible() const {
+    return ((fltk3::Widget*)_p)->visible();
+  }
+  int visible_r() const {
+    return ((fltk3::Widget*)_p)->visible_r();
+  }
+  void set_visible() {
+    ((fltk3::Widget*)_p)->set_visible();
+  }
+  void clear_visible() {
+    ((fltk3::Widget*)_p)->clear_visible();
+  }
+  unsigned int active() const {
+    return ((fltk3::Widget*)_p)->active();
+  }
+  int active_r() const {
+    return ((fltk3::Widget*)_p)->active_r();
+  }
+  void activate() {
+    ((fltk3::Widget*)_p)->activate();
+  }
+  void deactivate() {
+    ((fltk3::Widget*)_p)->deactivate();
+  }
+  unsigned int output() const {
+    return ((fltk3::Widget*)_p)->output();
+  }
+  void set_output() {
+    ((fltk3::Widget*)_p)->set_output();
+  }
+  void clear_output() {
+    ((fltk3::Widget*)_p)->clear_output();
+  }
+  unsigned int takesevents() const {
+    return ((fltk3::Widget*)_p)->takesevents();
+  }
+  unsigned int changed() const {
+    return ((fltk3::Widget*)_p)->changed();
+  }
+  void set_changed() {
+    ((fltk3::Widget*)_p)->set_changed();
+  }
+  void clear_changed() {
+    ((fltk3::Widget*)_p)->clear_changed();
+  }
+  int take_focus() {
+    return ((fltk3::Widget*)_p)->take_focus();
+  }
+  void set_visible_focus() {
+    ((fltk3::Widget*)_p)->set_visible_focus();
+  }
+  void clear_visible_focus() {
+    ((fltk3::Widget*)_p)->clear_visible_focus();
+  }
+  void visible_focus(int v) {
+    ((fltk3::Widget*)_p)->visible_focus(v);
+  }
+  unsigned int visible_focus() {
+    return ((fltk3::Widget*)_p)->visible_focus();
+  }
+  static void default_callback(Fl_Widget *cb, void *d) {
+    fltk3::Widget::default_callback( (fltk3::Widget*)( ((Fl_Widget*)cb)->_p ), d );
+  }
+  void do_callback() {
+    ((fltk3::Widget*)_p)->do_callback();
+  }
+  void do_callback(Fl_Widget* o,long arg) {
+    ((fltk3::Widget*)_p)->do_callback( (fltk3::Widget*)( ((Fl_Widget*)o)->_p ), arg );
+  }
+  void do_callback(Fl_Widget* o,void* arg=0) {
+    ((fltk3::Widget*)_p)->do_callback( (fltk3::Widget*)( ((Fl_Widget*)o)->_p ), arg );
+  }
+  int test_shortcut() {
+    return ((fltk3::Widget*)_p)->test_shortcut();
+  }
+  static unsigned int label_shortcut(const char *t) {
+    return fltk3::Widget::label_shortcut(t);
+  }
+  static int test_shortcut(const char *s, const bool require_alt = false) {
+    return fltk3::Widget::test_shortcut(s, require_alt);
+  }
+  int contains(const Fl_Widget *w) const {
+    return ((fltk3::Widget*)_p)->contains( (fltk3::Widget*)( ((Fl_Widget*)w)->_p ) );
+  }
+  int inside(const Fl_Widget* w) const {
+    return ((fltk3::Widget*)_p)->inside( (fltk3::Widget*)( ((Fl_Widget*)w)->_p ) );
+  }
+  void redraw() {
+    ((fltk3::Widget*)_p)->redraw();
+  }
+  void redraw_label() {
+    ((fltk3::Widget*)_p)->redraw_label();
+  }
+  uchar damage() const {
+    return ((fltk3::Widget*)_p)->damage();
+  }
+  void clear_damage(uchar c = 0) {
+    ((fltk3::Widget*)_p)->clear_damage(c);
+  }
+  void damage(uchar c) {
+    ((fltk3::Widget*)_p)->damage(c);
+  }
+  void damage(uchar c, int x, int y, int w, int h) {
+    ((fltk3::Widget*)_p)->damage(c, x, y, w, h);
+  }
+  void draw_label(int x, int y, int w, int h, Fl_Align a) const {
+    ((fltk3::Widget*)_p)->draw_label(x, y, w, h, (fltk3::Align)a);
+  }
+  void measure_label(int& ww, int& hh) const {
+    ((fltk3::Widget*)_p)->measure_label(ww, hh);
+  }
+  Fl_Window* window() const {
+    return (Fl_Window*)( ((fltk3::Widget*)_p)->window()->wrapper() );
+  }
+  Fl_Color color2() const {
+    return (Fl_Color)((fltk3::Widget*)_p)->color2(); 
+  }
+  void color2(unsigned a) {
+    ((fltk3::Widget*)_p)->color2((fltk3::Color)a);
+  }
   
 };
 

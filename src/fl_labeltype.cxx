@@ -33,7 +33,7 @@
 #include <fltk3/Widget.h>
 #include <fltk3/Group.H>
 #include <fltk3/fl_draw.H>
-#include <fltk3/Fl_Image.H>
+#include <fltk3/Image.h>
 
 void
 fl_no_label(const Fl_Label*,int,int,int,int,fltk3::Align) {}

@@ -45,7 +45,7 @@ namespace fltk3 {
     Object() 
     : pWrapper(0L) { }
     virtual ~Object() { }
-    Wrapper *wrapper() { return pWrapper; }
+    Wrapper *wrapper() { return this?pWrapper:0L; }
     void wrapper(Wrapper *w) { pWrapper = w; }
   };
   

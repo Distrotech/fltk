@@ -299,6 +299,8 @@ enum Fl_Event {	// events
   FL_DND_RELEASE	= 23
 };
 
+#endif // TODO: FLTK123
+
 /** \name When Conditions */
 /*@{*/
 /** These constants determine when a callback is performed.
@@ -318,6 +320,8 @@ enum Fl_When { // Fl_Widget::when():
 };
 
 /*@}*/		// group: When Conditions
+
+#if 0 // TODO: FLTK123
 
 /** \name Mouse and Keyboard Events
 

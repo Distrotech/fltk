@@ -50,7 +50,6 @@ typedef long fl_intptr_t;
 typedef unsigned long fl_uintptr_t;
 #endif
 
-class Fl_Image;
 
 class Fl_Widget; // needed for FLTK1 compatibility
 
@@ -58,16 +57,21 @@ namespace fltk3 {
   class Window;
   class Group;
   class Widget;
-}
+  class Image;
 
-/** Default callback type definition for all fltk widgets (by far the most used) */
-typedef void (Fl_Callback )(fltk3::Widget*, void*);
-/** Default callback type pointer definition for all fltk widgets */
-typedef Fl_Callback* Fl_Callback_p; // needed for BORLAND
-/** One parameter callback type definition passing only the widget */
-typedef void (Fl_Callback0)(fltk3::Widget*);
-/** Callback type definition passing the widget and a long data value */
-typedef void (Fl_Callback1)(fltk3::Widget*, long);
+  /** Default callback type definition for all fltk widgets (by far the most used) */
+  typedef void (Callback)(Widget*, void*);
+  
+  /** Default callback type pointer definition for all fltk widgets */
+  typedef Callback* Callback_p; // needed for BORLAND
+  
+  /** One parameter callback type definition passing only the widget */
+  typedef void (Callback0)(Widget*);
+  
+  /** Callback type definition passing the widget and a long data value */
+  typedef void (Callback1)(Widget*, long);
+
+}
 
 /** This struct stores all information for a text or mixed graphics label.
 
@@ -80,9 +84,9 @@ struct FL_EXPORT Fl_Label {
   /** label text */
   const char* value;
   /** optional image for an active label */
-  Fl_Image* image;
+  fltk3::Image* image;
   /** optional image for a deactivated label */
-  Fl_Image* deimage;
+  fltk3::Image* deimage;
   /** label font used in text */
   fltk3::Font font;
   /** size of label font */
@@ -117,7 +121,7 @@ class FL_EXPORT fltk3::Widget : public fltk3::Object {
   friend class ::Fl_Widget;
 
   fltk3::Group* parent_;
-  Fl_Callback* callback_;
+  fltk3::Callback* callback_;
   void* user_data_;
   int x_,y_,w_,h_;
   Fl_Label label_;
@@ -514,39 +518,39 @@ public:
       This image is used when drawing the widget in the active state.
       \return the current image
    */
-  Fl_Image* image() {return label_.image;}
-  const Fl_Image* image() const {return label_.image;}
+  fltk3::Image* image() {return label_.image;}
+  const fltk3::Image* image() const {return label_.image;}
 
   /** Sets the image to use as part of the widget label.
       This image is used when drawing the widget in the active state.
       \param[in] img the new image for the label 
    */
-  void image(Fl_Image* img) {label_.image=img;}
+  void image(fltk3::Image* img) {label_.image=img;}
 
   /** Sets the image to use as part of the widget label.
       This image is used when drawing the widget in the active state.
       \param[in] img the new image for the label 
    */
-  void image(Fl_Image& img) {label_.image=&img;}
+  void image(fltk3::Image& img) {label_.image=&img;}
 
   /** Gets the image that is used as part of the widget label.  
       This image is used when drawing the widget in the inactive state.
       \return the current image for the deactivated widget
    */
-  Fl_Image* deimage() {return label_.deimage;}
-  const Fl_Image* deimage() const {return label_.deimage;}
+  fltk3::Image* deimage() {return label_.deimage;}
+  const fltk3::Image* deimage() const {return label_.deimage;}
 
   /** Sets the image to use as part of the widget label.  
       This image is used when drawing the widget in the inactive state.
       \param[in] img the new image for the deactivated widget
    */
-  void deimage(Fl_Image* img) {label_.deimage=img;}
+  void deimage(fltk3::Image* img) {label_.deimage=img;}
 
   /** Sets the image to use as part of the widget label.  
       This image is used when drawing the widget in the inactive state.
       \param[in] img the new image for the deactivated widget
    */
-  void deimage(Fl_Image& img) {label_.deimage=&img;}
+  void deimage(fltk3::Image& img) {label_.deimage=&img;}
 
   /** Gets the current tooltip text.
       \return a pointer to the tooltip text or NULL
@@ -561,33 +565,33 @@ public:
       Each widget has a single callback.
       \return current callback
    */
-  Fl_Callback_p callback() const {return callback_;}
+  fltk3::Callback_p callback() const {return callback_;}
 
   /** Sets the current callback function for the widget.
       Each widget has a single callback.
       \param[in] cb new callback
       \param[in] p user data
    */
-  void callback(Fl_Callback* cb, void* p) {callback_=cb; user_data_=p;}
+  void callback(fltk3::Callback* cb, void* p) {callback_=cb; user_data_=p;}
 
   /** Sets the current callback function for the widget.
       Each widget has a single callback.
       \param[in] cb new callback
    */
-  void callback(Fl_Callback* cb) {callback_=cb;}
+  void callback(fltk3::Callback* cb) {callback_=cb;}
 
   /** Sets the current callback function for the widget.
       Each widget has a single callback.
       \param[in] cb new callback
    */
-  void callback(Fl_Callback0*cb) {callback_=(Fl_Callback*)cb;}
+  void callback(fltk3::Callback0*cb) {callback_=(fltk3::Callback*)cb;}
 
   /** Sets the current callback function for the widget.
       Each widget has a single callback.
       \param[in] cb new callback
       \param[in] p user data
    */
-  void callback(Fl_Callback1*cb, long p=0) {callback_=(Fl_Callback*)cb; user_data_=(void*)p;}
+  void callback(fltk3::Callback1*cb, long p=0) {callback_=(fltk3::Callback*)cb; user_data_=(void*)p;}
 
   /** Gets the user data for this widget.
       Gets the current user data (void *) argument that is passed to the callback function.

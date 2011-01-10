@@ -50,6 +50,39 @@ namespace fltk3 {
     virtual void draw() { /* call _p->draw() with a flag set */ }
   };
   
+  
+  class WidgetWrapper : public Wrapper {
+  public:
+    virtual ~WidgetWrapper() {}
+    virtual void draw() {
+      pVCalls |= 1;
+      ((fltk3::Widget*)_p)->draw();
+      pVCalls &= ~1;
+    }
+    virtual int handle(int event) { 
+      pVCalls |= 1;
+      int ret = ((fltk3::Widget*)_p)->handle(event);
+      pVCalls &= ~1;
+      return ret;
+    }
+    virtual void resize(int x, int y, int w, int h) {
+      pVCalls |= 1;
+      ((fltk3::Widget*)_p)->resize(x, y, w, h);
+      pVCalls &= ~1;
+    }
+    virtual void show() {
+      pVCalls |= 1;
+      ((fltk3::Widget*)_p)->show();
+      pVCalls &= ~1;
+    }
+    virtual void hide() {
+      pVCalls |= 1;
+      ((fltk3::Widget*)_p)->hide();
+      pVCalls &= ~1;
+    }
+  };
+  
+  
 }; // namespace fltk3
 
 

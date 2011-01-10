@@ -164,7 +164,7 @@ void Fl_Paged_Device::print_window_part(fltk3::Window *win, int x, int y, int w,
 }
 
 #ifdef __APPLE__
-void Fl_Paged_Device::add_image(Fl_Image *image, const uchar *data)
+void Fl_Paged_Device::add_image(fltk3::Image *image, const uchar *data)
 {
   struct chain_elt *elt =  (struct chain_elt *)calloc(sizeof(struct chain_elt), 1);
   elt->image = image;

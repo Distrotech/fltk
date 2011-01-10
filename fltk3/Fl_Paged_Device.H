@@ -111,11 +111,11 @@ public:
 private:
 #ifdef __APPLE__
   struct chain_elt {
-    Fl_Image *image;
+    fltk3::Image *image;
     const uchar *data;
     struct chain_elt *next;
   };
-  void add_image(Fl_Image *image, const uchar *data); // adds an image to the page image list
+  void add_image(fltk3::Image *image, const uchar *data); // adds an image to the page image list
 #endif
   void traverse(fltk3::Widget *widget); // finds subwindows of widget and prints them
 protected:
@@ -123,7 +123,7 @@ protected:
   int x_offset;
   /** \brief vertical offset to the origin of graphics coordinates */
   int y_offset;
-  /** \brief chained list of Fl_Image's used in this page */
+  /** \brief chained list of fltk3::Image's used in this page */
   struct chain_elt *image_list_; 
 #ifdef __APPLE__
   /** \brief deletes the page image list */
