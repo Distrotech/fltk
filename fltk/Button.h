@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Button.h 5433 2006-09-16 03:00:02Z spitzak $"
 //
@@ -25,17 +23,21 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_Button_h
-#define fltk_Button_h
+#ifndef fltk2_Button_h
+#define fltk2_Button_h
 
-#ifndef fltk_Widget_h
+#include <fltk3/Button.h>
 #include "Widget.h"
-#endif
 
 namespace fltk {
 
 class FL_API Button : public Widget {
 public:
+  Button(int x, int y, int w, int h, const char *l = 0) {
+    _p = new fltk3::Button(x, y, w, h, l);
+    _p->wrapper(this);
+  }
+#if 0 // TODO: FLTK123
   enum {HIDDEN=3}; // back-comptability value to hide the button
 
   bool	value() const { return state(); }
@@ -43,11 +45,11 @@ public:
 
   int handle(int);
   int handle(int event, const Rectangle&);
-  Button(int,int,int,int,const char * = 0);
   static NamedStyle* default_style;
 
   virtual void draw();
   void draw(int glyph_width) const;
+#endif // TODO: FLTK123
 };
 
 }
@@ -57,4 +59,3 @@ public:
 //
 // End of "$Id: Button.h 5433 2006-09-16 03:00:02Z spitzak $".
 //
-#endif

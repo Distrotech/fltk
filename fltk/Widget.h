@@ -42,11 +42,14 @@ class FL_API Symbol;
 class FL_API AssociationType;
 class FL_API AssociationFunctor;
 struct Cursor;
+#endif // TODO: FLTK123
 
 typedef void (Callback )(Widget*, void*);
-typedef Callback* Callback_p; // needed for BORLAND
+typedef Callback* Callback_p;
 typedef void (Callback0)(Widget*);
 typedef void (Callback1)(Widget*, long);
+
+#if 0 // TODO: FLTK123
 
 #ifdef FLTK_1_WIDGET  // back-compatability section:
 FL_API Font* font(int);
@@ -54,9 +57,25 @@ FL_API Font* font(int);
   
 #endif // TODO: FLTK123
   
+  // TODO: this should be derived from Rectangle!
   class FL_API Widget : public fltk3::WidgetWrapper {
   
 public:
+    
+    // TODO: this should be derived from Rectangle!
+    int x() {
+      return ((fltk3::Widget*)_p)->x();
+    }
+    int y() {
+      return ((fltk3::Widget*)_p)->y();
+    }
+    int w() {
+      return ((fltk3::Widget*)_p)->w();
+    }
+    int h() {
+      return ((fltk3::Widget*)_p)->h();
+    }
+    
 
     Widget() {}
     Widget(int x, int y, int w, int h, const char *l=0) {
@@ -123,8 +142,35 @@ public:
     void tooltip(const char *t)	{
       ((fltk3::Widget*)_p)->tooltip(t);
     }
-    
+    Callback_p callback() const	{
+      return (Callback_p)((fltk3::Widget*)_p)->callback();
+    }
+    void callback(Callback* cb, void* p) { 
+      ((fltk3::Widget*)_p)->callback( (fltk3::Callback*)cb, p );
+    }
+    void callback(Callback* cb) {
+      ((fltk3::Widget*)_p)->callback( (fltk3::Callback*)cb );
+    }
+    void callback(Callback0* cb)	{
+      ((fltk3::Widget*)_p)->callback( (fltk3::Callback0*)cb );
+    }
+    void callback(Callback1* cb, long p=0) {
+      ((fltk3::Widget*)_p)->callback( (fltk3::Callback1*)cb, p );
+    }
+    void do_callback() {
+      ((fltk3::Widget*)_p)->do_callback();
+    }
+    void do_callback(Widget* o,void* arg=0) { 
+      ((fltk3::Widget*)_p)->do_callback( (fltk3::Widget*)( ((Widget*)o)->_p ), arg );
+    }
+    void do_callback(Widget* o,long arg) { 
+      ((fltk3::Widget*)_p)->do_callback( (fltk3::Widget*)( ((Widget*)o)->_p ), arg );
+    }    
+    void color(Color c) {
+      ((fltk3::Widget*)_p)->color((fltk3::Color)c);
+    }
 #if 0 // TODO: FLTK123
+    static void default_callback(Widget*, void*);
   int	send(int event);
   virtual void layout();
   const Style* style() const { return style_; }
@@ -158,21 +204,12 @@ public:
   bool	test_label_shortcut() const;
   bool	test_shortcut() const	;
   bool  test_shortcut(bool) const;
-  Callback_p callback() const	{ return callback_; }
-  void	callback(Callback* c, void* p) { callback_=c; user_data_=p; }
-  void	callback(Callback* c)	{ callback_=c; }
-  void	callback(Callback0*c)	{ callback_=(Callback*)c; }
-  void	callback(Callback1*c, long p=0) { callback_=(Callback*)c; user_data_=(void*)p; }
   void*	user_data() const	{ return user_data_; }
   void	user_data(void* v)	{ user_data_ = v; }
   long	argument() const	{ return (long)user_data_; }
   void	argument(long v)	{ user_data_ = (void*)v; }
   uchar when() const		{ return when_; }
   void	when(uchar i)		{ when_ = i; }
-  static void default_callback(Widget*, void*);
-  void	do_callback()		{ callback_(this,user_data_); }
-  void	do_callback(Widget* o,void* arg=0) { callback_(o,arg); }
-  void	do_callback(Widget* o,long arg) { callback_(o,(void*)arg); }
   bool	contains(const Widget*) const;
   bool	inside(const Widget* o) const { return o && o->contains(this); }
   bool	pushed() const		;
@@ -269,7 +306,6 @@ public:
   unsigned char scrollbar_width() const;
   void glyph(Symbol*)		;
   void textfont(Font*)		;
-  void color(Color)		;
   void textcolor(Color a)	;
   void selection_color(Color)	;
   void selection_textcolor(Color);
