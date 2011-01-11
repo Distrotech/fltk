@@ -31,12 +31,12 @@
 #ifndef Fl_Radio_Light_Button_H
 #define Fl_Radio_Light_Button_H
 
-#include "Fl_Light_Button.H"
+#include "fltk3::LightButton.H"
 
-class FL_EXPORT Fl_Radio_Light_Button : public Fl_Light_Button {
+class FL_EXPORT Fl_Radio_Light_Button : public fltk3::LightButton {
 public:
     Fl_Radio_Light_Button(int X,int Y,int W,int H,const char *l=0)
-	: Fl_Light_Button(X,Y,W,H,l) {type(fltk3::RADIO_BUTTON);}
+	: fltk3::LightButton(X,Y,W,H,l) {type(fltk3::RADIO_BUTTON);}
 };
 
 #endif

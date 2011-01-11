@@ -26,14 +26,16 @@
 //
 
 /* \file
-   Fl_Multiline_Input widget . */
+   fltk3::MultilineInput widget . */
 
 
-#ifndef Fl_Multiline_Input_H
-#define Fl_Multiline_Input_H
+#ifndef Fltk3_Multiline_Input_H
+#define Fltk3_Multiline_Input_H
 
 #include "Input.h"
 
+namespace fltk3 {
+  
 /**
   This input field displays '\n' characters as new lines rather than ^J,
   and accepts the Return, Tab, and up and down arrow keys.  This is for
@@ -52,16 +54,18 @@
   behavior, set fltk3::Input_::tab_nav() to 0. Newer programs should consider using
   Fl_Text_Editor.
 */
-class FL_EXPORT Fl_Multiline_Input : public fltk3::Input {
+class FL_EXPORT MultilineInput : public fltk3::Input {
 public:
   /**
-    Creates a new Fl_Multiline_Input widget using the given
+    Creates a new fltk3::MultilineInput widget using the given
     position, size, and label string. The default boxtype is fltk3::DOWN_BOX.
     <P>Inherited destructor destroys the widget and any value associated with it.
   */
-  Fl_Multiline_Input(int X,int Y,int W,int H,const char *l = 0)
+  MultilineInput(int X,int Y,int W,int H,const char *l = 0)
     : fltk3::Input(X,Y,W,H,l) {type(FL_MULTILINE_INPUT);}
 };
+
+}
 
 #endif
 

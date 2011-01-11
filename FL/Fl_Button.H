@@ -56,19 +56,28 @@ protected:
 #endif // TODO: FLTK123
 
 public:
-
   Fl_Button(int X, int Y, int W, int H, const char *L = 0) {
     _p = new fltk3::Button(X, Y, W, H, L);
     _p->wrapper(this);
   }
+  int value(int v) {
+    return ((fltk3::Button*)_p)->value(v);
+  }
+  char value() const {
+    return ((fltk3::Button*)_p)->value();
+  }
+  int set() {
+    return ((fltk3::Button*)_p)->set();
+  }
+  int clear() {
+    return ((fltk3::Button*)_p)->clear();
+  }
+  void setonly() {
+    ((fltk3::Button*)_p)->setonly();
+  }
   
 #if 0 // TODO: FLTK123
   virtual int handle(int);
-  int value(int v);
-  char value() const {return value_;}
-  int set() {return value(1);}
-  int clear() {return value(0);}
-  void setonly();
   int shortcut() const {return shortcut_;}
   void shortcut(int s) {shortcut_ = s;}
   Fl_Boxtype down_box() const {return (Fl_Boxtype)down_box_;}

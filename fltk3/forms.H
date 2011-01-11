@@ -490,8 +490,8 @@ inline void fl_set_button_shortcut(fltk3::Widget* b, const char* s,int=0) {
     ((fltk3::Button*)b)->shortcut(s);}
 //#define fl_set_object_shortcut(b,s) fl_set_button_shortcut(b,s)
 
-#include "Fl_Light_Button.H"
-forms_constructor(Fl_Light_Button, fl_add_lightbutton)
+#include "fltk3::LightButton.H"
+forms_constructor(fltk3::LightButton, fl_add_lightbutton)
 
 #include "Fl_Round_Button.H"
 forms_constructor(Fl_Round_Button, fl_add_roundbutton)

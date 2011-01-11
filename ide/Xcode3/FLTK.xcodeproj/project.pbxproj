@@ -653,6 +653,10 @@
 		C9AF51AB12DCFE7900E3D29D /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
 		C9AF51AD12DCFE7900E3D29D /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
 		C9AF51C812DCFEE700E3D29D /* callbacks.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9AF51C712DCFEE700E3D29D /* callbacks.cxx */; };
+		C9AF51EE12DD014700E3D29D /* fltk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C9AF51F012DD014700E3D29D /* fltk.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FEB0F8FE6383384180570D94 /* fltk.framework */; };
+		C9AF520812DD019100E3D29D /* input.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9AF520712DD019100E3D29D /* input.cxx */; };
+		C9AF520912DD019100E3D29D /* input.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9AF520712DD019100E3D29D /* input.cxx */; };
 		C9C4C91FDA73557BB6B69F3D /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = D9DB580DCA05DE487FACA272 /* jchuff.c */; };
 		C9D72F10B7A22DD0349ABC68 /* fltk_forms.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 097D0B476E396B9AAC6FA1E0 /* fltk_forms.framework */; };
 		C9EDD4E01274BB7000ADB21C /* png.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9EDD4DE1274BB6600ADB21C /* png.h */; };
@@ -1559,6 +1563,18 @@
 			script = "export DYLD_FRAMEWORK_PATH=${TARGET_BUILD_DIR} && cd ${INPUT_FILE_DIR} && ${TARGET_BUILD_DIR}/Fluid.app/Contents/MacOS/Fluid -c ${INPUT_FILE_NAME}";
 		};
 		C9AF51AE12DCFE7900E3D29D /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.fl";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.cxx",
+				"${INPUT_FILE_DIR}/${INPUT_FILE_BASE}.h",
+			);
+			script = "export DYLD_FRAMEWORK_PATH=${TARGET_BUILD_DIR} && cd ${INPUT_FILE_DIR} && ${TARGET_BUILD_DIR}/Fluid.app/Contents/MacOS/Fluid -c ${INPUT_FILE_NAME}";
+		};
+		C9AF51F112DD014700E3D29D /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.fl";
@@ -2902,6 +2918,13 @@
 			remoteGlobalIDString = C9AF4E3312DBB75D00E3D29D /* button2 */;
 			remoteInfo = button2;
 		};
+		C9AF51E912DD014700E3D29D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BF1A7FFEACF5F31B4127482 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A57FDE871C99A52BEEDEE68C;
+			remoteInfo = fltk;
+		};
 		CA3CA540809B8723BA17A4D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4BF1A7FFEACF5F31B4127482 /* Project object */;
@@ -3864,6 +3887,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9AF51EF12DD014700E3D29D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C9AF51F012DD014700E3D29D /* fltk.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9EDD42D1274B84100ADB21C /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4584,6 +4617,9 @@
 		C9AF51B212DCFE7900E3D29D /* adjuster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = adjuster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9AF51BA12DCFE7A00E3D29D /* adjuster-Info copy 2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "adjuster-Info copy 2.plist"; path = "plists/adjuster-Info copy 2.plist"; sourceTree = "<group>"; };
 		C9AF51C712DCFEE700E3D29D /* callbacks.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = callbacks.cxx; path = ../../test/callbacks.cxx; sourceTree = SOURCE_ROOT; };
+		C9AF51F512DD014700E3D29D /* input.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = input.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9AF51FD12DD014700E3D29D /* input-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "input-Info copy.plist"; path = "plists/input-Info copy.plist"; sourceTree = "<group>"; };
+		C9AF520712DD019100E3D29D /* input.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = input.cxx; path = ../../test1/input.cxx; sourceTree = SOURCE_ROOT; };
 		C9EDD143127338F600ADB21C /* README.OSX.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.OSX.txt; path = ../../README.OSX.txt; sourceTree = SOURCE_ROOT; };
 		C9EDD4DE1274BB6600ADB21C /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../../png/png.h; sourceTree = SOURCE_ROOT; };
 		C9EDD4DF1274BB6600ADB21C /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = ../../png/pngconf.h; sourceTree = SOURCE_ROOT; };
@@ -5311,6 +5347,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9AF51ED12DD014700E3D29D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9AF51EE12DD014700E3D29D /* fltk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CFFFB4C330636C95339A8F4F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -5780,12 +5824,7 @@
 				C955616012DA42DE00FFF041 /* Tests FLTK 2 */,
 				DCB546B00EC62A9F8CC4181A /* Products */,
 				C9628FFA1274D0A1007D3CFE /* Resources */,
-				C9555FEA12DA220600FFF041 /* hello-Info copy.plist */,
-				C955617912DA430000FFF041 /* hello-Info copy 2.plist */,
-				C9AF4E3112DBB75100E3D29D /* button-Info copy.plist */,
-				C9AF4E4912DBB75E00E3D29D /* button-Info copy 2.plist */,
-				C9AF500512DCB6EE00E3D29D /* adjuster-Info copy.plist */,
-				C9AF51BA12DCFE7A00E3D29D /* adjuster-Info copy 2.plist */,
+				C9AF51FD12DD014700E3D29D /* input-Info copy.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -6489,6 +6528,7 @@
 			children = (
 				C9AF4E4B12DBB77100E3D29D /* Button */,
 				C9555FF412DA224A00FFF041 /* Hello */,
+				C9AF520612DD016600E3D29D /* Input */,
 			);
 			name = "Tests FLTK 1";
 			sourceTree = "<group>";
@@ -6522,6 +6562,12 @@
 		C9628FFA1274D0A1007D3CFE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C9555FEA12DA220600FFF041 /* hello-Info copy.plist */,
+				C955617912DA430000FFF041 /* hello-Info copy 2.plist */,
+				C9AF4E3112DBB75100E3D29D /* button-Info copy.plist */,
+				C9AF4E4912DBB75E00E3D29D /* button-Info copy 2.plist */,
+				C9AF500512DCB6EE00E3D29D /* adjuster-Info copy.plist */,
+				C9AF51BA12DCFE7A00E3D29D /* adjuster-Info copy 2.plist */,
 				7F4762ED12D22C470073A4F9 /* ApplicationServices.framework */,
 				C9628FFD1274D0B3007D3CFE /* Cocoa.framework */,
 				C96290E11274D0EF007D3CFE /* AGL.framework */,
@@ -6560,6 +6606,14 @@
 				C9AF51C712DCFEE700E3D29D /* callbacks.cxx */,
 			);
 			name = callbacks;
+			sourceTree = "<group>";
+		};
+		C9AF520612DD016600E3D29D /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				C9AF520712DD019100E3D29D /* input.cxx */,
+			);
+			name = Input;
 			sourceTree = "<group>";
 		};
 		C9EDD4DC1274BB4100ADB21C /* Headers */ = {
@@ -6777,6 +6831,7 @@
 				C9AF4E4112DBB75D00E3D29D /* button.app */,
 				C9AF4FFD12DCB6EE00E3D29D /* adjuster.app */,
 				C9AF51B212DCFE7900E3D29D /* adjuster.app */,
+				C9AF51F512DD014700E3D29D /* input.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8579,6 +8634,26 @@
 			productReference = C9AF51B212DCFE7900E3D29D /* adjuster.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C9AF51E712DD014700E3D29D /* input1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9AF51F212DD014700E3D29D /* Build configuration list for PBXNativeTarget "input1" */;
+			buildPhases = (
+				C9AF51EA12DD014700E3D29D /* Resources */,
+				C9AF51EB12DD014700E3D29D /* Sources */,
+				C9AF51ED12DD014700E3D29D /* Frameworks */,
+				C9AF51EF12DD014700E3D29D /* CopyFiles */,
+			);
+			buildRules = (
+				C9AF51F112DD014700E3D29D /* PBXBuildRule */,
+			);
+			dependencies = (
+				C9AF51E812DD014700E3D29D /* PBXTargetDependency */,
+			);
+			name = input1;
+			productName = input;
+			productReference = C9AF51F512DD014700E3D29D /* input.app */;
+			productType = "com.apple.product-type.application";
+		};
 		CA05747C492074A51F2F35BC /* iconize */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A28344FBEB8BBC1EB0B0B397 /* Build configuration list for PBXNativeTarget "iconize" */;
@@ -8967,6 +9042,7 @@
 				E167C0E81B125EBADAC8ED73 /* valuators */,
 				C9AF4E0C12DBB75100E3D29D /* button1 */,
 				C9555FC912DA220500FFF041 /* hello1 */,
+				C9AF51E712DD014700E3D29D /* input1 */,
 				C9AF4E3312DBB75D00E3D29D /* button2 */,
 				C9AF4FEF12DCB6EE00E3D29D /* callbacks2 */,
 				C955616312DA430000FFF041 /* hello2 */,
@@ -9475,6 +9551,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C9AF51A712DCFE7900E3D29D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9AF51EA12DD014700E3D29D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -10386,6 +10469,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9AF51EB12DD014700E3D29D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9AF520912DD019100E3D29D /* input.cxx in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA99DB1AAB6C9D1F7D21B324 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -10455,6 +10546,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D8DD918B1AEA7E5E49C0EFE /* input.cxx in Sources */,
+				C9AF520812DD019100E3D29D /* input.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11329,6 +11421,11 @@
 			isa = PBXTargetDependency;
 			target = C9AF4E3312DBB75D00E3D29D /* button2 */;
 			targetProxy = C9AF51C312DCFE9300E3D29D /* PBXContainerItemProxy */;
+		};
+		C9AF51E812DD014700E3D29D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A57FDE871C99A52BEEDEE68C /* fltk */;
+			targetProxy = C9AF51E912DD014700E3D29D /* PBXContainerItemProxy */;
 		};
 		CB5F037BD3DC9B4748DF5E51 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -15850,6 +15947,67 @@
 			};
 			name = Release;
 		};
+		C9AF51F312DD014700E3D29D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/input-Info copy.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = input;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Debug;
+		};
+		C9AF51F412DD014700E3D29D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = fltk.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "USING_XCODE=1";
+				HEADER_SEARCH_PATHS = (
+					../../ide/XCode3/,
+					../../,
+					../../png,
+					../../jpeg,
+				);
+				INFOPLIST_FILE = "plists/input-Info copy.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+				);
+				PRODUCT_NAME = input;
+				WARNING_CFLAGS = (
+					"-Wno-format-security",
+					"-Wall",
+				);
+			};
+			name = Release;
+		};
 		CB5DC25E5DACEFD0C087A26C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -17263,6 +17421,15 @@
 			buildConfigurations = (
 				C9AF51B012DCFE7900E3D29D /* Debug */,
 				C9AF51B112DCFE7900E3D29D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C9AF51F212DD014700E3D29D /* Build configuration list for PBXNativeTarget "input1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9AF51F312DD014700E3D29D /* Debug */,
+				C9AF51F412DD014700E3D29D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -645,7 +645,7 @@ public:
      \li fltk3::WHEN_ENTER_KEY: If the user types the Enter key, the entire 
          text is selected, and the callback is done if the text has changed. 
 	 Normally the Enter key will navigate to the next field (or insert 
-	 a newline for a Fl_Multiline_Input) - this changes the behavior.
+	 a newline for a fltk3::MultilineInput) - this changes the behavior.
      \li fltk3::WHEN_ENTER_KEY|fltk3::WHEN_NOT_CHANGED: The Enter key will do the
          callback even if the text has not changed. Useful for command fields.
       fltk3::Widget::when() is a set of bitflags used by subclasses of 

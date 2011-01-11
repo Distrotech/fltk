@@ -43,7 +43,7 @@
 #include <fltk3/Fl_Return_Button.H>
 #include <fltk3/Window.h>
 #include <fltk3/Input.h>
-#include <fltk3/Fl_Secret_Input.H>
+#include <fltk3/SecretInput.H>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
 

@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id$"
 //
@@ -34,22 +32,15 @@
 #ifndef Fl_Float_Input_H
 #define Fl_Float_Input_H
 
+#include <fltk3/FloatInput.h>
 #include "Fl_Input.H"
 
-/**
-  The Fl_Float_Input class is a subclass of Fl_Input
-  that only allows the user to type floating point numbers (sign,
-  digits, decimal point, more digits, 'E' or 'e', sign, digits).
-*/
-class Fl_Float_Input : public Fl_Input { // don't use FL_EXPORT here !
+class Fl_Float_Input : public Fl_Input {
 public:
-  /**
-      Creates a new Fl_Float_Input widget using the given position,
-    size, and label string. The default boxtype is FL_DOWN_BOX.
-  <P> Inherited destructor destroys the widget and any value associated with it
-  */
-  Fl_Float_Input(int X,int Y,int W,int H,const char *l = 0)
-    : Fl_Input(X,Y,W,H,l) {type(FL_FLOAT_INPUT);}
+  Fl_Float_Input(int X,int Y,int W,int H,const char *l = 0) {
+    _p = new fltk3::FloatInput(X, Y, W, H, l);
+    _p->wrapper(this);
+  }
 };
 
 #endif
@@ -57,4 +48,3 @@ public:
 //
 // End of "$Id$".
 //
-#endif

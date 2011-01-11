@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id$"
 //
@@ -27,32 +25,19 @@
 //     http://www.fltk.org/str.php
 //
 
-/* \file
-   Fl_Toggle_Button widget . */
+#ifndef Fltk1_Toggle_Button_H
+#define Fltk1_Toggle_Button_H
 
-#ifndef Fl_Toggle_Button_H
-#define Fl_Toggle_Button_H
-
+#include <fltk3/ToggleButton.h>
 #include "Fl_Button.H"
 
-/**
-  The toggle button is a push button that needs to be clicked once 
-  to toggle on, and one more time to toggle off.
-  The Fl_Toggle_Button subclass displays the "on" state by
-  drawing a pushed-in button.</P>
-  <P>Buttons generate callbacks when they are clicked by the user.  You
-  control exactly when and how by changing the values for type()
-  and when().
-*/
 class FL_EXPORT Fl_Toggle_Button : public Fl_Button {
 public:
-  /**
-    Creates a new Fl_Toggle_Button widget using the given
-    position, size, and label string.
-    <P>The inherited destructor deletes the toggle button.
-  */
-    Fl_Toggle_Button(int X,int Y,int W,int H,const char *l=0)
-	: Fl_Button(X,Y,W,H,l) {type(FL_TOGGLE_BUTTON);}
+  Fl_Toggle_Button() {}
+  Fl_Toggle_Button(int X,int Y,int W,int H,const char *l=0) {
+    _p = new fltk3::ToggleButton(X, Y, W, H, l);
+    _p->wrapper(this);
+  }
 };
 
 #endif
@@ -60,4 +45,3 @@ public:
 //
 // End of "$Id$".
 //
-#endif

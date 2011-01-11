@@ -31,7 +31,7 @@
 #ifndef Fl_Round_Button_H
 #define Fl_Round_Button_H
 
-#include "Fl_Light_Button.H"
+#include "LightButton.H"
 
 /**
   Buttons generate callbacks when they are clicked by the user.  You
@@ -45,7 +45,7 @@
   when on is controlled with selection_color(), which defaults to
   FL_RED.
 */
-class FL_EXPORT Fl_Round_Button : public Fl_Light_Button {
+class FL_EXPORT Fl_Round_Button : public fltk3::LightButton {
 public:
   Fl_Round_Button(int x,int y,int w,int h,const char *l = 0);
 };
