@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 // "$Id: Valuator.h 6944 2009-11-27 12:18:37Z cwarrens $"
 //
 // Copyright 1998-2006 by Bill Spitzak and others.
@@ -21,41 +19,38 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 
-#ifndef fltk_Valuator_h
-#define fltk_Valuator_h
+#ifndef fltk2_Valuator_h
+#define fltk2_Valuator_h
 
-#ifndef fltk_Widget_h
+#include <fltk3/Valuator.h>
 #include "Widget.h"
-#endif
 
 namespace fltk {
 
 class FL_API Valuator : public Widget {
 
 public:
+  Valuator() {}
+  Valuator(int X, int Y, int W, int H, const char* L=0L) {
+    _p = new fltk3::Valuator(X, Y, W, H, L);
+    _p->wrapper(this);
+  }
 
+#if 0 // TODO: FLTK123
   double value() const {return value_;}
   bool value(double);
-
   double minimum() const {return minimum_;}
   void minimum(double a) {minimum_ = a;}
-
   double maximum() const {return maximum_;}
   void maximum(double a) {maximum_ = a;}
-
   void range(double a, double b) {minimum_ = a; maximum_ = b;}
-
   double step() const {return step_;}
   void step(double a) {step_ = a;}
-
   double linesize() const;
   void linesize(double a) {linesize_ = a;}
   double linesize_setting() const {return linesize_;}
-
   virtual int format(char*);
-
   int handle(int);
-
 #ifdef FLTK_1_SLIDER
   void step(double a, int b) {step(a/b);}
   void bounds(double a, double b) {minimum_=a; maximum_=b;}
@@ -65,27 +60,13 @@ public:
     step_ = 1.0f/B;
   }
 #endif
-
-//protected:
-
-  Valuator(int X, int Y, int W, int H, const char* L);
   double previous_value() const {return previous_value_;}
   void handle_push() {previous_value_ = value_;}
   void handle_drag(double newvalue);
   void handle_release();
-
   virtual void value_damage(); // callback whenever value changes
   void set_value(double v) {value_ = v;} // change w/o doing value_damage
-
-private:
-
-  double value_;
-  double previous_value_;
-  double minimum_;
-  double maximum_;
-  double step_;
-  double linesize_;
-
+#endif // TODO: FLTK123
 };
 
 }
@@ -93,4 +74,3 @@ private:
 #endif
 
 // End of "$Id: Valuator.h 6944 2009-11-27 12:18:37Z cwarrens $".
-#endif

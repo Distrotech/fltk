@@ -32,7 +32,7 @@ int main(int argc, char ** argv) {
   Button *b1 = new Button(20, 20, 80, 25, "&Beep");
   b1->callback(beepcb,0);
   
-  Button *b2 = new Button(120,20, 80, 25, "");
+  Button *b2 = new Button(120,20, 80, 25, "Image");
   // TODO: b2->image(new TiledImage(SharedImage::get("./images/coucou.png")));
 
   Button *b3 = new Button(220,20, 80, 25, "E&xit");

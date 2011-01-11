@@ -31,15 +31,15 @@
 #ifndef Fl_Value_Slider_H
 #define Fl_Value_Slider_H
 
-#include "Fl_Slider.H"
+#include "Slider.h"
 
 /**
-  The Fl_Value_Slider widget is a Fl_Slider widget
+  The Fl_Value_Slider widget is a fltk3::Slider widget
   with a box displaying the current value.
   <P ALIGN=CENTER>\image html value_slider.png 
   \image latex  value_slider.png "Fl_Value_Slider" width=4cm
 */
-class FL_EXPORT Fl_Value_Slider : public Fl_Slider {
+class FL_EXPORT Fl_Value_Slider : public fltk3::Slider {
     fltk3::Font textfont_;
     fltk3::Fontsize textsize_;
     fltk3::Color textcolor_;

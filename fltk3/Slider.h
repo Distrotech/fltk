@@ -26,14 +26,16 @@
 //
 
 /* \file
-   Fl_Slider widget . */
+   fltk3::Slider widget . */
 
-#ifndef Fl_Slider_H
-#define Fl_Slider_H
+#ifndef FLTK3_Slider_H
+#define FLTK3_Slider_H
 
-#ifndef Fl_Valuator_H
-#include "Fl_Valuator.H"
-#endif
+#include "Valuator.h"
+
+namespace fltk3 {
+  class Slider;
+}
 
 // values for type(), lowest bit indicate horizontal:
 #define FL_VERT_SLIDER		0
@@ -44,7 +46,7 @@
 #define FL_HOR_NICE_SLIDER	5
 
 /**
-  The Fl_Slider widget contains a sliding knob inside a box. It if
+  The fltk3::Slider widget contains a sliding knob inside a box. It if
   often used as a scrollbar.  Moving the box all the way to the
   top/left sets it to the minimum(), and to the bottom/right to the
   maximum().  The minimum() may be greater than the maximum() to
@@ -65,9 +67,9 @@
       nice looking control knob.
 
   \image html  slider.png 
-  \image latex slider.png "Fl_Slider" width=4cm
+  \image latex slider.png "fltk3::Slider" width=4cm
 */
-class FL_EXPORT Fl_Slider : public Fl_Valuator {
+class FL_EXPORT fltk3::Slider : public fltk3::Valuator {
 
   float slider_size_;
   uchar slider_;
@@ -84,8 +86,8 @@ protected:
 public:
 
   int handle(int);
-  Fl_Slider(int X,int Y,int W,int H, const char *L = 0);
-  Fl_Slider(uchar t,int X,int Y,int W,int H, const char *L);
+  Slider(int X,int Y,int W,int H, const char *L = 0);
+  Slider(uchar t,int X,int Y,int W,int H, const char *L);
 
   int scrollvalue(int pos,int size,int first,int total);
   void bounds(double a, double b);

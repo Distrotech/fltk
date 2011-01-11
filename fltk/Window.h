@@ -44,15 +44,20 @@ class FL_API Window : public Group {
 public:
 
   Window(int W, int H, const char *l = 0) {
+    fltk3::Group *curr = fltk3::Group::current();
     _p = new fltk3::Window(W, H, l);
     _p->wrapper(this);
-    // FIXME: this should not cause a begin in FLTK3 for compatibility
+    fltk3::Group::current(curr);
   }
   Window(int X, int Y, int W, int H, const char *l = 0, bool fBegin = false) {
+    fltk3::Group *curr = fltk3::Group::current();
     _p = new fltk3::Window(X, Y, W, H, l);
     _p->wrapper(this);
     // FIXME: this should not cause a begin in FLTK3 for compatibility
-    if (fBegin) begin();
+    if (fBegin) 
+      begin();
+    else
+      fltk3::Group::current(curr);
   }
   void show(int argc, char **argv) {
     ((fltk3::Window*)_p)->show(argc, argv); 

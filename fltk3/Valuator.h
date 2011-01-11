@@ -26,34 +26,42 @@
 //
 
 /* \file
-   Fl_Valuator widget . */
+   fltk3::Valuator widget . */
 
-#ifndef Fl_Valuator_H
-#define Fl_Valuator_H
+#ifndef FLTK3_Valuator_H
+#define FLTK3_Valuator_H
 
-#ifndef Fl_Widget_H
 #include "Widget.h"
-#endif
+
+namespace fltk3 {
+  class Valuator;
+}
+
+namespace fltk {
+  class Valuator;
+}
 
 // shared type() values for classes that work in both directions:
 #define FL_VERTICAL		0 ///< The valuator can work vertically
 #define FL_HORIZONTAL		1 ///< The valuator can work horizontally
 
 /**
-  The Fl_Valuator class controls a single floating-point value
+  The fltk3::Valuator class controls a single floating-point value
   and provides a consistent interface to set the value, range, and step,
   and insures that callbacks are done the same for every object.
   <P>There are probably more of these classes in FLTK than any others:
   <P ALIGN=CENTER>\image html  valuators.png</P> 
-  \image latex   valuators.png "Valuators derived from Fl_Valuators" width=10cm
+  \image latex   valuators.png "Valuators derived from fltk3::Valuators" width=10cm
   <P>In the above diagram each box surrounds an actual subclass.  These
   are further differentiated by setting the type() of the widget t
   o the symbolic value labeling the widget.  
   The ones labelled "0" are the default versions with a type(0).  
   For consistency the symbol FL_VERTICAL is defined as zero.
 */
-class FL_EXPORT Fl_Valuator : public fltk3::Widget {
+class FL_EXPORT fltk3::Valuator : public fltk3::Widget {
 
+  friend class fltk::Valuator;
+  
   double value_;
   double previous_value_;
   double min, max; // truncates to this range *after* rounding
@@ -62,7 +70,7 @@ class FL_EXPORT Fl_Valuator : public fltk3::Widget {
 protected:
   /** Tells if the valuator is an FL_HORIZONTAL one */
   int horizontal() const {return type()& FL_HORIZONTAL;}
-  Fl_Valuator(int X, int Y, int W, int H, const char* L);
+  Valuator(int X, int Y, int W, int H, const char* L);
 
   /** Gets the previous floating point value before an event changed it */
   double previous_value() const {return previous_value_;}
@@ -108,9 +116,9 @@ public:
     the widget after changing the range.
   */
   void range(double a, double b) {min = a; max = b;}
-  /**    See double Fl_Valuator::step() const   */
+  /**    See double fltk3::Valuator::step() const   */
   void step(int a) {A = a; B = 1;}
-  /**    See double Fl_Valuator::step() const   */
+  /**    See double fltk3::Valuator::step() const   */
   void step(double a, int b) {A = a; B = b;}
   void step(double s);
   /**

@@ -37,10 +37,13 @@ public:
   
   Group() {}
   Group(int x, int y, int w, int h, const char *l = 0, bool aBegin=false) {
+    fltk3::Group *curr = fltk3::Group::current();
     _p = new fltk3::Group(x, y, w, h, l);
     _p->wrapper(this);
     if (aBegin)
       begin();
+    else 
+      fltk3::Group::current(curr);
   }
   void begin() { 
     ((fltk3::Group*)_p)->begin(); 
