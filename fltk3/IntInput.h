@@ -1,7 +1,7 @@
 //
 // "$Id$"
 //
-// Print panel for the Fast Light Tool Kit (FLTK).
+// Integer input header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2010 by Bill Spitzak and others.
 //
@@ -25,29 +25,33 @@
 //     http://www.fltk.org/str.php
 //
 
-//
-// This is a temporary file.  It is only for development and will
-// probably be removed later.
-//
+/* \file
+   fltk3::IntInput widget . */
 
-#ifndef print_panel_h
-#define print_panel_h
-#include <fltk3/run.h>
-#include <fltk3/Fl_Double_Window.H>
-#include <fltk3/Group.H>
-#include <fltk3/Fl_Choice.H>
-#include <fltk3/Button.h>
-#include <fltk3/Box.h>
-#include <fltk3/Fl_Round_Button.H>
-#include <fltk3/Input.h>
-#include <fltk3/Fl_Spinner.H>
-#include <fltk3/Fl_Check_Button.H>
-#include <fltk3/Fl_Return_Button.H>
-#include <fltk3/Fl_Progress.H>
-static Fl_Double_Window* make_print_panel();
-static void print_cb(Fl_Return_Button *, void *); 
-static void print_load();
-static void print_update_status();
+#ifndef FLTK3_Int_Input_H
+#define FLTK3_Int_Input_H
+
+#include "NumericInput.H"
+
+namespace fltk3 {
+  class IntInput;
+}
+
+/**
+  The fltk3::IntInput class is a subclass of fltk3::Input
+  that only allows the user to type decimal digits (or hex numbers of the form 0xaef).
+*/
+class FL_EXPORT fltk3::IntInput : public fltk3::NumericInput {
+public:
+  /**
+    Creates a new fltk3::IntInput widget using the given position,
+    size, and label string. The default boxtype is fltk3::DOWN_BOX.
+    <P>Inherited destructor Destroys the widget and any value associated with it.
+  */
+  IntInput(int X,int Y,int W,int H,const char *l = 0)
+      : NumericInput(X,Y,W,H,l) {type(FL_INT_INPUT);}
+};
+
 #endif
 
 //

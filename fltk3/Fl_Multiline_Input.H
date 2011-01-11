@@ -32,7 +32,7 @@
 #ifndef Fl_Multiline_Input_H
 #define Fl_Multiline_Input_H
 
-#include "Fl_Input.H"
+#include "Input.h"
 
 /**
   This input field displays '\n' characters as new lines rather than ^J,
@@ -49,10 +49,10 @@
 
   In FLTK 1.3.x, the default behavior of the 'Tab' key was changed
   to support consistent focus navigation. To get the older FLTK 1.1.x
-  behavior, set Fl_Input_::tab_nav() to 0. Newer programs should consider using
+  behavior, set fltk3::Input_::tab_nav() to 0. Newer programs should consider using
   Fl_Text_Editor.
 */
-class FL_EXPORT Fl_Multiline_Input : public Fl_Input {
+class FL_EXPORT Fl_Multiline_Input : public fltk3::Input {
 public:
   /**
     Creates a new Fl_Multiline_Input widget using the given
@@ -60,7 +60,7 @@ public:
     <P>Inherited destructor destroys the widget and any value associated with it.
   */
   Fl_Multiline_Input(int X,int Y,int W,int H,const char *l = 0)
-    : Fl_Input(X,Y,W,H,l) {type(FL_MULTILINE_INPUT);}
+    : fltk3::Input(X,Y,W,H,l) {type(FL_MULTILINE_INPUT);}
 };
 
 #endif

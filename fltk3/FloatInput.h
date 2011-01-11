@@ -1,7 +1,7 @@
 //
 // "$Id$"
 //
-// Integer input header file for the Fast Light Tool Kit (FLTK).
+// Floating point input header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-2010 by Bill Spitzak and others.
 //
@@ -26,26 +26,32 @@
 //
 
 /* \file
-   Fl_Int_Input widget . */
+   fltk3::FloatInput widget . */
 
-#ifndef Fl_Int_Input_H
-#define Fl_Int_Input_H
 
-#include "Fl_Input.H"
+#ifndef FLTK3_Float_Input_H
+#define FLTK3_Float_Input_H
+
+#include "NumericInput.h"
+
+namespace fltk3 {
+  class FloatInput;
+}
 
 /**
-  The Fl_Int_Input class is a subclass of Fl_Input
-  that only allows the user to type decimal digits (or hex numbers of the form 0xaef).
+  The fltk3::FloatInput class is a subclass of fltk3::Input
+  that only allows the user to type floating point numbers (sign,
+  digits, decimal point, more digits, 'E' or 'e', sign, digits).
 */
-class FL_EXPORT Fl_Int_Input : public Fl_Input {
+class fltk3::FloatInput : public fltk3::NumericInput { // don't use FL_EXPORT here !
 public:
   /**
-    Creates a new Fl_Int_Input widget using the given position,
+      Creates a new fltk3::FloatInput widget using the given position,
     size, and label string. The default boxtype is fltk3::DOWN_BOX.
-    <P>Inherited destructor Destroys the widget and any value associated with it.
+  <P> Inherited destructor destroys the widget and any value associated with it
   */
-  Fl_Int_Input(int X,int Y,int W,int H,const char *l = 0)
-      : Fl_Input(X,Y,W,H,l) {type(FL_INT_INPUT);}
+  FloatInput(int X,int Y,int W,int H,const char *l = 0)
+    : fltk3::NumericInput(X,Y,W,H,l) {type(FL_FLOAT_INPUT);}
 };
 
 #endif

@@ -56,7 +56,7 @@ static const unsigned int DAMAGE_BAR	= 0x10;
   \param[in] L widget label, default is no label
 */
 Fl_File_Input::Fl_File_Input(int X, int Y, int W, int H, const char *L)
-  : Fl_Input(X, Y, W, H, L) {
+  : fltk3::Input(X, Y, W, H, L) {
   buttons_[0] = 0;
   errorcolor_ = FL_RED;
   ok_entry_   = 1;
@@ -149,7 +149,7 @@ int						// O - TRUE on success
 Fl_File_Input::value(const char *str,		// I - New string value
                      int        len) {		// I - Length of value
   damage(DAMAGE_BAR);
-  return Fl_Input::value(str,len);
+  return fltk3::Input::value(str,len);
 }
 
 
@@ -161,7 +161,7 @@ Fl_File_Input::value(const char *str,		// I - New string value
 int						// O - TRUE on success
 Fl_File_Input::value(const char *str) {		// I - New string value
   damage(DAMAGE_BAR);
-  return Fl_Input::value(str);
+  return fltk3::Input::value(str);
 }
 
 
@@ -171,13 +171,13 @@ Fl_File_Input::value(const char *str) {		// I - New string value
 void Fl_File_Input::draw() {
   fltk3::Boxtype b = box();
   if (damage() & (DAMAGE_BAR | fltk3::DAMAGE_ALL)) draw_buttons();
-  // this flag keeps Fl_Input_::drawtext from drawing a bogus box!
+  // this flag keeps fltk3::Input_::drawtext from drawing a bogus box!
   char must_trick_fl_input_ = 
     fltk3::focus()!=this && !size() && !(damage()&fltk3::DAMAGE_ALL);
   if ((damage() & fltk3::DAMAGE_ALL) || must_trick_fl_input_) 
     draw_box(b,x(),y()+DIR_HEIGHT,w(),h()-DIR_HEIGHT,color());
   if (!must_trick_fl_input_) 
-    Fl_Input_::drawtext(x()+fltk3::box_dx(b)+3, y()+fltk3::box_dy(b)+DIR_HEIGHT,
+    fltk3::Input_::drawtext(x()+fltk3::box_dx(b)+3, y()+fltk3::box_dy(b)+DIR_HEIGHT,
 		        w()-fltk3::box_dw(b)-6, h()-fltk3::box_dh(b)-DIR_HEIGHT);
 }
 
@@ -213,11 +213,11 @@ Fl_File_Input::handle(int event) 		// I - Event
       if (inButtonBar) 
         return handle_button(event);
       else
-        return Fl_Input::handle(event);
+        return fltk3::Input::handle(event);
 
     default :
       { Fl_Widget_Tracker wp(this);
-	if (Fl_Input::handle(event)) {
+	if (fltk3::Input::handle(event)) {
 	  if (wp.exists())
 	    damage(DAMAGE_BAR);
 	  return 1;

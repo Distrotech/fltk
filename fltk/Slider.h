@@ -41,7 +41,6 @@ public:
     _p->wrapper(this);
   }
 
-#if 0 // TODO: FLTK123
   enum { // bit flags for type():
     LINEAR		= 0,
     TICK_ABOVE		= 2,
@@ -57,6 +56,8 @@ public:
     FILL		= 16
 #endif
   };
+  
+#if 0 // TODO: FLTK123
   bool horizontal() const {return !flag(LAYOUT_VERTICAL) || (type()&1);}
   bool log() const {return (type()&LOG)!=0;}
 

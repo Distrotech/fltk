@@ -42,7 +42,7 @@
 #include <fltk3/Button.h>
 #include <fltk3/Fl_Return_Button.H>
 #include <fltk3/Window.h>
-#include <fltk3/Fl_Input.H>
+#include <fltk3/Input.h>
 #include <fltk3/Fl_Secret_Input.H>
 #include <fltk3/x.H>
 #include <fltk3/fl_draw.H>
@@ -51,7 +51,7 @@ static fltk3::Window *message_form;
 static fltk3::Box *message;
 static fltk3::Box *icon;
 static fltk3::Button *button[3];
-static Fl_Input *input;
+static fltk3::Input *input;
 static int ret_val;
 static const char *iconlabel = "?";
 fltk3::Font fl_message_font_ = fltk3::HELVETICA;
@@ -89,7 +89,7 @@ static fltk3::Window *makeform() {
  // w->box(fltk3::UP_BOX);
  (message = new fltk3::Box(60, 25, 340, 20))
    ->align(fltk3::ALIGN_LEFT|fltk3::ALIGN_INSIDE|fltk3::ALIGN_WRAP);
- (input = new Fl_Input(60, 37, 340, 23))->hide();
+ (input = new fltk3::Input(60, 37, 340, 23))->hide();
  {fltk3::Box* o = icon = new fltk3::Box(10, 10, 50, 50);
   o->box(fltk3::THIN_UP_BOX);
   o->labelfont(fltk3::TIMES_BOLD);

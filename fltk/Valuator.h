@@ -35,22 +35,48 @@ public:
     _p = new fltk3::Valuator(X, Y, W, H, L);
     _p->wrapper(this);
   }
-
+  // in Wrapper: int handle(int);
+  double value() const {
+    return ((fltk3::Valuator*)_p)->value();
+  }
+  bool value(double v) {
+    bool ret = (value()!=v);
+    ((fltk3::Valuator*)_p)->value(v);
+    return ret;
+  }
+  double minimum() const {
+    return ((fltk3::Valuator*)_p)->minimum();
+  }
+  void minimum(double a) {
+    ((fltk3::Valuator*)_p)->minimum(a);
+  }
+  double maximum() const {
+    return ((fltk3::Valuator*)_p)->maximum();
+  }
+  void maximum(double a) {
+    ((fltk3::Valuator*)_p)->maximum(a);
+  }
+  void range(double a, double b) {
+    ((fltk3::Valuator*)_p)->range(a, b);
+  }
+  double step() const {
+    return ((fltk3::Valuator*)_p)->step();
+  }
+  void step(double a) {
+    ((fltk3::Valuator*)_p)->step(a);
+  }
+  
 #if 0 // TODO: FLTK123
-  double value() const {return value_;}
-  bool value(double);
-  double minimum() const {return minimum_;}
-  void minimum(double a) {minimum_ = a;}
-  double maximum() const {return maximum_;}
-  void maximum(double a) {maximum_ = a;}
-  void range(double a, double b) {minimum_ = a; maximum_ = b;}
-  double step() const {return step_;}
-  void step(double a) {step_ = a;}
-  double linesize() const;
-  void linesize(double a) {linesize_ = a;}
-  double linesize_setting() const {return linesize_;}
+  double linesize() const {
+    return ((fltk3::Valuator*)_p)->linesize();
+  }
+  void linesize(double a) {
+    ((fltk3::Valuator*)_p)->linesize(a);
+  }
+  double linesize_setting() const {
+    return ((fltk3::Valuator*)_p)->linesize_setting();
+  }
   virtual int format(char*);
-  int handle(int);
 #ifdef FLTK_1_SLIDER
   void step(double a, int b) {step(a/b);}
   void bounds(double a, double b) {minimum_=a; maximum_=b;}

@@ -26,14 +26,16 @@
 //
 
 /* \file
-   Fl_Input_ widget . */
+   fltk3::Input_ widget . */
 
-#ifndef Fl_Input__H
-#define Fl_Input__H
+#ifndef fltk3_Input__H
+#define fltk3_Input__H
 
-#ifndef Fl_Widget_H
 #include "Widget.h"
-#endif
+
+namespace fltk3 {
+  class Input_;
+}
 
 #define FL_NORMAL_INPUT		0
 #define FL_FLOAT_INPUT		1
@@ -52,14 +54,14 @@
 /**
   This class provides a low-overhead text input field.
 
-  This is a virtual base class below Fl_Input. It has all
+  This is a virtual base class below fltk3::Input. It has all
   the same interfaces, but lacks the handle() and
   draw() method. You may want to subclass it if you are
   one of those people who likes to change how the editing keys
   work. It may also be useful for adding scrollbars
   to the input field.
 
-  This can act like any of the subclasses of Fl_Input, by
+  This can act like any of the subclasses of fltk3::Input, by
   setting type() to one of the following values:
 
   \code
@@ -91,7 +93,7 @@
   \internal
   When porting this widget from ASCII to UTF-8, previously legal pointers into
   the text of this widget can become illegal by pointing into the middle of
-  a UTF-8 sequence. This is not a big problem for Fl_Input_ because all code
+  a UTF-8 sequence. This is not a big problem for fltk3::Input_ because all code
   in this module is quite tolerant. It could be problematic though when deriving
   from this class because no feedback for illegal pointers is given. Additionally,
   a careless "copy" call can put partial UTF-8 sequences into the clipboard.
@@ -99,7 +101,7 @@
   None of these issues should be disastrous. Nevertheless, we should
   discuss how FLTK should handle false UTF-8 sequences and pointers.
 */
-class FL_EXPORT Fl_Input_ : public fltk3::Widget {
+class FL_EXPORT fltk3::Input_ : public fltk3::Widget {
 
   /** \internal Storage for the text field. */
   const char* value_;
@@ -222,10 +224,10 @@ public:
   void resize(int, int, int, int);
 
   /* Constructor */
-  Fl_Input_(int, int, int, int, const char* = 0);
+  Input_(int, int, int, int, const char* = 0);
 
   /* Destructor */
-  ~Fl_Input_();
+  ~Input_();
 
   /* Changes the widget text. */
   int value(const char*);
@@ -247,7 +249,7 @@ public:
       handled.
   
       \return pointer to an internal buffer - do not free() this    
-      \see Fl_Input_::value(const char*)
+      \see fltk3::Input_::value(const char*)
   */
   const char* value() const {return value_;}
 

@@ -169,6 +169,13 @@ public:
     void color(Color c) {
       ((fltk3::Widget*)_p)->color((fltk3::Color)c);
     }
+    void clear_flag(unsigned f) {
+      // TODO: FLTK123 - support more flags!
+      unsigned int f3type = ((fltk3::Widget*)_p)->type();
+      if (f&LAYOUT_VERTICAL) f3type |= 1;
+      ((fltk3::Widget*)_p)->type(f3type);
+    }
+
 #if 0 // TODO: FLTK123
     static void default_callback(Widget*, void*);
   int	send(int event);
@@ -218,7 +225,6 @@ public:
   Flags	flags() const		{ return flags_; }
   void	flags(Flags f)  	{ flags_ = f; }
   void	set_flag(unsigned f)	{ flags_ |= f; }
-  void	clear_flag(unsigned f)	{ flags_ &= ~f; }
   void	invert_flag(unsigned f)	{ flags_ ^= f; }
   void	set_flag(unsigned f,bool b) { flags_ = (flags_&~f)|(b?f:0); }
   bool	flag(unsigned f) const	{ return (flags_ & f) != 0; }

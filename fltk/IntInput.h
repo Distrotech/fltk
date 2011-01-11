@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: IntInput.h 4886 2006-03-30 09:55:32Z fabien $"
 //
@@ -23,17 +21,21 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_IntInput_h
-#define fltk_IntInput_h
+#ifndef FLTK2_IntInput_h
+#define FLTK2_IntInput_h
 
+#include <fltk3/IntInput.h>
 #include "FloatInput.h"
 
 namespace fltk {
 
 class FL_API IntInput : public FloatInput {
 public:
-  IntInput(int x,int y,int w,int h,const char *l = 0)
-    : FloatInput(x,y,w,h,l) { type(INT); }
+  IntInput() {}
+  IntInput(int x,int y,int w,int h,const char *l = 0) {
+    _p = new fltk3::IntInput(x, y, w, h, l);
+    _p->wrapper(this);
+  }
 };
 
 }
@@ -42,4 +44,3 @@ public:
 //
 // End of "$Id: IntInput.h 4886 2006-03-30 09:55:32Z fabien $".
 //
-#endif

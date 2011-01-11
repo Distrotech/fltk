@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: NumericInput.h 4886 2006-03-30 09:55:32Z fabien $"
 //
@@ -28,22 +26,56 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_NumericInput_h
-#define fltk_NumericInput_h
+#ifndef fltk2_NumericInput_h
+#define fltk2_NumericInput_h
 
+#include <fltk3/NumericInput.h>
 #include "Input.h"
+#include <math.h>
 
 namespace fltk {
 
 class FL_API NumericInput : public Input {
+  
+public:
+  NumericInput() {}
+  NumericInput(int x,int y, int w,int h,const char* l = 0) {
+    _p = new fltk3::NumericInput(x, y, w, h, l);
+    _p->wrapper(this);
+  }
+  const char *value() const {
+    return Input::value();
+  }
+  void value(int v) {
+    char buf[100];
+    sprintf(buf, "%d", v);
+    Input::value(buf);
+  }
+  void value(double A) {
+    char buf[32];
+    if (int(A)==A) {
+      snprintf(buf, 32, "%d", int(A));
+    } else {
+      int n = (int)ceil(log10(fabs(A)));
+      if (n>0 || n<-6) {
+        snprintf(buf, 32, "%g", A);
+      } else {
+        snprintf(buf, 32, "%.7f", A);
+        char *s = buf; while (*s) s++; s--;
+        while (s>buf && *s=='0') s--;
+        if (*s=='.') s--;
+        s[1] = 0;
+      }
+    }
+    Input::value(buf);
+  }
+  
+#if 0 // TODO: FLTK123
  protected:
   int handle_arrow(int);
- public:
-  NumericInput(int x,int y, int w,int h,const char* l = 0) :
-    Input(x,y,w,h,l) {when(WHEN_ENTER_KEY|WHEN_RELEASE);}
-  void value(double);
-  void value(int);
   int handle(int);
+#endif // TODO: FLTK123
+  
 };
 
 }
@@ -52,4 +84,3 @@ class FL_API NumericInput : public Input {
 //
 // End of "$Id: NumericInput.h 4886 2006-03-30 09:55:32Z fabien $"
 //
-#endif

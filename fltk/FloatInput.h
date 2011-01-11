@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: FloatInput.h 4886 2006-03-30 09:55:32Z fabien $"
 //
@@ -27,22 +25,35 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_FloatInput_h
-#define fltk_FloatInput_h
+#ifndef fltk2_FloatInput_h
+#define fltk2_FloatInput_h
 
+#include <fltk3/FloatInput.h>
 #include "NumericInput.h"
 
 namespace fltk {
 
 class FL_API FloatInput : public NumericInput {
-  virtual bool replace(int, int, const char*, int);
 public:
+  FloatInput() {}
+  FloatInput(int x,int y,int w,int h,const char *l = 0) {
+    _p = new fltk3::FloatInput(x, y, w, h, l);
+    _p->wrapper(this);
+  }
+  long lvalue() const {
+    return strtol(value(), 0, 0);
+  }
+  int ivalue() const {
+    return strtol(value(), 0, 0);
+  }
+  double fvalue() const {
+    return strtod(value(), 0);
+  }
+  
+#if 0 // TODO: FLTK123
   enum { FLOAT = 1, INT = 2 };
-  FloatInput(int x,int y,int w,int h,const char *l = 0)
-    : NumericInput(x,y,w,h,l) { type(FLOAT); }
-  long lvalue() const;
-  int ivalue() const { return int(lvalue()); }
-  double fvalue() const;
+#endif // TODO: FLTK123
+  
 };
 
 }
@@ -51,4 +62,3 @@ public:
 //
 // End of "$Id: FloatInput.h 4886 2006-03-30 09:55:32Z fabien $".
 //
-#endif

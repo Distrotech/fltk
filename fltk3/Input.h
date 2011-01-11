@@ -26,12 +26,16 @@
 //
 
 /* \file
-   Fl_Input widget . */
+   fltk3::Input widget . */
 
-#ifndef Fl_Input_H
-#define Fl_Input_H
+#ifndef Fltk3_Input_H
+#define Fltk3_Input_H
 
-#include "Fl_Input_.H"
+#include "Input_.H"
+
+namespace fltk3 {
+  class Input;
+}
 
 /**
   This is the FLTK text input widget. It displays a single line
@@ -45,8 +49,8 @@
   Character composition is done using dead keys and/or a compose
   key as defined by the operating system.
   <P>
-  <TABLE WIDTH=90% BORDER=1 SUMMARY="Fl_Input keyboard and mouse bindings.">
-    <CAPTION ALIGN=TOP>Fl_Input keyboard and mouse bindings.</CAPTION>
+  <TABLE WIDTH=90% BORDER=1 SUMMARY="fltk3::Input keyboard and mouse bindings.">
+    <CAPTION ALIGN=TOP>fltk3::Input keyboard and mouse bindings.</CAPTION>
     <TR><TD NOWRAP="NOWRAP" WIDTH="1%">
       <B>Mouse button 1</B> 
     </TD><TD>
@@ -83,8 +87,8 @@
 
   <P>
 
-  <TABLE WIDTH="90%" BORDER="1" SUMMARY="Fl_Input platform specific keyboard bindings.">
-    <CAPTION ALIGN=TOP>Fl_Input platform specific keyboard bindings.</CAPTION>
+  <TABLE WIDTH="90%" BORDER="1" SUMMARY="fltk3::Input platform specific keyboard bindings.">
+    <CAPTION ALIGN=TOP>fltk3::Input platform specific keyboard bindings.</CAPTION>
   <TR>
     <TD NOWRAP="NOWRAP" WIDTH="1%"><B> Windows/Linux </B></TD>
     <TD NOWRAP="NOWRAP" WIDTH="1%"><B> Mac </B></TD>
@@ -227,7 +231,7 @@
 
   </TD></TR></TABLE>
   */
-class FL_EXPORT Fl_Input : public Fl_Input_ {
+class FL_EXPORT fltk3::Input : public fltk3::Input_ {
   int handle_key();
   int shift_position(int p);
   int shift_up_down_position(int p);
@@ -267,7 +271,7 @@ protected:
   void draw();
 public:
   int handle(int);
-  Fl_Input(int,int,int,int,const char * = 0);
+  Input(int,int,int,int,const char * = 0);
 };
 
 #endif 

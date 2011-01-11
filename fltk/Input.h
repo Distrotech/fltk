@@ -1,5 +1,3 @@
-#warn FLTK123: This file has not been ported yet
-#if 0
 //
 // "$Id: Input.h 4886 2006-03-30 09:55:32Z fabien $"
 //
@@ -25,17 +23,36 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-#ifndef fltk_Input_h
-#define fltk_Input_h
+#ifndef fltk2_Input_h
+#define fltk2_Input_h
 
-#ifndef fltk_Widget_h
+#include <fltk3/Input.h>
 #include "Widget.h"
-#endif
 
 namespace fltk {
 
 class FL_API Input : public Widget {
+
 public:
+  Input() {}
+  Input(int x, int y, int w, int h, const char *l = 0) {
+    _p = new fltk3::Input(x, y, w, h, l);
+    _p->wrapper(this);
+  }
+  const char* value() const {
+    return ((fltk3::Input*)_p)->value();
+  }
+  bool value(const char* v) {
+    const char *old = value();
+    if (v && old && strcmp(old, v)==0) {
+      return false;
+    } else {
+      ((fltk3::Input*)_p)->value(v);
+    }
+    return true;
+  }
+
+#if 0 // TODO: FLTK123
   enum { // values for type()
     NORMAL	= 0,
     FLOAT_INPUT = 1,
@@ -45,7 +62,6 @@ public:
     WORDWRAP	= 5
   };
 
-  Input(int, int, int, int, const char* = 0);
   ~Input();
   static NamedStyle* default_style;
 
@@ -65,21 +81,17 @@ public:
   char index(int i) const {return text_[i];}
 #endif
 #ifndef SKIP_DEPRECIATED
-  bool value(const char* v) {return text(v);}
   bool value(const char* v, int n) {return text(v,n);}
   bool static_value(const char* v) {return static_text(v);}
-  const char* value() const {return text_;}
 #endif
   int size() const {return size_;}
   void reserve(int newsize);
-
   int position() const {return position_;}
   int mark() const {return mark_;}
   void position(int p, int m);
   void position(int p) {position(p, p);}
   void up_down_position(int position, bool extend);
   void mark(int m) { position(position(), m);}
-
   virtual bool replace(int, int, const char*, int);
   bool cut() {return replace(position(), mark(), 0, 0);}
   bool cut(int n) {return replace(position(), position()+n, 0, 0);}
@@ -90,7 +102,6 @@ public:
   bool copy(bool clipboard = true);
   bool undo();
   void maybe_do_callback();
-
   int word_start(int i) const;
   int word_end(int i) const;
   int line_start(int i) const;
@@ -98,30 +109,7 @@ public:
   int mouse_position(const Rectangle&) const;
   int xscroll() const {return xscroll_;}
   int yscroll() const {return yscroll_;}
-
-private:
-
-  const char* text_;
-  char* buffer;
-
-  int size_;
-  int bufsize;
-  int position_;
-  int mark_;
-  int xscroll_, yscroll_;
-  int mu_p;
-  int label_width;
-
-  const char* expand(const char*, char*, int) const;
-  float expandpos(const char*, const char*, const char*, int*) const;
-  void minimal_update(int, int);
-  void minimal_update(int p);
-  void erase_cursor_at(int p);
-
-  void setfont() const;
-
-  void shift_position(int p);
-  void shift_up_down_position(int p);
+#endif // TODO: FLTK123
 
 };
 
@@ -132,4 +120,3 @@ private:
 //
 // End of "$Id: Input.h 4886 2006-03-30 09:55:32Z fabien $".
 //
-#endif
