@@ -84,8 +84,8 @@ namespace fltk3 {
  */
   class Wrapper {
   protected:
-    Object *_p;
   public:
+    Object *_p;
     Wrapper() 
     : _p(0L), pVCalls(0) { }
     virtual ~Wrapper();

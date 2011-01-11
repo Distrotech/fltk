@@ -30,7 +30,7 @@
 
 namespace fltk {
 
-#if 0 // TODo: FLTK123
+#if 0 // TODO: FLTK123
   
 // value for x,y to indicate window system places window
 const int USEDEFAULT = ((int)0x80000000); // same as Win32 value
@@ -46,120 +46,107 @@ public:
   Window(int W, int H, const char *l = 0) {
     _p = new fltk3::Window(W, H, l);
     _p->wrapper(this);
-    // FIXME: this should not cause a begine in FLTK3 for compatibility
+    // FIXME: this should not cause a begin in FLTK3 for compatibility
+  }
+  Window(int X, int Y, int W, int H, const char *l = 0, bool fBegin = false) {
+    _p = new fltk3::Window(X, Y, W, H, l);
+    _p->wrapper(this);
+    // FIXME: this should not cause a begin in FLTK3 for compatibility
+    if (fBegin) begin();
+  }
+  void show(int argc, char **argv) {
+    ((fltk3::Window*)_p)->show(argc, argv); 
+  }
+  void fullscreen_off(int x, int y, int w, int h) {
+    ((fltk3::Window*)_p)->fullscreen_off(x, y, w, h); 
+  }
+  void iconize() {
+    ((fltk3::Window*)_p)->iconize(); 
+  }
+  void fullscreen() {
+    ((fltk3::Window*)_p)->fullscreen(); 
+  }
+  const char* label() const {
+    return ((fltk3::Window*)_p)->label(); 
+  }
+  const char* iconlabel() {
+    return ((fltk3::Window*)_p)->iconlabel(); 
+  }
+  void label(const char *p) {
+    ((fltk3::Window*)_p)->label(p); 
+  }
+  void iconlabel(const char *il) {
+    ((fltk3::Window*)_p)->iconlabel(il); 
+  }
+  void label(const char* label, const char* iconlabel) {
+    ((fltk3::Window*)_p)->label(label, iconlabel); 
+  }
+  void copy_label(const char* c) {
+    ((fltk3::Window*)_p)->copy_label(c); 
+  }
+  const void* icon() const {
+    return ((fltk3::Window*)_p)->icon(); 
+  }
+  void icon(const void * ic) {
+    ((fltk3::Window*)_p)->icon(ic); 
+  }
+  static const char* xclass() {
+    return fltk3::Window::default_xclass(); 
+  }
+  static void xclass(const char* v) {
+    fltk3::Window::default_xclass(v); 
   }
   
-#if 0 // TODo: FLTK123  
-  Window(int,int,int,int, const char* = 0, bool begin = false);
-  static NamedStyle* default_style;
-  virtual ~Window();
-
-  const char* label() const	{return Widget::label();}
-  const char* iconlabel() const	{return iconlabel_;}
-  void label(const char*);
-  void iconlabel(const char*);
-  void label(const char* label, const char* iconlabel);
-  void copy_label(const char* c) {Widget::copy_label(c); label(label());}
-  const void* icon() const	{return icon_;}
-  void icon(const void * ic)	{icon_ = ic;}
-  static const char* xclass()	{return xclass_;}
-  static void xclass(const char* v) {xclass_ = v;}
-
+#if 0 // TODO: FLTK123
+  void maximize() {
+    ((fltk3::Window*)_p)->maximize(); 
+  }
+  virtual ~Window();  
   void border(bool set)	{set ? clear_flag(NOBORDER) : set_flag(NOBORDER);}
-  /*! \deprecated compat. api only, please use Window::border(bool)*/
   void clear_border()    {set_flag(NOBORDER);} 
   bool border() const	{return !flag(NOBORDER);}
   void set_override()	{set_flag(NOBORDER|OVERRIDE);}
   bool override() const {return flag(OVERRIDE); }
   const Window* child_of() const {return child_of_;}
   void child_of(const Window* w);
-  void set_modal()	{set_flag(MODAL);} // back compatability only!
-  void set_non_modal()	{set_flag(NON_MODAL);} // back compatability only!
-
+  void set_modal()	{set_flag(MODAL);}
+  void set_non_modal()	{set_flag(NON_MODAL);}
   bool double_buffer() const {return flag(DOUBLE);}
   void set_double_buffer() {set_flag(DOUBLE);}
   void clear_double_buffer() {clear_flag(DOUBLE);}
   void free_backbuffer();
-
   virtual void draw_overlay();
   void redraw_overlay();
   void erase_overlay();
-
   void hotspot(int x, int y, bool offscreen = false);
   void hotspot(const Widget*, bool offscreen = false);
   void hotspot(const Widget& p, bool offscrn = false) {hotspot(&p,offscrn);}
-  void size_range(int a, int b, int c=0, int d=0, int e=0, int f=0)
-    { minw=(short)a; minh=(short)b; maxw=(short)c; maxh=(short)d; dw=(uchar)e; dh=(uchar)f; size_range_(); }
+  void size_range(int a, int b, int c=0, int d=0, int e=0, int f=0){ minw=(short)a; minh=(short)b; maxw=(short)c; maxh=(short)d; dw=(uchar)e; dh=(uchar)f; size_range_(); }
   bool get_size_range( int *min_w, int *min_h, int *max_w, int *max_h );
-
   bool shown() const {return i != 0;}
   void show();
-#endif // TODO: FLTK123
-  
-  void show(int argc, char **argv) { ((fltk3::Window*)_p)->show(argc, argv); }
-  
-#if 0 // TODO: FLTK123
   void show(const Window* parent);
   bool exec(const Window* parent = 0, bool grab = false);
   void make_exec_return(bool);
   void show_inside(const Window* parent);
   virtual void destroy();
-
-  void iconize();
   bool iconic() const;
-
-  void maximize();
-
-  void fullscreen();
   void fullscreen(const Monitor&);
-  void fullscreen_off(int,int,int,int);
-
   static void default_callback(Window*, void* v);
-
   virtual int handle(int);
   virtual void layout();
   void system_layout();
   virtual void flush();
   virtual void draw();
-
   static Window* first();
   static void first(Window*);
   Window* next();
-
   void borders( Rectangle *r ) const;
-
   static const Window* drawing_window() {return drawing_window_;}
   static const Window* drawing_window_;
-
-  // fabien: used for my cairo experimentations,
-  // not sure i'll keep that opaque backbuffer access :
-  // at least it shouldn't stay public
   void* backbuffer() const;
-
 protected:
   virtual void create();
-
-private:
-
-  friend class CreatedWindow;
-  CreatedWindow *i; // points at the system-specific stuff
-  const Window* child_of_;
-  const char* iconlabel_;
-  const void* icon_;
-  // size_range stuff:
-  short minw, minh, maxw, maxh;
-  unsigned char dw, dh, size_range_set;
-  void size_range_();
-  // values for flags():
-  enum {
-    MODAL	    = 0x80000000,
-    NOBORDER 	    = 0x40000000,
-    OVERRIDE	    = 0x20000000,
-    NON_MODAL	    = 0x10000000,
-    DOUBLE	    = 0x08000000
-  };
-  static const char* xclass_;
-  void _Window(); // constructor innards
 #endif // TODO: FLTK123
   
 };

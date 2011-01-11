@@ -604,6 +604,8 @@ inline Fl_Color fl_color_cube(int r, int g, int b) {
 
 //*@}*/		// group: Colors
 
+#endif // TODO: FLTK123
+
 /** \name Cursors
 
     The following constants define the mouse cursors that are available in FLTK.
@@ -641,6 +643,8 @@ enum Fl_Cursor {	// standard cursors
   //FL_CURSOR_NS	= 22,
   //FL_CURSOR_WE	= 55,
 };
+
+#if 0 // TODO: FLTK123
 
 enum { // values for "when" passed to Fl::add_fd()
   FL_READ = 1,

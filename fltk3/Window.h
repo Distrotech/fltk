@@ -38,6 +38,8 @@
 
 class Fl_X;
 
+class Fl_Window;
+
 namespace fltk3 {
   class Window;
 };
@@ -60,6 +62,8 @@ namespace fltk3 {
   window. fltk3::Window has a default callback that calls fltk3::Window::hide().
 */
 class FL_EXPORT fltk3::Window : public fltk3::Group {
+  
+  friend class ::Fl_Window;
 
   static char *default_xclass_;
 
