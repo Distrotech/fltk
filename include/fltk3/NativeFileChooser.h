@@ -35,6 +35,8 @@
 /* \file
  fltk3::NativeFileChooser widget. */
 
+#include <fltk3/x.h>
+
 // Use Windows' chooser
 #ifdef WIN32
 // #define _WIN32_WINNT	0x0501	// needed for OPENFILENAME's 'FlagsEx'

@@ -25,6 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef __APPLE__
+
 // Return the current state of a key.  Keys are named by fltk symbols,
 // which are actually X keysyms.  So this has to translate to macOS
 // symbols.
@@ -280,6 +282,8 @@ int fltk3::get_key(unsigned int k) {
   return (b[i>>3]>>(i&7))&1;
   }
 }
+
+#endif
 
 //
 // End of "$Id$".

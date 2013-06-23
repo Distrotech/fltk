@@ -28,13 +28,6 @@
 
 #include <fltk3/Printer.h>
 
-#ifdef __APPLE__
-//#include "Fl_Quartz_Printer.mm"
-#elif defined(WIN32)
-#include "GDIPrinter.cxx"
-#endif
-
-#include "PostScript.cxx"
 
 // print dialog customization strings
 /** [this text may be customized at run-time] */

@@ -25,7 +25,9 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
 #include "../fltk3/flstring.h"
+
 #if HAVE_GL
 
 extern int fl_gl_load_plugin;

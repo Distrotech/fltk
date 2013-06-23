@@ -238,20 +238,7 @@ int fltk3::event_inside(const fltk3::Widget *o) {
 // timer support
 //
 
-#ifdef WIN32
-
-// implementation in Fl_win32.cxx
-
-#elif defined(__APPLE__)
-
-// implementation in Fl_mac.cxx
-
-#else
-
-//
-// X11 timers
-//
-
+#ifdef USE_X11
 
 ////////////////////////////////////////////////////////////////////////
 // Timeouts are stored in a sorted list (*first_timeout), so only the
@@ -440,7 +427,7 @@ int fltk3::has_check(fltk3::TimeoutHandler cb, void *argp) {
   return 0;
 }
 
-static void run_checks()
+void run_checks()
 {
   // checks are a bit messy so that add/remove and wait may be called
   // from inside them without causing an infinite loop:
@@ -1705,10 +1692,6 @@ void fltk3::Window::flush() {
   draw();
 }
 
-#ifdef WIN32
-#  include "win32.cxx"
-//#elif defined(__APPLE__)
-#endif
 
 //
 // The following methods allow callbacks to schedule the deletion of

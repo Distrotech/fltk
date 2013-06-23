@@ -25,20 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-// Use Windows' chooser
-#ifdef WIN32
-#include "win32NativeFileChooser.cxx"
-#endif
-
-// Use Apple's chooser
-#ifdef __APPLE__
 #include <fltk3/NativeFileChooser.h>
-#endif
-
-// All else falls back to FLTK's own chooser
-#if ! defined(__APPLE__) && !defined(WIN32)
-#include "x11NativeFileChooser.cxx"
-#endif
 
 const char *fltk3::NativeFileChooser::file_exists_message = "File exists. Are you sure you want to overwrite?";
 

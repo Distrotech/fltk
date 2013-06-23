@@ -44,10 +44,34 @@
 #include <fltk3/CheckButton.h>
 #include <fltk3/ReturnButton.h>
 #include <fltk3/Progress.h>
-static fltk3::DoubleWindow* make_print_panel();
+#include <fltk3/IntInput.h>
+#include <fltk3/Preferences.h>
+
+fltk3::DoubleWindow* make_print_panel();
 static void print_cb(fltk3::ReturnButton *, void *); 
-static void print_load();
+void print_load();
 static void print_update_status();
+
+extern fltk3::Preferences print_prefs;
+extern fltk3::DoubleWindow *print_panel;
+extern fltk3::Group *print_panel_controls;
+extern fltk3::Choice *print_choice;
+extern fltk3::Button *print_properties;
+extern fltk3::Widget *print_status;
+extern fltk3::RoundButton *print_all;
+extern fltk3::RoundButton *print_pages;
+extern fltk3::RoundButton *print_selection;
+extern fltk3::CheckButton *print_collate_button;
+extern fltk3::Group *print_collate_group[2];
+extern fltk3::Progress *print_progress;
+extern fltk3::DoubleWindow *print_properties_panel;
+extern fltk3::Choice *print_page_size;
+extern fltk3::IntInput *print_from;
+extern fltk3::IntInput *print_to;
+extern fltk3::Spinner *print_copies;
+extern fltk3::Button *print_output_mode[4];
+extern int print_start;
+
 #endif
 
 //

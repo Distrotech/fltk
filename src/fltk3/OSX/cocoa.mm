@@ -49,7 +49,7 @@ extern "C" {
 #include <fltk3/TextDisplay.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+#include "../flstring.h"
 #include <unistd.h>
 #include <stdarg.h>
 

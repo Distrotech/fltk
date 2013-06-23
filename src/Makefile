@@ -3,7 +3,7 @@
 #
 # Library makefile for the Fast Light Tool Kit (FLTK).
 #
-# Copyright 1998-2011 by Bill Spitzak and others.
+# Copyright 1998-2013 by Bill Spitzak and others.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
@@ -68,6 +68,7 @@ FLTK3_CPPFILES = \
 	fltk3/PagedDevice.cxx \
 	fltk3/Pixmap.cxx \
 	fltk3/Positioner.cxx \
+	fltk3/PostScript.cxx \
 	fltk3/Printer.cxx \
 	fltk3/Preferences.cxx \
 	fltk3/Progress.cxx \
@@ -78,7 +79,6 @@ FLTK3_CPPFILES = \
 	fltk3/Scalebar.cxx \
 	fltk3/ScrollGroup.cxx \
 	fltk3/Scrollbar.cxx \
-	fltk3/ShapedWindow.cxx \
 	fltk3/SharedImage.cxx \
 	fltk3/SingleWindow.cxx \
 	fltk3/Slider.cxx \
@@ -175,7 +175,35 @@ FLTK3_CPPFILES = \
 	fltk3/utf8.cxx \
 	fltk3/vertex.cxx \
 	fltk3/visual.cxx \
-	fltk3/x11.cxx
+	fltk3/OSX/cocoa_get_key.cxx \
+	fltk3/OSX/cocoa_font.cxx \
+	fltk3/OSX/cocoa_color.cxx \
+	fltk3/OSX/cocoa_draw_image.cxx \
+	fltk3/OSX/cocoa_read_image.cxx \
+	fltk3/OSX/cocoa_set_fonts.cxx \
+	fltk3/MSWindows/win32.cxx \
+	fltk3/MSWindows/win32_get_key.cxx \
+	fltk3/MSWindows/win32_font.cxx \
+	fltk3/MSWindows/win32_color.cxx \
+	fltk3/MSWindows/win32_dnd.cxx \
+	fltk3/MSWindows/win32_draw_image.cxx \
+	fltk3/MSWindows/win32_read_image.cxx \
+	fltk3/MSWindows/win32_set_fonts.cxx \
+	fltk3/MSWindows/win32_scandir.cxx \
+	fltk3/MSWindows/win32NativeFileChooser.cxx \
+	fltk3/MSWindows/GDIPrinter.cxx \
+	fltk3/Unix/x11.cxx \
+	fltk3/Unix/xlib_get_key.cxx \
+	fltk3/Unix/x11_font.cxx \
+	fltk3/Unix/xft_font.cxx \
+	fltk3/Unix/xlib_color.cxx \
+	fltk3/Unix/x11_dnd.cxx \
+	fltk3/Unix/x11_draw_image.cxx \
+	fltk3/Unix/x11_read_image.cxx \
+	fltk3/Unix/xft_set_fonts.cxx \
+	fltk3/Unix/x11_set_fonts.cxx \
+	fltk3/Unix/x11NativeFileChooser.cxx \
+	fltk3/Unix/x11_print_panel.cxx
 
 FLTK3GL_CPPFILES = \
 	fltk3gl/GLChoice.cxx \
@@ -210,10 +238,10 @@ FLTK3CONNECT_CPPFILES = \
 	fltk3connect/USBConnection.cxx
 
 FLTK3_OBJCPPFILES = \
-	fltk3/cocoa.mm \
-	fltk3/cocoaNativeFileChooser.mm \
-	fltk3/cocoaQuartzPrinter.mm \
-	fltk3/cocoaSysMenuBar.mm
+	fltk3/OSX/cocoa.mm \
+	fltk3/OSX/cocoaNativeFileChooser.mm \
+	fltk3/OSX/cocoaQuartzPrinter.mm \
+	fltk3/OSX/cocoaSysMenuBar.mm
 
 FLTK3_CFILES = \
 	fltk3/xutf8/case.c \

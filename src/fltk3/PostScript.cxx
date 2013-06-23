@@ -30,6 +30,7 @@
 #include <fltk3/ask.h>
 #include <fltk3/draw.h>
 #include <stdio.h>
+#include <fltk3/Printer.h>
 #include <fltk3/PostScript.h>
 #include <fltk3/NativeFileChooser.h>
 #if defined(USE_X11)
@@ -145,10 +146,6 @@ fltk3::PostScriptFileDevice::~PostScriptFileDevice() {
 }
 
 #ifndef FLTK3_DOXYGEN
-
-#if ! (defined(__APPLE__) || defined(WIN32) )
-#  include "print_panel.cxx"
-#endif
 
 //  Prolog string 
 
@@ -1526,6 +1523,9 @@ void fltk3::PostScriptFileDevice::end_job (void)
 }
 
 #if ! (defined(__APPLE__) || defined(WIN32) )
+
+#include "Unix/x11_print_panel.h"
+
 int fltk3::PostScriptPrinter::start_job(int pages, int *firstpage, int *lastpage) {
   enum fltk3::PagedDevice::Page_Format format;
   enum fltk3::PagedDevice::Page_Layout layout;

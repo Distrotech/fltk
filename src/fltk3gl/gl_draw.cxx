@@ -28,6 +28,8 @@
 // Functions from <fltk3/gl.h>
 // See also fltk3::GLWindow and gl_start.cxx
 
+#include <config.h>
+
 #include "../fltk3/flstring.h"
 #if HAVE_GL || defined(FLTK3_DOXYGEN)
 

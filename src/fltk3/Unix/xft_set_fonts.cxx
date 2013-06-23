@@ -25,6 +25,17 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
+
+#if (defined(USE_X11)) && (defined(USE_XFT))
+
+#include <config.h>
+#include <fltk3/run.h>
+#include <fltk3/x.h>
+#include "../font.h"
+#include "../flstring.h"
+#include <stdlib.h>
+
 #include <X11/Xft/Xft.h>
 
 // This function fills in the fltk font table with all the fonts that
@@ -381,6 +392,8 @@ int fltk3::get_font_sizes(fltk3::Font fnum, int*& sizep) {
   sizep = array;
   return j;
 }
+
+#endif
 
 //
 // End of "$Id$".

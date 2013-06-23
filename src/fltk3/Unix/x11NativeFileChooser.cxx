@@ -26,6 +26,10 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
+
+#ifdef USE_X11
+
 #include <fltk3/NativeFileChooser.h>
 #include <fltk3/FileIcon.h>
 #define FLTK_CHOOSER_SINGLE    fltk3::FileChooser::SINGLE
@@ -33,9 +37,60 @@
 #define FLTK_CHOOSER_MULTI     fltk3::FileChooser::MULTI
 #define FLTK_CHOOSER_CREATE    fltk3::FileChooser::CREATE
 
-#include "NativeFileChooser_common.cxx"
 #include <sys/stat.h>
 #include <string.h>
+
+
+// COPY A STRING WITH 'new'
+//    Value can be NULL
+//
+static char *strnew(const char *val) {
+  if ( val == NULL ) return(NULL);
+  char *s = new char[strlen(val)+1];
+  strcpy(s, val);
+  return(s);
+}
+
+// FREE STRING CREATED WITH strnew(), NULLS OUT STRING
+//    Value can be NULL
+//
+static char *strfree(char *val) {
+  if ( val ) delete [] val;
+  return(NULL);
+}
+
+// 'DYNAMICALLY' APPEND ONE STRING TO ANOTHER
+//    Returns newly allocated string, or NULL
+//    if s && val == NULL.
+//    's' can be NULL; returns a strnew(val).
+//    'val' can be NULL; s is returned unmodified.
+//
+//    Usage:
+//	char *s = strnew("foo");	// s = "foo"
+//      s = strapp(s, "bar");		// s = "foobar"
+//
+static char *strapp(char *s, const char *val) {
+  if ( ! val ) {
+    return(s);			// Nothing to append? return s
+  }
+  if ( ! s ) {
+    return(strnew(val));	// New string? return copy of val
+  }
+  char *news = new char[strlen(s)+strlen(val)+1];
+  strcpy(news, s);
+  strcat(news, val);
+  delete [] s;			// delete old string
+  return(news);			// return new copy
+}
+
+// APPEND A CHARACTER TO A STRING
+//     This does NOT allocate space for the new character.
+//
+static void chrcat(char *s, char c) {
+  char tmp[2] = { c, '\0' };
+  strcat(s, tmp);
+}
+
 
 /**
   The constructor. Internally allocates the native widgets.
@@ -457,6 +512,8 @@ const char* fltk3::NativeFileChooser::preset_file() const {
 int fltk3::NativeFileChooser::exist_dialog() {
   return(fltk3::choice("%s", fltk3::cancel, fltk3::ok, NULL, file_exists_message));
 }
+
+#endif // USE_X11
 
 //
 // End of "$Id$".

@@ -24,6 +24,8 @@
 //
 //     http://www.fltk.org/str.php
 
+#ifdef WIN32
+
 // This file contains win32-specific code for fltk which is always linked
 // in.  Search other files for "WIN32" or filenames ending in _win32.cxx
 // for other system-specific code.
@@ -32,7 +34,8 @@
 #include <fltk3/x.h>
 #include <fltk3/Window.h>
 #include <fltk3/utf8.h>
-#include "flstring.h"
+#include "../flstring.h"
+#include <Windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -549,6 +552,8 @@ int fltk3::dnd()
   if ( ret==DRAGDROP_S_DROP ) return 1; // or DD_S_CANCEL
   return 0;
 }
+
+#endif
 
 //
 // End of "$Id$".

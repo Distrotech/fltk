@@ -93,7 +93,7 @@ void fltk3::ShapedWindow::shape(fltk3::Image* b) {
 }
 
 #if USE_X11
-# include <X11/extensions/shape.h>
+//# include <X11/extensions/shape.h>
 #elif defined(_WIN32)
 // needed for VisualC2010
 # include <malloc.h>

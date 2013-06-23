@@ -38,6 +38,7 @@
 // is being used)
 
 #include <config.h>
+
 #if HAVE_GL
 
 #include <fltk3/run.h>

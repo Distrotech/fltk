@@ -51,10 +51,6 @@
 		F552DCC431AA40CCC6F1988A /* fltk3png.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06A7B68E2100DB960872987D /* fltk3png.framework */; };
 		CC663664EF1FE8C4CB778028 /* fltk3jpeg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C03975F619684D3461888340 /* fltk3jpeg.framework */; };
 		0D2A2AC958D590B51B01BBEF /* fltk3zlib.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AFDEBB8CE5A31C066586BF8B /* fltk3zlib.framework */; };
-		69C261B5080F70C54F62E633 /* cocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6BB47B6B9E3180AB7C5F16D /* cocoa.mm */; };
-		02BBCA82DFFB0AB67443CA28 /* cocoaNativeFileChooser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23CCB736CF9A2433827C3EE /* cocoaNativeFileChooser.mm */; };
-		B7920395FCBAAF8E46AA357D /* cocoaQuartzPrinter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 10A048C45D4667189C9F77EA /* cocoaQuartzPrinter.mm */; };
-		3F29F926268EB822DD8A7143 /* cocoaSysMenuBar.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2443E023D987FA8A8BE86106 /* cocoaSysMenuBar.mm */; };
 		2271ACEBB4FBB71C4086EF24 /* Adjuster.cxx in Sources */ = {isa = PBXBuildFile; fileRef = ECEA64F2B2C5C5186949AD76 /* Adjuster.cxx */; };
 		87F292EDA50F45BFAEA18EC5 /* Bitmap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = D68004A5D4D7878F2E22B59B /* Bitmap.cxx */; };
 		D3D9C65EBA0726B45E8C7725 /* Box.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 81608512CDA5C11B35A2B539 /* Box.cxx */; };
@@ -97,6 +93,7 @@
 		BFD45A930F841AB6663EB28F /* PagedDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 680EF039247E0C542AD802F6 /* PagedDevice.cxx */; };
 		EBD658967C0EF993B55D8A75 /* Pixmap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9AEB93657A00F78B2046454D /* Pixmap.cxx */; };
 		7878131091565BEFA0E1E765 /* Positioner.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9EB992B1957E27AE06A07426 /* Positioner.cxx */; };
+		99E79CD146F8E5A514FB74F7 /* PostScript.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 02D9984F8A2CB1EF0EC2E177 /* PostScript.cxx */; };
 		C759F61877A5D20EDBD7488D /* Printer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 53F2F9DED1C91758A21D0246 /* Printer.cxx */; };
 		96257899A0D5C1733FAC5200 /* Preferences.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 596103743F0CE2A89B7B3FA5 /* Preferences.cxx */; };
 		486D31DD278E2C5144B6284E /* Progress.cxx in Sources */ = {isa = PBXBuildFile; fileRef = B62169E8816659E5E6E4DD9F /* Progress.cxx */; };
@@ -107,7 +104,6 @@
 		6C6D887784F56A9B321AB7F0 /* Scalebar.cxx in Sources */ = {isa = PBXBuildFile; fileRef = B5BBD2D50238E385AAB46F67 /* Scalebar.cxx */; };
 		B506EE63710A08EC82B52F62 /* ScrollGroup.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 135F7AE45CBDAA49D80BB12D /* ScrollGroup.cxx */; };
 		5622DE2929FDB9DBF1607BC6 /* Scrollbar.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 6F7BEB35272214B6167B1FB8 /* Scrollbar.cxx */; };
-		BBAD8482995A5F1D84D224F8 /* ShapedWindow.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 1CCF247C3F96C6CC83193B68 /* ShapedWindow.cxx */; };
 		7CB9D27B0F1CE28C828F280B /* SharedImage.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 8580401C9D38395ECAD127AC /* SharedImage.cxx */; };
 		550F71EE23A3D8E00A890F88 /* SingleWindow.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 17A03BA54D8D67397D8BDCEE /* SingleWindow.cxx */; };
 		052ACB65AAC112E4DFA7B7C1 /* Slider.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 085FAF82201B9FD1927A8BAA /* Slider.cxx */; };
@@ -208,8 +204,40 @@
 		E05DB01E716C969FB0A9984E /* utf8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C82D09C9EB356BF14388A904 /* utf8.cxx */; };
 		0DA673401BF6865FFFEF7D18 /* vertex.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 6C74D84D95E5167E6D41A606 /* vertex.cxx */; };
 		D57FBCFB72B5E577A7F80562 /* visual.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 1626800F2D2DF61E9E2468DD /* visual.cxx */; };
-		D90075982F3B0CDB0EF91A73 /* x11.cxx in Sources */ = {isa = PBXBuildFile; fileRef = F285310A7BD8D88F965104C8 /* x11.cxx */; };
 		2A8804F6E00533FEF1B22A54 /* vsnprintf.c in Sources */ = {isa = PBXBuildFile; fileRef = 4024031C45193E6173805457 /* vsnprintf.c */; };
+		69C261B5080F70C54F62E633 /* cocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6BB47B6B9E3180AB7C5F16D /* cocoa.mm */; };
+		02BBCA82DFFB0AB67443CA28 /* cocoaNativeFileChooser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23CCB736CF9A2433827C3EE /* cocoaNativeFileChooser.mm */; };
+		B7920395FCBAAF8E46AA357D /* cocoaQuartzPrinter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 10A048C45D4667189C9F77EA /* cocoaQuartzPrinter.mm */; };
+		3F29F926268EB822DD8A7143 /* cocoaSysMenuBar.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2443E023D987FA8A8BE86106 /* cocoaSysMenuBar.mm */; };
+		3C8F9DDB484B1D262E9334BA /* cocoa_get_key.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 94AC142F6E0725AF291E4738 /* cocoa_get_key.cxx */; };
+		E0DB929EB474578C40CFF7F0 /* cocoa_font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9B9F918622CB86313C8C0128 /* cocoa_font.cxx */; };
+		F7CC530C8AF3234ED944BA37 /* cocoa_color.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5760D9285F26D88DD70BB /* cocoa_color.cxx */; };
+		AEEF9A67BF6B7B9A3182B710 /* cocoa_draw_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 41809733CC2358F6878E0B0F /* cocoa_draw_image.cxx */; };
+		A9A43DC90BE2175E4CB4C250 /* cocoa_read_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF727DBF9919D514897DE01D /* cocoa_read_image.cxx */; };
+		221CE674B9834B86EB8E95DE /* cocoa_set_fonts.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 8E28A88539A127F8F3A9E412 /* cocoa_set_fonts.cxx */; };
+		AFA5349EDFB005024E4A5CA1 /* win32.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C74EBB8D55E173B168692CE4 /* win32.cxx */; };
+		C5941E0DB82788968E26EC3D /* win32_get_key.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 530D92E9EF504A6F3DF85222 /* win32_get_key.cxx */; };
+		5199F1D9FFB49EE804A782DB /* win32_font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7424EDDF5253B014EE3B4F75 /* win32_font.cxx */; };
+		5281BAB3A9478481F8109C35 /* win32_color.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E20E8546AC88A7C589B8E5FD /* win32_color.cxx */; };
+		A9B22FB235DF8E8017067979 /* win32_dnd.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 673196728603551E665FB732 /* win32_dnd.cxx */; };
+		9631B6BC233BBF29C0A401D7 /* win32_draw_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = EE50DDFEDE85B44A65164192 /* win32_draw_image.cxx */; };
+		A905042E9C7B04D99DA585CB /* win32_read_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FEE9325F618496245B1D6B9C /* win32_read_image.cxx */; };
+		23A7010D4C03BEC996C9FA34 /* win32_set_fonts.cxx in Sources */ = {isa = PBXBuildFile; fileRef = D9B0087F53BEEE5877EC685D /* win32_set_fonts.cxx */; };
+		C52C8BC1CD317E2D442DC3F1 /* win32_scandir.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BB4795F6482B0DDEB00FF1B4 /* win32_scandir.cxx */; };
+		9B5CFB4904874B4EA9DE1F75 /* win32NativeFileChooser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = A9377DCFA7250C786BB0BE87 /* win32NativeFileChooser.cxx */; };
+		A6BE3BE48BC3971C31597B55 /* GDIPrinter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FB4B2995B1FB1AD3A6DA8BD2 /* GDIPrinter.cxx */; };
+		D90075982F3B0CDB0EF91A73 /* x11.cxx in Sources */ = {isa = PBXBuildFile; fileRef = F285310A7BD8D88F965104C8 /* x11.cxx */; };
+		A7051463299A8A1A74C4F4C7 /* xlib_get_key.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 1656EF36F622DA04069FCA51 /* xlib_get_key.cxx */; };
+		8B57BA94D039546989879D20 /* x11_font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E782DC411E8AAB7BCBC8A6E8 /* x11_font.cxx */; };
+		D73DE38A1E5DF96CD8B9DCE8 /* xft_font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 64FCEE57A711D408D8AD6B4D /* xft_font.cxx */; };
+		154875AB8F04808DC3F1C54E /* xlib_color.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 54C6A9AE2DBB8FF8F96BFAF5 /* xlib_color.cxx */; };
+		07359EDC9C6C2A9E66F5650E /* x11_dnd.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 3E649EE2B52FADA0FD79567B /* x11_dnd.cxx */; };
+		42DC50C6FDF03994AACDB593 /* x11_draw_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 1179F6073C4E000235B0FB8A /* x11_draw_image.cxx */; };
+		077E5B1724ED5160BAADEE15 /* x11_read_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D5E9B864848FF549191C4 /* x11_read_image.cxx */; };
+		3C2E7960D8A754A10E64F831 /* xft_set_fonts.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9B7C230B3FF3818ED339F457 /* xft_set_fonts.cxx */; };
+		6DA69B1BEF8AF2844E3B08BE /* x11_set_fonts.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 74CA8317195ABB4AC95FBB5D /* x11_set_fonts.cxx */; };
+		3C0D2694F0126028263F609B /* x11NativeFileChooser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = D93BB90239F390177FDC0338 /* x11NativeFileChooser.cxx */; };
+		B4338D79F8E03638EC0A1D08 /* x11_print_panel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DD49A7FB74DA8E5E5C711644 /* x11_print_panel.cxx */; };
 		6EC5A8E1F6171E20505CDA66 /* all.h in Headers */ = {isa = PBXBuildFile; fileRef = DDEC0AB0E55CB75CFA5FD9DC /* all.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		39576718F4A718E5885D7837 /* fltk3.h in Headers */ = {isa = PBXBuildFile; fileRef = 15B1A08E928290071C92EDD1 /* fltk3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		757ECB76CD9272004B8A4A42 /* Adjuster.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CDC310CF438C4E007EE265B /* Adjuster.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8439,10 +8467,6 @@
 		2E1B408952EFBB79A46CDE69 /* Xutf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Xutf8.h; path = ../../include/fltk3/Xutf8.h; sourceTree = SOURCE_ROOT; };
 		9F6F453D846A6B7E8679FDAA /* XBMImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XBMImage.h; path = ../../include/fltk3/XBMImage.h; sourceTree = SOURCE_ROOT; };
 		0C163988CD45E6AB4710982F /* XPMImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPMImage.h; path = ../../include/fltk3/XPMImage.h; sourceTree = SOURCE_ROOT; };
-		F6BB47B6B9E3180AB7C5F16D /* cocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoa.mm; path = ../../src/fltk3/cocoa.mm; sourceTree = SOURCE_ROOT; };
-		B23CCB736CF9A2433827C3EE /* cocoaNativeFileChooser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaNativeFileChooser.mm; path = ../../src/fltk3/cocoaNativeFileChooser.mm; sourceTree = SOURCE_ROOT; };
-		10A048C45D4667189C9F77EA /* cocoaQuartzPrinter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaQuartzPrinter.mm; path = ../../src/fltk3/cocoaQuartzPrinter.mm; sourceTree = SOURCE_ROOT; };
-		2443E023D987FA8A8BE86106 /* cocoaSysMenuBar.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaSysMenuBar.mm; path = ../../src/fltk3/cocoaSysMenuBar.mm; sourceTree = SOURCE_ROOT; };
 		ECEA64F2B2C5C5186949AD76 /* Adjuster.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Adjuster.cxx; path = ../../src/fltk3/Adjuster.cxx; sourceTree = SOURCE_ROOT; };
 		D68004A5D4D7878F2E22B59B /* Bitmap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Bitmap.cxx; path = ../../src/fltk3/Bitmap.cxx; sourceTree = SOURCE_ROOT; };
 		81608512CDA5C11B35A2B539 /* Box.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Box.cxx; path = ../../src/fltk3/Box.cxx; sourceTree = SOURCE_ROOT; };
@@ -8485,6 +8509,7 @@
 		680EF039247E0C542AD802F6 /* PagedDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PagedDevice.cxx; path = ../../src/fltk3/PagedDevice.cxx; sourceTree = SOURCE_ROOT; };
 		9AEB93657A00F78B2046454D /* Pixmap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Pixmap.cxx; path = ../../src/fltk3/Pixmap.cxx; sourceTree = SOURCE_ROOT; };
 		9EB992B1957E27AE06A07426 /* Positioner.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Positioner.cxx; path = ../../src/fltk3/Positioner.cxx; sourceTree = SOURCE_ROOT; };
+		02D9984F8A2CB1EF0EC2E177 /* PostScript.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PostScript.cxx; path = ../../src/fltk3/PostScript.cxx; sourceTree = SOURCE_ROOT; };
 		53F2F9DED1C91758A21D0246 /* Printer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Printer.cxx; path = ../../src/fltk3/Printer.cxx; sourceTree = SOURCE_ROOT; };
 		596103743F0CE2A89B7B3FA5 /* Preferences.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Preferences.cxx; path = ../../src/fltk3/Preferences.cxx; sourceTree = SOURCE_ROOT; };
 		B62169E8816659E5E6E4DD9F /* Progress.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Progress.cxx; path = ../../src/fltk3/Progress.cxx; sourceTree = SOURCE_ROOT; };
@@ -8495,7 +8520,6 @@
 		B5BBD2D50238E385AAB46F67 /* Scalebar.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Scalebar.cxx; path = ../../src/fltk3/Scalebar.cxx; sourceTree = SOURCE_ROOT; };
 		135F7AE45CBDAA49D80BB12D /* ScrollGroup.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScrollGroup.cxx; path = ../../src/fltk3/ScrollGroup.cxx; sourceTree = SOURCE_ROOT; };
 		6F7BEB35272214B6167B1FB8 /* Scrollbar.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Scrollbar.cxx; path = ../../src/fltk3/Scrollbar.cxx; sourceTree = SOURCE_ROOT; };
-		1CCF247C3F96C6CC83193B68 /* ShapedWindow.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShapedWindow.cxx; path = ../../src/fltk3/ShapedWindow.cxx; sourceTree = SOURCE_ROOT; };
 		8580401C9D38395ECAD127AC /* SharedImage.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SharedImage.cxx; path = ../../src/fltk3/SharedImage.cxx; sourceTree = SOURCE_ROOT; };
 		17A03BA54D8D67397D8BDCEE /* SingleWindow.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleWindow.cxx; path = ../../src/fltk3/SingleWindow.cxx; sourceTree = SOURCE_ROOT; };
 		085FAF82201B9FD1927A8BAA /* Slider.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Slider.cxx; path = ../../src/fltk3/Slider.cxx; sourceTree = SOURCE_ROOT; };
@@ -8596,8 +8620,40 @@
 		C82D09C9EB356BF14388A904 /* utf8.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utf8.cxx; path = ../../src/fltk3/utf8.cxx; sourceTree = SOURCE_ROOT; };
 		6C74D84D95E5167E6D41A606 /* vertex.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vertex.cxx; path = ../../src/fltk3/vertex.cxx; sourceTree = SOURCE_ROOT; };
 		1626800F2D2DF61E9E2468DD /* visual.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = visual.cxx; path = ../../src/fltk3/visual.cxx; sourceTree = SOURCE_ROOT; };
-		F285310A7BD8D88F965104C8 /* x11.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11.cxx; path = ../../src/fltk3/x11.cxx; sourceTree = SOURCE_ROOT; };
 		4024031C45193E6173805457 /* vsnprintf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsnprintf.c; path = ../../src/fltk3/vsnprintf.c; sourceTree = SOURCE_ROOT; };
+		F6BB47B6B9E3180AB7C5F16D /* cocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoa.mm; path = ../../src/fltk3/OSX/cocoa.mm; sourceTree = SOURCE_ROOT; };
+		B23CCB736CF9A2433827C3EE /* cocoaNativeFileChooser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaNativeFileChooser.mm; path = ../../src/fltk3/OSX/cocoaNativeFileChooser.mm; sourceTree = SOURCE_ROOT; };
+		10A048C45D4667189C9F77EA /* cocoaQuartzPrinter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaQuartzPrinter.mm; path = ../../src/fltk3/OSX/cocoaQuartzPrinter.mm; sourceTree = SOURCE_ROOT; };
+		2443E023D987FA8A8BE86106 /* cocoaSysMenuBar.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cocoaSysMenuBar.mm; path = ../../src/fltk3/OSX/cocoaSysMenuBar.mm; sourceTree = SOURCE_ROOT; };
+		94AC142F6E0725AF291E4738 /* cocoa_get_key.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_get_key.cxx; path = ../../src/fltk3/OSX/cocoa_get_key.cxx; sourceTree = SOURCE_ROOT; };
+		9B9F918622CB86313C8C0128 /* cocoa_font.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_font.cxx; path = ../../src/fltk3/OSX/cocoa_font.cxx; sourceTree = SOURCE_ROOT; };
+		2DB5760D9285F26D88DD70BB /* cocoa_color.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_color.cxx; path = ../../src/fltk3/OSX/cocoa_color.cxx; sourceTree = SOURCE_ROOT; };
+		41809733CC2358F6878E0B0F /* cocoa_draw_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_draw_image.cxx; path = ../../src/fltk3/OSX/cocoa_draw_image.cxx; sourceTree = SOURCE_ROOT; };
+		BF727DBF9919D514897DE01D /* cocoa_read_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_read_image.cxx; path = ../../src/fltk3/OSX/cocoa_read_image.cxx; sourceTree = SOURCE_ROOT; };
+		8E28A88539A127F8F3A9E412 /* cocoa_set_fonts.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_set_fonts.cxx; path = ../../src/fltk3/OSX/cocoa_set_fonts.cxx; sourceTree = SOURCE_ROOT; };
+		C74EBB8D55E173B168692CE4 /* win32.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32.cxx; path = ../../src/fltk3/MSWindows/win32.cxx; sourceTree = SOURCE_ROOT; };
+		530D92E9EF504A6F3DF85222 /* win32_get_key.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_get_key.cxx; path = ../../src/fltk3/MSWindows/win32_get_key.cxx; sourceTree = SOURCE_ROOT; };
+		7424EDDF5253B014EE3B4F75 /* win32_font.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_font.cxx; path = ../../src/fltk3/MSWindows/win32_font.cxx; sourceTree = SOURCE_ROOT; };
+		E20E8546AC88A7C589B8E5FD /* win32_color.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_color.cxx; path = ../../src/fltk3/MSWindows/win32_color.cxx; sourceTree = SOURCE_ROOT; };
+		673196728603551E665FB732 /* win32_dnd.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_dnd.cxx; path = ../../src/fltk3/MSWindows/win32_dnd.cxx; sourceTree = SOURCE_ROOT; };
+		EE50DDFEDE85B44A65164192 /* win32_draw_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_draw_image.cxx; path = ../../src/fltk3/MSWindows/win32_draw_image.cxx; sourceTree = SOURCE_ROOT; };
+		FEE9325F618496245B1D6B9C /* win32_read_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_read_image.cxx; path = ../../src/fltk3/MSWindows/win32_read_image.cxx; sourceTree = SOURCE_ROOT; };
+		D9B0087F53BEEE5877EC685D /* win32_set_fonts.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_set_fonts.cxx; path = ../../src/fltk3/MSWindows/win32_set_fonts.cxx; sourceTree = SOURCE_ROOT; };
+		BB4795F6482B0DDEB00FF1B4 /* win32_scandir.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_scandir.cxx; path = ../../src/fltk3/MSWindows/win32_scandir.cxx; sourceTree = SOURCE_ROOT; };
+		A9377DCFA7250C786BB0BE87 /* win32NativeFileChooser.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32NativeFileChooser.cxx; path = ../../src/fltk3/MSWindows/win32NativeFileChooser.cxx; sourceTree = SOURCE_ROOT; };
+		FB4B2995B1FB1AD3A6DA8BD2 /* GDIPrinter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GDIPrinter.cxx; path = ../../src/fltk3/MSWindows/GDIPrinter.cxx; sourceTree = SOURCE_ROOT; };
+		F285310A7BD8D88F965104C8 /* x11.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11.cxx; path = ../../src/fltk3/Unix/x11.cxx; sourceTree = SOURCE_ROOT; };
+		1656EF36F622DA04069FCA51 /* xlib_get_key.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xlib_get_key.cxx; path = ../../src/fltk3/Unix/xlib_get_key.cxx; sourceTree = SOURCE_ROOT; };
+		E782DC411E8AAB7BCBC8A6E8 /* x11_font.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_font.cxx; path = ../../src/fltk3/Unix/x11_font.cxx; sourceTree = SOURCE_ROOT; };
+		64FCEE57A711D408D8AD6B4D /* xft_font.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xft_font.cxx; path = ../../src/fltk3/Unix/xft_font.cxx; sourceTree = SOURCE_ROOT; };
+		54C6A9AE2DBB8FF8F96BFAF5 /* xlib_color.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xlib_color.cxx; path = ../../src/fltk3/Unix/xlib_color.cxx; sourceTree = SOURCE_ROOT; };
+		3E649EE2B52FADA0FD79567B /* x11_dnd.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_dnd.cxx; path = ../../src/fltk3/Unix/x11_dnd.cxx; sourceTree = SOURCE_ROOT; };
+		1179F6073C4E000235B0FB8A /* x11_draw_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_draw_image.cxx; path = ../../src/fltk3/Unix/x11_draw_image.cxx; sourceTree = SOURCE_ROOT; };
+		3A9D5E9B864848FF549191C4 /* x11_read_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_read_image.cxx; path = ../../src/fltk3/Unix/x11_read_image.cxx; sourceTree = SOURCE_ROOT; };
+		9B7C230B3FF3818ED339F457 /* xft_set_fonts.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xft_set_fonts.cxx; path = ../../src/fltk3/Unix/xft_set_fonts.cxx; sourceTree = SOURCE_ROOT; };
+		74CA8317195ABB4AC95FBB5D /* x11_set_fonts.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_set_fonts.cxx; path = ../../src/fltk3/Unix/x11_set_fonts.cxx; sourceTree = SOURCE_ROOT; };
+		D93BB90239F390177FDC0338 /* x11NativeFileChooser.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11NativeFileChooser.cxx; path = ../../src/fltk3/Unix/x11NativeFileChooser.cxx; sourceTree = SOURCE_ROOT; };
+		DD49A7FB74DA8E5E5C711644 /* x11_print_panel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_print_panel.cxx; path = ../../src/fltk3/Unix/x11_print_panel.cxx; sourceTree = SOURCE_ROOT; };
 		14F66311E977D66CE29024C3 /* Cocoa.framework */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = SDKs/MacOSX10.7.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		9283F8E14E6EC863F3DB5B02 /* dirent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dirent.h; path = ../../include/FL/dirent.h; sourceTree = SOURCE_ROOT; };
 		45991C139A94060934746880 /* Enumerations.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Enumerations.H; path = ../../include/FL/Enumerations.H; sourceTree = SOURCE_ROOT; };
@@ -11672,13 +11728,63 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
-		91990322480BD14240EE5AB1 /* Sources */ = {
+		79D19F60D3EFBDF9C07DE763 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
 				F6BB47B6B9E3180AB7C5F16D /* cocoa.mm */,
 				B23CCB736CF9A2433827C3EE /* cocoaNativeFileChooser.mm */,
 				10A048C45D4667189C9F77EA /* cocoaQuartzPrinter.mm */,
 				2443E023D987FA8A8BE86106 /* cocoaSysMenuBar.mm */,
+				94AC142F6E0725AF291E4738 /* cocoa_get_key.cxx */,
+				9B9F918622CB86313C8C0128 /* cocoa_font.cxx */,
+				2DB5760D9285F26D88DD70BB /* cocoa_color.cxx */,
+				41809733CC2358F6878E0B0F /* cocoa_draw_image.cxx */,
+				BF727DBF9919D514897DE01D /* cocoa_read_image.cxx */,
+				8E28A88539A127F8F3A9E412 /* cocoa_set_fonts.cxx */,
+			);
+			name = OSX;
+			sourceTree = "<group>";
+		};
+		226919021DF40B1509663AFE /* MSWindows */ = {
+			isa = PBXGroup;
+			children = (
+				C74EBB8D55E173B168692CE4 /* win32.cxx */,
+				530D92E9EF504A6F3DF85222 /* win32_get_key.cxx */,
+				7424EDDF5253B014EE3B4F75 /* win32_font.cxx */,
+				E20E8546AC88A7C589B8E5FD /* win32_color.cxx */,
+				673196728603551E665FB732 /* win32_dnd.cxx */,
+				EE50DDFEDE85B44A65164192 /* win32_draw_image.cxx */,
+				FEE9325F618496245B1D6B9C /* win32_read_image.cxx */,
+				D9B0087F53BEEE5877EC685D /* win32_set_fonts.cxx */,
+				BB4795F6482B0DDEB00FF1B4 /* win32_scandir.cxx */,
+				A9377DCFA7250C786BB0BE87 /* win32NativeFileChooser.cxx */,
+				FB4B2995B1FB1AD3A6DA8BD2 /* GDIPrinter.cxx */,
+			);
+			name = MSWindows;
+			sourceTree = "<group>";
+		};
+		E3D47A8AA27E78F7297BD2E4 /* Unix */ = {
+			isa = PBXGroup;
+			children = (
+				F285310A7BD8D88F965104C8 /* x11.cxx */,
+				1656EF36F622DA04069FCA51 /* xlib_get_key.cxx */,
+				E782DC411E8AAB7BCBC8A6E8 /* x11_font.cxx */,
+				64FCEE57A711D408D8AD6B4D /* xft_font.cxx */,
+				54C6A9AE2DBB8FF8F96BFAF5 /* xlib_color.cxx */,
+				3E649EE2B52FADA0FD79567B /* x11_dnd.cxx */,
+				1179F6073C4E000235B0FB8A /* x11_draw_image.cxx */,
+				3A9D5E9B864848FF549191C4 /* x11_read_image.cxx */,
+				9B7C230B3FF3818ED339F457 /* xft_set_fonts.cxx */,
+				74CA8317195ABB4AC95FBB5D /* x11_set_fonts.cxx */,
+				D93BB90239F390177FDC0338 /* x11NativeFileChooser.cxx */,
+				DD49A7FB74DA8E5E5C711644 /* x11_print_panel.cxx */,
+			);
+			name = Unix;
+			sourceTree = "<group>";
+		};
+		91990322480BD14240EE5AB1 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
 				ECEA64F2B2C5C5186949AD76 /* Adjuster.cxx */,
 				D68004A5D4D7878F2E22B59B /* Bitmap.cxx */,
 				81608512CDA5C11B35A2B539 /* Box.cxx */,
@@ -11721,6 +11827,7 @@
 				680EF039247E0C542AD802F6 /* PagedDevice.cxx */,
 				9AEB93657A00F78B2046454D /* Pixmap.cxx */,
 				9EB992B1957E27AE06A07426 /* Positioner.cxx */,
+				02D9984F8A2CB1EF0EC2E177 /* PostScript.cxx */,
 				53F2F9DED1C91758A21D0246 /* Printer.cxx */,
 				596103743F0CE2A89B7B3FA5 /* Preferences.cxx */,
 				B62169E8816659E5E6E4DD9F /* Progress.cxx */,
@@ -11731,7 +11838,6 @@
 				B5BBD2D50238E385AAB46F67 /* Scalebar.cxx */,
 				135F7AE45CBDAA49D80BB12D /* ScrollGroup.cxx */,
 				6F7BEB35272214B6167B1FB8 /* Scrollbar.cxx */,
-				1CCF247C3F96C6CC83193B68 /* ShapedWindow.cxx */,
 				8580401C9D38395ECAD127AC /* SharedImage.cxx */,
 				17A03BA54D8D67397D8BDCEE /* SingleWindow.cxx */,
 				085FAF82201B9FD1927A8BAA /* Slider.cxx */,
@@ -11832,8 +11938,10 @@
 				C82D09C9EB356BF14388A904 /* utf8.cxx */,
 				6C74D84D95E5167E6D41A606 /* vertex.cxx */,
 				1626800F2D2DF61E9E2468DD /* visual.cxx */,
-				F285310A7BD8D88F965104C8 /* x11.cxx */,
 				4024031C45193E6173805457 /* vsnprintf.c */,
+				79D19F60D3EFBDF9C07DE763 /* OSX */,
+				226919021DF40B1509663AFE /* MSWindows */,
+				E3D47A8AA27E78F7297BD2E4 /* Unix */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -20474,10 +20582,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69C261B5080F70C54F62E633 /* cocoa.mm in Sources */,
-				02BBCA82DFFB0AB67443CA28 /* cocoaNativeFileChooser.mm in Sources */,
-				B7920395FCBAAF8E46AA357D /* cocoaQuartzPrinter.mm in Sources */,
-				3F29F926268EB822DD8A7143 /* cocoaSysMenuBar.mm in Sources */,
 				2271ACEBB4FBB71C4086EF24 /* Adjuster.cxx in Sources */,
 				87F292EDA50F45BFAEA18EC5 /* Bitmap.cxx in Sources */,
 				D3D9C65EBA0726B45E8C7725 /* Box.cxx in Sources */,
@@ -20520,6 +20624,7 @@
 				BFD45A930F841AB6663EB28F /* PagedDevice.cxx in Sources */,
 				EBD658967C0EF993B55D8A75 /* Pixmap.cxx in Sources */,
 				7878131091565BEFA0E1E765 /* Positioner.cxx in Sources */,
+				99E79CD146F8E5A514FB74F7 /* PostScript.cxx in Sources */,
 				C759F61877A5D20EDBD7488D /* Printer.cxx in Sources */,
 				96257899A0D5C1733FAC5200 /* Preferences.cxx in Sources */,
 				486D31DD278E2C5144B6284E /* Progress.cxx in Sources */,
@@ -20530,7 +20635,6 @@
 				6C6D887784F56A9B321AB7F0 /* Scalebar.cxx in Sources */,
 				B506EE63710A08EC82B52F62 /* ScrollGroup.cxx in Sources */,
 				5622DE2929FDB9DBF1607BC6 /* Scrollbar.cxx in Sources */,
-				BBAD8482995A5F1D84D224F8 /* ShapedWindow.cxx in Sources */,
 				7CB9D27B0F1CE28C828F280B /* SharedImage.cxx in Sources */,
 				550F71EE23A3D8E00A890F88 /* SingleWindow.cxx in Sources */,
 				052ACB65AAC112E4DFA7B7C1 /* Slider.cxx in Sources */,
@@ -20631,8 +20735,40 @@
 				E05DB01E716C969FB0A9984E /* utf8.cxx in Sources */,
 				0DA673401BF6865FFFEF7D18 /* vertex.cxx in Sources */,
 				D57FBCFB72B5E577A7F80562 /* visual.cxx in Sources */,
-				D90075982F3B0CDB0EF91A73 /* x11.cxx in Sources */,
 				2A8804F6E00533FEF1B22A54 /* vsnprintf.c in Sources */,
+				69C261B5080F70C54F62E633 /* cocoa.mm in Sources */,
+				02BBCA82DFFB0AB67443CA28 /* cocoaNativeFileChooser.mm in Sources */,
+				B7920395FCBAAF8E46AA357D /* cocoaQuartzPrinter.mm in Sources */,
+				3F29F926268EB822DD8A7143 /* cocoaSysMenuBar.mm in Sources */,
+				3C8F9DDB484B1D262E9334BA /* cocoa_get_key.cxx in Sources */,
+				E0DB929EB474578C40CFF7F0 /* cocoa_font.cxx in Sources */,
+				F7CC530C8AF3234ED944BA37 /* cocoa_color.cxx in Sources */,
+				AEEF9A67BF6B7B9A3182B710 /* cocoa_draw_image.cxx in Sources */,
+				A9A43DC90BE2175E4CB4C250 /* cocoa_read_image.cxx in Sources */,
+				221CE674B9834B86EB8E95DE /* cocoa_set_fonts.cxx in Sources */,
+				AFA5349EDFB005024E4A5CA1 /* win32.cxx in Sources */,
+				C5941E0DB82788968E26EC3D /* win32_get_key.cxx in Sources */,
+				5199F1D9FFB49EE804A782DB /* win32_font.cxx in Sources */,
+				5281BAB3A9478481F8109C35 /* win32_color.cxx in Sources */,
+				A9B22FB235DF8E8017067979 /* win32_dnd.cxx in Sources */,
+				9631B6BC233BBF29C0A401D7 /* win32_draw_image.cxx in Sources */,
+				A905042E9C7B04D99DA585CB /* win32_read_image.cxx in Sources */,
+				23A7010D4C03BEC996C9FA34 /* win32_set_fonts.cxx in Sources */,
+				C52C8BC1CD317E2D442DC3F1 /* win32_scandir.cxx in Sources */,
+				9B5CFB4904874B4EA9DE1F75 /* win32NativeFileChooser.cxx in Sources */,
+				A6BE3BE48BC3971C31597B55 /* GDIPrinter.cxx in Sources */,
+				D90075982F3B0CDB0EF91A73 /* x11.cxx in Sources */,
+				A7051463299A8A1A74C4F4C7 /* xlib_get_key.cxx in Sources */,
+				8B57BA94D039546989879D20 /* x11_font.cxx in Sources */,
+				D73DE38A1E5DF96CD8B9DCE8 /* xft_font.cxx in Sources */,
+				154875AB8F04808DC3F1C54E /* xlib_color.cxx in Sources */,
+				07359EDC9C6C2A9E66F5650E /* x11_dnd.cxx in Sources */,
+				42DC50C6FDF03994AACDB593 /* x11_draw_image.cxx in Sources */,
+				077E5B1724ED5160BAADEE15 /* x11_read_image.cxx in Sources */,
+				3C2E7960D8A754A10E64F831 /* xft_set_fonts.cxx in Sources */,
+				6DA69B1BEF8AF2844E3B08BE /* x11_set_fonts.cxx in Sources */,
+				3C0D2694F0126028263F609B /* x11NativeFileChooser.cxx in Sources */,
+				B4338D79F8E03638EC0A1D08 /* x11_print_panel.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

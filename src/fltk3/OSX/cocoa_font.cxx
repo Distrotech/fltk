@@ -25,7 +25,19 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef __APPLE__
+
+
 #include <config.h>
+
+#include "../flstring.h"
+#include <fltk3/run.h>
+#include <fltk3/draw.h>
+#include <fltk3/x.h>
+#include "../font.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 #include <fltk3/utf8.h>
 
 static CGAffineTransform font_mx = { 1, 0, 0, -1, 0, 0 };
@@ -547,6 +559,9 @@ void fltk3::QuartzGraphicsDriver::rtl_draw(const char* c, int n, int x, int y) {
   text_extents(c, n, dx, dy, w, h);
   draw(c, n, x - w - dx, y);
 }
+
+
+#endif
 
 //
 // End of "$Id$".

@@ -25,6 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef WIN32
+
 // Return the current state of a key.  Keys are named by fltk symbols,
 // which are actually X keysyms.  So this has to translate to MSWindows
 // VK_x symbols.
@@ -133,6 +135,8 @@ int fltk3::get_key(unsigned int k) {
   GetKeyboardState(foo);
   return foo[fltk2ms(k)]&~1;
 }
+
+#endif
 
 //
 // End of "$Id$".

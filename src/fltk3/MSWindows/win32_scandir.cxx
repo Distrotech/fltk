@@ -25,11 +25,13 @@
  *     http://www.fltk.org/str.php
  */
 
+#if defined(WIN32) && !defined(__CYGWIN__)
+
 #ifndef __CYGWIN__
 /* Emulation of posix scandir() call */
 #include <fltk3/utf8.h>
 #include <fltk3/filename.h>
-#include "flstring.h"
+#include "../flstring.h"
 #include <windows.h>
 #include <stdlib.h>
 
@@ -133,6 +135,8 @@ int fl_scandir(const char *dirname, struct dirent ***namelist,
   *namelist = dir;
   return nDir;
 }
+
+#endif
 
 #endif
 

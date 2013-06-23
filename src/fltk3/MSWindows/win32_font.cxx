@@ -25,6 +25,35 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef WIN32
+
+# ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
+# endif
+/* We require Windows 2000 features such as GetGlyphIndices */
+# if !defined(WINVER) || (WINVER < 0x0500)
+#  ifdef WINVER
+#   undef WINVER
+#  endif
+#  define WINVER 0x0500
+# endif
+# if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0500)
+#  ifdef _WIN32_WINNT
+#   undef _WIN32_WINNT
+#  endif
+#  define _WIN32_WINNT 0x0500
+# endif
+
+// Select fonts from the FLTK font table.
+#include "../flstring.h"
+#include <fltk3/run.h>
+#include <fltk3/draw.h>
+#include <fltk3/x.h>
+#include "../font.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <fltk3/Printer.h>
 
 static int fl_angle_ = 0;
@@ -449,6 +478,9 @@ void fltk3::GDIGraphicsDriver::rtl_draw(const char* c, int n, int x, int y) {
   SetTextColor(fl_gc, oldColor);
 }
 #endif
+
+#endif
+
 //
 // End of "$Id$".
 //

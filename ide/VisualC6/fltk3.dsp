@@ -251,6 +251,10 @@ SOURCE=..\..\src\fltk3\Positioner.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\fltk3\PostScript.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\fltk3\Printer.cxx
 # End Source File
 # Begin Source File
@@ -288,10 +292,6 @@ SOURCE=..\..\src\fltk3\ScrollGroup.cxx
 # Begin Source File
 
 SOURCE=..\..\src\fltk3\Scrollbar.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\fltk3\ShapedWindow.cxx
 # End Source File
 # Begin Source File
 
@@ -695,11 +695,123 @@ SOURCE=..\..\src\fltk3\visual.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fltk3\x11.cxx
+SOURCE=..\..\src\fltk3\vsnprintf.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fltk3\vsnprintf.c
+SOURCE=..\..\src\fltk3\OSX\cocoa_get_key.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\OSX\cocoa_font.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\OSX\cocoa_color.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\OSX\cocoa_draw_image.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\OSX\cocoa_read_image.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\OSX\cocoa_set_fonts.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_get_key.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_font.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_color.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_dnd.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_draw_image.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_read_image.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_set_fonts.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32_scandir.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\win32NativeFileChooser.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\GDIPrinter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\xlib_get_key.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11_font.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\xft_font.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\xlib_color.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11_dnd.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11_draw_image.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11_read_image.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\xft_set_fonts.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11_set_fonts.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11NativeFileChooser.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\x11_print_panel.cxx
 # End Source File
 # End Target
 # End Project

@@ -25,13 +25,44 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef WIN32
+
 // This file contains win32-specific code for fltk which is always linked
 // in.  Search other files for "WIN32" or filenames ending in _win32.cxx
 // for other system-specific code.
 
-// This file must be #include'd in Fl.cxx and not compiled separately.
+#include <config.h>
+
+#include <fltk3/Wrapper.h>
+
+/* We require Windows 2000 features (e.g. VK definitions) */
+
+#if defined(WIN32)
+# if !defined(WINVER) || (WINVER < 0x0500)
+#  ifdef WINVER
+#   undef WINVER
+#  endif
+#  define WINVER 0x0500
+# endif
+# if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0500)
+#  ifdef _WIN32_WINNT
+#   undef _WIN32_WINNT
+#  endif
+#  define _WIN32_WINNT 0x0500
+# endif
+#endif
+
+// recent versions of MinGW warn: "Please include winsock2.h before windows.h",
+// hence we must include winsock2.h before FL/Fl.H (A.S. Dec. 2010, IMM May 2011)
+
+#if defined(WIN32) && !defined(__CYGWIN__)
+#  include <winsock2.h>
+#endif
+
+#  include <ole2.h>
 
 #ifndef FLTK3_DOXYGEN
+#include <fltk3/x.h>
 #include <fltk3/run.h>
 #include <fltk3/utf8.h>
 #include <fltk3/Window.h>
@@ -39,8 +70,8 @@
 #include <fltk3/enumerations.h>
 #include <fltk3/Tooltip.h>
 #include <fltk3/PagedDevice.h>
-#include "flstring.h"
-#include "font.h"
+#include "../flstring.h"
+#include "../font.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -68,7 +99,7 @@
 #include <ole2.h>
 #include <shellapi.h>
 
-#include "aimm.h"
+#include "../aimm.h"
 
 //
 // USE_ASYNC_SELECT - define it if you have WSAAsyncSelect()...
@@ -100,7 +131,6 @@ static fltk3::DisplayDevice fl_gdi_display(&fl_gdi_driver);
 # define SOCKET int
 #endif
 
-// note: winsock2.h has been #include'd in Fl.cxx
 #define WSCK_DLL_NAME "WS2_32.DLL"
 
 typedef int (WINAPI* fl_wsk_select_f)(int, fd_set*, fd_set*, fd_set*, const struct timeval*);
@@ -350,6 +380,8 @@ void* fltk3::thread_message() {
 
 IActiveIMMApp *fl_aimm = NULL;
 MSG fl_msg;
+
+extern void run_checks();
 
 // This is never called with time_to_wait < 0.0.
 // It *should* return negative on error, 0 if nothing happens before
@@ -1490,6 +1522,8 @@ HCURSOR fl_default_cursor;
 UINT fl_wake_msg = 0;
 int fl_disable_transient_for; // secret method of removing TRANSIENT_FOR
 
+extern void fl_OleInitialize();
+
 Fl_X* Fl_X::make(fltk3::Window* w) {
   fltk3::Group::current(0); // get rid of very common user bug: forgot end()
 
@@ -2175,6 +2209,8 @@ void preparePrintFront(void)
 #endif // USE_PRINT_BUTTON
 
 #endif // FLTK3_DOXYGEN
+
+#endif // WIN32
 
 //
 // End of "$Id$".

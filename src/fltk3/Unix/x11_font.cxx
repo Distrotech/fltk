@@ -24,7 +24,22 @@
 //
 //     http://www.fltk.org/str.php
 //
+
+#include <config.h>
+
+#if (defined(USE_X11)) && !(defined(USE_XFT))
+
 #ifndef FLTK3_DOXYGEN
+
+// Select fonts from the FLTK font table.
+#include "../flstring.h"
+#include <fltk3/run.h>
+#include <fltk3/draw.h>
+#include <fltk3/x.h>
+#include "../font.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 Fl_Font_Descriptor::Fl_Font_Descriptor(const char* name) {
   font = XCreateUtf8FontStruct(fl_display, name);
@@ -339,6 +354,9 @@ void fltk3::XlibGraphicsDriver::rtl_draw(const char* c, int n, int x, int y) {
   if (fl_gc) XUtf8DrawRtlString(fl_display, fl_window, font_descriptor()->font, fl_gc, x, y, c, n);
 }
 #endif // FLTK3_DOXYGEN
+
+#endif
+
 //
 // End of "$Id$".
 //

@@ -25,24 +25,6 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifdef WIN32
-# ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-# endif
-/* We require Windows 2000 features such as GetGlyphIndices */
-# if !defined(WINVER) || (WINVER < 0x0500)
-#  ifdef WINVER
-#   undef WINVER
-#  endif
-#  define WINVER 0x0500
-# endif
-# if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0500)
-#  ifdef _WIN32_WINNT
-#   undef _WIN32_WINNT
-#  endif
-#  define _WIN32_WINNT 0x0500
-# endif
-#endif
 
 // Select fonts from the FLTK font table.
 #include "flstring.h"
@@ -53,16 +35,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef WIN32
-#  include "win32_font.cxx"
-#elif defined(__APPLE__)
-#  include "cocoa_font.cxx"
-#elif USE_XFT
-#  include "xft_font.cxx"
-#else
-#  include "x11_font.cxx"
-#endif // WIN32
 
 namespace fltk3 {
   

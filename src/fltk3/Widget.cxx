@@ -25,6 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
 #include <fltk3/run.h>
 #include <fltk3/Widget.h>
 #include <fltk3/Wrapper.h>

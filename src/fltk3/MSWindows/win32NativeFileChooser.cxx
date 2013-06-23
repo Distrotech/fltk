@@ -26,6 +26,8 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef WIN32
+
 // Any application to multi-folder implementation:
 //     http://www.codeproject.com/dialog/selectfolder.asp
 //
@@ -34,7 +36,6 @@
 
 #include <stdio.h>		// debugging
 #include <wchar.h>		//MG
-#include "NativeFileChooser_common.cxx"		// strnew/strfree/strapp/chrcat
 typedef const wchar_t *LPCWSTR; //MG
 LPCWSTR utf8towchar(const char *in); //MG
 char *wchartoutf8(LPCWSTR in);  //MG
@@ -46,6 +47,33 @@ char *wchartoutf8(LPCWSTR in);  //MG
 #define LBRACKET_CHR	'['
 #define RBRACKET_CHR	']'
 #define MAXFILTERS	80
+
+
+// COPY A STRING WITH 'new'
+//    Value can be NULL
+//
+static char *strnew(const char *val) {
+  if ( val == NULL ) return(NULL);
+  char *s = new char[strlen(val)+1];
+  strcpy(s, val);
+  return(s);
+}
+
+// FREE STRING CREATED WITH strnew(), NULLS OUT STRING
+//    Value can be NULL
+//
+static char *strfree(char *val) {
+  if ( val ) delete [] val;
+  return(NULL);
+}
+
+// APPEND A CHARACTER TO A STRING
+//     This does NOT allocate space for the new character.
+//
+static void chrcat(char *s, char c) {
+  char tmp[2] = { c, '\0' };
+  strcat(s, tmp);
+}
 
 void fl_OleInitialize();	// in Fl.cxx (Windows only)
 
@@ -854,6 +882,8 @@ LPCWSTR utf8towchar(const char *in)
 }
 
 #endif /*!FLTK3_DOXYGEN*/
+
+#endif // WIN32
 
 //
 // End of "$Id$".

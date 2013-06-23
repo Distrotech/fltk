@@ -35,6 +35,7 @@
 // the window full screen will lose the size of the border off the
 // bottom and right.
 
+#include <config.h>
 #include <fltk3/run.h>
 #include <fltk3/x.h>
 

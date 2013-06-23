@@ -31,6 +31,7 @@
 // methods for bringing up popup menu hierarchies without using the
 // fltk3::Menu_ widget.
 
+#include <config.h>
 #include <fltk3/run.h>
 #include <fltk3/MenuWindow.h>
 #include <fltk3/Menu_.h>

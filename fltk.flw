@@ -16,7 +16,7 @@ workspace FLTK {open
   folder Applications {open
     uuid_Xcode4_Group {137F861A-5702-45AC-821B-A2C51A17F780}
   } {
-    app_target Fluid {open selected
+    app_target Fluid {
       uuid_Xcode4_ProductReference {FD9750B2-CA9C-4856-A516-E56BD9B2E805}
       uuid_Xcode4_ProductFileReference {4616D958-4FAE-4BE9-921B-A868F80B6CC7}
       uuid_Xcode4_FluidBuildRule {30FE3F00-9876-4AE4-9F6E-35B6B4CAA24E}
@@ -194,7 +194,7 @@ workspace FLTK {open
           filename_and_path {fluid/WorkspaceType.h}
         }
       }
-      folder Sources {
+      folder Sources {open
         uuid_Xcode4_Group {A7473707-DAEF-403D-A178-64742001185E}
       } {
         file_ref {about_panel.cxx} {
@@ -432,7 +432,7 @@ workspace FLTK {open
       }
     }
   }
-  folder Libraries {
+  folder Libraries {open
     uuid_Xcode4_Group {AFD010B3-DA64-4C5E-9682-891530BD3B73}
   } {
     lib_target fltk3 {open
@@ -453,7 +453,7 @@ workspace FLTK {open
       target_path lib
       makefile_path src
     } {
-      folder Headers {open
+      folder Headers {
         uuid_Xcode4_Group {C2F00625-E401-4002-85F6-FA183D17629D}
       } {
         file_ref {all.h} {
@@ -1553,40 +1553,9 @@ workspace FLTK {open
           filename_and_path {include/fltk3/XPMImage.h}
         }
       }
-      folder Sources {
+      folder Sources {open selected
         uuid_Xcode4_Group {91990322-0AF9-42F2-A077-713540EE5AB1}
       } {
-        file_ref {cocoa.mm} {
-          uuid_Xcode4_BuildFile {99D08647-5486-4C7E-8CC9-51B70074F29C}
-          uuid_Xcode4_FileRef {F6BB47B6-F621-4FC2-A7DC-BFD6B7C5F16D}
-          uuid_Xcode4_BuildFileInSources {69C261B5-4876-4079-9B0B-EBCE4F62E633}
-          build_env 99
-          list_env 96
-          filename_and_path {src/fltk3/cocoa.mm}
-        }
-        file_ref {cocoaNativeFileChooser.mm} {
-          uuid_Xcode4_BuildFile {60D9759F-404F-4A7C-A356-2F92BC2F400F}
-          uuid_Xcode4_FileRef {B23CCB73-2D6F-4196-8925-2B663827C3EE}
-          uuid_Xcode4_BuildFileInSources {02BBCA82-9B2B-44D0-9C15-96A37443CA28}
-          build_env 99
-          list_env 96
-          filename_and_path {src/fltk3/cocoaNativeFileChooser.mm}
-        }
-        file_ref {cocoaQuartzPrinter.mm} {
-          uuid_Xcode4_BuildFile {982B3E9E-7B79-4E84-A10F-7270A2EB17A5}
-          uuid_Xcode4_FileRef {10A048C4-1F53-4215-8F9A-E8829C9F77EA}
-          uuid_Xcode4_BuildFileInSources {B7920395-B4B5-480F-BB30-14BE46AA357D}
-          build_env 99
-          list_env 96
-          filename_and_path {src/fltk3/cocoaQuartzPrinter.mm}
-        }
-        file_ref {cocoaSysMenuBar.mm} {
-          uuid_Xcode4_BuildFileInSources {3F29F926-6943-4FCD-B3E4-0BC6DD8A7143}
-          uuid_Xcode4_FileRef {2443E023-9C31-45B6-BE44-44CE8BE86106}
-          build_env 67
-          list_env 64
-          filename_and_path {src/fltk3/cocoaSysMenuBar.mm}
-        }
         file_ref {Adjuster.cxx} {
           uuid_Xcode4_BuildFile {91FE1840-74E4-4847-8B8E-D8952CEAF112}
           uuid_Xcode4_FileRef {ECEA64F2-F8B3-4A76-B195-748D6949AD76}
@@ -1839,6 +1808,12 @@ workspace FLTK {open
           uuid_Xcode4_BuildFileInSources {78781310-D555-4403-B4E1-EF0EA0E1E765}
           filename_and_path {src/fltk3/Positioner.cxx}
         }
+        file_ref {PostScript.cxx} {
+          uuid_Xcode4_BuildFile {61DF870A-1A27-49FE-A2F1-FC19A3A296FD}
+          uuid_Xcode4_FileRef {02D9984F-CEF8-44D4-AAF7-1B180EC2E177}
+          uuid_Xcode4_BuildFileInSources {99E79CD1-0BDA-4D22-9A4F-7FEA14FB74F7}
+          filename_and_path {src/fltk3/PostScript.cxx}
+        }
         file_ref {Printer.cxx} {
           uuid_Xcode4_BuildFile {7BA4A607-6C7B-4BB0-B8CB-0F7B4F3EDE3F}
           uuid_Xcode4_FileRef {53F2F9DE-99B0-4879-AD46-BA1EA21D0246}
@@ -1898,12 +1873,6 @@ workspace FLTK {open
           uuid_Xcode4_FileRef {6F7BEB35-6EBF-499D-A9F5-BD43167B1FB8}
           uuid_Xcode4_BuildFileInSources {5622DE29-66EB-4F16-8F99-3642F1607BC6}
           filename_and_path {src/fltk3/Scrollbar.cxx}
-        }
-        file_ref {ShapedWindow.cxx} {
-          uuid_Xcode4_BuildFile {8E342E66-AEAE-4986-89DC-FA8CAAA1959E}
-          uuid_Xcode4_FileRef {1CCF247C-7D52-42C4-8F94-495883193B68}
-          uuid_Xcode4_BuildFileInSources {BBAD8482-D942-4018-A930-F62D84D224F8}
-          filename_and_path {src/fltk3/ShapedWindow.cxx}
         }
         file_ref {SharedImage.cxx} {
           uuid_Xcode4_BuildFile {8A0C023A-0383-430E-95D8-B9AEA5E17969}
@@ -2533,17 +2502,225 @@ workspace FLTK {open
           uuid_Xcode4_BuildFileInSources {D57FBCFB-33F0-4145-A643-4334A7F80562}
           filename_and_path {src/fltk3/visual.cxx}
         }
-        file_ref {x11.cxx} {
-          uuid_Xcode4_BuildFile {4FEC890B-E99A-4CC0-B4FA-8A61FFB4C5AD}
-          uuid_Xcode4_FileRef {F285310A-3E4D-4595-B259-6AD6965104C8}
-          uuid_Xcode4_BuildFileInSources {D9007598-62D1-4DEA-BB6B-B7B00EF91A73}
-          filename_and_path {src/fltk3/x11.cxx}
-        }
         file_ref {vsnprintf.c} {
           uuid_Xcode4_BuildFile {22C4313D-D9D6-41BD-BA8B-E3CE07600FE1}
           uuid_Xcode4_FileRef {4024031C-0F34-4A2D-A3F2-9D9373805457}
           uuid_Xcode4_BuildFileInSources {2A8804F6-AFE8-4FED-BF50-8CAEF1B22A54}
           filename_and_path {src/fltk3/vsnprintf.c}
+        }
+        folder OSX {open
+        } {
+          file_ref {cocoa.mm} {
+            uuid_Xcode4_BuildFile {99D08647-5486-4C7E-8CC9-51B70074F29C}
+            uuid_Xcode4_FileRef {F6BB47B6-F621-4FC2-A7DC-BFD6B7C5F16D}
+            uuid_Xcode4_BuildFileInSources {69C261B5-4876-4079-9B0B-EBCE4F62E633}
+            build_env 99
+            list_env 96
+            filename_and_path {src/fltk3/OSX/cocoa.mm}
+          }
+          file_ref {cocoaNativeFileChooser.mm} {
+            uuid_Xcode4_BuildFile {60D9759F-404F-4A7C-A356-2F92BC2F400F}
+            uuid_Xcode4_FileRef {B23CCB73-2D6F-4196-8925-2B663827C3EE}
+            uuid_Xcode4_BuildFileInSources {02BBCA82-9B2B-44D0-9C15-96A37443CA28}
+            build_env 99
+            list_env 96
+            filename_and_path {src/fltk3/OSX/cocoaNativeFileChooser.mm}
+          }
+          file_ref {cocoaQuartzPrinter.mm} {
+            uuid_Xcode4_BuildFile {982B3E9E-7B79-4E84-A10F-7270A2EB17A5}
+            uuid_Xcode4_FileRef {10A048C4-1F53-4215-8F9A-E8829C9F77EA}
+            uuid_Xcode4_BuildFileInSources {B7920395-B4B5-480F-BB30-14BE46AA357D}
+            build_env 99
+            list_env 96
+            filename_and_path {src/fltk3/OSX/cocoaQuartzPrinter.mm}
+          }
+          file_ref {cocoaSysMenuBar.mm} {
+            uuid_Xcode4_BuildFileInSources {3F29F926-6943-4FCD-B3E4-0BC6DD8A7143}
+            uuid_Xcode4_FileRef {2443E023-9C31-45B6-BE44-44CE8BE86106}
+            build_env 67
+            list_env 64
+            filename_and_path {src/fltk3/OSX/cocoaSysMenuBar.mm}
+          }
+          file_ref {cocoa_get_key.cxx} {
+            uuid_Xcode4_BuildFile {FE31A56C-A7C1-4756-B9AE-674109D2FAF7}
+            uuid_Xcode4_FileRef {94AC142F-20AE-4EA9-9CDD-B972291E4738}
+            uuid_Xcode4_BuildFileInSources {3C8F9DDB-0987-41CC-A533-B8152E9334BA}
+            filename_and_path {src/fltk3/OSX/cocoa_get_key.cxx}
+          }
+          file_ref {cocoa_font.cxx} {
+            uuid_Xcode4_BuildFile {3AC8BED5-8423-4E6B-9506-5CDF2422A121}
+            uuid_Xcode4_FileRef {9B9F9186-6B1F-49D4-BEA1-38903C8C0128}
+            uuid_Xcode4_BuildFileInSources {E0DB929E-F08A-44FE-A30A-F48640CFF7F0}
+            filename_and_path {src/fltk3/OSX/cocoa_font.cxx}
+          }
+          file_ref {cocoa_color.cxx} {
+            uuid_Xcode4_BuildFile {62B0811A-F8AF-4641-A96C-6D6173A13D1B}
+            uuid_Xcode4_FileRef {2DB5760D-D3BD-4138-A674-541988DD70BB}
+            uuid_Xcode4_BuildFileInSources {F7CC530C-C3AD-495E-9971-BA3FD944BA37}
+            filename_and_path {src/fltk3/OSX/cocoa_color.cxx}
+          }
+          file_ref {cocoa_draw_image.cxx} {
+            uuid_Xcode4_BuildFile {6E189B25-F7F3-4D91-BBF7-538F5B3DF54C}
+            uuid_Xcode4_FileRef {41809733-854B-4968-B21E-EAE8878E0B0F}
+            uuid_Xcode4_BuildFileInSources {AEEF9A67-F9CA-46A1-A9B8-D2223182B710}
+            filename_and_path {src/fltk3/OSX/cocoa_draw_image.cxx}
+          }
+          file_ref {cocoa_read_image.cxx} {
+            uuid_Xcode4_BuildFile {487DB19A-6012-4D96-B662-0CF787187428}
+            uuid_Xcode4_FileRef {BF727DBF-D968-4071-8FFC-5AE8897DE01D}
+            uuid_Xcode4_BuildFileInSources {A9A43DC9-475D-4CBF-83E6-94B84CB4C250}
+            filename_and_path {src/fltk3/OSX/cocoa_read_image.cxx}
+          }
+          file_ref {cocoa_set_fonts.cxx} {
+            uuid_Xcode4_BuildFile {7821E957-42A0-4D28-8FDE-E96F1B503DF1}
+            uuid_Xcode4_FileRef {8E28A885-78F0-4151-88FF-AF07F3A9E412}
+            uuid_Xcode4_BuildFileInSources {221CE674-FE5C-47DF-AA9B-E11DEB8E95DE}
+            filename_and_path {src/fltk3/OSX/cocoa_set_fonts.cxx}
+          }
+        }
+        folder MSWindows {open
+        } {
+          file_ref {win32.cxx} {
+            uuid_Xcode4_BuildFile {5EAA22C7-6E63-412F-A910-8CC38D224574}
+            uuid_Xcode4_FileRef {C74EBB8D-164A-43AB-A877-DBC668692CE4}
+            uuid_Xcode4_BuildFileInSources {AFA5349E-9E81-4131-A414-A1164E4A5CA1}
+            filename_and_path {src/fltk3/MSWindows/win32.cxx}
+          }
+          file_ref {win32_get_key.cxx} {
+            uuid_Xcode4_BuildFile {D55F4E3A-464A-47F6-8F42-E859E507B5C1}
+            uuid_Xcode4_FileRef {530D92E9-AC65-4335-85EB-CF843DF85222}
+            uuid_Xcode4_BuildFileInSources {C5941E0D-FD73-4554-AABD-222B8E26EC3D}
+            filename_and_path {src/fltk3/MSWindows/win32_get_key.cxx}
+          }
+          file_ref {win32_font.cxx} {
+            uuid_Xcode4_BuildFile {C8CECF40-CCC0-43BC-9587-CC78D67F782B}
+            uuid_Xcode4_FileRef {7424EDDF-1725-4576-87C5-37D1EE3B4F75}
+            uuid_Xcode4_BuildFileInSources {5199F1D9-B557-4AE3-ACC3-322B04A782DB}
+            filename_and_path {src/fltk3/MSWindows/win32_font.cxx}
+          }
+          file_ref {win32_color.cxx} {
+            uuid_Xcode4_BuildFile {B8113BDB-6337-4A9F-BAF4-2D05D1CA3807}
+            uuid_Xcode4_FileRef {E20E8546-E302-4F8A-8F30-28F589B8E5FD}
+            uuid_Xcode4_BuildFileInSources {5281BAB3-E9F5-40B2-A587-2106F8109C35}
+            filename_and_path {src/fltk3/MSWindows/win32_color.cxx}
+          }
+          file_ref {win32_dnd.cxx} {
+            uuid_Xcode4_BuildFile {1B4BA908-4A09-4217-83E2-812207943CDB}
+            uuid_Xcode4_FileRef {67319672-C18F-478C-ACAF-F9B1665FB732}
+            uuid_Xcode4_BuildFileInSources {A9B22FB2-7966-4CB9-A8B3-263317067979}
+            filename_and_path {src/fltk3/MSWindows/win32_dnd.cxx}
+          }
+          file_ref {win32_draw_image.cxx} {
+            uuid_Xcode4_BuildFile {9394BFD4-3D99-4BB2-A8F9-EFE424722776}
+            uuid_Xcode4_FileRef {EE50DDFE-90BB-4E3E-B18C-05C665164192}
+            uuid_Xcode4_BuildFileInSources {9631B6BC-63F6-40CD-B812-073BC0A401D7}
+            filename_and_path {src/fltk3/MSWindows/win32_draw_image.cxx}
+          }
+          file_ref {win32_read_image.cxx} {
+            uuid_Xcode4_BuildFile {D06D42AD-5BF9-42A9-805D-A98603BDB483}
+            uuid_Xcode4_FileRef {FEE9325F-2B02-4A86-8FE8-19CC5B1D6B9C}
+            uuid_Xcode4_BuildFileInSources {A905042E-DAFE-4685-8941-8D989DA585CB}
+            filename_and_path {src/fltk3/MSWindows/win32_read_image.cxx}
+          }
+          file_ref {win32_set_fonts.cxx} {
+            uuid_Xcode4_BuildFile {0210336D-7345-404E-B51C-1853AB509F47}
+            uuid_Xcode4_FileRef {D9B0087F-1F7B-4CC5-B053-5E0B77EC685D}
+            uuid_Xcode4_BuildFileInSources {23A7010D-0E65-4266-84C1-3A0896C9FA34}
+            filename_and_path {src/fltk3/MSWindows/win32_set_fonts.cxx}
+          }
+          file_ref {win32_scandir.cxx} {
+            uuid_Xcode4_BuildFile {6A271014-3FA4-4C52-A217-E2BE158F456D}
+            uuid_Xcode4_FileRef {BB4795F6-0C87-44AC-B2E3-BF3DB00FF1B4}
+            uuid_Xcode4_BuildFileInSources {C52C8BC1-8007-4D36-9237-EC1A442DC3F1}
+            filename_and_path {src/fltk3/MSWindows/win32_scandir.cxx}
+          }
+          file_ref {win32NativeFileChooser.cxx} {
+            uuid_Xcode4_BuildFile {581096A9-58BB-4AAD-A250-2B12956E7E57}
+            uuid_Xcode4_FileRef {A9377DCF-E595-42B0-96E8-9A906BB0BE87}
+            uuid_Xcode4_BuildFileInSources {9B5CFB49-497F-4DF8-BB5B-F015A9DE1F75}
+            filename_and_path {src/fltk3/MSWindows/win32NativeFileChooser.cxx}
+          }
+          file_ref {GDIPrinter.cxx} {
+            uuid_Xcode4_BuildFile {E2E6E246-E18F-40C8-8E40-D8E5496C7463}
+            uuid_Xcode4_FileRef {FB4B2995-FB56-4AAD-8C34-96E7A6DA8BD2}
+            uuid_Xcode4_BuildFileInSources {A6BE3BE4-CA97-4154-999B-0E8731597B55}
+            filename_and_path {src/fltk3/MSWindows/GDIPrinter.cxx}
+          }
+        }
+        folder Unix {open
+        } {
+          file_ref {x11.cxx} {
+            uuid_Xcode4_BuildFile {4FEC890B-E99A-4CC0-B4FA-8A61FFB4C5AD}
+            uuid_Xcode4_FileRef {F285310A-3E4D-4595-B259-6AD6965104C8}
+            uuid_Xcode4_BuildFileInSources {D9007598-62D1-4DEA-BB6B-B7B00EF91A73}
+            filename_and_path {src/fltk3/Unix/x11.cxx}
+          }
+          file_ref {xlib_get_key.cxx} {
+            uuid_Xcode4_BuildFile {250CBE56-AA5C-4AB7-B1FF-A77795230BDE}
+            uuid_Xcode4_FileRef {1656EF36-BB08-4D2A-B4BE-6EBA069FCA51}
+            uuid_Xcode4_BuildFileInSources {A7051463-6EF9-4763-86B5-0CAF74C4F4C7}
+            filename_and_path {src/fltk3/Unix/xlib_get_key.cxx}
+          }
+          file_ref {x11_font.cxx} {
+            uuid_Xcode4_BuildFile {F385BCFB-AAFE-483E-AC15-5BF6A410A56A}
+            uuid_Xcode4_FileRef {E782DC41-5345-4DCF-9093-3BE8CBC8A6E8}
+            uuid_Xcode4_BuildFileInSources {8B57BA94-9DE1-4DD8-8863-DC0A89879D20}
+            filename_and_path {src/fltk3/Unix/x11_font.cxx}
+          }
+          file_ref {xft_font.cxx} {
+            uuid_Xcode4_BuildFile {72AE746F-44E2-47C0-9EFC-8128F2FC3E66}
+            uuid_Xcode4_FileRef {64FCEE57-E19B-468A-9B62-4F6AD8AD6B4D}
+            uuid_Xcode4_BuildFileInSources {D73DE38A-53C2-4D9F-B4BF-4DD3D8B9DCE8}
+            filename_and_path {src/fltk3/Unix/xft_font.cxx}
+          }
+          file_ref {xlib_color.cxx} {
+            uuid_Xcode4_BuildFile {07CC7C4E-8C11-45F1-B8A2-B9F10F95068F}
+            uuid_Xcode4_FileRef {54C6A9AE-6AD8-4763-B7A6-385EF96BFAF5}
+            uuid_Xcode4_BuildFileInSources {154875AB-C3B2-4CB6-961C-1691C3F1C54E}
+            filename_and_path {src/fltk3/Unix/xlib_color.cxx}
+          }
+          file_ref {x11_dnd.cxx} {
+            uuid_Xcode4_BuildFile {FADC19C5-AB32-4ACF-BADE-F67F524C12A4}
+            uuid_Xcode4_FileRef {3E649EE2-F5BF-4090-B329-1E89FD79567B}
+            uuid_Xcode4_BuildFileInSources {07359EDC-DDB9-41D5-80B0-AA2E66F5650E}
+            filename_and_path {src/fltk3/Unix/x11_dnd.cxx}
+          }
+          file_ref {x11_draw_image.cxx} {
+            uuid_Xcode4_BuildFile {FBBE05EE-D590-423C-A54F-27DD3390F669}
+            uuid_Xcode4_FileRef {1179F607-7CA4-40EA-9A39-9A3B35B0FB8A}
+            uuid_Xcode4_BuildFileInSources {42DC50C6-BFED-421D-88C8-B15CAACDB593}
+            filename_and_path {src/fltk3/Unix/x11_draw_image.cxx}
+          }
+          file_ref {x11_read_image.cxx} {
+            uuid_Xcode4_BuildFile {4BC9DAB0-DA1A-4150-9080-CE742DB57343}
+            uuid_Xcode4_FileRef {3A9D5E9B-C426-426E-95F1-DD0E549191C4}
+            uuid_Xcode4_BuildFileInSources {077E5B17-677C-4391-8C31-DD51BAADEE15}
+            filename_and_path {src/fltk3/Unix/x11_read_image.cxx}
+          }
+          file_ref {xft_set_fonts.cxx} {
+            uuid_Xcode4_BuildFile {ECC3A113-D761-47E9-B9D9-B655CE3266E7}
+            uuid_Xcode4_FileRef {9B7C230B-7A5A-45A9-878D-0603D339F457}
+            uuid_Xcode4_BuildFileInSources {3C2E7960-904F-48E8-A241-F6E00E64F831}
+            filename_and_path {src/fltk3/Unix/xft_set_fonts.cxx}
+          }
+          file_ref {x11_set_fonts.cxx} {
+            uuid_Xcode4_BuildFile {AFC24927-C0FE-4710-A96E-571876DA50A0}
+            uuid_Xcode4_FileRef {74CA8317-5C06-455C-9250-291AC95FBB5D}
+            uuid_Xcode4_BuildFileInSources {6DA69B1B-A968-46E2-A3D4-51504E3B08BE}
+            filename_and_path {src/fltk3/Unix/x11_set_fonts.cxx}
+          }
+          file_ref {x11NativeFileChooser.cxx} {
+            uuid_Xcode4_BuildFile {B7358D3D-F64E-4A9F-B60E-B9C560F6286C}
+            uuid_Xcode4_FileRef {D93BB902-7675-4F86-A16F-31787FDC0338}
+            uuid_Xcode4_BuildFileInSources {3C0D2694-B21B-4209-B93F-D917263F609B}
+            filename_and_path {src/fltk3/Unix/x11NativeFileChooser.cxx}
+          }
+          file_ref {x11_print_panel.cxx} {
+            uuid_Xcode4_BuildFile {EDECF0AE-C695-4FAB-88FB-C8D45DAD6ACE}
+            uuid_Xcode4_FileRef {DD49A7FB-3437-40ED-BFF2-31AC5C711644}
+            uuid_Xcode4_BuildFileInSources {B4338D79-B6C6-4E26-9947-AF7FEC0A1D08}
+            filename_and_path {src/fltk3/Unix/x11_print_panel.cxx}
+          }
         }
       }
       folder Libraries {

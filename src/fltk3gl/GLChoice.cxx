@@ -26,6 +26,7 @@
 //
 
 #include <config.h>
+
 #if HAVE_GL
 
 #  include <fltk3/run.h>

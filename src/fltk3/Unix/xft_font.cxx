@@ -61,7 +61,22 @@
 // itself. You should edit the ~/.xftconfig file to "fix" things, there
 // are several web pages of information on how to do this.
 //
+
+#include <config.h>
+
+#if (defined(USE_X11)) && (defined(USE_XFT))
+
 #ifndef FLTK3_DOXYGEN
+
+// Select fonts from the FLTK font table.
+#include "../flstring.h"
+#include <fltk3/run.h>
+#include <fltk3/draw.h>
+#include <fltk3/x.h>
+#include "../font.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <X11/Xft/Xft.h>
 
@@ -701,6 +716,8 @@ void fltk3::XlibGraphicsDriver::rtl_draw(const char* c, int n, int x, int y) {
 
   delete[] ucs_txt;
 }
+#endif
+
 #endif
 
 //

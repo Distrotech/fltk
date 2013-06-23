@@ -25,6 +25,10 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
+
+#ifdef USE_X11
+
 //
 // This file is "work in progress".  The main parts have been copied
 // from fluid's print_panel{.fl|.h|.cxx} and hand-edited to produce
@@ -36,37 +40,37 @@
 //
 //   -	Currently preferences can't be saved, and there are options that
 //	are not yet used for printing.
-//   -	This file can only be used as an include file in Fl_PS_Printer.cxx
+//   -	This file can only be used as an include file in Fl_PS_Printer_cxx
 //   -	The use of static variables should be avoided.
 //   -	Probably much more ...
 //
 
-#include "print_panel.h"
+#include "x11_print_panel.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "flstring.h"
+#include "../flstring.h"
 #include <fltk3/Preferences.h>
-#include <fltk3/IntInput.h>
+#include <fltk3/Printer.h>
 
-static fltk3::Preferences print_prefs(fltk3::Preferences::USER, "fltk.org", "printers");
-static fltk3::DoubleWindow *print_panel=(fltk3::DoubleWindow *)0;
-static fltk3::Group *print_panel_controls=(fltk3::Group *)0;
-static fltk3::Choice *print_choice=(fltk3::Choice *)0;
-static fltk3::Button *print_properties=(fltk3::Button *)0;
-static fltk3::Widget *print_status=(fltk3::Widget *)0;
-static fltk3::RoundButton *print_all=(fltk3::RoundButton *)0;
-static fltk3::RoundButton *print_pages=(fltk3::RoundButton *)0;
-static fltk3::RoundButton *print_selection=(fltk3::RoundButton *)0;
-static fltk3::CheckButton *print_collate_button=(fltk3::CheckButton *)0;
-static fltk3::Group *print_collate_group[2]={(fltk3::Group *)0};
-static fltk3::Progress *print_progress=(fltk3::Progress *)0;
-static fltk3::DoubleWindow *print_properties_panel=(fltk3::DoubleWindow *)0;
-static fltk3::Choice *print_page_size=(fltk3::Choice *)0;
-static fltk3::IntInput *print_from=(fltk3::IntInput *)0;
-static fltk3::IntInput *print_to=(fltk3::IntInput *)0;
-static fltk3::Spinner *print_copies=(fltk3::Spinner *)0;
+fltk3::Preferences print_prefs(fltk3::Preferences::USER, "fltk.org", "printers");
+fltk3::DoubleWindow *print_panel=(fltk3::DoubleWindow *)0;
+fltk3::Group *print_panel_controls=(fltk3::Group *)0;
+fltk3::Choice *print_choice=(fltk3::Choice *)0;
+fltk3::Button *print_properties=(fltk3::Button *)0;
+fltk3::Widget *print_status=(fltk3::Widget *)0;
+fltk3::RoundButton *print_all=(fltk3::RoundButton *)0;
+fltk3::RoundButton *print_pages=(fltk3::RoundButton *)0;
+fltk3::RoundButton *print_selection=(fltk3::RoundButton *)0;
+fltk3::CheckButton *print_collate_button=(fltk3::CheckButton *)0;
+fltk3::Group *print_collate_group[2]={(fltk3::Group *)0};
+fltk3::Progress *print_progress=(fltk3::Progress *)0;
+fltk3::DoubleWindow *print_properties_panel=(fltk3::DoubleWindow *)0;
+fltk3::Choice *print_page_size=(fltk3::Choice *)0;
+fltk3::IntInput *print_from=(fltk3::IntInput *)0;
+fltk3::IntInput *print_to=(fltk3::IntInput *)0;
+fltk3::Spinner *print_copies=(fltk3::Spinner *)0;
 
-static int print_start = 0;	// 1 if print_okay has been clicked
+int print_start = 0;	// 1 if print_okay has been clicked
 
 static void cb_print_choice(fltk3::Choice*, void*) {
   print_update_status();
@@ -225,7 +229,7 @@ static const char *idata_print_gray[] = {
 };
 static fltk3::Pixmap image_print_gray(idata_print_gray);
 
-static fltk3::Button *print_output_mode[4]={(fltk3::Button *)0};
+fltk3::Button *print_output_mode[4]={(fltk3::Button *)0};
 
 static void cb_Save(fltk3::ReturnButton*, void*) {
   print_properties_panel->hide();
@@ -598,6 +602,8 @@ void print_update_status() {
   print_prefs.get(name, val, 0);
   print_output_mode[val]->setonly();
 }
+
+#endif
 
 //
 // End of "$Id$".

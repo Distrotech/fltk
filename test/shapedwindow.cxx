@@ -1,7 +1,11 @@
 #include <fltk3/run.h>
-#include <fltk3/ShapedWindow.h>
+#include <fltk3/Window.h>
 #include <fltk3/Bitmap.h>
 #include <fltk3/Button.h>
+
+#if 0
+
+#include <fltk3/ShapedWindow.h>
 
 #define x_width 200
 #define x_height 200
@@ -246,5 +250,13 @@ int main() {
   win1->show();
   fltk3::run();
   delete win1;
+  return 0;
+}
+#endif
+
+int main(int, char**) {
+  fltk3::Window *win = new fltk3::Window(500, 50, "Nothing to see yet");
+  win->show();
+  fltk3::run();
   return 0;
 }

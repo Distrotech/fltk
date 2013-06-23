@@ -25,10 +25,14 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
+
+#ifdef USE_X11
+
 #include <fltk3/run.h>
 #include <fltk3/Window.h>
 #include <fltk3/x.h>
-#include "flstring.h"
+#include "../flstring.h"
 
 
 extern Atom fl_XdndAware;
@@ -196,6 +200,7 @@ int fltk3::dnd() {
   return 1;
 }
 
+#endif
 
 //
 // End of "$Id$".

@@ -25,6 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef __APPLE__
+
 ////////////////////////////////////////////////////////////////
 
 #include <config.h>
@@ -170,6 +172,8 @@ void fltk3::rectf(int x, int y, int w, int h, uchar r, uchar g, uchar b) {
   fltk3::color(r,g,b);
   fltk3::rectf(x,y,w,h);
 }
+
+#endif
 
 //
 // End of "$Id$".

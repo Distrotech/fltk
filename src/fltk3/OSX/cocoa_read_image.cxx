@@ -25,7 +25,18 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef __APPLE__
+
 #include <config.h>
+#include <fltk3/x.h>
+#include <fltk3/run.h>
+#include <fltk3/draw.h>
+#include "../flstring.h"
+
+#ifdef DEBUG
+#  include <stdio.h>
+#endif // DEBUG
+
 
 //
 // 'fltk3::read_image()' - Read an image from the current window or off-screen buffer.
@@ -76,6 +87,7 @@ fltk3::read_image(uchar *p,		// I - Pixel buffer or NULL to allocate
   return p;
 }
 
+#endif
 
 //
 // End of "$Id$".

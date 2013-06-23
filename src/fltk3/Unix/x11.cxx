@@ -25,11 +25,9 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifdef WIN32
-//#  include "Fl_win32.cxx"
-#elif defined(__APPLE__)
-//#  include "Fl_mac.cxx"
-#elif !defined(FLTK3_DOXYGEN)
+#include <config.h>
+
+#ifdef USE_X11
 
 #  define CONSOLIDATE_MOTION 1
 /**** Define this if your keyboard lacks a backspace key... ****/
@@ -47,7 +45,7 @@
 #  include <fltk3/filename.h>
 #  include <stdio.h>
 #  include <stdlib.h>
-#  include "flstring.h"
+#  include "../flstring.h"
 #  include <unistd.h>
 #  include <sys/time.h>
 #  include <X11/Xmd.h>

@@ -52,7 +52,7 @@
 #include <fltk3/run.h>
 #include <fltk3/SysMenuBar.h>
 
-#include "flstring.h"
+#include "../flstring.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <stdarg.h>

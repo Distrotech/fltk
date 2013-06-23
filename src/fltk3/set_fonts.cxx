@@ -25,21 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/run.h>
-#include <fltk3/x.h>
-#include "font.h"
-#include "flstring.h"
-#include <stdlib.h>
-
-#ifdef WIN32
-#  include "win32_set_fonts.cxx"
-#elif defined(__APPLE__)
-#  include "cocoa_set_fonts.cxx"
-#elif USE_XFT
-#  include "xft_set_fonts.cxx"
-#else
-#  include "x11_set_fonts.cxx"
-#endif // WIN32
+// Moved to the corresponding platform folders
 
 //
 // End of "$Id$".

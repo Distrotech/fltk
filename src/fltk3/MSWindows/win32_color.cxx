@@ -25,6 +25,8 @@
 //     http://www.fltk.org/str.php
 //
 
+#ifdef WIN32
+
 // The fltk "colormap".  This allows ui colors to be stored in 8-bit
 // locations, and provides a level of indirection so that global color
 // changes can be made.  Not to be confused with the X colormap, which
@@ -39,9 +41,7 @@
 #include <fltk3/x.h>
 #include <fltk3/draw.h>
 
-static unsigned fl_cmap[256] = {
-#include "cmap.h" // this is a file produced by "cmap.cxx":
-};
+extern unsigned fl_cmap[256];
 
 // Translations to win32 data structures:
 Fl_XMap fl_xmap[256];
@@ -244,6 +244,8 @@ fl_select_palette(void)
   }
   return fl_palette;
 }
+
+#endif
 
 #endif
 

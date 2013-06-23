@@ -25,6 +25,17 @@
 //     http://www.fltk.org/str.php
 //
 
+#include <config.h>
+
+#if (defined(USE_X11)) && !(defined(USE_XFT))
+
+#include <config.h>
+#include <fltk3/run.h>
+#include <fltk3/x.h>
+#include "../font.h"
+#include "../flstring.h"
+#include <stdlib.h>
+
 // This function fills in the fltk font table with all the fonts that
 // are found on the X server.  It tries to place the fonts into families
 // and to sort them so the first 4 in a family are normal, bold, italic,
@@ -344,6 +355,8 @@ int fltk3::get_font_sizes(fltk3::Font fnum, int*& sizep) {
   sizep = sizes;
   return numsizes;
 }
+
+#endif
 
 //
 // End of "$Id$".

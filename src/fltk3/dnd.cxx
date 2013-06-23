@@ -25,13 +25,7 @@
 //     http://www.fltk.org/str.php
 //
 
-#ifdef WIN32
-#  include "win32_dnd.cxx"
-#elif defined(__APPLE__)
-//#  include "fl_dnd_mac.cxx"
-#else
-#  include "x11_dnd.cxx"
-#endif
+// moved to respective platform directories
 
 //
 // End of "$Id$".
