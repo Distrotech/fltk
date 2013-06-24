@@ -382,62 +382,6 @@ void fltk3::RGBImage::desaturate() {
 }
 
 #if !defined(WIN32) && !defined(__APPLE_QUARTZ__)
-// Composite an image with alpha on systems that don't have accelerated
-// alpha compositing...
-static void alpha_blend(fltk3::RGBImage *img, int X, int Y, int W, int H, int cx, int cy) {
-  int ld = img->ld();
-  if (ld == 0) ld = img->w() * img->d();
-  uchar *srcptr = (uchar*)img->array + cy * ld + cx * img->d();
-  int srcskip = ld - img->d() * W;
-  
-  uchar *dst = new uchar[W * H * 3];
-  uchar *dstptr = dst;
-  
-  fltk3::read_image(dst, X+fltk3::origin_x(), Y+fltk3::origin_y(), W, H, 0);
-  
-  uchar srcr, srcg, srcb, srca;
-  uchar dstr, dstg, dstb, dsta;
-  
-  if (img->d() == 2) {
-    // Composite grayscale + alpha over RGB...
-    for (int y = H; y > 0; y--, srcptr+=srcskip)
-      for (int x = W; x > 0; x--) {
-	srcg = *srcptr++;
-	srca = *srcptr++;
-        
-	dstr = dstptr[0];
-	dstg = dstptr[1];
-	dstb = dstptr[2];
-	dsta = 255 - srca;
-        
-	*dstptr++ = (srcg * srca + dstr * dsta) >> 8;
-	*dstptr++ = (srcg * srca + dstg * dsta) >> 8;
-	*dstptr++ = (srcg * srca + dstb * dsta) >> 8;
-      }
-  } else {
-    // Composite RGBA over RGB...
-    for (int y = H; y > 0; y--, srcptr+=srcskip)
-      for (int x = W; x > 0; x--) {
-	srcr = *srcptr++;
-	srcg = *srcptr++;
-	srcb = *srcptr++;
-	srca = *srcptr++;
-        
-	dstr = dstptr[0];
-	dstg = dstptr[1];
-	dstb = dstptr[2];
-	dsta = 255 - srca;
-        
-	*dstptr++ = (srcr * srca + dstr * dsta) >> 8;
-	*dstptr++ = (srcg * srca + dstg * dsta) >> 8;
-	*dstptr++ = (srcb * srca + dstb * dsta) >> 8;
-      }
-  }
-  
-  fltk3::draw_image(dst, X, Y, W, H, 3, 0);
-  
-  delete[] dst;
-}
 #endif // !WIN32 && !__APPLE_QUARTZ__
 
 void fltk3::RGBImage::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
@@ -470,6 +414,9 @@ int fltk3_start(fltk3::RGBImage *img,
 
 #ifdef __APPLE__
 #elif defined(WIN32)
+
+#include "MSWindows/GDIGraphicsDriver.h"
+
 void fltk3::GDIGraphicsDriver::draw(fltk3::RGBImage *img, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   // Don't draw an empty image...
@@ -514,53 +461,6 @@ void fltk3::GDIGraphicsDriver::draw(fltk3::RGBImage *img, int XP, int YP, int WP
 }
 
 #else
-void fltk3::XlibGraphicsDriver::draw(fltk3::RGBImage *img, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  // Don't draw an empty image...
-  if (!img->d() || !img->array) {
-    img->draw_empty(XP, YP);
-    return;
-  }
-  if (start(img, XP, YP, WP, HP, img->w(), img->h(), cx, cy, X, Y, W, H)) {
-    return;
-  }
-  if (!img->id_) {
-    if (img->d() == 1 || img->d() == 3) {
-      img->id_ = fl_create_offscreen(img->w(), img->h());
-      fl_begin_offscreen((fltk3::Offscreen)img->id_);
-      fltk3::push_origin(); fltk3::origin(0,0);
-      fltk3::draw_image(img->array, 0, 0, img->w(), img->h(), img->d(), img->ld());
-      fltk3::pop_origin();
-      fl_end_offscreen();
-    }
-  }
-  if (img->id_) {
-    if (img->mask_) {
-      // I can't figure out how to combine a mask with existing region,
-      // so cut the image down to a clipped rectangle:
-      int nx, ny; fltk3::clip_box(X,Y,W,H,nx,ny,W,H);
-      cx += nx-X; X = nx;
-      cy += ny-Y; Y = ny;
-      // make X use the bitmap as a mask:
-      XSetClipMask(fl_display, fl_gc, img->mask_);
-      int ox = X-cx; if (ox < 0) ox += img->w();
-      int oy = Y-cy; if (oy < 0) oy += img->h();
-      XSetClipOrigin(fl_display, fl_gc, X-cx, Y-cy);
-    }
-    
-    copy_offscreen(X, Y, W, H, img->id_, cx, cy);
-    
-    if (img->mask_) {
-      // put the old clip region back
-      XSetClipOrigin(fl_display, fl_gc, 0, 0);
-      fltk3::restore_clip();
-    }
-  } else {
-    // Composite image with alpha manually each time...
-    alpha_blend(img, X, Y, W, H, cx, cy);
-  }
-}
-
 #endif
 
 void fltk3::RGBImage::label(fltk3::Widget* widget) {

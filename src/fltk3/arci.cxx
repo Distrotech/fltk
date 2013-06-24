@@ -49,6 +49,9 @@
 
 #if defined(__APPLE_QUARTZ__)
 #elif defined(WIN32)
+
+#include "MSWindows/GDIGraphicsDriver.h"
+
 void fltk3::GDIGraphicsDriver::arc(int x,int y,int w,int h,double a1,double a2) {
   if (w <= 0 || h <= 0) return;
   x += origin_x(); y += origin_y();
@@ -62,11 +65,6 @@ void fltk3::GDIGraphicsDriver::arc(int x,int y,int w,int h,double a1,double a2) 
   } else Arc(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb);
 }
 #else
-void fltk3::XlibGraphicsDriver::arc(int x,int y,int w,int h,double a1,double a2) {
-  if (w <= 0 || h <= 0) return;
-  x += origin_x(); y += origin_y();
-  XDrawArc(fl_display, fl_window, fl_gc, x,y,w-1,h-1, int(a1*64),int((a2-a1)*64));
-}
 #endif
 
 
@@ -90,12 +88,6 @@ void fltk3::GDIGraphicsDriver::pie(int x,int y,int w,int h,double a1,double a2) 
   } else Pie(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb); 
 }
 #else
-void fltk3::XlibGraphicsDriver::pie(int x,int y,int w,int h,double a1,double a2) {
-  if (w <= 0 || h <= 0) return;
-  x += origin_x(); y += origin_y();
-  XDrawArc(fl_display, fl_window, fl_gc, x,y,w-1,h-1, int(a1*64),int((a2-a1)*64));
-  XFillArc(fl_display, fl_window, fl_gc, x,y,w-1,h-1, int(a1*64),int((a2-a1)*64));
-}
 #endif
 //
 // End of "$Id$".

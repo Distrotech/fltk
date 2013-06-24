@@ -36,7 +36,6 @@
 
 fltk3::Win32WindowDriver::Win32WindowDriver()
 {
-  fprintf(stderr, "Loading Window Driver\n");
 }
 
 

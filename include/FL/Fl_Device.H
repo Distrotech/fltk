@@ -466,25 +466,25 @@ FL_EXPORT extern Fl_Graphics_Driver *fl_graphics_driver;
 //  }
 //};
 #elif defined(WIN32)
-class FL_EXPORT Fl_GDI_Graphics_Driver : public Fl_Graphics_Driver {
-public:
-  Fl_GDI_Graphics_Driver() {
-    _p->wrapper(NULL);
-    delete _p;
-    _p = new fltk3::GDIGraphicsDriver();
-    _p->wrapper(this);
-  }
-};
+//class FL_EXPORT Fl_GDI_Graphics_Driver : public Fl_Graphics_Driver {
+//public:
+//  Fl_GDI_Graphics_Driver() {
+//    _p->wrapper(NULL);
+//    delete _p;
+//    _p = new fltk3::GDIGraphicsDriver();
+//    _p->wrapper(this);
+//  }
+//};
 #else
-class FL_EXPORT Fl_Xlib_Graphics_Driver : public Fl_Graphics_Driver {
-public:
-  Fl_Xlib_Graphics_Driver() {
-    _p->wrapper(NULL);
-    delete _p;
-    _p = new fltk3::XlibGraphicsDriver();
-    _p->wrapper(this);
-  }
-};
+//class FL_EXPORT Fl_Xlib_Graphics_Driver : public Fl_Graphics_Driver {
+//public:
+//  Fl_Xlib_Graphics_Driver() {
+//    _p->wrapper(NULL);
+//    delete _p;
+//    _p = new fltk3::XlibGraphicsDriver();
+//    _p->wrapper(this);
+//  }
+//};
 #endif
 
 class FL_EXPORT Fl_Surface_Device : public fltk3::Wrapper {

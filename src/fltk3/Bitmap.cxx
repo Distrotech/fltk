@@ -300,6 +300,9 @@ int fltk3_start(fltk3::Bitmap *bm,
 
 #ifdef __APPLE__
 #elif defined(WIN32)
+
+#include "MSWindows/GDIGraphicsDriver.h"
+
 // implements fltk3::GDIGraphicsDriver::draw(fltk3::Bitmap*,...) with an extra parameter
 // to distinguish betwen display and printer
 void fltk3::GDIGraphicsDriver::draw_bitmap(fltk3::Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy,
@@ -364,25 +367,6 @@ void fltk3::GDIGraphicsDriver::draw_bitmap(fltk3::Bitmap *bm, int XP, int YP, in
 }  
 
 #else // Xlib
-void fltk3::XlibGraphicsDriver::draw(fltk3::Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  if (!bm->array) {
-    bm->draw_empty(XP, YP);
-    return;
-  }
-  if (start(bm, XP, YP, WP, HP, bm->w(), bm->h(), cx, cy, X, Y, W, H)) {
-    return;
-  }
-  if (!bm->id_) bm->id_ = fl_create_bitmask(bm->w(), bm->h(), bm->array);
-  
-  XSetStipple(fl_display, fl_gc, bm->id_);
-  int ox = X+origin_x()-cx; if (ox < 0) ox += bm->w();
-  int oy = Y+origin_y()-cy; if (oy < 0) oy += bm->h();
-  XSetTSOrigin(fl_display, fl_gc, ox, oy);
-  XSetFillStyle(fl_display, fl_gc, FillStippled);
-  XFillRectangle(fl_display, fl_window, fl_gc, X+origin_x(), Y+origin_y(), W, H);
-  XSetFillStyle(fl_display, fl_gc, FillSolid);
-}
 #endif
 
 /**

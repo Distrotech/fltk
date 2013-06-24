@@ -53,7 +53,7 @@
 #include "flstring.h"
 #include <ctype.h>
 
-#include "OSX/quartz_graphics_driver.h"
+#include "OSX/QuartzGraphicsDriver.h"
 
 #ifdef WIN32
 extern void fl_release_dc(HWND, HDC);      // located in Fl_win32.cxx
@@ -147,6 +147,8 @@ int fltk3::Pixmap::prepare(int XP, int YP, int WP, int HP, int &cx, int &cy,
 #ifdef __APPLE__
 #elif defined(WIN32)
 
+#include "MSWindows/GDIGraphicsDriver.h"
+
 void fltk3::GDIGraphicsDriver::draw(fltk3::Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (pxm->prepare(XP, YP, WP, HP, cx, cy, X, Y, W, H)) return;
@@ -189,29 +191,6 @@ void fltk3::GDIPrinterGraphicsDriver::draw(fltk3::Pixmap *pxm, int XP, int YP, i
 }
 
 #else // Xlib
-void fltk3::XlibGraphicsDriver::draw(fltk3::Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  if (pxm->prepare(XP, YP, WP, HP, cx, cy, X, Y, W, H)) return;
-  if (pxm->mask_) {
-    // I can't figure out how to combine a mask with existing region,
-    // so cut the image down to a clipped rectangle:
-    int nx, ny; fltk3::clip_box(X,Y,W,H,nx,ny,W,H);
-    cx += nx-X; X = nx;
-    cy += ny-Y; Y = ny;
-    // make X use the bitmap as a mask:
-    XSetClipMask(fl_display, fl_gc, pxm->mask_);
-    int ox = X-cx; if (ox < 0) ox += pxm->w();
-    int oy = Y-cy; if (oy < 0) oy += pxm->h();
-    XSetClipOrigin(fl_display, fl_gc, X+origin_x()-cx, Y+origin_y()-cy);
-  }
-  copy_offscreen(X, Y, W, H, pxm->id_, cx, cy);
-  if (pxm->mask_) {
-    // put the old clip region back
-    XSetClipOrigin(fl_display, fl_gc, 0, 0);
-    fltk3::restore_clip();
-  }
-}
-
 #endif
 
 /**

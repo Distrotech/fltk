@@ -27,36 +27,26 @@
 
 #include <config.h>
 
-#ifdef USE_X11
+#ifdef WIN32
 
-#include "XlibWindowDriver.h"
+#include "GDIGraphicsDriver.h"
+
+#include <fltk3/run.h>
 #include <fltk3/x.h>
-#include <stdio.h>
+#include <fltk3/draw.h>
+#include <fltk3/Widget.h>
+#include <fltk3/MenuItem.h>
+#include <fltk3/Bitmap.h>
+#include <fltk3/Printer.h>
+#include <fltk3/Image.h>
+#include <fltk3/DoubleWindow.h>
+#include <fltk3/utf8.h>
+
+#include "../flstring.h"
+#include "../font.h"
 
 
-fltk3::XlibWindowDriver::XlibWindowDriver()
-{
-}
-
-
-void fltk3::XlibWindowDriver::iconize(fltk3::Window* win)
-{
-  XIconifyWindow(fl_display, Fl_X::i(win)->xid, fl_screen);
-}
-
-
-void fltk3::XlibWindowDriver::decoration_size(bool, int& top, int& left, int& right, int& bottom)
-{
-  // Ensure border is on screen; these values are generic enough
-  // to work with many window managers, and are based on KDE defaults.
-  top = 20;
-  left = 4;
-  right = 4;
-  bottom = 8;
-}
-
-
-#endif // USE_X11
+#endif
 
 //
 // End of "$Id$".

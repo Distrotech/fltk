@@ -41,6 +41,9 @@
 #include <fltk3/x.h>
 #include <fltk3/draw.h>
 
+#include "GDIGraphicsDriver.h"
+
+
 extern unsigned fl_cmap[256];
 
 // Translations to win32 data structures:

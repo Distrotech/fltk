@@ -217,8 +217,8 @@
 		AEEF9A67BF6B7B9A3182B710 /* cocoa_draw_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 41809733CC2358F6878E0B0F /* cocoa_draw_image.cxx */; };
 		A9A43DC90BE2175E4CB4C250 /* cocoa_read_image.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF727DBF9919D514897DE01D /* cocoa_read_image.cxx */; };
 		221CE674B9834B86EB8E95DE /* cocoa_set_fonts.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 8E28A88539A127F8F3A9E412 /* cocoa_set_fonts.cxx */; };
-		E9A5DBBB70C4DB23CC182E74 /* quartz_graphics_driver.cxx in Sources */ = {isa = PBXBuildFile; fileRef = AD674564A03416F636D7DC06 /* quartz_graphics_driver.cxx */; };
 		ADC4E4784D0CCFE559299D8C /* CocoaWindowDriver.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7EA97242ECCA0B0B24F92B15 /* CocoaWindowDriver.cxx */; };
+		E9A5DBBB70C4DB23CC182E74 /* QuartzGraphicsDriver.cxx in Sources */ = {isa = PBXBuildFile; fileRef = AD674564A03416F636D7DC06 /* QuartzGraphicsDriver.cxx */; };
 		AFA5349EDFB005024E4A5CA1 /* win32.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C74EBB8D55E173B168692CE4 /* win32.cxx */; };
 		C5941E0DB82788968E26EC3D /* win32_get_key.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 530D92E9EF504A6F3DF85222 /* win32_get_key.cxx */; };
 		5199F1D9FFB49EE804A782DB /* win32_font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 7424EDDF5253B014EE3B4F75 /* win32_font.cxx */; };
@@ -231,6 +231,7 @@
 		9B5CFB4904874B4EA9DE1F75 /* win32NativeFileChooser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = A9377DCFA7250C786BB0BE87 /* win32NativeFileChooser.cxx */; };
 		A6BE3BE48BC3971C31597B55 /* GDIPrinter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FB4B2995B1FB1AD3A6DA8BD2 /* GDIPrinter.cxx */; };
 		7E4445024DBA89A37DEF3AC1 /* Win32WindowDriver.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 37D8CA6166E7C506259BC92D /* Win32WindowDriver.cxx */; };
+		7968FB8BD37642E575056F2C /* GDIGraphicsDriver.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0A4DB907C44A6AE7E1C41E74 /* GDIGraphicsDriver.cxx */; };
 		D90075982F3B0CDB0EF91A73 /* x11.cxx in Sources */ = {isa = PBXBuildFile; fileRef = F285310A7BD8D88F965104C8 /* x11.cxx */; };
 		A7051463299A8A1A74C4F4C7 /* xlib_get_key.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 1656EF36F622DA04069FCA51 /* xlib_get_key.cxx */; };
 		8B57BA94D039546989879D20 /* x11_font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E782DC411E8AAB7BCBC8A6E8 /* x11_font.cxx */; };
@@ -244,6 +245,7 @@
 		3C0D2694F0126028263F609B /* x11NativeFileChooser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = D93BB90239F390177FDC0338 /* x11NativeFileChooser.cxx */; };
 		B4338D79F8E03638EC0A1D08 /* x11_print_panel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DD49A7FB74DA8E5E5C711644 /* x11_print_panel.cxx */; };
 		0E014ED4CAC51299FD5C19C8 /* XlibWindowDriver.cxx in Sources */ = {isa = PBXBuildFile; fileRef = A220AD837AE5E567453F9ACD /* XlibWindowDriver.cxx */; };
+		8CEDFF2F24FA8798EF091D74 /* XlibGraphicsDriver.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 536DB3512B1C370B71719B6A /* XlibGraphicsDriver.cxx */; };
 		6EC5A8E1F6171E20505CDA66 /* all.h in Headers */ = {isa = PBXBuildFile; fileRef = DDEC0AB0E55CB75CFA5FD9DC /* all.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		39576718F4A718E5885D7837 /* fltk3.h in Headers */ = {isa = PBXBuildFile; fileRef = 15B1A08E928290071C92EDD1 /* fltk3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		757ECB76CD9272004B8A4A42 /* Adjuster.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CDC310CF438C4E007EE265B /* Adjuster.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8643,10 +8645,10 @@
 		41809733CC2358F6878E0B0F /* cocoa_draw_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_draw_image.cxx; path = ../../src/fltk3/OSX/cocoa_draw_image.cxx; sourceTree = SOURCE_ROOT; };
 		BF727DBF9919D514897DE01D /* cocoa_read_image.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_read_image.cxx; path = ../../src/fltk3/OSX/cocoa_read_image.cxx; sourceTree = SOURCE_ROOT; };
 		8E28A88539A127F8F3A9E412 /* cocoa_set_fonts.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocoa_set_fonts.cxx; path = ../../src/fltk3/OSX/cocoa_set_fonts.cxx; sourceTree = SOURCE_ROOT; };
-		AD674564A03416F636D7DC06 /* quartz_graphics_driver.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = quartz_graphics_driver.cxx; path = ../../src/fltk3/OSX/quartz_graphics_driver.cxx; sourceTree = SOURCE_ROOT; };
-		7CEF9255AA74A4B07E15D1AA /* quartz_graphics_driver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quartz_graphics_driver.h; path = ../../src/fltk3/OSX/quartz_graphics_driver.h; sourceTree = SOURCE_ROOT; };
 		7EA97242ECCA0B0B24F92B15 /* CocoaWindowDriver.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaWindowDriver.cxx; path = ../../src/fltk3/OSX/CocoaWindowDriver.cxx; sourceTree = SOURCE_ROOT; };
 		79AFA38CE414E0543803E138 /* CocoaWindowDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaWindowDriver.h; path = ../../src/fltk3/OSX/CocoaWindowDriver.h; sourceTree = SOURCE_ROOT; };
+		AD674564A03416F636D7DC06 /* QuartzGraphicsDriver.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuartzGraphicsDriver.cxx; path = ../../src/fltk3/OSX/QuartzGraphicsDriver.cxx; sourceTree = SOURCE_ROOT; };
+		7CEF9255AA74A4B07E15D1AA /* QuartzGraphicsDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QuartzGraphicsDriver.h; path = ../../src/fltk3/OSX/QuartzGraphicsDriver.h; sourceTree = SOURCE_ROOT; };
 		C74EBB8D55E173B168692CE4 /* win32.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32.cxx; path = ../../src/fltk3/MSWindows/win32.cxx; sourceTree = SOURCE_ROOT; };
 		530D92E9EF504A6F3DF85222 /* win32_get_key.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_get_key.cxx; path = ../../src/fltk3/MSWindows/win32_get_key.cxx; sourceTree = SOURCE_ROOT; };
 		7424EDDF5253B014EE3B4F75 /* win32_font.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win32_font.cxx; path = ../../src/fltk3/MSWindows/win32_font.cxx; sourceTree = SOURCE_ROOT; };
@@ -8660,6 +8662,8 @@
 		FB4B2995B1FB1AD3A6DA8BD2 /* GDIPrinter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GDIPrinter.cxx; path = ../../src/fltk3/MSWindows/GDIPrinter.cxx; sourceTree = SOURCE_ROOT; };
 		37D8CA6166E7C506259BC92D /* Win32WindowDriver.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Win32WindowDriver.cxx; path = ../../src/fltk3/MSWindows/Win32WindowDriver.cxx; sourceTree = SOURCE_ROOT; };
 		B40AF55C84A40BA30EE2EC48 /* Win32WindowDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Win32WindowDriver.h; path = ../../src/fltk3/MSWindows/Win32WindowDriver.h; sourceTree = SOURCE_ROOT; };
+		0A4DB907C44A6AE7E1C41E74 /* GDIGraphicsDriver.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GDIGraphicsDriver.cxx; path = ../../src/fltk3/MSWindows/GDIGraphicsDriver.cxx; sourceTree = SOURCE_ROOT; };
+		6B31FB2417AAF55D1BD4D1BD /* GDIGraphicsDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDIGraphicsDriver.h; path = ../../src/fltk3/MSWindows/GDIGraphicsDriver.h; sourceTree = SOURCE_ROOT; };
 		F285310A7BD8D88F965104C8 /* x11.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11.cxx; path = ../../src/fltk3/Unix/x11.cxx; sourceTree = SOURCE_ROOT; };
 		1656EF36F622DA04069FCA51 /* xlib_get_key.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xlib_get_key.cxx; path = ../../src/fltk3/Unix/xlib_get_key.cxx; sourceTree = SOURCE_ROOT; };
 		E782DC411E8AAB7BCBC8A6E8 /* x11_font.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_font.cxx; path = ../../src/fltk3/Unix/x11_font.cxx; sourceTree = SOURCE_ROOT; };
@@ -8674,6 +8678,8 @@
 		DD49A7FB74DA8E5E5C711644 /* x11_print_panel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = x11_print_panel.cxx; path = ../../src/fltk3/Unix/x11_print_panel.cxx; sourceTree = SOURCE_ROOT; };
 		A220AD837AE5E567453F9ACD /* XlibWindowDriver.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XlibWindowDriver.cxx; path = ../../src/fltk3/Unix/XlibWindowDriver.cxx; sourceTree = SOURCE_ROOT; };
 		12D15B7814135CAE53907A9E /* XlibWindowDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XlibWindowDriver.h; path = ../../src/fltk3/Unix/XlibWindowDriver.h; sourceTree = SOURCE_ROOT; };
+		536DB3512B1C370B71719B6A /* XlibGraphicsDriver.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XlibGraphicsDriver.cxx; path = ../../src/fltk3/Unix/XlibGraphicsDriver.cxx; sourceTree = SOURCE_ROOT; };
+		C419963D56C3E2B385BA980C /* XlibGraphicsDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XlibGraphicsDriver.h; path = ../../src/fltk3/Unix/XlibGraphicsDriver.h; sourceTree = SOURCE_ROOT; };
 		14F66311E977D66CE29024C3 /* Cocoa.framework */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = SDKs/MacOSX10.7.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		9283F8E14E6EC863F3DB5B02 /* dirent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dirent.h; path = ../../include/FL/dirent.h; sourceTree = SOURCE_ROOT; };
 		45991C139A94060934746880 /* Enumerations.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Enumerations.H; path = ../../include/FL/Enumerations.H; sourceTree = SOURCE_ROOT; };
@@ -11750,7 +11756,7 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
-		E0C78745BABD97A79A5E518E /* OSX */ = {
+		152FA59C6C9658A2AA3D9283 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
 				F6BB47B6B9E3180AB7C5F16D /* cocoa.mm */,
@@ -11763,15 +11769,15 @@
 				41809733CC2358F6878E0B0F /* cocoa_draw_image.cxx */,
 				BF727DBF9919D514897DE01D /* cocoa_read_image.cxx */,
 				8E28A88539A127F8F3A9E412 /* cocoa_set_fonts.cxx */,
-				AD674564A03416F636D7DC06 /* quartz_graphics_driver.cxx */,
-				7CEF9255AA74A4B07E15D1AA /* quartz_graphics_driver.h */,
 				7EA97242ECCA0B0B24F92B15 /* CocoaWindowDriver.cxx */,
 				79AFA38CE414E0543803E138 /* CocoaWindowDriver.h */,
+				AD674564A03416F636D7DC06 /* QuartzGraphicsDriver.cxx */,
+				7CEF9255AA74A4B07E15D1AA /* QuartzGraphicsDriver.h */,
 			);
 			name = OSX;
 			sourceTree = "<group>";
 		};
-		088A0BA8C6261A7C390DC883 /* MSWindows */ = {
+		EE5C29675C114A94F9EBD666 /* MSWindows */ = {
 			isa = PBXGroup;
 			children = (
 				C74EBB8D55E173B168692CE4 /* win32.cxx */,
@@ -11787,11 +11793,13 @@
 				FB4B2995B1FB1AD3A6DA8BD2 /* GDIPrinter.cxx */,
 				37D8CA6166E7C506259BC92D /* Win32WindowDriver.cxx */,
 				B40AF55C84A40BA30EE2EC48 /* Win32WindowDriver.h */,
+				0A4DB907C44A6AE7E1C41E74 /* GDIGraphicsDriver.cxx */,
+				6B31FB2417AAF55D1BD4D1BD /* GDIGraphicsDriver.h */,
 			);
 			name = MSWindows;
 			sourceTree = "<group>";
 		};
-		B92ECEA3C009EFB3B8E289DC /* Unix */ = {
+		1E77C3610C85975F42A610C2 /* Unix */ = {
 			isa = PBXGroup;
 			children = (
 				F285310A7BD8D88F965104C8 /* x11.cxx */,
@@ -11808,6 +11816,8 @@
 				DD49A7FB74DA8E5E5C711644 /* x11_print_panel.cxx */,
 				A220AD837AE5E567453F9ACD /* XlibWindowDriver.cxx */,
 				12D15B7814135CAE53907A9E /* XlibWindowDriver.h */,
+				536DB3512B1C370B71719B6A /* XlibGraphicsDriver.cxx */,
+				C419963D56C3E2B385BA980C /* XlibGraphicsDriver.h */,
 			);
 			name = Unix;
 			sourceTree = "<group>";
@@ -11971,9 +11981,9 @@
 				4024031C45193E6173805457 /* vsnprintf.c */,
 				4B356C4251018782DAE03740 /* GraphicsDriver.cxx */,
 				D21B79877B10004FC7408569 /* WindowDriver.cxx */,
-				E0C78745BABD97A79A5E518E /* OSX */,
-				088A0BA8C6261A7C390DC883 /* MSWindows */,
-				B92ECEA3C009EFB3B8E289DC /* Unix */,
+				152FA59C6C9658A2AA3D9283 /* OSX */,
+				EE5C29675C114A94F9EBD666 /* MSWindows */,
+				1E77C3610C85975F42A610C2 /* Unix */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -20782,8 +20792,8 @@
 				AEEF9A67BF6B7B9A3182B710 /* cocoa_draw_image.cxx in Sources */,
 				A9A43DC90BE2175E4CB4C250 /* cocoa_read_image.cxx in Sources */,
 				221CE674B9834B86EB8E95DE /* cocoa_set_fonts.cxx in Sources */,
-				E9A5DBBB70C4DB23CC182E74 /* quartz_graphics_driver.cxx in Sources */,
 				ADC4E4784D0CCFE559299D8C /* CocoaWindowDriver.cxx in Sources */,
+				E9A5DBBB70C4DB23CC182E74 /* QuartzGraphicsDriver.cxx in Sources */,
 				AFA5349EDFB005024E4A5CA1 /* win32.cxx in Sources */,
 				C5941E0DB82788968E26EC3D /* win32_get_key.cxx in Sources */,
 				5199F1D9FFB49EE804A782DB /* win32_font.cxx in Sources */,
@@ -20796,6 +20806,7 @@
 				9B5CFB4904874B4EA9DE1F75 /* win32NativeFileChooser.cxx in Sources */,
 				A6BE3BE48BC3971C31597B55 /* GDIPrinter.cxx in Sources */,
 				7E4445024DBA89A37DEF3AC1 /* Win32WindowDriver.cxx in Sources */,
+				7968FB8BD37642E575056F2C /* GDIGraphicsDriver.cxx in Sources */,
 				D90075982F3B0CDB0EF91A73 /* x11.cxx in Sources */,
 				A7051463299A8A1A74C4F4C7 /* xlib_get_key.cxx in Sources */,
 				8B57BA94D039546989879D20 /* x11_font.cxx in Sources */,
@@ -20809,6 +20820,7 @@
 				3C0D2694F0126028263F609B /* x11NativeFileChooser.cxx in Sources */,
 				B4338D79F8E03638EC0A1D08 /* x11_print_panel.cxx in Sources */,
 				0E014ED4CAC51299FD5C19C8 /* XlibWindowDriver.cxx in Sources */,
+				8CEDFF2F24FA8798EF091D74 /* XlibGraphicsDriver.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

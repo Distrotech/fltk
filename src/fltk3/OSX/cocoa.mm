@@ -53,7 +53,7 @@ extern "C" {
 #include <unistd.h>
 #include <stdarg.h>
 
-#include "quartz_graphics_driver.h"
+#include "QuartzGraphicsDriver.h"
 
 #import <Cocoa/Cocoa.h>
 

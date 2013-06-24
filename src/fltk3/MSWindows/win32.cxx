@@ -122,7 +122,7 @@
   fltk because of this finer granularity and instrumentation code to be added
   for async mode proper operation, not mentioning the side effects...
 */
-
+#include "GDIGraphicsDriver.h"
 #include "Win32WindowDriver.h"
 fltk3::Win32WindowDriver fltk3::win32_window_driver;
 

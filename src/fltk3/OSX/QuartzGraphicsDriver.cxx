@@ -29,7 +29,7 @@
 
 #ifdef __APPLE__
 
-#include "quartz_graphics_driver.h"
+#include "QuartzGraphicsDriver.h"
 
 #include <fltk3/run.h>
 #include <fltk3/x.h>

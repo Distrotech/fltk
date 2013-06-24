@@ -56,6 +56,8 @@
 
 #include <fltk3/Printer.h>
 
+#include "GDIGraphicsDriver.h"
+
 static int fl_angle_ = 0;
 
 #ifndef FLTK3_DOXYGEN

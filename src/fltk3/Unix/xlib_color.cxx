@@ -47,6 +47,7 @@
 #  include <fltk3/run.h>
 #  include <fltk3/x.h>
 #  include <fltk3/draw.h>
+#include "XlibGraphicsDriver.h"
 
 ////////////////////////////////////////////////////////////////
 // figure_out_visual() calculates masks & shifts for generating

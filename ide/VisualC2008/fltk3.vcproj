@@ -3887,7 +3887,7 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\..\src\fltk3\OSX\quartz_graphics_driver.cxx"
+			RelativePath="..\..\src\fltk3\OSX\CocoaWindowDriver.cxx"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -3910,7 +3910,7 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\..\src\fltk3\OSX\CocoaWindowDriver.cxx"
+			RelativePath="..\..\src\fltk3\OSX\QuartzGraphicsDriver.cxx"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -4187,6 +4187,29 @@
 		</File>
 		<File
 			RelativePath="..\..\src\fltk3\MSWindows\Win32WindowDriver.cxx"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\..\src\fltk3\MSWindows\GDIGraphicsDriver.cxx"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -4486,6 +4509,29 @@
 		</File>
 		<File
 			RelativePath="..\..\src\fltk3\Unix\XlibWindowDriver.cxx"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\..\src\fltk3\Unix\XlibGraphicsDriver.cxx"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"

@@ -110,16 +110,9 @@ void fltk3::GraphicsDriver::copy_offscreen(int x, int y, int w, int h, fltk3::Of
 
 #if defined(USE_X11)
 
-void fltk3::XlibGraphicsDriver::copy_offscreen(int x, int y, int w, int h, fltk3::Offscreen pixmap, int srcx, int srcy) {
-  XCopyArea(fl_display, pixmap, fl_window, fl_gc, srcx, srcy, w, h, x+origin_x(), y+origin_y());
-}
-
-
-// maybe someone feels inclined to implement alpha blending on X11?
-char fltk3::XlibGraphicsDriver::can_do_alpha_blending() {
-  return 0;
-}
 #elif defined(WIN32)
+
+#include "MSWindows/GDIGraphicsDriver.h"
 
 // Code used to switch output to an off-screen window.  See macros in
 // win32.h which save the old state in local variables.

@@ -77,6 +77,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "XlibGraphicsDriver.h"
 
 #include <X11/Xft/Xft.h>
 

@@ -52,6 +52,8 @@
 #include <fltk3/draw.h>
 #include <fltk3/x.h>
 
+#include "GDIGraphicsDriver.h"
+
 #define MAXBUFFER 0x40000 // 256k
 
 #if USE_COLORMAP

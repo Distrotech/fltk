@@ -113,8 +113,6 @@ void fltk3::GraphicsDriver::transformed_vertex0(COORD_T x, COORD_T y) {
 void fltk3::GraphicsDriver::transformed_vertex(double xf, double yf) {
   transformed_vertex0(COORD_T(rint(xf)), COORD_T(rint(yf)));
 }
-#ifdef __APPLE__
-#endif
 
 void fltk3::GraphicsDriver::vertex(double x,double y) {
   transformed_vertex0(COORD_T(x*m.a + y*m.c + m.x), COORD_T(x*m.b + y*m.d + m.y));
@@ -126,6 +124,9 @@ void fltk3::GraphicsDriver::end_points() {
   for (int i=0; i<n; i++) point(p[i].x, p[i].y);
 }
 #ifdef WIN32
+
+#include "MSWindows/GDIGraphicsDriver.h"
+
 void fltk3::GDIGraphicsDriver::end_points() {
   int n = vertex_no();
   XPOINT *p = vertices();
@@ -133,10 +134,6 @@ void fltk3::GDIGraphicsDriver::end_points() {
 }
 #elif defined(__APPLE__)
 #else
-void fltk3::XlibGraphicsDriver::end_points() {
-  int n = vertex_no();
-  if (n > 1) XDrawPoints(fl_display, fl_window, fl_gc, vertices(), n, 0);
-}
 #endif
 
 
@@ -152,15 +149,6 @@ void fltk3::GDIGraphicsDriver::end_line() {
   if (n>1) Polyline(fl_gc, p, n);
 }
 #else
-void fltk3::XlibGraphicsDriver::end_line() {
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 2) {
-    end_points();
-    return;
-  }
-  if (n>1) XDrawLines(fl_display, fl_window, fl_gc, p, n, 0);
-}
 #endif
 
 void fltk3::GraphicsDriver::fixloop() {  // remove equal points from closed path
@@ -189,16 +177,6 @@ void fltk3::GDIGraphicsDriver::end_polygon() {
   }
 }
 #else
-void fltk3::XlibGraphicsDriver::end_polygon() {
-  fixloop();
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 3) {
-    end_line();
-    return;
-  }
-  if (n>2) XFillPolygon(fl_display, fl_window, fl_gc, p, n, Convex, 0);
-}
 #endif
 
 void fltk3::GraphicsDriver::begin_complex_polygon() {
@@ -251,16 +229,6 @@ void fltk3::GDIGraphicsDriver::end_complex_polygon() {
   }
 }
 #else
-void fltk3::XlibGraphicsDriver::end_complex_polygon() {
-  gap();
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 3) {
-    end_line();
-    return;
-  }
-  if (n>2) XFillPolygon(fl_display, fl_window, fl_gc, p, n, 0, 0);
-}
 #endif
 
 void fltk3::GraphicsDriver::prepare_circle(double x, double y, double r, int& llx, int& lly, int& w, int& h, double& xt, double& yt)
@@ -292,13 +260,6 @@ void fltk3::GDIGraphicsDriver::circle(double x, double y, double r) {
     Arc(fl_gc, llx+origin_x(), lly+origin_y(), llx+origin_x()+w, lly+origin_y()+h, 0,0, 0,0); 
 }
 #else
-void fltk3::XlibGraphicsDriver::circle(double x, double y, double r) {
-  int llx, lly, w, h;
-  double xt, yt;
-  prepare_circle(x, y, r, llx, lly, w, h, xt, yt);
-  (vertex_kind() == POLYGON ? XFillArc : XDrawArc)
-  (fl_display, fl_window, fl_gc, llx+origin_x(), lly+origin_y(), w, h, 0, 360*64);
-}
 #endif
 //
 // End of "$Id$".

@@ -63,6 +63,7 @@
 #  include <fltk3/x.h>
 #  include "../xcolor.h"
 #  include "../flstring.h"
+#include "XlibGraphicsDriver.h"
 
 static XImage xi;	// template used to pass info to X
 static int bytes_per_pixel;

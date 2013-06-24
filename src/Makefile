@@ -183,8 +183,8 @@ FLTK3_CPPFILES = \
 	fltk3/OSX/cocoa_draw_image.cxx \
 	fltk3/OSX/cocoa_read_image.cxx \
 	fltk3/OSX/cocoa_set_fonts.cxx \
-	fltk3/OSX/quartz_graphics_driver.cxx \
 	fltk3/OSX/CocoaWindowDriver.cxx \
+	fltk3/OSX/QuartzGraphicsDriver.cxx \
 	fltk3/MSWindows/win32.cxx \
 	fltk3/MSWindows/win32_get_key.cxx \
 	fltk3/MSWindows/win32_font.cxx \
@@ -197,6 +197,7 @@ FLTK3_CPPFILES = \
 	fltk3/MSWindows/win32NativeFileChooser.cxx \
 	fltk3/MSWindows/GDIPrinter.cxx \
 	fltk3/MSWindows/Win32WindowDriver.cxx \
+	fltk3/MSWindows/GDIGraphicsDriver.cxx \
 	fltk3/Unix/x11.cxx \
 	fltk3/Unix/xlib_get_key.cxx \
 	fltk3/Unix/x11_font.cxx \
@@ -209,7 +210,8 @@ FLTK3_CPPFILES = \
 	fltk3/Unix/x11_set_fonts.cxx \
 	fltk3/Unix/x11NativeFileChooser.cxx \
 	fltk3/Unix/x11_print_panel.cxx \
-	fltk3/Unix/XlibWindowDriver.cxx
+	fltk3/Unix/XlibWindowDriver.cxx \
+	fltk3/Unix/XlibGraphicsDriver.cxx
 
 FLTK3GL_CPPFILES = \
 	fltk3gl/GLChoice.cxx \

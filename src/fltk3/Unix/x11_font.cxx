@@ -37,6 +37,7 @@
 #include <fltk3/draw.h>
 #include <fltk3/x.h>
 #include "../font.h"
+#include "XlibGraphicsDriver.h"
 
 #include <stdio.h>
 #include <stdlib.h>

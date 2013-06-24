@@ -739,11 +739,11 @@ SOURCE=..\..\src\fltk3\OSX\cocoa_set_fonts.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fltk3\OSX\quartz_graphics_driver.cxx
+SOURCE=..\..\src\fltk3\OSX\CocoaWindowDriver.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fltk3\OSX\CocoaWindowDriver.cxx
+SOURCE=..\..\src\fltk3\OSX\QuartzGraphicsDriver.cxx
 # End Source File
 # Begin Source File
 
@@ -792,6 +792,10 @@ SOURCE=..\..\src\fltk3\MSWindows\GDIPrinter.cxx
 # Begin Source File
 
 SOURCE=..\..\src\fltk3\MSWindows\Win32WindowDriver.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\GDIGraphicsDriver.cxx
 # End Source File
 # Begin Source File
 
@@ -844,6 +848,10 @@ SOURCE=..\..\src\fltk3\Unix\x11_print_panel.cxx
 # Begin Source File
 
 SOURCE=..\..\src\fltk3\Unix\XlibWindowDriver.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\XlibGraphicsDriver.cxx
 # End Source File
 # End Target
 # End Project

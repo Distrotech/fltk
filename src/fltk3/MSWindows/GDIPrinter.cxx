@@ -32,6 +32,8 @@
 #include <fltk3/ask.h>
 #include <fltk3/math.h>
 
+#include "GDIGraphicsDriver.h"
+
 extern HWND fl_window;
 
 fltk3::SystemPrinter::SystemPrinter(void) : fltk3::PagedDevice() {

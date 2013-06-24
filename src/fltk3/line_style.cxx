@@ -45,6 +45,9 @@ int fl_line_width_ = 0;
 
 #ifdef __APPLE__
 #elif defined(WIN32)
+
+#include "MSWindows/GDIGraphicsDriver.h"
+
 void fltk3::GDIGraphicsDriver::line_style(int style, int width, char* dashes) {
   // save line width in global variable for X11 clipping
   if (width == 0) fl_line_width_ = 1;
@@ -75,41 +78,6 @@ void fltk3::GDIGraphicsDriver::line_style(int style, int width, char* dashes) {
   fl_current_xmap->pen = newpen;
 }
 #else
-void fltk3::XlibGraphicsDriver::line_style(int style, int width, char* dashes) {
-  // save line width in global variable for X11 clipping
-  if (width == 0) fl_line_width_ = 1;
-  else fl_line_width_ = width>0 ? width : -width;
-  int ndashes = dashes ? strlen(dashes) : 0;
-  // emulate the WIN32 dash patterns on X
-  char buf[7];
-  if (!ndashes && (style&0xff)) {
-    int w = width ? width : 1;
-    char dash, dot, gap;
-    // adjust lengths to account for cap:
-    if (style & 0x200) {
-      dash = char(2*w);
-      dot = 1; // unfortunately 0 does not work
-      gap = char(2*w-1);
-    } else {
-      dash = char(3*w);
-      dot = gap = char(w);
-    }
-    char* p = dashes = buf;
-    switch (style & 0xff) {
-      case fltk3::DASH:	*p++ = dash; *p++ = gap; break;
-      case fltk3::DOT:	*p++ = dot; *p++ = gap; break;
-      case fltk3::DASHDOT:	*p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; break;
-      case fltk3::DASHDOTDOT: *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; *p++ = dot; *p++ = gap; break;
-    }
-    ndashes = p-buf;
-  }
-  static int Cap[4] = {CapButt, CapButt, CapRound, CapProjecting};
-  static int Join[4] = {JoinMiter, JoinMiter, JoinRound, JoinBevel};
-  XSetLineAttributes(fl_display, fl_gc, width, 
-		     ndashes ? LineOnOffDash : LineSolid,
-		     Cap[(style>>8)&3], Join[(style>>12)&3]);
-  if (ndashes) XSetDashes(fl_display, fl_gc, 0, dashes, ndashes);
-}
 #endif
 
 //
