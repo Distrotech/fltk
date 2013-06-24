@@ -412,57 +412,6 @@ int fltk3_start(fltk3::RGBImage *img,
   return ::start(img, XP, YP, WP, HP, w, h, cx, cy, X, Y, W, H);
 }
 
-#ifdef __APPLE__
-#elif defined(WIN32)
-
-#include "MSWindows/GDIGraphicsDriver.h"
-
-void fltk3::GDIGraphicsDriver::draw(fltk3::RGBImage *img, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  // Don't draw an empty image...
-  if (!img->d() || !img->array) {
-    img->draw_empty(XP, YP);
-    return;
-  }
-  if (start(img, XP, YP, WP, HP, img->w(), img->h(), cx, cy, X, Y, W, H)) {
-    return;
-  }
-  if (!img->id_) {
-    img->id_ = fl_create_offscreen(img->w(), img->h());
-    fltk3::push_origin(); fltk3::origin(0,0);
-    if ((img->d() == 2 || img->d() == 4) && can_do_alpha_blending()) {
-      fl_begin_offscreen((fltk3::Offscreen)img->id_);
-      fltk3::draw_image(img->array, 0, 0, img->w(), img->h(), img->d()|fltk3::IMAGE_WITH_ALPHA, img->ld());
-      fl_end_offscreen();
-    } else {
-      fl_begin_offscreen((fltk3::Offscreen)img->id_);
-      fltk3::draw_image(img->array, 0, 0, img->w(), img->h(), img->d(), img->ld());
-      fl_end_offscreen();
-      if (img->d() == 2 || img->d() == 4) {
-        img->mask_ = fl_create_alphamask(img->w(), img->h(), img->d(), img->ld(), img->array);
-      }
-    }
-    fltk3::pop_origin();
-  }
-  if (img->mask_) {
-    HDC new_gc = CreateCompatibleDC(fl_gc);
-    int save = SaveDC(new_gc);
-    SelectObject(new_gc, (void*)img->mask_);
-    BitBlt(fl_gc, X+origin_x(), Y+origin_y(), W, H, new_gc, cx, cy, SRCAND);
-    SelectObject(new_gc, (void*)img->id_);
-    BitBlt(fl_gc, X+origin_x(), Y+origin_y(), W, H, new_gc, cx, cy, SRCPAINT);
-    RestoreDC(new_gc,save);
-    DeleteDC(new_gc);
-  } else if (img->d()==2 || img->d()==4) {
-    copy_offscreen_with_alpha(X, Y, W, H, (fltk3::Offscreen)img->id_, cx, cy);
-  } else {
-    copy_offscreen(X, Y, W, H, (fltk3::Offscreen)img->id_, cx, cy);
-  }
-}
-
-#else
-#endif
-
 void fltk3::RGBImage::label(fltk3::Widget* widget) {
   widget->image(this);
 }

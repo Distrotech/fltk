@@ -123,33 +123,7 @@ void fltk3::GraphicsDriver::end_points() {
   XPOINT *p = vertices();
   for (int i=0; i<n; i++) point(p[i].x, p[i].y);
 }
-#ifdef WIN32
 
-#include "MSWindows/GDIGraphicsDriver.h"
-
-void fltk3::GDIGraphicsDriver::end_points() {
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  for (int i=0; i<n; i++) SetPixel(fl_gc, p[i].x, p[i].y, fl_RGB());
-}
-#elif defined(__APPLE__)
-#else
-#endif
-
-
-#if defined(__APPLE_QUARTZ__)
-#elif defined(WIN32)
-void fltk3::GDIGraphicsDriver::end_line() {
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 2) {
-    end_points();
-    return;
-  }
-  if (n>1) Polyline(fl_gc, p, n);
-}
-#else
-#endif
 
 void fltk3::GraphicsDriver::fixloop() {  // remove equal points from closed path
   while (n>2 && p[n-1].x == p[0].x && p[n-1].y == p[0].y) n--;
@@ -161,34 +135,11 @@ void fltk3::GraphicsDriver::end_loop() {
   end_line();
 }
 
-#if defined(__APPLE_QUARTZ__)
-#elif defined(WIN32)
-void fltk3::GDIGraphicsDriver::end_polygon() {
-  fixloop();
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 3) {
-    end_line();
-    return;
-  }
-  if (n>2) {
-    SelectObject(fl_gc, fl_brush());
-    Polygon(fl_gc, p, n);
-  }
-}
-#else
-#endif
 
 void fltk3::GraphicsDriver::begin_complex_polygon() {
   begin_polygon();
   gap_ = 0;
 }
-#if defined(WIN32)
-void fltk3::GDIGraphicsDriver::begin_complex_polygon() {
-  GraphicsDriver::begin_complex_polygon();
-  numcount = 0;
-}
-#endif
 
 
 void fltk3::GraphicsDriver::gap() {
@@ -200,36 +151,6 @@ void fltk3::GraphicsDriver::gap() {
     n = gap_;
   }
 }
-#if defined(WIN32)
-void fltk3::GDIGraphicsDriver::gap() {
-  while (n>gap_+2 && p[n-1].x == p[gap_].x && p[n-1].y == p[gap_].y) n--;
-  if (n > gap_+2) {
-    transformed_vertex((COORD_T)p[gap_].x-origin_x(), (COORD_T)p[gap_].y-origin_y());
-    counts[numcount++] = n-gap_;
-    gap_ = n;
-  } else {
-    n = gap_;
-  }
-}
-#endif
-
-#if defined(__APPLE_QUARTZ__)
-#elif defined(WIN32)
-void fltk3::GDIGraphicsDriver::end_complex_polygon() {
-  gap();
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 3) {
-    end_line();
-    return;
-  }
-  if (n>2) {
-    SelectObject(fl_gc, fl_brush());
-    PolyPolygon(fl_gc, p, counts, numcount);
-  }
-}
-#else
-#endif
 
 void fltk3::GraphicsDriver::prepare_circle(double x, double y, double r, int& llx, int& lly, int& w, int& h, double& xt, double& yt)
 {
@@ -243,24 +164,6 @@ void fltk3::GraphicsDriver::prepare_circle(double x, double y, double r, int& ll
   h = (int)rint(yt+ry)-lly;
 }
 
-// shortcut the closed circles so they use XDrawArc:
-// warning: these do not draw rotated ellipses correctly!
-// See fltk3::arc.c for portable version.
-
-#if defined(__APPLE_QUARTZ__)
-#elif defined(WIN32)
-void fltk3::GDIGraphicsDriver::circle(double x, double y, double r) {
-  int llx, lly, w, h;
-  double xt, yt;
-  prepare_circle(x, y, r, llx, lly, w, h, xt, yt);
-  if (vertex_kind()==POLYGON) {
-    SelectObject(fl_gc, fl_brush());
-    Pie(fl_gc, llx+origin_x(), lly+origin_y(), llx+origin_x()+w, lly+origin_y()+h, 0,0, 0,0); 
-  } else
-    Arc(fl_gc, llx+origin_x(), lly+origin_y(), llx+origin_x()+w, lly+origin_y()+h, 0,0, 0,0); 
-}
-#else
-#endif
 //
 // End of "$Id$".
 //

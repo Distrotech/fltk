@@ -144,55 +144,6 @@ int fltk3::Pixmap::prepare(int XP, int YP, int WP, int HP, int &cx, int &cy,
   return 0;
 }  
 
-#ifdef __APPLE__
-#elif defined(WIN32)
-
-#include "MSWindows/GDIGraphicsDriver.h"
-
-void fltk3::GDIGraphicsDriver::draw(fltk3::Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  if (pxm->prepare(XP, YP, WP, HP, cx, cy, X, Y, W, H)) return;
-  if (pxm->mask_) {
-    HDC new_gc = CreateCompatibleDC(fl_gc);
-    int save = SaveDC(new_gc);
-    SelectObject(new_gc, (void*)pxm->mask_);
-    BitBlt(fl_gc, X+origin_x(), Y+origin_y(), W, H, new_gc, cx, cy, SRCAND);
-    SelectObject(new_gc, (void*)pxm->id_);
-    BitBlt(fl_gc, X+origin_x(), Y+origin_y(), W, H, new_gc, cx, cy, SRCPAINT);
-    RestoreDC(new_gc,save);
-    DeleteDC(new_gc);
-  } else {
-    copy_offscreen(X, Y, W, H, (fltk3::Offscreen)pxm->id_, cx, cy);
-  }
-}
-
-void fltk3::GDIPrinterGraphicsDriver::draw(fltk3::Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  if (pxm->prepare(XP, YP, WP, HP, cx, cy, X, Y, W, H)) return;
-  typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
-  static HMODULE hMod = NULL;
-  static fl_transp_func fl_TransparentBlt = NULL;
-  if (!hMod) {
-    hMod = LoadLibrary("MSIMG32.DLL");
-    if(hMod) fl_TransparentBlt = (fl_transp_func)GetProcAddress(hMod, "TransparentBlt");
-  }
-  if (fl_TransparentBlt) {
-    HDC new_gc = CreateCompatibleDC(fl_gc);
-    int save = SaveDC(new_gc);
-    SelectObject(new_gc, (void*)pxm->id_);
-    // print all of offscreen but its parts in background color
-    fl_TransparentBlt(fl_gc, X+origin_x(), Y+origin_y(), W, H, new_gc, cx, cy, pxm->w(), pxm->h(), pxm->pixmap_bg_color );
-    RestoreDC(new_gc,save);
-    DeleteDC(new_gc);
-  }
-  else {
-    copy_offscreen(X, Y, W, H, (fltk3::Offscreen)pxm->id_, cx, cy);
-  }
-}
-
-#else // Xlib
-#endif
-
 /**
   The destructor free all memory and server resources that are used by
   the pixmap.
