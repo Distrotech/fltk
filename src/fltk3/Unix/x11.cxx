@@ -62,6 +62,9 @@ static XRRUpdateConfiguration_type XRRUpdateConfiguration_f;
 static int randrEventBase;                  // base of RandR-defined events
 #endif
 
+#include "XlibWindowDriver.h"
+
+fltk3::XlibWindowDriver fltk3::xlib_window_driver;
 static fltk3::XlibGraphicsDriver fl_xlib_driver;
 static fltk3::DisplayDevice fl_xlib_display(&fl_xlib_driver);
 

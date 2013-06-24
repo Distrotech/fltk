@@ -196,9 +196,7 @@ namespace fltk3 {
     void draw_image_mono(fltk3::DrawImageCb call, void* data, int x,int y, int w, int h, int delta=1);
     
     void draw(const char* s, int n, int x, int y) {transformed_draw(s,n,x,y); };
-#ifdef __APPLE__
     void draw(const char* s, int n, float x, float y) {transformed_draw(s,n,x,y); };
-#endif
     void draw(int angle, const char *str, int n, int x, int y);
     void rtl_draw(const char* s, int n, int x, int y);
     void font(int face, int size);

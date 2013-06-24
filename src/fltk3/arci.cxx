@@ -48,25 +48,6 @@
 #include <config.h>
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::arc(int x,int y,int w,int h,double a1,double a2) {
-  if (w <= 0 || h <= 0) return;
-  x += origin_x(); y += origin_y();
-  a1 = (-a1)/180.0f*M_PI; a2 = (-a2)/180.0f*M_PI;
-  float cx = x + 0.5f*w - 0.5f, cy = y + 0.5f*h - 0.5f;
-  CGContextSetShouldAntialias(fl_gc, true);
-  if (w!=h) {
-    CGContextSaveGState(fl_gc);
-    CGContextTranslateCTM(fl_gc, cx, cy);
-    CGContextScaleCTM(fl_gc, w-1.0f, h-1.0f);
-    CGContextAddArc(fl_gc, 0, 0, 0.5, a1, a2, 1);
-    CGContextRestoreGState(fl_gc);
-  } else {
-    float r = (w+h)*0.25f-0.5f;
-    CGContextAddArc(fl_gc, cx, cy, r, a1, a2, 1);
-  }
-  CGContextStrokePath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::arc(int x,int y,int w,int h,double a1,double a2) {
   if (w <= 0 || h <= 0) return;
@@ -90,29 +71,6 @@ void fltk3::XlibGraphicsDriver::arc(int x,int y,int w,int h,double a1,double a2)
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::pie(int x,int y,int w,int h,double a1,double a2) {
-  if (w <= 0 || h <= 0) return;
-  x += origin_x(); y += origin_y();
-  a1 = (-a1)/180.0f*M_PI; a2 = (-a2)/180.0f*M_PI;
-  float cx = x + 0.5f*w - 0.5f, cy = y + 0.5f*h - 0.5f;
-  CGContextSetShouldAntialias(fl_gc, true);
-  if (w!=h) {
-    CGContextSaveGState(fl_gc);
-    CGContextTranslateCTM(fl_gc, cx, cy);
-    CGContextScaleCTM(fl_gc, w, h);
-    CGContextAddArc(fl_gc, 0, 0, 0.5, a1, a2, 1);
-    CGContextAddLineToPoint(fl_gc, 0, 0);
-    CGContextClosePath(fl_gc);
-    CGContextRestoreGState(fl_gc);
-  } else {
-    float r = (w+h)*0.25f;
-    CGContextAddArc(fl_gc, cx, cy, r, a1, a2, 1);
-    CGContextAddLineToPoint(fl_gc, cx, cy);
-    CGContextClosePath(fl_gc);
-  }
-  CGContextFillPath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::pie(int x,int y,int w,int h,double a1,double a2) {
   if (w <= 0 || h <= 0) return;

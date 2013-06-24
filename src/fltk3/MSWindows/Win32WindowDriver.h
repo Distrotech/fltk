@@ -1,9 +1,9 @@
 //
 // "$Id$"
 //
-// implementation of fltk3::Device class for the Fast Light Tool Kit (FLTK).
+// Window Driver for the Fast Light Tool Kit (FLTK).
 //
-// Copyright 2010-2011 by Bill Spitzak and others.
+// Copyright 2010-2013 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -20,36 +20,40 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA.
 //
-// Please report all bugs and problems to:
+// Please report all bugs and problems on the following page:
 //
 //     http://www.fltk.org/str.php
 //
+/** \file CocoaWindowDriver.h
+ */
 
-#include <fltk3/run.h>
-#include <fltk3/Device.h>
-#include <fltk3/Image.h>
+#ifndef FLTK3_MSWINDOWS_WIN32_WINDOW_DRIVER_H
+#define FLTK3_MSWINDOWS_WIN32_WINDOW_DRIVER_H
 
+#include <config.h>
 
-fltk3::SurfaceDevice* fltk3::SurfaceDevice::_surface; // the current target surface of graphics operations
+#ifdef WIN32
 
-fltk3::DisplayDevice *fltk3::DisplayDevice::_display; // the platform display
+#include <fltk3/WindowDriver.h>
 
+namespace fltk3 {
+  
+  class FLTK3_EXPORT Win32WindowDriver : public fltk3::WindowDriver {
+  public:
+    Win32WindowDriver();
+    
+    virtual void iconize(fltk3::Window*);
+    virtual void decoration_size(bool, int&, int&, int&, int&);
 
-/** \brief Use this drawing surface for future graphics requests. */
-void fltk3::SurfaceDevice::set_current(void)
-{
-  fltk3::graphics_driver = _driver;
-  _surface = this;
+  };
+  
+  extern FLTK3_EXPORT Win32WindowDriver win32_window_driver;
+
 }
 
+#endif // WIN32
 
-fltk3::SurfaceDevice::~SurfaceDevice() { }
-
-
-fltk3::DisplayDevice::DisplayDevice(fltk3::GraphicsDriver *graphics_driver) : fltk3::SurfaceDevice( graphics_driver) {
-  this->set_current();
-  _display = this;
-}
+#endif // FLTK3_MSWINDOWS_WIN32_WINDOW_DRIVER_H
 
 //
 // End of "$Id$".

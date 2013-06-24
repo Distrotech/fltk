@@ -42,74 +42,8 @@
 // FIXME: this would probably better be in class fltk3::
 int fl_line_width_ = 0;
 
-#ifdef __APPLE_QUARTZ__
-float fl_quartz_line_width_ = 1.0f;
-static enum CGLineCap fl_quartz_line_cap_ = kCGLineCapButt;
-static enum CGLineJoin fl_quartz_line_join_ = kCGLineJoinMiter;
-static CGFloat *fl_quartz_line_pattern = 0;
-static int fl_quartz_line_pattern_size = 0;
-void fl_quartz_restore_line_style_() {
-  CGContextSetLineWidth(fl_gc, fl_quartz_line_width_);
-  CGContextSetLineCap(fl_gc, fl_quartz_line_cap_);
-  CGContextSetLineJoin(fl_gc, fl_quartz_line_join_);
-  CGContextSetLineDash(fl_gc, 0, fl_quartz_line_pattern, fl_quartz_line_pattern_size);
-}
-#endif
 
 #ifdef __APPLE__
-void fltk3::QuartzGraphicsDriver::line_style(int style, int width, char* dashes) {
-  // save line width in global variable for X11 clipping
-  if (width == 0) fl_line_width_ = 1;
-  else fl_line_width_ = width>0 ? width : -width;
-  static enum CGLineCap Cap[4] = { kCGLineCapButt, kCGLineCapButt, 
-                                   kCGLineCapRound, kCGLineCapSquare };
-  static enum CGLineJoin Join[4] = { kCGLineJoinMiter, kCGLineJoinMiter, 
-                                    kCGLineJoinRound, kCGLineJoinBevel };
-  if (width<1) width = 1;
-  fl_quartz_line_width_ = (float)width; 
-  fl_quartz_line_cap_ = Cap[(style>>8)&3];
-  fl_quartz_line_join_ = Join[(style>>12)&3];
-  char *d = dashes; 
-  static CGFloat pattern[16];
-  if (d && *d) {
-	CGFloat *p = pattern;
-    while (*d) { *p++ = (float)*d++; }
-    fl_quartz_line_pattern = pattern;
-    fl_quartz_line_pattern_size = d-dashes;
-  } else if (style & 0xff) {
-    char dash, dot, gap;
-    // adjust lengths to account for cap:
-    if (style & 0x200) {
-      dash = char(2*width);
-      dot = 1; 
-      gap = char(2*width-1);
-    } else {
-      dash = char(3*width);
-      dot = gap = char(width);
-    }
-	CGFloat *p = pattern;
-    switch (style & 0xff) {
-    case fltk3::DASH:       *p++ = dash; *p++ = gap; break;
-    case fltk3::DOT:        *p++ = dot; *p++ = gap; break;
-    case fltk3::DASHDOT:    *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; break;
-    case fltk3::DASHDOTDOT: *p++ = dash; *p++ = gap; *p++ = dot; *p++ = gap; *p++ = dot; *p++ = gap; break;
-    }
-    fl_quartz_line_pattern_size = p-pattern;
-    fl_quartz_line_pattern = pattern;
-  } else {
-    fl_quartz_line_pattern = 0; 
-		fl_quartz_line_pattern_size = 0;
-  }
-  fl_quartz_restore_line_style_();
-}
-
-void fltk3::PrinterQuartzGraphicsDriver::line_style(int style, int width, char* dashes) {
-  QuartzGraphicsDriver::line_style(style, width, dashes);
-  if ( style == fltk3::SOLID && dashes == NULL ) {  // when printing kCGLineCapSquare seems better for solid lines
-    fl_quartz_line_cap_ = kCGLineCapSquare;
-    CGContextSetLineCap(fl_gc, fl_quartz_line_cap_);
-  }
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::line_style(int style, int width, char* dashes) {
   // save line width in global variable for X11 clipping

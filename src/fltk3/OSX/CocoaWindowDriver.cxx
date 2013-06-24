@@ -25,31 +25,38 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/run.h>
-#include <fltk3/Device.h>
-#include <fltk3/Image.h>
+#include <config.h>
+
+#ifdef __APPLE__
+
+#include "CocoaWindowDriver.h"
 
 
-fltk3::SurfaceDevice* fltk3::SurfaceDevice::_surface; // the current target surface of graphics operations
-
-fltk3::DisplayDevice *fltk3::DisplayDevice::_display; // the platform display
+fltk3::CocoaWindowDriver fltk3::cocoa_window_driver;
 
 
-/** \brief Use this drawing surface for future graphics requests. */
-void fltk3::SurfaceDevice::set_current(void)
+fltk3::CocoaWindowDriver::CocoaWindowDriver()
 {
-  fltk3::graphics_driver = _driver;
-  _surface = this;
 }
 
 
-fltk3::SurfaceDevice::~SurfaceDevice() { }
-
-
-fltk3::DisplayDevice::DisplayDevice(fltk3::GraphicsDriver *graphics_driver) : fltk3::SurfaceDevice( graphics_driver) {
-  this->set_current();
-  _display = this;
+void fltk3::CocoaWindowDriver::iconize(fltk3::Window* win)
+{
+  Fl_X::i(win)->collapse();
 }
+
+
+void fltk3::CocoaWindowDriver::decoration_size(bool, int& top, int& left, int& right, int& bottom)
+{
+  top = 24;
+  left = 2;
+  right = 2;
+  bottom = 2;
+}
+
+
+
+#endif // __APPLE__
 
 //
 // End of "$Id$".

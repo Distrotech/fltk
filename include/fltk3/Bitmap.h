@@ -46,7 +46,7 @@ namespace fltk3 {
   class XlibGraphicsDriver;
 
   /**
-   \brief STore and draw single color images.
+   \brief Store and draw single color images.
    
    The fltk3::Bitmap class supports caching and drawing of mono-color
    (bitmap) images. Images are drawn using the current color.

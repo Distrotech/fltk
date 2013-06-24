@@ -26,29 +26,37 @@
 //
 
 #include <fltk3/run.h>
-#include <fltk3/Device.h>
+#include <fltk3/GraphicsDriver.h>
 #include <fltk3/Image.h>
 
 
-fltk3::SurfaceDevice* fltk3::SurfaceDevice::_surface; // the current target surface of graphics operations
+// Pointer to the fltk3::GraphicsDriver object that currently handles all graphics operations
+FLTK3_EXPORT fltk3::GraphicsDriver *fltk3::graphics_driver; 
 
-fltk3::DisplayDevice *fltk3::DisplayDevice::_display; // the platform display
+const fltk3::GraphicsDriver::matrix fltk3::GraphicsDriver::m0 = {1, 0, 0, 1, 0, 0};
 
-
-/** \brief Use this drawing surface for future graphics requests. */
-void fltk3::SurfaceDevice::set_current(void)
-{
-  fltk3::graphics_driver = _driver;
-  _surface = this;
+fltk3::GraphicsDriver::GraphicsDriver() {
+  font_ = 0;
+  size_ = 0;
+  sptr=0; rstackptr=0; 
+  rstack[0] = NULL;
+  fl_clip_state_number=0;
+  m = m0; 
+  fl_matrix = &m; 
+  p = (XPOINT *)0;
+  font_descriptor_ = NULL;
+  p_size = 0;
+  n = 0;
+  o.x = o.y = 0;
+  optr = 0;
 }
 
-
-fltk3::SurfaceDevice::~SurfaceDevice() { }
-
-
-fltk3::DisplayDevice::DisplayDevice(fltk3::GraphicsDriver *graphics_driver) : fltk3::SurfaceDevice( graphics_driver) {
-  this->set_current();
-  _display = this;
+void fltk3::GraphicsDriver::text_extents(const char*t, int n, int& dx, int& dy, int& w, int& h)
+{
+  w = (int)width(t, n);
+  h = - height();
+  dx = 0;
+  dy = descent();
 }
 
 //

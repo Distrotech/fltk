@@ -33,6 +33,8 @@
 #include <fltk3/draw.h>
 #import <Cocoa/Cocoa.h>
 
+#include "quartz_graphics_driver.h"
+
 extern void fl_quartz_restore_line_style_();
 
 fltk3::SystemPrinter::SystemPrinter(void)

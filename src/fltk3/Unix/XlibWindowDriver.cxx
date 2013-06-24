@@ -25,31 +25,39 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/run.h>
-#include <fltk3/Device.h>
-#include <fltk3/Image.h>
+#include <config.h>
+
+#ifdef USE_X11
+
+#include "XlibWindowDriver.h"
+#include <fltk3/x.h>
+#include <stdio.h>
 
 
-fltk3::SurfaceDevice* fltk3::SurfaceDevice::_surface; // the current target surface of graphics operations
-
-fltk3::DisplayDevice *fltk3::DisplayDevice::_display; // the platform display
-
-
-/** \brief Use this drawing surface for future graphics requests. */
-void fltk3::SurfaceDevice::set_current(void)
+fltk3::XlibWindowDriver::XlibWindowDriver()
 {
-  fltk3::graphics_driver = _driver;
-  _surface = this;
+  fprintf(stderr, "Loading Window Driver\n");
 }
 
 
-fltk3::SurfaceDevice::~SurfaceDevice() { }
-
-
-fltk3::DisplayDevice::DisplayDevice(fltk3::GraphicsDriver *graphics_driver) : fltk3::SurfaceDevice( graphics_driver) {
-  this->set_current();
-  _display = this;
+void fltk3::XlibWindowDriver::iconize(fltk3::Window* win)
+{
+  XIconifyWindow(fl_display, Fl_X::i(win)->xid, fl_screen);
 }
+
+
+void fltk3::XlibWindowDriver::decoration_size(bool, int& top, int& left, int& right, int& bottom)
+{
+  // Ensure border is on screen; these values are generic enough
+  // to work with many window managers, and are based on KDE defaults.
+  top = 20;
+  left = 4;
+  right = 4;
+  bottom = 8;
+}
+
+
+#endif // USE_X11
 
 //
 // End of "$Id$".

@@ -53,6 +53,8 @@
 #include "flstring.h"
 #include <ctype.h>
 
+#include "OSX/quartz_graphics_driver.h"
+
 #ifdef WIN32
 extern void fl_release_dc(HWND, HDC);      // located in Fl_win32.cxx
 extern UINT win_pixmap_bg_color; // computed by fltk3::draw_pixmap()
@@ -143,12 +145,6 @@ int fltk3::Pixmap::prepare(int XP, int YP, int WP, int HP, int &cx, int &cy,
 }  
 
 #ifdef __APPLE__
-void fltk3::QuartzGraphicsDriver::draw(fltk3::Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  if (pxm->prepare(XP, YP, WP, HP, cx, cy, X, Y, W, H)) return;
-  copy_offscreen(X, Y, W, H, (fltk3::Offscreen)pxm->id_, cx, cy);
-}
-
 #elif defined(WIN32)
 
 void fltk3::GDIGraphicsDriver::draw(fltk3::Pixmap *pxm, int XP, int YP, int WP, int HP, int cx, int cy) {

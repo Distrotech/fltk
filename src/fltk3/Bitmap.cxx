@@ -77,6 +77,7 @@ fltk3::Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
   CGDataProviderRelease(srcp);
   return (fltk3::Bitmask)id_;
 }
+
 void fl_delete_bitmask(fltk3::Bitmask bm) {
   if (bm) CGImageRelease((CGImageRef)bm);
 }
@@ -287,25 +288,17 @@ static int start(fltk3::Bitmap *bm, int XP, int YP, int WP, int HP, int w, int h
   return 0;
 }
 
-#ifdef __APPLE__
-void fltk3::QuartzGraphicsDriver::draw(fltk3::Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  if (!bm->array) {
-    bm->draw_empty(XP, YP);
-    return;
-  }
-  if (start(bm, XP, YP, WP, HP, bm->w(), bm->h(), cx, cy, X, Y, W, H)) {
-    return;
-  }
-  if (!bm->id_) bm->id_ = fl_create_bitmask(bm->w(), bm->h(), bm->array);
-  if (bm->id_ && fl_gc) {
-    CGRect rect = { { X+origin_x(), Y+origin_y()}, { W, H } };
-    Fl_X::q_begin_image(rect, cx, cy, bm->w(), bm->h());
-    CGContextDrawImage(fl_gc, rect, (CGImageRef)bm->id_);
-    Fl_X::q_end_image();
-  }
+int fltk3_start(fltk3::Bitmap *bm,
+                int XP, int YP, int WP, int HP,
+                int w, int h, int &cx, int &cy,
+                int &X, int &Y, int &W, int &H)
+{
+  return ::start(bm, XP, YP, WP, HP, w, h, cx, cy, X, Y, W, H);
 }
 
+
+
+#ifdef __APPLE__
 #elif defined(WIN32)
 // implements fltk3::GDIGraphicsDriver::draw(fltk3::Bitmap*,...) with an extra parameter
 // to distinguish betwen display and printer

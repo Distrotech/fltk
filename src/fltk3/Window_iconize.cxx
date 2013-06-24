@@ -26,6 +26,7 @@
 //
 
 #include <fltk3/x.h>
+#include <fltk3/WindowDriver.h>
 
 extern char fl_show_iconic; // in Fl_x.cxx
 
@@ -34,13 +35,7 @@ void fltk3::Window::iconize() {
     fl_show_iconic = 1;
     show();
   } else {
-#ifdef WIN32
-    ShowWindow(i->xid, SW_SHOWMINNOACTIVE);
-#elif defined(__APPLE__)
-    i->collapse();
-#else
-    XIconifyWindow(fl_display, i->xid, fl_screen);
-#endif
+    window_driver->iconize(this);
   }
 }
 

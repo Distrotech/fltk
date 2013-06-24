@@ -453,7 +453,7 @@ workspace FLTK {open
       target_path lib
       makefile_path src
     } {
-      folder Headers {
+      folder Headers {open
         uuid_Xcode4_Group {C2F00625-E401-4002-85F6-FA183D17629D}
       } {
         file_ref {all.h} {
@@ -1552,8 +1552,24 @@ workspace FLTK {open
           list_env 124
           filename_and_path {include/fltk3/XPMImage.h}
         }
+        file_ref {GraphicsDriver.h} {
+          uuid_Xcode4_BuildFile {0076F488-6E26-41FD-A543-7BE16F7FC9C4}
+          uuid_Xcode4_FileRef {054C1116-20CC-4DB7-A107-98C7ADBD449C}
+          uuid_Xcode4_BuildFileInHeaders {A1C9C389-B0E6-4FF9-A4CA-D36D929F6AA5}
+          build_env 96
+          list_env 124
+          filename_and_path {include/fltk3/GraphicsDriver.h}
+        }
+        file_ref {WindowDriver.h} {
+          uuid_Xcode4_BuildFile {6FBB5DF2-AE96-4077-A690-F046D1711C43}
+          uuid_Xcode4_FileRef {C9FF7807-A786-43E9-91C9-1714A6979952}
+          uuid_Xcode4_BuildFileInHeaders {4AE7F4F4-5264-48B6-B5F1-02484BD1F53C}
+          build_env 96
+          list_env 124
+          filename_and_path {include/fltk3/WindowDriver.h}
+        }
       }
-      folder Sources {open selected
+      folder Sources {open
         uuid_Xcode4_Group {91990322-0AF9-42F2-A077-713540EE5AB1}
       } {
         file_ref {Adjuster.cxx} {
@@ -2508,6 +2524,18 @@ workspace FLTK {open
           uuid_Xcode4_BuildFileInSources {2A8804F6-AFE8-4FED-BF50-8CAEF1B22A54}
           filename_and_path {src/fltk3/vsnprintf.c}
         }
+        file_ref {GraphicsDriver.cxx} {
+          uuid_Xcode4_BuildFile {342475FD-F99A-41F2-902A-D832B55C0DBD}
+          uuid_Xcode4_FileRef {4B356C42-1738-4639-95FA-1278DAE03740}
+          uuid_Xcode4_BuildFileInSources {323F056C-EA5A-4312-9611-60F7F29CFC0A}
+          filename_and_path {src/fltk3/GraphicsDriver.cxx}
+        }
+        file_ref {WindowDriver.cxx} {
+          uuid_Xcode4_BuildFile {406B8DC3-409B-4F53-BD6B-A46C34CCBBC7}
+          uuid_Xcode4_FileRef {D21B7987-3B56-4046-AC58-AC17C7408569}
+          uuid_Xcode4_BuildFileInSources {28B707BB-58BD-4F7A-B2E0-85174E4218F6}
+          filename_and_path {src/fltk3/WindowDriver.cxx}
+        }
         folder OSX {open
         } {
           file_ref {cocoa.mm} {
@@ -2577,6 +2605,32 @@ workspace FLTK {open
             uuid_Xcode4_BuildFileInSources {221CE674-FE5C-47DF-AA9B-E11DEB8E95DE}
             filename_and_path {src/fltk3/OSX/cocoa_set_fonts.cxx}
           }
+          file_ref {quartz_graphics_driver.cxx} {selected
+            uuid_Xcode4_BuildFile {386AACA8-D544-4781-8B23-47162CB75C48}
+            uuid_Xcode4_FileRef {AD674564-EB4C-4B78-8D9E-9B6836D7DC06}
+            uuid_Xcode4_BuildFileInSources {E9A5DBBB-37D3-4717-97F5-4CD6CC182E74}
+            filename_and_path {src/fltk3/OSX/quartz_graphics_driver.cxx}
+          }
+          file_ref {quartz_graphics_driver.h} {
+            uuid_Xcode4_BuildFile {69E5439E-A168-40DC-913E-4879637768CA}
+            uuid_Xcode4_FileRef {7CEF9255-EDEC-4798-814A-25FA7E15D1AA}
+            uuid_Xcode4_BuildFileInSources {D40D9EDD-3A95-48DA-B04A-026FFBC14FC8}
+            build_env 0
+            filename_and_path {src/fltk3/OSX/quartz_graphics_driver.h}
+          }
+          file_ref {CocoaWindowDriver.cxx} {
+            uuid_Xcode4_BuildFile {EF4AFA56-3760-4A48-959A-48B697835929}
+            uuid_Xcode4_FileRef {7EA97242-A877-44BD-BA7E-B17524F92B15}
+            uuid_Xcode4_BuildFileInSources {ADC4E478-0ED2-43DE-A01A-6FFF59299D8C}
+            filename_and_path {src/fltk3/OSX/CocoaWindowDriver.cxx}
+          }
+          file_ref {CocoaWindowDriver.h} {
+            uuid_Xcode4_BuildFile {E356708A-CF42-4B00-8707-BA14DF2591CA}
+            uuid_Xcode4_FileRef {79AFA38C-A99D-4D89-8EB2-6EE63803E138}
+            uuid_Xcode4_BuildFileInSources {832118D3-C7F0-4E3C-B39D-D11A79A8F57C}
+            build_env 0
+            filename_and_path {src/fltk3/OSX/CocoaWindowDriver.h}
+          }
         }
         folder MSWindows {open
         } {
@@ -2645,6 +2699,19 @@ workspace FLTK {open
             uuid_Xcode4_FileRef {FB4B2995-FB56-4AAD-8C34-96E7A6DA8BD2}
             uuid_Xcode4_BuildFileInSources {A6BE3BE4-CA97-4154-999B-0E8731597B55}
             filename_and_path {src/fltk3/MSWindows/GDIPrinter.cxx}
+          }
+          file_ref {Win32WindowDriver.cxx} {
+            uuid_Xcode4_BuildFile {FBFBBAF5-B99C-4AA3-B3B1-F6237272BA06}
+            uuid_Xcode4_FileRef {37D8CA61-23E2-4505-9498-519E259BC92D}
+            uuid_Xcode4_BuildFileInSources {7E444502-0ACA-4770-845A-0DF97DEF3AC1}
+            filename_and_path {src/fltk3/MSWindows/Win32WindowDriver.cxx}
+          }
+          file_ref {Win32WindowDriver.h} {
+            uuid_Xcode4_BuildFile {6BAFF70D-31FF-4209-BE2A-27C7D2D04F36}
+            uuid_Xcode4_FileRef {B40AF55C-C5D6-4172-A1C3-AA600EE2EC48}
+            uuid_Xcode4_BuildFileInSources {25096CEE-7959-4712-AB09-7814B3E59793}
+            build_env 0
+            filename_and_path {src/fltk3/MSWindows/Win32WindowDriver.h}
           }
         }
         folder Unix {open
@@ -2720,6 +2787,19 @@ workspace FLTK {open
             uuid_Xcode4_FileRef {DD49A7FB-3437-40ED-BFF2-31AC5C711644}
             uuid_Xcode4_BuildFileInSources {B4338D79-B6C6-4E26-9947-AF7FEC0A1D08}
             filename_and_path {src/fltk3/Unix/x11_print_panel.cxx}
+          }
+          file_ref {XlibWindowDriver.cxx} {
+            uuid_Xcode4_BuildFile {B9603927-7533-4204-93F0-E5B4F0FE4C42}
+            uuid_Xcode4_FileRef {A220AD83-3191-4B74-8008-656F453F9ACD}
+            uuid_Xcode4_BuildFileInSources {0E014ED4-8897-4252-945A-86C3FD5C19C8}
+            filename_and_path {src/fltk3/Unix/XlibWindowDriver.cxx}
+          }
+          file_ref {XlibWindowDriver.h} {
+            uuid_Xcode4_BuildFile {A3036381-F38E-4F07-8C25-287D7FA41A25}
+            uuid_Xcode4_FileRef {12D15B78-5BFA-4FE9-877F-DBD153907A9E}
+            uuid_Xcode4_BuildFileInSources {92598726-B521-40D6-BFB8-16CD121A0E1A}
+            build_env 0
+            filename_and_path {src/fltk3/Unix/XlibWindowDriver.h}
           }
         }
       }

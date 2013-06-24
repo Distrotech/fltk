@@ -189,17 +189,6 @@ void fltk3::GraphicsDriver::origin(int x, int y) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::rect(int x, int y, int w, int h) {
-  if (w<=0 || h<=0) return;
-  x += origin_x(); y += origin_y();
-  CGRect rect = CGRectMake(x, y, w-1, h-1);
-  CGContextStrokeRect(fl_gc, rect);
-}
-void fltk3::PrinterQuartzGraphicsDriver::rect(int x, int y, int w, int h) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  QuartzGraphicsDriver::rect(x, y, w, h);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::rect(int x, int y, int w, int h) {
   if (w<=0 || h<=0) return;
@@ -221,12 +210,6 @@ void fltk3::XlibGraphicsDriver::rect(int x, int y, int w, int h) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::rectf(int x, int y, int w, int h) {
-  if (w<=0 || h<=0) return;
-  x += origin_x(); y += origin_y();
-  CGRect rect = CGRectMake(x, y, w-0.9, h-0.9);
-  CGContextFillRect(fl_gc, rect);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::rectf(int x, int y, int w, int h) {
   if (w<=0 || h<=0) return;
@@ -247,17 +230,6 @@ void fltk3::XlibGraphicsDriver::rectf(int x, int y, int w, int h) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::xyline(int x, int y, int x1) {
-  x += origin_x(); y += origin_y(); x1 += origin_x();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y);
-  CGContextStrokePath(fl_gc);
-}
-void fltk3::PrinterQuartzGraphicsDriver::xyline(int x, int y, int x1) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  QuartzGraphicsDriver::xyline(x, y, x1);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::xyline(int x, int y, int x1) {
   x += origin_x(); y += origin_y(); x1 += origin_x();
@@ -272,18 +244,6 @@ void fltk3::XlibGraphicsDriver::xyline(int x, int y, int x1) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::xyline(int x, int y, int x1, int y2) {
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y2 += origin_y();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y);
-  CGContextAddLineToPoint(fl_gc, x1, y2);
-  CGContextStrokePath(fl_gc);
-}
-void fltk3::PrinterQuartzGraphicsDriver::xyline(int x, int y, int x1, int y2) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  QuartzGraphicsDriver::xyline(x, y, x1, y2);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::xyline(int x, int y, int x1, int y2) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y2 += origin_y();
@@ -305,19 +265,6 @@ void fltk3::XlibGraphicsDriver::xyline(int x, int y, int x1, int y2) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::xyline(int x, int y, int x1, int y2, int x3) {
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y2 += origin_y(); x3 += origin_x();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y);
-  CGContextAddLineToPoint(fl_gc, x1, y2);
-  CGContextAddLineToPoint(fl_gc, x3, y2);
-  CGContextStrokePath(fl_gc);
-}
-void fltk3::PrinterQuartzGraphicsDriver::xyline(int x, int y, int x1, int y2, int x3) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  QuartzGraphicsDriver::xyline(x, y, x1, y2, x3);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::xyline(int x, int y, int x1, int y2, int x3) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y2 += origin_y(); x3 += origin_x();
@@ -341,17 +288,6 @@ void fltk3::XlibGraphicsDriver::xyline(int x, int y, int x1, int y2, int x3) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::yxline(int x, int y, int y1) {
-  x += origin_x(); y += origin_y(); y1 += origin_y();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x, y1);
-  CGContextStrokePath(fl_gc);
-}
-void fltk3::PrinterQuartzGraphicsDriver::yxline(int x, int y, int y1) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  QuartzGraphicsDriver::yxline(x, y, y1);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::yxline(int x, int y, int y1) {
   x += origin_x(); y += origin_y(); y1 += origin_y();
@@ -368,18 +304,6 @@ void fltk3::XlibGraphicsDriver::yxline(int x, int y, int y1) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::yxline(int x, int y, int y1, int x2) {
-  x += origin_x(); y += origin_y(); y1 += origin_y(); x2 += origin_x();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y1);
-  CGContextStrokePath(fl_gc);
-}
-void fltk3::PrinterQuartzGraphicsDriver::yxline(int x, int y, int y1, int x2) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  QuartzGraphicsDriver::yxline(x, y, y1, x2);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::yxline(int x, int y, int y1, int x2) {
   x += origin_x(); y += origin_y(); y1 += origin_y(); x2 += origin_x();
@@ -401,19 +325,6 @@ void fltk3::XlibGraphicsDriver::yxline(int x, int y, int y1, int x2) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::yxline(int x, int y, int y1, int x2, int y3) {
-  x += origin_x(); y += origin_y(); y1 += origin_y(); x2 += origin_x(); y3 += origin_y();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y3);
-  CGContextStrokePath(fl_gc);
-}
-void fltk3::PrinterQuartzGraphicsDriver::yxline(int x, int y, int y1, int x2, int y3) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  QuartzGraphicsDriver::yxline(x, y, y1, x2, y3);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::yxline(int x, int y, int y1, int x2, int y3) {
   x += origin_x(); y += origin_y(); y1 += origin_y(); x2 += origin_x(); y3 += origin_y();
@@ -437,14 +348,6 @@ void fltk3::XlibGraphicsDriver::yxline(int x, int y, int y1, int x2, int y3) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::line(int x, int y, int x1, int y1) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y1);
-  CGContextStrokePath(fl_gc);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::line(int x, int y, int x1, int y1) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y();
@@ -463,15 +366,6 @@ void fltk3::XlibGraphicsDriver::line(int x, int y, int x1, int y1) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::line(int x, int y, int x1, int y1, int x2, int y2) {
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); x2 += origin_x(); y2 += origin_y();
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y2);
-  CGContextStrokePath(fl_gc);
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::line(int x, int y, int x1, int y1, int x2, int y2) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); x2 += origin_x(); y2 += origin_y();
@@ -495,16 +389,6 @@ void fltk3::XlibGraphicsDriver::line(int x, int y, int x1, int y1, int x2, int y
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::loop(int x, int y, int x1, int y1, int x2, int y2) {
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); x2 += origin_x(); y2 += origin_y();
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y2);
-  CGContextClosePath(fl_gc);
-  CGContextStrokePath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::loop(int x, int y, int x1, int y1, int x2, int y2) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); x2 += origin_x(); y2 += origin_y();
@@ -527,18 +411,6 @@ void fltk3::XlibGraphicsDriver::loop(int x, int y, int x1, int y1, int x2, int y
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::loop(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); 
-  x2 += origin_x(); y2 += origin_y(); x3 += origin_x(); y3 += origin_y();
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y2);
-  CGContextAddLineToPoint(fl_gc, x3, y3);
-  CGContextClosePath(fl_gc);
-  CGContextStrokePath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::loop(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); 
@@ -565,16 +437,6 @@ void fltk3::XlibGraphicsDriver::loop(int x, int y, int x1, int y1, int x2, int y
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::polygon(int x, int y, int x1, int y1, int x2, int y2) {
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); x2 += origin_x(); y2 += origin_y();
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y2);
-  CGContextClosePath(fl_gc);
-  CGContextFillPath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::polygon(int x, int y, int x1, int y1, int x2, int y2) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); x2 += origin_x(); y2 += origin_y();
@@ -600,18 +462,6 @@ void fltk3::XlibGraphicsDriver::polygon(int x, int y, int x1, int y1, int x2, in
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::polygon(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
-  x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); 
-  x2 += origin_x(); y2 += origin_y(); x3 += origin_x(); y3 += origin_y();
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextMoveToPoint(fl_gc, x, y);
-  CGContextAddLineToPoint(fl_gc, x1, y1);
-  CGContextAddLineToPoint(fl_gc, x2, y2);
-  CGContextAddLineToPoint(fl_gc, x3, y3);
-  CGContextClosePath(fl_gc);
-  CGContextFillPath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::polygon(int x, int y, int x1, int y1, int x2, int y2, int x3, int y3) {
   x += origin_x(); y += origin_y(); x1 += origin_x(); y1 += origin_y(); 
@@ -641,10 +491,6 @@ void fltk3::XlibGraphicsDriver::polygon(int x, int y, int x1, int y1, int x2, in
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::point(int x, int y) {
-  x += origin_x(); y += origin_y();
-  CGContextFillRect(fl_gc, CGRectMake(x - 0.5, y - 0.5, 1, 1) );
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::point(int x, int y) {
   x += origin_x(); y += origin_y();
@@ -675,18 +521,6 @@ fltk3::Region XRectangleRegion(int x, int y, int w, int h) {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::restore_clip() {
-  fl_clip_state_number++;
-  fltk3::Region r = clip_region();
-  if ( fl_window || fl_gc) { // clipping for a true window or for an offscreen drawing world (CGBitmap)
-    Fl_X::q_clear_clipping();
-    Fl_X::q_fill_context();//flip coords if bitmap context
-    //apply program clip
-    if (r) {
-      CGContextClipToRects(fl_gc, r->rects, r->count);
-    }
-  }
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::restore_clip() {
   fl_clip_state_number++;
@@ -716,22 +550,6 @@ void fltk3::GraphicsDriver::region_stack_push(fltk3::Region r) {
 }
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::push_clip(int x, int y, int w, int h) {
-  x += origin_x(); y += origin_y();
-  fltk3::Region r;
-  if (w > 0 && h > 0) {
-    r = XRectangleRegion(x,y,w,h);
-    fltk3::Region current = clip_region();
-    if (current) {
-      XDestroyRegion(r);
-      r = Fl_X::intersect_region_and_rect(current, x,y,w,h);
-    }
-  } else { // make empty clip region:
-    r = XRectangleRegion(0,0,0,0);
-  }
-  region_stack_push(r);
-  restore_clip();
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::push_clip(int x, int y, int w, int h) {
   x += origin_x(); y += origin_y();
@@ -788,18 +606,6 @@ void fltk3::GraphicsDriver::pop_clip() {
 
 
 #if defined(__APPLE_QUARTZ__)
-int fltk3::QuartzGraphicsDriver::not_clipped(int x, int y, int w, int h) {
-  x += origin_x(); y += origin_y();
-  if (x+w <= 0 || y+h <= 0) return 0;
-  fltk3::Region r = clip_region();
-  if (!r) return 1;
-  CGRect arg = fl_cgrectmake_cocoa(x, y, w, h);
-  for (int i = 0; i < r->count; i++) {
-    CGRect test = CGRectIntersection(r->rects[i], arg);
-    if (!CGRectIsEmpty(test)) return 1;
-  }
-  return 0;
-}
 #elif defined(WIN32)
 int fltk3::GDIGraphicsDriver::not_clipped(int x, int y, int w, int h) {
   x += origin_x(); y += origin_y();
@@ -831,34 +637,6 @@ int fltk3::XlibGraphicsDriver::not_clipped(int x, int y, int w, int h) {
 
 // return rectangle surrounding intersection of this rectangle and clip:
 #if defined(__APPLE_QUARTZ__)
-int fltk3::QuartzGraphicsDriver::clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
-  int ret;
-  x += origin_x(); y += origin_y();
-  X = x; Y = y; W = w; H = h;
-  fltk3::Region r = clip_region();
-  if (!r) {
-    ret = 0;
-  } else {
-    CGRect arg = fl_cgrectmake_cocoa(x, y, w, h);
-    CGRect u = CGRectMake(0,0,0,0);
-    CGRect test;
-    for(int i = 0; i < r->count; i++) {
-      test = CGRectIntersection(r->rects[i], arg);
-      if( ! CGRectIsEmpty(test) ) {
-        if(CGRectIsEmpty(u)) u = test;
-        else u = CGRectUnion(u, test);
-      }
-    }
-    X = int(u.origin.x);
-    Y = int(u.origin.y);
-    W = int(u.size.width + 1);
-    H = int(u.size.height + 1);
-    if(CGRectIsEmpty(u)) W = H = 0;
-    ret = ! CGRectEqualToRect(arg, u);
-  }
-  X -= origin_x(); Y -= origin_y();
-  return ret;
-}
 #elif defined(WIN32)
 int fltk3::GDIGraphicsDriver::clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H){
   X = x; Y = y; W = w; H = h;

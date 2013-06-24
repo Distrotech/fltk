@@ -460,55 +460,15 @@ static int start(fltk3::RGBImage *img, int XP, int YP, int WP, int HP, int w, in
   return 0;
 }
 
-#ifdef __APPLE__
-static void imgProviderReleaseData (void *info, const void *data, size_t size)
+int fltk3_start(fltk3::RGBImage *img,
+                int XP, int YP, int WP, int HP,
+                int w, int h, int &cx, int &cy,
+                int &X, int &Y, int &W, int &H)
 {
-  delete[] (unsigned char *)data;
+  return ::start(img, XP, YP, WP, HP, w, h, cx, cy, X, Y, W, H);
 }
 
-void fltk3::QuartzGraphicsDriver::draw(fltk3::RGBImage *img, int XP, int YP, int WP, int HP, int cx, int cy) {
-  int X, Y, W, H;
-  // Don't draw an empty image...
-  if (!img->d() || !img->array) {
-    img->draw_empty(XP, YP);
-    return;
-  }
-  if (start(img, XP, YP, WP, HP, img->w(), img->h(), cx, cy, X, Y, W, H)) {
-    return;
-  }
-  if (!img->id_) {
-    CGColorSpaceRef lut = 0;
-    CGDataProviderReleaseDataCallback release_cb = NULL;
-    const uchar* img_bytes = img->array;
-    int ld = img->ld();
-    if (is_printer()) {
-      // when printing, duplicate the image data so it can be deleted later, at page end
-      release_cb = imgProviderReleaseData;
-      fltk3::RGBImage* img2 = (fltk3::RGBImage*)img->copy();
-      img2->alloc_array = 0;
-      img_bytes = img2->array;
-      ld = 0;
-      delete img2;
-    }
-    if (img->d()<=2)
-      lut = CGColorSpaceCreateDeviceGray();
-    else
-      lut = CGColorSpaceCreateDeviceRGB();
-    CGDataProviderRef src = CGDataProviderCreateWithData( NULL, img_bytes, img->w()*img->h()*img->d(), release_cb);
-    img->id_ = CGImageCreate( img->w(), img->h(), 8, img->d()*8, ld?ld:img->w()*img->d(),
-                             lut, (img->d()&1)?kCGImageAlphaNone:kCGImageAlphaLast,
-                             src, 0L, false, kCGRenderingIntentDefault);
-    CGColorSpaceRelease(lut);
-    CGDataProviderRelease(src);
-  }
-  if (img->id_ && fl_gc) {
-    CGRect rect = { { X+origin_x(), Y+origin_y() }, { W, H } };
-    Fl_X::q_begin_image(rect, cx, cy, img->w(), img->h());
-    CGContextDrawImage(fl_gc, rect, (CGImageRef)img->id_);
-    Fl_X::q_end_image();
-  }
-}
-
+#ifdef __APPLE__
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::draw(fltk3::RGBImage *img, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;

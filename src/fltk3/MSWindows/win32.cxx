@@ -123,6 +123,9 @@
   for async mode proper operation, not mentioning the side effects...
 */
 
+#include "Win32WindowDriver.h"
+fltk3::Win32WindowDriver fltk3::win32_window_driver;
+
 static fltk3::GDIGraphicsDriver fl_gdi_driver;
 static fltk3::DisplayDevice fl_gdi_display(&fl_gdi_driver);
 

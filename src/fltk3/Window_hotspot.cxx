@@ -27,6 +27,7 @@
 
 #include <fltk3/run.h>
 #include <fltk3/Window.h>
+#include <fltk3/WindowDriver.h>
 #include <fltk3/x.h>
 #include <stdio.h>
 
@@ -49,28 +50,8 @@ void fltk3::Window::hotspot(int X, int Y, int offscreen) {
     int bottom = 0;
 
     if (border()) {
-#ifdef WIN32
-      if (size_range_set && (maxw != minw || maxh != minh)) {
-        left = right = GetSystemMetrics(SM_CXSIZEFRAME);
-        top = bottom = GetSystemMetrics(SM_CYSIZEFRAME);
-      } else {
-        left = right = GetSystemMetrics(SM_CXFIXEDFRAME); 
-        top = bottom = GetSystemMetrics(SM_CYFIXEDFRAME);
-      }
-      top += GetSystemMetrics(SM_CYCAPTION);
-#elif defined(__APPLE__)
-      top = 24;
-      left = 2;
-      right = 2;
-      bottom = 2;
-#else
-      // Ensure border is on screen; these values are generic enough
-      // to work with many window managers, and are based on KDE defaults.
-      top = 20;
-      left = 4;
-      right = 4;
-      bottom = 8;
-#endif
+      window_driver->decoration_size((size_range_set && (maxw != minw || maxh != minh)),
+                                     top, left, right, bottom);
     }
     // now insure contents are on-screen (more important than border):
     if (X+w()+right > scr_w+scr_x) X = scr_w+scr_x-right-w();

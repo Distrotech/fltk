@@ -655,7 +655,7 @@ Fl_Type *sort(Fl_Type *parent) {
     if (!f || (parent && f->level <= parent->level)) return f;
     n = sort(f);
     if (!f->selected) continue;
-    Fl_Type *g; // we will insert before this
+    Fl_Type *g = f; // we will insert before this
                 // sort widgets by position, so we get a decent Tab navigation
     if (f->is_widget() && !f->is_menu_item()) {
       fltk3::Widget* fw = ((Fl_Widget_Type*)f)->o;

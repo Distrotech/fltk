@@ -114,9 +114,6 @@ void fltk3::GraphicsDriver::transformed_vertex(double xf, double yf) {
   transformed_vertex0(COORD_T(rint(xf)), COORD_T(rint(yf)));
 }
 #ifdef __APPLE__
-void fltk3::QuartzGraphicsDriver::transformed_vertex(double xf, double yf) {
-  transformed_vertex0(COORD_T(xf), COORD_T(yf));
-}
 #endif
 
 void fltk3::GraphicsDriver::vertex(double x,double y) {
@@ -135,17 +132,6 @@ void fltk3::GDIGraphicsDriver::end_points() {
   for (int i=0; i<n; i++) SetPixel(fl_gc, p[i].x, p[i].y, fl_RGB());
 }
 #elif defined(__APPLE__)
-void fltk3::QuartzGraphicsDriver::end_points() {
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, true);
-  for (int i=0; i<n; i++) { 
-    CGContextMoveToPoint(fl_gc, p[i].x, p[i].y);
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-    CGContextStrokePath(fl_gc);
-  }
-  if (fl_quartz_line_width_ > 1.5f) CGContextSetShouldAntialias(fl_gc, false);
-}
 #else
 void fltk3::XlibGraphicsDriver::end_points() {
   int n = vertex_no();
@@ -155,21 +141,6 @@ void fltk3::XlibGraphicsDriver::end_points() {
 
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::end_line() {
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 2) {
-    end_points();
-    return;
-  }
-  if (n<=1) return;
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
-  for (int i=1; i<n; i++)
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-  CGContextStrokePath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::end_line() {
   int n = vertex_no();
@@ -203,23 +174,6 @@ void fltk3::GraphicsDriver::end_loop() {
 }
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::end_polygon() {
-  fixloop();
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 3) {
-    end_line();
-    return;
-  }
-  if (n<=1) return;
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
-  for (int i=1; i<n; i++) 
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-  CGContextClosePath(fl_gc);
-  CGContextFillPath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::end_polygon() {
   fixloop();
@@ -282,23 +236,6 @@ void fltk3::GDIGraphicsDriver::gap() {
 #endif
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::end_complex_polygon() {
-  gap();
-  int n = vertex_no();
-  XPOINT *p = vertices();
-  if (n < 3) {
-    end_line();
-    return;
-  }
-  if (n<=1) return;
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextMoveToPoint(fl_gc, p[0].x, p[0].y);
-  for (int i=1; i<n; i++)
-    CGContextAddLineToPoint(fl_gc, p[i].x, p[i].y);
-  CGContextClosePath(fl_gc);
-  CGContextFillPath(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::end_complex_polygon() {
   gap();
@@ -343,17 +280,6 @@ void fltk3::GraphicsDriver::prepare_circle(double x, double y, double r, int& ll
 // See fltk3::arc.c for portable version.
 
 #if defined(__APPLE_QUARTZ__)
-void fltk3::QuartzGraphicsDriver::circle(double x, double y, double r) {
-  int llx, lly, w, h;
-  double xt, yt;
-  prepare_circle(x, y, r, llx, lly, w, h, xt, yt);
-  // Quartz warning: circle won't scale to current matrix!
-  // Last argument must be 0 (counter-clockwise) or it draws nothing under __LP64__ !!!!
-  CGContextSetShouldAntialias(fl_gc, true);
-  CGContextAddArc(fl_gc, xt+origin_x(), yt+origin_y(), (w+h)*0.25f, 0, 2.0f*M_PI, 0);
-  (vertex_kind() == POLYGON ? CGContextFillPath : CGContextStrokePath)(fl_gc);
-  CGContextSetShouldAntialias(fl_gc, false);
-}
 #elif defined(WIN32)
 void fltk3::GDIGraphicsDriver::circle(double x, double y, double r) {
   int llx, lly, w, h;

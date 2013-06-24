@@ -25,31 +25,41 @@
 //     http://www.fltk.org/str.php
 //
 
-#include <fltk3/run.h>
-#include <fltk3/Device.h>
-#include <fltk3/Image.h>
+#include <config.h>
+
+#ifdef WIN32
+
+#include "Win32WindowDriver.h"
+#include <fltk3/x.h>
+#include <stdio.h>
 
 
-fltk3::SurfaceDevice* fltk3::SurfaceDevice::_surface; // the current target surface of graphics operations
-
-fltk3::DisplayDevice *fltk3::DisplayDevice::_display; // the platform display
-
-
-/** \brief Use this drawing surface for future graphics requests. */
-void fltk3::SurfaceDevice::set_current(void)
+fltk3::Win32WindowDriver::Win32WindowDriver()
 {
-  fltk3::graphics_driver = _driver;
-  _surface = this;
+  fprintf(stderr, "Loading Window Driver\n");
 }
 
 
-fltk3::SurfaceDevice::~SurfaceDevice() { }
-
-
-fltk3::DisplayDevice::DisplayDevice(fltk3::GraphicsDriver *graphics_driver) : fltk3::SurfaceDevice( graphics_driver) {
-  this->set_current();
-  _display = this;
+void fltk3::Win32WindowDriver::iconize(fltk3::Window* win)
+{
+  ShowWindow(Fl_X::i(win)->xid, SW_SHOWMINNOACTIVE);
 }
+
+
+void fltk3::Win32WindowDriver::decoration_size(bool isResizable, int& top, int& left, int& right, int& bottom)
+{
+  if (isResizable) {
+    left = right = GetSystemMetrics(SM_CXSIZEFRAME);
+    top = bottom = GetSystemMetrics(SM_CYSIZEFRAME);
+  } else {
+    left = right = GetSystemMetrics(SM_CXFIXEDFRAME);
+    top = bottom = GetSystemMetrics(SM_CYFIXEDFRAME);
+  }
+  top += GetSystemMetrics(SM_CYCAPTION);
+}
+
+
+#endif // WIN32
 
 //
 // End of "$Id$".

@@ -456,15 +456,15 @@ public:
 FL_EXPORT extern Fl_Graphics_Driver *fl_graphics_driver;
 
 #ifdef __APPLE__
-class FL_EXPORT Fl_Quartz_Graphics_Driver : public Fl_Graphics_Driver {
-public:
-  Fl_Quartz_Graphics_Driver() {
-    _p->wrapper(NULL);
-    delete _p;
-    _p = new fltk3::QuartzGraphicsDriver();
-    _p->wrapper(this);
-  }
-};
+//class FL_EXPORT Fl_Quartz_Graphics_Driver : public Fl_Graphics_Driver {
+//public:
+//  Fl_Quartz_Graphics_Driver() {
+//    _p->wrapper(NULL);
+//    delete _p;
+//    _p = new fltk3::QuartzGraphicsDriver();
+//    _p->wrapper(this);
+//  }
+//};
 #elif defined(WIN32)
 class FL_EXPORT Fl_GDI_Graphics_Driver : public Fl_Graphics_Driver {
 public:

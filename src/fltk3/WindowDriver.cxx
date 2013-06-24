@@ -26,30 +26,17 @@
 //
 
 #include <fltk3/run.h>
-#include <fltk3/Device.h>
+#include <fltk3/WindowDriver.h>
 #include <fltk3/Image.h>
 
 
-fltk3::SurfaceDevice* fltk3::SurfaceDevice::_surface; // the current target surface of graphics operations
-
-fltk3::DisplayDevice *fltk3::DisplayDevice::_display; // the platform display
+FLTK3_EXPORT fltk3::WindowDriver* fltk3::window_driver;
 
 
-/** \brief Use this drawing surface for future graphics requests. */
-void fltk3::SurfaceDevice::set_current(void)
-{
-  fltk3::graphics_driver = _driver;
-  _surface = this;
+fltk3::WindowDriver::WindowDriver() {
+  fltk3::window_driver = this;
 }
 
-
-fltk3::SurfaceDevice::~SurfaceDevice() { }
-
-
-fltk3::DisplayDevice::DisplayDevice(fltk3::GraphicsDriver *graphics_driver) : fltk3::SurfaceDevice( graphics_driver) {
-  this->set_current();
-  _display = this;
-}
 
 //
 // End of "$Id$".

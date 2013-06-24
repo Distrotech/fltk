@@ -214,19 +214,6 @@ extern void fltk3::restore_clip();
 
 #elif defined(__APPLE_QUARTZ__) || defined(FLTK3_DOXYGEN)
 
-char fltk3::QuartzGraphicsDriver::can_do_alpha_blending() {
-  return 1;
-}
-
-fltk3::Offscreen fltk3::QuartzGraphicsDriver::create_offscreen_with_alpha(int w, int h) {
-  void *data = calloc(w*h,4);
-  CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
-  CGContextRef ctx = CGBitmapContextCreate(
-    data, w, h, 8, w*4, lut, kCGImageAlphaPremultipliedLast);
-  CGColorSpaceRelease(lut);
-  return (fltk3::Offscreen)ctx;
-}
-
 /** \addtogroup fl_drawings
  @{
  */
@@ -243,34 +230,6 @@ fltk3::Offscreen fl_create_offscreen(int w, int h) {
     data, w, h, 8, w*4, lut, kCGImageAlphaNoneSkipLast);
   CGColorSpaceRelease(lut);
   return (fltk3::Offscreen)ctx;
-}
-
-static void bmProviderRelease (void *src, const void *data, size_t size) {
-  CFIndex count = CFGetRetainCount(src);
-  CFRelease(src);
-  if(count == 1) free((void*)data);
-}
-
-void fltk3::QuartzGraphicsDriver::copy_offscreen(int x,int y,int w,int h,fltk3::Offscreen osrc,int srcx,int srcy) {
-  CGContextRef src = (CGContextRef)osrc;
-  void *data = CGBitmapContextGetData(src);
-  int sw = CGBitmapContextGetWidth(src);
-  int sh = CGBitmapContextGetHeight(src);
-  CGImageAlphaInfo alpha = CGBitmapContextGetAlphaInfo(src);
-  CGColorSpaceRef lut = CGColorSpaceCreateDeviceRGB();
-  // when output goes to a Quartz printercontext, release of the bitmap must be
-  // delayed after the end of the print page
-  CFRetain(src);
-  CGDataProviderRef src_bytes = CGDataProviderCreateWithData( src, data, sw*sh*4, bmProviderRelease);
-  CGImageRef img = CGImageCreate( sw, sh, 8, 4*8, 4*sw, lut, alpha,
-				 src_bytes, 0L, false, kCGRenderingIntentDefault);
-  CGRect rect = { { x+origin_x(), y+origin_y() }, { w, h } };
-  Fl_X::q_begin_image(rect, srcx, srcy, sw, sh);
-  CGContextDrawImage(fl_gc, rect, img);
-  Fl_X::q_end_image();
-  CGImageRelease(img);
-  CGColorSpaceRelease(lut);
-  CGDataProviderRelease(src_bytes);
 }
 
 /**  Deletion of an offscreen graphics buffer.
