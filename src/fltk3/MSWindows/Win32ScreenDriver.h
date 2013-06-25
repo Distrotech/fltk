@@ -41,6 +41,7 @@ namespace fltk3 {
   class FLTK3_EXPORT Win32ScreenDriver : public fltk3::ScreenDriver {
   public:
     Win32ScreenDriver();
+    virtual void beep(int);
   };
   
   extern FLTK3_EXPORT Win32ScreenDriver* win32_screen_driver;

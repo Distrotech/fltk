@@ -89,6 +89,59 @@ void fltk3::GraphicsDriver::freePlatformData(fltk3::Bitmap* bm)
   }
 }
 
+void fltk3::GraphicsDriver::push_origin() {
+  if (optr==origin_stack_size)
+    fltk3::error("fltk3::push_origin(): origin stack overflow.");
+  else
+    ostack[optr++] = o;
+}
+
+void fltk3::GraphicsDriver::pop_origin() {
+  if (optr==0)
+    fltk3::error("fltk3::pop_origin(): origin stack underflow.");
+  else
+    o = ostack[--optr];
+}
+
+void fltk3::GraphicsDriver::translate_origin(int dx, int dy) {
+  o.x += dx;
+  o.y += dy;
+}
+
+void fltk3::GraphicsDriver::origin(int x, int y) {
+  o.x = x;
+  o.y = y;
+}
+
+void fltk3::GraphicsDriver::clip_region(fltk3::Region r) {
+  fltk3::Region oldr = rstack[rstackptr];
+  if (oldr) XDestroyRegion(oldr);
+  rstack[rstackptr] = r;
+  restore_clip();
+}
+
+void fltk3::GraphicsDriver::region_stack_push(fltk3::Region r) {
+  if (rstackptr < region_stack_max) rstack[++rstackptr] = r;
+  else fltk3::warning("fltk3::push_clip: clip stack overflow!\n");
+}
+
+
+// make there be no clip (used by fl_begin_offscreen() only!)
+void fltk3::GraphicsDriver::push_no_clip() {
+  if (rstackptr < region_stack_max) rstack[++rstackptr] = 0;
+  else fltk3::warning("fltk3::push_no_clip: clip stack overflow!\n");
+  restore_clip();
+}
+
+// pop back to previous clip:
+void fltk3::GraphicsDriver::pop_clip() {
+  if (rstackptr > 0) {
+    fltk3::Region oldr = rstack[rstackptr--];
+    if (oldr) XDestroyRegion(oldr);
+  } else fltk3::warning("fltk3::pop_clip: clip stack underflow!\n");
+  restore_clip();
+}
+
 //
 // End of "$Id$".
 //

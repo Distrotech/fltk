@@ -85,10 +85,8 @@ namespace fltk3 {
     static fltk3::Color textcolor() { return textcolor_; }
     /** Sets the color of the text in the tooltip. The default is  black. */
     static void textcolor(fltk3::Color c) { textcolor_ = c; }
-#ifdef __APPLE__
-    // the unique tooltip window
+    /** Return the tooltip window. */
     static fltk3::Window* current_window(void);
-#endif
     
     // These should not be public, but fltk3::Widget::tooltip() needs them...
     // fabien: made it private with only a friend function access

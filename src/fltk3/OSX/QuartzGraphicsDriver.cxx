@@ -108,6 +108,29 @@ void fltk3::QuartzGraphicsDriver::uncache(fltk3::Bitmap* bm)
   //  }
 }
 
+
+fltk3::Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
+  static uchar reverse[16] =    /* Bit reversal lookup table */
+  { 0x00, 0x88, 0x44, 0xcc, 0x22, 0xaa, 0x66, 0xee,
+    0x11, 0x99, 0x55, 0xdd, 0x33, 0xbb, 0x77, 0xff };
+  int rowBytes = (w+7)>>3 ;
+  uchar *bmask = (uchar*)malloc(rowBytes*h), *dst = bmask;
+  const uchar *src = array;
+  for ( int i=rowBytes*h; i>0; i--,src++ ) {
+    *dst++ = ((reverse[*src & 0x0f] & 0xf0) | (reverse[(*src >> 4) & 0x0f] & 0x0f))^0xff;
+  }
+  CGDataProviderRef srcp = CGDataProviderCreateWithData( 0L, bmask, rowBytes*h, 0L);
+  CGImageRef id_ = CGImageMaskCreate( w, h, 1, 1, rowBytes, srcp, 0L, false);
+  CGDataProviderRelease(srcp);
+  return (fltk3::Bitmask)id_;
+}
+
+
+void fl_delete_bitmask(fltk3::Bitmask bm) {
+  if (bm) CGImageRelease((CGImageRef)bm);
+}
+
+
 void fltk3::QuartzGraphicsDriver::draw(fltk3::Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
   if (!bm->array) {

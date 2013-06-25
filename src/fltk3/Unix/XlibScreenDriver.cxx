@@ -32,12 +32,28 @@
 #include "XlibScreenDriver.h"
 #include <fltk3/x.h>
 #include <stdio.h>
+#include <fltk3/ask.h>
 
 
 fltk3::XlibScreenDriver::XlibScreenDriver()
 {
 }
 
+
+void fltk3::CocoaScreenDriver::beep(int type)
+{
+  switch (type) {
+    case fltk3::BEEP_DEFAULT :
+    case fltk3::BEEP_ERROR :
+      if (!fl_display) fl_open_display();      
+      XBell(fl_display, 100);
+      break;
+    default :
+      if (!fl_display) fl_open_display();
+      XBell(fl_display, 50);
+      break;
+  }
+  
 
 #endif // USE_X11
 

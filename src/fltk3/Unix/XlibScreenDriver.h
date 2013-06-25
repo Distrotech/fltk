@@ -41,6 +41,7 @@ namespace fltk3 {
   class FLTK3_EXPORT XlibScreenDriver : public fltk3::ScreenDriver {
   public:
     XlibScreenDriver();
+    virtual void beep(int);
   };
   
   extern FLTK3_EXPORT XlibScreenDriver* xlib_screen_driver;

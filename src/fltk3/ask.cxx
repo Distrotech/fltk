@@ -48,6 +48,8 @@
 #include <fltk3/SecretInput.h>
 #include <fltk3/x.h>
 #include <fltk3/draw.h>
+#include <fltk3/ScreenDriver.h>
+
 
 static fltk3::Window *message_form;
 static fltk3::Widget *message;
@@ -60,9 +62,6 @@ static const char *message_title_default_;
 fltk3::Font fltk3::message_font_ = fltk3::HELVETICA;
 fltk3::Fontsize fltk3::message_size_ = -1;
 static int enableHotspot = 1;
-#ifdef __APPLE__
-extern "C" void NSBeep(void);
-#endif
 
 static char avoidRecursion = 0;
 
@@ -293,49 +292,7 @@ const char* fltk3::close= "Close";   ///< string pointer used in common dialogs,
  \note \#include <fltk3/ask.h>
  */
 void fltk3::beep(int type) {
-#ifdef WIN32
-  switch (type) {
-    case fltk3::BEEP_QUESTION :
-    case fltk3::BEEP_PASSWORD :
-      MessageBeep(MB_ICONQUESTION);
-      break;
-    case fltk3::BEEP_MESSAGE :
-      MessageBeep(MB_ICONASTERISK);
-      break;
-    case fltk3::BEEP_NOTIFICATION :
-      MessageBeep(MB_ICONASTERISK);
-      break;
-    case fltk3::BEEP_ERROR :
-      MessageBeep(MB_ICONERROR);
-      break;
-    default :
-      MessageBeep(0xFFFFFFFF);
-      break;
-  }
-#elif defined(__APPLE__)
-  switch (type) {
-    case fltk3::BEEP_DEFAULT :
-    case fltk3::BEEP_ERROR :
-      NSBeep();
-      break;
-    default :
-      break;
-  }
-#else
-  switch (type) {
-    case fltk3::BEEP_DEFAULT :
-    case fltk3::BEEP_ERROR :
-      if (!fl_display) fl_open_display();
-
-      XBell(fl_display, 100);
-      break;
-    default :
-      if (!fl_display) fl_open_display();
-
-      XBell(fl_display, 50);
-      break;
-  }
-#endif // WIN32
+  screen_driver->beep(type);
 }
 
 

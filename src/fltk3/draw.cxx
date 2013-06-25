@@ -158,8 +158,7 @@ fltk3::expand_text(const char* from, char* buf, int maxbuf, double maxw, int& n,
 #else
     } else if (c == 0xA0) { // non-breaking space in ISO 8859
 #endif
-      *o++ = ' ';
-       
+      *o++ = ' ';       
     } else if (c == '@' && draw_symbols) { // Symbol???
       if (p[1] && p[1] != '@')  break;
       *o++ = c;

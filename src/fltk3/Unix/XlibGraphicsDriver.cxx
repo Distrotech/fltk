@@ -90,6 +90,18 @@ void fltk3::XlibGraphicsDriver::uncache(fltk3::Bitmap* bm)
 }
 
 
+fltk3::Bitmask fl_create_bitmask(int w, int h, const uchar *data) {
+  return XCreateBitmapFromData(fl_display, fl_window, (const char *)data,
+                               (w+7)&-8, h);
+}
+
+
+void fl_delete_bitmask(fltk3::Bitmask bm) {
+  fl_delete_offscreen((fltk3::Offscreen)bm);
+}
+
+
+
 
 // Composite an image with alpha on systems that don't have accelerated
 // alpha compositing...

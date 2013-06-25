@@ -59,47 +59,6 @@ fltk3::Bitmap::Bitmap(const char *bits, int W, int H) :
 }
 
 
-#if defined(__APPLE_QUARTZ__)
-
-
-fltk3::Bitmask fl_create_bitmask(int w, int h, const uchar *array) {
-  static uchar reverse[16] =    /* Bit reversal lookup table */
-    { 0x00, 0x88, 0x44, 0xcc, 0x22, 0xaa, 0x66, 0xee, 
-      0x11, 0x99, 0x55, 0xdd, 0x33, 0xbb, 0x77, 0xff };
-  int rowBytes = (w+7)>>3 ;
-  uchar *bmask = (uchar*)malloc(rowBytes*h), *dst = bmask;
-  const uchar *src = array;
-  for ( int i=rowBytes*h; i>0; i--,src++ ) {
-    *dst++ = ((reverse[*src & 0x0f] & 0xf0) | (reverse[(*src >> 4) & 0x0f] & 0x0f))^0xff;
-  }
-  CGDataProviderRef srcp = CGDataProviderCreateWithData( 0L, bmask, rowBytes*h, 0L);
-  CGImageRef id_ = CGImageMaskCreate( w, h, 1, 1, rowBytes, srcp, 0L, false);
-  CGDataProviderRelease(srcp);
-  return (fltk3::Bitmask)id_;
-}
-
-void fl_delete_bitmask(fltk3::Bitmask bm) {
-  if (bm) CGImageRelease((CGImageRef)bm);
-}
-
-
-#elif defined(WIN32) // Windows bitmask functions...
-#else // X11 bitmask functions
-
-
-fltk3::Bitmask fl_create_bitmask(int w, int h, const uchar *data) {
-  return XCreateBitmapFromData(fl_display, fl_window, (const char *)data,
-                               (w+7)&-8, h);
-}
-
-void fl_delete_bitmask(fltk3::Bitmask bm) {
-  fl_delete_offscreen((fltk3::Offscreen)bm);
-}
-
-
-#endif // __APPLE__
-
-
 // Create a 1-bit mask used for alpha blending
 fltk3::Bitmask fl_create_alphamask(int w, int h, int d, int ld, const uchar *array) {
   fltk3::Bitmask bm;

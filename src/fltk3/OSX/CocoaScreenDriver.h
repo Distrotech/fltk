@@ -41,6 +41,7 @@ namespace fltk3 {
   class FLTK3_EXPORT CocoaScreenDriver : public fltk3::ScreenDriver {
   public:
     CocoaScreenDriver();
+    virtual void beep(int);
   };
   
   extern FLTK3_EXPORT CocoaScreenDriver* cocoa_screen_driver;

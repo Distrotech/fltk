@@ -68,13 +68,10 @@ fltk3::Widget* fltk3::Tooltip::widget_ = 0;
 static Fl_TooltipBox *window = 0;
 static int Y,H;
 
-#ifdef __APPLE__
-// returns the unique tooltip window
 fltk3::Window *fltk3::Tooltip::current_window(void)
 {
   return (fltk3::Window*)window;
 }
-#endif
 
 void Fl_TooltipBox::layout() {
   fltk3::font(fltk3::Tooltip::font(), fltk3::Tooltip::size());

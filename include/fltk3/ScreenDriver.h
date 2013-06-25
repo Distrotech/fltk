@@ -45,6 +45,7 @@ namespace fltk3 {
   public:
     ScreenDriver();
     virtual ~ScreenDriver() { }
+    virtual void beep(int) = 0;
   };
   
   FLTK3_EXPORT extern ScreenDriver *screen_driver;

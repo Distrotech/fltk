@@ -35,12 +35,27 @@
 #include <fltk3/run.h>
 #include <fltk3/draw.h>
 #include <fltk3/Window.h>
+#include <fltk3/ask.h>
+
+extern "C" void NSBeep(void);
 
 
 fltk3::CocoaScreenDriver::CocoaScreenDriver()
 {
 }
 
+
+void fltk3::CocoaScreenDriver::beep(int type)
+{
+  switch (type) {
+    case fltk3::BEEP_DEFAULT :
+    case fltk3::BEEP_ERROR :
+      NSBeep();
+      break;
+    default :
+      break;
+  }
+}
 
 #endif // __APPLE__
 

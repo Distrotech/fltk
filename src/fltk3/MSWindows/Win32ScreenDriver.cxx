@@ -32,10 +32,34 @@
 #include "Win32ScreenDriver.h"
 #include <fltk3/x.h>
 #include <stdio.h>
+#include <fltk3/ask.h>
 
 
 fltk3::Win32ScreenDriver::Win32ScreenDriver()
 {
+}
+
+
+void fltk3::CocoaScreenDriver::beep(int type)
+{
+  switch (type) {
+    case fltk3::BEEP_QUESTION :
+    case fltk3::BEEP_PASSWORD :
+      MessageBeep(MB_ICONQUESTION);
+      break;
+    case fltk3::BEEP_MESSAGE :
+      MessageBeep(MB_ICONASTERISK);
+      break;
+    case fltk3::BEEP_NOTIFICATION :
+      MessageBeep(MB_ICONASTERISK);
+      break;
+    case fltk3::BEEP_ERROR :
+      MessageBeep(MB_ICONERROR);
+      break;
+    default :
+      MessageBeep(0xFFFFFFFF);
+      break;
+  }
 }
 
 

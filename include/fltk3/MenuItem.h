@@ -31,7 +31,7 @@
 #  include "Widget.h"
 #  include "Image.h"
 
-#  if defined(__APPLE__) && defined(check)
+#  ifdef check
 #    undef check
 #  endif
 
