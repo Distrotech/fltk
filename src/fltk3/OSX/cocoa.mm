@@ -54,8 +54,16 @@ extern "C" {
 #include <stdarg.h>
 
 #include "QuartzGraphicsDriver.h"
+#include "CocoaWindowDriver.h"
+#include "CocoaScreenDriver.h"
+#include "OSXSystemDriver.h"
 
 #import <Cocoa/Cocoa.h>
+
+static fltk3::DisplayDevice fl_quartz_display(new fltk3::QuartzGraphicsDriver);
+fltk3::CocoaWindowDriver* fltk3::cocoa_window_driver = new fltk3::CocoaWindowDriver();
+fltk3::CocoaScreenDriver* fltk3::cocoa_screen_driver = new fltk3::CocoaScreenDriver();
+fltk3::OSXSystemDriver* fltk3::osx_system_driver = new fltk3::OSXSystemDriver();
 
 #ifndef NSINTEGER_DEFINED // appears with 10.5 in NSObjCRuntime.h
 #if defined(__LP64__) && __LP64__
@@ -92,7 +100,6 @@ static void cocoaMouseHandler(NSEvent *theEvent);
 static int calc_mac_os_version();
 static fltk3::Image *create_default_drag_image();
 
-static fltk3::DisplayDevice fl_quartz_display(new fltk3::QuartzGraphicsDriver);
 
 // public variables
 CGContextRef fl_gc = 0;

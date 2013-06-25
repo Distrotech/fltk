@@ -37,9 +37,6 @@
 #include <fltk3/Window.h>
 
 
-fltk3::CocoaWindowDriver fltk3::cocoa_window_driver;
-
-
 fltk3::CocoaWindowDriver::CocoaWindowDriver()
 {
 }

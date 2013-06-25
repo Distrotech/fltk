@@ -27,34 +27,29 @@
 /** \file CocoaWindowDriver.h
  */
 
-#ifndef FLTK3_OSX_COCOA_WINDOW_DRIVER_H
-#define FLTK3_OSX_COCOA_WINDOW_DRIVER_H
+#ifndef FLTK3_OSX_COCOA_SCREEN_DRIVER_H
+#define FLTK3_OSX_COCOA_SCREEN_DRIVER_H
 
 #include <config.h>
 
 #ifdef __APPLE__
 
-#include <fltk3/WindowDriver.h>
+#include <fltk3/ScreenDriver.h>
 
 namespace fltk3 {
   
-  class FLTK3_EXPORT CocoaWindowDriver : public fltk3::WindowDriver {
+  class FLTK3_EXPORT CocoaScreenDriver : public fltk3::ScreenDriver {
   public:
-    CocoaWindowDriver();
-    
-    virtual void iconize(fltk3::Window*);
-    virtual void decoration_size(bool, int&, int&, int&, int&);
-    virtual void draw_decoration(fltk3::Window*);
-
+    CocoaScreenDriver();
   };
   
-  extern FLTK3_EXPORT CocoaWindowDriver* cocoa_window_driver;
+  extern FLTK3_EXPORT CocoaScreenDriver* cocoa_screen_driver;
   
 }
 
 #endif // __APPLE__
 
-#endif // FLTK3_OSX_COCOA_WINDOW_DRIVER_H
+#endif // FLTK3_OSX_COCOA_SCREEN_DRIVER_H
 
 //
 // End of "$Id$".

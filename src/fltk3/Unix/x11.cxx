@@ -63,11 +63,16 @@ static int randrEventBase;                  // base of RandR-defined events
 #endif
 
 #include "XlibWindowDriver.h"
+#include "XlibScreenDriver.h"
 #include "XlibGraphicsDriver.h"
+#include "UnixSystemDriver.h"
 
-fltk3::XlibWindowDriver fltk3::xlib_window_driver;
-static fltk3::XlibGraphicsDriver fl_xlib_driver;
-static fltk3::DisplayDevice fl_xlib_display(&fl_xlib_driver);
+static fltk3::XlibGraphicsDriver* fl_xlib_driver = new fltk3::XlibGraphicsDriver();
+static fltk3::DisplayDevice fl_xlib_display(fl_xlib_driver);
+fltk3::XlibWindowDriver* fltk3::xlib_window_driver = new fltk3::XlibWindowDriver();
+fltk3::XlibScreenDriver* fltk3::xlib_screen_driver = new fltk3::XlibScreenDriver();
+fltk3::UnixSystemDriver* fltk3::unix_system_driver = new fltk3::UnixSystemDriver();
+
 
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:

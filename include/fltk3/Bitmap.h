@@ -66,18 +66,6 @@ namespace fltk3 {
     
     void** pPlatformData;
 
-  private:
-    
-//#if defined(__APPLE__) || defined(WIN32)
-//    /** for internal use */
-//    void *id_;
-//#else
-//    /** for internal use */
-//    unsigned id_;
-//#endif // __APPLE__ || WIN32
-    
-  public:
-    
     /** The constructors create a new bitmap from the specified bitmap data */
     Bitmap(const uchar *bits, int W, int H);
 

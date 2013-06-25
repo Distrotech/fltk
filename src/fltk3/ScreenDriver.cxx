@@ -1,9 +1,9 @@
 //
 // "$Id$"
 //
-// Window Driver for the Fast Light Tool Kit (FLTK).
+// implementation of fltk3::Device class for the Fast Light Tool Kit (FLTK).
 //
-// Copyright 2010-2013 by Bill Spitzak and others.
+// Copyright 2010-2011 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -20,41 +20,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA.
 //
-// Please report all bugs and problems on the following page:
+// Please report all bugs and problems to:
 //
 //     http://www.fltk.org/str.php
 //
-/** \file CocoaWindowDriver.h
- */
 
-#ifndef FLTK3_OSX_COCOA_WINDOW_DRIVER_H
-#define FLTK3_OSX_COCOA_WINDOW_DRIVER_H
+#include <fltk3/run.h>
+#include <fltk3/ScreenDriver.h>
+#include <fltk3/Image.h>
 
-#include <config.h>
 
-#ifdef __APPLE__
+FLTK3_EXPORT fltk3::ScreenDriver* fltk3::screen_driver;
 
-#include <fltk3/WindowDriver.h>
 
-namespace fltk3 {
-  
-  class FLTK3_EXPORT CocoaWindowDriver : public fltk3::WindowDriver {
-  public:
-    CocoaWindowDriver();
-    
-    virtual void iconize(fltk3::Window*);
-    virtual void decoration_size(bool, int&, int&, int&, int&);
-    virtual void draw_decoration(fltk3::Window*);
-
-  };
-  
-  extern FLTK3_EXPORT CocoaWindowDriver* cocoa_window_driver;
-  
+fltk3::ScreenDriver::ScreenDriver() {
+  fltk3::screen_driver = this;
 }
 
-#endif // __APPLE__
-
-#endif // FLTK3_OSX_COCOA_WINDOW_DRIVER_H
 
 //
 // End of "$Id$".

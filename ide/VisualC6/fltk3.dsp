@@ -707,6 +707,14 @@ SOURCE=..\..\src\fltk3\WindowDriver.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\fltk3\ScreenDriver.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\SystemDriver.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\fltk3\OSX\cocoa_get_key.cxx
 # End Source File
 # Begin Source File
@@ -731,11 +739,19 @@ SOURCE=..\..\src\fltk3\OSX\cocoa_set_fonts.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\fltk3\OSX\QuartzGraphicsDriver.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\fltk3\OSX\CocoaWindowDriver.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fltk3\OSX\QuartzGraphicsDriver.cxx
+SOURCE=..\..\src\fltk3\OSX\CocoaScreenDriver.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\OSX\OSXSystemDriver.cxx
 # End Source File
 # Begin Source File
 
@@ -783,11 +799,19 @@ SOURCE=..\..\src\fltk3\MSWindows\GDIPrinter.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\fltk3\MSWindows\GDIGraphicsDriver.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\fltk3\MSWindows\Win32WindowDriver.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fltk3\MSWindows\GDIGraphicsDriver.cxx
+SOURCE=..\..\src\fltk3\MSWindows\Win32ScreenDriver.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\MSWindows\MSWindowsSystemDriver.cxx
 # End Source File
 # Begin Source File
 
@@ -839,11 +863,19 @@ SOURCE=..\..\src\fltk3\Unix\x11_print_panel.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\fltk3\Unix\XlibGraphicsDriver.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\fltk3\Unix\XlibWindowDriver.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fltk3\Unix\XlibGraphicsDriver.cxx
+SOURCE=..\..\src\fltk3\Unix\XlibScreenDriver.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fltk3\Unix\UnixSystemDriver.cxx
 # End Source File
 # End Target
 # End Project

@@ -47,7 +47,7 @@ namespace fltk3 {
 
   };
   
-  extern FLTK3_EXPORT XlibWindowDriver xlib_window_driver;
+  extern FLTK3_EXPORT XlibWindowDriver* xlib_window_driver;
   
 }
 

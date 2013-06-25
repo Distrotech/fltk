@@ -1568,6 +1568,22 @@ workspace FLTK {open
           list_env 124
           filename_and_path {include/fltk3/WindowDriver.h}
         }
+        file_ref {ScreenDriver.h} {
+          uuid_Xcode4_BuildFile {308F7EF9-82D4-43BD-86C4-3564A407A82F}
+          uuid_Xcode4_FileRef {33178A50-FA75-4DB7-884F-9DB8C0A7E7A9}
+          uuid_Xcode4_BuildFileInHeaders {F4803595-66D8-48E2-BD93-2968A58794AF}
+          build_env 96
+          list_env 124
+          filename_and_path {include/fltk3/ScreenDriver.h}
+        }
+        file_ref {SystemDriver.h} {
+          uuid_Xcode4_BuildFile {F83EB3A2-BE3E-4D4F-B44A-6389F968233E}
+          uuid_Xcode4_FileRef {BE8DA29A-69C7-437B-B49A-32785DC64317}
+          uuid_Xcode4_BuildFileInHeaders {FD39AEB5-83AD-47FD-B954-A80BC654CEBD}
+          build_env 96
+          list_env 124
+          filename_and_path {include/fltk3/SystemDriver.h}
+        }
       }
       folder Sources {open
         uuid_Xcode4_Group {91990322-0AF9-42F2-A077-713540EE5AB1}
@@ -2536,6 +2552,18 @@ workspace FLTK {open
           uuid_Xcode4_BuildFileInSources {28B707BB-58BD-4F7A-B2E0-85174E4218F6}
           filename_and_path {src/fltk3/WindowDriver.cxx}
         }
+        file_ref {ScreenDriver.cxx} {
+          uuid_Xcode4_BuildFile {29335C87-74F1-41B4-AECD-9B8B4FCE5E76}
+          uuid_Xcode4_FileRef {2FA80209-F816-45C5-AC77-3F601700D424}
+          uuid_Xcode4_BuildFileInSources {2389733E-F1F3-4F89-9928-EDEF4B7D9F7A}
+          filename_and_path {src/fltk3/ScreenDriver.cxx}
+        }
+        file_ref {SystemDriver.cxx} {
+          uuid_Xcode4_BuildFile {9A299524-3CFB-4C33-A1B6-93C6F05DC15C}
+          uuid_Xcode4_FileRef {9FB228E6-94D0-449D-9BEA-C953808C9C3C}
+          uuid_Xcode4_BuildFileInSources {1DC6020E-1F84-407A-ABE9-13BDCDE1430E}
+          filename_and_path {src/fltk3/SystemDriver.cxx}
+        }
         folder OSX {open
         } {
           file_ref {cocoa.mm} {
@@ -2605,6 +2633,19 @@ workspace FLTK {open
             uuid_Xcode4_BuildFileInSources {221CE674-FE5C-47DF-AA9B-E11DEB8E95DE}
             filename_and_path {src/fltk3/OSX/cocoa_set_fonts.cxx}
           }
+          file_ref {QuartzGraphicsDriver.cxx} {
+            uuid_Xcode4_BuildFile {386AACA8-D544-4781-8B23-47162CB75C48}
+            uuid_Xcode4_FileRef {AD674564-EB4C-4B78-8D9E-9B6836D7DC06}
+            uuid_Xcode4_BuildFileInSources {E9A5DBBB-37D3-4717-97F5-4CD6CC182E74}
+            filename_and_path {src/fltk3/OSX/QuartzGraphicsDriver.cxx}
+          }
+          file_ref {QuartzGraphicsDriver.h} {
+            uuid_Xcode4_BuildFile {69E5439E-A168-40DC-913E-4879637768CA}
+            uuid_Xcode4_FileRef {7CEF9255-EDEC-4798-814A-25FA7E15D1AA}
+            uuid_Xcode4_BuildFileInSources {D40D9EDD-3A95-48DA-B04A-026FFBC14FC8}
+            build_env 0
+            filename_and_path {src/fltk3/OSX/QuartzGraphicsDriver.h}
+          }
           file_ref {CocoaWindowDriver.cxx} {
             uuid_Xcode4_BuildFile {EF4AFA56-3760-4A48-959A-48B697835929}
             uuid_Xcode4_FileRef {7EA97242-A877-44BD-BA7E-B17524F92B15}
@@ -2618,18 +2659,31 @@ workspace FLTK {open
             build_env 0
             filename_and_path {src/fltk3/OSX/CocoaWindowDriver.h}
           }
-          file_ref {QuartzGraphicsDriver.cxx} {
-            uuid_Xcode4_BuildFile {386AACA8-D544-4781-8B23-47162CB75C48}
-            uuid_Xcode4_FileRef {AD674564-EB4C-4B78-8D9E-9B6836D7DC06}
-            uuid_Xcode4_BuildFileInSources {E9A5DBBB-37D3-4717-97F5-4CD6CC182E74}
-            filename_and_path {src/fltk3/OSX/QuartzGraphicsDriver.cxx}
+          file_ref {CocoaScreenDriver.cxx} {
+            uuid_Xcode4_BuildFile {05B06A75-26CE-467C-BB81-CA7BB0E6837D}
+            uuid_Xcode4_FileRef {2921280D-6DCD-4C3E-B544-1784EFA4EF68}
+            uuid_Xcode4_BuildFileInSources {3C970512-1807-402E-BE12-AB19045B4BAD}
+            filename_and_path {src/fltk3/OSX/CocoaScreenDriver.cxx}
           }
-          file_ref {QuartzGraphicsDriver.h} {
-            uuid_Xcode4_BuildFile {69E5439E-A168-40DC-913E-4879637768CA}
-            uuid_Xcode4_FileRef {7CEF9255-EDEC-4798-814A-25FA7E15D1AA}
-            uuid_Xcode4_BuildFileInSources {D40D9EDD-3A95-48DA-B04A-026FFBC14FC8}
+          file_ref {CocoaScreenDriver.h} {selected
+            uuid_Xcode4_BuildFile {36641C45-505D-4D97-868A-0A9F56CE874D}
+            uuid_Xcode4_FileRef {BB75A5AC-D4A3-4CEF-BA2E-6FC7F47CFCD7}
+            uuid_Xcode4_BuildFileInSources {696EB0E8-CD93-4D4D-8081-1D721B4B877A}
             build_env 0
-            filename_and_path {src/fltk3/OSX/QuartzGraphicsDriver.h}
+            filename_and_path {src/fltk3/OSX/CocoaScreenDriver.h}
+          }
+          file_ref {OSXSystemDriver.cxx} {
+            uuid_Xcode4_BuildFile {9DFF7E49-03A9-4F21-82B6-BB18D397560D}
+            uuid_Xcode4_FileRef {C57054C9-3EFC-400B-80C8-FF79A0E11111}
+            uuid_Xcode4_BuildFileInSources {5872BA20-61C8-40DB-A3DE-66EF88022890}
+            filename_and_path {src/fltk3/OSX/OSXSystemDriver.cxx}
+          }
+          file_ref {OSXSystemDriver.h} {
+            uuid_Xcode4_BuildFile {8CFACD52-9DCF-4945-99FA-F9999538DA4A}
+            uuid_Xcode4_FileRef {444F84E0-FEF9-4189-9F20-F8083DA79582}
+            uuid_Xcode4_BuildFileInSources {50531FF9-1EFE-4B8F-9187-3BEE810B9387}
+            build_env 0
+            filename_and_path {src/fltk3/OSX/OSXSystemDriver.h}
           }
         }
         folder MSWindows {open
@@ -2700,6 +2754,19 @@ workspace FLTK {open
             uuid_Xcode4_BuildFileInSources {A6BE3BE4-CA97-4154-999B-0E8731597B55}
             filename_and_path {src/fltk3/MSWindows/GDIPrinter.cxx}
           }
+          file_ref {GDIGraphicsDriver.cxx} {
+            uuid_Xcode4_BuildFile {B9F830D9-1425-4E13-909A-DD6E2131F3D7}
+            uuid_Xcode4_FileRef {0A4DB907-8C0F-4845-9EF1-F416E1C41E74}
+            uuid_Xcode4_BuildFileInSources {7968FB8B-909A-43EC-A10D-E3E875056F2C}
+            filename_and_path {src/fltk3/MSWindows/GDIGraphicsDriver.cxx}
+          }
+          file_ref {GDIGraphicsDriver.h} {
+            uuid_Xcode4_BuildFile {F830D8E0-4144-49FE-AD67-EADB8226F806}
+            uuid_Xcode4_FileRef {6B31FB24-50D1-477B-B5A4-40F91BD4D1BD}
+            uuid_Xcode4_BuildFileInSources {47679591-C818-4521-9386-66AB165C4FE6}
+            build_env 0
+            filename_and_path {src/fltk3/MSWindows/GDIGraphicsDriver.h}
+          }
           file_ref {Win32WindowDriver.cxx} {
             uuid_Xcode4_BuildFile {FBFBBAF5-B99C-4AA3-B3B1-F6237272BA06}
             uuid_Xcode4_FileRef {37D8CA61-23E2-4505-9498-519E259BC92D}
@@ -2713,18 +2780,31 @@ workspace FLTK {open
             build_env 0
             filename_and_path {src/fltk3/MSWindows/Win32WindowDriver.h}
           }
-          file_ref {GDIGraphicsDriver.cxx} {
-            uuid_Xcode4_BuildFile {B9F830D9-1425-4E13-909A-DD6E2131F3D7}
-            uuid_Xcode4_FileRef {0A4DB907-8C0F-4845-9EF1-F416E1C41E74}
-            uuid_Xcode4_BuildFileInSources {7968FB8B-909A-43EC-A10D-E3E875056F2C}
-            filename_and_path {src/fltk3/MSWindows/GDIGraphicsDriver.cxx}
+          file_ref {Win32ScreenDriver.cxx} {
+            uuid_Xcode4_BuildFile {A170BF29-D657-4B49-8C0C-7E88CB83DFCE}
+            uuid_Xcode4_FileRef {B6F32019-A147-4F1C-B5D3-D63FC3B63580}
+            uuid_Xcode4_BuildFileInSources {8FB1646E-ECEB-4DB3-905D-05627AD49401}
+            filename_and_path {src/fltk3/MSWindows/Win32ScreenDriver.cxx}
           }
-          file_ref {GDIGraphicsDriver.h} {selected
-            uuid_Xcode4_BuildFile {F830D8E0-4144-49FE-AD67-EADB8226F806}
-            uuid_Xcode4_FileRef {6B31FB24-50D1-477B-B5A4-40F91BD4D1BD}
-            uuid_Xcode4_BuildFileInSources {47679591-C818-4521-9386-66AB165C4FE6}
+          file_ref {Win32ScreenDriver.h} {
+            uuid_Xcode4_BuildFile {31687C3B-4CC3-44F8-AF58-EFB0ADFD12C2}
+            uuid_Xcode4_FileRef {5510AE9C-9A2B-490C-9671-667157DB71CF}
+            uuid_Xcode4_BuildFileInSources {13F72E89-C891-4595-88B0-20EA6661135D}
             build_env 0
-            filename_and_path {src/fltk3/MSWindows/GDIGraphicsDriver.h}
+            filename_and_path {src/fltk3/MSWindows/Win32ScreenDriver.h}
+          }
+          file_ref {MSWindowsSystemDriver.cxx} {
+            uuid_Xcode4_BuildFile {23873847-03EE-4251-B8F1-7CC8BFBFE652}
+            uuid_Xcode4_FileRef {70B18CA4-4AED-4A6A-B3C1-86E142DF0504}
+            uuid_Xcode4_BuildFileInSources {ACC7DEAA-8904-4A6E-BF58-70E233C42A2C}
+            filename_and_path {src/fltk3/MSWindows/MSWindowsSystemDriver.cxx}
+          }
+          file_ref {MSWindowsSystemDriver.h} {
+            uuid_Xcode4_BuildFile {3013FD30-CEA2-429C-B181-2EF88572F562}
+            uuid_Xcode4_FileRef {9A5AF63F-0F00-47E6-925C-F72CCFFF8FDE}
+            uuid_Xcode4_BuildFileInSources {05AB1E8D-1E08-4294-B874-2C4E9DBF7A62}
+            build_env 0
+            filename_and_path {src/fltk3/MSWindows/MSWindowsSystemDriver.h}
           }
         }
         folder Unix {open
@@ -2801,6 +2881,19 @@ workspace FLTK {open
             uuid_Xcode4_BuildFileInSources {B4338D79-B6C6-4E26-9947-AF7FEC0A1D08}
             filename_and_path {src/fltk3/Unix/x11_print_panel.cxx}
           }
+          file_ref {XlibGraphicsDriver.cxx} {
+            uuid_Xcode4_BuildFile {817A84E6-CB5E-476E-B909-6AB74BD06FB5}
+            uuid_Xcode4_FileRef {536DB351-6092-4B8E-AB3C-9C3771719B6A}
+            uuid_Xcode4_BuildFileInSources {8CEDFF2F-6148-45B2-B0DF-3747EF091D74}
+            filename_and_path {src/fltk3/Unix/XlibGraphicsDriver.cxx}
+          }
+          file_ref {XlibGraphicsDriver.h} {
+            uuid_Xcode4_BuildFile {446F7547-63D6-4B9C-B991-D8234E033B56}
+            uuid_Xcode4_FileRef {C419963D-1F50-4993-9D25-7F9685BA980C}
+            uuid_Xcode4_BuildFileInSources {012D1439-6FB2-4F92-AD3D-B8C57901AF4A}
+            build_env 0
+            filename_and_path {src/fltk3/Unix/XlibGraphicsDriver.h}
+          }
           file_ref {XlibWindowDriver.cxx} {
             uuid_Xcode4_BuildFile {B9603927-7533-4204-93F0-E5B4F0FE4C42}
             uuid_Xcode4_FileRef {A220AD83-3191-4B74-8008-656F453F9ACD}
@@ -2814,18 +2907,31 @@ workspace FLTK {open
             build_env 0
             filename_and_path {src/fltk3/Unix/XlibWindowDriver.h}
           }
-          file_ref {XlibGraphicsDriver.cxx} {
-            uuid_Xcode4_BuildFile {817A84E6-CB5E-476E-B909-6AB74BD06FB5}
-            uuid_Xcode4_FileRef {536DB351-6092-4B8E-AB3C-9C3771719B6A}
-            uuid_Xcode4_BuildFileInSources {8CEDFF2F-6148-45B2-B0DF-3747EF091D74}
-            filename_and_path {src/fltk3/Unix/XlibGraphicsDriver.cxx}
+          file_ref {XlibScreenDriver.cxx} {
+            uuid_Xcode4_BuildFile {9A603AB5-6B0A-46F2-A8C8-455320B4B1CA}
+            uuid_Xcode4_FileRef {E93CC57F-84C8-433B-BCAE-5F85EACF8643}
+            uuid_Xcode4_BuildFileInSources {7A6C19FF-C9A2-4F45-A479-F9F59668A53D}
+            filename_and_path {src/fltk3/Unix/XlibScreenDriver.cxx}
           }
-          file_ref {XlibGraphicsDriver.h} {
-            uuid_Xcode4_BuildFile {446F7547-63D6-4B9C-B991-D8234E033B56}
-            uuid_Xcode4_FileRef {C419963D-1F50-4993-9D25-7F9685BA980C}
-            uuid_Xcode4_BuildFileInSources {012D1439-6FB2-4F92-AD3D-B8C57901AF4A}
+          file_ref {XlibScreenDriver.h} {
+            uuid_Xcode4_BuildFile {1AF1EF4D-C88C-456D-BFC0-2458E95A55F1}
+            uuid_Xcode4_FileRef {CF166DEC-1D25-45B7-95BA-F2513D2859DD}
+            uuid_Xcode4_BuildFileInSources {6C0DF25A-C838-4AAE-B518-C1F0B6663F4B}
             build_env 0
-            filename_and_path {src/fltk3/Unix/XlibGraphicsDriver.h}
+            filename_and_path {src/fltk3/Unix/XlibScreenDriver.h}
+          }
+          file_ref {UnixSystemDriver.cxx} {
+            uuid_Xcode4_BuildFile {055552F7-C6D1-4D7E-B02A-3C5E5CB1B8E3}
+            uuid_Xcode4_FileRef {789B42E9-601E-4698-8BE0-3AB87D8A36BB}
+            uuid_Xcode4_BuildFileInSources {3DAD4425-014E-45F7-AB33-E5CD2FCC8747}
+            filename_and_path {src/fltk3/Unix/UnixSystemDriver.cxx}
+          }
+          file_ref {UnixSystemDriver.h} {
+            uuid_Xcode4_BuildFile {81299880-5F61-45B5-B1BC-78D0DEFDB4D9}
+            uuid_Xcode4_FileRef {F2E98FBE-5879-4545-9737-6DD1BAE1639A}
+            uuid_Xcode4_BuildFileInSources {14342DEC-C035-4890-A8DE-4BF319DA7066}
+            build_env 0
+            filename_and_path {src/fltk3/Unix/UnixSystemDriver.h}
           }
         }
       }

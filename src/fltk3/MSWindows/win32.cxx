@@ -124,10 +124,14 @@
 */
 #include "GDIGraphicsDriver.h"
 #include "Win32WindowDriver.h"
-fltk3::Win32WindowDriver fltk3::win32_window_driver;
+#include "Win32ScreenDriver.h"
+#include "MSWindowsSystemDriver.h"
 
-static fltk3::GDIGraphicsDriver fl_gdi_driver;
-static fltk3::DisplayDevice fl_gdi_display(&fl_gdi_driver);
+static fltk3::GDIGraphicsDriver* fl_gdi_driver = new fltk3::GDIGraphicsDriver();
+static fltk3::DisplayDevice fl_gdi_display(fl_gdi_driver);
+fltk3::Win32WindowDriver* fltk3::win32_window_driver = new fltk3::Win32WindowDriver();
+fltk3::Win32ScreenDriver* fltk3::win32_screen_driver = new fltk3::Win32ScreenDriver();
+fltk3::MSWindowsSystemDriver* fltk3::mswindows_system_driver = new fltk3::MSWindowsSystemDriver();
 
 // dynamic wsock dll handling api:
 #if defined(__CYGWIN__) && !defined(SOCKET)
