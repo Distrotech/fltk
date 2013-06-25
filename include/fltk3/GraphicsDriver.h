@@ -96,6 +96,11 @@ namespace fltk3 {
     friend class ::Fl_Graphics_Driver;
     friend class GDIGraphicsDriver;
   public:
+    
+    static int nDriver;
+    static GraphicsDriver* driver[8];
+    int myIndex;
+    
     /** A 2D coordinate transformation matrix
      */
     struct matrix {double a, b, c, d, x, y;};
@@ -332,6 +337,14 @@ namespace fltk3 {
     virtual char can_do_alpha_blending() {return 0;}
     /** \brief The destructor */
     virtual ~GraphicsDriver() { if (p) free(p); }
+    
+    // --- Bitmap support ---
+    void allocatePlatformData(fltk3::Bitmap*);
+    void freePlatformData(fltk3::Bitmap*);
+    virtual void allocateMyPlatformData(fltk3::Bitmap*) {}
+    virtual void freeMyPlatformData(fltk3::Bitmap*) {}
+    virtual void uncache(fltk3::Bitmap*) {}
+    
   };
     
 }

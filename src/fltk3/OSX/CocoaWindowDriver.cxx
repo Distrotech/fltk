@@ -31,6 +31,11 @@
 
 #include "CocoaWindowDriver.h"
 
+#include <fltk3/x.h>
+#include <fltk3/run.h>
+#include <fltk3/draw.h>
+#include <fltk3/Window.h>
+
 
 fltk3::CocoaWindowDriver fltk3::cocoa_window_driver;
 
@@ -54,6 +59,33 @@ void fltk3::CocoaWindowDriver::decoration_size(bool, int& top, int& left, int& r
   bottom = 2;
 }
 
+
+void fltk3::CocoaWindowDriver::draw_decoration(fltk3::Window* win)
+{
+  // on OS X, windows have no frame. To resize a window, we drag the lower right
+  // corner. This code draws a little ribbed triangle for dragging.
+  // Starting with 10.7, OS X windows have a hidden frame and the corner is no longer needed
+  if (fl_mac_os_version < 100700) {
+    if (fl_gc && !win->parent() && win->resizable() && (!win->size_range_set || win->minh!=win->maxh || win->minw!=win->maxw)) {
+      int dx = fltk3::box_dw(win->box())-fltk3::box_dx(win->box());
+      int dy = fltk3::box_dh(win->box())-fltk3::box_dy(win->box());
+      if (dx<=0) dx = 1;
+      if (dy<=0) dy = 1;
+      int x1 = w()-dx-1, x2 = x1, y1 = h()-dx-1, y2 = y1;
+      fltk3::Color c[4] = {
+        color(),
+        fltk3::color_average(color(), fltk3::WHITE, 0.7f),
+        fltk3::color_average(color(), fltk3::BLACK, 0.6f),
+        fltk3::color_average(color(), fltk3::BLACK, 0.8f),
+      };
+      int i;
+      for (i=dx; i<12; i++) {
+        fltk3::color(c[i&3]);
+        fltk3::line(x1--, y1, x2, y2--);
+      }
+    }
+  }
+}
 
 
 #endif // __APPLE__

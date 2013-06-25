@@ -96,6 +96,11 @@ namespace fltk3 {
     void copy_offscreen(int x, int y, int w, int h, fltk3::Offscreen pixmap, int srcx, int srcy);
     char can_do_alpha_blending();
     static fltk3::Offscreen create_offscreen_with_alpha(int w, int h);
+    
+    // --- Bitmap support ---
+    virtual void allocateMyPlatformData(fltk3::Bitmap*);
+    virtual void freeMyPlatformData(fltk3::Bitmap*);
+    virtual void uncache(fltk3::Bitmap*);
   };
   
   class FLTK3_EXPORT PrinterQuartzGraphicsDriver : public QuartzGraphicsDriver {

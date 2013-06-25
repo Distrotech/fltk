@@ -62,16 +62,51 @@ void fl_quartz_restore_line_style_() {
 
 extern Fl_Font_Descriptor* fltk3_find(fltk3::Font fnum, fltk3::Fontsize size);
 
-extern int fltk3_start(fltk3::Bitmap *bm,
-                       int XP, int YP, int WP, int HP,
-                       int w, int h, int &cx, int &cy,
-                       int &X, int &Y, int &W, int &H);
 
 extern int fltk3_start(fltk3::RGBImage *img,
                        int XP, int YP, int WP, int HP,
                        int w, int h, int &cx, int &cy,
                        int &X, int &Y, int &W, int &H);
 
+
+// --- Bitmap support ---
+
+typedef struct {
+  CGImageRef id;
+} BitmapData;
+
+extern int fltk3_start(fltk3::Bitmap *bm,
+                       int XP, int YP, int WP, int HP,
+                       int w, int h, int &cx, int &cy,
+                       int &X, int &Y, int &W, int &H);
+
+void fltk3::QuartzGraphicsDriver::allocateMyPlatformData(fltk3::Bitmap* bm)
+{
+  bm->pPlatformData[myIndex] = calloc(1, sizeof(BitmapData));
+}
+
+void fltk3::QuartzGraphicsDriver::freeMyPlatformData(fltk3::Bitmap* bm)
+{
+  free(bm->pPlatformData[myIndex]);
+}
+
+void fltk3::QuartzGraphicsDriver::uncache(fltk3::Bitmap* bm)
+{
+  if (!bm->pPlatformData) allocatePlatformData(bm);
+  BitmapData *pd = (BitmapData*)bm->pPlatformData[myIndex];
+  if (pd->id) {
+    fl_delete_bitmask(pd->id);
+    pd->id = 0;
+  }
+  //  if (id_) {
+  //#ifdef __APPLE_QUARTZ__
+  //    fl_delete_bitmask((fltk3::Bitmask)id_);
+  //#else
+  //    fl_delete_bitmask((fltk3::Offscreen)id_);
+  //#endif
+  //    id_ = 0;
+  //  }
+}
 
 void fltk3::QuartzGraphicsDriver::draw(fltk3::Bitmap *bm, int XP, int YP, int WP, int HP, int cx, int cy) {
   int X, Y, W, H;
@@ -82,11 +117,13 @@ void fltk3::QuartzGraphicsDriver::draw(fltk3::Bitmap *bm, int XP, int YP, int WP
   if (fltk3_start(bm, XP, YP, WP, HP, bm->w(), bm->h(), cx, cy, X, Y, W, H)) {
     return;
   }
-  if (!bm->id_) bm->id_ = fl_create_bitmask(bm->w(), bm->h(), bm->array);
-  if (bm->id_ && fl_gc) {
+  if (!bm->pPlatformData) allocatePlatformData(bm);
+  BitmapData *pd = (BitmapData*)bm->pPlatformData[myIndex];
+  if (!pd->id) pd->id = fl_create_bitmask(bm->w(), bm->h(), bm->array);
+  if (pd->id && fl_gc) {
     CGRect rect = { { X+origin_x(), Y+origin_y()}, { W, H } };
     Fl_X::q_begin_image(rect, cx, cy, bm->w(), bm->h());
-    CGContextDrawImage(fl_gc, rect, (CGImageRef)bm->id_);
+    CGContextDrawImage(fl_gc, rect, pd->id);
     Fl_X::q_end_image();
   }
 }
@@ -1284,6 +1321,8 @@ void fltk3::QuartzGraphicsDriver::yxline(int x, int y, int y1, int x2, int y3) {
   CGContextAddLineToPoint(fl_gc, x2, y3);
   CGContextStrokePath(fl_gc);
 }
+
+
 
 
 

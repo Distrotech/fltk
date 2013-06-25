@@ -90,7 +90,9 @@ static int local_handle(int event, fltk3::Window* window) {
   return ret;
 }
 
-int fltk3::dnd() {
+fltk3::Image *fltk3::default_drag_image = 0L;
+
+int fltk3::dnd(fltk3::Image*) {
   fltk3::Window *source_fl_win = fltk3::first_window();
   fltk3::first_window()->cursor(fltk3::CURSOR_MOVE);
   ::Window source_window = fl_xid(fltk3::first_window());

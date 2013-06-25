@@ -381,9 +381,6 @@ void fltk3::RGBImage::desaturate() {
   d(new_d);
 }
 
-#if !defined(WIN32) && !defined(__APPLE_QUARTZ__)
-#endif // !WIN32 && !__APPLE_QUARTZ__
-
 void fltk3::RGBImage::draw(int XP, int YP, int WP, int HP, int cx, int cy) {
   fltk3::graphics_driver->draw(this, XP, YP, WP, HP, cx, cy);
 }

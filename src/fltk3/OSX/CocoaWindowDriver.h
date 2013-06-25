@@ -44,6 +44,7 @@ namespace fltk3 {
     
     virtual void iconize(fltk3::Window*);
     virtual void decoration_size(bool, int&, int&, int&, int&);
+    virtual void draw_decoration(fltk3::Window*);
 
   };
   

@@ -102,6 +102,11 @@ namespace fltk3 {
     void copy_offscreen(int x, int y, int w, int h, fltk3::Offscreen pixmap, int srcx, int srcy);
     char can_do_alpha_blending();
     void copy_offscreen_with_alpha(int x,int y,int w,int h,HBITMAP pixmap,int srcx,int srcy);
+
+    // --- Bitmap support ---
+    virtual void allocateMyPlatformData(fltk3::Bitmap*);
+    virtual void freeMyPlatformData(fltk3::Bitmap*);
+    virtual void uncache(fltk3::Bitmap*);
   };
   
   class FLTK3_EXPORT GDIPrinterGraphicsDriver : public fltk3::GDIGraphicsDriver {

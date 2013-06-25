@@ -48,6 +48,7 @@ namespace fltk3 {
     
     virtual void iconize(fltk3::Window*) = 0;
     virtual void decoration_size(bool, int&, int&, int&, int&) = 0;
+    virtual void draw_decoration(fltk3::Window*) { };
   };
   
   FLTK3_EXPORT extern WindowDriver *window_driver;

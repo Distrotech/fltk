@@ -54,6 +54,7 @@ namespace fltk3 {
   class FLTK3_EXPORT Window : public Group {
 
     friend class WidgetWrapper;
+    friend class CocoaWindowDriver;
 
     static char *default_xclass_;
 

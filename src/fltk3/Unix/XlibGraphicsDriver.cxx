@@ -51,15 +51,45 @@ extern int fl_line_width_;
 #define SHRT_MAX (32767)
 #endif
 
-extern int fltk3_start(fltk3::Bitmap *bm,
-                       int XP, int YP, int WP, int HP,
-                       int w, int h, int &cx, int &cy,
-                       int &X, int &Y, int &W, int &H);
 
 extern int fltk3_start(fltk3::RGBImage *img,
                        int XP, int YP, int WP, int HP,
                        int w, int h, int &cx, int &cy,
                        int &X, int &Y, int &W, int &H);
+
+
+// --- Bitmap support ---
+
+typedef struct {
+  Pixmap id;
+} BitmapData;
+
+extern int fltk3_start(fltk3::Bitmap *bm,
+                       int XP, int YP, int WP, int HP,
+                       int w, int h, int &cx, int &cy,
+                       int &X, int &Y, int &W, int &H);
+
+void fltk3::XlibGraphicsDriver::allocateMyPlatformData(fltk3::Bitmap* bm)
+{
+  bm->pPlatformData[myIndex] = calloc(1, sizeof(BitmapData));
+}
+
+void fltk3::XlibGraphicsDriver::freeMyPlatformData(fltk3::Bitmap* bm)
+{
+  free(bm->pPlatformData[myIndex]);
+}
+
+void fltk3::XlibGraphicsDriver::uncache(fltk3::Bitmap* bm)
+{
+  if (!bm->pPlatformData) allocatePlatformData(bm);
+  BitmapData *pd = (BitmapData*)bm->pPlatformData[myIndex];
+  if (pd->id) {
+    fl_delete_bitmask(pd->id);
+    pd->id = 0;
+  }
+}
+
+
 
 // Composite an image with alpha on systems that don't have accelerated
 // alpha compositing...
@@ -291,9 +321,11 @@ void fltk3::XlibGraphicsDriver::draw(fltk3::Bitmap *bm, int XP, int YP, int WP, 
   if (fltk3_start(bm, XP, YP, WP, HP, bm->w(), bm->h(), cx, cy, X, Y, W, H)) {
     return;
   }
-  if (!bm->id_) bm->id_ = fl_create_bitmask(bm->w(), bm->h(), bm->array);
+  if (!bm->pPlatformData) allocatePlatformData(bm);
+  BitmapData *pd = (BitmapData*)bm->pPlatformData[myIndex];
+  if (!pd->id) pd->id = fl_create_bitmask(bm->w(), bm->h(), bm->array);
   
-  XSetStipple(fl_display, fl_gc, bm->id_);
+  XSetStipple(fl_display, fl_gc, pd->id);
   int ox = X+origin_x()-cx; if (ox < 0) ox += bm->w();
   int oy = Y+origin_y()-cy; if (oy < 0) oy += bm->h();
   XSetTSOrigin(fl_display, fl_gc, ox, oy);

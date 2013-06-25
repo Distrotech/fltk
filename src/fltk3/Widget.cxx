@@ -254,18 +254,14 @@ fltk3::Widget::draw_focus(fltk3::Box* B, int X, int Y, int W, int H) const {
 
   fltk3::color(fltk3::contrast(fltk3::BLACK, color()));
 
-#if defined(USE_X11) || defined(__APPLE_QUARTZ__)
+#if 1
   fltk3::line_style(fltk3::DOT);
   fltk3::rect(X + fltk3::box_dx(B), Y + fltk3::box_dy(B),
           W - fltk3::box_dw(B) - 1, H - fltk3::box_dh(B) - 1);
   fltk3::line_style(fltk3::SOLID);
-#elif defined(WIN32) 
+#else
   // Windows 95/98/ME do not implement the dotted line style, so draw
   // every other pixel around the focus area...
-  //
-  // Also, QuickDraw (MacOS) does not support line styles specifically,
-  // and the hack we use in fltk3::line_style() will not draw horizontal lines
-  // on odd-numbered rows...
   int i, xx, yy;
 
   X += fltk3::box_dx(B);
@@ -277,9 +273,7 @@ fltk3::Widget::draw_focus(fltk3::Box* B, int X, int Y, int W, int H) const {
   for (yy = 0; yy < H; yy ++, i ++) if (i & 1) fltk3::point(X + W, Y + yy);
   for (xx = W; xx > 0; xx --, i ++) if (i & 1) fltk3::point(X + xx, Y + H);
   for (yy = H; yy > 0; yy --, i ++) if (i & 1) fltk3::point(X, Y + yy);
-#else
-# error unsupported platform
-#endif // WIN32
+#endif
 }
 
 

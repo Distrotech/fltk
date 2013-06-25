@@ -761,29 +761,24 @@ namespace fltk3 {
    copy/cut/paste operations.
    */
   void paste(fltk3::Widget &receiver, int source /*=0*/); // platform dependent
-#if defined(__APPLE__)
-  extern fltk3::Image *default_drag_image;
-#endif
+
   /**
-   Initiate a Drag And Drop operation. The selection buffer should be
-   filled with relevant data before calling this method. FLTK will
-   then initiate the system wide drag and drop handling. Dropped data
-   will be marked as <i>text</i>.
+   Initiate a Drag And Drop operation. The selection buffer should be filled 
+   with relevant data before calling this method. FLTK will then initiate the
+   system wide drag and drop handling. Dropped data will be marked 
+   as <i>text</i>.
    
    Create a selection first using:
-   fltk3::copy(const char *stuff, int len, 0)
+   <tt>fltk3::copy(const char *stuff, int len, 0)</tt>
    
-   On the Mac OS platform, the \p dragimage optional argument 
-   sets the image to use as a cursor when dragging. 
-   If no (or a NULL) argument is used, the text in the selection buffer is used to build the cursor.
-   Otherwise, the argument is the image to use as a cursor;
-   the variable fltk3::Image *fltk3::default_drag_image is an adequate default drag image.
+   On the Mac OS platform, the \p dragimage optional argument sets the image 
+   to use as a cursor when dragging. If no (or a NULL) argument is used, the 
+   text in the selection buffer is used to build the cursor. Otherwise, the 
+   argument is the image to use as a cursor; the variable 
+   fltk3::Image *fltk3::default_drag_image is an adequate default drag image.
    */
-  int dnd(
-#if defined(__APPLE__) || defined(FL_DOXYGEN)
-	  fltk3::Image* dragimage = NULL
-#endif
-	  ); // platform dependent
+  int dnd(fltk3::Image* dragimage = NULL);
+  extern fltk3::Image *default_drag_image;
   
   // These are for back-compatibility only:
   /**  back-compatibility only: Gets the widget owning the current selection  

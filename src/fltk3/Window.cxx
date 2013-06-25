@@ -33,17 +33,15 @@
 #include <fltk3/run.h>
 #include <fltk3/x.h>
 #include <fltk3/Window.h>
+#include <fltk3/WindowDriver.h>
 #include <fltk3/Wrapper.h>
 #include <stdlib.h>
 #include "flstring.h"
 
-#ifdef __APPLE_QUARTZ__
-#include <fltk3/draw.h>
-#endif
 
 char *fltk3::Window::default_xclass_ = 0L;
 
-void fltk3::Window::_Fl_Window() {
+void fltk3::Window::_Fl_Window() {  
   type(fltk3::WINDOW);
   box(fltk3::FLAT_BOX);
   if (fltk3::scheme_bg_) {
@@ -115,33 +113,7 @@ void fltk3::Window::draw() {
     draw_box(box(),0,0,w(),h(),color()); // draw box with x/y = 0
   }
   draw_children();
-
-#ifdef __APPLE_QUARTZ__
-  // on OS X, windows have no frame. To resize a window, we drag the lower right
-  // corner. This code draws a little ribbed triangle for dragging.
-  // Starting with 10.7, OS X windows have a hidden frame and the corner is no longer needed
-  if (fl_mac_os_version < 100700) {
-    if (fl_gc && !parent() && resizable() && (!size_range_set || minh!=maxh || minw!=maxw)) {
-      int dx = fltk3::box_dw(box())-fltk3::box_dx(box());
-      int dy = fltk3::box_dh(box())-fltk3::box_dy(box());
-      if (dx<=0) dx = 1;
-      if (dy<=0) dy = 1;
-      int x1 = w()-dx-1, x2 = x1, y1 = h()-dx-1, y2 = y1;
-      fltk3::Color c[4] = {
-        color(),
-        fltk3::color_average(color(), fltk3::WHITE, 0.7f),
-        fltk3::color_average(color(), fltk3::BLACK, 0.6f),
-        fltk3::color_average(color(), fltk3::BLACK, 0.8f),
-      };
-      int i;
-      for (i=dx; i<12; i++) {
-        fltk3::color(c[i&3]);
-        fltk3::line(x1--, y1, x2, y2--);
-      }
-    }
-  }
-#endif
-
+  window_driver->draw_decoration(this);
 # if defined(FLTK_USE_CAIRO)
   fltk3::cairo_make_current(this); // checkout if an update is necessary
 # endif

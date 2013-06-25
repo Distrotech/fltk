@@ -63,6 +63,7 @@ static int randrEventBase;                  // base of RandR-defined events
 #endif
 
 #include "XlibWindowDriver.h"
+#include "XlibGraphicsDriver.h"
 
 fltk3::XlibWindowDriver fltk3::xlib_window_driver;
 static fltk3::XlibGraphicsDriver fl_xlib_driver;

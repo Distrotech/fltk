@@ -42,7 +42,7 @@ fltk3::Bitmap::Bitmap(const uchar *bits, int W, int H) :
   Image(W,H,0), 
   array(bits), 
   alloc_array(0), 
-  id_(0) 
+  pPlatformData(0L)
 {
   data((const char **)&array, 1);
 }
@@ -53,7 +53,7 @@ fltk3::Bitmap::Bitmap(const char *bits, int W, int H) :
   Image(W,H,0), 
   array((const uchar *)bits), 
   alloc_array(0), 
-  id_(0) 
+  pPlatformData(0L)
 {
   data((const char **)&array, 1);
 }
@@ -210,17 +210,11 @@ int fltk3_start(fltk3::Bitmap *bm,
 fltk3::Bitmap::~Bitmap() {
   uncache();
   if (alloc_array) delete[] (uchar *)array;
+  graphics_driver->freeMyPlatformData(this);
 }
 
 void fltk3::Bitmap::uncache() {
-  if (id_) {
-#ifdef __APPLE_QUARTZ__
-    fl_delete_bitmask((fltk3::Bitmask)id_);
-#else
-    fl_delete_bitmask((fltk3::Offscreen)id_);
-#endif
-    id_ = 0;
-  }
+  graphics_driver->uncache(this);
 }
 
 void fltk3::Bitmap::label(fltk3::Widget* widget) {

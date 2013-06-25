@@ -51,7 +51,6 @@ extern int fl_selection_length[2];
 extern int fl_selection_buffer_length[2];
 extern char fl_i_own_selection[2];
 extern char *fl_locale2utf8(const char *s, UINT codepage = 0);
-extern unsigned int fl_codepage;
 
 fltk3::Window *fl_dnd_target_window = 0;
 
@@ -526,7 +525,9 @@ public:
 };
 
 
-int fltk3::dnd()
+fltk3::Image *fltk3::default_drag_image = 0L;
+
+int fltk3::dnd(fltk3::Image*)
 {
   DWORD dropEffect;
   ReleaseCapture();

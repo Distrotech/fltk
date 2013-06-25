@@ -34,7 +34,7 @@
 #include "Image.h"
 
 namespace fltk3 {
-  class Widget; 
+  class Widget;
   struct MenuItem;
   class Image;
 }
@@ -64,15 +64,17 @@ namespace fltk3 {
     /** Non-zero if array points to bitmap data allocated internally */
     int alloc_array;
     
+    void** pPlatformData;
+
   private:
     
-#if defined(__APPLE__) || defined(WIN32)
-    /** for internal use */
-    void *id_;
-#else
-    /** for internal use */
-    unsigned id_;
-#endif // __APPLE__ || WIN32
+//#if defined(__APPLE__) || defined(WIN32)
+//    /** for internal use */
+//    void *id_;
+//#else
+//    /** for internal use */
+//    unsigned id_;
+//#endif // __APPLE__ || WIN32
     
   public:
     

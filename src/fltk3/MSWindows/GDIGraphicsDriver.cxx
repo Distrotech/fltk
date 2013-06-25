@@ -48,15 +48,44 @@
 
 extern int fl_line_width_;
 
-extern int fltk3_start(fltk3::Bitmap *bm,
-                       int XP, int YP, int WP, int HP,
-                       int w, int h, int &cx, int &cy,
-                       int &X, int &Y, int &W, int &H);
 
 extern int fltk3_start(fltk3::RGBImage *img,
                        int XP, int YP, int WP, int HP,
                        int w, int h, int &cx, int &cy,
                        int &X, int &Y, int &W, int &H);
+
+
+// --- Bitmap support ---
+
+typedef struct {
+  HGDIOBJ id;
+} BitmapData;
+
+extern int fltk3_start(fltk3::Bitmap *bm,
+                       int XP, int YP, int WP, int HP,
+                       int w, int h, int &cx, int &cy,
+                       int &X, int &Y, int &W, int &H);
+
+void fltk3::GDIGraphicsDriver::allocateMyPlatformData(fltk3::Bitmap* bm)
+{
+  bm->pPlatformData[myIndex] = calloc(1, sizeof(BitmapData));
+}
+
+void fltk3::GDIGraphicsDriver::freeMyPlatformData(fltk3::Bitmap* bm)
+{
+  free(bm->pPlatformData[myIndex]);
+}
+
+void fltk3::GDIGraphicsDriver::uncache(fltk3::Bitmap* bm)
+{
+  if (!bm->pPlatformData) allocatePlatformData(bm);
+  BitmapData *pd = (BitmapData*)bm->pPlatformData[myIndex];
+  if (pd->id) {
+    fl_delete_bitmask((fltk3::Offscreen)pd->id);
+    pd->id = 0;
+  }
+}
+
 
 
 // 'fl_create_bitmap()' - Create a 1-bit bitmap for drawing...
@@ -195,7 +224,9 @@ void fltk3::GDIGraphicsDriver::draw_bitmap(fltk3::Bitmap *bm, int XP, int YP, in
   if (fltk3_start(bm, XP, YP, WP, HP, bm->w(), bm->h(), cx, cy, X, Y, W, H)) {
     return;
   }
-  if (!bm->id_) bm->id_ = fl_create_bitmap(bm->w(), bm->h(), bm->array);
+  if (!bm->pPlatformData) allocatePlatformData(bm);
+  BitmapData *pd = (BitmapData*)bm->pPlatformData[myIndex];
+  if (!pd->id) pd->id = fl_create_bitmap(bm->w(), bm->h(), bm->array);
   
   typedef BOOL (WINAPI* fl_transp_func)  (HDC,int,int,int,int,HDC,int,int,int,int,UINT);
   static fl_transp_func fl_TransparentBlt;
@@ -225,7 +256,7 @@ void fltk3::GDIGraphicsDriver::draw_bitmap(fltk3::Bitmap *bm, int XP, int YP, in
     fltk3::color(save_c); // back to bitmap's color
     tempdc = CreateCompatibleDC(fl_gc);
     save = SaveDC(tempdc);
-    SelectObject(tempdc, (HGDIOBJ)bm->id_);
+    SelectObject(tempdc, pd->id);
     SelectObject(fl_gc, fl_brush()); // use bitmap's desired color
     BitBlt(fl_gc, 0, 0, W, H, tempdc, 0, 0, 0xE20746L); // draw bitmap to offscreen
     fl_end_offscreen(); // offscreen data is in tmp_id
@@ -237,7 +268,7 @@ void fltk3::GDIGraphicsDriver::draw_bitmap(fltk3::Bitmap *bm, int XP, int YP, in
   else { // algorithm for bitmap output to display
     tempdc = CreateCompatibleDC(fl_gc);
     save = SaveDC(tempdc);
-    SelectObject(tempdc, (HGDIOBJ)bm->id_);
+    SelectObject(tempdc, pd->id);
     SelectObject(fl_gc, fl_brush());
     // secret bitblt code found in old MSWindows reference manual:
     BitBlt(fl_gc, X+origin_x(), Y+origin_y(), W, H, tempdc, cx, cy, 0xE20746L);

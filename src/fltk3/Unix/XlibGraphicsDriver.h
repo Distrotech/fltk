@@ -93,6 +93,11 @@ namespace fltk3 {
     void line_style(int style, int width=0, char* dashes=0);
     void copy_offscreen(int x, int y, int w, int h, fltk3::Offscreen pixmap, int srcx, int srcy);
     char can_do_alpha_blending();
+    
+    // --- Bitmap support ---
+    virtual void allocateMyPlatformData(fltk3::Bitmap*);
+    virtual void freeMyPlatformData(fltk3::Bitmap*);
+    virtual void uncache(fltk3::Bitmap*);
   };
   
 }
